@@ -52,7 +52,7 @@ public class EyeSprite extends MobSprite {
 		charging = new Animation( 12, true);
 		charging.frames( frames, 3, 4 );
 		
-		run = new Animation( 12, true );
+		run = new Animation( 3, true );
 		run.frames( frames, 5, 6 );
 		
 		attack = new Animation( 8, false );

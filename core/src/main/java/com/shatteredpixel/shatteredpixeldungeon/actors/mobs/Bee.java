@@ -43,8 +43,7 @@ public class Bee extends Mob {
 		viewDistance = 4;
 
 		EXP = 0;
-		
-		flying = true;
+
 		state = WANDERING;
 		
 		//only applicable when the bee is charmed with elixir of honeyed healing

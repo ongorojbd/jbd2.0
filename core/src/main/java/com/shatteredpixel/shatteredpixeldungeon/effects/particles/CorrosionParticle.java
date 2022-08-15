@@ -86,7 +86,7 @@ public class CorrosionParticle extends PixelParticle {
 		// alpha: 1 -> 0; size: 1 -> 4
 		size( 4 - (am = left / lifespan) * 3 );
 		// color: 0xAAAAAA -> 0xFF8800
-		color( ColorMath.interpolate( 0xFF8800, 0xAAAAAA, am ) );
+		color( ColorMath.interpolate( 0x5700A3, 0x3C0070, am ) );
 	}
 	
 }

@@ -309,7 +309,7 @@ public class Speck extends Image {
 			break;
 
 		case CORROSION:
-			hardlight( 0xAAAAAA );
+			hardlight( 0x5700A3 );
 			angularSpeed = 30;
 			angle = Random.Float( 360 );
 			lifespan = Random.Float( 1f, 3f );
@@ -482,7 +482,7 @@ public class Speck extends Image {
 				break;
 
 			case CORROSION:
-				hardlight( ColorMath.interpolate( 0xAAAAAA, 0xFF8800 , p ));
+				hardlight( ColorMath.interpolate( 0x5700A3, 0x3C0070 , p ));
 			case STENCH:
 			case SMOKE:
 				am = (float)Math.sqrt( (p < 0.5f ? p : 1 - p) );

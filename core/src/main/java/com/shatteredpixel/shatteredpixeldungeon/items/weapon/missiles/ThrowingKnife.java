@@ -32,7 +32,7 @@ public class ThrowingKnife extends MissileWeapon {
 	
 	{
 		image = ItemSpriteSheet.THROWING_KNIFE;
-		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 1.2f;
 		
 		bones = false;

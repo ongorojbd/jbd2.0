@@ -57,7 +57,7 @@ public abstract class FistSprite extends MobSprite {
 
 		texture( Assets.Sprites.FISTS );
 
-		TextureFilm frames = new TextureFilm( texture, 24, 17 );
+		TextureFilm frames = new TextureFilm( texture, 40, 40 );
 
 		idle = new Animation( 2, true );
 		idle.frames( frames, c+0, c+0, c+1 );

@@ -31,7 +31,7 @@ public class Tomahawk extends MissileWeapon {
 
 	{
 		image = ItemSpriteSheet.TOMAHAWK;
-		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 0.9f;
 
 		tier = 4;

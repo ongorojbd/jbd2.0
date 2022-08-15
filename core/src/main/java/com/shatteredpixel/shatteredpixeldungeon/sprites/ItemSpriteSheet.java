@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
 import com.watabou.noosa.TextureFilm;
 
 public class ItemSpriteSheet {
@@ -99,7 +100,7 @@ public class ItemSpriteSheet {
 
 		assignItemRect(DEWDROP,     10, 10);
 		assignItemRect(PETAL,       8,  8);
-		assignItemRect(SANDBAG,     10, 10);
+		assignItemRect(SANDBAG,     6,  12);
 		assignItemRect(SPIRIT_ARROW,11, 11);
 		
 		assignItemRect(GUIDE_PAGE,  10, 11);
@@ -147,7 +148,7 @@ public class ItemSpriteSheet {
 	public static final int MASTERY         = MISC_CONSUMABLE +14;
 	public static final int KIT             = MISC_CONSUMABLE +15;
 	static{
-		assignItemRect(ANKH,            10, 16);
+		assignItemRect(ANKH,            14, 16);
 		assignItemRect(STYLUS,          12, 13);
 		
 		assignItemRect(SEAL,            9,  15);
@@ -160,8 +161,8 @@ public class ItemSpriteSheet {
 		assignItemRect(GOLDEN_KEY,      8,  14);
 		assignItemRect(CRYSTAL_KEY,     8,  14);
 		assignItemRect(SKELETON_KEY,    8,  14);
-		assignItemRect(MASK,            11,  9);
-		assignItemRect(CROWN,           13,  7);
+		assignItemRect(MASK,            13, 13);
+		assignItemRect(CROWN,           13, 13);
 		assignItemRect(AMULET,          16, 16);
 		assignItemRect(MASTERY,         13, 16);
 		assignItemRect(KIT,             16, 15);
@@ -180,7 +181,6 @@ public class ItemSpriteSheet {
 	public static final int NOISEMAKER      = BOMBS+9;
 	public static final int ARCANE_BOMB     = BOMBS+10;
 	public static final int SHRAPNEL_BOMB   = BOMBS+11;
-	
 	static{
 		assignItemRect(BOMB,            10, 13);
 		assignItemRect(DBL_BOMB,        14, 13);
@@ -266,6 +266,10 @@ public class ItemSpriteSheet {
 	public static final int GREATAXE        = WEP_TIER5+3;
 	public static final int GREATSHIELD     = WEP_TIER5+4;
 	public static final int GAUNTLETS       = WEP_TIER5+5;
+	public static final int LSWORD          = WEP_TIER5+6;
+	public static final int DBLADE          = WEP_TIER5+7;
+	public static final int MISTA           = WEP_TIER5+8;
+
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
 		assignItemRect(WAR_HAMMER,  16, 16);
@@ -273,6 +277,9 @@ public class ItemSpriteSheet {
 		assignItemRect(GREATAXE,    12, 16);
 		assignItemRect(GREATSHIELD, 12, 16);
 		assignItemRect(GAUNTLETS,   13, 15);
+		assignItemRect(LSWORD,      15, 15);
+		assignItemRect(DBLADE,      16, 16);
+		assignItemRect(MISTA,       15, 14);
 	}
 
 	                                                                                    //8 free slots
@@ -353,11 +360,11 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_ROGUE     = ARMOR+7;
 	public static final int ARMOR_HUNTRESS  = ARMOR+8;
 	static{
-		assignItemRect(ARMOR_CLOTH,     15, 12);
-		assignItemRect(ARMOR_LEATHER,   14, 13);
-		assignItemRect(ARMOR_MAIL,      14, 12);
-		assignItemRect(ARMOR_SCALE,     14, 11);
-		assignItemRect(ARMOR_PLATE,     12, 12);
+		assignItemRect(ARMOR_CLOTH,     16, 16);
+		assignItemRect(ARMOR_LEATHER,   16, 16);
+		assignItemRect(ARMOR_MAIL,      16, 16);
+		assignItemRect(ARMOR_SCALE,     16, 16);
+		assignItemRect(ARMOR_PLATE,     16, 16);
 		assignItemRect(ARMOR_WARRIOR,   12, 12);
 		assignItemRect(ARMOR_MAGE,      15, 15);
 		assignItemRect(ARMOR_ROGUE,     14, 12);
@@ -400,7 +407,7 @@ public class ItemSpriteSheet {
 	public static final int RING_DIAMOND    = RINGS+11;
 	static {
 		for (int i = RINGS; i < RINGS+16; i++)
-			assignItemRect(i, 8, 10);
+			assignItemRect(i, 13, 16);
 	}
 
 	private static final int ARTIFACTS          =                            xy(1, 16);  //32 slots
@@ -428,29 +435,29 @@ public class ItemSpriteSheet {
 	public static final int ARTIFACT_ROSE2      = ARTIFACTS+21;
 	public static final int ARTIFACT_ROSE3      = ARTIFACTS+22;
 	static{
-		assignItemRect(ARTIFACT_CLOAK,      9,  15);
-		assignItemRect(ARTIFACT_ARMBAND,    16, 13);
-		assignItemRect(ARTIFACT_CAPE,       16, 14);
-		assignItemRect(ARTIFACT_TALISMAN,   15, 13);
-		assignItemRect(ARTIFACT_HOURGLASS,  13, 16);
-		assignItemRect(ARTIFACT_TOOLKIT,    15, 13);
-		assignItemRect(ARTIFACT_SPELLBOOK,  13, 16);
+		assignItemRect(ARTIFACT_CLOAK,      16, 16);
+		assignItemRect(ARTIFACT_ARMBAND,    16, 16);
+		assignItemRect(ARTIFACT_CAPE,       16, 16);
+		assignItemRect(ARTIFACT_TALISMAN,   16, 16);
+		assignItemRect(ARTIFACT_HOURGLASS,  16, 16);
+		assignItemRect(ARTIFACT_TOOLKIT,    16, 16);
+		assignItemRect(ARTIFACT_SPELLBOOK,  16, 16);
 		assignItemRect(ARTIFACT_BEACON,     16, 16);
 		assignItemRect(ARTIFACT_CHAINS,     16, 16);
-		assignItemRect(ARTIFACT_HORN1,      15, 15);
-		assignItemRect(ARTIFACT_HORN2,      15, 15);
-		assignItemRect(ARTIFACT_HORN3,      15, 15);
-		assignItemRect(ARTIFACT_HORN4,      15, 15);
-		assignItemRect(ARTIFACT_CHALICE1,   12, 15);
-		assignItemRect(ARTIFACT_CHALICE2,   12, 15);
-		assignItemRect(ARTIFACT_CHALICE3,   12, 15);
-		assignItemRect(ARTIFACT_SANDALS,    16, 6 );
-		assignItemRect(ARTIFACT_SHOES,      16, 6 );
-		assignItemRect(ARTIFACT_BOOTS,      16, 9 );
-		assignItemRect(ARTIFACT_GREAVES,    16, 14);
-		assignItemRect(ARTIFACT_ROSE1,      14, 14);
-		assignItemRect(ARTIFACT_ROSE2,      14, 14);
-		assignItemRect(ARTIFACT_ROSE3,      14, 14);
+		assignItemRect(ARTIFACT_HORN1,      16, 16);
+		assignItemRect(ARTIFACT_HORN2,      16, 16);
+		assignItemRect(ARTIFACT_HORN3,      16, 16);
+		assignItemRect(ARTIFACT_HORN4,      16, 16);
+		assignItemRect(ARTIFACT_CHALICE1,   16, 16);
+		assignItemRect(ARTIFACT_CHALICE2,   16, 16);
+		assignItemRect(ARTIFACT_CHALICE3,   16, 16);
+		assignItemRect(ARTIFACT_SANDALS,    16, 16);
+		assignItemRect(ARTIFACT_SHOES,      16, 16);
+		assignItemRect(ARTIFACT_BOOTS,      16, 16);
+		assignItemRect(ARTIFACT_GREAVES,    16, 16);
+		assignItemRect(ARTIFACT_ROSE1,      16, 16);
+		assignItemRect(ARTIFACT_ROSE2,      16, 16);
+		assignItemRect(ARTIFACT_ROSE3,      16, 16);
 	}
 
 	                                                                                    //16 free slots
@@ -651,7 +658,7 @@ public class ItemSpriteSheet {
 		assignItemRect(PASTY,       16, 11);
 		assignItemRect(PUMPKIN_PIE, 16, 12);
 		assignItemRect(CANDY_CANE,  13, 16);
-		assignItemRect(MEAT_PIE,    16, 12);
+		assignItemRect(MEAT_PIE,    16, 16);
 		assignItemRect(BLANDFRUIT,  9,  12);
 		assignItemRect(BLAND_CHUNKS,14, 6);
 		assignItemRect(BERRY,       9,  11);

@@ -40,6 +40,7 @@ public abstract class EquipableItem extends Item {
 
 	public static final String AC_EQUIP		= "EQUIP";
 	public static final String AC_UNEQUIP	= "UNEQUIP";
+	public static final String AC_XYZ	= "XYZ";
 
 	{
 		bones = true;
@@ -49,6 +50,7 @@ public abstract class EquipableItem extends Item {
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( isEquipped( hero ) ? AC_UNEQUIP : AC_EQUIP );
+		actions.add(AC_XYZ);
 		return actions;
 	}
 

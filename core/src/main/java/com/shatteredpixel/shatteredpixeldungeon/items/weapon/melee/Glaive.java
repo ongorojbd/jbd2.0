@@ -28,7 +28,7 @@ public class Glaive extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.GLAIVE;
-		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 0.8f;
 
 		tier = 5;

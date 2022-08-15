@@ -337,7 +337,7 @@ public class SentryRoom extends SpecialRoom {
 			texture( Assets.Sprites.RED_SENTRY );
 
 			idle = new Animation(1, true);
-			idle.frames(texture.uvRect(0, 0, 8, 15));
+			idle.frames(texture.uvRect(0, 0, 10, 16));
 
 			run = idle.clone();
 			attack = idle.clone();

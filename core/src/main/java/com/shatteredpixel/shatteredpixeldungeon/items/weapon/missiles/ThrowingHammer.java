@@ -28,7 +28,7 @@ public class ThrowingHammer extends MissileWeapon {
 	
 	{
 		image = ItemSpriteSheet.THROWING_HAMMER;
-		hitSound = Assets.Sounds.HIT_CRUSH;
+		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 0.8f;
 		
 		tier = 5;

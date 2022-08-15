@@ -622,7 +622,7 @@ public class DwarfKing extends Mob {
 					particles.burst(ElmoParticle.FACTORY, 10);
 					Sample.INSTANCE.play(Assets.Sounds.BURNING);
 				} else {
-					particles.burst(Speck.factory(Speck.BONE), 10);
+					particles.burst(Speck.factory(Speck.STEAM), 10);
 					Sample.INSTANCE.play(Assets.Sounds.BONES);
 				}
 				particles = null;
@@ -688,7 +688,7 @@ public class DwarfKing extends Mob {
 				} else if (summon == DKMonk.class){
 					particles.pour(ElmoParticle.FACTORY, 0.1f);
 				} else {
-					particles.pour(Speck.factory(Speck.RATTLE), 0.1f);
+					particles.pour(Speck.factory(Speck.STEAM), 0.1f);
 				}
 
 			} else if (!on && particles != null) {

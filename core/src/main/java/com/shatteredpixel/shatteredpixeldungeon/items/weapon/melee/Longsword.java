@@ -28,7 +28,7 @@ public class Longsword extends MeleeWeapon {
 	
 	{
 		image = ItemSpriteSheet.LONGSWORD;
-		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSound = Assets.Sounds.HIT_MAGIC;
 		hitSoundPitch = 1f;
 
 		tier = 4;
