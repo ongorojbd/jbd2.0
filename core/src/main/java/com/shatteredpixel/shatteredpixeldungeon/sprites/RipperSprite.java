@@ -39,7 +39,7 @@ public class RipperSprite extends MobSprite {
 
 		texture( Assets.Sprites.RIPPER );
 
-		TextureFilm frames = new TextureFilm( texture, 15, 14 );
+		TextureFilm frames = new TextureFilm( texture, 16, 17 );
 
 		idle = new Animation( 4, true );
 		idle.frames( frames, 1, 0, 1, 2 );

@@ -22,32 +22,24 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-
-import java.util.ArrayList;
 
 public class RunicBlade extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.RUNIC_BLADE;
 		hitSound = Assets.Sounds.HIT_SLASH;
-		hitSoundPitch = 1.0f;
+		hitSoundPitch = 1f;
 
-		tier = 2;
+		tier = 4;
 	}
 
-	@Override
-	public ArrayList<String> actions(Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		actions.remove(AC_XYZ);
-		return actions;
-	}
+	//Essentially it's a tier 4 weapon, with tier 3 base max damage, and tier 5 scaling.
+	//equal to tier 4 in damage at +5
 
 	@Override
 	public int max(int lvl) {
-		return  3*(tier+1) +    //12 base, down from 15
-				lvl*(tier+1);   //scaling unchanged
+		return  5*(tier) +                	//20 base, down from 25
+				Math.round(lvl*(tier+2));	//+6 per level, up from +5
 	}
 }
