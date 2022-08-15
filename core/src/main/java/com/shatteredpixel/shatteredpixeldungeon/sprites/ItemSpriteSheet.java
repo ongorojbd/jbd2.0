@@ -275,7 +275,7 @@ public class ItemSpriteSheet {
 		assignItemRect(WAR_HAMMER,  16, 16);
 		assignItemRect(GLAIVE,      16, 16);
 		assignItemRect(GREATAXE,    12, 16);
-		assignItemRect(GREATSHIELD, 12, 16);
+		assignItemRect(GREATSHIELD, 11, 16);
 		assignItemRect(GAUNTLETS,   13, 15);
 		assignItemRect(LSWORD,      15, 15);
 		assignItemRect(DBLADE,      16, 16);

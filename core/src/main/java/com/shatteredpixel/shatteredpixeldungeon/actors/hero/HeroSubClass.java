@@ -37,10 +37,10 @@ public enum HeroSubClass {
 
 	BATTLEMAGE(HeroIcon.BATTLEMAGE),
 	WARLOCK(HeroIcon.WARLOCK),
-
+	
 	ASSASSIN(HeroIcon.ASSASSIN),
 	FREERUNNER(HeroIcon.FREERUNNER),
-
+	
 	SNIPER(HeroIcon.SNIPER),
 	WARDEN(HeroIcon.WARDEN);
 
@@ -49,7 +49,7 @@ public enum HeroSubClass {
 	HeroSubClass(int icon){
 		this.icon = icon;
 	}
-
+	
 	public String title() {
 		return Messages.get(this, name());
 	}

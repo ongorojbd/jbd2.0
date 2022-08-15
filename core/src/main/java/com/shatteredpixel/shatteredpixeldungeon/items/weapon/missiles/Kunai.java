@@ -33,7 +33,7 @@ public class Kunai extends MissileWeapon {
 	
 	{
 		image = ItemSpriteSheet.KUNAI;
-		hitSound = Assets.Sounds.HIT;
+		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 1.1f;
 		
 		tier = 3;

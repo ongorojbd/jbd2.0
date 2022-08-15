@@ -28,7 +28,7 @@ public class Whip extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.WHIP;
-		hitSound = Assets.Sounds.HIT_STAB;
+		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 1.1f;
 
 		tier = 3;

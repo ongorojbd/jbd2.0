@@ -22,40 +22,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-import java.util.ArrayList;
-
 public class Sword extends MeleeWeapon {
-
+	
 	{
 		image = ItemSpriteSheet.SWORD;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1f;
 
 		tier = 3;
-		ACC = 1.1f;
 	}
 
-	@Override
-	public int max(int lvl) {
-		return  Math.round((Statistics.foodEaten)*0.2f+3f*(tier+1)) +    //20 base, up from 15
-				lvl*Math.round(1.33f*(tier+1)); //+4 per level, up from +3
-	}
-
-	@Override
-	public ArrayList<String> actions(Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		actions.remove(AC_XYZ);
-		return actions;
-	}
-
-	@Override
-	public int defenseFactor( Char owner ) {
-		return 2;	//2 extra defence
-	}
 }
-

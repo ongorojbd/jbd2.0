@@ -65,8 +65,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -253,7 +251,7 @@ public enum HeroClass {
 				return Assets.Splashes.HUNTRESS;
 		}
 	}
-
+	
 	public String[] perks() {
 		switch (this) {
 			case WARRIOR: default:
@@ -290,11 +288,11 @@ public enum HeroClass {
 				};
 		}
 	}
-
+	
 	public boolean isUnlocked(){
 		//always unlock on debug builds
 		if (DeviceCompat.isDebug()) return true;
-
+		
 		switch (this){
 			case WARRIOR: default:
 				return true;
@@ -306,7 +304,7 @@ public enum HeroClass {
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_HUNTRESS);
 		}
 	}
-
+	
 	public String unlockMsg() {
 		switch (this){
 			case WARRIOR: default:

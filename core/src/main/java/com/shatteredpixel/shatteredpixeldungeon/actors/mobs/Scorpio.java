@@ -49,7 +49,7 @@ public class Scorpio extends Mob {
 		maxLvl = 27;
 
 		flying = true;
-		
+
 		loot = Generator.Category.POTION;
 		lootChance = 0.5f;
 

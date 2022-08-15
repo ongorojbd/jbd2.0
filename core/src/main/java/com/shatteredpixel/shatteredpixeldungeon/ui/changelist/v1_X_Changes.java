@@ -64,7 +64,7 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(Icons.get(Icons.SHPX), "",
 			""));
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.PICKAXE), "Crazy Diamond Quest Change",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.PICKAXE), "Josuke & Jolyne",
 			""));
 
 		changes.addButton( new ChangeButton(Icons.get(Icons.PREFS), "",

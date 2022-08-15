@@ -85,7 +85,7 @@ public class DBLADE extends MeleeWeapon {
             inputs =  new Class[]{Longsword.class, BattleAxe.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 12;
+            cost = 3;
 
             output = DBLADE.class;
             outQuantity = 1;

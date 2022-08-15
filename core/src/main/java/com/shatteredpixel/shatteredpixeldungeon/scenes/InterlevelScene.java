@@ -172,9 +172,9 @@ public class InterlevelScene extends PixelScene {
 			fadeTime += 0.5f; //adds 1 second total
 		//speed up transition when debugging
 		} else if (DeviceCompat.isDebug()){
-			fadeTime += 0.5f; //adds 1 second total
+			fadeTime = 0f;
 		}
-
+		
 		SkinnedBlock bg = new SkinnedBlock(Camera.main.width, Camera.main.height, loadingAsset ){
 			@Override
 			protected NoosaScript script() {

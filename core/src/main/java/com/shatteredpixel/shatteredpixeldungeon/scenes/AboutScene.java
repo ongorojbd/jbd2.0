@@ -101,7 +101,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock charlie = new CreditsBlock(false, Window.SHPX_COLOR,
 				"Info",
 				Icons.CELESTI.get(),
-				"About",
+				" About",
 				"Kakao",
 				"https://open.kakao.com/o/gC7ZgGjd");
 		charlie.setRect(alex.right(), alex.top(), colWidth/2f, 0);
@@ -122,7 +122,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
 				"To Be Countinued....",
 				Icons.WATA.get(),
-				"Next Update : v2.0a",
+				"Next Update : 2.0c",
 				"",
 				"");
 		if (landscape()){
@@ -137,7 +137,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock cube = new CreditsBlock(false, WATA_COLOR,
 				"Now",
 				Icons.CUBE_CODE.get(),
-				"v6.0",
+				"2.0b",
 				null,
 				null);
 		cube.setSize(colWidth/2f, 0);
@@ -250,7 +250,7 @@ public class AboutScene extends PixelScene {
 
 		//fadeIn();
 	}
-	
+
 	@Override
 	protected void onBackPressed() {
 		ShatteredPixelDungeon.switchScene(TitleScene.class);

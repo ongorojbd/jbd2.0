@@ -111,7 +111,7 @@ public class LSWORD extends MeleeWeapon {
             inputs =  new Class[]{WornShortsword.class};
             inQuantity = new int[]{1};
 
-            cost = 1;
+            cost = 77;
 
             output = LSWORD.class;
             outQuantity = 1;
