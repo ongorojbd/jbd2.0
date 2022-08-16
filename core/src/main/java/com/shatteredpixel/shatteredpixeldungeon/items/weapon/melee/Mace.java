@@ -22,23 +22,54 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
+
+import javax.crypto.Mac;
 
 public class Mace extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.MACE;
-		hitSound = Assets.Sounds.HIT_CRUSH;
-		hitSoundPitch = 1f;
+		hitSound = Assets.Sounds.HIT;
+
+		hitSoundPitch = 1.1f;
 
 		tier = 3;
-		ACC = 1.28f; //28% boost to accuracy
+		ACC = 1.20f; //28% boost to accuracy
+
+		bones = false;
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //16 base, down from 20
-				lvl*(tier+1);   //scaling unchanged
+	public int damageRoll(Char owner) {
+		if (owner instanceof Hero) {
+			Hero hero = (Hero) owner;
+			Char enemy = hero.enemy();
+			if (Dungeon.hero.belongings.weapon() instanceof Mace && Random.Int(100) == 0) {
+				PotionOfHealing.cure(hero);
+				PotionOfHealing.heal(hero);
+			}
+		}
+		return super.damageRoll(owner);
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
+			if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( Mace.class, "setbouns");}
+
+		return info;
 	}
 
 }

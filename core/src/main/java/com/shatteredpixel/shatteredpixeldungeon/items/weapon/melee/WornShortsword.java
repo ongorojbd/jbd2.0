@@ -22,39 +22,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class WornShortsword extends MeleeWeapon {
 
 	{
-		image = ItemSpriteSheet.DBLADE;
+		image = ItemSpriteSheet.WORN_SHORTSWORD;
 		hitSound = Assets.Sounds.HIT_SLASH;
-		hitSoundPitch = 1f;
+		hitSoundPitch = 1.1f;
 
 		tier = 1;
+
+		bones = false;
 	}
 
-	@Override
-	public int max(int lvl) {
-		return  4*(tier+1)+
-				lvl*(tier);
-	}
-
-	@Override
-	public int damageRoll(Char owner) {
-		if (owner instanceof Hero) {
-			Hero hero = (Hero) owner;
-			Char enemy = hero.enemy();
-			if (Dungeon.hero.belongings.weapon() instanceof WornShortsword && (Random.Int(10) == 0)) {
-				Dungeon.energy += 1;
-			}
-		}
-		return super.damageRoll(owner);
-	}
 }

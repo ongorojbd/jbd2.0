@@ -207,9 +207,9 @@ public class ItemSpriteSheet {
 	public static final int DAGGER          = WEP_TIER1+4;
 	public static final int MAGES_STAFF     = WEP_TIER1+5;
 	static{
-		assignItemRect(WORN_SHORTSWORD, 13, 13);
+		assignItemRect(WORN_SHORTSWORD, 16, 16);
 		assignItemRect(GLOVES,          12, 16);
-		assignItemRect(DAGGER,          12, 13);
+		assignItemRect(DAGGER,          10, 13);
 		assignItemRect(MAGES_STAFF,     15, 16);
 	}
 
@@ -235,8 +235,8 @@ public class ItemSpriteSheet {
 	public static final int SAI             = WEP_TIER3+4;
 	public static final int WHIP            = WEP_TIER3+5;
 	static{
-		assignItemRect(SWORD,           14, 14);
-		assignItemRect(MACE,            15, 15);
+		assignItemRect(SWORD,           12, 14);
+		assignItemRect(MACE,            14, 14);
 		assignItemRect(SCIMITAR,        13, 16);
 		assignItemRect(ROUND_SHIELD,    16, 16);
 		assignItemRect(SAI,             16, 16);
@@ -254,7 +254,7 @@ public class ItemSpriteSheet {
 		assignItemRect(LONGSWORD,       15, 15);
 		assignItemRect(BATTLE_AXE,      16, 16);
 		assignItemRect(FLAIL,           14, 14);
-		assignItemRect(RUNIC_BLADE,     14, 14);
+		assignItemRect(RUNIC_BLADE,     13, 14);
 		assignItemRect(ASSASSINS_BLADE, 14, 15);
 		assignItemRect(CROSSBOW,        15, 15);
 	}
@@ -272,12 +272,12 @@ public class ItemSpriteSheet {
 
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
-		assignItemRect(WAR_HAMMER,  16, 16);
+		assignItemRect(WAR_HAMMER,  13, 16);
 		assignItemRect(GLAIVE,      16, 16);
 		assignItemRect(GREATAXE,    12, 16);
 		assignItemRect(GREATSHIELD, 11, 16);
 		assignItemRect(GAUNTLETS,   13, 15);
-		assignItemRect(LSWORD,      15, 15);
+		assignItemRect(LSWORD,      16, 16);
 		assignItemRect(DBLADE,      16, 16);
 		assignItemRect(MISTA,       15, 14);
 	}

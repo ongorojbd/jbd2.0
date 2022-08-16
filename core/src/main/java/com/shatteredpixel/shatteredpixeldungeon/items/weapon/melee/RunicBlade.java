@@ -22,24 +22,53 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class RunicBlade extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.RUNIC_BLADE;
-		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSound = Assets.Sounds.FF;
 		hitSoundPitch = 1f;
 
 		tier = 4;
+		RCH = 2;    //extra reach
 	}
-
-	//Essentially it's a tier 4 weapon, with tier 3 base max damage, and tier 5 scaling.
-	//equal to tier 4 in damage at +5
 
 	@Override
 	public int max(int lvl) {
-		return  5*(tier) +                	//20 base, down from 25
-				Math.round(lvl*(tier+2));	//+6 per level, up from +5
+		return  4*(tier) + 2 +  // 22 + 4
+				lvl*(tier);
+	}
+
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+		float dmgbouns = 1f;
+		if (Dungeon.level.map[attacker.pos] == Terrain.WATER) {
+			dmgbouns += 0.2f;
+		}
+		if (Dungeon.level.map[defender.pos] == Terrain.WATER) {
+			dmgbouns += 0.2f;
+		}
+
+		damage *= dmgbouns;
+		return super.proc(attacker, defender, damage);
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(UnstableSpellbook.class) != null) {
+			if (Dungeon.hero.belongings.getItem(UnstableSpellbook.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( RunicBlade.class, "setbouns");}
+
+		return info;
 	}
 }

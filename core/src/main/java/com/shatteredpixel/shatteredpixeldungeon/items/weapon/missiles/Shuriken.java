@@ -30,7 +30,7 @@ public class Shuriken extends MissileWeapon {
 
 	{
 		image = ItemSpriteSheet.SHURIKEN;
-		hitSound = Assets.Sounds.HIT_STAB;
+		hitSound = Assets.Sounds.PUFF;
 		hitSoundPitch = 1.2f;
 		
 		tier = 2;

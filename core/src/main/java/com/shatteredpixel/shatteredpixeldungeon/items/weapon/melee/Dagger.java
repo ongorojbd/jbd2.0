@@ -32,15 +32,39 @@ public class Dagger extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.DAGGER;
-		hitSound = Assets.Sounds.HIT_SLASH;
-		hitSoundPitch = 1.0f;
+		hitSound = Assets.Sounds.HIT;
+		hitSoundPitch = 1.1f;
 
-		tier = 5;
+		tier = 1;
+
+		bones = false;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  3*(tier+1) +    //12 base, down from 15
+		return  4*(tier+1) +    //8 base, down from 10
 				lvl*(tier+1);   //scaling unchanged
 	}
+
+	@Override
+	public int damageRoll(Char owner) {
+		if (owner instanceof Hero) {
+			Hero hero = (Hero)owner;
+			Char enemy = hero.enemy();
+			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+				//deals 75% toward max to max on surprise, instead of min to max.
+				int diff = max() - min();
+				int damage = augment.damageFactor(Random.NormalIntRange(
+						min() + Math.round(diff*0.75f),
+						max()));
+				int exStr = hero.STR() - STRReq();
+				if (exStr > 0) {
+					damage += Random.IntRange(0, exStr);
+				}
+				return damage;
+			}
+		}
+		return super.damageRoll(owner);
+	}
+
 }

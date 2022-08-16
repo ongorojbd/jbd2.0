@@ -28,7 +28,7 @@ public class Sai extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.SAI;
-		hitSound = Assets.Sounds.HIT_STAB;
+		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.3f;
 
 		tier = 3;

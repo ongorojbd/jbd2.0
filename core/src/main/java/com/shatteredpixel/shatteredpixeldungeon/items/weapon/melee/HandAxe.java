@@ -6,6 +6,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
@@ -48,9 +50,9 @@ public class HandAxe extends MeleeWeapon {
 
 		float bounsdmg = Math.min(1.5f, 1f+(extratarget*0.1f));
 
-		if (Dungeon.hero.belongings.getItem(RingOfWealth.class) != null) {
-			if (Dungeon.hero.belongings.getItem(RingOfWealth.class).isEquipped(Dungeon.hero) && defender.properties().contains(Char.Property.BOSS))
-				bounsdmg += 0.35f;
+		if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
+			if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero) && defender.properties().contains(Char.Property.BOSS))
+				bounsdmg += 0.1f;
 		}
 
 		damage = Math.round(damage * bounsdmg);
@@ -115,9 +117,9 @@ public class HandAxe extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(RingOfWealth.class) != null) {
-			if (Dungeon.hero.belongings.getItem(RingOfWealth.class).isEquipped(Dungeon.hero))
-				info += "\n\n" + Messages.get( Dagger.class, "setbouns");}
+		if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
+			if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( HandAxe.class, "setbouns");}
 
 		return info;
 	}

@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -51,4 +54,15 @@ public class Greatshield extends MeleeWeapon {
 			return Messages.get(this, "typical_stats_desc", 6);
 		}
 	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+			if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( Greatshield.class, "setbouns");}
+
+		return info;
+	}
+
 }

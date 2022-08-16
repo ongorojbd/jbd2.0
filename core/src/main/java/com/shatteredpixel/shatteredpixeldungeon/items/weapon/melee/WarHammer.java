@@ -22,7 +22,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class WarHammer extends MeleeWeapon {
 
@@ -37,8 +46,30 @@ public class WarHammer extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //24 base, down from 30
-				lvl*(tier+1);   //scaling unchanged
+		return  4*(tier+1)+
+				lvl*(tier);
+	}
+
+	@Override
+	public int damageRoll(Char owner) {
+		if (owner instanceof Hero) {
+			Hero hero = (Hero) owner;
+			Char enemy = hero.enemy();
+			if (Dungeon.hero.belongings.weapon() instanceof WarHammer && (Random.Int(4) == 0)) {
+				Dungeon.energy += 1;
+			}
+		}
+		return super.damageRoll(owner);
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(CloakOfShadows.class) != null) {
+			if (Dungeon.hero.belongings.getItem(CloakOfShadows.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( WarHammer.class, "setbouns");}
+
+		return info;
 	}
 
 }

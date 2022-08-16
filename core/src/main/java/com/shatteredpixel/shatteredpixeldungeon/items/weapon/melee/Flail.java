@@ -28,7 +28,7 @@ public class Flail extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.FLAIL;
-		hitSound = Assets.Sounds.HIT_CRUSH;
+		hitSound = Assets.Sounds.HIT_STRONG;
 		hitSoundPitch = 0.8f;
 
 		tier = 4;

@@ -22,13 +22,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Greataxe extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.GREATAXE;
-		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSound = Assets.Sounds.HIT_MAGIC;
 		hitSoundPitch = 1f;
 
 		tier = 5;
@@ -43,6 +48,16 @@ public class Greataxe extends MeleeWeapon {
 	@Override
 	public int STRReq(int lvl) {
 		return STRReq(tier+1, lvl); //20 base strength req, up from 18
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( Greataxe.class, "setbouns");}
+
+		return info;
 	}
 
 }

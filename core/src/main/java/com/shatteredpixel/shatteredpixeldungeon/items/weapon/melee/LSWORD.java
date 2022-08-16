@@ -13,6 +13,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -58,7 +60,7 @@ public class LSWORD extends MeleeWeapon {
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                         if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
                             int dmg = hero.damageRoll();
-                            dmg *= 1.2f;
+                            dmg *= 1.1f;
                             CellEmitter.get( mob.pos ).burst( Speck.factory( Speck.STAR), 3 );
                             mob.damage(dmg, this);
                         }
@@ -116,6 +118,16 @@ public class LSWORD extends MeleeWeapon {
             output = LSWORD.class;
             outQuantity = 1;
         }
+    }
+
+    @Override
+    public String desc() {
+        String info = Messages.get(this, "desc");
+        if (Dungeon.hero.belongings.getItem(RingOfWealth.class) != null) {
+            if (Dungeon.hero.belongings.getItem(RingOfWealth.class).isEquipped(Dungeon.hero))
+                info += "\n\n" + Messages.get( LSWORD.class, "setbouns");}
+
+        return info;
     }
 
 }
