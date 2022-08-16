@@ -104,7 +104,7 @@ public class MISTA extends MeleeWeapon {
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                     int dmg = attacker.damageRoll() - defender.drRoll();
-                    dmg = Math.round(dmg * (starpower * 0.7f));
+                    dmg = Math.round(dmg * (starpower * 0.5f));
 
                     mob.damage(dmg, attacker);
                 }
@@ -112,7 +112,7 @@ public class MISTA extends MeleeWeapon {
             if (starpower == 3) GameScene.flash( 0x80FFFFFF );
             Camera.main.shake(2, starpower / 3);
 
-            Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH, 1.76f, 1.76f);
+            Sample.INSTANCE.play(Assets.Sounds.SP, 1.76f, 1.76f);
             attacker.sprite.showStatus(CharSprite.POSITIVE, Messages.get(MISTA.class, "attack"));
         }
 

@@ -137,7 +137,7 @@ public class Berserk extends Buff {
 				shield.supercharge(shieldAmount);
 
 				SpellSprite.show(target, SpellSprite.BERSERK);
-				Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+				Sample.INSTANCE.play( Assets.Sounds.OVERDRIVE );
 				GameScene.flash(0xFF0000);
 			}
 

@@ -54,18 +54,18 @@ public class LSWORD extends MeleeWeapon {
             if (!isEquipped(hero)) return;
 
             if (!cursed) {
-                if (charge >= 6) {
+                if (charge >= 17) {
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                         if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
                             int dmg = hero.damageRoll();
-                            dmg *= 1.6f;
+                            dmg *= 1.2f;
                             CellEmitter.get( mob.pos ).burst( Speck.factory( Speck.STAR), 3 );
                             mob.damage(dmg, this);
                         }
                     }
                     CellEmitter.get( curUser.pos ).burst( Speck.factory( Speck.STAR ), 10 );
-                    charge -= 7;
-                    Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH);
+                    charge -= 17;
+                    Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
                     hero.sprite.zap(hero.pos);
                     Invisibility.dispel();
                     updateQuickslot();
@@ -75,7 +75,7 @@ public class LSWORD extends MeleeWeapon {
             else {
                 Buff.affect(hero, Roots.class, 5f);
                 cursedKnown = true;
-                charge -= 7;
+                charge -= 17;
                 Invisibility.dispel();
                 updateQuickslot();
                 hero.spendAndNext(1f);

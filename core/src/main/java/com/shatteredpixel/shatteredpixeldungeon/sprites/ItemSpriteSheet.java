@@ -323,7 +323,7 @@ public class ItemSpriteSheet {
 		assignItemRect(KUNAI,           15, 15);
 		
 		assignItemRect(JAVELIN,         16, 16);
-		assignItemRect(TOMAHAWK,        13, 13);
+		assignItemRect(TOMAHAWK,        14, 14);
 		assignItemRect(BOOMERANG,       14, 14);
 		
 		assignItemRect(TRIDENT,         16, 16);

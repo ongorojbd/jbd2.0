@@ -28,7 +28,7 @@ public class HandAxe extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier) - 2 +   //14 + 4
+		return  5*(tier) - 2 +   //14 + 4
 				lvl*(tier); }
 
 	@Override
