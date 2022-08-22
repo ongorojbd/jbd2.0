@@ -43,12 +43,6 @@ public class Sword extends MeleeWeapon {
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //12 base, down from 15
-				lvl*(tier+1);   //scaling unchanged
-	}
-
-	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
 		if (Dungeon.hero.belongings.getItem(UnstableSpellbook.class) != null) {

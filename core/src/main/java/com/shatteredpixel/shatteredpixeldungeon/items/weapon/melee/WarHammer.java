@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -65,8 +66,8 @@ public class WarHammer extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(CloakOfShadows.class) != null) {
-			if (Dungeon.hero.belongings.getItem(CloakOfShadows.class).isEquipped(Dungeon.hero))
+		if (Dungeon.hero.belongings.getItem(RingOfHaste.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfHaste.class).isEquipped(Dungeon.hero))
 				info += "\n\n" + Messages.get( WarHammer.class, "setbouns");}
 
 		return info;

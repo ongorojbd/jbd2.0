@@ -47,7 +47,6 @@ public class Scimitar extends MeleeWeapon {
 		hitSoundPitch = 1.2f;
 
 		tier = 3;
-		DLY = 0.8f; //1.5x speed
 	}
 
 	@Override

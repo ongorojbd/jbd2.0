@@ -99,20 +99,20 @@ public class AboutScene extends PixelScene {
 		content.add(alex);
 
 		CreditsBlock charlie = new CreditsBlock(false, Window.SHPX_COLOR,
-				"Info",
+				"Pixel Design",
 				Icons.CELESTI.get(),
-				" About",
-				"Kakao",
-				"https://open.kakao.com/o/gC7ZgGjd");
+				"",
+				"Nugooripool",
+				"https://www.youtube.com/watch?v=FPyIMtXsIcY");
 		charlie.setRect(alex.right(), alex.top(), colWidth/2f, 0);
 		content.add(charlie);
 
 		CreditsBlock kristjan = new CreditsBlock(false, Window.SHPX_COLOR,
-				"",
+				"ABOUT",
 				Icons.KRISTJAN.get(),
 				"",
-				"",
-				"");
+				"Kakao",
+				"https://open.kakao.com/o/sW7iiZYc");
 		kristjan.setRect(alex.right() - colWidth/4f, alex.bottom() + 5, colWidth/2f, 0);
 		content.add(kristjan);
 
@@ -122,7 +122,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
 				"To Be Countinued....",
 				Icons.WATA.get(),
-				"Next Update : 2.0c",
+				"Next Update : 2.0d",
 				"",
 				"");
 		if (landscape()){
@@ -137,7 +137,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock cube = new CreditsBlock(false, WATA_COLOR,
 				"Now",
 				Icons.CUBE_CODE.get(),
-				"2.0b",
+				"2.0c",
 				null,
 				null);
 		cube.setSize(colWidth/2f, 0);
