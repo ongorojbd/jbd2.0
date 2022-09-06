@@ -170,12 +170,48 @@ public class Bestiary {
 						Succubus.class,
 						Eye.class, Eye.class,
 						Scorpio.class));
-			case 24: case 25: case 26:
+			case 24: case 25:
 				//1x succubus, 2x evil eye, 3x scorpio
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class, Eye.class,
 						Scorpio.class, Scorpio.class, Scorpio.class));
+
+			// Labs
+			case 26:
+				// 3x soldier, 1x researcher
+				return new ArrayList<>(Arrays.asList(
+						Soldier.class, Soldier.class, Soldier.class,
+						Researcher.class));
+			case 27:
+				// 2x Soldier, 2x researcher, 1x supression
+				return new ArrayList<>(Arrays.asList(
+						Soldier.class, Soldier.class,
+						Researcher.class, Researcher.class,
+						Supression.class));
+			case 28:
+				// 2x soldier, 1x researcher, 1x supression, 1x tank, 1x medic
+				return new ArrayList<>(Arrays.asList(
+						Soldier.class, Soldier.class,
+						Researcher.class,
+						Supression.class,
+						Tank.class,
+						Medic.class));
+			case 29:
+				// 1x soldier, 2x researcher, 2x supression, 1x tank, 2x medic, 1x swat
+				return new ArrayList<>(Arrays.asList(
+						Soldier.class,
+						Researcher.class, Researcher.class,
+						Supression.class, Supression.class,
+						Tank.class, SWAT.class,
+						Medic.class, Medic.class));
+			case 30: case 31:
+				// 1x soldier, 2x researcher, 2x supression, 1x tank, 2x medic
+				return new ArrayList<>(Arrays.asList(
+						Soldier.class,
+						Researcher.class, Researcher.class,
+						Supression.class, Supression.class,
+						Tank.class, Medic.class, Medic.class));
 		}
 		
 	}

@@ -104,7 +104,7 @@ public class MISTA extends MeleeWeapon {
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                     int dmg = attacker.damageRoll() - defender.drRoll();
-                    dmg = Math.round(dmg * (starpower * 0.25f));
+                    dmg = Math.round(dmg * (starpower * 0.3f));
 
                     mob.damage(dmg, attacker);
                 }

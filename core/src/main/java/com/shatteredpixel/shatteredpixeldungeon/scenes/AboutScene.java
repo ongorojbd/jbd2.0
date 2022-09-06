@@ -108,11 +108,11 @@ public class AboutScene extends PixelScene {
 		content.add(charlie);
 
 		CreditsBlock kristjan = new CreditsBlock(false, Window.SHPX_COLOR,
-				"ABOUT",
+				"",
 				Icons.KRISTJAN.get(),
 				"",
-				"Kakao",
-				"https://open.kakao.com/o/sW7iiZYc");
+				"",
+				"");
 		kristjan.setRect(alex.right() - colWidth/4f, alex.bottom() + 5, colWidth/2f, 0);
 		content.add(kristjan);
 
@@ -137,7 +137,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock cube = new CreditsBlock(false, WATA_COLOR,
 				"Now",
 				Icons.CUBE_CODE.get(),
-				"2.0c",
+				"2.0c-1",
 				null,
 				null);
 		cube.setSize(colWidth/2f, 0);

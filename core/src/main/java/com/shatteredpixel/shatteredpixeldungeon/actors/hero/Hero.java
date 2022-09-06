@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -115,6 +116,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
@@ -170,8 +172,11 @@ public class Hero extends Char {
 	
 	public static final int MAX_LEVEL = 30;
 
+
 	public static final int STARTING_STR = 10;
-	
+	//public static final int STARTING_STR = 18;
+
+
 	private static final float TIME_TO_REST		    = 1f;
 	private static final float TIME_TO_SEARCH	    = 2f;
 	private static final float HUNGER_FOR_SEARCH	= 6f;
@@ -181,8 +186,9 @@ public class Hero extends Char {
 	public ArmorAbility armorAbility = null;
 	public ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
 	public LinkedHashMap<Talent, Talent> metamorphedTalents = new LinkedHashMap<>();
-	
+
 	private int attackSkill = 10;
+	//private int attackSkill = 1000;
 	private int defenseSkill = 5;
 
 	public boolean ready = false;
@@ -199,8 +205,9 @@ public class Hero extends Char {
 	public int STR;
 	
 	public float awareness;
-	
+
 	public int lvl = 1;
+	//public int lvl = 30;
 	public int exp = 0;
 	
 	public int HTBoost = 0;
@@ -215,6 +222,7 @@ public class Hero extends Char {
 		super();
 
 		HP = HT = 20;
+		//HP = HT = 2000;
 		STR = STARTING_STR;
 		
 		belongings = new Belongings( this );
@@ -1207,7 +1215,13 @@ public class Hero extends Char {
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
 		}
-		
+
+		if (Dungeon.hero.belongings.weapon() instanceof RoundShield && (Random.Int(3) == 0)){
+			Buff.prolong(this, Invisibility.class, Invisibility.DURATION / 7f);
+			Buff.prolong(this, Haste.class, Haste.DURATION / 7f);
+		}
+
+
 		return damage;
 	}
 	
@@ -1499,7 +1513,7 @@ public class Hero extends Char {
 			
 		} else if (Dungeon.level.getTransition(cell) != null
 				&& !Dungeon.level.locked
-				&& (Dungeon.depth < 26 || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
+				&& (Dungeon.depth < 31 || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
 
 			curAction = new HeroAction.LvlTransition( cell );
 			

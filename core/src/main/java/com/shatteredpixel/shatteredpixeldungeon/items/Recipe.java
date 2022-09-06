@@ -62,9 +62,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AJA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DBLADE;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.watabou.utils.Reflection;
@@ -219,12 +221,14 @@ public abstract class Recipe {
 		new SummonElemental.Recipe(),
 		new DBLADE.Recipe(),
 		new MISTA.Recipe(),
+			new PINK.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
 		new Potion.SeedToPotion(),
 		new StewedMeat.threeMeat(),
+			new AJA.Recipe(),
 		new MeatPie.Recipe()
 	};
 	

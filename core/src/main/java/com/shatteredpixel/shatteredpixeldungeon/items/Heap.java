@@ -85,7 +85,7 @@ public class Heap implements Bundlable {
 			break;
 		case REMAINS:
 		case SKELETON:
-			CellEmitter.center( pos ).start(Speck.factory(Speck.RATTLE), 0.1f, 3);
+			CellEmitter.center( pos ).start(Speck.factory(Speck.MASK), 0.1f, 3);
 			break;
 		default:
 		}

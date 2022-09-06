@@ -36,17 +36,19 @@ public class Assets {
 		public static final String VISUAL_GRID  = "environment/visual_grid.png";
 		public static final String WALL_BLOCKING= "environment/wall_blocking.png";
 
-		public static final String TILES_SEWERS = "environment/tiles_sewers.png";
-		public static final String TILES_PRISON = "environment/tiles_prison.png";
-		public static final String TILES_CAVES  = "environment/tiles_caves.png";
-		public static final String TILES_CITY   = "environment/tiles_city.png";
-		public static final String TILES_HALLS  = "environment/tiles_halls.png";
+		public static final String TILES_SEWERS	= "environment/tiles_sewers.png";
+		public static final String TILES_PRISON	= "environment/tiles_prison.png";
+		public static final String TILES_CAVES	= "environment/tiles_caves.png";
+		public static final String TILES_CITY	= "environment/tiles_city.png";
+		public static final String TILES_HALLS	= "environment/tiles_halls.png";
+		public static final String TILES_LABS	= "environment/tiles_labs.png";
 
-		public static final String WATER_SEWERS = "environment/water0.png";
-		public static final String WATER_PRISON = "environment/water1.png";
-		public static final String WATER_CAVES  = "environment/water2.png";
-		public static final String WATER_CITY   = "environment/water3.png";
-		public static final String WATER_HALLS  = "environment/water4.png";
+		public static final String WATER_SEWERS	= "environment/water0.png";
+		public static final String WATER_PRISON	= "environment/water1.png";
+		public static final String WATER_CAVES	= "environment/water2.png";
+		public static final String WATER_CITY	= "environment/water3.png";
+		public static final String WATER_HALLS	= "environment/water4.png";
+		public static final String WATER_LABS	= "environment/water5.png";
 
 		public static final String WEAK_FLOOR       = "environment/custom_tiles/weak_floor.png";
 		public static final String SEWER_BOSS       = "environment/custom_tiles/sewer_boss.png";
@@ -134,6 +136,10 @@ public class Assets {
 		public static final String HALLS_1      = "music/halls_1.ogg";
 		public static final String HALLS_2      = "music/halls_2.ogg";
 		public static final String HALLS_BOSS   = "music/halls_boss.ogg";
+
+		public static final String LABS_1     = "music/labs_1.ogg";
+		public static final String LABS_BOSS   = "music/labs_boss.ogg";
+
 	}
 
 	public static class Sounds {
@@ -208,6 +214,7 @@ public class Assets {
 		public static final String SHEEP    = "sounds/sheep.mp3";
 		public static final String GUITAR    = "sounds/guitar.mp3";
 		public static final String FF    = "sounds/ff.mp3";
+		public static final String OH    = "sounds/oh.mp3";
 		public static final String OVERDRIVE   = "sounds/overdrive.mp3";
 		public static final String SP   = "sounds/sp.mp3";
 
@@ -222,7 +229,7 @@ public class Assets {
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
-				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OVERDRIVE, SP
+				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OVERDRIVE, SP
 		};
 	}
 
@@ -299,6 +306,13 @@ public class Assets {
 		public static final String LOTUS    = "sprites/lotus.png";
 		public static final String NINJA_LOG= "sprites/ninja_log.png";
 		public static final String SPIRIT_HAWK= "sprites/spirit_hawk.png";
+		public static final String SOLDIER= "sprites/soldier.png";
+		public static final String RESEARCHER= "sprites/researcher.png";
+		public static final String TANK= "sprites/tank.png";
+		public static final String SUPRESSION= "sprites/supression.png";
+		public static final String MEDIC= "sprites/medic.png";
+		public static final String REBEL= "sprites/rebel.png";
+		public static final String MUDA= "sprites/muda.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 	}
 }
