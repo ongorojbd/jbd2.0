@@ -64,7 +64,7 @@ public class SWAT extends Mob implements Callback {
 		HP = HT = 1000;
 		defenseSkill = 25;
 
-		EXP = 77;
+		EXP = 71;
 		maxLvl = 30;
 
 		flying = true;
@@ -123,7 +123,7 @@ public class SWAT extends Mob implements Callback {
 		}
 		return super.defenseProc(enemy, damage);
 	}
-	
+
 	@Override
 	protected boolean canAttack(Char enemy) {
 		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
