@@ -70,7 +70,7 @@ public class WO extends Mob {
     {
         spriteClass = MudaSprite.class;
 
-        HP = HT = Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) ? 1800 : 1500;
+        HP = HT = Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) ? 3000 : 1500;
 
         defenseSkill = 25;
         EXP = 50;

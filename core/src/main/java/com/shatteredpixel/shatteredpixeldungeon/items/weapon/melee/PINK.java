@@ -51,7 +51,7 @@ public class PINK extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        SPCharge(1);
+        SPCharge(2);
         return super.proc(attacker, defender, damage);
     }
 

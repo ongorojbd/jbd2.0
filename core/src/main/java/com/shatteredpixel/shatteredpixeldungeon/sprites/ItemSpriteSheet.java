@@ -666,7 +666,7 @@ public class ItemSpriteSheet {
 		assignItemRect(MEAT_PIE,    16, 16);
 		assignItemRect(BLANDFRUIT,  9,  11);
 		assignItemRect(BLAND_CHUNKS,14, 6);
-		assignItemRect(BERRY,       9,  7);
+		assignItemRect(BERRY,       14, 15);
 	}
 
 	private static final int QUEST  =                                       xy(1, 29);  //32 slots
