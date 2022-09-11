@@ -23,7 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SWAT;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Soldier;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -59,45 +62,36 @@ public class SoldierSprite extends MobSprite {
 		
 		play( idle );
 	}
-	
-	@Override
-	public void attack( int cell ) {
-		if (!Dungeon.level.adjacent( cell, ch.pos )) {
 
-			cellToAttack = cell;
-			turnTo( ch.pos , cell );
-			play( zap );
+	public void zap( int cell ) {
 
-		} else {
-			
-			super.attack( cell );
-			
-		}
+		turnTo( ch.pos , cell );
+		play( zap );
+
+		MagicMissile.boltFromChar( parent,
+				MagicMissile.FOLIAGE,
+				this,
+				cell,
+				new Callback() {
+					@Override
+					public void call() {
+						((Soldier)ch).onZapComplete();
+					}
+				} );
+		Sample.INSTANCE.play( Assets.Sounds.ATK_SPIRITBOW );
 	}
-	
+
 	@Override
 	public void onComplete( Animation anim ) {
 		if (anim == zap) {
 			idle();
-			CellEmitter.get(ch.pos).burst(SmokeParticle.FACTORY, 2);
-			CellEmitter.center(ch.pos).burst(BlastParticle.FACTORY, 2);
-			Sample.INSTANCE.play( Assets.Sounds.HIT_CRUSH, 1, Random.Float(0.33f, 0.66f) );
-			((MissileSprite)parent.recycle( MissileSprite.class )).
-			reset( this, cellToAttack, new SoldierShot(), new Callback() {
+		}
+		super.onComplete( anim );
+	}
 
-				@Override
-				public void call() {
-					ch.onAttackComplete();
-				}
-			} );
-		} else {
-			super.onComplete( anim );
-		}
-	}
+
+
+
 	
-	public class SoldierShot extends Item {
-		{
-			image = ItemSpriteSheet.SPEAR;
-		}
-	}
+
 }

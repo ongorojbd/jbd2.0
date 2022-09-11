@@ -23,9 +23,11 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
@@ -40,13 +42,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SoldierSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 public class Soldier extends Mob {
+
+	private static final float TIME_TO_ZAP = 1f;
 
 	{
 		spriteClass = SoldierSprite.class;
@@ -81,13 +87,62 @@ public class Soldier extends Mob {
 		if (this.buff(Doom.class) == null) {
 			if (Dungeon.hero.belongings.weapon() instanceof MeleeWeapon) {
 				//takes 5/6/7/8/9/10 dmg at 5/7/10/14/19/25 incoming dmg
-				enemy.damage(damage / 4, target);
+				enemy.damage(damage / 5, target);
 				GLog.w(Messages.get(this, "reflect"));
 			}
 		}
 		return super.defenseProc(enemy, damage);
 	}
 
+	@Override
+	protected boolean canAttack(Char enemy) {
+		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+	}
+
+	protected boolean doAttack(Char enemy) {
+
+		if (Dungeon.level.adjacent(pos, enemy.pos)) {
+
+			return super.doAttack(enemy);
+
+		} else {
+
+			if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+				sprite.zap(enemy.pos);
+				return false;
+			} else {
+				zap();
+				return true;
+			}
+		}
+	}
+
+	//used so resistances can differentiate between melee and magical attacks
+	public static class DarkBolt {
+	}
+
+	private void zap() {
+		spend(TIME_TO_ZAP);
+
+		if (hit(this, enemy, true)) {
+			//TODO would be nice for this to work on ghost/statues too
+
+			int dmg = Random.NormalIntRange(25, 30);
+			enemy.damage( dmg, new Warlock.DarkBolt() );
+
+			if (enemy == Dungeon.hero && !enemy.isAlive()) {
+				Dungeon.fail(getClass());
+				GLog.n(Messages.get(this, "bolt_kill"));
+			}
+		} else {
+			enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
+		}
+	}
+
+	public void onZapComplete() {
+		zap();
+		next();
+	}
 
 	@Override
 	public float lootChance() {

@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -64,12 +65,12 @@ public class SWAT extends Mob implements Callback {
 		HP = HT = 1000;
 		defenseSkill = 25;
 
-		EXP = 71;
+		EXP = 77;
 		maxLvl = 30;
 
 		flying = true;
 
-		loot = new MagicalInfusion();
+		loot = new RingOfElements().identify().upgrade(5);
 		lootChance = 1f;
 
 		properties.add(Property.BOSS);

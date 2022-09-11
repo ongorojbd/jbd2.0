@@ -69,7 +69,7 @@ public class SWATSprite extends MobSprite {
 		play( zap );
 
 		MagicMissile.boltFromChar( parent,
-				MagicMissile.RAINBOW,
+				MagicMissile.FORCE,
 				this,
 				cell,
 				new Callback() {
