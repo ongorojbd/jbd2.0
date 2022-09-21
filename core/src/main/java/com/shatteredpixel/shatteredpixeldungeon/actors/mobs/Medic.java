@@ -24,11 +24,13 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
@@ -47,14 +49,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShr
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MedicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 public class Medic extends Mob {
+
+	private static final float TIME_TO_ZAP = 1f;
 
 	{
 		spriteClass = MedicSprite.class;
@@ -96,7 +104,59 @@ public class Medic extends Mob {
 		return damage;
 	}
 
+	@Override
+	protected boolean canAttack(Char enemy) {
+		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+	}
 
+	protected boolean doAttack(Char enemy) {
+
+		if (Dungeon.level.adjacent(pos, enemy.pos)) {
+
+			return super.doAttack(enemy);
+
+		} else {
+
+			if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+				sprite.zap(enemy.pos);
+				return false;
+			} else {
+				zap();
+				return true;
+			}
+		}
+	}
+
+	//used so resistances can differentiate between melee and magical attacks
+	public static class DarkBolt {
+	}
+
+	private void zap() {
+		spend(TIME_TO_ZAP);
+
+		if (hit(this, enemy, true)) {
+			//TODO would be nice for this to work on ghost/statues too
+			if (enemy == Dungeon.hero && Random.Int(0) == 0) {
+				Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
+				Sample.INSTANCE.play(Assets.Sounds.HIT);
+			}
+
+			int dmg = Random.NormalIntRange(25, 30);
+			enemy.damage( dmg, new DarkBolt() );
+
+			if (enemy == Dungeon.hero && !enemy.isAlive()) {
+				Dungeon.fail(getClass());
+				GLog.n(Messages.get(this, "bolt_kill"));
+			}
+		} else {
+			enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
+		}
+	}
+
+	public void onZapComplete() {
+		zap();
+		next();
+	}
 
 	@Override
 	public float lootChance() {

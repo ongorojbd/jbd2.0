@@ -39,7 +39,7 @@ public class Mace extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.MACE;
-		hitSound = Assets.Sounds.HIT;
+		hitSound = Assets.Sounds.FF;
 
 		hitSoundPitch = 1.1f;
 

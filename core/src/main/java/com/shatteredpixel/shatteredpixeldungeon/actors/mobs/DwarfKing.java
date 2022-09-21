@@ -424,7 +424,20 @@ public class DwarfKing extends Mob {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
-			yell(Messages.get(this, "notice"));
+			switch(Dungeon.hero.heroClass){
+				case WARRIOR:
+					this.yell(Messages.get(this, "notice"));
+					break;
+				case ROGUE:
+					this.yell(Messages.get(this, "notice2"));
+					break;
+				case MAGE:
+					this.yell(Messages.get(this, "notice3"));
+					break;
+				case HUNTRESS:
+					this.yell(Messages.get(this, "notice4"));
+					break;
+			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){
 					((DriedRose.GhostHero) ch).sayBoss();

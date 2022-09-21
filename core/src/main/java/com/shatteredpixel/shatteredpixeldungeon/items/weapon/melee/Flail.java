@@ -22,14 +22,22 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Flail extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.FLAIL;
-		hitSound = Assets.Sounds.FF;
-		hitSoundPitch = 0.8f;
+		hitSound = Assets.Sounds.HIT_STRONG;
+		hitSoundPitch = 3.3f;
 
 		tier = 4;
 		ACC = 0.8f; //0.8x accuracy
@@ -41,4 +49,33 @@ public class Flail extends MeleeWeapon {
 		return  Math.round(7*(tier+1)) +        //35 base, up from 25
 				lvl*Math.round(1.6f*(tier+1));  //+8 per level, up from +5
 	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (attacker instanceof Hero) {
+			if (Dungeon.hero.belongings.getItem(RingOfForce.class) != null) {
+				if (Dungeon.hero.belongings.getItem(RingOfForce.class).isEquipped(Dungeon.hero)) {
+					{
+						if (defender.buff(Poison.class) == null)
+							Buff.affect(defender, Poison.class).set(5f);
+						else Buff.affect(defender, Poison.class).extend(5f);
+					}
+				}
+			}
+		}
+
+		return super.proc(attacker, defender, damage);
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(RingOfForce.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfForce.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( Flail.class, "setbouns");}
+
+		return info;
+	}
+
 }

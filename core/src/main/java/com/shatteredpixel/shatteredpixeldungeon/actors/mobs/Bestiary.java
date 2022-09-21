@@ -171,11 +171,12 @@ public class Bestiary {
 						Eye.class, Eye.class,
 						Scorpio.class));
 			case 24: case 25:
-				//1x succubus, 2x evil eye, 3x scorpio
+				//1x succubus, 2x evil eye, 3x scorpio,1x acidic
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class, Eye.class,
-						Scorpio.class, Scorpio.class, Scorpio.class));
+						Scorpio.class, Scorpio.class, Scorpio.class,
+						Acidic.class));
 
 			// Labs
 			case 26:

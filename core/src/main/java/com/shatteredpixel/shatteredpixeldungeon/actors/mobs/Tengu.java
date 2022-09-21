@@ -325,7 +325,20 @@ public class Tengu extends Mob {
 			BossHealthBar.assignBoss(this);
 			if (HP <= HT/2) BossHealthBar.bleed(true);
 			if (HP == HT) {
-				yell(Messages.get(this, "notice_gotcha", Dungeon.hero.name()));
+				switch(Dungeon.hero.heroClass){
+					case WARRIOR:
+						this.yell(Messages.get(this, "notice_gotcha"));
+						break;
+					case ROGUE:
+						this.yell(Messages.get(this, "notice_gotcha2"));
+						break;
+					case MAGE:
+						this.yell(Messages.get(this, "notice_gotcha3"));
+						break;
+					case HUNTRESS:
+						this.yell(Messages.get(this, "notice_gotcha4"));
+						break;
+				}
 				for (Char ch : Actor.chars()){
 					if (ch instanceof DriedRose.GhostHero){
 						((DriedRose.GhostHero) ch).sayBoss();

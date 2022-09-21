@@ -33,8 +33,8 @@ public class AcidicSprite extends ScorpioSprite {
 		
 		TextureFilm frames = new TextureFilm( texture, 18, 17 );
 		
-		idle = new Animation( 12, true );
-		idle.frames( frames, 14, 14, 14, 14, 14, 14, 14, 14, 15, 16, 15, 16, 15, 16 );
+		idle = new Animation( 5, true );
+		idle.frames( frames, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 15, 15, 15 );
 		
 		run = new Animation( 4, true );
 		run.frames( frames, 19, 20 );

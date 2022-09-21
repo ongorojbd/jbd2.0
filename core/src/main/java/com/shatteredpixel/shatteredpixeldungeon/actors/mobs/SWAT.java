@@ -22,37 +22,58 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Silence;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SWATSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class SWAT extends Mob implements Callback {
@@ -70,18 +91,65 @@ public class SWAT extends Mob implements Callback {
 
 		flying = true;
 
-		loot = new RingOfElements().identify().upgrade(5);
-		lootChance = 1f;
-
 		properties.add(Property.BOSS);
 
 	}
+	int damageTaken = 0;
+	public int  Phase = 0;
 
 	@Override
-	public void die(Object cause) {
-		super.die(cause);
+	public void die( Object cause ) {
+
+		super.die( cause );
+
+		Dungeon.level.drop( new RingOfElements().identify().upgrade(5), pos ).sprite.drop( pos );
+
+		yell( Messages.get(this, "defeated") );
 	}
 
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle(bundle);
+		bundle.put( PHASE, Phase );
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle( bundle );
+		Phase = bundle.getInt(PHASE);
+	}
+
+	@Override
+	public void damage(int dmg, Object src) {
+
+		if (dmg >= 250){
+			//takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+			// at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+			dmg = 250;
+		}
+
+		super.damage(dmg, src);
+
+		if (Phase==0 && HP < 999) {
+			Phase = 1;
+			HP = 999;
+			Buff.prolong(this, Bless.class, Bless.DURATION*5000f);
+			Buff.prolong(this, BlobImmunity.class, BlobImmunity.DURATION*5000f);
+			Buff.prolong(this, Haste.class, Haste.DURATION*5000f);
+			Buff.prolong(this, Light.class, Light.DURATION*5000f);
+			Buff.prolong(this, Adrenaline.class, Adrenaline.DURATION*5000f);
+			Sample.INSTANCE.play( Assets.Sounds.MASTERY );
+			new Flare(6, 28).color(0xFFFF00, true);
+			if (!BossHealthBar.isAssigned()) {
+				BossHealthBar.assignBoss(this);
+				yell(Messages.get(this, "notice"));
+				for (Char ch : Actor.chars()){
+				}
+			}
+		}
+	}
+
+	private static final String PHASE   = "Phase";
 
 	@Override
 	public int damageRoll() {
@@ -103,26 +171,10 @@ public class SWAT extends Mob implements Callback {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
+			yell(Messages.get(this, "notice"));
 			for (Char ch : Actor.chars()){
 			}
 		}
-	}
-
-	@Override
-	public int defenseProc(Char enemy, int damage) {
-		if (this.buff(Barkskin.class) == null) {
-			if (Dungeon.hero.belongings.weapon() instanceof MeleeWeapon) {
-				//takes 5/6/7/8/9/10 dmg at 5/7/10/14/19/25 incoming dmg
-				enemy.damage(damage/5, target);
-				Buff.prolong(this, Bless.class, Bless.DURATION*5000f);
-				Buff.prolong(this, BlobImmunity.class, BlobImmunity.DURATION*5000f);
-				Buff.prolong(this, Haste.class, Haste.DURATION*5000f);
-				Buff.prolong(this, Light.class, Light.DURATION*5000f);
-				Buff.prolong(this, Adrenaline.class, Light.DURATION*5000f);
-				GLog.w(Messages.get(this, "reflect"));
-			}
-		}
-		return super.defenseProc(enemy, damage);
 	}
 
 	@Override

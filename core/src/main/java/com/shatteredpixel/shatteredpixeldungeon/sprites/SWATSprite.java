@@ -58,7 +58,7 @@ public class SWATSprite extends MobSprite {
 		zap = attack.clone();
 
 		die = new Animation( 20, false );
-		die.frames( frames, 32, 33, 34, 35, 36, 35);
+		die.frames( frames, 32, 33, 34, 35, 36);
 		
 		play( idle );
 	}

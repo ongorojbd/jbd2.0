@@ -3,89 +3,53 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class AJA extends MeleeWeapon {
-    public static final String AC_SP = "SP";
-
+    public static final String AC_ZAP = "ZAP";
     {
         image = ItemSpriteSheet.AJA;
-        hitSound = Assets.Sounds.HIT;
-        hitSoundPitch = 1f;
 
-        defaultAction = AC_SP;
+        defaultAction = AC_ZAP;
 
         tier = 5;
+        ACC = 1.4f;
+        DLY = 1f;
     }
+
+    private int mode = 0;
+    // 0, 1, 2
 
     @Override
     public int max(int lvl) {
-        return  2*(tier) +    //10
-                lvl*(tier-3);   // +2
+        return  4*(tier) +                	//20 + 4
+                lvl*(tier-1);
     }
 
-    @Override
-    public int proc(Char attacker, Char defender, int damage) {
-
-        for (int count = 0; count<3; count++) {
-            if (defender.isAlive()) {
-                defender.damage(attacker.damageRoll() - defender.drRoll(), attacker);
-                defender.sprite.burst(CharSprite.NEGATIVE, 10);
-            }
-        }
-
-        if (attacker.buff(JourneyBuff_ice.class) != null) {
-            Buff.detach(attacker, JourneyBuff_ice.class);
-            Buff.affect(defender, Cripple.class, 2f);
-        }
-        else if (attacker.buff(JourneyBuff_fire.class) != null) {
-            Buff.detach(attacker, JourneyBuff_fire.class);
-            Buff.affect(defender, SoulMark.class, 5f);
-        }
-        else if (attacker.buff(JourneyBuff_heavy.class) != null) {
-            Buff.detach(attacker, JourneyBuff_heavy.class);
-            Buff.affect(defender, Hex.class, 15f);
-        }
-        else if (attacker.buff(JourneyBuff_1.class) != null) {
-            Buff.detach(attacker, JourneyBuff_1.class);
-            Buff.affect(defender, Vulnerable.class, 15f);
-        }
-        else if (attacker.buff(JourneyBuff_2.class) != null) {
-            Buff.detach(attacker, JourneyBuff_2.class);
-            Buff.affect(defender, Weakness.class, 15f);
-        }
-
-        SPCharge(100);
-        updateQuickslot();
-        return super.proc(attacker, defender, damage);
-    }
 
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        actions.add(AC_SP);
+        actions.add(AC_ZAP);
         return actions;
     }
 
@@ -94,69 +58,138 @@ public class AJA extends MeleeWeapon {
 
         super.execute(hero, action);
 
-        if (action.equals(AC_SP) && this.isEquipped(hero)) {
-            GameScene.show(
-                    new WndOptions(Messages.get(this, "name"),
-                            Messages.get(this, "wnddesc"),
-                            Messages.get(this, "special1"),
-                            Messages.get(this, "special2"),
-                            Messages.get(this, "special3"),
-                            Messages.get(this, "special4"),
-                            Messages.get(this, "special5")) {
+        if (action.equals(AC_ZAP) && isEquipped(hero)) {
+            mode++;
+            if (mode > 2) mode = 0;
 
-                        @Override
-                        protected void onSelect(int index) {
-                            if (index == 0) {
-                                Buff.affect(hero, JourneyBuff_ice.class);
-                                charge = 0;
-                                updateQuickslot();
-                            }
-                            else if (index == 1) {
-                                Buff.affect(hero, JourneyBuff_fire.class);
-                                charge = 0;
-                                updateQuickslot();
-                            }
-                            else if (index == 2) {
-                                Buff.affect(hero, JourneyBuff_heavy.class);
-                                charge = 0;
-                                updateQuickslot();
-                            }
-                            else if (index == 3) {
-                                Buff.affect(hero, JourneyBuff_1.class);
-                                charge = 0;
-                                updateQuickslot();
-                            }
-                            else if (index == 4) {
-                                Buff.affect(hero, JourneyBuff_2.class);
-                                charge = 0;
-                                updateQuickslot();
-                            }
-                        }
-                    });
+            switch (mode) {
+                default:
+                case 0:
+                    ACC = 1f;
+                    DLY = 0.75f;
+                    hitSound = Assets.Sounds.HIT;
+                    hitSoundPitch = 3.3f;
+                    break;
+                case 1:
+                    ACC = 1.55f;
+                    DLY = 1f;
+                    hitSound = Assets.Sounds.HIT_STRONG;
+                    hitSoundPitch = 3.3f;
+                    break;
+                case 2:
+                    ACC = 0.4f;
+                    DLY = 0.5f;
+                    hitSound = Assets.Sounds.SP;
+                    hitSoundPitch = 3.3f;
+                    break;
+            }
+
+            updateQuickslot();
+            curUser.spendAndNext(1f);
         }
     }
 
     @Override
-    public String status() {
+    public int proc(Char attacker, Char defender, int damage) {
 
-        //if the artifact isn't IDed, or is cursed, don't display anything
-        if (!isIdentified() || cursed) {
-            return null;
+
+        if (mode == 0) {
+        int extratarget = 0;
+        if (attacker instanceof Hero) {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (Dungeon.level.adjacent(mob.pos, defender.pos) && mob.alignment != Char.Alignment.ALLY) {
+                    int dmg = Dungeon.hero.damageRoll() - Math.max(defender.drRoll(), defender.drRoll());
+                    mob.damage(dmg, this);
+                    extratarget++;
+
+                }
+            }
         }
-        //display as percent
-        if (chargeCap == 100)
-            return Messages.format("%d%%", charge);
+
+        float bounsdmg = Math.min(1.5f, 1f+(extratarget*0.1f));
+
+        damage = Math.round(damage * bounsdmg);
+
+        }
+
+        if (mode == 1) {
+            if (defender.buff(Poison.class) == null)
+                Buff.affect(defender, Poison.class).set(3f);
+            else Buff.affect(defender, Poison.class).extend(3f);
+        }
 
 
-        //otherwise, if there's no charge, return null.
-        return null;
+        if (mode == 2) {
+            defender.damage(attacker.damageRoll(), attacker);
+        }
+
+
+        if (attacker instanceof Hero) {
+            if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
+                if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero)) {
+                    if (Random.Int(12 + buffedLvl()) > 10) {
+                        if (defender.buff(SoulMark.class) == null)
+                            Buff.affect(defender, SoulMark.class, 1f);
+                    }
+                }
+            }
+        }
+
+        return super.proc(attacker, defender, damage);
     }
 
-    public static class JourneyBuff_ice extends Buff{}
-    public static class JourneyBuff_fire extends Buff{}
-    public static class JourneyBuff_heavy extends Buff{}
-    public static class JourneyBuff_1 extends Buff{}
-    public static class JourneyBuff_2 extends Buff{}
+    @Override
+    public String desc() {
+        String info;
+        if (mode == 2) info = Messages.get(this, "desc_mode2");
+        else if (mode == 1) info = Messages.get(this, "desc_mode1");
+        else info = Messages.get(this, "desc");
+
+        if (VectorSetBouns()) {
+            info += "\n\n" + Messages.get(AJA.class, "setbouns"); }
+        return info;
+    }
+
+
+
+    @Override
+    public String status() {
+        if (this.isIdentified()) {
+            if (mode == 2) return "Squirrel";
+            else if (mode == 1) return "Tentacle";
+            else return "Wing";
+        }
+        else return null;}
+
+    public static boolean VectorSetBouns() {
+        if (!(Dungeon.hero.belongings.weapon instanceof AJA)) return false;
+
+        if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
+            if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero))
+                return true;
+        }
+        return false;
+    }
+
+    private static final String SWICH = "mode";
+    private static final String DLYSAVE = "DLY";
+    private static final String ACCSAVE = "ACC";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(SWICH, mode);
+        bundle.put(ACCSAVE, ACC);
+        bundle.put(DLYSAVE, DLY);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        mode = bundle.getInt(SWICH);
+        ACC = bundle.getFloat(ACCSAVE);
+        DLY = bundle.getFloat(DLYSAVE);
+    }
 
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
@@ -171,18 +204,4 @@ public class AJA extends MeleeWeapon {
             outQuantity = 1;
         }
     }
-
-    @Override
-    public String desc() {
-        String info = Messages.get(this, "desc");
-        if (Dungeon.hero.belongings.getItem(RingOfForce.class) != null) {
-            if (Dungeon.hero.belongings.getItem(RingOfForce.class).isEquipped(Dungeon.hero))
-                info += "\n\n" + Messages.get( AJA.class, "setbouns");}
-
-        return info;
-    }
-
-
-
-
 }

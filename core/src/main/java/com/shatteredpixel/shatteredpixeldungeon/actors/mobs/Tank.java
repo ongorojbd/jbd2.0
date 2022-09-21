@@ -27,9 +27,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
@@ -70,6 +76,7 @@ public class Tank extends Mob {
 		loot = new ShockingBrew();
 		lootChance = 0.3f;
 	}
+	int damageTaken = 0;
 
 	@Override
 	public int damageRoll() {
@@ -96,6 +103,26 @@ public class Tank extends Mob {
 		return damage;
 	}
 
+	@Override
+	public int defenseProc( Char enemy, int damage ) {
+		damage = super.defenseProc( enemy, damage );
+		damageTaken += damage;
+		if (damageTaken >= 100) {
+			Buff.prolong(this, Invisibility.class, Invisibility.DURATION*5000f);
+			damageTaken = 0;
+		}
+		return damage;
+	}
+
+	@Override
+	protected boolean act() {
+
+
+		if (this.HP < 1*this.HT/2) {
+			Buff.prolong(this, Invisibility.class, Invisibility.DURATION*5000f);
+		}
+		return super.act();
+	}
 
 	@Override
 	public float lootChance() {

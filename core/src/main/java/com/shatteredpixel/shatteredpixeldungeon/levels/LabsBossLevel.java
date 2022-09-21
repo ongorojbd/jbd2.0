@@ -26,29 +26,15 @@ import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ParalyticGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ToxicGasRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.Game;
@@ -132,49 +118,49 @@ public class LabsBossLevel extends Level {
 	private static final short e = Terrain.EMPTY;
 	private static final short E = Terrain.ENTRANCE;
 	private static final short p = Terrain.PEDESTAL;
-	private static final short s = Terrain.EMPTY_SP;
+	private static final short s = Terrain.ALCHEMY;
 	private static final short D = Terrain.DOOR;
-	private static final short C = Terrain.CRYSTAL_DOOR;
-	private static final short B = Terrain.EMPTY;
-	private static final short i = Terrain.EMPTY;
+	private static final short C = Terrain.STATUE_SP;
+	private static final short B = Terrain.BARRICADE;
+	private static final short i = Terrain.EMPTY_SP;
 	private static final short t = Terrain.EMPTY;
-	private static final short J = Terrain.EMPTY;
+	private static final short J = Terrain.STATUE;
 	private static final short L = Terrain.LOCKED_EXIT;
 
 	private static short[] level = {
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, L, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, i, i, i, i, i, i, i, i, i, i, i, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, e, e, e, e, e, e, e, e, e, e, e, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, i, i, i, i, i, i, i, i, i, i, i, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, i, i, i, i, i, i, i, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, i, i, i, i, i, e, e, e, i, e, e, e, i, i, i, i, i, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, i, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, i, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, i, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, i, i, i, i, i, i, i, i, i, i, i, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, i, i, i, i, i, i, i, i, i, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, e, i, i, i, i, i, i, i, e, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, e, e, i, i, i, i, i, e, e, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, e, i, i, i, e, i, i, i, e, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, e, i, i, e, e, e, i, i, e, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, i, i, e, e, e, e, e, i, i, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, i, i, i, i, i, i, e, e, e, e, e, e, e, i, i, i, i, i, i, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, e, e, e, e, e, e, e, i, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, i, i, i, i, i, i, i, i, i, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, D, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, t, t, t, t, t, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, t, e, e, e, t, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, t, e, E, e, t, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, t, e, e, e, t, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, t, t, t, t, t, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, C, i, i, i, C, W, W, W, i, i, i, i, i, i, i, i, i, W, W, W, C, i, i, i, C, W, W, W, W,
+			W, W, W, W, i, e, e, e, i, W, W, W, i, J, t, e, e, e, t, J, i, W, W, W, i, e, e, e, i, W, W, W, W,
+			W, W, W, W, i, e, s, e, i, i, i, D, i, J, t, e, E, e, t, J, i, D, i, i, i, e, s, e, i, W, W, W, W,
+			W, W, W, W, i, e, e, e, i, W, W, W, i, J, t, e, e, e, t, J, i, W, W, W, i, e, e, e, i, W, W, W, W,
+			W, W, W, W, C, i, i, i, C, W, W, W, i, i, i, i, i, i, i, i, i, W, W, W, C, i, i, i, C, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W
 	};
 
@@ -187,11 +173,6 @@ public class LabsBossLevel extends Level {
 			// 된 요소대로 맵 제작
 			pos++; 												//만들고 나서 다음 칸으로 이동하기 위해 필요한 것. ex)벽 -> 벽일 경우 첫번째 벽이 pos고, 두번째 벽이 pos+1.
 		}
-
-		Blob.seed(3+(36)*33, 12, ConfusionGasSeed.class, this);
-		Blob.seed(10+(36)*33, 12, ToxicGasSeed.class, this);
-		Blob.seed(17+(36)*33, 12, ParalyticGasSeed.class, this);
-		Blob.seed(24+(36)*33, 12, CorrosiveGasSeed.class, this);
 	}
 
 	@Override
@@ -225,77 +206,14 @@ public class LabsBossLevel extends Level {
 
 	@Override
 	protected void createItems() {
-		Item prize1 = Random.oneOf(
-				new Gold(3000),
-				new PotionOfHealing().quantity(3),
-				new StoneOfEnchantment().quantity(3),
-				Generator.randomArtifact(),
-				Generator.randomWeapon(5).upgrade(3),
-				Generator.randomArmor(5).upgrade(3),
-				new PotionOfParalyticGas().quantity(5),
-				new PotionOfExperience().quantity(5)
-		);
-		Item prize2 = Random.oneOf(
-				new Gold(3000),
-				new PotionOfHealing().quantity(3),
-				new StoneOfEnchantment().quantity(3),
-				Generator.randomArtifact(),
-				Generator.randomWeapon(5).upgrade(3),
-				Generator.randomArmor(5).upgrade(3),
-				new PotionOfParalyticGas().quantity(5),
-				new PotionOfEarthenArmor().quantity(5)
-		);
-		Item prize3 = Random.oneOf(
-				new Gold(3000),
-				new PotionOfHealing().quantity(3),
-				new StoneOfEnchantment().quantity(3),
-				Generator.randomArtifact(),
-				Generator.randomWeapon(5).upgrade(3),
-				Generator.randomArmor(5).upgrade(3),
-				new PotionOfParalyticGas().quantity(5),
-				new PotionOfEarthenArmor().quantity(5)
-		);
-		Item prize4 = Random.oneOf(
-				new Gold(3000),
-				new PotionOfHealing().quantity(3),
-				new StoneOfEnchantment().quantity(3),
-				Generator.randomArtifact(),
-				Generator.randomWeapon(5).upgrade(3),
-				Generator.randomArmor(5).upgrade(3),
-				new PotionOfParalyticGas().quantity(5),
-				new PotionOfEarthenArmor().quantity(5)
-		);
-		Item prize5 = Random.oneOf(
-				new Gold(3000),
-				new PotionOfHealing().quantity(3),
-				new StoneOfEnchantment().quantity(3),
-				Generator.randomArtifact(),
-				Generator.randomWeapon(5).upgrade(3),
-				Generator.randomArmor(5).upgrade(3),
-				new PotionOfParalyticGas().quantity(5),
-				new PotionOfEarthenArmor().quantity(5)
-		);
-		Item prize6 = Random.oneOf(
-				new Gold(3000),
-				new PotionOfHealing().quantity(3),
-				new StoneOfEnchantment().quantity(3),
-				Generator.randomArtifact(),
-				Generator.randomWeapon(5).upgrade(3),
-				Generator.randomArmor(5).upgrade(3),
-				new PotionOfParalyticGas().quantity(5),
-				new PotionOfEarthenArmor().quantity(5)
-		);
 
-		drop( new CrystalKey(30), 29+(30)*33 ).type = Heap.Type.CHEST;
-		drop( new GoldenKey(30).quantity(Random.NormalIntRange(1, 6)), 29+(36)*33 ).type = Heap.Type.CHEST;
+		Item prize1 = (new PotionOfShielding().quantity(3));
+		Item prize5 = (new ScrollOfMetamorphosis().quantity(3));
 
-		drop( prize1, 7+(28)*33 ).type = Heap.Type.LOCKED_CHEST;
-		drop( prize2, 8+(28)*33 ).type = Heap.Type.LOCKED_CHEST;
-		drop( prize3, 9+(28)*33 ).type = Heap.Type.LOCKED_CHEST;
 
-		drop( prize4, 23+(28)*33 ).type = Heap.Type.LOCKED_CHEST;
-		drop( prize5, 24+(28)*33 ).type = Heap.Type.LOCKED_CHEST;
-		drop( prize6, 25+(28)*33 ).type = Heap.Type.LOCKED_CHEST;
+		drop( prize1, 6+(28)*33 ).type = Heap.Type.CHEST;
+		drop( prize5, 26+(28)*33 ).type = Heap.Type.CHEST;
+
 		Item item = Bones.get();
 		if (item != null) {
 			int pos;
@@ -451,107 +369,4 @@ public class LabsBossLevel extends Level {
 		}
 	}
 
-	public static class ToxicGasSeed extends Blob {
-
-		@Override
-		protected void evolve() {
-			int cell;
-			ToxicGas gas = (ToxicGas) Dungeon.level.blobs.get(ToxicGas.class);
-			for (int i=area.top-1; i <= area.bottom; i++) {
-				for (int j = area.left-1; j <= area.right; j++) {
-					cell = j + i* Dungeon.level.width();
-					if (Dungeon.level.insideMap(cell)) {
-
-						off[cell] = cur[cell];
-						volume += off[cell];
-
-						if (gas == null || gas.volume == 0){
-							GameScene.add(Blob.seed(cell, 300, ToxicGas.class));
-						} else if (gas.cur[cell] <= 9*off[cell]){
-							GameScene.add(Blob.seed(cell, 300, ToxicGas.class));
-						}
-					}
-				}
-			}
-		}
-
-	}
-
-	public static class ParalyticGasSeed extends Blob {
-
-		@Override
-		protected void evolve() {
-			int cell;
-			ParalyticGas gas = (ParalyticGas) Dungeon.level.blobs.get(ParalyticGas.class);
-			for (int i=area.top-1; i <= area.bottom; i++) {
-				for (int j = area.left-1; j <= area.right; j++) {
-					cell = j + i* Dungeon.level.width();
-					if (Dungeon.level.insideMap(cell)) {
-
-						off[cell] = cur[cell];
-						volume += off[cell];
-
-						if (gas == null || gas.volume == 0){
-							GameScene.add(Blob.seed(cell, 300, ParalyticGas.class));
-						} else if (gas.cur[cell] <= 9*off[cell]){
-							GameScene.add(Blob.seed(cell, 300, ParalyticGas.class));
-						}
-					}
-				}
-			}
-		}
-
-	}
-
-	public static class CorrosiveGasSeed extends Blob {
-
-		@Override
-		protected void evolve() {
-			int cell;
-			CorrosiveGas gas = (CorrosiveGas) Dungeon.level.blobs.get(CorrosiveGas.class);
-			for (int i=area.top-1; i <= area.bottom; i++) {
-				for (int j = area.left-1; j <= area.right; j++) {
-					cell = j + i* Dungeon.level.width();
-					if (Dungeon.level.insideMap(cell)) {
-
-						off[cell] = cur[cell];
-						volume += off[cell];
-
-						if (gas == null || gas.volume == 0){
-							GameScene.add(Blob.seed(cell, 300, CorrosiveGas.class));
-						} else if (gas.cur[cell] <= 9*off[cell]){
-							GameScene.add(Blob.seed(cell, 300, CorrosiveGas.class));
-						}
-					}
-				}
-			}
-		}
-
-	}
-
-	public static class ConfusionGasSeed extends Blob {
-
-		@Override
-		protected void evolve() {
-			int cell;
-			ConfusionGas gas = (ConfusionGas) Dungeon.level.blobs.get(ConfusionGas.class);
-			for (int i=area.top-1; i <= area.bottom; i++) {
-				for (int j = area.left-1; j <= area.right; j++) {
-					cell = j + i* Dungeon.level.width();
-					if (Dungeon.level.insideMap(cell)) {
-
-						off[cell] = cur[cell];
-						volume += off[cell];
-
-						if (gas == null || gas.volume == 0){
-							GameScene.add(Blob.seed(cell, 300, ConfusionGas.class));
-						} else if (gas.cur[cell] <= 9*off[cell]){
-							GameScene.add(Blob.seed(cell, 300, ConfusionGas.class));
-						}
-					}
-				}
-			}
-		}
-
-	}
 }

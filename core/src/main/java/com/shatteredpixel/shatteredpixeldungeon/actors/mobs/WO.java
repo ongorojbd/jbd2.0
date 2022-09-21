@@ -44,20 +44,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ToxicImbue;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MudaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
@@ -70,13 +64,13 @@ public class WO extends Mob {
     {
         spriteClass = MudaSprite.class;
 
-        HP = HT = Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES) ? 3000 : 1500;
+        HP = HT = 1200;
 
         defenseSkill = 25;
-        EXP = 50;
+        EXP = 0;
         maxLvl = 30;
         flying = true;
-        viewDistance = 23;
+        viewDistance = 55;
 
         state = HUNTING;
 
@@ -98,29 +92,24 @@ public class WO extends Mob {
             spell = Random.Int(1,4);
             switch (spell) {
                 case 1:
-                    GLog.w(Messages.get(Rebel.class, "skill1"));
-                    Sample.INSTANCE.play( Assets.Sounds.OH );
-                    CellEmitter.get( this.pos ).burst( ShadowParticle.UP, 10 );
-                    Buff.affect(this, Invisibility.class, 3f);
+                    CellEmitter.get( this.pos ).burst( RainbowParticle.BURST, 99 );
+                    sprite.showStatus(CharSprite.WARNING, Messages.get(this, "W1"));
                     Buff.affect(this, Haste.class, 3f);
                     Buff.affect(this, MagicImmune.class, 3f);
                     this.beckon( Dungeon.hero.pos );
                     break;
                 case 2:
-                    GLog.w(Messages.get(Rebel.class, "skill2"));
-                    Sample.INSTANCE.play( Assets.Sounds.OH );
-                    CellEmitter.get( this.pos ).burst( ShadowParticle.UP, 10 );
-                    Buff.affect(this, ToxicImbue.class).set(3f);
+                    CellEmitter.get( this.pos ).burst( FlameParticle.FACTORY, 99 );
+                    sprite.showStatus(CharSprite.WARNING, Messages.get(this, "W2"));
+                    Buff.affect(this, Light.class, 3f);
                     Buff.affect(this, FireImbue.class).set(3f);
                     this.beckon( Dungeon.hero.pos );
                     break;
                 case 3:
-                    GLog.w(Messages.get(Rebel.class, "skill3"));
-                    Sample.INSTANCE.play( Assets.Sounds.OH );
-                    CellEmitter.get( this.pos ).burst( ShadowParticle.UP, 10 );
+                    CellEmitter.get( this.pos ).burst( MagicMissile.MagicParticle.FACTORY, 99 );
+                    sprite.showStatus(CharSprite.WARNING, Messages.get(this, "W3"));
                     Buff.affect(this, Bless.class, 3f);
                     Buff.affect(this, FrostImbue.class, 3f);
-                    Buff.affect(this, Light.class, 3f);
                     this.beckon( Dungeon.hero.pos );
                     break;
             }
@@ -144,7 +133,13 @@ public class WO extends Mob {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 2);
+        int dr;
+        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+            dr = Random.NormalIntRange(5, 19);
+        } else {
+            dr = Random.NormalIntRange(5, 15);
+        }
+        return dr;
     }
 
 
@@ -159,15 +154,10 @@ public class WO extends Mob {
     }
 
     @Override
-    public int attackProc( Char enemy, int damage ) {
-        damage = super.attackProc( enemy, damage );
-        if (this.buff(Barkskin.class) == null) {
-            if (Random.Int(7) == 0) {
-                new GeyserTrap().set(target).activate();
-                new WarpingTrap().set(target).activate();
-            }
-
-        }
-        return damage;
+    public void die(Object cause) {
+        super.die(cause);
     }
+
+
+
 }

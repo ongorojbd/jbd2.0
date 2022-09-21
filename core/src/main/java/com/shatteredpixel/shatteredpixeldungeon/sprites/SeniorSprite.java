@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,48 +22,99 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SacrificialParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class SeniorSprite extends MobSprite {
-	
-	private Animation kick;
-	
+
+	private int cellToAttack;
+
 	public SeniorSprite() {
 		super();
-		
-		texture( Assets.Sprites.MONK );
-		
-		TextureFilm frames = new TextureFilm( texture, 14, 16 );
-		
-		idle = new Animation( 6, true );
-		idle.frames( frames, 18, 17, 18, 19 );
-		
-		run = new Animation( 15, true );
-		run.frames( frames, 28, 29, 30, 31, 32, 33 );
-		
-		attack = new Animation( 12, false );
-		attack.frames( frames, 20, 21, 20, 21 );
-		
-		kick = new Animation( 10, false );
-		kick.frames( frames, 22, 23, 22 );
-		
-		die = new Animation( 15, false );
-		die.frames( frames, 18, 24, 25, 25, 26, 27 );
-		
+
+		texture( Assets.Sprites.SUPRESSION );
+
+		TextureFilm frames = new TextureFilm( texture, 12, 15 );
+
+		idle = new Animation( 1, true );
+		idle.frames( frames, 21, 21, 21, 22, 21, 21, 21, 22 );
+
+		run = new Animation( 20, true );
+		run.frames( frames, 23, 24, 25, 26, 27, 28 );
+
+		attack = new Animation( 15, false );
+		attack.frames( frames, 29, 30, 31, 21 );
+
+		zap = attack.clone();
+
+		die = new Animation( 20, false );
+		die.frames( frames, 32, 33, 34, 35, 36);
+
 		play( idle );
 	}
-	
+
 	@Override
 	public void attack( int cell ) {
-		super.attack( cell );
-		if (Random.Float() < 0.3f) {
-			play( kick );
+		if (!Dungeon.level.adjacent( cell, ch.pos )) {
+
+			cellToAttack = cell;
+			turnTo( ch.pos , cell );
+			play( zap );
+
+		} else {
+
+			super.attack( cell );
+
 		}
 	}
-	
+
 	@Override
 	public void onComplete( Animation anim ) {
-		super.onComplete( anim == kick ? attack : anim );
+		if (anim == zap) {
+			idle();
+			CellEmitter.get(ch.pos).burst(EnergyParticle.FACTORY, 2);
+			CellEmitter.center(ch.pos).burst(SacrificialParticle.FACTORY, 2);
+			Sample.INSTANCE.play( Assets.Sounds.READ, 2, Random.Float(0.33f, 0.66f) );
+			((MissileSprite)parent.recycle( MissileSprite.class )).
+					reset( this, cellToAttack, new SeniorShot(), new Callback() {
+
+						@Override
+						public void call() {
+							ch.onAttackComplete();
+						}
+					} );
+		} else {
+			super.onComplete( anim );
+		}
+	}
+
+	public class SeniorShot extends Item {
+		{
+			image = ItemSpriteSheet.EMBER;
+		}
+	}
+
+
+	@Override
+	public void link( Char ch ) {
+		super.link( ch );
+		add(State.SHIELDED);
+	}
+
+	@Override
+	public void die() {
+		super.die();
+
+		remove(State.SHIELDED);
+		emitter().start( ElmoParticle.FACTORY, 0.03f, 60 );
 	}
 }

@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Soldier;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SacrificialParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.watabou.noosa.TextureFilm;
@@ -58,35 +60,48 @@ public class SoldierSprite extends MobSprite {
 		zap = attack.clone();
 
 		die = new Animation( 20, false );
-		die.frames( frames, 11, 12, 13, 14, 15, 14);
+		die.frames( frames, 11, 12, 13, 14, 15);
 		
 		play( idle );
 	}
 
-	public void zap( int cell ) {
+	@Override
+	public void attack( int cell ) {
+		if (!Dungeon.level.adjacent( cell, ch.pos )) {
 
-		turnTo( ch.pos , cell );
-		play( zap );
+			cellToAttack = cell;
+			turnTo( ch.pos , cell );
+			play( zap );
 
-		MagicMissile.boltFromChar( parent,
-				MagicMissile.FOLIAGE,
-				this,
-				cell,
-				new Callback() {
-					@Override
-					public void call() {
-						((Soldier)ch).onZapComplete();
-					}
-				} );
-		Sample.INSTANCE.play( Assets.Sounds.ATK_SPIRITBOW );
+		} else {
+
+			super.attack( cell );
+
+		}
 	}
 
 	@Override
 	public void onComplete( Animation anim ) {
 		if (anim == zap) {
 			idle();
+			Sample.INSTANCE.play( Assets.Sounds.ATK_SPIRITBOW );
+			((MissileSprite)parent.recycle( MissileSprite.class )).
+					reset( this, cellToAttack, new SoldierSprite.SoldierShot(), new Callback() {
+
+						@Override
+						public void call() {
+							ch.onAttackComplete();
+						}
+					} );
+		} else {
+			super.onComplete( anim );
 		}
-		super.onComplete( anim );
+	}
+
+	public class SoldierShot extends Item {
+		{
+			image = ItemSpriteSheet.SPIRIT_ARROW;
+		}
 	}
 
 

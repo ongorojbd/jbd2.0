@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
@@ -443,6 +444,8 @@ public class YogDzewa extends Mob {
 
 		GameScene.add(fist, 4);
 		Actor.addDelayed( new Pushing( fist, Dungeon.level.exit(), fist.pos ), -1 );
+
+		Sample.INSTANCE.play( Assets.Sounds.ZAWARUDO );
 	}
 
 	public void updateVisibility( Level level ){
@@ -508,13 +511,28 @@ public class YogDzewa extends Mob {
 		super.die( cause );
 
 		yell( Messages.get(this, "defeated") );
+
+		Sample.INSTANCE.play( Assets.Sounds.NANI );
 	}
 
 	@Override
 	public void notice() {
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
-			yell(Messages.get(this, "notice"));
+			switch(Dungeon.hero.heroClass){
+				case WARRIOR:
+					this.yell(Messages.get(this, "notice"));
+					break;
+				case ROGUE:
+					this.yell(Messages.get(this, "notice2"));
+					break;
+				case MAGE:
+					this.yell(Messages.get(this, "notice3"));
+					break;
+				case HUNTRESS:
+					this.yell(Messages.get(this, "notice4"));
+					break;
+			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){
 					((DriedRose.GhostHero) ch).sayBoss();

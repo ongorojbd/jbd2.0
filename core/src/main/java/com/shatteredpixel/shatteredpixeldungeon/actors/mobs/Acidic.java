@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,40 +21,85 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.AcidicSprite;
 
-public class Acidic extends Scorpio {
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AcidicSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+
+public class Acidic extends Mob {
 
 	{
 		spriteClass = AcidicSprite.class;
-		
-		properties.add(Property.ACIDIC);
 
-		loot = new PotionOfExperience();
-		lootChance = 1f;
-	}
-	@Override
-	public int attackProc(Char enemy, int damage) {
-		Buff.affect(enemy, Ooze.class).set( Ooze.DURATION );
-		return super.attackProc(enemy, damage);
+		HP = HT = 175;
+		defenseSkill = 20;
+		viewDistance = Light.DISTANCE;
+
+		EXP = 15;
+		maxLvl = 30;
+
+
+		loot = new WandOfBlastWave();
+		lootChance = 0.14f;
+
+		properties.add(Property.BOSS);
 	}
 
 	@Override
-	public int defenseProc( Char enemy, int damage ) {
-		if (Dungeon.level.adjacent(pos, enemy.pos)){
-			Buff.affect(enemy, Ooze.class).set( Ooze.DURATION );
+	public void notice() {
+		super.notice();
+		if (!BossHealthBar.isAssigned()) {
+			BossHealthBar.assignBoss(this);
+			for (Char ch : Actor.chars()){
+			}
 		}
-		return super.defenseProc( enemy, damage );
 	}
 
 	@Override
-	public Item createLoot() {
-		return new PotionOfExperience();
+	public int damageRoll() {return Random.NormalIntRange(4, 6);}
+
+	@Override
+	public int attackSkill(Char target) {return 35;}
+
+	@Override
+	public int drRoll() {
+		return Random.NormalIntRange(0, 10);
 	}
+
+	@Override
+	public int attackProc(Char hero, int damage) {
+		damage = super.attackProc(enemy, damage);
+		if (this.buff(Barkskin.class) == null) {
+
+			{
+				{
+					damage = Math.max(damage, hero.HP / 2);
+				}
+				Sample.INSTANCE.play(Assets.Sounds.BLAST);
+				CellEmitter.center(Dungeon.hero.pos).burst(BloodParticle.BURST, 31);
+				GLog.w(Messages.get(this, "torment"));
+
+				return damage;
+			}
+		}
+		return damage;
+	}
+
 }

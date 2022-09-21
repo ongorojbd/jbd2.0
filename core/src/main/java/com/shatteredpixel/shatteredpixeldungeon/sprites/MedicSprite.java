@@ -22,9 +22,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Medic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Soldier;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 public class MedicSprite extends MobSprite {
+
+	private int cellToAttack;
 
 	public MedicSprite() {
 		super();
@@ -45,8 +52,34 @@ public class MedicSprite extends MobSprite {
 		zap = attack.clone();
 
 		die = new Animation( 20, false );
-		die.frames( frames, 11, 12, 13, 14, 15, 14);
+		die.frames( frames, 11, 12, 13, 14, 15);
 		
 		play( idle );
+	}
+
+	public void zap( int cell ) {
+
+		turnTo( ch.pos , cell );
+		play( zap );
+
+		MagicMissile.boltFromChar( parent,
+				MagicMissile.FIRE_CONE ,
+				this,
+				cell,
+				new Callback() {
+					@Override
+					public void call() {
+						((Medic)ch).onZapComplete();
+					}
+				} );
+		Sample.INSTANCE.play( Assets.Sounds.ZAP);
+	}
+
+	@Override
+	public void onComplete( Animation anim ) {
+		if (anim == zap) {
+			idle();
+		}
+		super.onComplete( anim );
 	}
 }

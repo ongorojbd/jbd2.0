@@ -681,7 +681,7 @@ public class ItemSpriteSheet {
 	public static final int SHARD   = QUEST+8;
 	static{
 		assignItemRect(SKULL,   16, 11);
-		assignItemRect(DUST,    10, 10);
+		assignItemRect(DUST,    13, 8);
 		assignItemRect(CANDLE,  10, 12);
 		assignItemRect(EMBER,   10, 10);
 		assignItemRect(PICKAXE, 13, 14);

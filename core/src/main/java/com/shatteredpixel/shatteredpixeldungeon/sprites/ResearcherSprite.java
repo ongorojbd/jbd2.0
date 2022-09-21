@@ -53,7 +53,7 @@ public class ResearcherSprite extends MobSprite {
 		zap = attack.clone();
 
 		die = new Animation( 20, false );
-		die.frames( frames, 11, 12, 13, 14, 15, 14);
+		die.frames( frames, 11, 12, 13, 14, 15);
 		
 		play( idle );
 	}

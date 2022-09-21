@@ -52,8 +52,6 @@ import com.watabou.utils.Reflection;
 
 public class Soldier extends Mob {
 
-	private static final float TIME_TO_ZAP = 1f;
-
 	{
 		spriteClass = SoldierSprite.class;
 
@@ -67,9 +65,11 @@ public class Soldier extends Mob {
 		lootChance = 0.3f;
 	}
 
+
+
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 30, 45 );
+		return Random.NormalIntRange( 30, 43 );
 	}
 
 	@Override
@@ -95,53 +95,8 @@ public class Soldier extends Mob {
 	}
 
 	@Override
-	protected boolean canAttack(Char enemy) {
-		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
-	}
-
-	protected boolean doAttack(Char enemy) {
-
-		if (Dungeon.level.adjacent(pos, enemy.pos)) {
-
-			return super.doAttack(enemy);
-
-		} else {
-
-			if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-				sprite.zap(enemy.pos);
-				return false;
-			} else {
-				zap();
-				return true;
-			}
-		}
-	}
-
-	//used so resistances can differentiate between melee and magical attacks
-	public static class DarkBolt {
-	}
-
-	private void zap() {
-		spend(TIME_TO_ZAP);
-
-		if (hit(this, enemy, true)) {
-			//TODO would be nice for this to work on ghost/statues too
-
-			int dmg = Random.NormalIntRange(25, 30);
-			enemy.damage( dmg, new Warlock.DarkBolt() );
-
-			if (enemy == Dungeon.hero && !enemy.isAlive()) {
-				Dungeon.fail(getClass());
-				GLog.n(Messages.get(this, "bolt_kill"));
-			}
-		} else {
-			enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
-		}
-	}
-
-	public void onZapComplete() {
-		zap();
-		next();
+	protected boolean canAttack( Char enemy ) {
+		return true;
 	}
 
 	@Override

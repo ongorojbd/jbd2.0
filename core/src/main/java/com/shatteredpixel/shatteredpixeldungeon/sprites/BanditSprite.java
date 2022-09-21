@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.watabou.noosa.TextureFilm;
 
 public class BanditSprite extends MobSprite {
@@ -45,5 +47,14 @@ public class BanditSprite extends MobSprite {
 		attack.frames( film, 31, 32, 33 );
 		
 		idle();
+	}
+
+
+	@Override
+	public void die() {
+		super.die();
+		if (Dungeon.level.heroFOV[ch.pos]) {
+			emitter().burst( Speck.factory( Speck.COIN ), 39 );
+		}
 	}
 }
