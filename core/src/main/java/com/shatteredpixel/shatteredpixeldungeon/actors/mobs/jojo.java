@@ -21,12 +21,16 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -36,13 +40,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Silence;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
@@ -54,7 +62,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -70,9 +82,11 @@ public class jojo extends Mob {
         state = WANDERING;
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
-        HP = HT = 175;
-        defenseSkill = 15;
+        viewDistance = 99;
+        HP = HT = 177;
+        defenseSkill = 30;
         EXP = 0;
+        baseSpeed = 1.2f;
     }
 
     private boolean seenBefore = false;
@@ -95,16 +109,36 @@ public class jojo extends Mob {
                     this.yell(Messages.get(this, "notice4"));
                     break;
             }
+
+           // for (int i : PathFinder.NEIGHBOURS9){
+           // ScrollOfTeleportation.appear(this, hero.pos);
+            //}
+
+            new Flare( 5, 32 ).color( 0x00FFFF, true ).show( this.sprite, 3f );
+            Buff.affect(hero, Barrier.class).setShield(10);
         }
         seenBefore = true;
-
         return super.act();
     }
+
+    @Override
+    public void damage(int dmg, Object src) {
+
+        if (dmg >= 25){
+            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+            dmg = 25;
+        }
+
+        super.damage(dmg, src);
+
+
+        }
 
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 19, 19 );
+        return Random.NormalIntRange( 30, 30 );
     }
 
     @Override
@@ -114,16 +148,29 @@ public class jojo extends Mob {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 10);
+        return Random.NormalIntRange(5, 10);
     }
 
     @Override
     public void die(Object cause) {
         super.die(cause);
 
-        yell(Messages.get(this, "defeated"));
-        GLog.w(Messages.get(jojo.class, "kisama"));
-        Buff.affect(Dungeon.hero, Adrenaline.class, 7f);
+        switch(Dungeon.hero.heroClass){
+            case WARRIOR:
+                this.yell(Messages.get(this, "defeated1"));
+                break;
+            case ROGUE:
+                this.yell(Messages.get(this, "defeated"));
+                GLog.p(Messages.get(jojo.class, "kisama"));
+                Buff.affect(Dungeon.hero, Adrenaline.class, 7f);
+                break;
+            case MAGE:
+                this.yell(Messages.get(this, "defeated2"));
+                break;
+            case HUNTRESS:
+                this.yell(Messages.get(this, "defeated3"));
+                break;
+        }
 
     }
 

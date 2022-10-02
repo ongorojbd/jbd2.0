@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -207,7 +208,7 @@ public class LabsBossLevel extends Level {
 	@Override
 	protected void createItems() {
 
-		Item prize1 = (new PotionOfShielding().quantity(3));
+		Item prize1 = (new PotionOfShielding().quantity(1));
 		Item prize5 = (new ScrollOfMetamorphosis().quantity(3));
 
 
@@ -262,6 +263,7 @@ public class LabsBossLevel extends Level {
 	@Override
 	public void seal() {
 		super.seal();
+		Statistics.qualifiedForBossChallengeBadge = true;
 
 		Rebel boss = new Rebel();
 		boss.state = boss.WANDERING;

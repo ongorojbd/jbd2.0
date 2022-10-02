@@ -127,18 +127,23 @@ public class Assets {
 
 		public static final String CAVES_1      = "music/caves_1.ogg";
 		public static final String CAVES_2      = "music/caves_2.ogg";
+		public static final String KIRA         = "music/kira.ogg";
 		public static final String CAVES_BOSS   = "music/caves_boss.ogg";
+		public static final String KOICHI       = "music/koichi.ogg";
 
 		public static final String CITY_1       = "music/city_1.ogg";
 		public static final String CITY_2       = "music/city_2.ogg";
+		public static final String ENYA         = "music/enya.ogg";
 		public static final String CITY_BOSS    = "music/city_boss.ogg";
 
 		public static final String HALLS_1      = "music/halls_1.ogg";
 		public static final String HALLS_2      = "music/halls_2.ogg";
 		public static final String HALLS_BOSS   = "music/halls_boss.ogg";
+		public static final String DIOLOWHP     = "music/diolowhp.ogg";
 
 		public static final String LABS_1     = "music/labs_1.ogg";
 		public static final String LABS_BOSS   = "music/labs_boss.ogg";
+		public static final String HEAVENDIO   = "music/heavendio.ogg";
 
 	}
 
@@ -220,6 +225,9 @@ public class Assets {
 		public static final String HAHAH    = "sounds/hahah.mp3";
 		public static final String ZAWARUDO   = "sounds/zawarudo.mp3";
 		public static final String NANI   = "sounds/nani.mp3";
+		public static final String TBOMB   = "sounds/tbomb.mp3";
+		public static final String SHEER = "sounds/sheer.mp3";
+		public static final String DIAVOLO = "sounds/diavolo.mp3";
 
 
 		public static final String[] all = new String[]{
@@ -234,7 +242,7 @@ public class Assets {
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OVERDRIVE, SP,
-				HAHAH, ZAWARUDO, NANI
+				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO
 		};
 	}
 
@@ -320,6 +328,9 @@ public class Assets {
 		public static final String MUDA= "sprites/muda.png";
 		public static final String PUCCI= "sprites/pucci.png";
 		public static final String KOUSAKU= "sprites/kousaku.png";
+		public static final String JOJO= "sprites/jojo.png";
+		public static final String TONIO= "sprites/tonio.png";
+		public static final String HIGHDIO= "sprites/highdio.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 	}
 }

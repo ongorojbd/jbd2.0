@@ -25,11 +25,14 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AcidicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -47,14 +50,11 @@ public class Newcmoon extends Mob {
         maxLvl = 30;
         EXP = 0;
 
-        properties.add(Property.MINIBOSS);
-        immunities.add(Amok.class );
-
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 19, 29 );
+        return Random.NormalIntRange( 30, 39 );
     }
 
     @Override
@@ -71,7 +71,7 @@ public class Newcmoon extends Mob {
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
         if (this.buff(Barkskin.class) == null) {
-            if (Random.Int(3) == 0) {
+            if (Random.Int(7) == 0) {
                 {
                     {
                         damage = Math.max(damage, hero.HP / 4);
@@ -86,6 +86,16 @@ public class Newcmoon extends Mob {
 
         }
         return damage;
+    }
+
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+
+        if (Random.Int( 3 ) == 0) {
+            Dungeon.level.drop( new WildEnergy().identify(), pos ).sprite.drop( pos );
+        }
+
     }
 
 }

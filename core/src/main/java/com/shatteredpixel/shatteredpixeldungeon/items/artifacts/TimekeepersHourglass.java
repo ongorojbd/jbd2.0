@@ -105,7 +105,7 @@ public class TimekeepersHourglass extends Artifact {
 								if (index == 0) {
 									GLog.i( Messages.get(TimekeepersHourglass.class, "onstasis") );
 									GameScene.flash(0x80FFFFFF);
-									Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+									Sample.INSTANCE.play(Assets.Sounds.ZAWARUDO);
 
 									activeBuff = new timeStasis();
 									Talent.onArtifactUsed(Dungeon.hero);
@@ -113,7 +113,7 @@ public class TimekeepersHourglass extends Artifact {
 								} else if (index == 1) {
 									GLog.i( Messages.get(TimekeepersHourglass.class, "onfreeze") );
 									GameScene.flash(0x80FFFFFF);
-									Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+									Sample.INSTANCE.play(Assets.Sounds.ZAWARUDO);
 
 									activeBuff = new timeFreeze();
 									Talent.onArtifactUsed(Dungeon.hero);
@@ -453,7 +453,7 @@ public class TimekeepersHourglass extends Artifact {
 			TimekeepersHourglass hourglass = hero.belongings.getItem( TimekeepersHourglass.class );
 			if (hourglass != null && !hourglass.cursed) {
 				hourglass.upgrade();
-				Sample.INSTANCE.play( Assets.Sounds.DEWDROP );
+				Sample.INSTANCE.play( Assets.Sounds.HAHAH );
 				if (hourglass.level() == hourglass.levelCap)
 					GLog.p( Messages.get(this, "maxlevel") );
 				else

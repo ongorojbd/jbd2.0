@@ -72,7 +72,7 @@ public class AboutScene extends PixelScene {
 		shpxLink += "&utm_campaign=ingame_link";
 
 		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
-				"JOJO's bizzare Dungeon",
+				"죠죠의 기묘한 던전",
 				Icons.SHPX.get(),
 				"Developed by: _Ongoro_\nBased on SPD's open source",
 				" ",
@@ -102,7 +102,7 @@ public class AboutScene extends PixelScene {
 				"Pixel Design",
 				Icons.CELESTI.get(),
 				"",
-				"Nugooripool",
+				"너구리풀",
 				"https://www.youtube.com/watch?v=FPyIMtXsIcY");
 		charlie.setRect(alex.right(), alex.top(), colWidth/2f, 0);
 		content.add(charlie);
@@ -122,7 +122,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
 				"To Be Countinued....",
 				Icons.WATA.get(),
-				"Next Update : 2.0d",
+				"Next Update : 2.0e",
 				"",
 				"");
 		if (landscape()){
@@ -137,7 +137,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock cube = new CreditsBlock(false, WATA_COLOR,
 				"Now",
 				Icons.CUBE_CODE.get(),
-				"2.0c-2",
+				"2.0d",
 				null,
 				null);
 		cube.setSize(colWidth/2f, 0);

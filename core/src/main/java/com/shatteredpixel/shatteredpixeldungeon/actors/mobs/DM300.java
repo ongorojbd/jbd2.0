@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.gate;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.mainArena;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -29,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ShrGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -65,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -88,6 +93,7 @@ public class DM300 extends Mob {
 		properties.add(Property.BOSS);
 		properties.add(Property.INORGANIC);
 		properties.add(Property.LARGE);
+		immunities.add(ShrGas.class);
 	}
 
 	@Override
@@ -353,6 +359,7 @@ public class DM300 extends Mob {
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 			turnsSinceLastAbility = 0;
+			Sample.INSTANCE.play( Assets.Sounds.SHEER );
 			switch(Dungeon.hero.heroClass){
 				case WARRIOR:
 					this.yell(Messages.get(this, "notice"));
@@ -390,16 +397,16 @@ public class DM300 extends Mob {
 		int gasMulti = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 1;
 
 		for (int i : trajectory.subPath(0, trajectory.dist)){
-			GameScene.add(Blob.seed(i, 20*gasMulti, ToxicGas.class));
+			GameScene.add(Blob.seed(i, 20*gasMulti, ShrGas.class));
 			gasVented += 20*gasMulti;
 		}
 
-		GameScene.add(Blob.seed(trajectory.collisionPos, 100*gasMulti, ToxicGas.class));
+		GameScene.add(Blob.seed(trajectory.collisionPos, 100*gasMulti, ShrGas.class));
 
 		if (gasVented < 250*gasMulti){
 			int toVentAround = (int)Math.ceil(((250*gasMulti) - gasVented)/8f);
 			for (int i : PathFinder.NEIGHBOURS8){
-				GameScene.add(Blob.seed(pos+i, toVentAround, ToxicGas.class));
+				GameScene.add(Blob.seed(pos+i, toVentAround, ShrGas.class));
 			}
 
 		}
@@ -513,6 +520,8 @@ public class DM300 extends Mob {
 		((DM300Sprite)sprite).charge();
 		chargeAnnounced = false;
 
+		Sample.INSTANCE.play( Assets.Sounds.SHEER);
+
 	}
 
 	public boolean isSupercharged(){
@@ -528,6 +537,7 @@ public class DM300 extends Mob {
 		} else {
 			yell(Messages.get(this, "pylons_destroyed"));
 			BossHealthBar.bleed(true);
+			Music.INSTANCE.play(Assets.Music.KOICHI, true);
 		}
 	}
 
@@ -541,8 +551,19 @@ public class DM300 extends Mob {
 
 		super.die( cause );
 
+		yell( Messages.get(this, "defeated") );
+
 		GameScene.bossSlain();
 		Dungeon.level.unseal();
+
+		Sample.INSTANCE.play( Assets.Sounds.SHEER, 3, 0.33f );
+
+		Kawasiri Kawasiri = new Kawasiri();
+		Kawasiri.state = Kawasiri.FLEEING;
+		Kawasiri.pos = this.pos;
+		GameScene.add( Kawasiri );
+		Kawasiri.beckon(Dungeon.hero.pos);
+
 
 		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5
 		int shards = Random.chances(new float[]{0, 0, 6, 3, 1});
@@ -564,8 +585,6 @@ public class DM300 extends Mob {
 		if (beacon != null) {
 			beacon.upgrade();
 		}
-
-		yell( Messages.get(this, "defeated") );
 	}
 
 	@Override

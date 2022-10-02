@@ -32,7 +32,6 @@ public class LSWORD extends MeleeWeapon {
         hitSoundPitch = 1f;
 
         tier = 5;
-        DLY = 0.75f;
 
         defaultAction = AC_ZAP;
     }
@@ -60,7 +59,7 @@ public class LSWORD extends MeleeWeapon {
                     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                         if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
                             int dmg = hero.damageRoll();
-                            dmg *= 1.1f;
+                            dmg *= 1.3f;
                             CellEmitter.get( mob.pos ).burst( Speck.factory( Speck.STAR), 3 );
                             mob.damage(dmg, this);
                         }
@@ -113,7 +112,7 @@ public class LSWORD extends MeleeWeapon {
             inputs =  new Class[]{WornShortsword.class};
             inQuantity = new int[]{1};
 
-            cost = 77;
+            cost = 150;
 
             output = LSWORD.class;
             outQuantity = 1;

@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -37,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -48,8 +51,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WoundsofWar;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
@@ -427,15 +433,19 @@ public class DwarfKing extends Mob {
 			switch(Dungeon.hero.heroClass){
 				case WARRIOR:
 					this.yell(Messages.get(this, "notice"));
+					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
 					break;
 				case ROGUE:
 					this.yell(Messages.get(this, "notice2"));
+					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
 					break;
 				case MAGE:
 					this.yell(Messages.get(this, "notice3"));
+					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
 					break;
 				case HUNTRESS:
 					this.yell(Messages.get(this, "notice4"));
+					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
 					break;
 			}
 			for (Char ch : Actor.chars()){
@@ -538,6 +548,13 @@ public class DwarfKing extends Mob {
 			Dungeon.level.drop(new KingsCrown(), pos + Dungeon.level.width()).sprite.drop(pos);
 		} else {
 			Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
+		}
+
+		if (Random.Int( 15 ) == 0) {
+			Dungeon.level.drop( new AdvancedEvolution().identify(), pos ).sprite.drop( pos );
+			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
+			Sample.INSTANCE.play(Assets.Sounds.BADGE);
+			GLog.p(Messages.get(Kawasiri.class, "rare"));
 		}
 
 		Badges.validateBossSlain();

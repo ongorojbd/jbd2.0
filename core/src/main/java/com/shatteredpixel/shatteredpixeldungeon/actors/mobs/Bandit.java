@@ -48,16 +48,12 @@ public class Bandit extends Mob {
 	{
 		spriteClass = BanditSprite.class;
 
-		HP = HT = 30;
+		HP = HT = 35;
 		defenseSkill = 12;
 
 		EXP = 5;
 		maxLvl = 11;
 
-		loot = new Gold().identify().quantity(1000);
-		lootChance = 1f;
-
-		properties.add(Property.UNDEAD);
 	}
 
 	@Override
@@ -89,5 +85,18 @@ public class Bandit extends Mob {
 			}
 		}
 		return damage;
+	}
+
+
+	@Override
+	public void die(Object cause) {
+
+		super.die(cause);
+
+
+		{
+			Dungeon.level.drop( new Gold().identify().quantity(1000), pos ).sprite.drop( pos );
+		}
+
 	}
 }

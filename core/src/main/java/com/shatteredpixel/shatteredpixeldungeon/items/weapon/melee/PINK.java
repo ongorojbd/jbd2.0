@@ -125,7 +125,7 @@ public class PINK extends MeleeWeapon {
             inputs =  new Class[]{WarHammer.class, WandOfCorruption.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 3;
+            cost = 30;
 
             output = PINK.class;
             outQuantity = 1;

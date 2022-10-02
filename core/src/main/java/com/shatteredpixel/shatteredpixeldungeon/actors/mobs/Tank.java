@@ -89,13 +89,13 @@ public class Tank extends Mob {
 	}
 
 	@Override
-	public int drRoll() { return Random.NormalIntRange(0, 10);}
+	public int drRoll() { return Random.NormalIntRange(0, 5);}
 
 	@Override
 	public int attackProc( Char hero, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if (this.buff(Doom.class) == null) {
-			if (Random.Int(9) == 0) {
+			if (Random.Int(10) == 0) {
 				new DisarmingTrap().set(target).activate();
 			}
 		}

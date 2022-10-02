@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -83,9 +84,9 @@ public class MISTA extends MeleeWeapon {
                 starpower++;
                 updateQuickslot();
                 hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(MISTA.class, "charge"));
-                if (Dungeon.hero.belongings.getItem(TalismanOfForesight.class) != null) {
-                    if (Dungeon.hero.belongings.getItem(TalismanOfForesight.class).isEquipped(Dungeon.hero)) {
-                        curUser.spendAndNext(0.75f);
+                if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
+                    if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero)) {
+                        curUser.spendAndNext(1f);
 
                     }
                     else curUser.spendAndNext(2f);
@@ -104,7 +105,7 @@ public class MISTA extends MeleeWeapon {
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                     int dmg = attacker.damageRoll() - defender.drRoll();
-                    dmg = Math.round(dmg * (starpower * 0.3f));
+                    dmg = Math.round(dmg * (starpower * 0.35f));
 
                     mob.damage(dmg, attacker);
                 }
@@ -154,10 +155,10 @@ public class MISTA extends MeleeWeapon {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{Whip.class, MeatPie.class};
+            inputs =  new Class[]{Whip.class, WandOfRegrowth.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 44;
+            cost = 4;
 
             output = MISTA.class;
             outQuantity = 1;

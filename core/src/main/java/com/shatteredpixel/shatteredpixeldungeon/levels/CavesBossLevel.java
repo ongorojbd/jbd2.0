@@ -80,11 +80,14 @@ public class CavesBossLevel extends Level {
 			Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
 		//if wall isn't broken
 		} else if (map[14 + 13*width()] == Terrain.SIGN){
-			Music.INSTANCE.end();
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.KIRA},
+					new float[]{1},
+					false);
 		} else {
 			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.CAVES_1, Assets.Music.CAVES_2, Assets.Music.CAVES_2},
-					new float[]{1, 1, 0.5f},
+					new String[]{Assets.Music.KIRA},
+					new float[]{1},
 					false);
 		}
 	}
@@ -137,11 +140,11 @@ public class CavesBossLevel extends Level {
 		new CavesPainter().paint(this, null);
 
 		//setup exit area above main boss arena
-		Painter.fill(this, 0, 3, width(), 4, Terrain.CHASM);
-		Painter.fill(this, 6, 7, 21, 1, Terrain.CHASM);
-		Painter.fill(this, 10, 8, 13, 1, Terrain.CHASM);
-		Painter.fill(this, 12, 9, 9, 1, Terrain.CHASM);
-		Painter.fill(this, 13, 10, 7, 1, Terrain.CHASM);
+		Painter.fill(this, 0, 3, width(), 4, Terrain.WALL);
+		Painter.fill(this, 6, 7, 21, 1, Terrain.WALL);
+		Painter.fill(this, 10, 8, 13, 1, Terrain.WALL);
+		Painter.fill(this, 12, 9, 9, 1, Terrain.WALL);
+		Painter.fill(this, 13, 10, 7, 1, Terrain.WALL);
 		Painter.fill(this, 14, 3, 5, 10, Terrain.EMPTY);
 
 		//fill in special floor, statues, and exits

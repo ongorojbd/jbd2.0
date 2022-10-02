@@ -58,7 +58,7 @@ public class Researcher extends Mob {
 	{
 		spriteClass = ResearcherSprite.class;
 
-		HP = HT = 230;
+		HP = HT = 200;
 		defenseSkill = 15;
 		baseSpeed = 1.5f;
 
@@ -81,7 +81,7 @@ public class Researcher extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 10);
+		return Random.NormalIntRange(0, 5);
 	}
 
 
@@ -108,7 +108,7 @@ public class Researcher extends Mob {
 			GLog.w(Messages.get(Researcher.class, "stole", toSteal.name()));
 			if (!toSteal.stackable) {
 				Dungeon.quickslot.convertToPlaceholder(toSteal);
-				Sample.INSTANCE.play( Assets.Sounds.CURSED );
+				Sample.INSTANCE.play( Assets.Sounds.EVOKE );
 			}
 			Item.updateQuickslot();
 

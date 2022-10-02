@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ShrGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KousakuSprite;
@@ -33,10 +34,12 @@ public class Kousaku extends Mob {
     {
         spriteClass = KousakuSprite.class;
 
-        HP = HT = 135;
+        HP = HT = 150;
         defenseSkill = 20;
         EXP = 0;
         maxLvl = 30;
+
+        state = HUNTING;
 
     }
 

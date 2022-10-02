@@ -35,57 +35,57 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class MagicalInfusion extends InventorySpell {
-	
-	{
-		image = ItemSpriteSheet.MAGIC_INFUSE;
 
-		unique = true;
-	}
+    {
+        image = ItemSpriteSheet.MAGIC_INFUSE;
 
-	@Override
-	protected boolean usableOnItem(Item item) {
-		return item.isUpgradable();
-	}
+        unique = true;
+    }
 
-	@Override
-	protected void onItemSelected( Item item ) {
+    @Override
+    protected boolean usableOnItem(Item item) {
+        return item.isUpgradable();
+    }
 
-		ScrollOfUpgrade.upgrade(curUser);
+    @Override
+    protected void onItemSelected( Item item ) {
 
-		Degrade.detach( curUser, Degrade.class );
+        ScrollOfUpgrade.upgrade(curUser);
 
-		if (item instanceof Weapon && ((Weapon) item).enchantment != null) {
-			((Weapon) item).upgrade(true);
-		} else if (item instanceof Armor && ((Armor) item).glyph != null) {
-			((Armor) item).upgrade(true);
-		} else {
-			item.upgrade();
-		}
-		
-		GLog.p( Messages.get(this, "infuse", item.name()) );
-		Talent.onUpgradeScrollUsed( Dungeon.hero );
-		Badges.validateItemLevelAquired(item);
+        Degrade.detach( curUser, Degrade.class );
 
-		Statistics.upgradesUsed++;
-	}
-	
-	@Override
-	public int value() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((50 + 40) / 1f));
-	}
-	
-	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
-		
-		{
-			inputs =  new Class[]{ScrollOfUpgrade.class, ArcaneCatalyst.class};
-			inQuantity = new int[]{1, 1};
-			
-			cost = 4;
-			
-			output = MagicalInfusion.class;
-			outQuantity = 1;
-		}
-		
-	}
+        if (item instanceof Weapon && ((Weapon) item).enchantment != null) {
+            ((Weapon) item).upgrade(true);
+        } else if (item instanceof Armor && ((Armor) item).glyph != null) {
+            ((Armor) item).upgrade(true);
+        } else {
+            item.upgrade();
+        }
+
+        GLog.p( Messages.get(this, "infuse", item.name()) );
+        Talent.onUpgradeScrollUsed( Dungeon.hero );
+        Badges.validateItemLevelAquired(item);
+
+        Statistics.upgradesUsed++;
+    }
+
+    @Override
+    public int value() {
+        //prices of ingredients, divided by output quantity
+        return Math.round(quantity * ((50 + 40) / 1f));
+    }
+
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
+
+        {
+            inputs =  new Class[]{ScrollOfUpgrade.class, ArcaneCatalyst.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 4;
+
+            output = MagicalInfusion.class;
+            outQuantity = 1;
+        }
+
+    }
 }

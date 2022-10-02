@@ -64,14 +64,14 @@ public class ItemSpriteSheet {
 	static{
 		assignItemRect(SOMETHING,       8,  13);
 		assignItemRect(WEAPON_HOLDER,   14, 14);
-		assignItemRect(ARMOR_HOLDER,    14, 12);
-		assignItemRect(MISSILE_HOLDER,  15, 15);
+		assignItemRect(ARMOR_HOLDER,    12, 10);
+		assignItemRect(MISSILE_HOLDER,  13, 13);
 		assignItemRect(WAND_HOLDER,     14, 14);
-		assignItemRect(RING_HOLDER,     8,  10);
+		assignItemRect(RING_HOLDER,     14, 12);
 		assignItemRect(ARTIFACT_HOLDER, 15, 15);
 		assignItemRect(FOOD_HOLDER,     15, 11);
 		assignItemRect(BOMB_HOLDER,     10, 13);
-		assignItemRect(POTION_HOLDER,   12, 14);
+		assignItemRect(POTION_HOLDER,   8, 14);
 		assignItemRect(SEED_HOLDER,     10, 10);
 		assignItemRect(SCROLL_HOLDER,   15, 14);
 		assignItemRect(STONE_HOLDER,    14, 12);
@@ -153,7 +153,7 @@ public class ItemSpriteSheet {
 		
 		assignItemRect(SEAL,            15, 16);
 		assignItemRect(TORCH,           12, 15);
-		assignItemRect(BEACON,          16, 15);
+		assignItemRect(BEACON,          6,  10);
 		
 		assignItemRect(HONEYPOT,        8, 12);
 		assignItemRect(SHATTPOT,        11, 13);
@@ -165,7 +165,7 @@ public class ItemSpriteSheet {
 		assignItemRect(CROWN,           13, 13);
 		assignItemRect(AMULET,          16, 16);
 		assignItemRect(MASTERY,         13, 16);
-		assignItemRect(KIT,             16, 15);
+		assignItemRect(KIT,             14, 14);
 	}
 	
 	private static final int BOMBS          =                               xy(1, 5);   //16 slots
@@ -370,7 +370,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_MAIL,      16, 16);
 		assignItemRect(ARMOR_SCALE,     16, 16);
 		assignItemRect(ARMOR_PLATE,     16, 16);
-		assignItemRect(ARMOR_WARRIOR,   12, 9);
+		assignItemRect(ARMOR_WARRIOR,   14, 14);
 		assignItemRect(ARMOR_MAGE,      15, 15);
 		assignItemRect(ARMOR_ROGUE,     14, 8);
 		assignItemRect(ARMOR_HUNTRESS,  13, 13);
@@ -543,7 +543,7 @@ public class ItemSpriteSheet {
 	public static final int LIQUID_METAL    = POTIONS+14;
 	static {
 		for (int i = POTIONS; i < POTIONS+16; i++)
-			assignItemRect(i, 12, 14);
+			assignItemRect(i, 8, 14);
 		assignItemRect(POTION_CATALYST, 6, 15);
 		assignItemRect(LIQUID_METAL,    8, 15);
 	}
@@ -680,7 +680,7 @@ public class ItemSpriteSheet {
 	public static final int BLOB    = QUEST+7;
 	public static final int SHARD   = QUEST+8;
 	static{
-		assignItemRect(SKULL,   16, 11);
+		assignItemRect(SKULL,   16, 16);
 		assignItemRect(DUST,    13, 8);
 		assignItemRect(CANDLE,  10, 12);
 		assignItemRect(EMBER,   10, 10);

@@ -171,7 +171,9 @@ public class Badges {
 		GAMES_PLAYED_5              ( 121, true ),
 		HIGH_SCORE_5                ( 122 ),
 		CHAMPION_2                  ( 123 ),
-		CHAMPION_3                  ( 124 );
+		CHAMPION_3                  ( 124 ),
+		YORIHIMES                   ( 125 ),
+		BOSS_CHALLENGE_6            ( 125 );
 
 		public boolean meta;
 
@@ -691,6 +693,17 @@ public class Badges {
 		}
 	}
 
+	public static void validateYorihimesKilled() {
+		Badge badge = null;
+
+		if (!local.contains( Badge.YORIHIMES ) && Statistics.yorihimesKilled >= 1) {
+			badge = Badge.YORIHIMES;
+			local.add( badge );
+		}
+
+		displayBadge( badge );
+	}
+
 	private static LinkedHashMap<HeroClass, Badge> firstBossClassBadges = new LinkedHashMap<>();
 	static {
 		firstBossClassBadges.put(HeroClass.WARRIOR, Badge.BOSS_SLAIN_1_WARRIOR);
@@ -801,6 +814,9 @@ public class Badges {
 				break;
 			case 25:
 				badge = Badge.BOSS_CHALLENGE_5;
+				break;
+			case 30:
+				badge = Badge.BOSS_CHALLENGE_6;
 				break;
 		}
 
@@ -1066,6 +1082,8 @@ public class Badges {
 			{Badge.BOSS_SLAIN_3, Badge.BOSS_CHALLENGE_3},
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
+			{Badge.VICTORY,      Badge.YORIHIMES},
+			{Badge.YORIHIMES,    Badge.BOSS_CHALLENGE_6},
 	};
 
 	//If the summary badge is unlocked, don't show the component badges
@@ -1079,6 +1097,7 @@ public class Badges {
 			{Badge.DEATH_FROM_FRIENDLY_MAGIC, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
+			{Badge.YORIHIMES, Badge.BOSS_CHALLENGE_6},
 
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},

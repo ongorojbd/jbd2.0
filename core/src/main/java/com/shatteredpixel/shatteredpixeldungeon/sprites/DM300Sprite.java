@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.TextureFilm;
@@ -88,7 +89,7 @@ public class DM300Sprite extends MobSprite {
 		play( zap );
 
 		MagicMissile.boltFromChar( parent,
-				MagicMissile.TOXIC_VENT,
+				MagicMissile.FIRE,
 				this,
 				cell,
 				new Callback() {
@@ -123,10 +124,17 @@ public class DM300Sprite extends MobSprite {
 		}
 
 		super.onComplete( anim );
+
+		if (anim == attack) {
+			Sample.INSTANCE.play(Assets.Sounds.BLAST);
+			emitter().burst( BlastParticle.FACTORY, 55 );
+			emitter().burst(SmokeParticle.FACTORY, 4);
+		}
 		
 		if (anim == die) {
 			Sample.INSTANCE.play(Assets.Sounds.BLAST);
 			emitter().burst( BlastParticle.FACTORY, 100 );
+			emitter().burst(SmokeParticle.FACTORY, 4);
 			killAndErase();
 		}
 	}

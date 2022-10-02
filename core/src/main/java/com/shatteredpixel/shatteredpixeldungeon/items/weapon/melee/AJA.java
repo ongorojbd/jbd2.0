@@ -71,13 +71,13 @@ public class AJA extends MeleeWeapon {
                     hitSoundPitch = 3.3f;
                     break;
                 case 1:
-                    ACC = 1.55f;
+                    ACC = 1.5f;
                     DLY = 1f;
                     hitSound = Assets.Sounds.HIT_STRONG;
                     hitSoundPitch = 3.3f;
                     break;
                 case 2:
-                    ACC = 0.4f;
+                    ACC = 0.5f;
                     DLY = 0.5f;
                     hitSound = Assets.Sounds.SP;
                     hitSoundPitch = 3.3f;
@@ -85,7 +85,7 @@ public class AJA extends MeleeWeapon {
             }
 
             updateQuickslot();
-            curUser.spendAndNext(1f);
+            curUser.spendAndNext(0f);
         }
     }
 
@@ -198,7 +198,7 @@ public class AJA extends MeleeWeapon {
             inputs =  new Class[]{Greataxe.class, Flail.class, Kunai.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 130;
+            cost = 50;
 
             output = AJA.class;
             outQuantity = 1;

@@ -45,6 +45,7 @@ public class DBLADE extends MeleeWeapon {
         hitSoundPitch = 0.8f;
 
         tier = 5;
+        DLY = 0.8f;//1.25x speed
     }
 
     private boolean doubleattack = true;
@@ -86,7 +87,7 @@ public class DBLADE extends MeleeWeapon {
             inputs =  new Class[]{Longsword.class, BattleAxe.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 3;
+            cost = 30;
 
             output = DBLADE.class;
             outQuantity = 1;

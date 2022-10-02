@@ -36,7 +36,7 @@ public class Genkaku extends Mob {
     {
         spriteClass = GenkakuSprite.class;
 
-        HP = HT = 135;
+        HP = HT = 150;
         defenseSkill = 15;
         maxLvl = 30;
         EXP = 0;

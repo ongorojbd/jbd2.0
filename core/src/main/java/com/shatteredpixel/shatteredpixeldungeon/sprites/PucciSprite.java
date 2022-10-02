@@ -104,14 +104,5 @@ public class PucciSprite extends MobSprite {
         }
     }
 
-    @Override
-    public void die() {
-        super.die();
-
-        emitter().start( ElmoParticle.FACTORY, 0.03f, 60 );
-    }
-
-
-
 
 }

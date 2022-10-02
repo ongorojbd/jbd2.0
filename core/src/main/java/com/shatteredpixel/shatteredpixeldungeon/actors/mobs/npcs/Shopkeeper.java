@@ -21,11 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Enemytonio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pucci;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -38,6 +41,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class Shopkeeper extends NPC {
@@ -82,6 +87,15 @@ public class Shopkeeper extends NPC {
 		
 		sprite.killAndErase();
 		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
+
+
+		Enemytonio Enemytonio = new Enemytonio();
+		Enemytonio.state = Enemytonio.WANDERING;
+		Enemytonio.pos = this.pos;
+		GameScene.add( Enemytonio );
+		Enemytonio.beckon(Dungeon.hero.pos);
+
+		Sample.INSTANCE.play( Assets.Sounds.MIMIC );
 	}
 	
 	@Override

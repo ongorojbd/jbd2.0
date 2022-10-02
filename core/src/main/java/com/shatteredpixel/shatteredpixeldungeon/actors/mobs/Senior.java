@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -20,8 +22,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -30,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -79,8 +84,15 @@ public class Senior extends Mob {
 	@Override
 	public void damage(int dmg, Object src) {
 
+		if (dmg >= 50){
+			//takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+			// at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+			dmg = 50;
+		}
+
 		super.damage(dmg, src);
 		if (state == PASSIVE) state = HUNTING;
+
 
 
 		if (Phase==0 && HP < 129) {
@@ -156,6 +168,13 @@ public class Senior extends Mob {
 		Dungeon.level.drop( new ScrollOfEnchantment(), pos ).sprite.drop( pos );
 
 		yell( Messages.get(this, "defeated") );
+
+		if (Random.Int( 30 ) == 0) {
+			Dungeon.level.drop( new AdvancedEvolution().identify(), pos ).sprite.drop( pos );
+			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
+			Sample.INSTANCE.play(Assets.Sounds.BADGE);
+			GLog.p(Messages.get(Kawasiri.class, "rare"));
+		}
 	}
 
 		@Override

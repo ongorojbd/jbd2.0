@@ -21,16 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
@@ -42,26 +40,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Silence;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -85,6 +67,7 @@ public class SWAT extends Mob implements Callback {
 
 		HP = HT = 1000;
 		defenseSkill = 25;
+		state = PASSIVE;
 
 		EXP = 77;
 		maxLvl = 30;
@@ -102,7 +85,13 @@ public class SWAT extends Mob implements Callback {
 
 		super.die( cause );
 
-		Dungeon.level.drop( new RingOfElements().identify().upgrade(5), pos ).sprite.drop( pos );
+		if (Random.Int( 4 ) == 0) {
+			Dungeon.level.drop( new CapeOfThorns().identify().upgrade(10), pos ).sprite.drop( pos );
+			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
+			Sample.INSTANCE.play(Assets.Sounds.BADGE);
+			GLog.p(Messages.get(Kawasiri.class, "rare"));
+		}
+
 
 		yell( Messages.get(this, "defeated") );
 	}
@@ -133,19 +122,22 @@ public class SWAT extends Mob implements Callback {
 		if (Phase==0 && HP < 999) {
 			Phase = 1;
 			HP = 999;
+			state = HUNTING;
+			if (!BossHealthBar.isAssigned()) {
+				BossHealthBar.assignBoss(this);
+				for (Char ch : Actor.chars()){
+				}
+			}
 			Buff.prolong(this, Bless.class, Bless.DURATION*5000f);
 			Buff.prolong(this, BlobImmunity.class, BlobImmunity.DURATION*5000f);
 			Buff.prolong(this, Haste.class, Haste.DURATION*5000f);
 			Buff.prolong(this, Light.class, Light.DURATION*5000f);
 			Buff.prolong(this, Adrenaline.class, Adrenaline.DURATION*5000f);
 			Sample.INSTANCE.play( Assets.Sounds.MASTERY );
-			new Flare(6, 28).color(0xFFFF00, true);
-			if (!BossHealthBar.isAssigned()) {
-				BossHealthBar.assignBoss(this);
+
+			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( this.sprite, 99999f );
 				yell(Messages.get(this, "notice"));
-				for (Char ch : Actor.chars()){
-				}
-			}
+
 		}
 	}
 
@@ -153,7 +145,7 @@ public class SWAT extends Mob implements Callback {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 47, 57 );
+		return Random.NormalIntRange( 51, 57 );
 	}
 
 	@Override
@@ -169,12 +161,6 @@ public class SWAT extends Mob implements Callback {
 	@Override
 	public void notice() {
 		super.notice();
-		if (!BossHealthBar.isAssigned()) {
-			BossHealthBar.assignBoss(this);
-			yell(Messages.get(this, "notice"));
-			for (Char ch : Actor.chars()){
-			}
-		}
 	}
 
 	@Override

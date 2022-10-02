@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 
 import java.util.HashMap;
@@ -236,6 +238,8 @@ public class AscensionChallenge extends Buff {
 	public boolean act() {
 
 		beckonEnemies();
+
+		Music.INSTANCE.play(Assets.Music.CAVES_1, true);
 
 		//hero starts progressively taking damage over time at 10+ stacks
 		if (stacks >= 10 && !Dungeon.bossLevel()){

@@ -48,7 +48,7 @@ public class CapeOfThorns extends Artifact {
 	protected ArtifactBuff passiveBuff() {
 		return new Thorns();
 	}
-	
+
 	@Override
 	public void charge(Hero target, float amount) {
 		if (cooldown == 0) {
@@ -59,16 +59,20 @@ public class CapeOfThorns extends Artifact {
 			target.buff(Thorns.class).proc(0, null, null);
 		}
 	}
-	
+
 	@Override
 	public String desc() {
 		String desc = Messages.get(this, "desc");
-		if (isEquipped( Dungeon.hero )) {
+		if (isEquipped(Dungeon.hero)) {
 			desc += "\n\n";
-			if (cooldown == 0)
+			if (cursed) {
+				desc += Messages.get(this, "desc_cursed");
+			} else if (cooldown == 0) {
 				desc += Messages.get(this, "desc_inactive");
-			else
+			} else {
 				desc += Messages.get(this, "desc_active");
+			}
+
 		}
 
 		return desc;
@@ -90,39 +94,43 @@ public class CapeOfThorns extends Artifact {
 		}
 
 		public int proc(int damage, Char attacker, Char defender){
-			if (cooldown == 0){
-				charge += damage*(0.5+level()*0.05);
-				if (charge >= chargeCap){
-					charge = 0;
-					cooldown = 10+level();
-					GLog.p( Messages.get(this, "radiating") );
+			if (!cursed) {
+				if (cooldown == 0){
+					charge += damage/3;
+					if (charge >= chargeCap){
+						charge = 0;
+						cooldown = 2+level()*1/2;
+						GLog.p( Messages.get(this, "radiating") );
+					}
 				}
+
+				if (cooldown != 0){
+					int deflected = Random.NormalIntRange(damage/17 * level(), damage);
+					damage -= deflected;
+
+					if (attacker != null && Dungeon.level.adjacent(attacker.pos, defender.pos)) {
+						attacker.damage(deflected, this);
+					}
+
+					exp+= deflected;
+
+					if (exp >= (level()+1)*10 && level() < levelCap){
+						exp -= (level()+1)*10;
+						upgrade();
+						GLog.p( Messages.get(this, "levelup") );
+					}
+
+				}
+				updateQuickslot();
+				return damage;
+			} else {
+				return damage;
 			}
-
-			if (cooldown != 0){
-				int deflected = Random.NormalIntRange(0, damage);
-				damage -= deflected;
-
-				if (attacker != null && Dungeon.level.adjacent(attacker.pos, defender.pos)) {
-					attacker.damage(deflected, this);
-				}
-
-				exp+= deflected;
-
-				if (exp >= (level()+1)*5 && level() < levelCap){
-					exp -= (level()+1)*5;
-					upgrade();
-					GLog.p( Messages.get(this, "levelup") );
-				}
-
-			}
-			updateQuickslot();
-			return damage;
 		}
 
 		@Override
 		public String toString() {
-				return Messages.get(this, "name");
+			return Messages.get(this, "name");
 		}
 
 		@Override

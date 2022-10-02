@@ -38,6 +38,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
@@ -104,11 +107,12 @@ public class Pylon extends Mob {
 
 		if (visible) {
 			for (int cell : shockCells){
-				sprite.parent.add(new Lightning(sprite.center(),
-						DungeonTilemap.raisedTileCenterToWorld(cell), null));
-				CellEmitter.get(cell).burst(SparkParticle.FACTORY, 3);
+				CellEmitter.center(cell).burst(BlastParticle.FACTORY, 15);
+				CellEmitter.center(cell).burst(SmokeParticle.FACTORY, 4);
+				Sample.INSTANCE.play( Assets.Sounds.BLAST );
+
 			}
-			Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
+
 		}
 
 		for (int cell : shockCells) {

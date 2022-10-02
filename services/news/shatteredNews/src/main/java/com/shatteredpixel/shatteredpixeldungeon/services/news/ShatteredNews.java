@@ -46,9 +46,9 @@ public class ShatteredNews extends NewsService {
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
 		if (preferHTTPS) {
-			httpGet.setUrl("https://shatteredpixel.com/feed_by_tag/SHPD_INGAME.xml");
+			httpGet.setUrl("https://youtu.be/FPyIMtXsIcY?list=RDFPyIMtXsIcY");
 		} else {
-			httpGet.setUrl("http://shatteredpixel.com/feed_by_tag/SHPD_INGAME.xml");
+			httpGet.setUrl("https://youtu.be/FPyIMtXsIcY?list=RDFPyIMtXsIcY");
 		}
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {

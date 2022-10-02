@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -41,17 +43,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HighdioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LarvaSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
@@ -73,7 +80,12 @@ import java.util.HashSet;
 public class YogDzewa extends Mob {
 
 	{
-		spriteClass = YogSprite.class;
+
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+			spriteClass = HighdioSprite.class;
+		} else {
+			spriteClass = YogSprite.class;
+		}
 
 		HP = HT = 1000;
 
@@ -191,6 +203,7 @@ public class YogDzewa extends Mob {
 			yell(Messages.get(this, "hope"));
 			summonCooldown = -15; //summon a burst of minions!
 			phase = 5;
+			Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
 		}
 
 		if (phase == 0){
@@ -510,6 +523,20 @@ public class YogDzewa extends Mob {
 		Dungeon.level.unseal();
 		super.die( cause );
 
+		if (Random.Int( 15 ) == 0) {
+			Dungeon.level.drop( new AdvancedEvolution().identify(), pos ).sprite.drop( pos );
+			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
+			Sample.INSTANCE.play(Assets.Sounds.BADGE);
+			GLog.p(Messages.get(Kawasiri.class, "rare"));
+		}
+
+		if (Random.Int( 30 ) == 0) {
+			Dungeon.level.drop( new ScrollOfExtract().identify(), pos ).sprite.drop( pos );
+			new Flare( 5, 32 ).color( 0x66FFFF, true ).show( hero.sprite, 2f );
+			Sample.INSTANCE.play(Assets.Sounds.BADGE);
+			GLog.p(Messages.get(Kawasiri.class, "rare"));
+		}
+
 		yell( Messages.get(this, "defeated") );
 
 		Sample.INSTANCE.play( Assets.Sounds.NANI );
@@ -558,6 +585,10 @@ public class YogDzewa extends Mob {
 
 		if (Statistics.spawnersAlive > 0){
 			desc += "\n\n" + Messages.get(this, "desc_spawners");
+		}
+
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+			desc += "\n\n" + Messages.get(this, "high");
 		}
 
 		return desc;

@@ -40,7 +40,7 @@ public class ElmoParticle extends PixelParticle.Shrinking {
 	
 	public ElmoParticle() {
 		super();
-		
+
 		color( 0x22EE66 );
 		lifespan = 0.6f;
 		

@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
@@ -249,7 +250,7 @@ public class MagicalFireRoom extends SpecialRoom {
 		@Override
 		public void use( BlobEmitter emitter ) {
 			super.use( emitter );
-			emitter.pour( ElmoParticle.FACTORY, 0.02f );
+			emitter.pour(FlameParticle.FACTORY, 0.02f );
 		}
 
 		@Override

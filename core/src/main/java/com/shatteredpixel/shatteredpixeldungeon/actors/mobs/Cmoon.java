@@ -57,7 +57,7 @@ public class Cmoon extends Mob {
     {
         spriteClass = CmoonSprite.class;
 
-        HP = HT = 135;
+        HP = HT = 150;
         defenseSkill = 15;
         maxLvl = 30;
         EXP = 0;

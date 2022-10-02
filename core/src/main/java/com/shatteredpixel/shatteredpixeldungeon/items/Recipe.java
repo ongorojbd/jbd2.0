@@ -220,8 +220,8 @@ public abstract class Recipe {
 		new TelekineticGrab.Recipe(),
 		new SummonElemental.Recipe(),
 		new DBLADE.Recipe(),
-		new MISTA.Recipe(),
 			new PINK.Recipe(),
+			new MISTA.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

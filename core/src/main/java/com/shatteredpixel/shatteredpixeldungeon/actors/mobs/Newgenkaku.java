@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Silence;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NewgenkakuSprite;
 import com.watabou.utils.Random;
@@ -72,7 +73,9 @@ public class Newgenkaku extends Mob {
     public void die(Object cause) {
         super.die(cause);
 
-        Dungeon.level.drop( new WildEnergy(), pos ).sprite.drop( pos );
+        if (Random.Int( 5 ) == 0) {
+            Dungeon.level.drop( new ScrollOfChallenge().identify(), pos ).sprite.drop( pos );
+        }
 
     }
 

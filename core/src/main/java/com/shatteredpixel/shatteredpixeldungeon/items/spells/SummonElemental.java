@@ -216,8 +216,7 @@ public class SummonElemental extends Spell {
 
 		@Override
 		public void fx(boolean on) {
-			if (on) target.sprite.add(CharSprite.State.HEARTS);
-			else    target.sprite.remove(CharSprite.State.HEARTS);
+
 		}
 
 	}

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -42,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -54,7 +57,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WoundsofWar;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -208,6 +214,17 @@ public class Tengu extends Mob {
 		
 		GameScene.bossSlain();
 		super.die( cause );
+
+		if (Random.Int( 10 ) == 0) {
+			Dungeon.level.drop( new WoundsofWar().identify(), pos ).sprite.drop( pos );
+			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
+			Sample.INSTANCE.play(Assets.Sounds.BADGE);
+			GLog.p(Messages.get(Kawasiri.class, "rare"));
+		}
+
+		if (Random.Int( 5 ) == 0) {
+			Dungeon.level.drop( new ScrollOfForesight().identify(), pos ).sprite.drop( pos );
+		}
 		
 		Badges.validateBossSlain();
 		if (Statistics.qualifiedForBossChallengeBadge){
@@ -264,7 +281,8 @@ public class Tengu extends Mob {
 				move( newPos );
 				
 				if (level.heroFOV[newPos]) CellEmitter.get( newPos ).burst( Speck.factory( Speck.WOOL ), 6 );
-				Sample.INSTANCE.play( Assets.Sounds.PUFF );
+				Sample.INSTANCE.play( Assets.Sounds.DIAVOLO );
+				GameScene.flash( 0xCC3366 );
 
 				float fill = 0.9f - 0.5f*((HP-(HT/2f))/(HT/2f));
 				level.placeTrapsInTenguCell(fill);
@@ -296,7 +314,8 @@ public class Tengu extends Mob {
 				if (arenaJumps < 4) arenaJumps++;
 				
 				if (level.heroFOV[newPos]) CellEmitter.get( newPos ).burst( Speck.factory( Speck.WOOL ), 6 );
-				Sample.INSTANCE.play( Assets.Sounds.PUFF );
+				Sample.INSTANCE.play( Assets.Sounds.DIAVOLO );
+				GameScene.flash( 0xCC3366 );
 				
 			}
 			
@@ -312,7 +331,8 @@ public class Tengu extends Mob {
 			move( newPos );
 			
 			if (level.heroFOV[newPos]) CellEmitter.get( newPos ).burst( Speck.factory( Speck.WOOL ), 6 );
-			Sample.INSTANCE.play( Assets.Sounds.PUFF );
+			Sample.INSTANCE.play( Assets.Sounds.DIAVOLO );
+			GameScene.flash( 0xCC3366 );
 			
 		}
 		
@@ -323,6 +343,7 @@ public class Tengu extends Mob {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
+			GameScene.flash( 0xCC3366 );
 			if (HP <= HT/2) BossHealthBar.bleed(true);
 			if (HP == HT) {
 				switch(Dungeon.hero.heroClass){
