@@ -83,10 +83,10 @@ public class Pucci extends Mob {
         state = WANDERING;
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
-        HP = HT = 10;
+        HP = HT = 15;
         defenseSkill = 15;
         EXP = 0;
-        Buff.affect(this, Barrier.class).setShield(230);
+        Buff.affect(this, Barrier.class).setShield(175);
 
     }
     private boolean seenBefore = false;
@@ -175,12 +175,12 @@ public class Pucci extends Mob {
 
     @Override
     public int attackSkill( Char target ) {
-        return 99;
+        return 9999;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(5, 10);
+        return Random.NormalIntRange(3, 5);
     }
 
     @Override

@@ -104,7 +104,7 @@ public class ScrollOfExtract extends InventorySpell {
 
     private static Item extractWeapon( Weapon w ) {
         Item n;
-        int level = Math.min(w.level(), 25);
+        int level = Math.min(w.level(), 29);
         n = new MagicalInfusion().quantity(level);
 
         return n;

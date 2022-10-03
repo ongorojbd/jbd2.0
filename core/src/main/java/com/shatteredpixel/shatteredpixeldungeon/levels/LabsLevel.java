@@ -232,29 +232,20 @@ public class LabsLevel extends RegularLevel {
 		public FireParticle() {
 			super();
 
-			color( 0xEE7722 );
-			lifespan = 1f;
 
-			acc.set( 0, +80 );
+
+
 		}
 
 		public void reset( float x, float y ) {
 			revive();
 
-			this.x = x;
-			this.y = y;
 
-			left = lifespan;
-
-			speed.set( 0, -40 );
-			size = 4;
 		}
 
 		@Override
 		public void update() {
-			super.update();
-			float p = left / lifespan;
-			am = p > 0.8f ? (1 - p) * 5 : 1;
+
 		}
 	}
 }

@@ -55,8 +55,8 @@ import com.watabou.utils.Random;
 public class CityLevel extends RegularLevel {
 
 	{
-		color1 = 0x4b6636;
-		color2 = 0xf2f2f2;
+		color1 = 0x48763c;
+		color2 = 0x59994a;
 	}
 
 	@Override

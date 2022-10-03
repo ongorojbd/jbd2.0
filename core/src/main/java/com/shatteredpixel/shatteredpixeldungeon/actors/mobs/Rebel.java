@@ -72,10 +72,12 @@ public class Rebel extends Mob {
 		spriteClass = RebelSprite.class;
 
 		HP = HT = 1800;
-		EXP = 0;
-		maxLvl = 30;
 		defenseSkill = 25;
 		viewDistance = 12;
+
+		EXP = 0;
+		maxLvl = 30;
+
 		baseSpeed = 1.5f;
 
 		properties.add(Property.BOSS);
@@ -175,40 +177,18 @@ public class Rebel extends Mob {
 
 	@Override
 	public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
-		if (enemy == null) return false;
 
-		boolean visibleFight = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[enemy.pos];
-
-		if (enemy.isInvulnerable(getClass())) {
-
-			if (visibleFight) {
-				enemy.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
-
-				Sample.INSTANCE.play(Assets.Sounds.HIT, 1f, Random.Float(0.96f, 1.05f));
-			}
-
-			return false;
-		}
-		else if (hit( this, enemy, true )) {
+		 if (hit( this, enemy, true )) {
 
 			int dmg = damageRoll();
 			enemy.damage( dmg, this );
-			enemy.sprite.bloodBurstA( sprite.center(), dmg );
-			enemy.sprite.flash();
 
 			if (Dungeon.level.heroFOV[pos]) Sample.INSTANCE.play(Assets.Sounds.HIT, 1.35f, Random.Float(0.65f, 1.76f));
 
-			if (enemy == Dungeon.hero && !enemy.isAlive()) {
-				Dungeon.fail( getClass() );
-			}
-		} else {
-			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 		}
-
 		return true;
 
 	}
-
 
 	@Override
 	public int damageRoll() {
@@ -495,7 +475,6 @@ public class Rebel extends Mob {
 		else if (Phase==4 && HP < 300) {
 			Phase = 5;
 			Buff.prolong(this, MagicImmune.class, MagicImmune.DURATION*5000f);
-			Buff.prolong(enemy, Blindness.class, 3);
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
 

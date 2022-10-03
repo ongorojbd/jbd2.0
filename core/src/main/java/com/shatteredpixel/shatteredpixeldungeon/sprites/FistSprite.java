@@ -260,7 +260,6 @@ public abstract class FistSprite extends MobSprite {
 		@Override
 		protected Emitter createEmitter() {
 			Emitter emitter = emitter();
-			emitter.pour(SparkParticle.STATIC, 0.06f );
 			return emitter;
 		}
 

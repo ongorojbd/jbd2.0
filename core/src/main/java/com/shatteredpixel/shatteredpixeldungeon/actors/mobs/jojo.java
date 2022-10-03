@@ -83,7 +83,7 @@ public class jojo extends Mob {
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
         viewDistance = 99;
-        HP = HT = 177;
+        HP = HT = 175;
         defenseSkill = 30;
         EXP = 0;
         baseSpeed = 1.2f;
@@ -148,7 +148,7 @@ public class jojo extends Mob {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(5, 10);
+        return Random.NormalIntRange(11, 15);
     }
 
     @Override
