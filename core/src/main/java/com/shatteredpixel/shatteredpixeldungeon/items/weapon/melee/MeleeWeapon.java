@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,19 +24,13 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class MeleeWeapon extends Weapon {
-
+	
 	public int tier;
-
-	public int charge = 100;
-	public int chargeCap = 100;
 
 	@Override
 	public int min(int lvl) {
@@ -53,13 +47,7 @@ public class MeleeWeapon extends Weapon {
 	public int STRReq(int lvl){
 		return STRReq(tier, lvl);
 	}
-
-	public void SPCharge(int value) {
-		int chargevalue = value;
-		charge = Math.min(charge+chargevalue, chargeCap);
-		updateQuickslot();
-	}
-
+	
 	@Override
 	public int damageRoll(Char owner) {
 		int damage = augment.damageFactor(super.damageRoll( owner ));
@@ -70,10 +58,10 @@ public class MeleeWeapon extends Weapon {
 				damage += Random.IntRange( 0, exStr );
 			}
 		}
-
+		
 		return damage;
 	}
-
+	
 	@Override
 	public String info() {
 
@@ -107,8 +95,8 @@ public class MeleeWeapon extends Weapon {
 		}
 
 		if (enchantment != null && (cursedKnown || !enchantment.curse())){
-			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
-			info += " " + Messages.get(enchantment, "desc");
+			info += "\n\n" + Messages.capitalize(Messages.get(Weapon.class, "enchanted", enchantment.name()));
+			info += " " + enchantment.desc();
 		}
 
 		if (cursed && isEquipped( Dungeon.hero )) {
@@ -116,16 +104,20 @@ public class MeleeWeapon extends Weapon {
 		} else if (cursedKnown && cursed) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed");
 		} else if (!isIdentified() && cursedKnown){
-			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+			if (enchantment != null && enchantment.curse()) {
+				info += "\n\n" + Messages.get(Weapon.class, "weak_cursed");
+			} else {
+				info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
+			}
 		}
-
+		
 		return info;
 	}
-
+	
 	public String statsInfo(){
 		return Messages.get(this, "stats_desc");
 	}
-
+	
 	@Override
 	public int value() {
 		int price = 20 * tier;
@@ -143,20 +135,5 @@ public class MeleeWeapon extends Weapon {
 		}
 		return price;
 	}
-
-	private static final String CHARGE = "charge";
-	@Override
-	public void storeInBundle(Bundle bundle) {
-		super.storeInBundle(bundle);
-		bundle.put(CHARGE, charge);
-	}
-
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		super.restoreFromBundle(bundle);
-		if (chargeCap > 0) charge = Math.min(chargeCap, bundle.getInt(CHARGE));
-		else charge = bundle.getInt(CHARGE);
-	}
-
 
 }
