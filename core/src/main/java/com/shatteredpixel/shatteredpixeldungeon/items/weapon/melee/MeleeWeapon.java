@@ -26,11 +26,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class MeleeWeapon extends Weapon {
 	
 	public int tier;
+
+	public int charge = 100;
+	public int chargeCap = 100;
 
 	@Override
 	public int min(int lvl) {
@@ -47,7 +51,13 @@ public class MeleeWeapon extends Weapon {
 	public int STRReq(int lvl){
 		return STRReq(tier, lvl);
 	}
-	
+
+	public void SPCharge(int value) {
+		int chargevalue = value;
+		charge = Math.min(charge+chargevalue, chargeCap);
+		updateQuickslot();
+	}
+
 	@Override
 	public int damageRoll(Char owner) {
 		int damage = augment.damageFactor(super.damageRoll( owner ));
@@ -134,6 +144,20 @@ public class MeleeWeapon extends Weapon {
 			price = 1;
 		}
 		return price;
+	}
+
+	private static final String CHARGE = "charge";
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put(CHARGE, charge);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		if (chargeCap > 0) charge = Math.min(chargeCap, bundle.getInt(CHARGE));
+		else charge = bundle.getInt(CHARGE);
 	}
 
 }

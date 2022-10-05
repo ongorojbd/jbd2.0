@@ -73,7 +73,6 @@ public class Rebel extends Mob {
 
 		HP = HT = 1800;
 		defenseSkill = 25;
-		viewDistance = 12;
 
 		EXP = 0;
 		maxLvl = 30;
@@ -99,7 +98,7 @@ public class Rebel extends Mob {
 	public int  Phase = 0; // 1~6까지
 	private int blinkCooldown = 0;
 	private int GasCoolDown = 0;
-	private int ACoolDown = 0;
+	private int ACoolDown = 13;
 	private int BurstTime = 0;
 	private int Burstpos = -1;
 	private static final Rect arena = new Rect(0, 0, 33, 26);

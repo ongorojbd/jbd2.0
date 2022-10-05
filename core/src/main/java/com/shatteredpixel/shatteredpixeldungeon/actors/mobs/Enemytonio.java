@@ -52,7 +52,8 @@ public class Enemytonio extends Mob {
         defenseSkill = 25;
         EXP = 10;
         maxLvl = 25;
-        baseSpeed = 1.5f;
+
+        properties.add(Property.BOSS);
 
     }
     private boolean seenBefore = false;

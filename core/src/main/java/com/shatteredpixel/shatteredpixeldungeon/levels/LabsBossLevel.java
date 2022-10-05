@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -46,6 +47,8 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
+
+import java.util.ArrayList;
 
 public class LabsBossLevel extends Level {
 
@@ -263,7 +266,6 @@ public class LabsBossLevel extends Level {
 	@Override
 	public void seal() {
 		super.seal();
-		Statistics.qualifiedForBossChallengeBadge = true;
 
 		Rebel boss = new Rebel();
 		boss.state = boss.WANDERING;

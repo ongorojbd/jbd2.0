@@ -127,7 +127,7 @@ public class WndJournal extends WndTabbed {
 						if (value) last_index = 2;
 					}
 				},
-				new IconTab( new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER, null) ) {
+				new IconTab( new ItemSprite(ItemSpriteSheet.ARMOR_HOLDER, null) ) {
 					protected void select( boolean value ) {
 						super.select( value );
 						catalogTab.active = catalogTab.visible = value;

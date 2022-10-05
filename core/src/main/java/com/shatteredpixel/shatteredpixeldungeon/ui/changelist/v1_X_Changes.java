@@ -94,13 +94,13 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SKULL), "실버 채리엇 레퀴엠의 장비 DISC",
 				"???\n" +
 						"" +
-						"습득 방법은 SPW 재단의 일지에서 확인할 수 있습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_SAPPHIRE), "속성의 석가면",
+						"습득 방법은 SPW 재단의 기록에서 확인할 수 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_SAPPHIRE), "혼돈의 석가면",
 				"속성/상형문자의 발동 확률과 효과를 강화시켜주는 석가면이 추가됩니다!"
 		));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.BONES), "SPW재단의 기록",
-				"죠죠의 기묘한 던전의 팁이나 배경 설정이 기록된 SPW재단의 기록이 새로 추가됩니다!\n\n" +
-						"SPW재단의 기록은 한 계층당 6개, 무려 30개에 달하는 양으로 던전 내에서 일정 확률로 발견할 수 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GUIDE_PAGE), "SPW재단의 기록",
+				"_신규 수집 아이템인 SPW재단의 기록이 새로 추가됩니다!_\n\n" +
+						"SPW재단의 기록은 한 계층당 6개, 무려 30개에 달하는 양으로 죠죠의 기묘한 던전의 팁이나 배경 설정이 기록되어 있으며, 던전 내에서 일정 확률로 발견할 수 있습니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.SCORPIO, 0, 18, 18, 17), "신규 적",
 				"희귀하게 볼 수 있는 적이 3종 추가되었습니다."));
 		changes.addButton( new ChangeButton(new TalentIcon(Talent.THIEFS_INTUITION), "BGM 추가",
@@ -225,7 +225,7 @@ public class v1_X_Changes {
 				""));
 
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CRYSTAL_KEY), "신규 시련",
-				"신규 시련인 Eyes Of Heaven을 활성화해야 26층 이후가 개방됩니다."));
+				"신규 시련인 아이즈 오브 헤븐을 활성화해야 26층 이후가 개방됩니다."));
 
 		Image ic = Icons.get(Icons.SEED);
 		ic.hardlight(1f, 1.5f, 0.67f);

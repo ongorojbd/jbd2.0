@@ -129,7 +129,8 @@ public class InterlevelScene extends PixelScene {
 					if (Statistics.deepestFloor >= loadingDepth) {
 						fadeTime = FAST_FADE;
 					} else if (loadingDepth == 6 || loadingDepth == 11
-							|| loadingDepth == 16 || loadingDepth == 21) {
+							|| loadingDepth == 16 || loadingDepth == 21
+							|| loadingDepth == 26) {
 						fadeTime = SLOW_FADE;
 					}
 				}

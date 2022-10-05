@@ -459,7 +459,7 @@ public class PrisonBossLevel extends Level {
 				if (d != null) tengu.add(d);
 				
 				GameScene.flash(0xCC3366);
-				Sample.INSTANCE.play(Assets.Sounds.PUFF);
+				Sample.INSTANCE.play(Assets.Sounds.DIAVOLO);
 				
 				state = State.FIGHT_PAUSE;
 				break;

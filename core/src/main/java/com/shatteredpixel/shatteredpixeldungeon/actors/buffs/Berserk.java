@@ -185,7 +185,7 @@ public class Berserk extends Buff implements ActionIndicator.Action {
 	private void startBerserking(){
 		state = State.BERSERK;
 		SpellSprite.show(target, SpellSprite.BERSERK);
-		Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+		Sample.INSTANCE.play( Assets.Sounds.OVERDRIVE );
 		GameScene.flash(0xFF0000);
 
 		if (target.HP > 0) {

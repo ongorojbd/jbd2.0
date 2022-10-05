@@ -86,13 +86,13 @@ public class Pucci extends Mob {
         HP = HT = 15;
         defenseSkill = 15;
         EXP = 0;
-        Buff.affect(this, Barrier.class).setShield(175);
+        Buff.affect(this, Barrier.class).setShield(171);
 
     }
     private boolean seenBefore = false;
     private static final Rect arena = new Rect(0, 0, 33, 26);
     private static final int bottomDoor = 16 + (arena.bottom+1) * 33;
-    int summonCooldown = 5;
+    int summonCooldown = 7;
     private static final String SUMMON_COOLDOWN = "summoncooldown";
 
     @Override
@@ -140,7 +140,7 @@ public class Pucci extends Mob {
                     GameScene.add( Val );
                     Val.beckon(Dungeon.hero.pos);
 
-                summonCooldown = (5);
+                summonCooldown = (7);
                 sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "skill"));
 
             }

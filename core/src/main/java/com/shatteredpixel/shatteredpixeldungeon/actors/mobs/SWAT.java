@@ -135,7 +135,7 @@ public class SWAT extends Mob implements Callback {
 			Buff.prolong(this, Adrenaline.class, Adrenaline.DURATION*5000f);
 			Sample.INSTANCE.play( Assets.Sounds.MASTERY );
 
-			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( this.sprite, 99999f );
+			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( this.sprite, 3f );
 				yell(Messages.get(this, "notice"));
 
 		}

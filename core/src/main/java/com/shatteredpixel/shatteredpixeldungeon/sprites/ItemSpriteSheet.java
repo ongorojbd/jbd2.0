@@ -103,7 +103,6 @@ public class ItemSpriteSheet {
 		assignItemRect(TENGU_BOMB,      12, 12);
 		assignItemRect(TENGU_SHOCKER,   11, 11);
 
-
 	}
 
 	private static final int CONTAINERS     =                               xy(1, 3);   //16 slots
@@ -714,13 +713,13 @@ public class ItemSpriteSheet {
 	public static final int CITY_PAGE   = DOCUMENTS+5;
 	public static final int HALLS_PAGE  = DOCUMENTS+6;
 	static{
-		assignItemRect(GUIDE_PAGE,  10, 11);
-		assignItemRect(ALCH_PAGE,   10, 11);
-		assignItemRect(SEWER_PAGE,  10, 11);
-		assignItemRect(PRISON_PAGE, 10, 11);
-		assignItemRect(CAVES_PAGE,  10, 11);
-		assignItemRect(CITY_PAGE,   10, 11);
-		assignItemRect(HALLS_PAGE,  10, 11);
+		assignItemRect(GUIDE_PAGE,  8, 8);
+		assignItemRect(ALCH_PAGE,   8, 8);
+		assignItemRect(SEWER_PAGE,  8, 8);
+		assignItemRect(PRISON_PAGE, 8, 8);
+		assignItemRect(CAVES_PAGE,  8, 8);
+		assignItemRect(CITY_PAGE,   8, 8);
+		assignItemRect(HALLS_PAGE,  8, 8);
 	}
 
 	//for smaller 8x8 icons that often accompany an item sprite
