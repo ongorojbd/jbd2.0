@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -116,6 +117,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -1203,15 +1205,15 @@ public class Hero extends Char {
 		
 		return damage;
 	}
-	
+
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
-		
+
 		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
 			Berserk berserk = Buff.affect(this, Berserk.class);
 			berserk.damage(damage);
 		}
-		
+
 		if (belongings.armor() != null) {
 			damage = belongings.armor().proc( enemy, this, damage );
 		}
@@ -1220,7 +1222,12 @@ public class Hero extends Char {
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
 		}
-		
+
+		if (Dungeon.hero.belongings.weapon() instanceof RoundShield && (Random.Int(5) == 0)){
+			Buff.prolong(this, Invisibility.class, Invisibility.DURATION / 3f);
+			Buff.prolong(this, Haste.class, Haste.DURATION / 3f);
+		}
+
 		return super.defenseProc( enemy, damage );
 	}
 	
