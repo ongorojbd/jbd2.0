@@ -1224,8 +1224,8 @@ public class Hero extends Char {
 		}
 
 		if (Dungeon.hero.belongings.weapon() instanceof RoundShield && (Random.Int(5) == 0)){
-			Buff.prolong(this, Invisibility.class, Invisibility.DURATION / 3f);
-			Buff.prolong(this, Haste.class, Haste.DURATION / 3f);
+			Buff.prolong(this, Invisibility.class, Invisibility.DURATION / 6f);
+			Buff.prolong(this, Haste.class, Haste.DURATION / 6f);
 		}
 
 		return super.defenseProc( enemy, damage );
