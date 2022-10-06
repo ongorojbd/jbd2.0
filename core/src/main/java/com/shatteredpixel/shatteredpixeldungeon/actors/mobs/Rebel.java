@@ -508,8 +508,8 @@ public class Rebel extends Mob {
 		GameScene.bossSlain();
 		Dungeon.level.unseal();
 
-		Statistics.yorihimesKilled++;
-		Badges.validateYorihimesKilled();
+		Statistics.yorihimes++;
+		Badges.validateYorihimes();
 
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 			Badges.validateBossChallengeCompleted();

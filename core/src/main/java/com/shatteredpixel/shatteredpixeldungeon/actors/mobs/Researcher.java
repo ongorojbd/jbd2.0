@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -32,12 +33,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -58,9 +61,8 @@ public class Researcher extends Mob {
 	{
 		spriteClass = ResearcherSprite.class;
 
-		HP = HT = 200;
+		HP = HT = 185;
 		defenseSkill = 15;
-		baseSpeed = 1.5f;
 
 		EXP = 15;
 		maxLvl = 30;
@@ -102,13 +104,14 @@ public class Researcher extends Mob {
 	protected boolean steal(Hero hero) {
 
 		Item toSteal = hero.belongings.randomUnequipped();
+		if (Random.Int( 5 ) == 0) {
 
+		}
 		if (toSteal != null && !toSteal.unique && toSteal.level() < 1) {
 
 			GLog.w(Messages.get(Researcher.class, "stole", toSteal.name()));
 			if (!toSteal.stackable) {
 				Dungeon.quickslot.convertToPlaceholder(toSteal);
-				Sample.INSTANCE.play( Assets.Sounds.EVOKE );
 			}
 			Item.updateQuickslot();
 
@@ -118,8 +121,6 @@ public class Researcher extends Mob {
 			return false;
 		}
 	}
-
-
 
 	@Override
 	public float lootChance() {

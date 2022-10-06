@@ -169,10 +169,15 @@ public class Badges {
 		//diamond
 		BOSS_CHALLENGE_5            ( 120 ),
 		GAMES_PLAYED_5              ( 121, true ),
+		YORIHIMES                   ( 125 ),
 		HIGH_SCORE_5                ( 122 ),
 		CHAMPION_2                  ( 123 ),
 		CHAMPION_3                  ( 124 ),
-		YORIHIMES                   ( 125 ),
+		YORIHIMES_WARRIOR,
+		YORIHIMES_MAGE,
+		YORIHIMES_ROGUE,
+		YORIHIMES_HUNTRESS,
+		YORIHIMES_ALL_CLASSES       ( 125, true ),
 		BOSS_CHALLENGE_6            ( 125 );
 
 		public boolean meta;
@@ -693,13 +698,31 @@ public class Badges {
 		}
 	}
 
-	public static void validateYorihimesKilled() {
-		Badge badge = null;
+	public static void validateYorihimes() {
 
-		if (!local.contains( Badge.YORIHIMES ) && Statistics.yorihimesKilled >= 1) {
-			badge = Badge.YORIHIMES;
+
+		Badge badge = Badge.YORIHIMES;
+		local.add( badge );
+		displayBadge( badge );
+
+			badge =dioClassBadges.get(Dungeon.hero.heroClass);
+			if (badge == null) return;
 			local.add( badge );
-		}
+			unlock(badge);
+
+			boolean allUnlocked = true;
+			for (Badge b : dioClassBadges.values()){
+				if (!isUnlocked(b)){
+					allUnlocked = false;
+					break;
+				}
+			}
+			if (allUnlocked){
+				badge = Badge.YORIHIMES_ALL_CLASSES;
+				if (!isUnlocked( badge )) {
+				displayBadge( badge );
+			}
+			}
 
 		displayBadge( badge );
 	}
@@ -731,7 +754,15 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.SNIPER, Badge.BOSS_SLAIN_3_SNIPER);
 		thirdBossSubclassBadges.put(HeroSubClass.WARDEN, Badge.BOSS_SLAIN_3_WARDEN);
 	}
-	
+
+	private static LinkedHashMap<HeroClass, Badge> dioClassBadges = new LinkedHashMap<>();
+	static {
+		dioClassBadges.put(HeroClass.WARRIOR, Badge.YORIHIMES_WARRIOR);
+		dioClassBadges.put(HeroClass.MAGE, Badge.YORIHIMES_MAGE);
+		dioClassBadges.put(HeroClass.ROGUE, Badge.YORIHIMES_ROGUE);
+		dioClassBadges.put(HeroClass.HUNTRESS, Badge.YORIHIMES_HUNTRESS);
+	}
+
 	public static void validateBossSlain() {
 		Badge badge = null;
 		switch (Dungeon.depth) {
@@ -794,6 +825,7 @@ public class Badges {
 					}
 				}
 			}
+
 		}
 	}
 
@@ -1083,7 +1115,9 @@ public class Badges {
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
 			{Badge.VICTORY,      Badge.YORIHIMES},
+			{Badge.YORIHIMES,    Badge.YORIHIMES_ALL_CLASSES},
 			{Badge.YORIHIMES,    Badge.BOSS_CHALLENGE_6},
+			{Badge.YORIHIMES_ALL_CLASSES,   Badge.BOSS_CHALLENGE_6},
 	};
 
 	//If the summary badge is unlocked, don't show the component badges
@@ -1097,7 +1131,8 @@ public class Badges {
 			{Badge.DEATH_FROM_FRIENDLY_MAGIC, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
-			{Badge.YORIHIMES, Badge.BOSS_CHALLENGE_6},
+			{Badge.YORIHIMES, Badge.YORIHIMES_ALL_CLASSES},
+			{Badge.YORIHIMES_ALL_CLASSES, Badge.BOSS_CHALLENGE_6 },
 
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
@@ -1217,6 +1252,16 @@ public class Badges {
 			}
 
 			return result;
+		}  else if (badge == Badge.YORIHIMES_ALL_CLASSES) {
+
+			for (HeroClass cls : HeroClass.values()){
+				result += "\n";
+				if (isUnlocked(dioClassBadges.get(cls)))    result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                            result += Messages.titleCase(cls.title());
+			}
+
+			return result;
+
 		}
 
 		return null;

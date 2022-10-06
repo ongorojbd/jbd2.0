@@ -43,7 +43,8 @@ public enum Document {
 	PRISON_WARDEN(ItemSpriteSheet.PRISON_PAGE, true),
 	CAVES_EXPLORER(ItemSpriteSheet.CAVES_PAGE, true),
 	CITY_WARLOCK(ItemSpriteSheet.CITY_PAGE, true),
-	HALLS_KING(ItemSpriteSheet.HALLS_PAGE, true);
+	HALLS_KING(ItemSpriteSheet.HALLS_PAGE, true),
+	LABS_EOH(ItemSpriteSheet.GUIDE_PAGE,   true);
 	
 	Document( int sprite, boolean lore ){
 		pageIcon = null;
@@ -304,6 +305,15 @@ public enum Document {
 		HALLS_KING.pagesStates.put("new_king",                  debug ? READ : NOT_FOUND);
 		HALLS_KING.pagesStates.put("thing",                     debug ? READ : NOT_FOUND);
 		HALLS_KING.pagesStates.put("attrition",                 debug ? READ : NOT_FOUND);
+
+		LABS_EOH.pagesStates.put("1",                 debug ? READ : NOT_FOUND);
+		LABS_EOH.pagesStates.put("2",                    debug ? READ : NOT_FOUND);
+		LABS_EOH.pagesStates.put("3",                    debug ? READ : NOT_FOUND);
+		LABS_EOH.pagesStates.put("4",                  debug ? READ : NOT_FOUND);
+		LABS_EOH.pagesStates.put("5",                     debug ? READ : NOT_FOUND);
+		LABS_EOH.pagesStates.put("6",                 debug ? READ : NOT_FOUND);
+
+
 
 	}
 	

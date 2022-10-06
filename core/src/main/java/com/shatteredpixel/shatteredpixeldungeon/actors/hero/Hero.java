@@ -1921,7 +1921,7 @@ public class Hero extends Char {
 			if (Dungeon.level.distance(pos, heap.pos) <= 1){
 				boolean hasKey = true;
 				if (heap.type == Type.SKELETON || heap.type == Type.REMAINS) {
-					Sample.INSTANCE.play( Assets.Sounds.BONES );
+					Sample.INSTANCE.play( Assets.Sounds.ITEM );
 				} else if (heap.type == Type.LOCKED_CHEST){
 					hasKey = Notes.remove(new GoldenKey(Dungeon.depth));
 				} else if (heap.type == Type.CRYSTAL_CHEST){

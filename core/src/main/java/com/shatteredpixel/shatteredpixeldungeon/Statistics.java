@@ -33,7 +33,7 @@ public class Statistics {
 	public static int foodEaten;
 	public static int itemsCrafted;
 	public static int piranhasKilled;
-	public static int yorihimesKilled;
+	public static int yorihimes;
 	public static int ankhsUsed;
 
 	//These are used for score calculation
@@ -77,7 +77,7 @@ public class Statistics {
 		foodEaten		= 0;
 		itemsCrafted    = 0;
 		piranhasKilled	= 0;
-		yorihimesKilled = 0;
+		yorihimes = 0;
 		ankhsUsed		= 0;
 
 		progressScore   = 0;
@@ -117,7 +117,7 @@ public class Statistics {
 	private static final String FOOD		= "foodEaten";
 	private static final String ALCHEMY		= "potionsCooked";
 	private static final String PIRANHAS	= "priranhas";
-	private static final String YORIHIMES	= "yorihimeskilled";
+	private static final String YORIHIMES	= "yorihimes";
 	private static final String ANKHS		= "ankhsUsed";
 
 	private static final String PROG_SCORE	    = "prog_score";
@@ -156,7 +156,7 @@ public class Statistics {
 		bundle.put( FOOD,		foodEaten );
 		bundle.put( ALCHEMY,    itemsCrafted );
 		bundle.put( PIRANHAS,	piranhasKilled );
-		bundle.put( YORIHIMES,	yorihimesKilled );
+		bundle.put( YORIHIMES,	yorihimes );
 		bundle.put( ANKHS,		ankhsUsed );
 
 		bundle.put( PROG_SCORE,  progressScore );
@@ -200,7 +200,7 @@ public class Statistics {
 		foodEaten		= bundle.getInt( FOOD );
 		itemsCrafted    = bundle.getInt( ALCHEMY );
 		piranhasKilled	= bundle.getInt( PIRANHAS );
-		yorihimesKilled	= bundle.getInt( YORIHIMES );
+		yorihimes	= bundle.getInt( YORIHIMES );
 		ankhsUsed		= bundle.getInt( ANKHS );
 
 		progressScore   = bundle.getInt( PROG_SCORE );
