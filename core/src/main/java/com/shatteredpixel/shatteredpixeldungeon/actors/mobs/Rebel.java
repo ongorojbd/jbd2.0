@@ -38,7 +38,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
@@ -77,7 +79,7 @@ public class Rebel extends Mob {
 		EXP = 0;
 		maxLvl = 30;
 
-		baseSpeed = 1.5f;
+		baseSpeed = 1.7f;
 
 		properties.add(Property.BOSS);
 		properties.add(Property.DEMONIC);
@@ -96,7 +98,6 @@ public class Rebel extends Mob {
 	private int LastPos = -1;
 	private int Burstcooldown = 0; // 1이 되면 은신 파괴
 	public int  Phase = 0; // 1~6까지
-	private int blinkCooldown = 0;
 	private int GasCoolDown = 0;
 	private int ACoolDown = 29;
 	private int BurstTime = 0;
@@ -216,55 +217,6 @@ public class Rebel extends Mob {
 		return false;
 	}
 
-
-	@Override
-	protected boolean getCloser( int target ) {
-		if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0) {
-
-			blink( target );
-			spend( -1 / speed() );
-			return true;
-
-		} else {
-
-			blinkCooldown--;
-			return super.getCloser( target );
-
-		}
-	}
-
-	private void blink( int target ) {
-
-		Ballistica route = new Ballistica( pos, target, Ballistica.PROJECTILE);
-		int cell = route.collisionPos;
-
-		//can't occupy the same cell as another char, so move back one.
-		if (Actor.findChar( cell ) != null && cell != this.pos)
-			cell = route.path.get(route.dist-1);
-
-		if (Dungeon.level.avoid[ cell ] && (!properties().contains(Property.LARGE) || Dungeon.level.openSpace[cell])){
-			ArrayList<Integer> candidates = new ArrayList<>();
-			for (int n : PathFinder.NEIGHBOURS8) {
-				cell = route.collisionPos + n;
-				if (Dungeon.level.passable[cell]
-						&& Actor.findChar( cell ) == null
-						&& (!properties().contains(Property.LARGE) || Dungeon.level.openSpace[cell])) {
-					candidates.add( cell );
-				}
-			}
-			if (candidates.size() > 0)
-				cell = Random.element(candidates);
-			else {
-				blinkCooldown = Random.IntRange(4, 6);
-				return;
-			}
-		}
-
-		ScrollOfTeleportation.appear( this, cell );
-
-		blinkCooldown = Random.IntRange(4, 6);
-	}
-
 	@Override
 	public void notice() {
 		super.notice();
@@ -284,11 +236,6 @@ public class Rebel extends Mob {
 					this.yell(Messages.get(this, "notice4"));
 					break;
 			}
-			for (Char ch : Actor.chars()){
-				if (ch instanceof DriedRose.GhostHero){
-					((DriedRose.GhostHero) ch).sayBoss();
-				}
-			}
 		}
 	}
 
@@ -300,19 +247,19 @@ public class Rebel extends Mob {
 		if (summonCooldown <= 0 && Dungeon.level instanceof LabsBossLevel) {
 			Newgenkaku Newgenkaku = new Newgenkaku();
 			Newgenkaku.state = Newgenkaku.HUNTING;
-			Newgenkaku.pos = bottomDoor-11*33;
+			Newgenkaku.pos = bottomDoor-26*33;
 			GameScene.add( Newgenkaku );
 			Newgenkaku.beckon(Dungeon.hero.pos);
 
 			Newcmoon Newcmoon = new Newcmoon();
 			Newcmoon.state = Newcmoon.HUNTING;
-			Newcmoon.pos = bottomDoor-12*33;
+			Newcmoon.pos = bottomDoor-26*33;
 			GameScene.add( Newcmoon );
 			Newcmoon.beckon(Dungeon.hero.pos);
 
 			Mih Mih = new Mih();
 			Mih.state = Mih.HUNTING;
-			Mih.pos = bottomDoor-13*33;
+			Mih.pos = bottomDoor-26*33;
 			GameScene.add( Mih );
 			Mih.beckon(Dungeon.hero.pos);
 
@@ -320,7 +267,7 @@ public class Rebel extends Mob {
 
 			summonCooldown = (39);
 
-			sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
+			new Flare( 5, 32 ).color( 0xFFFFFF, true ).show( this.sprite, 3f );
 			Sample.INSTANCE.play(Assets.Sounds.HAHAH);
 		}
 		else if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
@@ -329,19 +276,19 @@ public class Rebel extends Mob {
 
 				Kousaku Kousaku = new Kousaku();
 				Kousaku.state = Kousaku.HUNTING;
-				Kousaku.pos = bottomDoor-11*33;
+				Kousaku.pos = bottomDoor-26*33;
 				GameScene.add( Kousaku );
 				Kousaku.beckon(Dungeon.hero.pos);
 
 				Cmoon Cmoon = new Cmoon();
 				Cmoon.state = Cmoon.HUNTING;
-				Cmoon.pos = bottomDoor-12*33;
+				Cmoon.pos = bottomDoor-26*33;
 				GameScene.add( Cmoon );
 				Cmoon.beckon(Dungeon.hero.pos);
 
 				Genkaku Genkaku = new Genkaku();
 				Genkaku.state = Genkaku.HUNTING;
-				Genkaku.pos = bottomDoor-13*33;
+				Genkaku.pos = bottomDoor-26*33;
 				GameScene.add( Genkaku );
 				Genkaku.beckon(Dungeon.hero.pos);
 
@@ -435,6 +382,7 @@ public class Rebel extends Mob {
 			GameScene.add( WO );
 			WO.beckon(Dungeon.hero.pos);
 
+			Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 			BossHealthBar.assignBoss(this);
 
@@ -449,7 +397,7 @@ public class Rebel extends Mob {
 
 			Pucci Pucci = new Pucci();
 			Pucci.state = Pucci.WANDERING;
-			Pucci.pos = bottomDoor-23*33;
+			Pucci.pos = bottomDoor-9*33;
 			GameScene.add( Pucci );
 			Pucci.beckon(Dungeon.hero.pos);
 
@@ -470,13 +418,11 @@ public class Rebel extends Mob {
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
 
-			for (int i : PathFinder.NEIGHBOURS2){
 			jojo jojo = new jojo();
 			jojo.state = jojo.WANDERING;
-			jojo.pos = hero.pos+i;
+			jojo.pos = hero.pos;
 			GameScene.add( jojo );
 			jojo.beckon(Dungeon.hero.pos);
-			}
 
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
@@ -621,8 +567,6 @@ public class Rebel extends Mob {
 					}
 				}
 
-				sprite.zap(Burstpos);
-
 				Sample.INSTANCE.play( Assets.Sounds.OH );
 				BurstTime++;
 
@@ -637,6 +581,7 @@ public class Rebel extends Mob {
 				BurstTime++;
 				return true;}
 			else if (BurstTime == 3) {
+
 				PathFinder.buildDistanceMap(Burstpos, BArray.not(Dungeon.level.solid, null), 1);
 				for (int cell = 0; cell < PathFinder.distance.length; cell++) {
 					if (PathFinder.distance[cell] < Integer.MAX_VALUE) {
@@ -649,6 +594,7 @@ public class Rebel extends Mob {
 				Burstpos = -1;
 				BurstTime = 0;
 				ACoolDown = Random.NormalIntRange(5,8);
+				if (Phase == 5) { ACoolDown = Random.NormalIntRange(1,5);}
 
 				Sample.INSTANCE.play( Assets.Sounds.BLAST, 1.5f, 0.67f );
 
@@ -668,7 +614,7 @@ public class Rebel extends Mob {
 		Dungeon.hero.interrupt();
 		GameScene.add(Blob.seed(target.pos, 250, Dominion.class));
 		GLog.w(Messages.get(Rebel.class, "skill2"));
-		GasCoolDown = 10;
+		GasCoolDown = 13;
 
 	}
 

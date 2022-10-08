@@ -52,7 +52,7 @@ public class Mih extends Mob {
         defenseSkill = 15;
         maxLvl = 30;
         EXP = 0;
-        baseSpeed = 3f;
+        baseSpeed = 2f;
     }
 
     @Override

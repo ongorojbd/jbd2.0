@@ -85,6 +85,7 @@ public class Kawasiri extends Mob {
         immunities.add(ShrGas.class);
 
         state = FLEEING;
+        immunities.add(Blindness.class );
 
     }
     int damageTaken = 0;
@@ -225,7 +226,7 @@ public class Kawasiri extends Mob {
             HP = 51;
             yell(Messages.get(this, "phase7"));
             Music.INSTANCE.play(Assets.Music.KOICHI, true);
-            Buff.affect(this, Barrier.class).setShield(55);
+            Buff.affect(this, Barrier.class).setShield(59);
             state = FLEEING;
 
                baseSpeed = 1.1f;
@@ -244,7 +245,7 @@ public class Kawasiri extends Mob {
         }
 
     private static final String PHASE   = "Phase";
-    private static final float DELAY = 13f;
+    private static final float DELAY = 11f;
 
     @Override
     public int damageRoll() {
@@ -321,7 +322,7 @@ public class Kawasiri extends Mob {
                 }
 
 
-                summonCooldown = (5);
+                summonCooldown = (7);
 
                 Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
             }

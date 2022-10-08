@@ -69,12 +69,4 @@ public class Genkaku extends Mob {
         return damage;
     }
 
-    @Override
-    public void die(Object cause) {
-        super.die(cause);
-
-        Dungeon.level.drop( new WildEnergy(), pos ).sprite.drop( pos );
-
-    }
-
 }

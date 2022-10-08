@@ -90,7 +90,7 @@ public class Amblance extends Mob {
         HP = HT = 999;
         defenseSkill = 999;
         EXP = 0;
-        baseSpeed = 1.3f;
+        baseSpeed = 1.5f;
     }
 
     private boolean seenBefore = false;

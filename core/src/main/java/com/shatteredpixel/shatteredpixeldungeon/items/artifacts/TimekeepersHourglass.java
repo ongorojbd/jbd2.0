@@ -330,7 +330,7 @@ public class TimekeepersHourglass extends Artifact {
 			type = buffType.POSITIVE;
 		}
 
-		float turnsToCost = 2f;
+		float turnsToCost = 0f;
 
 		ArrayList<Integer> presses = new ArrayList<>();
 
@@ -409,7 +409,7 @@ public class TimekeepersHourglass extends Artifact {
 
 		@Override
 		public float iconFadePercent() {
-			return Math.max(0, (2f - turnsToCost) / 2f);
+			return Math.max(0, (2f - (turnsToCost+1)) / 2f);
 		}
 
 		@Override

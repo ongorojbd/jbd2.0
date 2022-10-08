@@ -87,6 +87,8 @@ public class jojo extends Mob {
         defenseSkill = 30;
         EXP = 0;
         baseSpeed = 1.2f;
+
+        immunities.add(Blindness.class );
     }
 
     private boolean seenBefore = false;
