@@ -98,7 +98,7 @@ public class Rebel extends Mob {
 	public int  Phase = 0; // 1~6까지
 	private int blinkCooldown = 0;
 	private int GasCoolDown = 0;
-	private int ACoolDown = 13;
+	private int ACoolDown = 29;
 	private int BurstTime = 0;
 	private int Burstpos = -1;
 	private static final Rect arena = new Rect(0, 0, 33, 26);
@@ -348,8 +348,16 @@ public class Rebel extends Mob {
 			summonCooldown = (37);
 
 			}
-
 		}
+
+		for (Mob mob : Dungeon.level.mobs) {
+			if (mob.paralysed <= 0
+					&& Dungeon.level.distance(pos, mob.pos) <= 7
+					&& mob.state != mob.HUNTING) {
+				mob.beckon( Dungeon.hero.pos );
+			}
+		}
+
 		if (cleanCooldown <= 0) {
 			Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1, 1);
 			GameScene.flash(0xFFFF00);
@@ -369,7 +377,6 @@ public class Rebel extends Mob {
 			cleanCooldown = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) ? 15 : 31;
 		}
 
-		if (state == PASSIVE) return super.act();
 		if (!UseAbility()) {
 			return true; }
 
@@ -414,6 +421,7 @@ public class Rebel extends Mob {
 			Buff.prolong(this, Haste.class, Haste.DURATION*5000f);
 			yell(Messages.get(this, "telling_1"));
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
+			BossHealthBar.assignBoss(this);
 		}
 		else if (Phase==1 && HP < 1200) {
 			Phase = 2;
@@ -428,6 +436,7 @@ public class Rebel extends Mob {
 			WO.beckon(Dungeon.hero.pos);
 
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
+			BossHealthBar.assignBoss(this);
 
 		}
 		else if (Phase==2 && HP < 900) {
@@ -450,6 +459,7 @@ public class Rebel extends Mob {
 			yell(Messages.get(this, "telling_3"));
 
 			Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
+			BossHealthBar.assignBoss(this);
 
 		}
 		else if (Phase==3 && HP < 600) {
@@ -470,6 +480,7 @@ public class Rebel extends Mob {
 
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
+			BossHealthBar.assignBoss(this);
 		}
 		else if (Phase==4 && HP < 300) {
 			Phase = 5;
@@ -483,6 +494,7 @@ public class Rebel extends Mob {
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 
 			Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
+			BossHealthBar.assignBoss(this);
 		}
 
 	}
@@ -596,6 +608,7 @@ public class Rebel extends Mob {
 		//폭발
 		if (ACoolDown <= 0) {
 			if (Burstpos == -1) {
+				state = PASSIVE;
 				// 위치 미지정시, 이번 턴에는 폭발을 일으킬 지점을 정합니다.
 				Burstpos = Dungeon.hero.pos;
 				sprite.parent.addToBack(new TargetedCell(Burstpos, 0xFF00FF));
@@ -616,7 +629,7 @@ public class Rebel extends Mob {
 				return false;
 			}
 			else if (BurstTime == 1) {
-
+				state = HUNTING;
 				BurstTime++;
 				return true;}
 			else if (BurstTime == 2) {

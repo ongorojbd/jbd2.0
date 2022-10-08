@@ -61,14 +61,14 @@ public class Researcher extends Mob {
 	{
 		spriteClass = ResearcherSprite.class;
 
-		HP = HT = 185;
+		HP = HT = 150;
 		defenseSkill = 15;
 
 		EXP = 15;
 		maxLvl = 30;
 
 		loot = new SummonElemental();
-		lootChance = 0.35f;
+		lootChance = 0.25f;
 	}
 
 	@Override

@@ -164,12 +164,14 @@ public class Kawasiri extends Mob {
             HP = 149;
 
             yell(Messages.get(this, "notice"));
+            state = FLEEING;
         }
         if (Phase==1 && HP < 147) {
             Phase = 2;
             HP = 147;
 
             yell(Messages.get(this, "phase1"));
+            state = FLEEING;
         }
         if (Phase==2 && HP < 135) {
             Phase = 3;
@@ -180,7 +182,7 @@ public class Kawasiri extends Mob {
                 }
             }
             yell(Messages.get(this, "phase5"));
-            state = HUNTING;
+            if (state == FLEEING) state = HUNTING;
             Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
         }
         if (Phase==3 && HP < 75) {
@@ -242,7 +244,7 @@ public class Kawasiri extends Mob {
         }
 
     private static final String PHASE   = "Phase";
-    private static final float DELAY = 17f;
+    private static final float DELAY = 13f;
 
     @Override
     public int damageRoll() {

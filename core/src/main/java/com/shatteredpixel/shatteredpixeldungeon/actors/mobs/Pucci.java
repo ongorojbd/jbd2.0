@@ -83,7 +83,7 @@ public class Pucci extends Mob {
         state = WANDERING;
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
-        HP = HT = 15;
+        HP = HT = 5;
         defenseSkill = 15;
         EXP = 0;
         Buff.affect(this, Barrier.class).setShield(171);

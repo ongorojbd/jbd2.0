@@ -66,7 +66,7 @@ public class Tank extends Mob {
 	{
 		spriteClass = TankSprite.class;
 
-		HP = HT = 200;
+		HP = HT = 190;
 		defenseSkill = 15;
 		baseSpeed = 3f;
 

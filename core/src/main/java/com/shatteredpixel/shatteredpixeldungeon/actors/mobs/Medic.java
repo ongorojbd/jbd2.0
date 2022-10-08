@@ -67,7 +67,7 @@ public class Medic extends Mob {
 	{
 		spriteClass = MedicSprite.class;
 
-		HP = HT = 225;
+		HP = HT = 195;
 		defenseSkill = 20;
 
 		EXP = 15;

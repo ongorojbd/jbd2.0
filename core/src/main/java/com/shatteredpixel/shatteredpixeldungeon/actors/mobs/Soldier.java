@@ -55,14 +55,14 @@ public class Soldier extends Mob {
 	{
 		spriteClass = SoldierSprite.class;
 
-		HP = HT = 185;
+		HP = HT = 175;
 		defenseSkill = 15;
 
 		EXP = 15;
 		maxLvl = 30;
 
 		loot = new RegrowthBomb();
-		lootChance = 0.3f;
+		lootChance = 0.25f;
 	}
 
 

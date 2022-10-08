@@ -55,7 +55,7 @@ public class Supression extends Mob {
 	{
 		spriteClass = SupressionSprite.class;
 
-		HP = HT = 250;
+		HP = HT = 205;
 		defenseSkill = 15;
 		baseSpeed = 2f;
 
@@ -63,7 +63,7 @@ public class Supression extends Mob {
 		maxLvl = 30;
 
 		loot = new PotionOfShielding();
-		lootChance = 0.4f;
+		lootChance = 0.25f;
 	}
 
 	@Override

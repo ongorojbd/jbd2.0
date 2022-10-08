@@ -207,6 +207,10 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(new Image(Assets.Sprites.MUDA, 0, 0, 40, 40), "더 월드 오버 헤븐",
 				"체력이 300 감소했습니다." +
 						""));
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.SOLDIER, 0, 0, 12, 15), "26층 이후 적들 하향",
+				"레퀴엠 죠르노를 제외한 모든 적들의 체력이 감소되었습니다."));
+
 	}
 
 	public static void add_v1_2_Changes( ArrayList<ChangeInfo> changeInfos ) {
