@@ -156,7 +156,7 @@ public class TimekeepersHourglass extends Artifact {
 	protected ArtifactBuff passiveBuff() {
 		return new hourglassRecharge();
 	}
-	
+
 	@Override
 	public void charge(Hero target, float amount) {
 		if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
@@ -260,7 +260,7 @@ public class TimekeepersHourglass extends Artifact {
 	}
 
 	public class timeStasis extends ArtifactBuff {
-		
+
 		{
 			type = buffType.POSITIVE;
 			actPriority = BUFF_PRIO-3; //acts after all other buffs, so they are prevented
@@ -324,12 +324,12 @@ public class TimekeepersHourglass extends Artifact {
 	}
 
 	public class timeFreeze extends ArtifactBuff {
-		
+
 		{
 			type = buffType.POSITIVE;
 		}
 
-		float turnsToCost = 0f;
+		float turnsToCost = 2f;
 
 		ArrayList<Integer> presses = new ArrayList<>();
 
@@ -408,7 +408,7 @@ public class TimekeepersHourglass extends Artifact {
 
 		@Override
 		public float iconFadePercent() {
-			return Math.max(0, (2f - (turnsToCost+1)) / 2f);
+			return Math.max(0, (2f - turnsToCost) / 2f);
 		}
 
 		@Override

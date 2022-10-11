@@ -191,7 +191,7 @@ public class Rebel extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Random.Int(10) == 0) ? 77 : 37;
+		return 55;
 	}
 
 	@Override
@@ -374,7 +374,7 @@ public class Rebel extends Mob {
 
 			WO WO = new WO();
 			WO.state = WO.HUNTING;
-			WO.pos = bottomDoor-11*33;
+			WO.pos = bottomDoor-10*33;
 			GameScene.add( WO );
 			WO.beckon(Dungeon.hero.pos);
 
@@ -582,7 +582,7 @@ public class Rebel extends Mob {
 						Char ch = Actor.findChar(cell);
 						if (hit( this, enemy, true )) {
 							if (ch != null&& !(ch instanceof Rebel)) {
-								ch.damage(Random.NormalIntRange(51, 70), this);
+								ch.damage(Random.NormalIntRange(55, 70), this);
 							}
 						}
 					}}

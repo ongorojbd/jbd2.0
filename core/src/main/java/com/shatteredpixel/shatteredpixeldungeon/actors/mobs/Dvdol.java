@@ -89,6 +89,7 @@ public class Dvdol extends Mob {
 
         super.die( cause );
 
+        Sample.INSTANCE.play( Assets.Sounds.GHOST);
         yell( Messages.get(this, "defeated") );
     }
 

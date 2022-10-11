@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -53,6 +54,8 @@ public class Mih extends Mob {
         maxLvl = 30;
         EXP = 0;
         baseSpeed = 2f;
+
+        immunities.add(Dominion.class );
     }
 
     @Override
@@ -74,7 +77,7 @@ public class Mih extends Mob {
     public void die(Object cause) {
         super.die(cause);
 
-        if (Random.Int( 3 ) == 0) {
+        if (Random.Int( 5 ) == 0) {
             Dungeon.level.drop( new StoneOfBlink().identify(), pos ).sprite.drop( pos );
         }
 

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ShrGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
@@ -40,6 +41,8 @@ public class Kousaku extends Mob {
         maxLvl = 30;
 
         state = HUNTING;
+
+        immunities.add(Dominion.class );
 
     }
 

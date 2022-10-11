@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Enemytonio;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pucci;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -41,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
@@ -52,7 +50,7 @@ public class Shopkeeper extends NPC {
 
 		properties.add(Property.IMMOVABLE);
 	}
-	
+
 	@Override
 	protected boolean act() {
 
@@ -64,30 +62,31 @@ public class Shopkeeper extends NPC {
 			flee();
 			return true;
 		}
-		
+
 		sprite.turnTo( pos, Dungeon.hero.pos );
 		spend( TICK );
 		return super.act();
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
 		flee();
 	}
-	
+
 	@Override
 	public void add( Buff buff ) {
 		flee();
 	}
-	
+
 	public void flee() {
+
 		destroy();
 
 		Notes.remove(Notes.Landmark.SHOP);
-		
-		sprite.killAndErase();
-		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
 
+		sprite.killAndErase();
+
+		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
 
 		Enemytonio Enemytonio = new Enemytonio();
 		Enemytonio.state = Enemytonio.WANDERING;
@@ -95,9 +94,9 @@ public class Shopkeeper extends NPC {
 		GameScene.add( Enemytonio );
 		Enemytonio.beckon(Dungeon.hero.pos);
 
-		Sample.INSTANCE.play( Assets.Sounds.MIMIC );
+		Sample.INSTANCE.play(Assets.Sounds.MIMIC);
 	}
-	
+
 	@Override
 	public void destroy() {
 		super.destroy();
@@ -113,7 +112,7 @@ public class Shopkeeper extends NPC {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return true;
@@ -123,7 +122,7 @@ public class Shopkeeper extends NPC {
 	public static int sellPrice(Item item){
 		return item.value() * 5 * (Dungeon.depth / 5 + 1);
 	}
-	
+
 	public static WndBag sell() {
 		return GameScene.selectItem( itemSelector );
 	}

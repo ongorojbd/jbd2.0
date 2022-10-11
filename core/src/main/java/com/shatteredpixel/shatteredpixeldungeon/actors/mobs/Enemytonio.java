@@ -104,12 +104,6 @@ public class Enemytonio extends Mob {
     }
 
     @Override
-    public int drRoll() {
-        return Random.NormalIntRange(0, 2);
-    }
-
-
-    @Override
     protected boolean act() {
 
 
@@ -130,13 +124,26 @@ public class Enemytonio extends Mob {
     }
 
     @Override
+    public int drRoll() {
+        return Random.NormalIntRange(0, 2);
+    }
+
+    @Override
     public void die(Object cause) {
 
         super.die(cause);
 
-
          {
-            Dungeon.level.drop( new Gold().identify().quantity(500), pos ).sprite.drop( pos );
+             if (Dungeon.depth == 6) {
+                 Dungeon.level.drop( new Gold().identify().quantity(500), pos ).sprite.drop( pos );
+             } else
+             if (Dungeon.depth == 11) {
+                 Dungeon.level.drop( new Gold().identify().quantity(625), pos ).sprite.drop( pos );
+             }
+             if (Dungeon.depth == 16) {
+                 Dungeon.level.drop( new Gold().identify().quantity(750), pos ).sprite.drop( pos );
+             }
+
         }
 
     }

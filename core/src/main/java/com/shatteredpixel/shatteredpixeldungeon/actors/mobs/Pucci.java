@@ -85,7 +85,7 @@ public class Pucci extends Mob {
         state = WANDERING;
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
-        HP = HT = 5;
+        HP = HT = 15;
         defenseSkill = 15;
         EXP = 0;
 

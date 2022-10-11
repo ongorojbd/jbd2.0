@@ -136,7 +136,7 @@ public class WO extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(30, 47);
+        return Random.NormalIntRange(35, 55);
     }
 
     @Override

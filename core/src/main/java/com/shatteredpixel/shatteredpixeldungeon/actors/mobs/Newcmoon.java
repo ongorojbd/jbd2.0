@@ -27,6 +27,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -49,6 +50,8 @@ public class Newcmoon extends Mob {
         defenseSkill = 15;
         maxLvl = 30;
         EXP = 0;
+
+        immunities.add(Dominion.class );
 
     }
 
@@ -92,7 +95,7 @@ public class Newcmoon extends Mob {
     public void die(Object cause) {
         super.die(cause);
 
-        if (Random.Int( 3 ) == 0) {
+        if (Random.Int( 5 ) == 0) {
             Dungeon.level.drop( new WildEnergy().identify(), pos ).sprite.drop( pos );
         }
 
