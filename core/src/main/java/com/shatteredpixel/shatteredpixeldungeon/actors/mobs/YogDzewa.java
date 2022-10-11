@@ -546,6 +546,11 @@ public class YogDzewa extends Mob {
 
 	@Override
 	public void notice() {
+
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+			Sample.INSTANCE.play(Assets.Sounds.CRAZYDIO);
+		}
+
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 			switch(Dungeon.hero.heroClass){
@@ -556,6 +561,7 @@ public class YogDzewa extends Mob {
 					this.yell(Messages.get(this, "notice2"));
 					break;
 				case MAGE:
+					GLog.p(Messages.get(Val.class, "5"));
 					this.yell(Messages.get(this, "notice3"));
 					break;
 				case HUNTRESS:

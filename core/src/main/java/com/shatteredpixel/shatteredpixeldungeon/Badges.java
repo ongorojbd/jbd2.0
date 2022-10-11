@@ -173,12 +173,13 @@ public class Badges {
 		HIGH_SCORE_5                ( 122 ),
 		CHAMPION_2                  ( 123 ),
 		CHAMPION_3                  ( 124 ),
+		BOSS_CHALLENGE_6            ( 125 ),
 		YORIHIMES_WARRIOR,
 		YORIHIMES_MAGE,
 		YORIHIMES_ROGUE,
 		YORIHIMES_HUNTRESS,
-		YORIHIMES_ALL_CLASSES       ( 125, true ),
-		BOSS_CHALLENGE_6            ( 125 );
+		YORIHIMES_ALL_CLASSES       ( 126, true ),
+		;
 
 		public boolean meta;
 
@@ -1131,8 +1132,7 @@ public class Badges {
 			{Badge.DEATH_FROM_FRIENDLY_MAGIC, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
-			{Badge.YORIHIMES, Badge.YORIHIMES_ALL_CLASSES},
-			{Badge.YORIHIMES_ALL_CLASSES, Badge.BOSS_CHALLENGE_6 },
+			{Badge.YORIHIMES, Badge.BOSS_CHALLENGE_6 },
 
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},

@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -83,8 +84,7 @@ public class Kawasiri extends Mob {
         properties.add(Property.INORGANIC);
         properties.add(Property.BOSS);
         immunities.add(ShrGas.class);
-
-        state = FLEEING;
+        immunities.add(Grim.class );
         immunities.add(Blindness.class );
 
     }
@@ -160,41 +160,60 @@ public class Kawasiri extends Mob {
 
         super.damage(dmg, src);
 
-        if (Phase==0 && HP < 149) {
+        if (Phase==0 && HP < 151) {
             Phase = 1;
+            HP = 150;
+            state = FLEEING;
+        }
+        if (Phase==1 && HP < 149) {
+            Phase = 2;
             HP = 149;
 
             yell(Messages.get(this, "notice"));
             state = FLEEING;
         }
-        if (Phase==1 && HP < 147) {
-            Phase = 2;
+        if (Phase==2 && HP < 147) {
+            Phase = 3;
             HP = 147;
 
             yell(Messages.get(this, "phase1"));
             state = FLEEING;
         }
-        if (Phase==2 && HP < 135) {
-            Phase = 3;
+        if (Phase==3 && HP < 135) {
+            Phase = 4;
             HP = 134;
             if (!BossHealthBar.isAssigned()) {
                 BossHealthBar.assignBoss(this);
                 for (Char ch : Actor.chars()){
                 }
             }
-            yell(Messages.get(this, "phase5"));
+            switch(Dungeon.hero.heroClass){
+                case WARRIOR:
+                    this.yell(Messages.get(this, "phase5"));
+                    break;
+                case ROGUE:
+                    this.yell(Messages.get(this, "jotaro"));
+                    break;
+                case MAGE:
+                    GLog.p(Messages.get(Val.class, "7"));
+                    this.yell(Messages.get(this, "joseph"));
+                    break;
+                case HUNTRESS:
+                    this.yell(Messages.get(this, "phase5"));
+                    break;
+            }
             if (state == FLEEING) state = HUNTING;
             Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
         }
-        if (Phase==3 && HP < 75) {
-            Phase = 4;
+        if (Phase==4 && HP < 75) {
+            Phase = 5;
             HP = 74;
 
             yell(Messages.get(this, "phase2"));
 
         }
-        if (Phase==4 && HP < 54) {
-            Phase = 5;
+        if (Phase==5 && HP < 54) {
+            Phase = 6;
             HP = 53;
             int reg = 101 ;
             Dungeon.hero.damage(Dungeon.hero.HP/3, this);
@@ -220,9 +239,9 @@ public class Kawasiri extends Mob {
             Dungeon.level.cleanWalls();
             yell(Messages.get(this, "bom"));
         }
-        if (Phase==5 && HP < 52)
+        if (Phase==6 && HP < 52)
            {
-            Phase = 6;
+            Phase = 7;
             HP = 51;
             yell(Messages.get(this, "phase7"));
             Music.INSTANCE.play(Assets.Music.KOICHI, true);
@@ -245,7 +264,7 @@ public class Kawasiri extends Mob {
         }
 
     private static final String PHASE   = "Phase";
-    private static final float DELAY = 11f;
+    private static final float DELAY = 9f;
 
     @Override
     public int damageRoll() {
@@ -272,18 +291,6 @@ public class Kawasiri extends Mob {
     protected boolean act() {
         summonCooldown--;
 
-        if (Phase == 3){
-            if (summonCooldown <= 0 && Dungeon.level instanceof CavesBossLevel) {
-
-
-                new DestOrbTrap().set(target).activate();
-
-
-                summonCooldown = (7);
-
-                Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-            }
-        }
         if (Phase == 4){
             if (summonCooldown <= 0 && Dungeon.level instanceof CavesBossLevel) {
 
@@ -309,6 +316,18 @@ public class Kawasiri extends Mob {
             }
         }
         if (Phase == 6){
+            if (summonCooldown <= 0 && Dungeon.level instanceof CavesBossLevel) {
+
+
+                new DestOrbTrap().set(target).activate();
+
+
+                summonCooldown = (7);
+
+                Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+            }
+        }
+        if (Phase == 7){
             if (summonCooldown <= 0 && Dungeon.level instanceof CavesBossLevel) {
 
 

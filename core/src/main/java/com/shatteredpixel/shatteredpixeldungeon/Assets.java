@@ -229,6 +229,7 @@ public class Assets {
 		public static final String SHEER = "sounds/sheer.mp3";
 		public static final String DIAVOLO = "sounds/diavolo.mp3";
 		public static final String STANDO = "sounds/stando.mp3";
+		public static final String CRAZYDIO = "sounds/crazydio.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -242,7 +243,7 @@ public class Assets {
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OVERDRIVE, SP,
-				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO
+				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO
 		};
 	}
 

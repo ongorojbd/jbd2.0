@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
@@ -75,6 +77,7 @@ public class Rebel extends Mob {
 
 		HP = HT = 1800;
 		defenseSkill = 25;
+		viewDistance = 10;
 
 		EXP = 0;
 		maxLvl = 30;
@@ -98,7 +101,7 @@ public class Rebel extends Mob {
 	private int LastPos = -1;
 	private int Burstcooldown = 0; // 1이 되면 은신 파괴
 	public int  Phase = 0; // 1~6까지
-	private int GasCoolDown = 0;
+	private int GasCoolDown = 15;
 	private int ACoolDown = 29;
 	private int BurstTime = 0;
 	private int Burstpos = -1;
@@ -176,23 +179,14 @@ public class Rebel extends Mob {
 	}
 
 	@Override
-	public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti ) {
-
-		 if (hit( this, enemy, true )) {
-
-			int dmg = damageRoll();
-			enemy.damage( dmg, this );
-
-			if (Dungeon.level.heroFOV[pos]) Sample.INSTANCE.play(Assets.Sounds.HIT, 1.35f, Random.Float(0.65f, 1.76f));
-
-		}
-		return true;
-
-	}
-
-	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 15, 25 );
+		int dmg;
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+			dmg = Random.NormalIntRange( 40, 65 );
+		} else {
+			dmg = Random.NormalIntRange( 35, 55 );
+		}
+		return dmg;
 	}
 
 	@Override
@@ -212,9 +206,8 @@ public class Rebel extends Mob {
 	}
 
 	@Override
-	protected boolean canAttack(Char enemy) {
-		if (this.fieldOfView[enemy.pos]){ return true; }
-		return false;
+	protected boolean canAttack( Char enemy ) {
+		return true;
 	}
 
 	@Override
@@ -230,6 +223,7 @@ public class Rebel extends Mob {
 					this.yell(Messages.get(this, "notice2"));
 					break;
 				case MAGE:
+					GLog.p(Messages.get(Val.class, "6"));
 					this.yell(Messages.get(this, "notice3"));
 					break;
 				case HUNTRESS:
@@ -268,7 +262,7 @@ public class Rebel extends Mob {
 			summonCooldown = (39);
 
 			new Flare( 5, 32 ).color( 0xFFFFFF, true ).show( this.sprite, 3f );
-			Sample.INSTANCE.play(Assets.Sounds.HAHAH);
+			Sample.INSTANCE.play(Assets.Sounds.CRAZYDIO);
 		}
 		else if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
 
@@ -292,19 +286,15 @@ public class Rebel extends Mob {
 				GameScene.add( Genkaku );
 				Genkaku.beckon(Dungeon.hero.pos);
 
+				GLog.w(Messages.get(Rebel.class, "summon"));
+
 			summonCooldown = (37);
 
+				new Flare( 5, 32 ).color( 0xFFFFFF, true ).show( this.sprite, 3f );
+				Sample.INSTANCE.play(Assets.Sounds.CRAZYDIO);
+
 			}
 		}
-
-		for (Mob mob : Dungeon.level.mobs) {
-			if (mob.paralysed <= 0
-					&& Dungeon.level.distance(pos, mob.pos) <= 7
-					&& mob.state != mob.HUNTING) {
-				mob.beckon( Dungeon.hero.pos );
-			}
-		}
-
 		if (cleanCooldown <= 0) {
 			Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1, 1);
 			GameScene.flash(0xFFFF00);
@@ -369,6 +359,12 @@ public class Rebel extends Mob {
 			yell(Messages.get(this, "telling_1"));
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 			BossHealthBar.assignBoss(this);
+
+			Dvdol Dvdol = new Dvdol();
+			Dvdol.state = Dvdol.HUNTING;
+			Dvdol.pos = bottomDoor-26*33;
+			GameScene.add( Dvdol );
+			Dvdol.beckon(Dungeon.hero.pos);
 		}
 		else if (Phase==1 && HP < 1200) {
 			Phase = 2;
@@ -392,8 +388,11 @@ public class Rebel extends Mob {
 			GameScene.flash(0x8B00FF);
 			Buff.prolong(this, BlobImmunity.class, BlobImmunity.DURATION*5000f);
 			Buff.detach(this, Doom.class);
+			Buff.affect(Dungeon.hero, MindVision.class, 3f);
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
+
+			GLog.n(Messages.get(Rebel.class, "val"));
 
 			Pucci Pucci = new Pucci();
 			Pucci.state = Pucci.WANDERING;
@@ -431,22 +430,21 @@ public class Rebel extends Mob {
 		else if (Phase==4 && HP < 300) {
 			Phase = 5;
 			Buff.prolong(this, MagicImmune.class, MagicImmune.DURATION*5000f);
+			Buff.affect(Dungeon.hero, Blindness.class, 30f);
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
+			this.sprite.add(CharSprite.State.ILLUMINATED);
 
 			GameScene.flash(0x8B00FF);
 			yell(Messages.get(this, "telling_5"));
 
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 
+			GLog.h(Messages.get(Rebel.class, "blood"));
 			Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
 			BossHealthBar.assignBoss(this);
 		}
 
-	}
-
-	@Override
-	public void beckon( int cell ) {
 	}
 
 	private static final String PHASE   = "Phase";
@@ -456,10 +454,13 @@ public class Rebel extends Mob {
 	public void die(Object cause) {
 
 		for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-			if (mob instanceof WO || mob instanceof Newgenkaku || mob instanceof Newcmoon || mob instanceof Mih || mob instanceof Kousaku || mob instanceof Cmoon || mob instanceof Genkaku || mob instanceof Pucci) {
+			if (mob instanceof WO || mob instanceof Newgenkaku || mob instanceof Newcmoon || mob instanceof Mih || mob instanceof Kousaku || mob instanceof Cmoon || mob instanceof Genkaku || mob instanceof Pucci || mob instanceof Dvdol) {
 				mob.die( cause );
 			}
 		}
+
+		Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
+		Camera.main.shake(31, 3f);
 
 		super.die(cause);
 		//Badges.validateBossSlain();
@@ -548,13 +549,10 @@ public class Rebel extends Mob {
 
 	private boolean UseAbility() {
 		// 폭발 > 국가 순
-
 		if (enemy == null) return true;
-
 		//폭발
 		if (ACoolDown <= 0) {
 			if (Burstpos == -1) {
-				state = PASSIVE;
 				// 위치 미지정시, 이번 턴에는 폭발을 일으킬 지점을 정합니다.
 				Burstpos = Dungeon.hero.pos;
 				sprite.parent.addToBack(new TargetedCell(Burstpos, 0xFF00FF));
@@ -567,34 +565,32 @@ public class Rebel extends Mob {
 					}
 				}
 
+				sprite.centerEmitter().start(Speck.factory(Speck.MASK), 0.05f, 20);
+				spend(2f);
 				Sample.INSTANCE.play( Assets.Sounds.OH );
 				BurstTime++;
 
 				return false;
 			}
 			else if (BurstTime == 1) {
-				state = HUNTING;
-				BurstTime++;
-				return true;}
-			else if (BurstTime == 2) {
-
-				BurstTime++;
-				return true;}
-			else if (BurstTime == 3) {
 
 				PathFinder.buildDistanceMap(Burstpos, BArray.not(Dungeon.level.solid, null), 1);
 				for (int cell = 0; cell < PathFinder.distance.length; cell++) {
 					if (PathFinder.distance[cell] < Integer.MAX_VALUE) {
 						CellEmitter.get(cell).burst(SparkParticle.FACTORY, 31);
+						CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 4);
 						Char ch = Actor.findChar(cell);
-						if (ch != null&& !(ch instanceof Rebel)) {
-							ch.damage(Random.NormalIntRange(45, 70), this);
-						}}}
+						if (hit( this, enemy, true )) {
+							if (ch != null&& !(ch instanceof Rebel)) {
+								ch.damage(Random.NormalIntRange(51, 70), this);
+							}
+						}
+					}}
 				Camera.main.shake(9, 0.5f);
 				Burstpos = -1;
 				BurstTime = 0;
 				ACoolDown = Random.NormalIntRange(5,8);
-				if (Phase == 5) { ACoolDown = Random.NormalIntRange(1,5);}
+				if (Phase == 5) ACoolDown = Random.NormalIntRange(1,5);
 
 				Sample.INSTANCE.play( Assets.Sounds.BLAST, 1.5f, 0.67f );
 
@@ -614,7 +610,7 @@ public class Rebel extends Mob {
 		Dungeon.hero.interrupt();
 		GameScene.add(Blob.seed(target.pos, 250, Dominion.class));
 		GLog.w(Messages.get(Rebel.class, "skill2"));
-		GasCoolDown = 13;
+		GasCoolDown = 10;
 
 	}
 

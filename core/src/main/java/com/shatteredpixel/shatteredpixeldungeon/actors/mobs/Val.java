@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -79,9 +80,11 @@ public class Val extends Mob {
         state = WANDERING;
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
+        flying = true;
         HP = HT = 1;
         EXP = 0;
 
+        immunities.add(Dominion.class );
     }
     private boolean seenBefore = false;
     private static final Rect arena = new Rect(0, 0, 33, 26);

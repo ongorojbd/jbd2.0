@@ -368,6 +368,7 @@ public class DM300 extends Mob {
 					this.yell(Messages.get(this, "notice2"));
 					break;
 				case MAGE:
+					GLog.p(Messages.get(Val.class, "3"));
 					this.yell(Messages.get(this, "notice3"));
 					break;
 				case HUNTRESS:

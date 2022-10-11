@@ -62,7 +62,7 @@ public class Soldier extends Mob {
 		maxLvl = 30;
 
 		loot = new RegrowthBomb();
-		lootChance = 0.25f;
+		lootChance = 0.2f;
 	}
 
 
@@ -80,18 +80,6 @@ public class Soldier extends Mob {
 	@Override
 	public int drRoll() {
 		return Random.NormalIntRange(0, 5);
-	}
-
-	@Override
-	public int defenseProc(Char enemy, int damage) {
-		if (this.buff(Doom.class) == null) {
-			if (Dungeon.hero.belongings.weapon() instanceof MeleeWeapon) {
-				//takes 5/6/7/8/9/10 dmg at 5/7/10/14/19/25 incoming dmg
-				enemy.damage(damage / 5, target);
-				GLog.w(Messages.get(this, "reflect"));
-			}
-		}
-		return super.defenseProc(enemy, damage);
 	}
 
 	@Override

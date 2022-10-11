@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -87,12 +88,15 @@ public class Pucci extends Mob {
         HP = HT = 5;
         defenseSkill = 15;
         EXP = 0;
+
+        flying = true;
+
         Buff.affect(this, Barrier.class).setShield(171);
 
-        immunities.add(Blindness.class );
+        immunities.add(Dominion.class );
 
     }
-    private boolean seenBefore = false;
+
     private static final Rect arena = new Rect(0, 0, 33, 26);
     private static final int bottomDoor = 16 + (arena.bottom+1) * 33;
     int summonCooldown = 7;
@@ -115,26 +119,7 @@ public class Pucci extends Mob {
 
         summonCooldown--;
 
-        if (!seenBefore) {
-            switch(Dungeon.hero.heroClass){
-                case WARRIOR:
-                    this.yell(Messages.get(this, "notice"));
-                    break;
-                case ROGUE:
-                    this.yell(Messages.get(this, "notice"));
-                    break;
-                case MAGE:
-                    this.yell(Messages.get(this, "notice"));
-                    break;
-                case HUNTRESS:
-                    this.yell(Messages.get(this, "notice"));
-                    break;
-            }
-        }
-        seenBefore = true;
-
         if (summonCooldown <= 0 && Dungeon.level instanceof LabsBossLevel) {
-
 
             for (int i : PathFinder.NEIGHBOURS4){
                     Val Val = new Val();

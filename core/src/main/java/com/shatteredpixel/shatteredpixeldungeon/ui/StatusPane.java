@@ -319,6 +319,12 @@ public class StatusPane extends Component {
 		counter.setSweep((1f - Actor.now()%1f)%1f);
 	}
 
+	public void Avaterupdate()
+	{
+		avatar.copy( HeroSprite.avatar( Dungeon.hero.heroClass, lastTier ) );
+
+	}
+
 	public void alpha( float value ){
 		value = GameMath.gate(0, value, 1f);
 		bg.alpha(value);

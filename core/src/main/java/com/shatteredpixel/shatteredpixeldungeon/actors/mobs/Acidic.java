@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -115,6 +116,8 @@ public class Acidic extends Mob {
 
 		super.die( cause );
 
+
+		Dungeon.level.drop( new ArcaneCatalyst().identify(), pos ).sprite.drop( pos );
 
 		int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
 		for (int i = 0; i < blobs; i++){

@@ -24,6 +24,8 @@ public class Dominion extends Blob {
     protected void evolve() {
         super.evolve();
 
+        int damage = 7;
+
         Char ch;
         int cell;
 
@@ -35,7 +37,7 @@ public class Dominion extends Blob {
                         Buff.prolong(ch, Weakness.class, 1);
                         Buff.prolong(ch, Vulnerable.class, 1);
                         Buff.prolong(ch, Hex.class, 1);
-                        Buff.prolong(ch, Blindness.class, 1);
+                        ch.damage(damage, this);
                         //Buff.affect(ch, Poison.class ).set(2);
                         //Buff.prolong(ch, Silence.class, 1);
                     }

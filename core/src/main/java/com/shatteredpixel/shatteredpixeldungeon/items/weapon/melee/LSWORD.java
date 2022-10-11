@@ -94,9 +94,7 @@ public class LSWORD extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         float procChance = (buffedLvl()+1f)/(buffedLvl()+3f);
-        if (Random.Float() < procChance) {
-            Buff.affect(defender, Blindness.class, 2+buffedLvl());
-        }
+
         if (defender.properties().contains(Char.Property.DEMONIC) || defender.properties().contains(Char.Property.UNDEAD)){
             defender.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10+buffedLvl() );
             Sample.INSTANCE.play(Assets.Sounds.BURNING);

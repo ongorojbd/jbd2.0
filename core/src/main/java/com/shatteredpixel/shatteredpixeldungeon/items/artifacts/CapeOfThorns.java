@@ -101,7 +101,7 @@ public class CapeOfThorns extends Artifact {
 		public int proc(int damage, Char attacker, Char defender){
 			if (!cursed) {
 				if (cooldown == 0){
-					charge += damage/3;
+					charge += damage;
 					if (charge >= chargeCap){
 						charge = 0;
 						cooldown = 2+level()*1/2;

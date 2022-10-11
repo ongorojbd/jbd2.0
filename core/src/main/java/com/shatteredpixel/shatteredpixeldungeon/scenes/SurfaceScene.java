@@ -33,8 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EarthGuardianSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SnakeSprite;
@@ -201,13 +201,13 @@ public class SurfaceScene extends PixelScene {
 		}
 		
 		if (roseLevel >= 3 && roseLevel >= earthLevel && roseLevel >= wardLevel){
-			allySprite = new GhostSprite();
+			allySprite = new DvdolSprite();
 			if (dayTime) allySprite.alpha(0.4f);
 		} else if (earthLevel >= 3 && earthLevel >= wardLevel){
 			allySprite = new EarthGuardianSprite();
 		} else if (wardLevel >= 3){
 			allySprite = new WardSprite();
-			((WardSprite) allySprite).updateTier(Math.min(wardLevel+2, 6));
+			((WardSprite) allySprite).updateTier(Math.min(3, 3));
 		}
 		
 		if (allySprite != null){

@@ -166,6 +166,13 @@ public class v1_X_Changes {
 						"파문 스승의 가르침 : 에이자의 적석이 전부 충전되어 있을 때 적석의 충전량을 소모하면, 강화 수치에 비례한 보호막이 부여됩니다.\n\n" +
 						"빛의 영수증이다! : 이제 골드 대신 아이템을 떨어트릴 확률이 증가합니다." ));
 
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.MAGE, 0, 15, 12, 15), "죠셉 비주얼 리워크",
+				"죠셉의 비주얼 리워크와 보스 전용 대사가 변경되었습니다."));
+
+		changes.addButton( new ChangeButton(BadgeBanner.image( Badges.Badge.YORIHIMES_ALL_CLASSES.image ), "신규 엔드 컨텐츠 뱃지",
+				"천국에 도달한 DIO 관련 신규 뱃지가 3종 추가되었습니다."));
+
+
 		changes = new ChangeInfo("상향", false, null);
 		changes.hardlight(Window.SHPX_COLOR);
 		changeInfos.add(changes);
@@ -208,8 +215,8 @@ public class v1_X_Changes {
 				"체력이 300 감소했습니다." +
 						""));
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.SOLDIER, 0, 0, 12, 15), "26층 이후 적들 하향",
-				"레퀴엠 죠르노를 제외한 모든 적들의 체력이 감소되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "26층 이후 적들 하향",
+				"레퀴엠 죠르노를 제외한 모든 적들의 체력이 감소되었습니다.\n\n죠르노의 반사 능력이 삭제되었습니다.\n\n죠스케의 이동속도가 1.5배에서 1배로 하향되었습니다.\n\n천국에 도달한 DIO의 나이프 공격이 이제 물리 공격을 입힙니다.\n\n천국에 도달한 DIO가 2턴의 정신 집중 후에 낙뢰를 발사하도록 변경되었습니다."));
 
 	}
 

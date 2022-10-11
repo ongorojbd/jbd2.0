@@ -354,6 +354,7 @@ public class Tengu extends Mob {
 						this.yell(Messages.get(this, "notice_gotcha2"));
 						break;
 					case MAGE:
+						GLog.p(Messages.get(Val.class, "2"));
 						this.yell(Messages.get(this, "notice_gotcha3"));
 						break;
 					case HUNTRESS:

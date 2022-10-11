@@ -334,6 +334,7 @@ public class Goo extends Mob {
 					this.yell(Messages.get(this, "notice2"));
 					break;
 				case MAGE:
+					GLog.p(Messages.get(Val.class, "1"));
 					this.yell(Messages.get(this, "notice3"));
 					break;
 				case HUNTRESS:

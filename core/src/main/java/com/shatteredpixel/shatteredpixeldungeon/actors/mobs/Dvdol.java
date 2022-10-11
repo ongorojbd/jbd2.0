@@ -26,7 +26,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
@@ -37,9 +39,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
@@ -52,123 +57,108 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MedicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
-public class Medic extends Mob {
+public class Dvdol extends Mob {
 
-	private static final float TIME_TO_ZAP = 1f;
+    private static final float TIME_TO_ZAP = 2f;
 
-	{
-		spriteClass = MedicSprite.class;
+    {
+        spriteClass = DvdolSprite.class;
 
-		HP = HT = 195;
-		defenseSkill = 20;
+        HP = HT = 195;
+        defenseSkill = 20;
 
-		EXP = 15;
-		maxLvl = 30;
+        EXP = 0;
 
-		loot = new PotionOfShroudingFog();
-		lootChance = 0.4f;
-	}
+        properties.add(Property.BOSS);
+        immunities.add(Dominion.class );
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 30, 40 );
-	}
+    }
 
-	@Override
-	public int attackSkill( Char target ) {
-		return 40;
-	}
+    @Override
+    public void die( Object cause ) {
 
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
-	}
+        super.die( cause );
 
+        yell( Messages.get(this, "defeated") );
+    }
 
-	@Override
-	public int attackProc( Char hero, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		if (this.buff(Doom.class) == null) {
-			if (Random.Int(5) == 0) {
-				new ExplosiveTrap().set(target).activate();
-			}
-		}
-		return damage;
-	}
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 30, 40 );
+    }
 
-	@Override
-	protected boolean canAttack(Char enemy) {
-		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
-	}
+    @Override
+    public int attackSkill( Char target ) {
+        return 40;
+    }
 
-	protected boolean doAttack(Char enemy) {
+    @Override
+    public int drRoll() {
+        return Random.NormalIntRange(0, 5);
+    }
 
-		if (Dungeon.level.adjacent(pos, enemy.pos)) {
+    @Override
+    protected boolean canAttack(Char enemy) {
+        return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+    }
 
-			return super.doAttack(enemy);
+    protected boolean doAttack(Char enemy) {
 
-		} else {
+        if (Dungeon.level.adjacent(pos, enemy.pos)) {
 
-			if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-				sprite.zap(enemy.pos);
-				return false;
-			} else {
-				zap();
-				return true;
-			}
-		}
-	}
+            return super.doAttack(enemy);
 
-	//used so resistances can differentiate between melee and magical attacks
-	public static class DarkBolt {
-	}
+        } else {
 
-	private void zap() {
-		spend(TIME_TO_ZAP);
+            if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+                sprite.zap(enemy.pos);
+                return false;
+            } else {
+                zap();
+                return true;
+            }
+        }
+    }
 
-		if (hit(this, enemy, true)) {
-			//TODO would be nice for this to work on ghost/statues too
-			if (enemy == Dungeon.hero && Random.Int(0) == 0) {
-				Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
-				Sample.INSTANCE.play(Assets.Sounds.HIT);
-			}
+    //used so resistances can differentiate between melee and magical attacks
+    public static class DarkBolt {
+    }
 
-			int dmg = Random.NormalIntRange(25, 30);
-			enemy.damage( dmg, new DarkBolt() );
+    private void zap() {
+        spend(TIME_TO_ZAP);
 
-			if (enemy == Dungeon.hero && !enemy.isAlive()) {
-				Dungeon.fail(getClass());
-				GLog.n(Messages.get(this, "bolt_kill"));
-			}
-		} else {
-			enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
-		}
-	}
+        if (hit(this, enemy, true)) {
+            //TODO would be nice for this to work on ghost/statues too
+            if (enemy == Dungeon.hero && Random.Int(0) == 0) {
+                Buff.affect( enemy, Burning.class ).reignite( enemy, 1f );
+                Sample.INSTANCE.play(Assets.Sounds.HIT);
+            }
 
-	public void onZapComplete() {
-		zap();
-		next();
-	}
+            int dmg = Random.NormalIntRange(15, 20);
+            enemy.damage( dmg, new DarkBolt() );
 
-	@Override
-	public float lootChance() {
-		return super.lootChance() * ((35f - Dungeon.LimitedDrops.NECRO_HP.count) / 35f);
-	}
+            if (enemy == Dungeon.hero && !enemy.isAlive()) {
+                Dungeon.fail(getClass());
+            }
+        } else {
+            enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
+        }
+    }
 
-	@Override
-	public Item createLoot(){
-		Dungeon.LimitedDrops.NECRO_HP.count++;
-		return super.createLoot();
-	}
-
+    public void onZapComplete() {
+        zap();
+        next();
+    }
 
 
 }

@@ -440,6 +440,7 @@ public class DwarfKing extends Mob {
 					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
 					break;
 				case MAGE:
+					GLog.p(Messages.get(Val.class, "4"));
 					this.yell(Messages.get(this, "notice3"));
 					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
 					break;
