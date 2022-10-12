@@ -23,6 +23,8 @@ public class ThirdBomb extends Bomb {
 
     {
         image = ItemSpriteSheet.KIT;
+
+        unique = true;
     }
 
     @Override

@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Fury;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Silence;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -59,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
@@ -84,8 +86,8 @@ public class jojo extends Mob {
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
         viewDistance = 99;
-        HP = HT = 185;
-        defenseSkill = 30;
+        HP = HT = 259;
+        defenseSkill = 35;
         EXP = 0;
         baseSpeed = 1.2f;
 
@@ -95,6 +97,28 @@ public class jojo extends Mob {
 
     private boolean seenBefore = false;
 
+    @Override
+    public int attackProc(Char enemy, int damage) {
+
+           {
+                int healAmt = 2*(7-Dungeon.level.distance(pos, hero.pos)); //different per each distance
+                healAmt = Math.min( 3,5);
+                if (healAmt > 0 && hero.isAlive()) {
+                    hero.HP += healAmt;
+                    if (Dungeon.level.heroFOV[hero.pos]) {
+                        hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.4f, 2 );
+                        hero.sprite.showStatus( CharSprite.POSITIVE, Integer.toString( healAmt ) );
+                    }
+
+                    if (sprite.visible || hero.sprite.visible) {
+                        sprite.parent.add(new Beam.HealthRay(sprite.center(), hero.sprite.center()));
+                    }
+                }
+            }
+        //heals nearby enemies and herself per every attack
+
+        return damage;
+    }
     @Override
     protected boolean act() {
 
@@ -119,7 +143,8 @@ public class jojo extends Mob {
             //}
 
             new Flare( 5, 32 ).color( 0x00FFFF, true ).show( this.sprite, 3f );
-            Buff.affect(hero, Barrier.class).setShield(10);
+            //Buff.affect(hero, Barrier.class).setShield(10);
+            Sample.INSTANCE.play( Assets.Sounds.YAREYARE, 3 );
         }
         seenBefore = true;
         return super.act();
@@ -152,7 +177,7 @@ public class jojo extends Mob {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(11, 15);
+        return Random.NormalIntRange(15, 21);
     }
 
     @Override

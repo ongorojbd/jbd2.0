@@ -236,7 +236,7 @@ abstract public class ClassArmor extends Armor {
 								GLog.p( Messages.get(ClassArmor.class, "transfer_complete") );
 								hero.sprite.operate(hero.pos);
 								hero.sprite.emitter().burst( Speck.factory( Speck.CROWN), 12 );
-								Sample.INSTANCE.play( Assets.Sounds.EVOKE );
+								Sample.INSTANCE.play( Assets.Sounds.MASTERY );
 								hero.spend(Actor.TICK);
 								hero.busy();
 

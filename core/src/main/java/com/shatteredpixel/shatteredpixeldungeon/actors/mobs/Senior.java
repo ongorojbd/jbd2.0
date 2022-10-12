@@ -169,12 +169,6 @@ public class Senior extends Mob {
 
 		yell( Messages.get(this, "defeated") );
 
-		if (Random.Int( 30 ) == 0) {
-			Dungeon.level.drop( new AdvancedEvolution().identify(), pos ).sprite.drop( pos );
-			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
-			Sample.INSTANCE.play(Assets.Sounds.BADGE);
-			GLog.p(Messages.get(Kawasiri.class, "rare"));
-		}
 	}
 
 		@Override

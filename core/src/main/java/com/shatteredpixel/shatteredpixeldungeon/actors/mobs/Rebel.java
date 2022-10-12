@@ -182,7 +182,7 @@ public class Rebel extends Mob {
 	public int damageRoll() {
 		int dmg;
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-			dmg = Random.NormalIntRange( 40, 65 );
+			dmg = Random.NormalIntRange( 45, 70 );
 		} else {
 			dmg = Random.NormalIntRange( 35, 55 );
 		}
@@ -191,7 +191,7 @@ public class Rebel extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 55;
+		return 65;
 	}
 
 	@Override
@@ -412,7 +412,7 @@ public class Rebel extends Mob {
 		else if (Phase==3 && HP < 600) {
 			Phase = 4;
 			GameScene.flash(0x8B00FF);
-			Buff.prolong(this, Stamina.class, Stamina.DURATION*5000f);
+			Buff.prolong(this, Adrenaline.class, Adrenaline.DURATION*5000f);
 			yell(Messages.get(this, "telling_4"));
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
@@ -582,7 +582,7 @@ public class Rebel extends Mob {
 						Char ch = Actor.findChar(cell);
 						if (hit( this, enemy, true )) {
 							if (ch != null&& !(ch instanceof Rebel)) {
-								ch.damage(Random.NormalIntRange(55, 70), this);
+								ch.damage(Random.NormalIntRange(65, 70), this);
 							}
 						}
 					}}

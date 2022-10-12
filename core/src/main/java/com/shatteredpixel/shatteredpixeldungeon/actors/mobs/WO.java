@@ -136,12 +136,12 @@ public class WO extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(35, 55);
+        return Random.NormalIntRange(35, 65);
     }
 
     @Override
     public int attackSkill(Char target) {
-        return 25;
+        return 65;
     }
 
     @Override

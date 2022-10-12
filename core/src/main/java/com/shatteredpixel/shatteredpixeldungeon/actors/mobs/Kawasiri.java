@@ -264,7 +264,7 @@ public class Kawasiri extends Mob {
         }
 
     private static final String PHASE   = "Phase";
-    private static final float DELAY = 9f;
+    private static final float DELAY = 7f;
 
     @Override
     public int damageRoll() {

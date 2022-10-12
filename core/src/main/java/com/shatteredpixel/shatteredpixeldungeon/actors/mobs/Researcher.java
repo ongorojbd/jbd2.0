@@ -61,7 +61,7 @@ public class Researcher extends Mob {
 	{
 		spriteClass = ResearcherSprite.class;
 
-		HP = HT = 150;
+		HP = HT = 165;
 		defenseSkill = 15;
 
 		EXP = 15;
@@ -78,7 +78,7 @@ public class Researcher extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 40;
+		return 49;
 	}
 
 	@Override
@@ -90,12 +90,13 @@ public class Researcher extends Mob {
 	@Override
 	public int attackProc(Char enemy, int damage) {
 		damage = super.attackProc(enemy, damage);
-		if (this.buff(Doom.class) == null) {
-			if (alignment == Alignment.ENEMY && item == null
-					&& enemy instanceof Hero && steal((Hero) enemy)) {
+
+		if (Random.Int( 3 ) == 0) {
+			if (alignment == Alignment.ENEMY && enemy instanceof Hero && steal((Hero) enemy)) {
 				state = WANDERING;
 				LiquidMetal Silence = new LiquidMetal();
 				Silence.quantity(1).collect();
+				Sample.INSTANCE.play( Assets.Sounds.EVOKE, 1, 0.8f );
 			}
 		}
 		return damage;
@@ -104,9 +105,7 @@ public class Researcher extends Mob {
 	protected boolean steal(Hero hero) {
 
 		Item toSteal = hero.belongings.randomUnequipped();
-		if (Random.Int( 5 ) == 0) {
 
-		}
 		if (toSteal != null && !toSteal.unique && toSteal.level() < 1) {
 
 			GLog.w(Messages.get(Researcher.class, "stole", toSteal.name()));

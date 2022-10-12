@@ -290,7 +290,7 @@ public class DM300 extends Mob {
 		} else {
 
 			if (!chargeAnnounced){
-				yell(Messages.get(this, "supercharged"));
+				GLog.n(Messages.get(this, "supercharged"));
 				chargeAnnounced = true;
 			}
 
@@ -362,17 +362,17 @@ public class DM300 extends Mob {
 			Sample.INSTANCE.play( Assets.Sounds.SHEER );
 			switch(Dungeon.hero.heroClass){
 				case WARRIOR:
-					this.yell(Messages.get(this, "notice"));
+					GLog.n(Messages.get(this, "notice"));
 					break;
 				case ROGUE:
-					this.yell(Messages.get(this, "notice2"));
+					GLog.n(Messages.get(this, "notice2"));
 					break;
 				case MAGE:
 					GLog.p(Messages.get(Val.class, "3"));
 					this.yell(Messages.get(this, "notice3"));
 					break;
 				case HUNTRESS:
-					this.yell(Messages.get(this, "notice4"));
+					GLog.n(Messages.get(this, "notice4"));
 					break;
 			}
 			for (Char ch : Actor.chars()){
@@ -547,9 +547,9 @@ public class DM300 extends Mob {
 		((DM300Sprite)sprite).updateChargeState(false);
 
 		if (pylonsActivated < totalPylonsToActivate()){
-			yell(Messages.get(this, "charge_lost"));
+			GLog.n(Messages.get(this, "charge_lost"));
 		} else {
-			yell(Messages.get(this, "pylons_destroyed"));
+			GLog.n(Messages.get(this, "pylons_destroyed"));
 			BossHealthBar.bleed(true);
 			Music.INSTANCE.play(Assets.Music.KOICHI, true);
 		}
