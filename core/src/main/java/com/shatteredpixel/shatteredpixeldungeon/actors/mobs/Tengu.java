@@ -61,6 +61,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WoundsofWar;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscB;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -230,16 +232,13 @@ public class Tengu extends Mob {
 		super.die( cause );
 
 		if (Random.Int( 10 ) == 0) {
-			Dungeon.level.drop( new WoundsofWar().identify(), pos ).sprite.drop( pos );
+			GameScene.flash(0xFFFF00);
+			Dungeon.level.drop( new BossdiscB().identify(), pos ).sprite.drop( pos );
 			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));
 		}
 
-		if (Random.Int( 5 ) == 0) {
-			Dungeon.level.drop( new ScrollOfForesight().identify(), pos ).sprite.drop( pos );
-		}
-		
 		Badges.validateBossSlain();
 		if (Statistics.qualifiedForBossChallengeBadge){
 			Badges.validateBossChallengeCompleted();

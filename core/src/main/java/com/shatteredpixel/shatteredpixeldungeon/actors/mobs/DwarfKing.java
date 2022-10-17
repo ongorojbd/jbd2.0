@@ -56,6 +56,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscE;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
@@ -551,8 +553,9 @@ public class DwarfKing extends Mob {
 			Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
 		}
 
-		if (Random.Int( 15 ) == 0) {
-			Dungeon.level.drop( new AdvancedEvolution().identify(), pos ).sprite.drop( pos );
+		if (Random.Int( 10 ) == 0) {
+			GameScene.flash(0xFFFF00);
+			Dungeon.level.drop( new BossdiscE().identify(), pos ).sprite.drop( pos );
 			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));

@@ -44,6 +44,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscG;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -86,7 +89,8 @@ public class SWAT extends Mob implements Callback {
 		super.die( cause );
 
 		if (Random.Int( 4 ) == 0) {
-			Dungeon.level.drop( new CapeOfThorns().identify().upgrade(10), pos ).sprite.drop( pos );
+			GameScene.flash(0xFFFF00);
+			Dungeon.level.drop( new BossdiscG().identify(), pos ).sprite.drop( pos );
 			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));

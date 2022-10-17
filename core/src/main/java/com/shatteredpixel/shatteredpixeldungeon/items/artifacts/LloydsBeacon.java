@@ -33,6 +33,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExplosiveCrossbow;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -66,7 +70,7 @@ public class LloydsBeacon extends Artifact {
 		image = ItemSpriteSheet.ARTIFACT_BEACON;
 
 		levelCap = 3;
-
+		identify();
 		charge = 0;
 		chargeCap = 3+level();
 
@@ -333,6 +337,20 @@ public class LloydsBeacon extends Artifact {
 			updateQuickslot();
 			spend( TICK );
 			return true;
+		}
+	}
+
+
+	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+
+		{
+			inputs =  new Class[]{BossdiscA.class, ArcaneCatalyst.class};
+			inQuantity = new int[]{1, 1};
+
+			cost = 3;
+
+			output = LloydsBeacon.class;
+			outQuantity = 1;
 		}
 	}
 }

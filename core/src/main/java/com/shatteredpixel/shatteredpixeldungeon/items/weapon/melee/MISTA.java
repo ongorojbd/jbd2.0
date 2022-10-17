@@ -50,6 +50,7 @@ public class MISTA extends MeleeWeapon {
         image = ItemSpriteSheet.MISTA;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch = 0.9f;
+        identify();
 
         defaultAction = AC_ZAP;
 

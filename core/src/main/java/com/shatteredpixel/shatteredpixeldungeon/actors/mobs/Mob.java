@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FlameKatana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -750,6 +751,10 @@ public abstract class Mob extends Char {
 
 		super.die( cause );
 
+		if (cause == Dungeon.hero && Dungeon.hero.belongings.weapon instanceof FlameKatana) {
+			((FlameKatana) Dungeon.hero.belongings.weapon).GetKillPoint();
+		}
+
 		if (!(this instanceof Wraith)
 				&& soulMarked
 				&& Random.Float() < (0.4f*Dungeon.hero.pointsInTalent(Talent.NECROMANCERS_MINIONS)/3f)){
@@ -763,6 +768,8 @@ public abstract class Mob extends Char {
 			}
 		}
 	}
+
+
 
 	public float lootChance(){
 		float lootChance = this.lootChance;

@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
@@ -100,6 +101,7 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfPrismaticLight.class, MagicMissile.RAINBOW_CONE);
 		effectTypes.put(WandOfWarding.class,        MagicMissile.WARD_CONE);
 		effectTypes.put(WandOfTransfusion.class,    MagicMissile.BLOOD_CONE);
+		effectTypes.put(WandOfDestOrb.class,        MagicMissile.FORCE_CONE);
 		effectTypes.put(WandOfCorruption.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(WandOfRegrowth.class,       MagicMissile.FOLIAGE_CONE);
 	}
@@ -117,6 +119,7 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfPrismaticLight.class,   0.67f);
 		damageFactors.put(WandOfWarding.class,          0f);
 		damageFactors.put(WandOfTransfusion.class,      0f);
+		damageFactors.put(WandOfDestOrb.class,      0f);
 		damageFactors.put(WandOfCorruption.class,       0f);
 		damageFactors.put(WandOfRegrowth.class,         0f);
 	}
@@ -347,8 +350,40 @@ public class ElementalBlast extends ArmorAbility {
 									}
 									charsHit++;
 
-								//*** Wand of Corruption ***
-								} else if (finalWandCls == WandOfCorruption.class){
+								//*** Wand of Destorb ***
+								} else if (finalWandCls == WandOfDestOrb.class){
+									if(mob.alignment == Char.Alignment.ALLY || mob.buff(Charm.class) != null){
+										int healing = Math.round(10*effectMulti);
+										int shielding = (mob.HP + healing) - mob.HT;
+										if (shielding > 0){
+											healing -= shielding;
+											Buff.affect(mob, Barrier.class).setShield(shielding);
+										} else {
+											shielding = 0;
+										}
+										mob.HP += healing;
+
+										mob.sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
+										mob.sprite.showStatus(CharSprite.POSITIVE, "+%dHP", healing + shielding);
+									} else {
+										if (!mob.properties().contains(Char.Property.UNDEAD)) {
+											Charm charm = Buff.affect(mob, Charm.class, effectMulti*Charm.DURATION/2f);
+											charm.object = hero.id();
+											charm.ignoreHeroAllies = true;
+											mob.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 3);
+										} else {
+											damage = Math.round(Random.NormalIntRange(15, 25) * effectMulti);
+											mob.damage(damage, Reflection.newInstance(finalWandCls));
+											mob.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
+										}
+									}
+									charsHit++;
+
+									//*** Wand of Corruption ***
+								}
+
+
+								else if (finalWandCls == WandOfCorruption.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
 										Buff.prolong(mob, Amok.class, effectMulti*5f);
 										charsHit++;

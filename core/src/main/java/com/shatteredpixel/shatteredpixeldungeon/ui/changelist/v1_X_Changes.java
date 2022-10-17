@@ -49,6 +49,7 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
+		add_v1_3_1_Changes(changeInfos);
 		add_v1_3_Changes(changeInfos);
 		add_v1_2_Changes(changeInfos);
 	}
@@ -70,6 +71,25 @@ public class v1_X_Changes {
 
 	}
 
+
+	public static void add_v1_3_1_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0d-1", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET, new ItemSprite.Glowing(0x99FFFF)), "메이드 인 헤븐의 DISC",
+				"_최강의 DISC인 메이드 인 헤븐의 DISC가 추가되었습니다!_\n\n메이드 인 헤븐의 DISC를 제작하기 위한 과정의 재료 아이템들이 대거 추가되었습니다.\n\n메이드 인 헤븐의 DISC는 제작 난이도가 상당히 높습니다."));
+
+
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.STURO), "보스 파생 아이템",
+				"이제 모든 보스가 1/10 확률로 드롭하는 강자의 잔재를 이용해서\n\n보스 파생 아이템을 제작할 수 있습니다."));
+
+	}
 
 	public static void add_v1_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
 		ChangeInfo changes = new ChangeInfo("2.0d", true, "");

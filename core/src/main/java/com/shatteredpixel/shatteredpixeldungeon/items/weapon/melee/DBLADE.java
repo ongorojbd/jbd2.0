@@ -43,7 +43,7 @@ public class DBLADE extends MeleeWeapon {
         image = ItemSpriteSheet.DBLADE;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 0.8f;
-
+        identify();
         tier = 5;
         DLY = 0.8f;//1.25x speed
     }

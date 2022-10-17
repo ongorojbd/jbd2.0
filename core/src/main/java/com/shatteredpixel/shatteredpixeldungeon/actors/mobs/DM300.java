@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.gate;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel.mainArena;
 
@@ -49,12 +50,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EarthParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscC;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
@@ -577,6 +581,14 @@ public class DM300 extends Mob {
 		Kawasiri.pos = this.pos;
 		GameScene.add( Kawasiri );
 		Kawasiri.beckon(Dungeon.hero.pos);
+
+		if (Random.Int( 10 ) == 0) {
+			GameScene.flash(0xFFFF00);
+			Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
+			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
+			Sample.INSTANCE.play(Assets.Sounds.BADGE);
+			GLog.p(Messages.get(Kawasiri.class, "rare"));
+		}
 
 
 		//60% chance of 2 shards, 30% chance of 3, 10% chance for 4. Average of 2.5

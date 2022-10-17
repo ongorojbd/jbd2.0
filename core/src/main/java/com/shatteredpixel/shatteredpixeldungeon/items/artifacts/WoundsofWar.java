@@ -13,8 +13,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscB;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.NewCross;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -34,7 +41,7 @@ public class WoundsofWar extends Artifact {
         charge = 0;
         partialCharge = 0;
         chargeCap = 1 + level() / 5;
-
+        identify();
         defaultAction = AC_SNAP;
     }
 
@@ -134,6 +141,19 @@ public class WoundsofWar extends Artifact {
             charge += Math.round(0.1 * amount);
             charge = Math.min(charge, chargeCap);
             updateQuickslot();
+        }
+    }
+
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+
+        {
+            inputs =  new Class[]{BossdiscB.class, ArcaneResin.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 3;
+
+            output = WoundsofWar.class;
+            outQuantity = 1;
         }
     }
 }

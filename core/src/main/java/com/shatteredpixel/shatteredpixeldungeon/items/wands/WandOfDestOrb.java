@@ -24,16 +24,25 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponEnhance;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SoftTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -42,29 +51,38 @@ import com.watabou.utils.Random;
 public class WandOfDestOrb extends Wand {
 
     {
-        image = ItemSpriteSheet.WAND_BLAST_WAVE;
+        image = ItemSpriteSheet.WAND_TRANSFUSION;
+        icon = ItemSpriteSheet.Icons.POTION_DIVINE;
+        identify();
 
         collisionProperties = Ballistica.PROJECTILE;
+    }
+
+    @Override
+    public ItemSprite.Glowing glowing() {
+        return new ItemSprite.Glowing(0x00CCFF, 3f);
     }
 
     private boolean freeCharge = false;
 
     @Override
     public void onZap(Ballistica beam) {
-        new DestOrbTrap().set(curUser.pos).activate();
+        new SoftTrap().set(curUser.pos).activate();
         if (this.level()>3){
-            new DestOrbTrap().set(curUser.pos).activate();
+            new SoftTrap().set(curUser.pos).activate();
         }
         if (this.level()>6){
-            new DestOrbTrap().set(curUser.pos).activate();
+            new SoftTrap().set(curUser.pos).activate();
+        }
+        if (this.level()>12){
+            new SoftTrap().set(curUser.pos).activate();
         }
     }
 
     @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
-        Buff.prolong(attacker, Foresight.class, Foresight.DURATION);
-        attacker.sprite.emitter().burst(BloodParticle.BURST, 20);
-        //well, there is no way to get this wand for marisa
+        //cripples enemy
+        Buff.prolong( defender, Cripple.class, Math.round((1+staff.buffedLvl())*procChanceMultiplier(attacker)));
     }
 
     @Override
@@ -76,7 +94,7 @@ public class WandOfDestOrb extends Wand {
 
     @Override
     public void staffFx(MagesStaff.StaffParticle particle) {
-        particle.color( 0xCC0000 );
+        particle.color( 0x00FFFF );
         particle.am = 0.6f;
         particle.setLifespan(1f);
         particle.speed.polar( Random.Float(PointF.PI2), 2f );
@@ -107,4 +125,16 @@ public class WandOfDestOrb extends Wand {
         bundle.put( FREECHARGE, freeCharge );
     }
 
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+
+        {
+            inputs =  new Class[]{BossdiscD.class, WandOfTransfusion.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 3;
+
+            output = WandOfDestOrb.class;
+            outQuantity = 1;
+        }
+    }
 }

@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -288,8 +289,9 @@ public class Goo extends Mob {
 		Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
 
 
-		if (Random.Int( 5 ) == 0) {
-			Dungeon.level.drop( new LloydsBeacon().identify(), pos ).sprite.drop( pos );
+		if (Random.Int( 10 ) == 0) {
+			GameScene.flash(0xFFFF00);
+			Dungeon.level.drop( new BossdiscA().identify(), pos ).sprite.drop( pos );
 			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));

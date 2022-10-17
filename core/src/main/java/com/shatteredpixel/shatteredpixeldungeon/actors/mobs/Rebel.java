@@ -46,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCle
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -184,14 +186,14 @@ public class Rebel extends Mob {
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
 			dmg = Random.NormalIntRange( 45, 70 );
 		} else {
-			dmg = Random.NormalIntRange( 35, 55 );
+			dmg = Random.NormalIntRange( 37, 57 );
 		}
 		return dmg;
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 65;
+		return 77;
 	}
 
 	@Override
@@ -484,8 +486,9 @@ public class Rebel extends Mob {
 			beacon.upgrade();
 		}
 
-		if (Random.Int( 15 ) == 0) {
-			Dungeon.level.drop( new AdvancedEvolution().identify(), pos ).sprite.drop( pos );
+		if (Random.Int( 10 ) == 0) {
+			GameScene.flash(0xFFFF00);
+			Dungeon.level.drop( new BossdiscH().identify(), pos ).sprite.drop( pos );
 			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));

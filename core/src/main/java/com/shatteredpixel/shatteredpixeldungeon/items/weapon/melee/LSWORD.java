@@ -13,9 +13,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -30,7 +32,7 @@ public class LSWORD extends MeleeWeapon {
         image = ItemSpriteSheet.LSWORD;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1f;
-
+        identify();
         tier = 5;
 
         defaultAction = AC_ZAP;
@@ -107,10 +109,10 @@ public class LSWORD extends MeleeWeapon {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{WornShortsword.class};
-            inQuantity = new int[]{1};
+            inputs =  new Class[]{WornShortsword.class, WarHammer.class};
+            inQuantity = new int[]{1, 1};
 
-            cost = 150;
+            cost = 50;
 
             output = LSWORD.class;
             outQuantity = 1;

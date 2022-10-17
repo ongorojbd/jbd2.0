@@ -51,6 +51,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscF;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -525,16 +527,10 @@ public class YogDzewa extends Mob {
 		Dungeon.level.unseal();
 		super.die( cause );
 
-		if (Random.Int( 15 ) == 0) {
-			Dungeon.level.drop( new AdvancedEvolution().identify(), pos ).sprite.drop( pos );
+		if (Random.Int( 10 ) == 0) {
+			GameScene.flash(0xFFFF00);
+			Dungeon.level.drop( new BossdiscF().identify(), pos ).sprite.drop( pos );
 			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
-			Sample.INSTANCE.play(Assets.Sounds.BADGE);
-			GLog.p(Messages.get(Kawasiri.class, "rare"));
-		}
-
-		if (Random.Int( 30 ) == 0) {
-			Dungeon.level.drop( new ScrollOfExtract().identify(), pos ).sprite.drop( pos );
-			new Flare( 5, 32 ).color( 0x66FFFF, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));
 		}

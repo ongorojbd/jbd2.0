@@ -30,7 +30,7 @@ public class AJA extends MeleeWeapon {
         image = ItemSpriteSheet.AJA;
 
         defaultAction = AC_ZAP;
-
+        identify();
         tier = 5;
         ACC = 1.4f;
         DLY = 1f;

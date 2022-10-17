@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -34,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -46,6 +48,11 @@ public class ScrollOfExtract extends InventorySpell {
 
         unique = true;
         bones = false;
+    }
+
+    @Override
+    public ItemSprite.Glowing glowing() {
+        return new ItemSprite.Glowing(0x000000, 3f);
     }
 
     @Override
@@ -113,5 +120,19 @@ public class ScrollOfExtract extends InventorySpell {
     @Override
     public int value() {
         return quantity * 300;
+    }
+
+
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+
+        {
+            inputs =  new Class[]{BossdiscF.class, ScrollOfUpgrade.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 3;
+
+            output = ScrollOfExtract.class;
+            outQuantity = 1;
+        }
     }
 }

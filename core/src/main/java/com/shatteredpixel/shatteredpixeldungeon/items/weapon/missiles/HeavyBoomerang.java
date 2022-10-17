@@ -38,8 +38,8 @@ public class HeavyBoomerang extends MissileWeapon {
 	
 	{
 		image = ItemSpriteSheet.BOOMERANG;
-		hitSound = Assets.Sounds.HIT_CRUSH;
-		hitSoundPitch = 1f;
+		hitSound = Assets.Sounds.HIT_STRONG;
+		hitSoundPitch = 3.3f;
 		
 		tier = 4;
 		sticky = false;

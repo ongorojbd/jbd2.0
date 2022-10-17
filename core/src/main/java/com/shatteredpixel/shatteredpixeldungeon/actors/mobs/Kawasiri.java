@@ -32,10 +32,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ShrGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -48,10 +51,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscD;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
@@ -78,6 +84,9 @@ public class Kawasiri extends Mob {
         spriteClass = KousakuSprite.class;
 
         HP = HT = 150;
+        viewDistance = 99;
+
+        baseSpeed = 0.5f;
 
         EXP = 15;
         defenseSkill = 15;
@@ -111,11 +120,12 @@ public class Kawasiri extends Mob {
             Dungeon.level.drop( new CeremonialCandle(), pos ).sprite.drop( pos );
 
 
-        if (Random.Int( 5 ) == 0) {
-            Dungeon.level.drop( new ThirdBomb().identify(), pos ).sprite.drop( pos );
-        new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
-        Sample.INSTANCE.play(Assets.Sounds.BADGE);
-        GLog.p(Messages.get(Kawasiri.class, "rare"));
+        if (Random.Int( 10 ) == 0) {
+            GameScene.flash(0xFFFF00);
+            Dungeon.level.drop( new BossdiscD().identify(), pos ).sprite.drop( pos );
+            new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
+            Sample.INSTANCE.play(Assets.Sounds.BADGE);
+            GLog.p(Messages.get(Kawasiri.class, "rare"));
         }
         Music.INSTANCE.end();
 
@@ -164,24 +174,33 @@ public class Kawasiri extends Mob {
             Phase = 1;
             HP = 150;
             state = FLEEING;
+
         }
         if (Phase==1 && HP < 149) {
             Phase = 2;
             HP = 149;
-
             yell(Messages.get(this, "notice"));
-            state = FLEEING;
-        }
-        if (Phase==2 && HP < 147) {
-            Phase = 3;
-            HP = 147;
 
-            yell(Messages.get(this, "phase1"));
             state = FLEEING;
         }
-        if (Phase==3 && HP < 135) {
+
+        if (Phase==2 && HP < 148) {
+            Phase = 3;
+            HP = 148;
+
+            Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
+            deferred.prolong( dmg );
+
+            state = FLEEING;
+        }
+        if (Phase==3 && HP < 147) {
             Phase = 4;
-            HP = 134;
+            baseSpeed = 1f;
+            HP = 147;
+            if (state == FLEEING) state = HUNTING;
+            Buff.detach(this, Viscosity.DeferedDamage.class);
+            Buff.detach(this, Cripple.class);
+
             if (!BossHealthBar.isAssigned()) {
                 BossHealthBar.assignBoss(this);
                 for (Char ch : Actor.chars()){
@@ -202,13 +221,13 @@ public class Kawasiri extends Mob {
                     this.yell(Messages.get(this, "phase5"));
                     break;
             }
-            if (state == FLEEING) state = HUNTING;
+
             Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
         }
         if (Phase==4 && HP < 75) {
             Phase = 5;
             HP = 74;
-
+            baseSpeed = 1f;
             yell(Messages.get(this, "phase2"));
 
         }
@@ -216,6 +235,7 @@ public class Kawasiri extends Mob {
             Phase = 6;
             HP = 53;
             int reg = 101 ;
+            baseSpeed = 1f;
             Dungeon.hero.damage(Dungeon.hero.HP/3, this);
             CellEmitter.center(Dungeon.hero.pos).burst(BlastParticle.FACTORY, 31);
             CellEmitter.center(Dungeon.hero.pos).burst(SmokeParticle.FACTORY, 4);

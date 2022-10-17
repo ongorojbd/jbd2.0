@@ -115,6 +115,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachinegun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
@@ -464,7 +466,47 @@ public class Hero extends Char {
 				accuracy *= 1.5f;
 			}
 		}
-		
+
+
+
+		if (Dungeon.level.adjacent( pos, target.pos )) {
+			if (wep instanceof KSG.Bullet
+					) {
+				accuracy *= (13f + 0.2f*pointsInTalent(Talent.POINT_BLANK));
+			}
+			else if (
+					wep instanceof HeavyMachinegun.Bullet
+
+			) {
+				accuracy *= 0;
+			}
+
+		} else {
+			if (wep instanceof KSG.Bullet
+					) {
+				accuracy *= 0;
+			}   else if (
+					 wep instanceof HeavyMachinegun.Bullet
+
+			) {
+				accuracy *= 5f;
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		if (wep != null) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
 		} else {
@@ -588,6 +630,8 @@ public class Hero extends Char {
 		if (belongings.weapon() == null || !(belongings.weapon() instanceof Weapon))    return true;
 		if (STR() < ((Weapon)belongings.weapon()).STRReq())                             return false;
 		if (belongings.weapon() instanceof Flail)                                       return false;
+		if (belongings.weapon() instanceof KSG.Bullet)				             	 	return false;
+		if (belongings.weapon() instanceof HeavyMachinegun.Bullet)				       	return false;
 
 		return super.canSurpriseAttack();
 	}

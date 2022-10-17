@@ -25,7 +25,12 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Whitesnake;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WoundsofWar;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
@@ -43,14 +48,21 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIc
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponEnhance;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
@@ -58,14 +70,23 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalPorter;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AJA;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ChaosSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DBLADE;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ExplosiveCrossbow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FlameKatana;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachinegun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MissileButton;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.NewCross;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -188,7 +209,6 @@ public abstract class Recipe {
 		new ArcaneResin.Recipe(),
 		new Alchemize.Recipe(),
 		new StewedMeat.oneMeat(),
-	    new LSWORD.Recipe()
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
@@ -219,9 +239,29 @@ public abstract class Recipe {
 		new WildEnergy.Recipe(),
 		new TelekineticGrab.Recipe(),
 		new SummonElemental.Recipe(),
+			new LSWORD.Recipe(),
 		new DBLADE.Recipe(),
 			new PINK.Recipe(),
 			new MISTA.Recipe(),
+			new LloydsBeacon.Recipe(),
+			new ChaosCatalyst.Recipe(),
+			new WoundsofWar.Recipe(),
+			new ChaosSword.Recipe(),
+			new KSG.Recipe(),
+			new HeavyMachinegun.Recipe(),
+			new ThirdBomb.Recipe(),
+			new WandOfDestOrb.Recipe(),
+			new PotionOfWeaponEnhance.Recipe(),
+			new PotionOfWeaponUpgrade.Recipe(),
+			new AdvancedEvolution.Recipe(),
+			new ScrollOfExtract.Recipe(),
+			new CapeOfThorns.Recipe(),
+			new MissileButton.Recipe(),
+			new Diodiary.Recipe(),
+			new Jotarodisc.Recipe(),
+			new FlameKatana.Recipe(),
+			new Whitesnake.Recipe(),
+			new Sleepcmoon.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

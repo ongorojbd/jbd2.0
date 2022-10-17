@@ -28,6 +28,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscF;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscG;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -40,12 +45,12 @@ public class CapeOfThorns extends Artifact {
 	{
 		image = ItemSpriteSheet.ARTIFACT_CAPE;
 
-		levelCap = 10;
+		levelCap = 1;
 
 		charge = 0;
 		chargeCap = 100;
 		cooldown = 0;
-
+		identify();
 		defaultAction = "NONE"; //so it can be quickslotted
 	}
 
@@ -104,7 +109,7 @@ public class CapeOfThorns extends Artifact {
 					charge += damage;
 					if (charge >= chargeCap){
 						charge = 0;
-						cooldown = 2+level()*1/2;
+						cooldown = 7;
 						GLog.p( Messages.get(this, "radiating") );
 						new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 						Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY, 2, 0.66f );
@@ -112,7 +117,7 @@ public class CapeOfThorns extends Artifact {
 				}
 
 				if (cooldown != 0){
-					int deflected = Random.NormalIntRange(damage/17 * level(), damage);
+					int deflected = Random.NormalIntRange(damage/17 * 7, damage);
 					damage -= deflected;
 
 					if (attacker != null && Dungeon.level.adjacent(attacker.pos, defender.pos)) {
@@ -120,12 +125,6 @@ public class CapeOfThorns extends Artifact {
 					}
 
 					exp+= deflected;
-
-					if (exp >= (level()+1)*10 && level() < levelCap){
-						exp -= (level()+1)*10;
-						upgrade();
-						GLog.p( Messages.get(this, "levelup") );
-					}
 
 				}
 				updateQuickslot();
@@ -161,6 +160,22 @@ public class CapeOfThorns extends Artifact {
 		}
 
 	}
+
+	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+
+		{
+			inputs =  new Class[]{BossdiscG.class, ArcaneCatalyst.class};
+			inQuantity = new int[]{1, 1};
+
+			cost = 3;
+
+			output = CapeOfThorns.class;
+			outQuantity = 1;
+		}
+	}
+
+
+
 
 
 }

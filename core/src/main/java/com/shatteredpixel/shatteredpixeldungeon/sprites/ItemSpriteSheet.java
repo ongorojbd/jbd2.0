@@ -74,7 +74,7 @@ public class ItemSpriteSheet {
 		assignItemRect(POTION_HOLDER,   8, 14);
 		assignItemRect(SEED_HOLDER,     10, 10);
 		assignItemRect(SCROLL_HOLDER,   15, 14);
-		assignItemRect(STONE_HOLDER,    14, 12);
+		assignItemRect(STONE_HOLDER,    10, 10);
 		assignItemRect(CATA_HOLDER,     6,  15);
 		assignItemRect(ELIXIR_HOLDER,   12, 14);
 		assignItemRect(SPELL_HOLDER,    8,  16);
@@ -91,6 +91,10 @@ public class ItemSpriteSheet {
 	
 	public static final int TENGU_BOMB      = UNCOLLECTIBLE+8;
 	public static final int TENGU_SHOCKER   = UNCOLLECTIBLE+9;
+
+	public static final int SHOTGUN      = UNCOLLECTIBLE+10;
+	public static final int STURO        = UNCOLLECTIBLE+11;
+	public static final int OVERH        = UNCOLLECTIBLE+12;
 	static{
 		assignItemRect(GOLD,        15, 13);
 		assignItemRect(ENERGY,      16, 16);
@@ -102,6 +106,10 @@ public class ItemSpriteSheet {
 
 		assignItemRect(TENGU_BOMB,      12, 12);
 		assignItemRect(TENGU_SHOCKER,   11, 11);
+
+		assignItemRect(SHOTGUN,      16, 8);
+		assignItemRect(STURO,        16, 11);
+		assignItemRect(OVERH,        14, 14);
 
 	}
 
@@ -314,7 +322,7 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_KNIFE,  12, 13);
 		assignItemRect(THROWING_STONE,  14, 14);
 		
-		assignItemRect(FISHING_SPEAR,   7,  7);
+		assignItemRect(FISHING_SPEAR,   6,  6);
 		assignItemRect(SHURIKEN,        11, 12);
 		assignItemRect(THROWING_CLUB,   10, 10);
 		
@@ -344,6 +352,7 @@ public class ItemSpriteSheet {
 	public static final int HOLY_DART       = TIPPED_DARTS+9;
 	public static final int DISPLACING_DART = TIPPED_DARTS+10;
 	public static final int BLINDING_DART   = TIPPED_DARTS+11;
+	public static final int EMPTY_DART   = TIPPED_DARTS+12;
 	static {
 		for (int i = TIPPED_DARTS; i < TIPPED_DARTS+16; i++)
 			assignItemRect(i, 9, 9);
@@ -649,12 +658,12 @@ public class ItemSpriteSheet {
 	public static final int BLAND_CHUNKS= FOOD+11;
 	public static final int BERRY =       FOOD+12;
 	static{
-		assignItemRect(MEAT,        15, 11);
-		assignItemRect(STEAK,       15, 11);
-		assignItemRect(STEWED,      15, 11);
-		assignItemRect(OVERPRICED,  14, 11);
-		assignItemRect(CARPACCIO,   15, 11);
-		assignItemRect(RATION,      16, 12);
+		assignItemRect(MEAT,        13, 13);
+		assignItemRect(STEAK,       13, 13);
+		assignItemRect(STEWED,      16, 16);
+		assignItemRect(OVERPRICED,  12, 11);
+		assignItemRect(CARPACCIO,   13, 13);
+		assignItemRect(RATION,      16, 15);
 		assignItemRect(PASTY,       16, 11);
 		assignItemRect(PUMPKIN_PIE, 16, 12);
 		assignItemRect(CANDY_CANE,  11, 14);
@@ -697,7 +706,7 @@ public class ItemSpriteSheet {
 	static{
 		assignItemRect(WATERSKIN,   12, 12);
 		assignItemRect(BACKPACK,    16, 16);
-		assignItemRect(POUCH,       14, 15);
+		assignItemRect(POUCH,       15, 14);
 		assignItemRect(HOLDER,      16, 13);
 		assignItemRect(BANDOLIER,   14, 13);
 		assignItemRect(HOLSTER,     10, 11);
