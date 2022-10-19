@@ -109,7 +109,7 @@ public class CapeOfThorns extends Artifact {
 					charge += damage;
 					if (charge >= chargeCap){
 						charge = 0;
-						cooldown = 7;
+						cooldown = 5;
 						GLog.p( Messages.get(this, "radiating") );
 						new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 						Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY, 2, 0.66f );

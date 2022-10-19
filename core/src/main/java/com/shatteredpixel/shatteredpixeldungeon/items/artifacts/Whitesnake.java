@@ -109,26 +109,9 @@ public class Whitesnake extends Artifact {
             }
         }
 
-        if (level() == 14) {
-
-            Awakensnake n = new Awakensnake();
-
-
-            n.cursedKnown = cursedKnown;
-            n.cursed = cursed;
-
-            Dungeon.quickslot.clearItem(curItem);
-            curItem.updateQuickslot();
-
-            if (n.doPickUp( Dungeon.hero )) {
-                GLog.h( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", n.name()) ));
-            } else {
-                Dungeon.level.drop(n, Dungeon.hero.pos ).sprite.drop();
-            }
-
-            Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
-        }
     }
+
+
 
     private void prick(Hero hero){
         Whitesnake pick = Dungeon.hero.belongings.getItem(  Whitesnake.class );
@@ -215,20 +198,35 @@ public class Whitesnake extends Artifact {
             Sample.INSTANCE.play(Assets.Sounds.BADGE);
         }
 
-        if (level() == 13){
+        if (level() == 13)
+            if (pick.isEquipped( Dungeon.hero )) {
             GLog.p( Messages.get(this, "onprick10") );
             Sample.INSTANCE.play(Assets.Sounds.BADGE);
-        }
-
-        if (level() >= 13)
-            if (pick.isEquipped( Dungeon.hero )) {
                 pick.doUnequip( Dungeon.hero, false );
                 pick.detach( Dungeon.hero.belongings.backpack );
                 GLog.n( Messages.get(this, "onprick11") );
 
                 Sample.INSTANCE.play( Assets.Sounds.HAHAH);
                 GameScene.flash(0xFFFF00);
-            }
+
+                Awakensnake n = new Awakensnake();
+
+
+                n.cursedKnown = cursedKnown;
+                n.cursed = cursed;
+
+                Dungeon.quickslot.clearItem(curItem);
+                curItem.updateQuickslot();
+
+                if (n.doPickUp( Dungeon.hero )) {
+                    GLog.h( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", n.name()) ));
+                } else {
+                    Dungeon.level.drop(n, Dungeon.hero.pos ).sprite.drop();
+                }
+
+                Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
+
+        }
 
         if (damage <= 0){
             damage = 1;
