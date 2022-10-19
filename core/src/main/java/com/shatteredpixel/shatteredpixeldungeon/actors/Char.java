@@ -106,7 +106,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.NewCross;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -349,17 +348,6 @@ public abstract class Char extends Actor {
 						&& h.subClass == HeroSubClass.SNIPER
 						&& !Dungeon.level.adjacent(h.pos, enemy.pos)){
 					dr = 0;
-				}
-			}
-
-			if (this instanceof Hero && hero.belongings.weapon() instanceof NewCross) {
-				if (Dungeon.level.adjacent( pos, enemy.pos )) {
-					//trace a ballistica to our target (which will also extend past them
-					Ballistica trajectory = new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET);
-					//trim it to just be the part that goes past them
-					trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
-					//knock them back along that ballistica
-					WandOfBlastWave.throwChar(enemy, trajectory, 20, true, true, hero.getClass());
 				}
 			}
 
