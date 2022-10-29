@@ -37,11 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -79,7 +76,7 @@ public class Goo extends Mob {
 		int max = (HP*2 <= HT) ? 12 : 8;
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
-			if (enemy == Dungeon.hero) {
+			if (enemy == hero) {
 				Statistics.qualifiedForBossChallengeBadge = false;
 				Statistics.bossScores[0] -= 100;
 			}
@@ -110,12 +107,15 @@ public class Goo extends Mob {
 	@Override
 	public boolean act() {
 
+		if (state != HUNTING){
+			pumpedUp = 0;
+		}
+
 		if (Dungeon.level.water[pos] && HP < HT) {
 			HP += healInc;
-			Statistics.bossScores[0] -= 10;
 			Statistics.qualifiedForBossChallengeBadge = false;
 
-			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+			LockedFloor lock = hero.buff(LockedFloor.class);
 			if (lock != null) lock.removeTime(healInc*2);
 
 			if (Dungeon.level.heroFOV[pos] ){
@@ -132,7 +132,7 @@ public class Goo extends Mob {
 		} else {
 			healInc = 1;
 		}
-		
+
 		if (state != SLEEPING){
 			Dungeon.level.seal();
 		}
@@ -146,8 +146,8 @@ public class Goo extends Mob {
 			//we check both from and to in this case as projectile logic isn't always symmetrical.
 			//this helps trim out BS edge-cases
 			return Dungeon.level.distance(enemy.pos, pos) <= 2
-						&& new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
-						&& new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
+					&& new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+					&& new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
 		} else {
 			return super.canAttack(enemy);
 		}
@@ -212,7 +212,7 @@ public class Goo extends Mob {
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 				pumpedUp += 2;
 				//don't want to overly punish players with slow move or attack speed
-				spend(GameMath.gate(attackDelay(), Dungeon.hero.cooldown(), 3*attackDelay()));
+				spend(GameMath.gate(attackDelay(), hero.cooldown(), 3*attackDelay()));
 			} else {
 				pumpedUp++;
 				spend( attackDelay() );
@@ -234,7 +234,7 @@ public class Goo extends Mob {
 		boolean result = super.attack( enemy, dmgMulti, dmgBonus, accMulti );
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
-			if (enemy == Dungeon.hero) {
+			if (enemy == hero) {
 				Statistics.qualifiedForBossChallengeBadge = false;
 				Statistics.bossScores[0] -= 100;
 			}
@@ -274,7 +274,7 @@ public class Goo extends Mob {
 			((GooSprite)sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
 		}
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+		LockedFloor lock = hero.buff(LockedFloor.class);
 		if (lock != null) lock.addTime(dmg*2);
 	}
 
@@ -306,29 +306,23 @@ public class Goo extends Mob {
 			} while (!Dungeon.level.passable[pos + ofs]);
 			Dungeon.level.drop( new GooBlob(), pos + ofs ).sprite.drop( pos );
 		}
-		
+
 		Badges.validateBossSlain();
 		if (Statistics.qualifiedForBossChallengeBadge){
 			Badges.validateBossChallengeCompleted();
 		}
-		Statistics.bossScores[0] += 1050; //Goo has a 50 point gimme
-		Statistics.bossScores[0] = Math.min(1000, Statistics.bossScores[0]);
+		Statistics.bossScores[0] += 1000;
 
-		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
-		if (beacon != null) {
-			beacon.upgrade();
-		}
-		
 		yell( Messages.get(this, "defeated") );
 	}
-	
+
 	@Override
 	public void notice() {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 			Dungeon.level.seal();
-			switch(Dungeon.hero.heroClass){
+			switch(hero.heroClass){
 				case WARRIOR:
 					this.yell(Messages.get(this, "notice"));
 					break;
@@ -374,5 +368,5 @@ public class Goo extends Mob {
 
 		healInc = bundle.getInt(HEALINC);
 	}
-	
+
 }

@@ -28,64 +28,70 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class MagicalInfusion extends InventorySpell {
+	
+	{
+		image = ItemSpriteSheet.MAGIC_INFUSE;
 
-    {
-        image = ItemSpriteSheet.MAGIC_INFUSE;
+		unique = true;
+	}
 
-        unique = true;
-    }
+	@Override
+	protected boolean usableOnItem(Item item) {
+		return item.isUpgradable();
+	}
 
-    @Override
-    protected boolean usableOnItem(Item item) {
-        return item.isUpgradable();
-    }
+	@Override
+	protected void onItemSelected( Item item ) {
 
-    @Override
-    protected void onItemSelected( Item item ) {
+		ScrollOfUpgrade.upgrade(curUser);
 
-        ScrollOfUpgrade.upgrade(curUser);
+		Degrade.detach( curUser, Degrade.class );
 
-        Degrade.detach( curUser, Degrade.class );
+		if (item instanceof Weapon && ((Weapon) item).enchantment != null) {
+			((Weapon) item).upgrade(true);
+		} else if (item instanceof Armor && ((Armor) item).glyph != null) {
+			((Armor) item).upgrade(true);
+		} else {
+			boolean wasCursed = item.cursed;
+			boolean wasCurseInfused = item instanceof Wand && ((Wand) item).curseInfusionBonus;
+			item.upgrade();
+			if (wasCursed) item.cursed = true;
+			if (wasCurseInfused) ((Wand) item).curseInfusionBonus = true;
+		}
+		
+		GLog.p( Messages.get(this, "infuse") );
+		Talent.onUpgradeScrollUsed( Dungeon.hero );
+		Badges.validateItemLevelAquired(item);
 
-        if (item instanceof Weapon && ((Weapon) item).enchantment != null) {
-            ((Weapon) item).upgrade(true);
-        } else if (item instanceof Armor && ((Armor) item).glyph != null) {
-            ((Armor) item).upgrade(true);
-        } else {
-            item.upgrade();
-        }
-
-        GLog.p( Messages.get(this, "infuse", item.name()) );
-        Talent.onUpgradeScrollUsed( Dungeon.hero );
-        Badges.validateItemLevelAquired(item);
-
-        Statistics.upgradesUsed++;
-    }
-
-    @Override
-    public int value() {
-        //prices of ingredients, divided by output quantity
-        return Math.round(quantity * ((50 + 40) / 1f));
-    }
-
-    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
-
-        {
-            inputs =  new Class[]{ScrollOfUpgrade.class, ArcaneCatalyst.class};
-            inQuantity = new int[]{1, 1};
-
-            cost = 4;
-
-            output = MagicalInfusion.class;
-            outQuantity = 1;
-        }
-
-    }
+		Statistics.upgradesUsed++;
+	}
+	
+	@Override
+	public int value() {
+		//prices of ingredients, divided by output quantity
+		return Math.round(quantity * ((50 + 40) / 1f));
+	}
+	
+	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
+		
+		{
+			inputs =  new Class[]{ScrollOfUpgrade.class, ArcaneCatalyst.class};
+			inQuantity = new int[]{1, 1};
+			
+			cost = 4;
+			
+			output = MagicalInfusion.class;
+			outQuantity = 1;
+		}
+		
+	}
 }

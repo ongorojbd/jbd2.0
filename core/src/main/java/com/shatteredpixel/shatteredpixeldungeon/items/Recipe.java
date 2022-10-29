@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
@@ -260,6 +261,7 @@ public abstract class Recipe {
 			new FlameKatana.Recipe(),
 			new Whitesnake.Recipe(),
 			new Sleepcmoon.Recipe(),
+			new ScrollOfPolymorph.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

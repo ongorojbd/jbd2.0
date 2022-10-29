@@ -26,7 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vitam;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VitamincSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -55,9 +58,11 @@ public class Vitaminc extends Mob {
     }
 
     @Override
-    public void die(Object cause) {
-        super.die(cause);
+    public void die( Object cause ) {
 
+        super.die( cause );
+
+        Dungeon.level.drop( new Bomb(), pos ).sprite.drop( pos );
     }
 
 
@@ -110,7 +115,7 @@ public class Vitaminc extends Mob {
             //TODO would be nice for this to work on ghost/statues too
             if (enemy == Dungeon.hero && Random.Int(2) == 0) {
                 Buff.prolong(enemy, Vitam.class, Vitam.DURATION);
-                Sample.INSTANCE.play(Assets.Sounds.DEBUFF);
+                Sample.INSTANCE.play(Assets.Sounds.FF);
             }
 
             int dmg = Random.NormalIntRange(5, 10);

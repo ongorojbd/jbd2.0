@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MandomSprite;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -261,6 +262,8 @@ public class Bestiary {
 					cl = SpectralNecromancer.class;
 				} else if (cl == Brute.random()) {
 					cl = ArmoredBrute.class;
+				} else if (cl == Spinner.class) {
+					cl = Mandom.class;
 				} else if (cl == DM200.class) {
 					cl = DM201.class;
 				} else if (cl == Monk.random()) {

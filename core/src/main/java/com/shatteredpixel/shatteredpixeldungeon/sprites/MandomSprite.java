@@ -34,17 +34,17 @@ public class MandomSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 15, 16 );
 
-        idle = new Animation( 3, true );
-        idle.frames( frames, 0, 1);
+        idle = new Animation( 11, true );
+        idle.frames( frames, 0, 1, 2, 3, 4, 3, 2, 1, 5, 0);
 
-        run = new Animation( 3, true );
-        run.frames( frames, 0, 1);
+        run = new Animation( 11, true );
+        run.frames( frames, 0, 1, 2, 3, 4, 3, 2, 1, 5, 0);
 
-        attack = new Animation( 3, true );
-        attack.frames( frames, 0, 1);
+        attack = new Animation( 11, true );
+        attack.frames( frames, 0, 1, 2, 3, 4, 3, 2, 1, 5, 0);
 
-        die = new Animation( 3, false );
-        die.frames( frames, 0, 1);
+        die = new Animation( 11, false );
+        die.frames( frames, 0, 1, 2, 3, 4, 3, 2, 1, 5, 0);
 
         play( idle );
     }

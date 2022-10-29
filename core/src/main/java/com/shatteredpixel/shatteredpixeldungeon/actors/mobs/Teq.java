@@ -189,14 +189,7 @@ public class Teq extends Mob {
 
         super.die( cause );
 
-        int blobs = Random.chances(new float[]{0, 0, 6, 3, 1});
-        for (int i = 0; i < blobs; i++){
-            int ofs;
-            do {
-                ofs = PathFinder.NEIGHBOURS8[Random.Int(8)];
-            } while (!Dungeon.level.passable[pos + ofs]);
-            Dungeon.level.drop( new PotionOfCleansing(), pos + ofs ).sprite.drop( pos );
-        }
+        Dungeon.level.drop( new PotionOfCleansing(), pos ).sprite.drop( pos );
 
         yell( Messages.get(this, "defeated") );
     }

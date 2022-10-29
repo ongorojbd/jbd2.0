@@ -137,7 +137,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock cube = new CreditsBlock(false, WATA_COLOR,
 				"Now",
 				Icons.CUBE_CODE.get(),
-				"2.0d-1",
+				"2.0d-2",
 				null,
 				null);
 		cube.setSize(colWidth/2f, 0);

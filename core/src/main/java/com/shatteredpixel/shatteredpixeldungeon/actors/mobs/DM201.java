@@ -44,7 +44,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SacrificialParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WoolParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -77,7 +83,6 @@ public class DM201 extends Mob {
 		EXP = 11;
 		maxLvl = 17;
 
-		state = HUNTING;
 		baseSpeed = 1f;
 
 		flying = true;
@@ -224,7 +229,7 @@ public class DM201 extends Mob {
 						if (ch != null && !isHit) {
 							if ((ch.alignment != alignment || ch instanceof Bee)) {
 								 ch.damage(Random.NormalIntRange(13, 15), new DM201.Volcano());
-								if (ch.isAlive()) Buff.affect(ch, Paralysis.class, 3f);
+								if (ch.isAlive()) Buff.affect(ch, Paralysis.class, 2f);
 
 								isHit = true;
 							}}
@@ -343,6 +348,14 @@ public class DM201 extends Mob {
 	@Override
 	public void notice() {
 
+
+			super.notice();
+			if (!BossHealthBar.isAssigned()) {
+				BossHealthBar.assignBoss(this);
+				for (Char ch : Actor.chars()){
+				}
+			}
+
 		summoncooldown = 1;
 		blastcooldown = 1;
 		barriercooldown = 4;
@@ -352,10 +365,13 @@ public class DM201 extends Mob {
 	}
 
 	@Override
-	public void die(Object cause) {
+	public void die( Object cause ) {
 
+		super.die( cause );
 
-		super.die(cause);
+		Dungeon.level.drop( new StoneOfEnchantment().identify(), pos ).sprite.drop( pos );
+
+		GLog.p(Messages.get(this, "defeated"));
 
 	}
 

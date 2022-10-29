@@ -24,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Puccidisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
@@ -151,7 +152,7 @@ public class Senior extends Mob {
 
 		super.die( cause );
 
-		Dungeon.level.drop( new ScrollOfEnchantment(), pos ).sprite.drop( pos );
+		Dungeon.level.drop( new Puccidisc(), pos ).sprite.drop( pos );
 
 		yell( Messages.get(this, "defeated") );
 

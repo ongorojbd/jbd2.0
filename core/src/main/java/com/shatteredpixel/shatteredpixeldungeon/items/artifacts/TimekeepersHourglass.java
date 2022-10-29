@@ -111,7 +111,7 @@ public class TimekeepersHourglass extends Artifact {
 								if (index == 0) {
 									GLog.i( Messages.get(TimekeepersHourglass.class, "onstasis") );
 									GameScene.flash(0x80FFFFFF);
-									Sample.INSTANCE.play(Assets.Sounds.ZAWARUDO);
+									Sample.INSTANCE.play(Assets.Sounds.STANDO);
 
 									activeBuff = new timeStasis();
 									Talent.onArtifactUsed(Dungeon.hero);

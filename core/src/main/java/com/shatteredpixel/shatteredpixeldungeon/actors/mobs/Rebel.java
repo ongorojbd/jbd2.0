@@ -376,11 +376,11 @@ public class Rebel extends Mob {
 
 			WO WO = new WO();
 			WO.state = WO.HUNTING;
-			WO.pos = bottomDoor-10*33;
+			WO.pos = bottomDoor-11*33;
 			GameScene.add( WO );
 			WO.beckon(Dungeon.hero.pos);
 
-			Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
+			Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 			BossHealthBar.assignBoss(this);
 

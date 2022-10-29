@@ -26,8 +26,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
@@ -49,9 +55,9 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
+		add_v1_3_2_Changes(changeInfos);
 		add_v1_3_1_Changes(changeInfos);
 		add_v1_3_Changes(changeInfos);
-		add_v1_2_Changes(changeInfos);
 	}
 
 	public static void add_Coming_Soon( ArrayList<ChangeInfo> changeInfos ) {
@@ -71,6 +77,47 @@ public class v1_X_Changes {
 
 	}
 
+	public static void add_v1_3_2_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0d-2", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes = new ChangeInfo("변경", false, null);
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), "밸런스 조정",
+				"몇가지 아이템과 특성의 밸런스가 조정되었습니다.\n\n" +
+						"_- 녹색 아기의 장비 DISC_의 에너지 소모량 20%로 버프\n" +
+						"_- 녹색 아기의 장비 DISC_를 강화하기 위한 씨앗의 요구량이 4/7/10 -> 3/6/9로 버프\n\n" +
+						"_- 파문 방출_ 특성의 적석 추가 효과의 위력 강화가 특성 1레벨당 33% -> 50%로 버프\n" +
+						"_- 이것이 나의 최후의 파문이다..._ 특성의 쿨타임이 4/3/2 ->  3/2/1로 버프\n\n" +
+						"_- 메이드 인 헤븐의 DISC_ 착용시 무기를 파괴하지 않음\n모든 행동 속도 3배 -> 2배 증가 + 받는 피해량 75% 증폭"
+		));
+
+		changes = new ChangeInfo("리워크", false, null);
+		changes.hardlight(CharSprite.WARNING);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DM200, 0, 18, 21, 18), "완전생물 카즈 리워크",
+				"완전생물 카즈가 완전생물에 걸맞는 능력으로 리워크되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI, 0, 15, 12, 15), "푸치신부 리워크",
+				"화이트 스네이크-추적자에서 일반 푸치신부로 변경되었습니다.\n\n비선공 -> 선공형 적으로 변경되었습니다.\n\n스탠드 면역 효과가 삭제되었습니다.\n\n보상이 _웨더 리포트의 기억 DISC_를 제작할 수 있는 재료로 변경되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BRUTE, 0, 0, 12, 16), "아누비스신",
+				"아누비스신의 바리에이션이 추가되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.MONK, 0, 0, 14, 16), "에보니 데빌",
+				"에보니 데빌의 바리에이션이 추가되었습니다."));
+
+		changes = new ChangeInfo("신규 적", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.MANDOM, 0, 0, 15, 16), "맨덤",
+				"시간을 돌리는 능력을 가진 맨덤이 11~14층에서 희귀한 확률로 출몰합니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.VITAMINC, 0, 0, 21, 19), "비타민 C",
+				"몸을 흐물흐물하게 만드는 강력한 능력을 가진 비타민 C가 21~24층에서 희귀한 확률로 출몰합니다."));
+
+	}
 
 	public static void add_v1_3_1_Changes( ArrayList<ChangeInfo> changeInfos ) {
 		ChangeInfo changes = new ChangeInfo("2.0d-1", true, "");
