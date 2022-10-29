@@ -69,7 +69,7 @@ public class Sleepcmoon extends MeleeWeapon {
     public void execute(final Hero hero, String action) {
         Sleepcmoon pick = Dungeon.hero.belongings.getItem(  Sleepcmoon.class );
 
-        if (Dungeon.depth > 20) {
+        if (Dungeon.depth > 23) {
             int lvl = this.level();
             Sample.INSTANCE.play(Assets.Sounds.HAHAH);
             GLog.n( Messages.get(this, "rev") );
@@ -80,7 +80,6 @@ public class Sleepcmoon extends MeleeWeapon {
 
             Madeinheaven n = new Madeinheaven();
 
-            pick.doUnequip( Dungeon.hero, false );
             pick.detach( Dungeon.hero.belongings.backpack );
 
             n.levelKnown = levelKnown;

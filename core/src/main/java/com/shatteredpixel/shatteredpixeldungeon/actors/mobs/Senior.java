@@ -50,10 +50,6 @@ public class Senior extends Mob {
 			EXP = 14;
 			maxLvl = 23;
 
-			state = PASSIVE;
-
-			Buff.prolong(this, MagicImmune.class, MagicImmune.DURATION*5000f);
-
 			HP = HT = 130;
 			defenseSkill = 15;
 
@@ -61,13 +57,6 @@ public class Senior extends Mob {
 		}
 
 	public int  Phase = 0;
-
-	@Override
-	protected boolean act() {
-		if (state == PASSIVE) return super.act();
-
-		return super.act();
-	}
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -91,9 +80,6 @@ public class Senior extends Mob {
 		}
 
 		super.damage(dmg, src);
-		if (state == PASSIVE) state = HUNTING;
-
-
 
 		if (Phase==0 && HP < 129) {
 			Phase = 1;

@@ -666,6 +666,9 @@ public abstract class Char extends Actor {
 		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
 			dmg *= 2;
 		}
+		if (this.buff(Triplespeed.class) != null && !isImmune(Doom.class)){
+			dmg *= 1.75;
+		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= 1.25f;
 		}
@@ -796,7 +799,7 @@ public abstract class Char extends Actor {
 			timeScale *= 2.0f;
 		}
 		if (buff( Triplespeed.class ) != null) {
-			timeScale *= 3.0f;
+			timeScale *= 2.0f;
 		}
 		super.spend( time / timeScale );
 	}

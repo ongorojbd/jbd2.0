@@ -97,20 +97,20 @@ public class Bestiary {
 				//3x bat, 1x brute, 1x shaman
 				return new ArrayList<>(Arrays.asList(
 						Bat.class, Bat.class, Bat.class,
-						Brute.class,
+						Brute.random(),
 						Shaman.random()));
 			case 12:
 				//2x bat, 2x brute, 1x shaman, 1x spinner
 				return new ArrayList<>(Arrays.asList(
 						Bat.class, Bat.class,
-						Brute.class, Brute.class,
+						Brute.random(), Brute.random(),
 						Shaman.random(),
 						Spinner.class));
 			case 13:
 				//1x bat, 2x brute, 2x shaman, 2x spinner, 1x DM-200
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
-						Brute.class, Brute.class,
+						Brute.random(), Brute.random(),
 						Shaman.random(), Shaman.random(),
 						Spinner.class, Spinner.class,
 						DM200.class));
@@ -118,7 +118,7 @@ public class Bestiary {
 				//1x bat, 1x brute, 2x shaman, 2x spinner, 2x DM-300
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
-						Brute.class,
+						Brute.random(),
 						Shaman.random(), Shaman.random(),
 						Spinner.class, Spinner.class,
 						DM200.class, DM200.class));
@@ -136,21 +136,21 @@ public class Bestiary {
 						Ghoul.class,
 						Elemental.random(), Elemental.random(),
 						Warlock.class,
-						Monk.class));
+						Monk.random()));
 			case 18:
 				//1x ghoul, 1x elemental, 2x warlock, 2x monk, 1x golem
 				return new ArrayList<>(Arrays.asList(
 						Ghoul.class,
 						Elemental.random(),
 						Warlock.class, Warlock.class,
-						Monk.class, Monk.class,
+						Monk.random(), Monk.random(),
 						Golem.class));
 			case 19: case 20:
 				//1x elemental, 2x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
 						Elemental.random(),
 						Warlock.class, Warlock.class,
-						Monk.class, Monk.class,
+						Monk.random(), Monk.random(),
 						Golem.class, Golem.class, Golem.class));
 				
 			// Halls
@@ -259,15 +259,17 @@ public class Bestiary {
 					cl = Bandit.class;
 				} else if (cl == Necromancer.class){
 					cl = SpectralNecromancer.class;
-				} else if (cl == Brute.class) {
+				} else if (cl == Brute.random()) {
 					cl = ArmoredBrute.class;
 				} else if (cl == DM200.class) {
 					cl = DM201.class;
-				} else if (cl == Monk.class) {
+				} else if (cl == Monk.random()) {
 					cl = Senior.class;
+				} else if (cl == Succubus.class) {
+					cl = Vitaminc.class;
 				} else if (cl == Scorpio.class) {
 					cl = Acidic.class;
-				}else if (cl == Soldier.class) {
+				} else if (cl == Soldier.class) {
 					cl = Teq.class;
 				}
 				rotation.set(i, cl);

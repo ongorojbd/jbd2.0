@@ -62,11 +62,7 @@ public class Acidic extends Mob {
 		viewDistance = Light.DISTANCE;
 
 		EXP = 15;
-		maxLvl = 30;
-
-
-		loot = new WandOfBlastWave();
-		lootChance = 0.14f;
+		maxLvl = 28;
 
 		properties.add(Property.BOSS);
 	}

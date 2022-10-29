@@ -32,6 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BruteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KhanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MonkSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -151,6 +154,29 @@ public class Brute extends Mob {
 
 		{
 			immunities.add(Terror.class);
+		}
+	}
+
+	public static class BlueBrute extends Brute {
+		{
+			spriteClass = BruteSprite.class;
+		}
+	}
+
+
+	public static class RedBrute extends Brute {
+		{
+			spriteClass = KhanSprite.class;
+		}
+
+	}
+
+	public static Class<? extends Brute> random(){
+		float roll = Random.Float();
+		if (roll < 0.5f){
+			return Brute.BlueBrute.class;
+		} else {
+			return Brute.RedBrute.class;
 		}
 	}
 }

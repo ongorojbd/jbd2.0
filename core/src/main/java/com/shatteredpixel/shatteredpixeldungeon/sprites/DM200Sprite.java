@@ -33,6 +33,8 @@ import com.watabou.utils.Callback;
 
 public class DM200Sprite extends MobSprite {
 
+	private static final float SLAM_TIME	= 0.33f;
+
 	public DM200Sprite () {
 		super();
 
@@ -46,8 +48,8 @@ public class DM200Sprite extends MobSprite {
 		run = new Animation( 10, true );
 		run.frames( frames, 2, 3 );
 
-		attack = new Animation( 15, false );
-		attack.frames( frames, 4, 5, 6 );
+		attack = new Animation( Math.round(1 / SLAM_TIME), false );
+		attack.frames( frames, 0 );
 
 		zap = new Animation( 15, false );
 		zap.frames( frames, 7, 8, 8, 7 );
@@ -85,8 +87,15 @@ public class DM200Sprite extends MobSprite {
 
 	@Override
 	public void die() {
-		emitter().burst( Speck.factory( Speck.WOOL ), 8 );
+		emitter().burst( Speck.factory( Speck.WOOL ), 15 );
 		super.die();
+	}
+
+	@Override
+	public void attack( int cell ) {
+		super.attack( cell );
+
+		jump(ch.pos, ch.pos, null, 15, SLAM_TIME );
 	}
 
 	@Override

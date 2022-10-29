@@ -23,11 +23,14 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -39,7 +42,14 @@ public class Madeinheaven extends Artifact {
 
         levelCap = 1;
 
+        unique = true;
+
         identify();
+    }
+
+    @Override
+    public ItemSprite.Glowing glowing() {
+        return new ItemSprite.Glowing(0x99FFFF, 1f);
     }
 
     @Override
@@ -55,37 +65,10 @@ public class Madeinheaven extends Artifact {
         if (this.isIdentified()) return "MIH";
         else return null;}
 
-
-
-    @Override
-    public Item upgrade() {
-        if (level() >= 6)
-            image = ItemSpriteSheet.ARTIFACT_CHALICE3;
-        else if (level() >= 2)
-            image = ItemSpriteSheet.ARTIFACT_CHALICE2;
-        return super.upgrade();
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        if (level() >= 7) image = ItemSpriteSheet.ARTIFACT_CHALICE3;
-        else if (level() >= 3) image = ItemSpriteSheet.ARTIFACT_CHALICE2;
-    }
-
     @Override
     protected ArtifactBuff passiveBuff() {
-        return new Madeinheaven.chaliceRegen();
+        return new Madeinheaven.mih();
     }
-
-    @Override
-    public void charge(Hero target, float amount) {
-
-
-        //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
-        target.HP = Math.min( 155, 2344);
-    }
-
 
     @Override
     public String desc() {
@@ -94,12 +77,10 @@ public class Madeinheaven extends Artifact {
         return desc;
     }
 
-    public class chaliceRegen extends ArtifactBuff {
+    public class mih extends ArtifactBuff {
 
         @Override
         public boolean act(){
-
-
             Buff.prolong(hero, Triplespeed.class, 3);
             spend(TICK);
             return true;

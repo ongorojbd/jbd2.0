@@ -761,7 +761,7 @@ public class DriedRose extends Artifact {
 			}
 			super.destroy();
 		}
-		
+
 		public void sayAppeared(){
 			if (Dungeon.hero.buff(AscensionChallenge.class) != null){
 				yell( Messages.get( this, "dialogue_ascension_" + Random.IntRange(1, 6) ));
@@ -775,20 +775,22 @@ public class DriedRose extends Artifact {
 
 				switch (depth) {
 					case 0:
-						yell(Messages.get(this, "dialogue_sewers_" + variant));
+						yell( Messages.get( this, "dialogue_sewers_" + variant ));
 						break;
 					case 1:
-						yell(Messages.get(this, "dialogue_prison_" + variant));
+						yell( Messages.get( this, "dialogue_prison_" + variant ));
 						break;
 					case 2:
-						yell(Messages.get(this, "dialogue_caves_" + variant));
+						yell( Messages.get( this, "dialogue_caves_" + variant ));
 						break;
 					case 3:
-						yell(Messages.get(this, "dialogue_city_" + variant));
+						yell( Messages.get( this, "dialogue_city_" + variant ));
 						break;
 					case 4:
-					default:
-						yell(Messages.get(this, "dialogue_halls_" + variant));
+						yell( Messages.get( this, "dialogue_halls_" + variant ));
+						break;
+					case 5: default:
+						yell( Messages.get( this, "dialogue_labs_" + variant ));
 						break;
 				}
 			}
@@ -813,8 +815,11 @@ public class DriedRose extends Artifact {
 				case 3:
 					yell( Messages.get( this, "seen_king_" + Random.IntRange(1, 3) ));
 					break;
-				case 4: default:
+				case 4:
 					yell( Messages.get( this, "seen_yog_" + Random.IntRange(1, 3) ));
+					break;
+				case 5: default:
+					yell( Messages.get( this, "seen_rebel_" + Random.IntRange(1, 3) ));
 					break;
 			}
 			Sample.INSTANCE.play( Assets.Sounds.GHOST );

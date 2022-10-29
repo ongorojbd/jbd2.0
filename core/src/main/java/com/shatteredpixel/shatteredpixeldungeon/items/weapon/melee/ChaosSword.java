@@ -65,9 +65,6 @@ public class ChaosSword extends MeleeWeapon {
         if (Random.Int(3) == 0) {
 
             CursedWand.cursedEffect(null, attacker, defender);
-        } else {
-
-            CursedWand.cursedEffect(null, defender, attacker);
         }
         return super.proc( attacker, defender, damage );
     }

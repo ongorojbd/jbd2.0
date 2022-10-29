@@ -336,6 +336,11 @@ public class Assets {
 		public static final String JOJO= "sprites/jojo.png";
 		public static final String TONIO= "sprites/tonio.png";
 		public static final String HIGHDIO= "sprites/highdio.png";
+		public static final String MANDOM= "sprites/mandom.png";
+		public static final String KHAN= "sprites/khan.png";
+		public static final String VITAMINC= "sprites/vitaminc.png";
+		public static final String HEAVYW= "sprites/heavyw.png";
+		public static final String BMORE= "sprites/bmore.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 	}
 }

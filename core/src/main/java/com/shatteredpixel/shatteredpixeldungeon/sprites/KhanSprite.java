@@ -19,29 +19,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
+package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.TextureFilm;
 
-public class FishingSpear extends MissileWeapon {
-	
-	{
-		image = ItemSpriteSheet.FISHING_SPEAR;
-		hitSound = Assets.Sounds.HIT;
-		hitSoundPitch = 1.1f;
-		
-		tier = 2;
-	}
-	
-	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-		if (defender instanceof Piranha ||defender instanceof GnollTrickster){
-			damage = Math.max(damage, defender.HP/2);
-		}
-		return super.proc(attacker, defender, damage);
-	}
+public class KhanSprite extends MobSprite {
+
+    public KhanSprite() {
+        super();
+
+        texture( Assets.Sprites.KHAN );
+
+        TextureFilm frames = new TextureFilm( texture, 12, 16 );
+
+        idle = new Animation( 2, true );
+        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
+
+        run = new Animation( 12, true );
+        run.frames( frames, 4, 5, 6, 7 );
+
+        attack = new Animation( 12, false );
+        attack.frames( frames, 2, 3, 0 );
+
+        die = new Animation( 12, false );
+        die.frames( frames, 8, 9, 10 );
+
+        play( idle );
+    }
 }

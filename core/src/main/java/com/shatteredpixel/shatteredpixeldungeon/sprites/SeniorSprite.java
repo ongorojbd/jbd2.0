@@ -41,7 +41,7 @@ public class SeniorSprite extends MobSprite {
 	public SeniorSprite() {
 		super();
 
-		texture( Assets.Sprites.SUPRESSION );
+		texture( Assets.Sprites.PUCCI );
 
 		TextureFilm frames = new TextureFilm( texture, 12, 15 );
 
@@ -103,18 +103,9 @@ public class SeniorSprite extends MobSprite {
 		}
 	}
 
-
-	@Override
-	public void link( Char ch ) {
-		super.link( ch );
-		add(State.SHIELDED);
-	}
-
 	@Override
 	public void die() {
 		super.die();
-
-		remove(State.SHIELDED);
 		emitter().start( ElmoParticle.FACTORY, 0.03f, 60 );
 	}
 }

@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vitam;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -329,12 +330,13 @@ public class Item implements Bundlable {
 	
 	//returns the level of the item, after it may have been modified by temporary boosts/reductions
 	//note that not all item properties should care about buffs/debuffs! (e.g. str requirement)
-	public int buffedLvl(){
-		if (Dungeon.hero.buff( Degrade.class ) != null) {
+	public int buffedLvl() {
+		if (Dungeon.hero.buff(Degrade.class) != null) {
 			return Degrade.reduceLevel(level());
-		} else {
-			return level();
+		} else if (Dungeon.hero.buff(Vitam.class) != null) {
+			return Vitam.reduceLevel(level());
 		}
+		return level();
 	}
 
 	public void level( int value ){

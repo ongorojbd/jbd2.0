@@ -84,7 +84,7 @@ public class Kawasiri extends Mob {
         spriteClass = KousakuSprite.class;
 
         HP = HT = 150;
-        viewDistance = 99;
+        viewDistance = 999;
 
         baseSpeed = 0.5f;
 
@@ -199,7 +199,6 @@ public class Kawasiri extends Mob {
             HP = 147;
             if (state == FLEEING) state = HUNTING;
             Buff.detach(this, Viscosity.DeferedDamage.class);
-            Buff.detach(this, Cripple.class);
 
             if (!BossHealthBar.isAssigned()) {
                 BossHealthBar.assignBoss(this);
