@@ -149,6 +149,13 @@ public enum HeroClass {
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
 
+		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+			RingOfDrago wealth = new RingOfDrago();
+			(hero.belongings.misc = wealth).identify();
+			hero.belongings.misc.activate( hero );
+		}
+
+
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
 	}
@@ -160,6 +167,13 @@ public enum HeroClass {
 
 		(hero.belongings.weapon = staff).identify();
 		hero.belongings.weapon.activate(hero);
+
+		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+			RingOfDrago wealth = new RingOfDrago();
+			(hero.belongings.misc = wealth).identify();
+			hero.belongings.misc.activate( hero );
+		}
+
 
 		Dungeon.quickslot.setSlot(0, staff);
 
@@ -177,6 +191,13 @@ public enum HeroClass {
 		ThrowingKnife knives = new ThrowingKnife();
 		knives.quantity(5).collect();
 
+		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+			RingOfDrago wealth = new RingOfDrago();
+			(hero.belongings.misc = wealth).identify();
+			hero.belongings.misc.activate( hero );
+		}
+
+
 		Dungeon.quickslot.setSlot(0, cloak);
 		Dungeon.quickslot.setSlot(1, knives);
 
@@ -189,6 +210,12 @@ public enum HeroClass {
 		(hero.belongings.weapon = new Gloves()).identify();
 		SpiritBow bow = new SpiritBow();
 		bow.identify().collect();
+
+		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+			RingOfDrago wealth = new RingOfDrago();
+			(hero.belongings.misc = wealth).identify();
+			hero.belongings.misc.activate( hero );
+		}
 
 		Dungeon.quickslot.setSlot(0, bow);
 

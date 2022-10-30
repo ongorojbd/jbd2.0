@@ -28,7 +28,7 @@ public class BattleAxe extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.BATTLE_AXE;
-		hitSound = Assets.Sounds.HIT_MAGIC;
+		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 0.9f;
 
 		tier = 4;

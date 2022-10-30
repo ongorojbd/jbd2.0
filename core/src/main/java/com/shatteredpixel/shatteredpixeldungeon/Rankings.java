@@ -221,6 +221,9 @@ public enum Rankings {
 
 		Statistics.chalMultiplier = (float)Math.pow(1.25, Challenges.activeChallenges());
 		Statistics.chalMultiplier = Math.round(Statistics.chalMultiplier*20f)/20f;
+		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+			Statistics.chalMultiplier = 0;
+		}
 
 		Statistics.totalScore = Statistics.progressScore + Statistics.treasureScore + Statistics.exploreScore
 					+ Statistics.totalBossScore + Statistics.totalQuestScore;

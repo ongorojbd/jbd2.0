@@ -543,7 +543,7 @@ public class YogDzewa extends Mob {
 
 	@Override
 	public void notice() {
-
+		Sample.INSTANCE.play(Assets.Sounds.STANDO);
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
 			Sample.INSTANCE.play(Assets.Sounds.CRAZYDIO);
 		}

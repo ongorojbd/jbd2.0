@@ -232,6 +232,11 @@ public class Rebel extends Mob {
 					this.yell(Messages.get(this, "notice4"));
 					break;
 			}
+			for (Char ch : Actor.chars()){
+				if (ch instanceof DriedRose.GhostHero){
+					((DriedRose.GhostHero) ch).sayBoss();
+				}
+			}
 		}
 	}
 

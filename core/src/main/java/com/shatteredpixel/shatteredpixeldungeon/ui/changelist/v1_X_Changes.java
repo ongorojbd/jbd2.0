@@ -55,6 +55,7 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
+		add_v1_3_3_Changes(changeInfos);
 		add_v1_3_2_Changes(changeInfos);
 		add_v1_3_1_Changes(changeInfos);
 		add_v1_3_Changes(changeInfos);
@@ -75,6 +76,19 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.PICKAXE),"크레이지 다이아몬드 퀘스트 변경" ,
 			""));
 
+	}
+
+	public static void add_v1_3_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0d-3", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes = new ChangeInfo("신규 시련", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
+		changeInfos.add(changes);
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), "신규 시련",
+				"신규 시련 3종이 새로 추가되었습니다!"));
 	}
 
 	public static void add_v1_3_2_Changes( ArrayList<ChangeInfo> changeInfos ) {

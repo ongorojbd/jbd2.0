@@ -37,7 +37,10 @@ public class Challenges {
 	public static final int EOH             	= 128;
 	public static final int STRONGER_BOSSES 	= 256;
 	public static final int CHAMPION_ENEMIES    = 512;
-	public static final int MAX_VALUE           = 1023;
+	public static final int GAMBLER             = 1024;
+	public static final int RAPSO               = 2048;
+	public static final int TRAP                = 4096;
+	public static final int MAX_VALUE           = 8191;
 
 	public static final String[] NAME_IDS = {
 			"eoh",
@@ -49,11 +52,14 @@ public class Challenges {
 			"swarm_intelligence",
 			"darkness",
 			"no_scrolls",
-			"champion_enemies"
+			"champion_enemies",
+			"gambler",
+			"rapso",
+			"trap"
 	};
 
 	public static final int[] MASKS = {
-			EOH , STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS, CHAMPION_ENEMIES
+			EOH , STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS, CHAMPION_ENEMIES, GAMBLER, RAPSO, TRAP
 	};
 
 	public static int activeChallenges(){

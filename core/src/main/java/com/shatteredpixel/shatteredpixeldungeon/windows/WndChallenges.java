@@ -38,7 +38,7 @@ public class WndChallenges extends Window {
 
 	private static final int WIDTH		= 120;
 	private static final int TTL_HEIGHT = 16;
-	private static final int BTN_HEIGHT = 16;
+	private static final int BTN_HEIGHT = 11;
 	private static final int GAP        = 1;
 
 	private boolean editable;
@@ -73,7 +73,7 @@ public class WndChallenges extends Window {
 			if (i > 0) {
 				pos += GAP;
 			}
-			cb.setRect( 0, pos, WIDTH-16, BTN_HEIGHT );
+			cb.setRect( 0, pos, WIDTH-9, BTN_HEIGHT );
 
 			add( cb );
 			boxes.add( cb );
@@ -87,7 +87,7 @@ public class WndChallenges extends Window {
 					);
 				}
 			};
-			info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
+			info.setRect(cb.right(), pos, 9, BTN_HEIGHT);
 			add(info);
 			
 			pos = cb.bottom();

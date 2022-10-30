@@ -403,7 +403,7 @@ public class WndRanking extends WndTabbed {
 				if (i > 0) {
 					pos += 1;
 				}
-				cb.setRect( 0, pos, WIDTH-16, 15 );
+				cb.setRect( 0, pos, WIDTH-9, 9 );
 
 				add( cb );
 
@@ -416,7 +416,7 @@ public class WndRanking extends WndTabbed {
 						);
 					}
 				};
-				info.setRect(cb.right(), pos, 16, 15);
+				info.setRect(cb.right(), pos, 9, 9);
 				add(info);
 
 				pos = cb.bottom();

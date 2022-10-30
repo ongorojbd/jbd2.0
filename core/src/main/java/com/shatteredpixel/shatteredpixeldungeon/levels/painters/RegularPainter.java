@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.painters;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -429,6 +430,9 @@ public abstract class RegularPainter extends Painter {
 		
 		//no more than one trap every 5 valid tiles.
 		nTraps = Math.min(nTraps, validCells.size()/5);
+		if (Dungeon.isChallenged(Challenges.TRAP)) {
+		nTraps = Math.min(5*nTraps, validCells.size()/5);
+		}
 
 		//for traps that want to avoid being in hallways
 		ArrayList<Integer> validNonHallways = new ArrayList<>();
@@ -447,6 +451,9 @@ public abstract class RegularPainter extends Painter {
 
 		//no more than one trap every 5 valid tiles.
 		nTraps = Math.min(nTraps, validCells.size()/5);
+		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+			nTraps = Math.min(5*nTraps, validCells.size()/5);
+		}
 
 		//5x traps on traps level feeling, but the extra traps are all visible
 		for (int i = 0; i < (l.feeling == Level.Feeling.TRAPS ? 5*nTraps : nTraps); i++) {

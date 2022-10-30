@@ -63,6 +63,7 @@ public class Ring extends KindofMisc {
 			put("quartz",ItemSpriteSheet.RING_QUARTZ);
 			put("agate",ItemSpriteSheet.RING_AGATE);
 			put("diamond",ItemSpriteSheet.RING_DIAMOND);
+			put("hobak",ItemSpriteSheet.RING_HOBAK);
 		}
 	};
 	
@@ -72,7 +73,7 @@ public class Ring extends KindofMisc {
 	
 	//rings cannot be 'used' like other equipment, so they ID purely based on exp
 	private float levelsToID = 1;
-	
+
 	@SuppressWarnings("unchecked")
 	public static void initGems() {
 		handler = new ItemStatusHandler<>( (Class<? extends Ring>[])Generator.Category.RING.classes, gems );
@@ -181,7 +182,7 @@ public class Ring extends KindofMisc {
 		if (isKnown()) {
 			desc += "\n\n" + statsInfo();
 		}
-		
+
 		return desc;
 	}
 	

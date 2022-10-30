@@ -126,7 +126,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BONES,           12, 11);
 		assignItemRect(REMAINS,         12, 11);
 		assignItemRect(TOMB,            14, 15);
-		assignItemRect(GRAVE,           14, 15);
+		assignItemRect(GRAVE,           15, 16);
 		assignItemRect(CHEST,           16, 14);
 		assignItemRect(LOCKED_CHEST,    16, 14);
 		assignItemRect(CRYSTAL_CHEST,   16, 14);
@@ -414,6 +414,7 @@ public class ItemSpriteSheet {
 	public static final int RING_QUARTZ     = RINGS+9;
 	public static final int RING_AGATE      = RINGS+10;
 	public static final int RING_DIAMOND    = RINGS+11;
+	public static final int RING_HOBAK      = RINGS+12;
 	static {
 		for (int i = RINGS; i < RINGS+16; i++)
 			assignItemRect(i, 13, 16);

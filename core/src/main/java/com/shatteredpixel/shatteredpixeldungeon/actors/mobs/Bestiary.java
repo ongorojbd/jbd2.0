@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MandomSprite;
 import com.watabou.utils.Random;
 
@@ -236,21 +238,42 @@ public class Bestiary {
 				return;
 				
 			// Caves
+			case 11:
+				if (Random.Float() < 0.03f) rotation.add(Mandom.class);
+				return;
+
 			case 14:
 				if (Random.Float() < 0.025f) rotation.add(Ghoul.class);
 				return;
 				
 			// City
+			case 16:
+				if (Random.Float() < 0.025f) rotation.add(Mandom.class);
+				return;
+
 			case 19:
 				if (Random.Float() < 0.025f) rotation.add(Succubus.class);
 				return;
+
+			case 21:
+				if (Random.Float() < 0.029f) rotation.add(Mandom.class);
+				return;
+
+			case 23:
+				if (Random.Float() < 0.031f) rotation.add(Mandom.class);
+				return;
+
+
 		}
 	}
 	
 	//switches out regular mobs for their alt versions when appropriate
 	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
 		for (int i = 0; i < rotation.size(); i++){
-			if (Random.Int( 50 ) == 0) {
+			int max = 50;
+			if (Dungeon.isChallenged(Challenges.RAPSO)) max = 0;
+
+			if (Random.Int( max ) == 0) {
 				Class<? extends Mob> cl = rotation.get(i);
 				if (cl == Rat.class) {
 					cl = Albino.class;
@@ -260,19 +283,19 @@ public class Bestiary {
 					cl = Bandit.class;
 				} else if (cl == Necromancer.class){
 					cl = SpectralNecromancer.class;
-				} else if (cl == Brute.random()) {
+				} else if (cl == Brute.BlueBrute.class) {
 					cl = ArmoredBrute.class;
-				} else if (cl == Spinner.class) {
-					cl = Mandom.class;
+				} else if (cl == Brute.RedBrute.class) {
+					cl = ArmoredBrute.class;
 				} else if (cl == DM200.class) {
 					cl = DM201.class;
-				} else if (cl == Monk.random()) {
+				} else if (cl == Monk.BlueMonk.class) {
 					cl = Senior.class;
-				} else if (cl == Succubus.class) {
+				} else if (cl == Monk.RedMonk.class) {
+					cl = Senior.class;
+				} else if (cl == Eye.class) {
 					cl = Vitaminc.class;
-				} else if (cl == Scorpio.class) {
-					cl = Acidic.class;
-				} else if (cl == Soldier.class) {
+				}  else if (cl == Soldier.class) {
 					cl = Teq.class;
 				}
 				rotation.set(i, cl);

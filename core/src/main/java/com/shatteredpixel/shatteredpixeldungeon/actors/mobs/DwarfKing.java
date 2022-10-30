@@ -553,8 +553,12 @@ public class DwarfKing extends Mob {
 			Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
 		}
 
+
+
+
 		if (Random.Int( 10) == 0) {
 
+			if (Dungeon.level.solid[pos]){
 			Heap h = Dungeon.level.heaps.get(pos);
 			if (h != null) {
 				for (Item i : h.items) {
@@ -567,14 +571,14 @@ public class DwarfKing extends Mob {
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));
 			Dungeon.level.drop(new BossdiscE(), pos + Dungeon.level.width()).sprite.drop(pos);
-		} else {
+		 } else {
 			GameScene.flash(0xFFFF00);
 			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));
 			Dungeon.level.drop(new BossdiscE(), pos).sprite.drop();
 		}
-
+		}
 
 		Badges.validateBossSlain();
 		if (Statistics.qualifiedForBossChallengeBadge){
