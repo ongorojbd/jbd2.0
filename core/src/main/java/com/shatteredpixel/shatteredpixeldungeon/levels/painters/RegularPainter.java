@@ -451,7 +451,7 @@ public abstract class RegularPainter extends Painter {
 
 		//no more than one trap every 5 valid tiles.
 		nTraps = Math.min(nTraps, validCells.size()/5);
-		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+		if (Dungeon.isChallenged(Challenges.TRAP)) {
 			nTraps = Math.min(5*nTraps, validCells.size()/5);
 		}
 

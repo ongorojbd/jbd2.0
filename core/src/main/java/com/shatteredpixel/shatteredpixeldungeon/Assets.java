@@ -119,6 +119,7 @@ public class Assets {
 
 		public static final String SEWERS_1     = "music/sewers_1.ogg";
 		public static final String SEWERS_2     = "music/sewers_2.ogg";
+		public static final String DRAGON       = "music/dragon.ogg";
 		public static final String SEWERS_BOSS  = "music/sewers_boss.ogg";
 
 		public static final String PRISON_1     = "music/prison_1.ogg";
