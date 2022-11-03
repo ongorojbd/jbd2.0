@@ -116,22 +116,22 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-		new TengusMask().collect();
-		new KingsCrown().collect();
-		new PotionOfExperience().identify().quantity(29).collect();
-		new ScrollOfEnchantment().identify().quantity(29).collect();
-		new AJA().identify().upgrade(100).collect();
-		new ScrollOfUpgrade().identify().quantity(1000).collect();
-		new ScrollOfExtract().quantity(20).collect();
-		new Teleporter().collect();
-		new PotionOfMindVision().identify().quantity(20).collect();
-		new ScrollOfMagicMapping().identify().quantity(1000).collect();
-		new TimekeepersHourglass().upgrade(10).identify().collect();
-		new AlchemistsToolkit().upgrade(10).identify().collect();
-		new RingOfArcana().identify().upgrade(9999).collect();
-		new RingOfWealth().identify().upgrade(9999).collect();
-		new ThrowingStone().identify().quantity(100).collect();
-		new Sungrass.Seed().quantity(100).collect();
+		//new TengusMask().collect();
+		//new KingsCrown().collect();
+		//new PotionOfExperience().identify().quantity(29).collect();
+		//new ScrollOfEnchantment().identify().quantity(29).collect();
+		//new AJA().identify().upgrade(100).collect();
+		//new ScrollOfUpgrade().identify().quantity(1000).collect();
+		//new ScrollOfExtract().quantity(20).collect();
+		//new Teleporter().collect();
+		//new PotionOfMindVision().identify().quantity(20).collect();
+		//new ScrollOfMagicMapping().identify().quantity(1000).collect();
+		//new TimekeepersHourglass().upgrade(10).identify().collect();
+		//new AlchemistsToolkit().upgrade(10).identify().collect();
+		//new RingOfArcana().identify().upgrade(9999).collect();
+		//new RingOfWealth().identify().upgrade(9999).collect();
+		//new ThrowingStone().identify().quantity(100).collect();
+		//new Sungrass.Seed().quantity(100).collect();
 
 		switch (this) {
 			case WARRIOR:
@@ -186,7 +186,7 @@ public enum HeroClass {
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
 			RingOfDrago wealth = new RingOfDrago();
-			(hero.belongings.misc = wealth).identify().upgrade(9999);
+			(hero.belongings.misc = wealth).identify();
 			hero.belongings.misc.activate( hero );
 		}
 

@@ -174,7 +174,7 @@ public class Hero extends Char {
 	
 	public static final int MAX_LEVEL = 30;
 
-	public static final int STARTING_STR = 18;
+	public static final int STARTING_STR = 10;
 	
 	private static final float TIME_TO_REST		    = 1f;
 	private static final float TIME_TO_SEARCH	    = 2f;
@@ -186,7 +186,7 @@ public class Hero extends Char {
 	public ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
 	public LinkedHashMap<Talent, Talent> metamorphedTalents = new LinkedHashMap<>();
 	
-	private int attackSkill = 1000;
+	private int attackSkill = 10;
 	private int defenseSkill = 5;
 
 	public boolean ready = false;
@@ -197,14 +197,14 @@ public class Hero extends Char {
 	private Char enemy;
 	
 	public boolean resting = false;
-	
+
 	public Belongings belongings;
 	
 	public int STR;
 	
 	public float awareness;
 	
-	public int lvl = 30;
+	public int lvl = 1;
 	public int exp = 0;
 	
 	public int HTBoost = 0;
@@ -218,7 +218,7 @@ public class Hero extends Char {
 	public Hero() {
 		super();
 
-		HP = HT = 2000;
+		HP = HT = 20;
 		STR = STARTING_STR;
 		
 		belongings = new Belongings( this );
