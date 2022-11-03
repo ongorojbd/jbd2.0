@@ -206,6 +206,7 @@ public class YogDzewa extends Mob {
 			yell(Messages.get(this, "hope"));
 			summonCooldown = -15; //summon a burst of minions!
 			phase = 5;
+			BossHealthBar.bleed(true);
 			Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
 		}
 
@@ -644,7 +645,10 @@ public class YogDzewa extends Mob {
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		phase = bundle.getInt(PHASE);
-		if (phase != 0) BossHealthBar.assignBoss(this);
+		if (phase != 0) {
+			BossHealthBar.assignBoss(this);
+			if (phase == 5) BossHealthBar.bleed(true);
+		}
 
 		abilityCooldown = bundle.getFloat(ABILITY_CD);
 		summonCooldown = bundle.getFloat(SUMMON_CD);
