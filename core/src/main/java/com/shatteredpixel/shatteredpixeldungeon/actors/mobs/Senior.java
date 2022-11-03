@@ -97,8 +97,8 @@ public class Senior extends Mob {
 			HP = 120;
 			GameScene.flash(0x99FFFF);
 			new TeleportationTrap().set(target).activate();
-			Buff.affect(enemy, Blindness.class, 11f);
-			Buff.affect(enemy, Ooze.class ).set( Ooze.DURATION );
+			Buff.affect(Dungeon.hero, Blindness.class, 11f);
+			Buff.affect(Dungeon.hero, Ooze.class ).set( Ooze.DURATION );
 			CellEmitter.center(Dungeon.hero.pos).burst(Speck.factory(Speck.QUESTION), 33);
 			Sample.INSTANCE.play( Assets.Sounds.CURSED, 2, 0.33f );
 			yell(Messages.get(this, "genkaku"));
@@ -108,9 +108,9 @@ public class Senior extends Mob {
 			Phase = 3;
 			GameScene.flash(0x99FFFF);
 			yell(Messages.get(this, "genkaku2"));
-			Buff.affect(enemy, Silence.class, 51f);
-			Buff.affect(enemy, Blindness.class, 15f);
-			Buff.affect(enemy, Cripple.class, 15f);
+			Buff.affect(Dungeon.hero, Silence.class, 51f);
+			Buff.affect(Dungeon.hero, Blindness.class, 15f);
+			Buff.affect(Dungeon.hero, Cripple.class, 15f);
 			Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
 
 			CellEmitter.center(Dungeon.hero.pos).burst(Speck.factory(Speck.QUESTION), 33);

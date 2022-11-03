@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
@@ -251,10 +252,10 @@ public class Kawasiri extends Mob {
             for (int i : pylonPositions) {
                 ScrollOfTeleportation.appear(this, i);
             }
-
-            Buff.affect(enemy, Blindness.class, 3f);
-            Buff.affect(enemy, Cripple.class,   7f);
-            Buff.affect(enemy, Weakness.class, 11f);
+            
+            Buff.affect(Dungeon.hero, Blindness.class, 3f);
+            Buff.affect(Dungeon.hero, Cripple.class,   7f);
+            Buff.affect(Dungeon.hero, Weakness.class, 11f);
             Dungeon.level.cleanWalls();
             yell(Messages.get(this, "bom"));
         }

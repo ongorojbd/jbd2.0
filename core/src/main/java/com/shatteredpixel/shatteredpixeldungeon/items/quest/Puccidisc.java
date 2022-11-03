@@ -35,6 +35,8 @@ public class Puccidisc extends Item {
     {
         image = ItemSpriteSheet.EXOTIC_BERKANAN;
 
+        stackable = true;
+
         unique = true;
     }
 

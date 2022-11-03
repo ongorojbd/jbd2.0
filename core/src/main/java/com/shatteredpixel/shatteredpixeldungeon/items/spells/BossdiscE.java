@@ -88,7 +88,7 @@ public class BossdiscE extends Spell {
 
     @Override
     public int value() {
-        return 750 * quantity;
+        return 800 * quantity;
     }
 
     @Override

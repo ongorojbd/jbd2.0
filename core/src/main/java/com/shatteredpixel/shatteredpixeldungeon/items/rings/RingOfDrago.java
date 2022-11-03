@@ -67,11 +67,6 @@ public class RingOfDrago extends Ring {
     private float triesToDrop = Float.MIN_VALUE;
     private int dropsToRare = Integer.MIN_VALUE;
 
-    @Override
-    public ArrayList<String> actions(Hero hero) {
-        return new ArrayList<>(); //yup, no dropping this one
-    }
-
     public String statsInfo() {
         if (this.isEquipped(Dungeon.hero)){
             this.identify();
