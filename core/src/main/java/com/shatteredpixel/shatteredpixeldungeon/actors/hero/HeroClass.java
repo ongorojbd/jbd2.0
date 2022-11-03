@@ -118,8 +118,7 @@ public enum HeroClass {
 
 		//new TengusMask().collect();
 		//new KingsCrown().collect();
-		//new PotionOfExperience().identify().quantity(29).collect();
-		//new ScrollOfEnchantment().identify().quantity(29).collect();
+		//new PotionOfHealing().identify().quantity(29).collect();
 		//new AJA().identify().upgrade(100).collect();
 		//new ScrollOfUpgrade().identify().quantity(1000).collect();
 		//new ScrollOfExtract().quantity(20).collect();
@@ -129,8 +128,7 @@ public enum HeroClass {
 		//new TimekeepersHourglass().upgrade(10).identify().collect();
 		//new AlchemistsToolkit().upgrade(10).identify().collect();
 		//new RingOfArcana().identify().upgrade(9999).collect();
-		//new RingOfWealth().identify().upgrade(9999).collect();
-		//new ThrowingStone().identify().quantity(100).collect();
+		//new RingOfDrago().identify().upgrade(9999).collect();
 		//new Sungrass.Seed().quantity(100).collect();
 
 		switch (this) {

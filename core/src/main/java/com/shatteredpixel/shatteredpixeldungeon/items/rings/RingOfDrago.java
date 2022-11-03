@@ -78,23 +78,6 @@ public class RingOfDrago extends Ring {
         }
     }
 
-
-
-    @Override
-    public void execute(Hero hero, String action) {
-
-        super.execute(hero, action);
-
-
-            this.identify();
-
-
-            updateQuickslot();
-            curUser.spendAndNext(0f);
-
-    }
-
-
     @Override
     public boolean isIdentified() {
         return true;

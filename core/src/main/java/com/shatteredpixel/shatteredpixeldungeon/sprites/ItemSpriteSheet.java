@@ -68,12 +68,12 @@ public class ItemSpriteSheet {
 		assignItemRect(MISSILE_HOLDER,  13, 13);
 		assignItemRect(WAND_HOLDER,     14, 14);
 		assignItemRect(RING_HOLDER,     14, 12);
-		assignItemRect(ARTIFACT_HOLDER, 15, 15);
+		assignItemRect(ARTIFACT_HOLDER, 14, 14);
 		assignItemRect(FOOD_HOLDER,     15, 11);
-		assignItemRect(BOMB_HOLDER,     10, 13);
+		assignItemRect(BOMB_HOLDER,     10, 10);
 		assignItemRect(POTION_HOLDER,   8, 14);
 		assignItemRect(SEED_HOLDER,     10, 10);
-		assignItemRect(SCROLL_HOLDER,   15, 14);
+		assignItemRect(SCROLL_HOLDER,   14, 14);
 		assignItemRect(STONE_HOLDER,    10, 10);
 		assignItemRect(CATA_HOLDER,     6,  15);
 		assignItemRect(ELIXIR_HOLDER,   12, 14);
@@ -445,29 +445,29 @@ public class ItemSpriteSheet {
 	public static final int ARTIFACT_ROSE2      = ARTIFACTS+21;
 	public static final int ARTIFACT_ROSE3      = ARTIFACTS+22;
 	static{
-		assignItemRect(ARTIFACT_CLOAK,      16, 16);
-		assignItemRect(ARTIFACT_ARMBAND,    16, 16);
-		assignItemRect(ARTIFACT_CAPE,       16, 16);
-		assignItemRect(ARTIFACT_TALISMAN,   16, 16);
-		assignItemRect(ARTIFACT_HOURGLASS,  16, 16);
-		assignItemRect(ARTIFACT_TOOLKIT,    16, 16);
-		assignItemRect(ARTIFACT_SPELLBOOK,  16, 16);
-		assignItemRect(ARTIFACT_BEACON,     16, 16);
-		assignItemRect(ARTIFACT_CHAINS,     16, 16);
-		assignItemRect(ARTIFACT_HORN1,      16, 16);
-		assignItemRect(ARTIFACT_HORN2,      16, 16);
-		assignItemRect(ARTIFACT_HORN3,      16, 16);
-		assignItemRect(ARTIFACT_HORN4,      16, 16);
-		assignItemRect(ARTIFACT_CHALICE1,   16, 16);
-		assignItemRect(ARTIFACT_CHALICE2,   16, 16);
-		assignItemRect(ARTIFACT_CHALICE3,   16, 16);
-		assignItemRect(ARTIFACT_SANDALS,    16, 16);
-		assignItemRect(ARTIFACT_SHOES,      16, 16);
-		assignItemRect(ARTIFACT_BOOTS,      16, 16);
-		assignItemRect(ARTIFACT_GREAVES,    16, 16);
-		assignItemRect(ARTIFACT_ROSE1,      16, 16);
-		assignItemRect(ARTIFACT_ROSE2,      16, 16);
-		assignItemRect(ARTIFACT_ROSE3,      16, 16);
+		assignItemRect(ARTIFACT_CLOAK,      14, 14);
+		assignItemRect(ARTIFACT_ARMBAND,    14, 14);
+		assignItemRect(ARTIFACT_CAPE,       14, 14);
+		assignItemRect(ARTIFACT_TALISMAN,   14, 14);
+		assignItemRect(ARTIFACT_HOURGLASS,  14, 14);
+		assignItemRect(ARTIFACT_TOOLKIT,    14, 14);
+		assignItemRect(ARTIFACT_SPELLBOOK,  14, 14);
+		assignItemRect(ARTIFACT_BEACON,     14, 14);
+		assignItemRect(ARTIFACT_CHAINS,     14, 14);
+		assignItemRect(ARTIFACT_HORN1,      14, 14);
+		assignItemRect(ARTIFACT_HORN2,      14, 14);
+		assignItemRect(ARTIFACT_HORN3,      14, 14);
+		assignItemRect(ARTIFACT_HORN4,      14, 14);
+		assignItemRect(ARTIFACT_CHALICE1,   14, 14);
+		assignItemRect(ARTIFACT_CHALICE2,   14, 14);
+		assignItemRect(ARTIFACT_CHALICE3,   14, 14);
+		assignItemRect(ARTIFACT_SANDALS,    14, 14);
+		assignItemRect(ARTIFACT_SHOES,      14, 14);
+		assignItemRect(ARTIFACT_BOOTS,      14, 14);
+		assignItemRect(ARTIFACT_GREAVES,    14, 14);
+		assignItemRect(ARTIFACT_ROSE1,      14, 14);
+		assignItemRect(ARTIFACT_ROSE2,      14, 14);
+		assignItemRect(ARTIFACT_ROSE3,      14, 14);
 	}
 
 	                                                                                    //16 free slots
@@ -490,7 +490,7 @@ public class ItemSpriteSheet {
 	public static final int ARCANE_RESIN    = SCROLLS+14;
 	static {
 		for (int i = SCROLLS; i < SCROLLS+16; i++)
-			assignItemRect(i, 15, 14);
+			assignItemRect(i, 14, 14);
 		assignItemRect(SCROLL_CATALYST, 12, 11);
 		assignItemRect(ARCANE_RESIN   , 12, 11);
 	}
@@ -510,7 +510,7 @@ public class ItemSpriteSheet {
 	public static final int EXOTIC_TIWAZ    = EXOTIC_SCROLLS+11;
 	static {
 		for (int i = EXOTIC_SCROLLS; i < EXOTIC_SCROLLS+16; i++)
-			assignItemRect(i, 15, 14);
+			assignItemRect(i, 14, 14);
 	}
 	
 	private static final int STONES             =                           xy(1, 21);  //16 slots

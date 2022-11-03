@@ -557,13 +557,8 @@ public class DwarfKing extends Mob {
 			Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
 		}
 
-
-
-
 		if (Random.Int( 10) == 0) {
-
 			if (Dungeon.level.solid[pos]){
-			Heap h = Dungeon.level.heaps.get(pos);
 			if (h != null) {
 				for (Item i : h.items) {
 					Dungeon.level.drop(i, pos + Dungeon.level.width());
