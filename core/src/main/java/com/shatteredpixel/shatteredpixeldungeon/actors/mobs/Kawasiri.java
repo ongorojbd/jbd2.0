@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
@@ -54,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Kirafood;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -96,12 +98,15 @@ public class Kawasiri extends Mob {
         immunities.add(ShrGas.class);
         immunities.add(Grim.class );
         immunities.add(Blindness.class );
+        immunities.add(Sleep.class );
 
     }
     int damageTaken = 0;
     public int  Phase = 0;
     int summonCooldown = 7;
+    int amCooldown = 249;
     private static final String SUMMON_COOLDOWN = "summoncooldown";
+    private static final String AM_COOLDOWN = "amcooldown";
     private static final String SKILL2TIME   = "BurstTime";
     private static int WIDTH = 33;
     private int BurstTime = 0;
@@ -118,7 +123,7 @@ public class Kawasiri extends Mob {
 
         yell( Messages.get(this, "phase4") );
 
-            Dungeon.level.drop( new CeremonialCandle(), pos ).sprite.drop( pos );
+            Dungeon.level.drop( new Kirafood(), pos ).sprite.drop( pos );
 
 
         if (Random.Int( 10 ) == 0) {
@@ -149,6 +154,7 @@ public class Kawasiri extends Mob {
         super.storeInBundle(bundle);
         bundle.put( PHASE, Phase );
         bundle.put(SUMMON_COOLDOWN, summonCooldown);
+        bundle.put(AM_COOLDOWN, amCooldown);
         bundle.put( SKILL2TIME, BurstTime );
     }
 
@@ -157,6 +163,7 @@ public class Kawasiri extends Mob {
         super.restoreFromBundle( bundle );
         Phase = bundle.getInt(PHASE);
         summonCooldown = bundle.getInt( SUMMON_COOLDOWN );
+        amCooldown = bundle.getInt( AM_COOLDOWN );
         BurstTime = bundle.getInt(SKILL2TIME);
     }
 
@@ -285,6 +292,7 @@ public class Kawasiri extends Mob {
 
     private static final String PHASE   = "Phase";
     private static final float DELAY = 7f;
+    private static final float DELAY3 = 249f;
 
     @Override
     public int damageRoll() {
@@ -310,6 +318,24 @@ public class Kawasiri extends Mob {
     @Override
     protected boolean act() {
         summonCooldown--;
+
+        if (Phase > 3){
+            amCooldown--;
+        if (amCooldown <= 0 && Dungeon.level instanceof CavesBossLevel) {
+
+            for (int i : PathFinder.NEIGHBOURS2) {
+                Amblance Amblance = new Amblance();
+                Amblance.state = Amblance.WANDERING;
+                Amblance.pos = this.pos+i;
+                GameScene.add( Amblance );
+                Amblance.beckon(Dungeon.hero.pos);
+            }
+
+           amCooldown = (249);
+
+        }
+        }
+
 
         if (Phase == 4){
             if (summonCooldown <= 0 && Dungeon.level instanceof CavesBossLevel) {

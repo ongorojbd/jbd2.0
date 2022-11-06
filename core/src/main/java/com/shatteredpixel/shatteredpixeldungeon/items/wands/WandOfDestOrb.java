@@ -74,7 +74,7 @@ public class WandOfDestOrb extends Wand {
         if (this.level()>6){
             new SoftTrap().set(curUser.pos).activate();
         }
-        if (this.level()>12){
+        if (this.level()>15){
             new SoftTrap().set(curUser.pos).activate();
         }
     }

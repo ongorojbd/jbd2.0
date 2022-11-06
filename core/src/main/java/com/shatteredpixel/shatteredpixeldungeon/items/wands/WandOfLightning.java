@@ -164,7 +164,7 @@ public class WandOfLightning extends DamageWand {
 
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color(0xFFFFFF);
+		particle.color(0xFFFF00);
 		particle.am = 0.6f;
 		particle.setLifespan(0.6f);
 		particle.acc.set(0, +10);

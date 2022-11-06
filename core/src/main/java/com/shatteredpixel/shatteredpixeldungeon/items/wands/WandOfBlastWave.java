@@ -223,7 +223,7 @@ public class WandOfBlastWave extends DamageWand {
 
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color( 0x664422 ); particle.am = 0.6f;
+		particle.color( 0x00FF00 ); particle.am = 0.6f;
 		particle.setLifespan(3f);
 		particle.speed.polar(Random.Float(PointF.PI2), 0.3f);
 		particle.setSize( 1f, 2f);

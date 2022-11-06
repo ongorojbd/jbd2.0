@@ -60,7 +60,7 @@ public class RingOfDrago extends Ring {
 
     {
         image = ItemSpriteSheet.GRAVE;
-
+        icon = ItemSpriteSheet.Icons.POTION_MAGISIGHT;
         unique = true;
     }
 
@@ -203,11 +203,11 @@ public class RingOfDrago extends Ring {
     public static Item genConsumableDrop(int level) {
         float roll = Random.Float();
         //60% chance - 4% per level. Starting from +15: 0%
-        if (roll < (0.6f - 0.04f * level)) {
+        if (roll < (0.6f - 0.03f * level)) {
             latestDropTier = 1;
             return genLowValueConsumable();
             //30% chance + 2% per level. Starting from +15: 60%-2%*(lvl-15)
-        } else if (roll < (0.9f - 0.02f * level)) {
+        } else if (roll < (0.9f - 0.015f * level)) {
             latestDropTier = 2;
             return genMidValueConsumable();
             //10% chance + 2% per level. Starting from +15: 40%+2%*(lvl-15)
@@ -234,7 +234,7 @@ public class RingOfDrago extends Ring {
                             return Generator.randomUsingDefaults(Generator.Category.SCROLL);
                         }
                     } else {
-                        if (Random.Int(8) == 0) {
+                        if (Random.Int(9) == 0) {
                             return new ScrollOfUpgrade();
                         } else {
                             return Generator.randomUsingDefaults(Generator.Category.SCROLL);
@@ -268,13 +268,13 @@ public class RingOfDrago extends Ring {
                 i = Generator.randomUsingDefaults(Generator.Category.SCROLL);
                 if (Dungeon.isChallenged(Challenges.GAMBLER)) {
                     if (Dungeon.isChallenged(Challenges.NO_SCROLLS)) {
-                        if (Random.Int(8) == 0) {
+                        if (Random.Int(9) == 0) {
                             return new ScrollOfUpgrade();
                         } else {
                             return Reflection.newInstance(ExoticScroll.regToExo.get(i.getClass()));
                         }
                     } else {
-                        if (Random.Int(4) == 0) {
+                        if (Random.Int(5) == 0) {
                             return new ScrollOfUpgrade();
                         } else {
                             return Reflection.newInstance(ExoticScroll.regToExo.get(i.getClass()));

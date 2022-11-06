@@ -185,7 +185,7 @@ public class WandOfWarding extends Wand {
 
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color( 0x8822FF );
+		particle.color( 0xCC00FF );
 		particle.am = 0.3f;
 		particle.setLifespan(3f);
 		particle.speed.polar(Random.Float(PointF.PI2), 0.3f);

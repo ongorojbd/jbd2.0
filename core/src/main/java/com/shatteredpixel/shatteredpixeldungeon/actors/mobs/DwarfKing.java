@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.KingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -524,7 +525,9 @@ public class DwarfKing extends Mob {
 			phase = 3;
 			summonsMade = 1; //monk/warlock on 3rd summon
 			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
+			Sample.INSTANCE.play( Assets.Sounds.BLAST );
 			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+			Camera.main.shake(9, 0.5f);
 			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
 		} else if (phase == 3 && preHP > 20 && HP < 20){
 			yell( Messages.get(this, "losing") );

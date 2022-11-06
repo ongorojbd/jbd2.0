@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fancake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -34,81 +35,32 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
-public class GuardianTrap extends Trap {
+public class FancakeTrap extends Trap {
 
-	{
-		color = RED;
-		shape = STARS;
-	}
+    {
+        color = YELLOW;
+        shape = DIAMOND;
+    }
 
-	@Override
-	public void activate() {
+    @Override
+    public void activate() {
 
-		for (Mob mob : Dungeon.level.mobs) {
-			mob.beckon( pos );
-		}
+        if (Dungeon.level.heroFOV[pos]) {
+            GLog.w( Messages.get(this, "alarm") );
+            CellEmitter.center(pos).start( Speck.factory(Speck.SCREAM), 0.3f, 3 );
+        }
 
-		if (Dungeon.level.heroFOV[pos]) {
-			GLog.w( Messages.get(this, "alarm") );
-			CellEmitter.center(pos).start( Speck.factory(Speck.SCREAM), 0.3f, 3 );
-		}
+        Sample.INSTANCE.play( Assets.Sounds.TOMB );
 
-		Sample.INSTANCE.play( Assets.Sounds.ALERT );
+        for (int i = 0; i < (Dungeon.depth - 5)/5; i++){
+            Fancake guardian = new Fancake();
+            guardian.state = guardian.WANDERING;
+            guardian.pos = Dungeon.level.randomRespawnCell( guardian );
+            if (guardian.pos != -1) {
+                GameScene.add(guardian);
+                guardian.beckon(Dungeon.hero.pos);
+            }
+        }
 
-		for (int i = 0; i < (Dungeon.depth - 5)/5; i++){
-			Guardian guardian = new Guardian();
-			guardian.state = guardian.WANDERING;
-			guardian.pos = Dungeon.level.randomRespawnCell( guardian );
-			if (guardian.pos != -1) {
-				GameScene.add(guardian);
-				guardian.beckon(Dungeon.hero.pos);
-			}
-		}
-
-	}
-
-	public static class Guardian extends Statue {
-
-		{
-			spriteClass = GuardianSprite.class;
-
-			EXP = 0;
-			state = WANDERING;
-
-			levelGenStatue = false;
-		}
-
-		public Guardian(){
-			super();
-
-			weapon.enchant(null);
-			weapon.degrade(weapon.level());
-		}
-
-		@Override
-		public void beckon(int cell) {
-			//Beckon works on these ones, unlike their superclass.
-			notice();
-
-			if (state != HUNTING) {
-				state = WANDERING;
-			}
-			target = cell;
-		}
-
-	}
-
-	public static class GuardianSprite extends GhoulSprite {
-
-		public GuardianSprite(){
-			super();
-			tint(0, 0, 1, 0.2f);
-		}
-
-		@Override
-		public void resetColor() {
-			super.resetColor();
-			tint(0, 0, 1, 0.2f);
-		}
-	}
+    }
 }

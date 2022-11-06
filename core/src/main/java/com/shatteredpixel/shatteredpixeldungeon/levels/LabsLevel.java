@@ -33,18 +33,22 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DoobieTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FancakeTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlashingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.MachineTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RockfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WiredTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.glwrap.Blending;
@@ -121,17 +125,19 @@ public class LabsLevel extends RegularLevel {
 	@Override
 	protected Class<?>[] trapClasses() {
 		return new Class[]{
-				FrostTrap.class, StormTrap.class, CorrosionTrap.class, BlazingTrap.class, DisintegrationTrap.class,
-				RockfallTrap.class, FlashingTrap.class, GuardianTrap.class, WeakeningTrap.class,
-				DisarmingTrap.class, SummoningTrap.class, WarpingTrap.class, CursingTrap.class, GrimTrap.class, PitfallTrap.class, DistortionTrap.class, GatewayTrap.class, GeyserTrap.class };
+				DoobieTrap.class, StormTrap.class, CorrosionTrap.class, FancakeTrap.class, DisintegrationTrap.class,
+				WiredTrap.class, MachineTrap.class,
+				BlazingTrap.class, FrostTrap.class,
+				DisarmingTrap.class, SummoningTrap.class, WarpingTrap.class, CursingTrap.class, GrimTrap.class, PitfallTrap.class, DistortionTrap.class, GatewayTrap.class };
 	}
 
 	@Override
 	protected float[] trapChances() {
 		return new float[]{
 				4, 4, 4, 4, 4,
-				2, 2, 2, 2,
-				1, 1, 1, 1, 1, 1, 1, 1, 1 };
+				3, 3,
+				2, 2,
+				1, 1, 1, 1, 1, 1, 1, 1 };
 	}
 
 	@Override

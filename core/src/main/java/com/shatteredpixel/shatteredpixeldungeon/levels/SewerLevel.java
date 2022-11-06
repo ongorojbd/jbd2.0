@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CreamTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlockTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
@@ -110,6 +111,7 @@ public class SewerLevel extends RegularLevel {
 				new Class<?>[]{ WornDartTrap.class } :
 				new Class<?>[]{
 						ChillingTrap.class, ShockingTrap.class, ToxicTrap.class, WornDartTrap.class,
+						CreamTrap.class,
 						AlarmTrap.class, OozeTrap.class,
 						ConfusionTrap.class, FlockTrap.class, SummoningTrap.class, TeleportationTrap.class, GatewayTrap.class };
 }
@@ -120,6 +122,7 @@ public class SewerLevel extends RegularLevel {
 				new float[]{1} :
 				new float[]{
 						4, 4, 4, 4,
+						3,
 						2, 2,
 						1, 1, 1, 1, 1};
 	}

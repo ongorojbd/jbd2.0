@@ -317,6 +317,8 @@ public class Assets {
 		public static final String SNAKE    = "sprites/snake.png";
 		public static final String NECRO    = "sprites/necromancer.png";
 		public static final String GHOUL    = "sprites/ghoul.png";
+		public static final String GHOUL2    = "sprites/ghoul2.png";
+		public static final String GHOUL3    = "sprites/ghoul3.png";
 		public static final String RIPPER   = "sprites/ripper.png";
 		public static final String SPAWNER  = "sprites/spawner.png";
 		public static final String DM100    = "sprites/dm100.png";
@@ -342,6 +344,7 @@ public class Assets {
 		public static final String VITAMINC= "sprites/vitaminc.png";
 		public static final String HEAVYW= "sprites/heavyw.png";
 		public static final String BMORE= "sprites/bmore.png";
+		public static final String DOPPIO= "sprites/doppio.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 	}
 }

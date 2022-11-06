@@ -261,7 +261,7 @@ public class WandOfCorruption extends Wand {
 
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color( 0 );
+		particle.color( 0xCC9900 );
 		particle.am = 0.6f;
 		particle.setLifespan(2f);
 		particle.speed.set(0, 5);

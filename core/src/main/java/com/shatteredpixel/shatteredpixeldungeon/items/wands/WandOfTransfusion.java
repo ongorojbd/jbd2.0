@@ -158,7 +158,7 @@ public class WandOfTransfusion extends Wand {
 
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color( 0xCC0000 );
+		particle.color( 0x66FFFF );
 		particle.am = 0.6f;
 		particle.setLifespan(1f);
 		particle.speed.polar( Random.Float(PointF.PI2), 2f );

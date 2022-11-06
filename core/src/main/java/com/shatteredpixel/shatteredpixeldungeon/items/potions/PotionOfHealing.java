@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Diavolo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -84,6 +85,7 @@ public class PotionOfHealing extends Potion {
 		Buff.detach( ch, Drowsy.class );
 		Buff.detach( ch, Slow.class );
 		Buff.detach( ch, Vertigo.class);
+		Buff.detach( ch, Diavolo.class);
 	}
 
 	@Override

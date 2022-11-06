@@ -142,7 +142,7 @@ public class WandOfDisintegration extends DamageWand {
 
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color(0x220022);
+		particle.color(0xFF66CC);
 		particle.am = 0.6f;
 		particle.setLifespan(1f);
 		particle.acc.set(10, -10);

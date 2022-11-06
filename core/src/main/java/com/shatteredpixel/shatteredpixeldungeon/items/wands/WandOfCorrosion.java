@@ -109,7 +109,7 @@ public class WandOfCorrosion extends Wand {
 
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color( ColorMath.random( 0xAAAAAA, 0xFF8800) );
+		particle.color( ColorMath.random( 0x9900CC, 0x330066) );
 		particle.am = 0.6f;
 		particle.setLifespan( 1f );
 		particle.acc.set(0, 20);

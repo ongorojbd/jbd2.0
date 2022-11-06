@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Diavolo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart;
@@ -106,7 +107,7 @@ public class PoisonDartTrap extends Trap {
 											Dungeon.fail(trap.getClass());
 										}
 									}
-									Buff.affect( finalTarget, Poison.class ).set( poisonAmount() );
+									Buff.affect( finalTarget, Diavolo.class ).set( poisonAmount() );
 									Sample.INSTANCE.play(Assets.Sounds.HIT, 1, 1, Random.Float(0.8f, 1.25f));
 									finalTarget.sprite.bloodBurstA(finalTarget.sprite.center(), dmg);
 									finalTarget.sprite.flash();
@@ -119,7 +120,7 @@ public class PoisonDartTrap extends Trap {
 				});
 			} else {
 				finalTarget.damage(Random.NormalIntRange(4, 8) - finalTarget.drRoll(), trap);
-				Buff.affect( finalTarget, Poison.class ).set( poisonAmount() );
+				Buff.affect( finalTarget, Diavolo.class ).set( poisonAmount() );
 			}
 		}
 	}

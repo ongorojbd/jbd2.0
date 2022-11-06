@@ -299,7 +299,7 @@ public class YogDzewa extends Mob {
 				for (int i : targetedCells){
 					Ballistica b = new Ballistica(pos, i, Ballistica.WONT_STOP);
 					for (int p : b.path){
-						sprite.parent.add(new TargetedCell(p, 0xFF0000));
+						sprite.parent.add(new TargetedCell(p, 0xFF00FF));
 						affectedCells.add(p);
 					}
 				}
@@ -530,9 +530,9 @@ public class YogDzewa extends Mob {
 		super.die( cause );
 
 		if (Random.Int( 10 ) == 0) {
-			GameScene.flash(0xFFFF00);
+			GameScene.flash(0xFF00FF);
 			Dungeon.level.drop( new BossdiscF().identify(), pos ).sprite.drop( pos );
-			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
+			new Flare( 5, 32 ).color( 0xFF00FF, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));
 		}

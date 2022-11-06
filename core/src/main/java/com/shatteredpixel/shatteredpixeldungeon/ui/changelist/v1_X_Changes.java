@@ -89,6 +89,14 @@ public class v1_X_Changes {
 
 		changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), "신규 시련",
 				"신규 시련 3종이 새로 추가되었습니다!"));
+
+		changes = new ChangeInfo("신규 함정", false, null);
+		changes.hardlight(CharSprite.WARNING);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(new Image(Assets.Environment.TERRAIN_FEATURES, 32, 0, 16, 16), "신규 함정",
+				"26~29층 전용 신규 함정 3종이 추가되었습니다.\n\n1~4층 전용 신규 함정 1종이 추가되었습니다."));
+
 	}
 
 	public static void add_v1_3_2_Changes( ArrayList<ChangeInfo> changeInfos ) {

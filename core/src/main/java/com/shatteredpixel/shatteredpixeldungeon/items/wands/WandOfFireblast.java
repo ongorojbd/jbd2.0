@@ -186,6 +186,7 @@ public class WandOfFireblast extends DamageWand {
 				callback );
 		Sample.INSTANCE.play( Assets.Sounds.ZAP );
 		Sample.INSTANCE.play( Assets.Sounds.BURNING );
+		Sample.INSTANCE.play( Assets.Sounds.GHOST );
 	}
 
 	@Override
@@ -207,7 +208,7 @@ public class WandOfFireblast extends DamageWand {
 
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color( 0xEE7722 );
+		particle.color( 0xFF0000 );
 		particle.am = 0.5f;
 		particle.setLifespan(0.6f);
 		particle.acc.set(0, -40);

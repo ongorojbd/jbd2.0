@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -490,6 +491,8 @@ public class Rebel extends Mob {
 		if (beacon != null) {
 			beacon.upgrade();
 		}
+		
+		Dungeon.level.drop( new ScrollOfPassage().identify(), pos ).sprite.drop( pos );
 
 		if (Random.Int( 10 ) == 0) {
 			GameScene.flash(0xFFFF00);

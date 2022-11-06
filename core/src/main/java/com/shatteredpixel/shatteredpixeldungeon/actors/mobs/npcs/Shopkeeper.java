@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DogTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
@@ -88,11 +90,7 @@ public class Shopkeeper extends NPC {
 
 		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
 
-		Enemytonio Enemytonio = new Enemytonio();
-		Enemytonio.state = Enemytonio.WANDERING;
-		Enemytonio.pos = this.pos;
-		GameScene.add( Enemytonio );
-		Enemytonio.beckon(Dungeon.hero.pos);
+		new DogTrap().set(pos).activate();
 
 		Sample.INSTANCE.play(Assets.Sounds.MIMIC);
 	}

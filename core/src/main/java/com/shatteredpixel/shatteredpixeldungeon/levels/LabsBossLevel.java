@@ -32,10 +32,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -211,9 +219,25 @@ public class LabsBossLevel extends Level {
 	@Override
 	protected void createItems() {
 
-		Item prize1 = (new PotionOfShielding().quantity(1));
-		Item prize5 = (new ScrollOfMetamorphosis().quantity(3));
+		Item prize1 = Random.oneOf(
+				new CeremonialCandle().quantity(1),
+				new StoneOfEnchantment().quantity(3),
+				new ScrollOfMetamorphosis().quantity(3),
+				new Blandfruit().quantity(3),
+				new ScrollOfPolymorph().quantity(1),
+				new PotionOfEarthenArmor().quantity(1),
+				new PotionOfShielding().quantity(1)
+		);
 
+		Item prize5 = Random.oneOf(
+				new CeremonialCandle().quantity(1),
+				new StoneOfEnchantment().quantity(3),
+				new ScrollOfMetamorphosis().quantity(3),
+				new Blandfruit().quantity(3),
+				new ScrollOfPolymorph().quantity(1),
+				new PotionOfEarthenArmor().quantity(1),
+				new PotionOfShielding().quantity(1)
+		);
 
 		drop( prize1, 6+(28)*33 ).type = Heap.Type.CHEST;
 		drop( prize5, 26+(28)*33 ).type = Heap.Type.CHEST;

@@ -114,7 +114,7 @@ public class Vitaminc extends Mob {
         if (hit(this, enemy, true)) {
             //TODO would be nice for this to work on ghost/statues too
             if (enemy == Dungeon.hero && Random.Int(2) == 0) {
-                Buff.prolong(enemy, Vitam.class, Vitam.DURATION);
+                Buff.prolong(enemy, Vitam.class, 5f);
                 Sample.INSTANCE.play(Assets.Sounds.FF);
             }
 
