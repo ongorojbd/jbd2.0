@@ -86,6 +86,7 @@ import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
 
+	//영웅 순서 바꾸고 싶으면 여길 바꾸면 된다.
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
 	ROGUE( HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),

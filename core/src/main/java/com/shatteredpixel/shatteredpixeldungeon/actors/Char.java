@@ -399,7 +399,7 @@ public abstract class Char extends Actor {
 			if ( buff(Weakness.class) != null ){
 				dmg *= 0.67f;
 			}
-			
+
 			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			effectiveDamage = Math.max( effectiveDamage - dr, 0 );
 
@@ -442,6 +442,7 @@ public abstract class Char extends Actor {
 					DeathMark.processFearTheReaper(enemy);
 				}
 				enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
+				Sample.INSTANCE.play(Assets.Sounds.ORA);
 			}
 
 			enemy.sprite.bloodBurstA( sprite.center(), effectiveDamage );

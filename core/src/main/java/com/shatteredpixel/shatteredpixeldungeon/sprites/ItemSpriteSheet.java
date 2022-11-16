@@ -130,7 +130,7 @@ public class ItemSpriteSheet {
 		assignItemRect(CHEST,           16, 14);
 		assignItemRect(LOCKED_CHEST,    16, 14);
 		assignItemRect(CRYSTAL_CHEST,   16, 14);
-		assignItemRect(EBONY_CHEST,     16, 14);
+		assignItemRect(EBONY_CHEST,     10, 10);
 	}
 
 	private static final int MISC_CONSUMABLE =                              xy(1, 4);   //16 slots
@@ -274,6 +274,7 @@ public class ItemSpriteSheet {
 	public static final int MISTA           = WEP_TIER5+8;
 	public static final int PINK            = WEP_TIER5+9;
 	public static final int AJA             = WEP_TIER5+10;
+	public static final int SPWORLD          = WEP_TIER5+11;
 
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
@@ -287,7 +288,7 @@ public class ItemSpriteSheet {
 		assignItemRect(MISTA,       15, 14);
 		assignItemRect(PINK,        13, 16);
 		assignItemRect(AJA,         16, 16);
-
+		assignItemRect(SPWORLD,     10, 13);
 	}
 
 	                                                                                    //8 free slots

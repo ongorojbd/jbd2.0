@@ -289,9 +289,7 @@ public class Bestiary {
 					cl = ArmoredBrute.class;
 				} else if (cl == DM200.class) {
 					cl = DM201.class;
-				} else if (cl == Monk.BlueMonk.class) {
-					cl = Senior.class;
-				} else if (cl == Monk.RedMonk.class) {
+				} else if (cl == Warlock.class) {
 					cl = Senior.class;
 				} else if (cl == Eye.class) {
 					cl = Vitaminc.class;

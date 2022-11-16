@@ -50,10 +50,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfTo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponEnhance;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cizah;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Yoyoma;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -66,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Gyro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalPorter;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
@@ -87,8 +91,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MissileButton;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.QuickRecipe;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -262,6 +268,12 @@ public abstract class Recipe {
 			new Whitesnake.Recipe(),
 			new Sleepcmoon.Recipe(),
 			new ScrollOfPolymorph.Recipe(),
+			new WalkieTalkie.Recipe(),
+			new Yoyoma.Recipe(),
+			new Cizah.Recipe(),
+			new Fugo.Recipe(),
+			new Gyro.Recipe(),
+			new SnowHunter.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

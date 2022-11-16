@@ -235,6 +235,8 @@ public class Assets {
 		public static final String STANDO = "sounds/stando.mp3";
 		public static final String CRAZYDIO = "sounds/crazydio.mp3";
 		public static final String YAREYARE = "sounds/yareyare.mp3";
+		public static final String PLATINUM = "sounds/platinum.mp3";
+		public static final String ORA = "sounds/ora.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -248,7 +250,7 @@ public class Assets {
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OVERDRIVE, SP,
-				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE
+				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA
 		};
 	}
 
@@ -345,6 +347,9 @@ public class Assets {
 		public static final String HEAVYW= "sprites/heavyw.png";
 		public static final String BMORE= "sprites/bmore.png";
 		public static final String DOPPIO= "sprites/doppio.png";
+		public static final String BOYTWO= "sprites/boytwo.png";
+		public static final String ACT1= "sprites/act1.png";
+		public static final String WILLA= "sprites/willa.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 	}
 }

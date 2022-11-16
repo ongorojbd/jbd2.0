@@ -155,9 +155,9 @@ public class AJA extends MeleeWeapon {
     @Override
     public String status() {
         if (this.isIdentified()) {
-            if (mode == 2) return "Squirrel";
-            else if (mode == 1) return "Tentacle";
-            else return "Wing";
+            if (mode == 2) return "SQUIRREL";
+            else if (mode == 1) return "TENTACLE";
+            else return "WING";
         }
         else return null;}
 

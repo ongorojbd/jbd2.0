@@ -96,6 +96,7 @@ public class CloakOfShadows extends Artifact {
 					hero.spend( 1f );
 					hero.busy();
 					Sample.INSTANCE.play(Assets.Sounds.MELD);
+					Sample.INSTANCE.play(Assets.Sounds.PLATINUM);
 					activeBuff = activeBuff();
 					activeBuff.attachTo(hero);
 					Talent.onArtifactUsed(Dungeon.hero);

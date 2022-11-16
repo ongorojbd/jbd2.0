@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
@@ -611,6 +612,15 @@ public abstract class Mob extends Char {
 				&& ((Hero) enemy).belongings.weapon() instanceof MissileWeapon){
 			Statistics.thrownAttacks++;
 			Badges.validateHuntressUnlock();
+		}
+
+		for (int i : PathFinder.NEIGHBOURS4) {
+			if (Dungeon.isChallenged(Challenges.GAMBLER) && enemy instanceof Hero && enemy.pos == this.pos+i){
+				damage *= 0f;
+				Dungeon.hero.damage(Dungeon.hero.HP/5, this);
+				Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN);
+				GLog.n(Messages.get(Act3.class, "d"));
+			}
 		}
 		
 		if (surprisedBy(enemy)) {

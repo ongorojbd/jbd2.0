@@ -65,7 +65,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spheaven;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
@@ -139,7 +141,9 @@ public class AdvancedEvolution extends InventorySpell {
                 || item instanceof PINK
                 || item instanceof LSWORD
                 || item instanceof DBLADE
-                || item instanceof MISTA;
+                || item instanceof MISTA
+                || item instanceof SnowHunter
+                || item instanceof Spheaven;
     }
 
     @Override
@@ -196,7 +200,7 @@ public class AdvancedEvolution extends InventorySpell {
 
 
             { //w instanceof Whip
-                switch (Random.Int(5)) {
+                switch (Random.Int(6)) {
                     case 0:
                     default:
                         n = new LSWORD();
@@ -212,6 +216,9 @@ public class AdvancedEvolution extends InventorySpell {
                         break;
                     case 4:
                         n = new AJA();
+                        break;
+                    case 5:
+                        n = new SnowHunter();
                         break;
                 }  {
 

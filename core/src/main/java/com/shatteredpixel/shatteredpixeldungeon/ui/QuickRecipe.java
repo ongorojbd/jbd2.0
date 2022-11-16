@@ -92,6 +92,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MissileButton;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -364,22 +365,6 @@ public class QuickRecipe extends Component {
 				}
 				return result;
 			case 6:
-				result.add(new QuickRecipe( new LiquidMetal.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new MissileWeapon.PlaceHolder())),
-						new LiquidMetal()));
-				result.add(new QuickRecipe( new LiquidMetal.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new MissileWeapon.PlaceHolder().quantity(2))),
-						new LiquidMetal()));
-				result.add(new QuickRecipe( new LiquidMetal.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new MissileWeapon.PlaceHolder().quantity(3))),
-						new LiquidMetal()));
-				result.add(null);
-				result.add(null);
-				result.add(new QuickRecipe( new ArcaneResin.Recipe(),
-						new ArrayList<Item>(Arrays.asList(new Wand.PlaceHolder())),
-						new ArcaneResin()));
-				result.add(null);
-				result.add(null);
 				result.add(new QuickRecipe(new LloydsBeacon.Recipe()));
 				result.add(new QuickRecipe(new ChaosCatalyst.Recipe()));
 				result.add(new QuickRecipe(new WoundsofWar.Recipe()));
@@ -408,11 +393,21 @@ public class QuickRecipe extends Component {
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe(new LSWORD.Recipe()));
-				result.add(new QuickRecipe(new MISTA.Recipe()));
-				result.add(new QuickRecipe(new DBLADE.Recipe()));
+				result.add(new QuickRecipe(new SnowHunter.Recipe()));
 				result.add(null);
+				result.add(new QuickRecipe(new DBLADE.Recipe()));
 				result.add(new QuickRecipe(new PINK.Recipe()));
+				result.add(null);
+				result.add(new QuickRecipe(new MISTA.Recipe()));
 				result.add(new QuickRecipe(new AJA.Recipe()));
+				result.add(null);
+				result.add(null);
+				result.add(new QuickRecipe( new LiquidMetal.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new MissileWeapon.PlaceHolder())),
+						new LiquidMetal()));
+				result.add(new QuickRecipe( new ArcaneResin.Recipe(),
+						new ArrayList<Item>(Arrays.asList(new Wand.PlaceHolder())),
+						new ArcaneResin()));
 				return result;
 
 

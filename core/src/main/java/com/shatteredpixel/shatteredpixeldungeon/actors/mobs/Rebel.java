@@ -382,7 +382,7 @@ public class Rebel extends Mob {
 
 			WO WO = new WO();
 			WO.state = WO.HUNTING;
-			WO.pos = bottomDoor-11*33;
+			WO.pos = bottomDoor-12*33;
 			GameScene.add( WO );
 			WO.beckon(Dungeon.hero.pos);
 

@@ -61,7 +61,7 @@ public class Whitesnake extends Artifact {
 
     @Override
     public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x660099, 1f);
+        return new ItemSprite.Glowing(0xCC0000, 1f);
     }
 
     @Override

@@ -88,7 +88,7 @@ public class Kawasiri extends Mob {
 
         HP = HT = 150;
         viewDistance = 999;
-
+        state = HUNTING;
         baseSpeed = 0.5f;
 
         EXP = 15;
@@ -170,10 +170,10 @@ public class Kawasiri extends Mob {
     @Override
     public void damage(int dmg, Object src) {
 
-        if (dmg >= 50){
+        if (dmg >= 49){
             //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
             // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
-            dmg = 50;
+            dmg = 49;
         }
 
         super.damage(dmg, src);
@@ -199,13 +199,12 @@ public class Kawasiri extends Mob {
             Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
             deferred.prolong( dmg );
 
-            state = FLEEING;
+            if (state == FLEEING) state = SLEEPING;
         }
         if (Phase==3 && HP < 147) {
             Phase = 4;
             baseSpeed = 1f;
             HP = 147;
-            if (state == FLEEING) state = HUNTING;
             Buff.detach(this, Viscosity.DeferedDamage.class);
 
             if (!BossHealthBar.isAssigned()) {
@@ -240,32 +239,29 @@ public class Kawasiri extends Mob {
         }
         if (Phase==5 && HP < 54) {
             Phase = 6;
-            HP = 53;
-            int reg = 101 ;
+            HP = 150;
+
             baseSpeed = 1f;
+
+            for (int i : pylonPositions) {
+                ScrollOfTeleportation.appear(this, i);
+            }
+
             Dungeon.hero.damage(Dungeon.hero.HP/3, this);
-            CellEmitter.center(Dungeon.hero.pos).burst(BlastParticle.FACTORY, 31);
-            CellEmitter.center(Dungeon.hero.pos).burst(SmokeParticle.FACTORY, 4);
             GameScene.flash(0x80FFFFFF);
             Buff.affect(this, Barrier.class).setShield(30);
             Camera.main.shake(11, 3f);
             sprite.emitter().burst( Speck.factory( Speck.HEALING ), 15 );
             Sample.INSTANCE.play(Assets.Sounds.TBOMB);
-            yell(Messages.get(this, "phase3"));
-            if (reg > 0) {
-                HP += reg;
-                sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-            }
-            for (int i : pylonPositions) {
-                ScrollOfTeleportation.appear(this, i);
-            }
-            
+
             Buff.affect(Dungeon.hero, Blindness.class, 3f);
             Buff.affect(Dungeon.hero, Cripple.class,   7f);
             Buff.affect(Dungeon.hero, Weakness.class, 11f);
-            Dungeon.level.cleanWalls();
+
+            yell(Messages.get(this, "phase3"));
             yell(Messages.get(this, "bom"));
         }
+
         if (Phase==6 && HP < 52)
            {
             Phase = 7;

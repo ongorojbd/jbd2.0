@@ -228,13 +228,13 @@ public class RingOfDrago extends Ring {
                     return Generator.randomUsingDefaults(Generator.Category.POTION);
                 case 3:
                     if (Dungeon.isChallenged(Challenges.NO_SCROLLS)) {
-                        if (Random.Int(16) == 0) {
+                        if (Random.Int(24) == 0) {
                             return new ScrollOfUpgrade();
                         } else {
                             return Generator.randomUsingDefaults(Generator.Category.SCROLL);
                         }
                     } else {
-                        if (Random.Int(9) == 0) {
+                        if (Random.Int(14) == 0) {
                             return new ScrollOfUpgrade();
                         } else {
                             return Generator.randomUsingDefaults(Generator.Category.SCROLL);
@@ -268,13 +268,13 @@ public class RingOfDrago extends Ring {
                 i = Generator.randomUsingDefaults(Generator.Category.SCROLL);
                 if (Dungeon.isChallenged(Challenges.GAMBLER)) {
                     if (Dungeon.isChallenged(Challenges.NO_SCROLLS)) {
-                        if (Random.Int(9) == 0) {
+                        if (Random.Int(14) == 0) {
                             return new ScrollOfUpgrade();
                         } else {
                             return Reflection.newInstance(ExoticScroll.regToExo.get(i.getClass()));
                         }
                     } else {
-                        if (Random.Int(5) == 0) {
+                        if (Random.Int(8) == 0) {
                             return new ScrollOfUpgrade();
                         } else {
                             return Reflection.newInstance(ExoticScroll.regToExo.get(i.getClass()));

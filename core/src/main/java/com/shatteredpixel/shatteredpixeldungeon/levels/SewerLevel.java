@@ -65,12 +65,6 @@ public class SewerLevel extends RegularLevel {
 				new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2},
 				new float[]{1, 1, 0.5f},
 				false);
-		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.DRAGON},
-					new float[]{1},
-					false);
-	}
 	}
 
 	@Override

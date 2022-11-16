@@ -24,6 +24,18 @@ package com.shatteredpixel.shatteredpixeldungeon.journal;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -82,8 +94,19 @@ public enum Catalog {
 			WANDS.seen.put( wand, false);
 		}
 
-		for (Class ring : Generator.Category.RING.classes){
-			RINGS.seen.put( ring, false);
+		{
+			RINGS.seen.put( RingOfAccuracy.class,               false);
+			RINGS.seen.put( RingOfArcana.class,                 false);
+			RINGS.seen.put( RingOfEnergy.class,                 false);
+			RINGS.seen.put( RingOfElements.class,               false);
+			RINGS.seen.put( RingOfEvasion.class,                false);
+			RINGS.seen.put( RingOfForce.class,                  false);
+			RINGS.seen.put( RingOfFuror.class,                  false);
+			RINGS.seen.put( RingOfHaste.class,                  false);
+			RINGS.seen.put( RingOfMight.class,                  false);
+			RINGS.seen.put( RingOfSharpshooting.class,          false);
+			RINGS.seen.put( RingOfTenacity.class,               false);
+			RINGS.seen.put( RingOfWealth.class,                 false);
 		}
 
 		for (Class artifact : Generator.Category.ARTIFACT.classes){

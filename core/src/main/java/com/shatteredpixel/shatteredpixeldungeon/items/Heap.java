@@ -39,7 +39,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfDrago;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -86,7 +85,7 @@ public class Heap implements Bundlable {
 			break;
 		case REMAINS:
 		case SKELETON:
-			CellEmitter.center( pos ).start(Speck.factory(Speck.MASK), 0.1f, 3);
+			CellEmitter.center( pos ).start(Speck.factory(Speck.CROWN), 0.1f, 3);
 			break;
 		default:
 		}
@@ -100,10 +99,10 @@ public class Heap implements Bundlable {
 		}
 
 		type = Type.HEAP;
-		ArrayList<Item> bonus = RingOfDrago.tryForBonusDrop(hero, 1);
+		ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(hero, 1);
 		if (bonus != null && !bonus.isEmpty()) {
 			items.addAll(0, bonus);
-			RingOfDrago.showFlareForBonusDrop(sprite);
+			RingOfWealth.showFlareForBonusDrop(sprite);
 		}
 		sprite.link();
 		sprite.drop();

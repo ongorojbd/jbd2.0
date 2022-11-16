@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bmore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fugomob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -76,18 +77,17 @@ public class BmoreSprite extends MobSprite {
         play( zap );
 
         MagicMissile.boltFromChar( parent,
-                MagicMissile.RAINBOW,
+                MagicMissile.CORROSION,
                 this,
                 cell,
                 new Callback() {
                     @Override
                     public void call() {
-                        Sample.INSTANCE.play( Assets.Sounds.SHEEP );
-                        ((Bmore)ch).onZapComplete();
+                        Sample.INSTANCE.play( Assets.Sounds.ZAP );
+                        ((Fugomob)ch).onZapComplete();
                     }
                 } );
         Sample.INSTANCE.play( Assets.Sounds.MISS, 1f, 1.5f );
-        GLog.w(Messages.get(DM201.class, "vent"));
     }
 
     @Override
