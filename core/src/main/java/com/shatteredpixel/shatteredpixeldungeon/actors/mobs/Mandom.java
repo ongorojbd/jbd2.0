@@ -60,24 +60,7 @@ public class Mandom extends Mob {
 
         properties.add(Property.IMMOVABLE);
 
-        HUNTING = new Mob.Hunting();
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 1, 3 );
-    }
-
-    private boolean threatened = false;
-
-
-    @Override
-    public void damage(int dmg, Object src) {
-        if ((src instanceof Char && !Dungeon.level.adjacent(pos, ((Char)src).pos))
-                || enemy == null || !Dungeon.level.adjacent(pos, enemy.pos)){
-            threatened = true;
-        }
-        super.damage(dmg, src);
+        state = PASSIVE;
     }
 
     @Override
@@ -97,10 +80,6 @@ public class Mandom extends Mob {
 
         new TimeManiTrap().set(target).activate();
 
-
-
     }
-
-
 
 }

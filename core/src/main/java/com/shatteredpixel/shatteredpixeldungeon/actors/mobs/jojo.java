@@ -167,7 +167,7 @@ public class jojo extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 30, 30 );
+        return Random.NormalIntRange( 17, 29 );
     }
 
     @Override

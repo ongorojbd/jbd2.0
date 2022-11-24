@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Whitesnake;
@@ -50,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfTo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponEnhance;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cizah;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
@@ -59,7 +57,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Yoyoma;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
@@ -72,6 +69,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Gyro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalPorter;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Newro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ogroc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
@@ -94,7 +94,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.ui.QuickRecipe;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -214,6 +213,8 @@ public abstract class Recipe {
 		new ArcaneResin.Recipe(),
 		new Alchemize.Recipe(),
 		new StewedMeat.oneMeat(),
+		new Ogroc.Recipe(),
+		new Newro.Recipe(),
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
@@ -270,10 +271,10 @@ public abstract class Recipe {
 			new ScrollOfPolymorph.Recipe(),
 			new WalkieTalkie.Recipe(),
 			new Yoyoma.Recipe(),
-			new Cizah.Recipe(),
 			new Fugo.Recipe(),
 			new Gyro.Recipe(),
 			new SnowHunter.Recipe(),
+			new Neoro.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

@@ -36,7 +36,7 @@ public class RatSprite extends MobSprite {
 		idle = new Animation( 2, true );
 		idle.frames( frames, 0, 0, 0, 1 );
 		
-		run = new Animation( 10, true );
+		run = new Animation( 12, true );
 		run.frames( frames, 6, 7, 8, 9, 10 );
 		
 		attack = new Animation( 15, false );
@@ -46,5 +46,10 @@ public class RatSprite extends MobSprite {
 		die.frames( frames, 11, 12, 13, 14 );
 		
 		play( idle );
+	}
+
+	@Override
+	public int blood() {
+		return 0x99FFFF;
 	}
 }

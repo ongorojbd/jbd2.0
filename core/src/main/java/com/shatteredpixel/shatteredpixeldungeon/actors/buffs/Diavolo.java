@@ -67,7 +67,7 @@ public class Diavolo extends Buff implements Hero.Doom {
 
     @Override
     public int icon() {
-        return BuffIndicator.AMOK;
+        return BuffIndicator.BLEEDING;
     }
 
 

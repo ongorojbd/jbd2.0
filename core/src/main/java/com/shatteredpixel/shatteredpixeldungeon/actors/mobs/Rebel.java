@@ -29,9 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -58,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RebelSprite;
@@ -185,9 +189,9 @@ public class Rebel extends Mob {
 	public int damageRoll() {
 		int dmg;
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-			dmg = Random.NormalIntRange( 45, 70 );
+			dmg = Random.NormalIntRange( 45, 65 );
 		} else {
-			dmg = Random.NormalIntRange( 37, 57 );
+			dmg = Random.NormalIntRange( 35, 55 );
 		}
 		return dmg;
 	}
@@ -363,16 +367,13 @@ public class Rebel extends Mob {
 		if (Phase==0 && HP < 1500) {
 			Phase = 1;
 			GameScene.flash(0x8B00FF);
+			new Fadeleaf().activate(this);
+			new Fadeleaf().activate(hero);
+			Sample.INSTANCE.play( Assets.Sounds.HAHAH );
 			Buff.prolong(this, Haste.class, Haste.DURATION*5000f);
 			yell(Messages.get(this, "telling_1"));
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 			BossHealthBar.assignBoss(this);
-
-			Dvdol Dvdol = new Dvdol();
-			Dvdol.state = Dvdol.HUNTING;
-			Dvdol.pos = bottomDoor-26*33;
-			GameScene.add( Dvdol );
-			Dvdol.beckon(Dungeon.hero.pos);
 		}
 		else if (Phase==1 && HP < 1200) {
 			Phase = 2;
@@ -484,6 +485,19 @@ public class Rebel extends Mob {
 			Statistics.qualifiedForBossChallengeBadge = false;
 		}
 
+		if (Dungeon.hero.buff(Roc.class) != null) {
+			Badges.validateNeoroca();
+		} else {
+			Statistics.qualifiedForBossChallengeBadge = false;
+		}
+
+		if (Dungeon.hero.buff(Triplespeed.class) != null) {
+			Badges.validateMih();
+		} else {
+			Statistics.qualifiedForBossChallengeBadge = false;
+		}
+
+
 		PotionOfHealing.cure(hero);
 		PotionOfHealing.heal(hero);
 
@@ -492,7 +506,7 @@ public class Rebel extends Mob {
 			beacon.upgrade();
 		}
 		
-		Dungeon.level.drop( new ScrollOfPassage().identify(), pos ).sprite.drop( pos );
+		Dungeon.level.drop( new ScrollOfPassage().identify().quantity(3), pos ).sprite.drop( pos );
 
 		if (Random.Int( 10 ) == 0) {
 			GameScene.flash(0xFFFF00);
@@ -601,7 +615,13 @@ public class Rebel extends Mob {
 				Burstpos = -1;
 				BurstTime = 0;
 				ACoolDown = Random.NormalIntRange(5,8);
-				if (Phase == 5) ACoolDown = Random.NormalIntRange(1,5);
+
+				if (enemy == Dungeon.hero && !enemy.isAlive()) {
+					Dungeon.fail(getClass());
+					GLog.n(Messages.get(this, "d"));
+				}
+
+				if (Phase == 5) ACoolDown = Random.NormalIntRange(1,4);
 
 				Sample.INSTANCE.play( Assets.Sounds.BLAST, 1.5f, 0.67f );
 
@@ -622,7 +642,6 @@ public class Rebel extends Mob {
 		GameScene.add(Blob.seed(target.pos, 250, Dominion.class));
 		GLog.w(Messages.get(Rebel.class, "skill2"));
 		GasCoolDown = 10;
-
 	}
 
 }

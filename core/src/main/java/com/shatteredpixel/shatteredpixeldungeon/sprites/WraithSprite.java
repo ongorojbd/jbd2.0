@@ -36,7 +36,7 @@ public class WraithSprite extends MobSprite {
 		idle = new Animation( 5, true );
 		idle.frames( frames, 0, 1 );
 		
-		run = new Animation( 10, true );
+		run = new Animation( 7, true );
 		run.frames( frames, 0, 1 );
 		
 		attack = new Animation( 10, false );
@@ -50,6 +50,6 @@ public class WraithSprite extends MobSprite {
 	
 	@Override
 	public int blood() {
-		return 0x88000000;
+		return 0x660000;
 	}
 }

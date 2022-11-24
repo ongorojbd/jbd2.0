@@ -40,66 +40,7 @@ public class Teleporter extends Item {
     @Override
     public void execute(Hero hero, String action) {
 
-        super.execute(hero, action);
-        if (action.equals(AC_TELEPORT)) {
-            Buff.affect(hero, FeatherFall.FeatherBuff.class, 3f);
-            Chasm.heroFall(hero.pos);
-            int length = Dungeon.level.length();
-            int[] map = Dungeon.level.map;
-            boolean[] mapped = Dungeon.level.mapped;
-            boolean[] discoverable = Dungeon.level.discoverable;
-
-            for (int i=0; i < length; i++) {
-
-                int terr = map[i];
-
-                if (discoverable[i]) {
-
-                    mapped[i] = true;
-                    if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
-
-                        Dungeon.level.discover( i );
-
-                        if (Dungeon.level.heroFOV[i]) {
-                            GameScene.discoverTile( i, terr );
-                            discover( i );
-                        }
-                    }
-                }
-            }
-            GameScene.updateFog();
-        }
-        if (action.equals(AC_RETURN)) {
-            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
-            InterlevelScene.returnBranch = 0;
-            InterlevelScene.returnPos = -2;
-            Game.switchScene( InterlevelScene.class );
-        }
-        int length = Dungeon.level.length();
-        int[] map = Dungeon.level.map;
-        boolean[] mapped = Dungeon.level.mapped;
-        boolean[] discoverable = Dungeon.level.discoverable;
-
-        for (int i=0; i < length; i++) {
-
-            int terr = map[i];
-
-            if (discoverable[i]) {
-
-                mapped[i] = true;
-                if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
-
-                    Dungeon.level.discover( i );
-
-                    if (Dungeon.level.heroFOV[i]) {
-                        GameScene.discoverTile( i, terr );
-                        discover( i );
-                    }
-                }
-            }
-        }
-        GameScene.updateFog();
+        hero.damage(hero.HP, this);
     }
 
     @Override

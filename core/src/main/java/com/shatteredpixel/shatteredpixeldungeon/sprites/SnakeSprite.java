@@ -50,4 +50,9 @@ public class SnakeSprite extends MobSprite {
 		play(idle);
 	}
 
+	@Override
+	public int blood() {
+		return 0xCC9966;
+	}
+
 }

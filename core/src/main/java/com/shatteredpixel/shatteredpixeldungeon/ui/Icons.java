@@ -133,7 +133,7 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 17, 0, 17, 16 ) );
 				break;
 			case RANKINGS:
-				icon.frame( icon.texture.uvRectBySize( 34, 0, 17, 16 ) );
+				icon.frame( icon.texture.uvRectBySize( 34, 0, 16, 16 ) );
 				break;
 			case BADGES:
 				icon.frame( icon.texture.uvRectBySize( 51, 0, 16, 16 ) );

@@ -179,6 +179,8 @@ public class Badges {
 		YORIHIMES_ROGUE,
 		YORIHIMES_HUNTRESS,
 		YORIHIMES_ALL_CLASSES       ( 126, true ),
+		NEOROCA                     ( 24, true ),
+		MIH                         ( 25, true ),
 		;
 
 		public boolean meta;
@@ -1014,6 +1016,15 @@ public class Badges {
 		displayBadge( Badge.HAPPY_END );
 	}
 
+
+	public static void validateNeoroca() {
+		displayBadge( Badge.NEOROCA );
+	}
+
+	public static void validateMih() {
+		displayBadge( Badge.MIH );
+	}
+
 	public static void validateChampion( int challenges ) {
 		if (challenges == 0) return;
 		Badge badge = null;
@@ -1118,9 +1129,9 @@ public class Badges {
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
 			{Badge.VICTORY,      Badge.YORIHIMES},
-			{Badge.YORIHIMES,    Badge.YORIHIMES_ALL_CLASSES},
-			{Badge.YORIHIMES,    Badge.BOSS_CHALLENGE_6},
 			{Badge.YORIHIMES_ALL_CLASSES,   Badge.BOSS_CHALLENGE_6},
+			{Badge.CHAMPION_1,   Badge.NEOROCA},
+			{Badge.CHAMPION_1,   Badge.MIH},
 	};
 
 	//If the summary badge is unlocked, don't show the component badges

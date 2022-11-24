@@ -59,7 +59,10 @@ public class Statistics {
 	public static int spawnersAlive;
 	
 	public static float duration;
-	
+
+	public static int timeReset;
+	public static int neoroca;
+
 	public static boolean qualifiedForNoKilling = false;
 	public static boolean completedWithNoKilling = false;
 	public static boolean qualifiedForBossChallengeBadge = false;
@@ -98,6 +101,9 @@ public class Statistics {
 		thrownAttacks   = 0;
 
 		spawnersAlive   = 0;
+
+		timeReset = 0;
+		neoroca = 0;
 		
 		duration	    = 0;
 		
@@ -120,6 +126,8 @@ public class Statistics {
 	private static final String YORIHIMES	= "yorihimes";
 	private static final String ANKHS		= "ankhsUsed";
 
+	private static final String TIMERESET		= "timeReset";
+	private static final String NEOROCA		    = "neoroca";
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
 	private static final String TRES_SCORE      = "tres_score";
@@ -159,6 +167,8 @@ public class Statistics {
 		bundle.put( YORIHIMES,	yorihimes );
 		bundle.put( ANKHS,		ankhsUsed );
 
+		bundle.put( TIMERESET,		timeReset );
+		bundle.put( NEOROCA,		neoroca );
 		bundle.put( PROG_SCORE,  progressScore );
 		bundle.put( ITEM_VAL,    heldItemValue );
 		bundle.put( TRES_SCORE,  treasureScore );
@@ -203,6 +213,8 @@ public class Statistics {
 		yorihimes	= bundle.getInt( YORIHIMES );
 		ankhsUsed		= bundle.getInt( ANKHS );
 
+		timeReset   = bundle.getInt( TIMERESET );
+		neoroca     = bundle.getInt( NEOROCA );
 		progressScore   = bundle.getInt( PROG_SCORE );
 		heldItemValue   = bundle.getInt( ITEM_VAL );
 		treasureScore   = bundle.getInt( TRES_SCORE );

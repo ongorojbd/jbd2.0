@@ -122,6 +122,14 @@ public class ItemSpriteSheet {
 	public static final int LOCKED_CHEST    = CONTAINERS+5;
 	public static final int CRYSTAL_CHEST   = CONTAINERS+6;
 	public static final int EBONY_CHEST     = CONTAINERS+7;
+	public static final int KINGN           = CONTAINERS+8;
+	public static final int KINGB           = CONTAINERS+9;
+	public static final int KINGC           = CONTAINERS+10;
+	public static final int KINGW           = CONTAINERS+11;
+	public static final int KINGM           = CONTAINERS+12;
+	public static final int KINGT           = CONTAINERS+13;
+	public static final int KINGA           = CONTAINERS+14;
+	public static final int KINGS           = CONTAINERS+15;
 	static{
 		assignItemRect(BONES,           12, 11);
 		assignItemRect(REMAINS,         12, 11);
@@ -131,6 +139,14 @@ public class ItemSpriteSheet {
 		assignItemRect(LOCKED_CHEST,    16, 14);
 		assignItemRect(CRYSTAL_CHEST,   16, 14);
 		assignItemRect(EBONY_CHEST,     10, 10);
+		assignItemRect(KINGN,           16, 9);
+		assignItemRect(KINGB,           15, 16);
+		assignItemRect(KINGC,           12, 14);
+		assignItemRect(KINGW,           15, 14);
+		assignItemRect(KINGM,           12, 14);
+		assignItemRect(KINGT,           11, 14);
+		assignItemRect(KINGA,           15, 16);
+		assignItemRect(KINGS,           16, 16);
 	}
 
 	private static final int MISC_CONSUMABLE =                              xy(1, 4);   //16 slots
@@ -445,6 +461,10 @@ public class ItemSpriteSheet {
 	public static final int ARTIFACT_ROSE1      = ARTIFACTS+20;
 	public static final int ARTIFACT_ROSE2      = ARTIFACTS+21;
 	public static final int ARTIFACT_ROSE3      = ARTIFACTS+22;
+	public static final int RO1                 = ARTIFACTS+23;
+	public static final int RO2                 = ARTIFACTS+24;
+	public static final int RO3                 = ARTIFACTS+25;
+	public static final int RAM                 = ARTIFACTS+26;
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      14, 14);
 		assignItemRect(ARTIFACT_ARMBAND,    14, 14);
@@ -469,6 +489,10 @@ public class ItemSpriteSheet {
 		assignItemRect(ARTIFACT_ROSE1,      14, 14);
 		assignItemRect(ARTIFACT_ROSE2,      14, 14);
 		assignItemRect(ARTIFACT_ROSE3,      14, 14);
+		assignItemRect(RO1,      10, 10);
+		assignItemRect(RO2,      10, 11);
+		assignItemRect(RO3,      7,  14);
+		assignItemRect(RAM,      12, 9);
 	}
 
 	                                                                                    //16 free slots
@@ -641,7 +665,7 @@ public class ItemSpriteSheet {
 		
 		assignItemRect(CURSE_INFUSE,    10, 15);
 		assignItemRect(MAGIC_INFUSE,    10, 15);
-		assignItemRect(ALCHEMIZE,       10, 15);
+		assignItemRect(ALCHEMIZE,       10, 13);
 		assignItemRect(RECYCLE,         10, 15);
 	}
 	
@@ -670,7 +694,7 @@ public class ItemSpriteSheet {
 		assignItemRect(PUMPKIN_PIE, 16, 12);
 		assignItemRect(CANDY_CANE,  11, 14);
 		assignItemRect(MEAT_PIE,    16, 16);
-		assignItemRect(BLANDFRUIT,  9,  11);
+		assignItemRect(BLANDFRUIT,  11, 13);
 		assignItemRect(BLAND_CHUNKS,14, 6);
 		assignItemRect(BERRY,       14, 15);
 	}
@@ -690,7 +714,7 @@ public class ItemSpriteSheet {
 		assignItemRect(DUST,    13, 8);
 		assignItemRect(CANDLE,  10, 12);
 		assignItemRect(EMBER,   10, 10);
-		assignItemRect(PICKAXE, 13, 14);
+		assignItemRect(PICKAXE, 10, 13);
 		assignItemRect(ORE,     10, 10);
 		assignItemRect(TOKEN,   10, 10);
 		assignItemRect(BLOB,    8,  8);
@@ -712,7 +736,7 @@ public class ItemSpriteSheet {
 		assignItemRect(HOLDER,      16, 13);
 		assignItemRect(BANDOLIER,   14, 13);
 		assignItemRect(HOLSTER,     10, 11);
-		assignItemRect(VIAL,        12, 12);
+		assignItemRect(VIAL,        9,  11);
 	}
 
 	private static final int DOCUMENTS  =                                   xy(1, 32);  //16 slots

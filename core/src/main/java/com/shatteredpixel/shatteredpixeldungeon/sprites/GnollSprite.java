@@ -47,4 +47,9 @@ public class GnollSprite extends MobSprite {
 		
 		play( idle );
 	}
+
+	@Override
+	public int blood() {
+		return 0x000000;
+	}
 }

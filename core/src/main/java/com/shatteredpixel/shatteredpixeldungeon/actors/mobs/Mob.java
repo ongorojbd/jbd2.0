@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -616,10 +617,25 @@ public abstract class Mob extends Char {
 
 		for (int i : PathFinder.NEIGHBOURS4) {
 			if (Dungeon.isChallenged(Challenges.GAMBLER) && enemy instanceof Hero && enemy.pos == this.pos+i){
+
+				Dungeon.hero.damage(damage, this);
+
 				damage *= 0f;
-				Dungeon.hero.damage(Dungeon.hero.HP/5, this);
+
 				Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN);
 				GLog.n(Messages.get(Act3.class, "d"));
+			}
+		}
+
+		for (int i : PathFinder.NEIGHBOURS4) {
+			if (Dungeon.isChallenged(Challenges.GAMBLER) && enemy instanceof DriedRose.GhostHero && enemy.pos == this.pos+i){
+
+				Dungeon.hero.damage(damage, this);
+
+				damage *= 0f;
+
+				Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN);
+				GLog.n(Messages.get(Act3.class, "s"));
 			}
 		}
 		
@@ -786,10 +802,6 @@ public abstract class Mob extends Char {
 		float lootChance = this.lootChance;
 
 		float dropBonus = RingOfWealth.dropChanceMultiplier( Dungeon.hero );
-
-		float dragoBonus = RingOfDrago.dropChanceMultiplier( Dungeon.hero );
-
-		dropBonus += dragoBonus;
 
 		Talent.BountyHunterTracker bhTracker = Dungeon.hero.buff(Talent.BountyHunterTracker.class);
 		if (bhTracker != null){

@@ -72,9 +72,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalPorter;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Newro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ogroc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Rocacaca;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
@@ -365,6 +369,12 @@ public class QuickRecipe extends Component {
 				}
 				return result;
 			case 6:
+				result.add(new QuickRecipe(new Ogroc.Recipe()));
+				result.add(null);
+				result.add(new QuickRecipe(new Newro.Recipe()));
+				result.add(new QuickRecipe(new Neoro.Recipe()));
+				result.add(null);
+				result.add(null);
 				result.add(new QuickRecipe(new LloydsBeacon.Recipe()));
 				result.add(new QuickRecipe(new ChaosCatalyst.Recipe()));
 				result.add(new QuickRecipe(new WoundsofWar.Recipe()));

@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -12,19 +13,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Silence;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
-public class Dominion extends Blob {
+public class Dominion extends Blob implements Hero.Doom {
+
     @Override
     protected void evolve() {
         super.evolve();
 
-        int damage = 7;
+        int damage = 10;
 
         Char ch;
         int cell;
@@ -49,11 +53,19 @@ public class Dominion extends Blob {
     @Override
     public void use( BlobEmitter emitter ) {
         super.use( emitter );
-        emitter.pour( Speck.factory( Speck.STORM), 0.25f );
+
+        emitter.pour( Speck.factory( Speck.DOMINION), 0.25f );
     }
 
     @Override
     public String tileDesc() {
         return Messages.get(this, "desc");
     }
+
+    @Override
+    public void onDeath() {
+        Dungeon.fail( getClass() );
+        GLog.n(Messages.get(Rebel.class, "d"));
+    }
+
 }

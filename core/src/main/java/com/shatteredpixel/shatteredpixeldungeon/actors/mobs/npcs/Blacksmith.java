@@ -28,6 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -39,11 +42,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BlacksmithRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DogTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBlacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
@@ -60,7 +67,7 @@ public class Blacksmith extends NPC {
 
 		properties.add(Property.IMMOVABLE);
 	}
-	
+
 	@Override
 	protected boolean act() {
 		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
@@ -75,6 +82,7 @@ public class Blacksmith extends NPC {
 	
 	@Override
 	public boolean interact(Char c) {
+
 		
 		sprite.turnTo( pos, c.pos );
 
@@ -87,25 +95,52 @@ public class Blacksmith extends NPC {
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
-					GameScene.show( new WndQuest( Blacksmith.this,
-							Quest.alternative ? Messages.get(Blacksmith.this, "blood_1") : Messages.get(Blacksmith.this, "gold_1") ) {
-						
-						@Override
-						public void onBackPressed() {
-							super.onBackPressed();
-							
-							Quest.given = true;
-							Quest.completed = false;
-							Notes.add( Notes.Landmark.TROLL );
-							
-							Pickaxe pick = new Pickaxe();
-							if (pick.doPickUp( Dungeon.hero )) {
-								GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
-							} else {
-								Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+						GameScene.show(new WndOptions(
+								sprite(),
+								Messages.titleCase(name()),
+								Messages.get(Blacksmith.class, "0"),
+								Messages.get(Blacksmith.class, "1"),
+								Messages.get(Blacksmith.class, "2"),
+								Messages.get(Blacksmith.class, "3")
+						){
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0){
+									super.onBackPressed();
+
+									Quest.given = true;
+									Quest.completed = false;
+									Notes.add( Notes.Landmark.TROLL );
+
+									Pickaxe pick = new Pickaxe();
+									if (pick.doPickUp( Dungeon.hero )) {
+										GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
+									} else {
+										Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+									}
+									yell(Messages.get(Blacksmith.class, "4"));
+								} else if (index == 1) {
+									Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+									yell(Messages.get(Jonny.class, "d"));
+
+									destroy();
+									sprite.killAndErase();
+									die(null);
+									Notes.remove(Notes.Landmark.TROLL);
+
+									Jonny Jonny = new Jonny();
+									Jonny.state = Jonny.HUNTING;
+									Jonny.pos = pos;
+									GameScene.add( Jonny );
+									Jonny.beckon(Dungeon.hero.pos);
+
+								} else {
+									Dungeon.hero.sprite.emitter().start( Speck.factory( Speck.BUBBLE ), 0.2f, 3 );
+									Sample.INSTANCE.play(Assets.Sounds.LULLABY);
+									yell(Messages.get(Jonny.class, "P"));
+								}
 							}
-						}
-					} );
+						});
 				}
 			});
 			
@@ -130,26 +165,24 @@ public class Blacksmith extends NPC {
 				}
 				
 			} else {
-				
+
 				Pickaxe pick = Dungeon.hero.belongings.getItem( Pickaxe.class );
-				DarkGold gold = Dungeon.hero.belongings.getItem( DarkGold.class );
 				if (pick == null) {
 					tell( Messages.get(this, "lost_pick") );
-				} else if (gold == null || gold.quantity() < 15) {
+				} else if (!pick.bloodStained) {
 					tell( Messages.get(this, "gold_2") );
 				} else {
 					if (pick.isEquipped( Dungeon.hero )) {
 						pick.doUnequip( Dungeon.hero, false );
 					}
 					pick.detach( Dungeon.hero.belongings.backpack );
-					gold.detachAll( Dungeon.hero.belongings.backpack );
 					tell( Messages.get(this, "completed") );
-					
+
 					Quest.completed = true;
 					Quest.reforged = false;
 					Statistics.questScores[2] = 3000;
 				}
-				
+
 			}
 		} else if (!Quest.reforged) {
 			

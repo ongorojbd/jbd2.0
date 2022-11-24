@@ -45,7 +45,7 @@ public class Waterskin extends Item {
 	private static final String TXT_STATUS	= "%d/%d";
 
 	{
-		image = ItemSpriteSheet.WATERSKIN;
+		image = ItemSpriteSheet.VIAL;
 
 		defaultAction = AC_DRINK;
 

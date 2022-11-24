@@ -68,7 +68,8 @@ public class Speck extends Image {
 	public static final int STORM       = 117;
 	public static final int INFERNO     = 118;
 	public static final int BLIZZARD    = 119;
-	
+	public static final int DOMINION    = 120;
+
 	private static final int SIZE = 7;
 	
 	private int type;
@@ -131,6 +132,7 @@ public class Speck extends Image {
 		case STENCH:
 		case CONFUSION:
 		case STORM:
+			case DOMINION:
 		case DUST:
 		case SMOKE:
 		case BLIZZARD:
@@ -342,6 +344,13 @@ public class Speck extends Image {
 			angle = Random.Float( 360 );
 			lifespan = Random.Float( 1f, 3f );
 			break;
+
+			case DOMINION:
+				hardlight( 0x9966FF );
+				angularSpeed = Random.Float( -20, +20 );
+				angle = Random.Float( 360 );
+				lifespan = Random.Float( 1f, 3f );
+				break;
 			
 		case INFERNO:
 			hardlight( 0xEE7722 );
@@ -474,6 +483,7 @@ public class Speck extends Image {
 			case PARALYSIS:
 			case CONFUSION:
 			case STORM:
+				case DOMINION:
 			case BLIZZARD:
 			case INFERNO:
 			case DUST:

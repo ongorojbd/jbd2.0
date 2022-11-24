@@ -350,6 +350,11 @@ public class Assets {
 		public static final String BOYTWO= "sprites/boytwo.png";
 		public static final String ACT1= "sprites/act1.png";
 		public static final String WILLA= "sprites/willa.png";
+		public static final String STOWER= "sprites/stower.png";
+		public static final String TUSK1= "sprites/tusk1.png";
+		public static final String TUSK2= "sprites/tusk2.png";
+		public static final String TUSK3= "sprites/tusk3.png";
+		public static final String TUSK4= "sprites/tusk4.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 	}
 }

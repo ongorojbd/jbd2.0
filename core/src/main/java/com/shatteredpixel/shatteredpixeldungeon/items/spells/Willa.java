@@ -73,6 +73,7 @@ public class Willa extends Spell {
         return actions;
     }
 
+
     @Override
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
@@ -140,7 +141,24 @@ public class Willa extends Spell {
             ScrollOfTeleportation.appear( elemental, Random.element(spawnPoints) );
             curUser.spendAndNext(Actor.TICK);
 
+
+
+
+
+
+
+
+
+
+
+
+
             detach(Dungeon.hero.belongings.backpack);
+
+
+
+
+
 
         } else {
             GLog.w(Messages.get(SpiritHawk.class, "no_space"));
@@ -161,6 +179,11 @@ public class Willa extends Spell {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
+    }
+
+    @Override
+    public int value() {
+        return 15 * quantity;
     }
 
 }

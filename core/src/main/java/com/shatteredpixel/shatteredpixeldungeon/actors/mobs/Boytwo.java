@@ -24,6 +24,20 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ParalyticGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Regrowth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -34,9 +48,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BoytwoSprite;
@@ -58,8 +77,20 @@ public class Boytwo extends Mob {
         EXP = 0;
         properties.add(Property.IMMOVABLE);
 
+        immunities.add( Blizzard.class );
+        immunities.add( CorrosiveGas.class );
+        immunities.add( Electricity.class );
+        immunities.add( Fire.class );
+        immunities.add( Freezing.class );
+        immunities.add( Inferno.class );
+        immunities.add( ParalyticGas.class );
+        immunities.add( StenchGas.class );
+        immunities.add( StormCloud.class );
+        immunities.add( ToxicGas.class );
+        immunities.addAll(AntiMagic.RESISTS);
+
         maxLvl = -9;
-        HUNTING = new Mob.Hunting();
+        state = PASSIVE;
 
     }
 
@@ -104,7 +135,7 @@ public class Boytwo extends Mob {
 
             }
 
-
+        sprite.attack( enemy.pos );
         return super.defenseProc(enemy, damage);
     }
 
@@ -113,7 +144,7 @@ public class Boytwo extends Mob {
     public void die( Object cause ) {
 
         super.die( cause );
-
+        Dungeon.level.drop( new ReclaimTrap().identify(), pos ).sprite.drop( pos );
         yell(Messages.get(this, "d2"));
 
         if (Dungeon.level.heroFOV[pos]) {
@@ -121,6 +152,7 @@ public class Boytwo extends Mob {
         }
 
     }
+
 
     @Override
     public int drRoll() {

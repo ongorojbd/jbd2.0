@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -66,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KousakuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SWATSprite;
@@ -97,6 +99,8 @@ public class Kawasiri extends Mob {
         properties.add(Property.BOSS);
         immunities.add(ShrGas.class);
         immunities.add(Grim.class );
+        immunities.add(Dread.class );
+        immunities.add(Terror.class );
         immunities.add(Blindness.class );
         immunities.add(Sleep.class );
 
@@ -243,13 +247,13 @@ public class Kawasiri extends Mob {
 
             baseSpeed = 1f;
 
-            for (int i : pylonPositions) {
-                ScrollOfTeleportation.appear(this, i);
-            }
+            //for (int i : pylonPositions) {
+           //     ScrollOfTeleportation.appear(this, i);
+           // }
 
+            new Fadeleaf().activate(this);
             Dungeon.hero.damage(Dungeon.hero.HP/3, this);
             GameScene.flash(0x80FFFFFF);
-            Buff.affect(this, Barrier.class).setShield(30);
             Camera.main.shake(11, 3f);
             sprite.emitter().burst( Speck.factory( Speck.HEALING ), 15 );
             Sample.INSTANCE.play(Assets.Sounds.TBOMB);
@@ -268,7 +272,7 @@ public class Kawasiri extends Mob {
             HP = 51;
             yell(Messages.get(this, "phase7"));
             Music.INSTANCE.play(Assets.Music.KOICHI, true);
-            Buff.affect(this, Barrier.class).setShield(59);
+            Buff.affect(this, Barrier.class).setShield(15);
             state = FLEEING;
 
                baseSpeed = 1.1f;

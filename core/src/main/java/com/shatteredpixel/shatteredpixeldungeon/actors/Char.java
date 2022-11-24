@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
@@ -373,6 +374,10 @@ public abstract class Char extends Actor {
 				dmg *= 1.5f;
 			}
 
+			if (buff( Roc.class ) != null) {
+				dmg *= 2f;
+			}
+
 			for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 				dmg *= buff.meleeDamageFactor();
 			}
@@ -667,8 +672,8 @@ public abstract class Char extends Actor {
 		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
 			dmg *= 2;
 		}
-		if (this.buff(Triplespeed.class) != null && !isImmune(Doom.class)){
-			dmg *= 1.75;
+		if (this.buff(Triplespeed.class) != null){
+			dmg *= 1.3;
 		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= 1.25f;

@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Puccidisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
@@ -103,7 +104,7 @@ public class ScrollOfPolymorph extends Scroll {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{Puccidisc.class, ScrollOfTransmutation.class};
+            inputs =  new Class[]{ScrollOfTransmutation.class, ArcaneCatalyst.class};
             inQuantity = new int[]{1, 1};
 
             cost = 6;

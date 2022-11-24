@@ -29,10 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EvoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MonkSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -42,7 +44,10 @@ import com.watabou.utils.Random;
 public class Monk extends Mob {
 	
 	{
-		spriteClass = MonkSprite.class;
+		spriteClass = Random.oneOf(
+				MonkSprite.class,
+				EvoSprite.class
+		);
 		
 		HP = HT = 70;
 		defenseSkill = 30;
@@ -163,27 +168,4 @@ public class Monk extends Mob {
 		}
 	}
 
-
-
-	public static class RedMonk extends Monk {
-		{
-			spriteClass = MonkSprite.class;
-		}
-
-	}
-
-	public static class BlueMonk extends Monk {
-		{
-			spriteClass = EvoSprite.class;
-		}
-	}
-
-	public static Class<? extends Monk> random(){
-		float roll = Random.Float();
-		if (roll < 0.5f){
-			return Monk.RedMonk.class;
-		} else {
-			return Monk.BlueMonk.class;
-		}
-	}
 }

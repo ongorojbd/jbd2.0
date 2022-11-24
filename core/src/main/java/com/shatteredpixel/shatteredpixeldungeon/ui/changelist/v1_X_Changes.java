@@ -56,8 +56,6 @@ public class v1_X_Changes {
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
 		add_v1_3_3_Changes(changeInfos);
-		add_v1_3_2_Changes(changeInfos);
-		add_v1_3_1_Changes(changeInfos);
 		add_v1_3_Changes(changeInfos);
 	}
 
@@ -67,97 +65,88 @@ public class v1_X_Changes {
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "죠스케",
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "신규 영웅 : 죠스케",
 			""));
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "죠린",
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 영웅 : 죠린",
 			""));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.PICKAXE),"크레이지 다이아몬드 퀘스트 변경" ,
-			""));
-
 	}
 
 	public static void add_v1_3_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0d-3", true, "");
+		ChangeInfo changes = new ChangeInfo("2.0e", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo("신규 시련", false, null);
+		changes = new ChangeInfo("새로운 요소", false, null);
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 
-		changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), "신규 시련",
-				"신규 시련 3종이 새로 추가되었습니다!"));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RO1), "로카카카",
+				"신규 아이템인 로카카카가 추가되었습니다.\n\n" +
+						"로카카카는 한 게임 내에서 단 1번만 사용할 수 있는 강력한 아이템입니다.\n\n" +
+						"코코 잠보의 특수 아이템 탭에서 제조할 수 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RO2), "신 로카카카",
+				"신규 아이템인 신 로카카카가 추가되었습니다.\n\n" +
+						"신 로카카카는 한 게임 내에서 단 3번만 사용할 수 있는 강력한 아이템입니다.\n\n" +
+						"코코 잠보의 특수 아이템 탭에서 제조할 수 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RO3), "LOCACACA 6251",
+				"강해지는 대신 엄청난 등가교환을 감수해야 하는 숙련자 전용 약물이 새로 추가되었습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RAM), "마법의 램프",
+				"상점 전용 신규 아이템인 마법의 램프가 추가되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.WILLA, 0, 0, 12, 16), "윌 A. 체펠리",
+				"죠죠를 지원하는 동료가 추가되었습니다.\n\n상점 전용 신규 아이템인 체펠리의 혼을 사용하여 소환할 수 있습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.TUSK3, 0, 0, 12, 15), "시저 체펠리",
+				"죠죠를 지원하는 동료가 추가되었습니다.\n\n상점 전용 신규 아이템인 체펠리의 혼을 사용하여 소환할 수 있습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.TUSK3, 0, 15, 12, 15), "자이로 체펠리",
+				"죠죠를 지원하는 동료가 추가되었습니다.\n\n상점 전용 신규 아이템인 체펠리의 혼을 사용하여 소환할 수 있습니다."));
 
-		changes = new ChangeInfo("신규 함정", false, null);
+
+		changes = new ChangeInfo("신규 시스템", false, null);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(new Image(Assets.Environment.TERRAIN_FEATURES, 32, 0, 16, 16), "신규 함정",
-				"26~29층 전용 신규 함정 3종이 추가되었습니다.\n\n1~4층 전용 신규 함정 1종이 추가되었습니다."));
 
-	}
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGN), "8부 스탠드",
+				"로카카카를 통해 획득할 수 있는 8부의 히가시카타 가족 스탠드 8종이 추가되었습니다.\n\n상점에서 구매할수도 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGT), "8부 스탠드",
+				"로카카카를 통해 획득할 수 있는 8부의 히가시카타 가족 스탠드 8종이 추가되었습니다.\n\n상점에서 구매할수도 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGS), "8부 스탠드",
+				"로카카카를 통해 획득할 수 있는 8부의 히가시카타 가족 스탠드 8종이 추가되었습니다.\n\n상점에서 구매할수도 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGA), "8부 스탠드",
+				"로카카카를 통해 획득할 수 있는 8부의 히가시카타 가족 스탠드 8종이 추가되었습니다.\n\n상점에서 구매할수도 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGW), "8부 스탠드",
+				"로카카카를 통해 획득할 수 있는 8부의 히가시카타 가족 스탠드 8종이 추가되었습니다.\n\n상점에서 구매할수도 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGC), "8부 스탠드",
+				"로카카카를 통해 획득할 수 있는 8부의 히가시카타 가족 스탠드 8종이 추가되었습니다.\n\n상점에서 구매할수도 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGB), "8부 스탠드",
+				"로카카카를 통해 획득할 수 있는 8부의 히가시카타 가족 스탠드 8종이 추가되었습니다.\n\n상점에서 구매할수도 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGM), "8부 스탠드",
+				"로카카카를 통해 획득할 수 있는 8부의 히가시카타 가족 스탠드 8종이 추가되었습니다.\n\n상점에서 구매할수도 있습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "11~15층 퀘스트 변경",
+				"크레이지 다이아몬드 대신 죠니 관련 퀘스트가 새로 추가되었습니다.\n\n디스크 15개 수집 퀘스트가 삭제되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.KEEPER, 0, 0, 15, 15), "상점 개편",
+				"상점에서만 구할수 있는 희귀한 전용 아이템들이 추가되었습니다.\n\n1/5 확률로 _체페리의 혼_을 판매합니다.\n\n1/15 확률로 _메가톤맨_을 판매합니다.\n\n1/30 확률로 ???를 판매합니다."));
+		changes.addButton( new ChangeButton(BadgeBanner.image( Badges.Badge.MIH.image ), "신규 고난이도 뱃지",
+				"고난이도 뱃지 2종이 추가되었습니다."));
 
-	public static void add_v1_3_2_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0d-2", true, "");
+
+		changes = new ChangeInfo("상향", false, null);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo("변경", false, null);
-		changes.hardlight(Window.TITLE_COLOR);
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), "메이드 인 헤븐의 DISC",
+				"받는 피해 증가 75% -> 30%"));
+
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_BERKANAN), "웨더 리포트의 기억 DISC",
+				"조합법이 변경되었습니다.\n\n변환의 DISC + DISC의 정수"));
+
+
+		changes = new ChangeInfo("하향", false, null);
+		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
-		changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), "밸런스 조정",
-				"몇가지 아이템과 특성의 밸런스가 조정되었습니다.\n\n" +
-						"_- 녹색 아기의 장비 DISC_의 에너지 소모량 20%로 버프\n" +
-						"_- 녹색 아기의 장비 DISC_를 강화하기 위한 씨앗의 요구량이 4/7/10 -> 3/6/9로 버프\n\n" +
-						"_- 파문 방출_ 특성의 적석 추가 효과의 위력 강화가 특성 1레벨당 33% -> 50%로 버프\n" +
-						"_- 이것이 나의 최후의 파문이다..._ 특성의 쿨타임이 4/3/2 ->  3/2/1로 버프\n\n" +
-						"_- 메이드 인 헤븐의 DISC_ 착용시 무기를 파괴하지 않음\n모든 행동 속도 3배 -> 2배 증가 + 받는 피해량 75% 증폭"
-		));
-
-		changes = new ChangeInfo("리워크", false, null);
-		changes.hardlight(CharSprite.WARNING);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DM200, 0, 18, 21, 18), "완전생물 카즈 리워크",
-				"완전생물 카즈가 완전생물에 걸맞는 능력으로 리워크되었습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI, 0, 15, 12, 15), "푸치신부 리워크",
-				"화이트 스네이크-추적자에서 일반 푸치신부로 변경되었습니다.\n\n비선공 -> 선공형 적으로 변경되었습니다.\n\n스탠드 면역 효과가 삭제되었습니다.\n\n보상이 _웨더 리포트의 기억 DISC_를 제작할 수 있는 재료로 변경되었습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BRUTE, 0, 0, 12, 16), "아누비스신",
-				"아누비스신의 바리에이션이 추가되었습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.MONK, 0, 0, 14, 16), "에보니 데빌",
-				"에보니 데빌의 바리에이션이 추가되었습니다."));
-
-		changes = new ChangeInfo("신규 적", false, null);
-		changes.hardlight(CharSprite.POSITIVE);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.MANDOM, 0, 0, 15, 16), "맨덤",
-				"시간을 돌리는 능력을 가진 맨덤이 11~14층에서 희귀한 확률로 출몰합니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.VITAMINC, 0, 0, 21, 19), "비타민 C",
-				"몸을 흐물흐물하게 만드는 강력한 능력을 가진 비타민 C가 21~24층에서 희귀한 확률로 출몰합니다."));
-
-	}
-
-	public static void add_v1_3_1_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0d-1", true, "");
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET, new ItemSprite.Glowing(0x99FFFF)), "메이드 인 헤븐의 DISC",
-				"_최강의 DISC인 메이드 인 헤븐의 DISC가 추가되었습니다!_\n\n메이드 인 헤븐의 DISC를 제작하기 위한 과정의 재료 아이템들이 대거 추가되었습니다.\n\n메이드 인 헤븐의 DISC는 제작 난이도가 상당히 높습니다."));
-
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.STURO), "보스 파생 아이템",
-				"이제 모든 보스가 1/10 확률로 드롭하는 강자의 잔재를 이용해서\n\n보스 파생 아이템을 제작할 수 있습니다."));
-
+		changes.addButton( new ChangeButton( Icons.get(Icons.TALENT), "시련 난이도 조정",
+				"아이즈 오브 헤븐 : 천국에 도달한 DIO 사망 시 펫 숍의 기억 DISC로 바로 26층으로 올라갈 수 있습니다.\n\n자유인의 광상곡 : 오시리스신의 퀘스트가 정상적으로 진행되도록 수정되었습니다.\n\n타올라라 용의 꿈 : 이제 흉에 방향에서 공격할 시 데미지가 그대로 반사됩니다. 압둘에게도 흉의 방향이 적용됩니다."));
 	}
 
 	public static void add_v1_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -165,14 +154,13 @@ public class v1_X_Changes {
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-		changes.hardlight(Window.TITLE_COLOR);
+		changes = new ChangeInfo("새로운 요소", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), "2.0d 업데이트",
-				"찬미하라..!! 천국이 태어 났음을!!\n새로운 세계의 막이 올랐음을..!!\n\n헨델의 [메시아] 최고의 명연..\n가디너 지휘 82년 녹음!" +
-						"\n실로! 이 상황에 걸맞는 곡이다!\n소리가 빛을 발하는것만 같군!\n\n헨델은 자신의 최고 걸작을 죽기 전날까지도 계속 연주 했다고 하지!"));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), "메이드 인 헤븐의 DISC",
+				"_최강의 DISC인 메이드 인 헤븐의 DISC가 추가되었습니다!_\n\n메이드 인 헤븐의 DISC를 제작하기 위한 과정의 재료 아이템들이 대거 추가되었습니다.\n\n메이드 인 헤븐의 DISC는 제작 난이도가 상당히 높습니다."));
 
 
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CAPE), "골드 익스피리언스 레퀴엠의 장비 DISC",
@@ -185,7 +173,7 @@ public class v1_X_Changes {
 						"" +
 						"습득 방법은 SPW 재단의 기록에서 확인할 수 있습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_SAPPHIRE), "혼돈의 석가면",
-				"속성/상형문자의 발동 확률과 효과를 강화시켜주는 석가면이 추가됩니다!"
+				"속성/상형문자의 발동 확률과 효과를 강화시켜주는 석가면이 추가되었습니다!"
 		));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GUIDE_PAGE), "SPW재단의 기록",
 				"_신규 수집 아이템인 SPW재단의 기록이 새로 추가됩니다!_\n\n" +
@@ -200,21 +188,8 @@ public class v1_X_Changes {
 						"" +
 						"" +
 						""));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_BEACON), "맨 인 더 미러의 장비 DISC",
-				"보스별로 일정한 확률로 드랍되는 레어 아이템이 추가되었습니다.\n\n" +
-						"5층 보스를 격파하면 1/5 확률로 드롭됩니다."
-						));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KIT), "제 3의 폭탄",
-				"보스별로 일정한 확률로 드랍되는 레어 아이템이 추가되었습니다.\n\n" +
-						"15층의 ???를 격파하면 1/5 확률로 드롭됩니다."
-					));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.BEACON), "DIO의 뼈",
-				"보스별로 일정한 확률로 드랍되는 레어 아이템이 추가되었습니다.\n\n" +
-						"20층 또는 25층 또는 30층 보스를 격파하면 1/15 확률로 드롭됩니다."));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ELIXIR_MIGHT), "광기의 피",
-				"보스별로 일정한 확률로 드랍되는 레어 아이템이 추가되었습니다.\n\n" +
-						"_25층 보스를 격파하면 1/30 확률로 드롭됩니다._"));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KIT), "보스 파생 아이템",
+				"이제 모든 보스가 1/10 확률로 드롭하는 강자의 잔재를 이용해서\n\n보스 파생 아이템을 제작할 수 있습니다."));
 
 		Image ic = Icons.get(Icons.SEED);
 		ic.hardlight(1f, 1.5f, 0.67f);
@@ -227,7 +202,7 @@ public class v1_X_Changes {
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(new Image(Assets.Sprites.REBEL, 144, 0, 16, 16), "진 : 천국에 도달한 DIO",
+		changes.addButton( new ChangeButton(new Image(Assets.Sprites.REBEL, 144, 0, 16, 16), "천국에 도달한 DIO",
 				"천국에 도달한 DIO의 패턴이 새롭게 리워크되었습니다."));
 
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.YOG, 0, 2, 20, 19), "DIO",
@@ -255,15 +230,12 @@ public class v1_X_Changes {
 						"파문 스승의 가르침 : 에이자의 적석이 전부 충전되어 있을 때 적석의 충전량을 소모하면, 강화 수치에 비례한 보호막이 부여됩니다.\n\n" +
 						"빛의 영수증이다! : 이제 골드 대신 아이템을 떨어트릴 확률이 증가합니다." ));
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.MAGE, 0, 15, 12, 15), "죠셉 비주얼 리워크",
-				"죠셉의 비주얼 리워크와 보스 전용 대사가 변경되었습니다."));
-
 		changes.addButton( new ChangeButton(BadgeBanner.image( Badges.Badge.YORIHIMES_ALL_CLASSES.image ), "신규 엔드 컨텐츠 뱃지",
 				"천국에 도달한 DIO 관련 신규 뱃지가 3종 추가되었습니다."));
 
 
 		changes = new ChangeInfo("상향", false, null);
-		changes.hardlight(Window.SHPX_COLOR);
+		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_AGATE), "행운의 석가면",
@@ -272,7 +244,7 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION), "소프트&웨트의 사격 DISC",
 				"특수한 적에게 가하는 강화 레벨당 데미지 0.5~1 -> 1~2" ));
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TELE_GRAB), "자력석",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TELE_GRAB), "자철석",
 				"이제 같은 장소에 겹쳐있는 아이템이나 적에게 꽃힌 여러 개의 투척 무기들을 전부 회수할 수 있습니다."));
 
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SHORTSWORD, new ItemSprite.Glowing(0x000000)), "짜증나는 저주",
@@ -303,9 +275,6 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(new Image(Assets.Sprites.MUDA, 0, 0, 40, 40), "더 월드 오버 헤븐",
 				"체력이 300 감소했습니다." +
 						""));
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "26층 이후 적들 하향",
-				"레퀴엠 죠르노를 제외한 모든 적들의 체력이 감소되었습니다.\n\n죠르노의 반사 능력이 삭제되었습니다.\n\n죠스케의 이동속도가 1.5배에서 1배로 하향되었습니다.\n\n천국에 도달한 DIO의 나이프 공격이 이제 물리 공격을 입힙니다.\n\n천국에 도달한 DIO가 2턴의 정신 집중 후에 낙뢰를 발사하도록 변경되었습니다."));
 
 	}
 

@@ -307,12 +307,15 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		//variance in damage dealt
 		switch (moveBeingUsed) {
 			case CLOBBER:
+				Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE, 1);
 				dmgMulti = 0;
 				break;
 			case SLAM:
+				Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE, 1);
 				dmgBonus = Math.round(target.drRoll() * count / 5f);
 				break;
 			case CRUSH:
+				Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE, 1);
 				dmgMulti = 0.25f * count;
 				break;
 			case FURY:
@@ -343,6 +346,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					WandOfBlastWave.throwChar(enemy, trajectory, dist, true, false, hero.getClass());
 					break;
 				case PARRY:
+					Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE, 1);
 					hit(enemy);
 					break;
 				case CRUSH:

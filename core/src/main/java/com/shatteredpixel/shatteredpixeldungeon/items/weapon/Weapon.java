@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReachIncrease;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -209,6 +210,11 @@ abstract public class Weapon extends KindOfWeapon {
 
 	@Override
 	public int reachFactor(Char owner) {
+
+		if (owner.buff(ReachIncrease.class) != null ){
+			return hasEnchant(Projecting.class, owner) ? RCH+3 : RCH+2;
+		}
+
 		if (hasEnchant(Projecting.class, owner)){
 			return RCH + Math.round(RingOfArcana.enchantPowerMultiplier(owner));
 		} else {

@@ -96,7 +96,7 @@ public class Researcher extends Mob {
 				state = WANDERING;
 				LiquidMetal Silence = new LiquidMetal();
 				Silence.quantity(1).collect();
-				Sample.INSTANCE.play( Assets.Sounds.EVOKE, 1, 0.8f );
+				Sample.INSTANCE.play( Assets.Sounds.FF, 1, 0.8f );
 			}
 		}
 		return damage;

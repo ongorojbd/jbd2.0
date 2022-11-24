@@ -79,7 +79,7 @@ public class Act3 extends Mob {
         spriteClass = Act3Sprite.class;
         HP = HT =  3 + (2 + Dungeon.depth) * 3;
         viewDistance = 5;
-        defenseSkill = 5 + Dungeon.depth;
+        defenseSkill = Dungeon.depth;
         EXP = 0;
 
         state = WANDERING;
@@ -125,7 +125,7 @@ public class Act3 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( Dungeon.depth/2, Dungeon.depth * 2 );
+        return Random.NormalIntRange( Dungeon.depth, Dungeon.depth * 3/2 );
     }
 
     @Override

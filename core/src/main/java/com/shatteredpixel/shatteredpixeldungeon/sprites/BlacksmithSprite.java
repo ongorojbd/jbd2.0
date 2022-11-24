@@ -38,10 +38,10 @@ public class BlacksmithSprite extends MobSprite {
 		
 		texture( Assets.Sprites.TROLL );
 		
-		TextureFilm frames = new TextureFilm( texture, 13, 16 );
-		
-		idle = new Animation( 15, true );
-		idle.frames( frames, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3 );
+		TextureFilm frames = new TextureFilm( texture, 9, 15 );
+
+		idle = new Animation( 1, true );
+		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 		
 		run = new Animation( 20, true );
 		run.frames( frames, 0 );
@@ -68,17 +68,6 @@ public class BlacksmithSprite extends MobSprite {
 		
 		if (emitter != null) {
 			emitter.visible = visible;
-		}
-	}
-	
-	@Override
-	public void onComplete( Animation anim ) {
-		super.onComplete( anim );
-		
-		if (visible && emitter != null && anim == idle) {
-			emitter.burst( Speck.factory( Speck.FORGE ), 3 );
-			float volume = 0.2f / (Dungeon.level.distance( ch.pos, Dungeon.hero.pos ));
-			Sample.INSTANCE.play( Assets.Sounds.EVOKE, volume, volume, 0.8f  );
 		}
 	}
 

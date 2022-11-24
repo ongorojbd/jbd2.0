@@ -130,7 +130,7 @@ public class InterlevelScene extends PixelScene {
 						fadeTime = FAST_FADE;
 					} else if (loadingDepth == 6 || loadingDepth == 11
 							|| loadingDepth == 16 || loadingDepth == 21
-							|| loadingDepth == 26) {
+							|| loadingDepth == 26 || loadingDepth == 30) {
 						fadeTime = SLOW_FADE;
 					}
 				}
@@ -164,13 +164,13 @@ public class InterlevelScene extends PixelScene {
 		else if (lastRegion == 3)    loadingAsset = Assets.Interfaces.LOADING_CAVES;
 		else if (lastRegion == 4)    loadingAsset = Assets.Interfaces.LOADING_CITY;
 		else if (lastRegion == 5)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
-		else if (lastRegion == 6)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
+		else if (loadingDepth == 26 || loadingDepth == 27 || loadingDepth == 28 || loadingDepth == 29 || loadingDepth == 30 || loadingDepth == 31)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
 		else                         loadingAsset = Assets.Interfaces.SHADOW;
 		
 		//slow down transition when displaying an install prompt
 		if (Updates.isInstallable()){
 			fadeTime += 0.5f; //adds 1 second total
-		//speed up transition when debugging
+			//speed up transition when debugging
 		} else if (DeviceCompat.isDebug()){
 			fadeTime = 0f;
 		}

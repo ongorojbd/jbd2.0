@@ -139,21 +139,21 @@ public class Bestiary {
 						Ghoul.class,
 						Elemental.random(), Elemental.random(),
 						Warlock.class,
-						Monk.random()));
+						Monk.class));
 			case 18:
 				//1x ghoul, 1x elemental, 2x warlock, 2x monk, 1x golem
 				return new ArrayList<>(Arrays.asList(
 						Ghoul.class,
 						Elemental.random(),
 						Warlock.class, Warlock.class,
-						Monk.random(), Monk.random(),
+						Monk.class, Monk.class,
 						Golem.class));
 			case 19: case 20:
 				//1x elemental, 2x warlock, 2x monk, 3x golem
 				return new ArrayList<>(Arrays.asList(
 						Elemental.random(),
 						Warlock.class, Warlock.class,
-						Monk.random(), Monk.random(),
+						Monk.class, Monk.class,
 						Golem.class, Golem.class, Golem.class));
 				
 			// Halls
@@ -233,25 +233,37 @@ public class Bestiary {
 				return;
 				
 			// Prison
+		//	case 6:
+			//	if (Random.Float() < 0.045f) rotation.add(Stower.class);
+			//	return;
+		//	case 7:
+			//	if (Random.Float() < 0.035f) rotation.add(Stower.class);
+			//	return;
+		//	case 8:
+			//	if (Random.Float() < 0.025f) rotation.add(Stower.class);
+			//	return;
 			case 9:
 				if (Random.Float() < 0.025f) rotation.add(Bat.class);
 				return;
 				
 			// Caves
-			case 11:
-				if (Random.Float() < 0.03f) rotation.add(Mandom.class);
-				return;
+		//	case 11:
+			//	if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
+			// return;
 
 			case 14:
+		//		if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
 				if (Random.Float() < 0.025f) rotation.add(Ghoul.class);
 				return;
 				
 			// City
 			case 16:
+			//	if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
 				if (Random.Float() < 0.025f) rotation.add(Mandom.class);
 				return;
 
 			case 19:
+			//	if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
 				if (Random.Float() < 0.025f) rotation.add(Succubus.class);
 				return;
 

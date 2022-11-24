@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.MerchantsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
@@ -48,8 +47,23 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Mdisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ram;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willg;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -209,8 +223,8 @@ public class ShopRoom extends SpecialRoom {
 
 
 		itemsToSpawn.add( new SmallRation() );
-		itemsToSpawn.add( new SmallRation() );
-		
+		itemsToSpawn.add( new Ram() );
+
 		switch (Random.Int(4)){
 			case 0:
 				itemsToSpawn.add( new Bomb() );
@@ -223,6 +237,62 @@ public class ShopRoom extends SpecialRoom {
 				itemsToSpawn.add( new Honeypot() );
 				break;
 		}
+
+		switch (Random.Int(8)){
+			case 0:
+				itemsToSpawn.add( new Kingt() );
+				break;
+			case 1:
+				itemsToSpawn.add( new StoneOfAdvanceguard() );
+				break;
+			case 2:
+				itemsToSpawn.add( new Xray() );
+				break;
+			case 3:
+				itemsToSpawn.add( new Kinga());
+				break;
+			case 4:
+				itemsToSpawn.add( new Kings());
+				break;
+			case 5:
+				itemsToSpawn.add( new Kingm());
+				break;
+			case 6:
+				itemsToSpawn.add( new Kingw());
+				break;
+			case 7:
+				itemsToSpawn.add( new Kingc());
+				break;
+		}
+
+
+		if (Random.Int(3) == 0) {
+		switch (Random.Int(3)){
+			case 0:
+				itemsToSpawn.add( new Willa() );
+				break;
+			case 1:
+				itemsToSpawn.add( new Willc() );
+				break;
+			case 2:
+				itemsToSpawn.add( new Willg() );
+				break;
+		}
+		}
+
+		switch (Random.Int(15)){
+			case 0:
+				itemsToSpawn.add( new Maga() );
+				break;
+		}
+
+		switch (Random.Int(30)){
+			case 0:
+				itemsToSpawn.add( new Mdisc() );
+				break;
+		}
+
+
 
 		itemsToSpawn.add( new Ankh() );
 		itemsToSpawn.add( new StoneOfAugmentation() );
@@ -261,6 +331,9 @@ public class ShopRoom extends SpecialRoom {
 				break;
 			case 2:
 				rare = Generator.random( Generator.Category.ARTIFACT );
+				break;
+			case 3:
+				rare = new Kingt();
 				break;
 			default:
 				rare = new Stylus();

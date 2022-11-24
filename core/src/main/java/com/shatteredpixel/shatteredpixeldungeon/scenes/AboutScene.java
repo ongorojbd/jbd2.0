@@ -71,7 +71,7 @@ public class AboutScene extends PixelScene {
 		shpxLink += "&utm_medium=about_page";
 		shpxLink += "&utm_campaign=ingame_link";
 
-		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
+		CreditsBlock shpx = new CreditsBlock(true, Window.TITLE_COLOR,
 				"죠죠의 기묘한 던전",
 				Icons.SHPX.get(),
 				"Developed by: _Ongoro_\nBased on SPD's open source",
@@ -122,7 +122,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
 				"To Be Countinued....",
 				Icons.WATA.get(),
-				"Next Update : 2.0e",
+				"Next Update : 2.0f",
 				"",
 				"");
 		if (landscape()){
@@ -135,9 +135,9 @@ public class AboutScene extends PixelScene {
 		addLine(wata.top() - 4, content);
 
 		CreditsBlock cube = new CreditsBlock(false, WATA_COLOR,
-				"Now",
+				"",
 				Icons.CUBE_CODE.get(),
-				"2.0d-3",
+				"",
 				null,
 				null);
 		cube.setSize(colWidth/2f, 0);
@@ -203,8 +203,6 @@ public class AboutScene extends PixelScene {
 		content.add(transifex);
 
 		addLine(transifex.top() - 4, content);
-
-		addLine(transifex.bottom() + 4, content);
 
 		//*** Freesound Credits ***
 

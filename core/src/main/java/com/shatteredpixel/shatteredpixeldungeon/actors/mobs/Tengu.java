@@ -75,9 +75,11 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HighdioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
@@ -98,10 +100,11 @@ public class Tengu extends Mob {
 	
 	{
 
-		spriteClass = Random.oneOf(
-				TenguSprite.class,
-				DoppioSprite.class
-		);
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+			spriteClass = DoppioSprite.class;
+		} else {
+			spriteClass = TenguSprite.class;
+		}
 
 		
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 250 : 200;

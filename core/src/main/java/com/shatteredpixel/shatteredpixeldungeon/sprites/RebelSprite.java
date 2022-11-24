@@ -23,7 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SacrificialParticle;
@@ -32,12 +35,14 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class RebelSprite extends MobSprite {
 
 	private int cellToAttack;
+	private Emitter chargeParticles;
 
 	public RebelSprite() {
 		super();
@@ -62,7 +67,27 @@ public class RebelSprite extends MobSprite {
 		
 		play( idle );
 	}
-	
+
+	@Override
+	public void link(Char ch) {
+		super.link(ch);
+
+		chargeParticles = centerEmitter();
+		chargeParticles.autoKill = true;
+		chargeParticles.pour(MagicMissile.MagicParticle.ATTRACTING, 0.05f);
+		chargeParticles.on = true;
+
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		if (chargeParticles != null){
+			chargeParticles.pos( center() );
+			chargeParticles.visible = visible;
+		}
+	}
+
 	@Override
 	public void attack( int cell ) {
 		if (!Dungeon.level.adjacent( cell, ch.pos )) {
@@ -82,8 +107,6 @@ public class RebelSprite extends MobSprite {
 	public void onComplete( Animation anim ) {
 		if (anim == zap) {
 			idle();
-			CellEmitter.get(ch.pos).burst(EnergyParticle.FACTORY, 2);
-			CellEmitter.center(ch.pos).burst(SacrificialParticle.FACTORY, 2);
 			Sample.INSTANCE.play( Assets.Sounds.RAY, 2, Random.Float(0.33f, 0.66f) );
 			((MissileSprite)parent.recycle( MissileSprite.class )).
 			reset( this, cellToAttack, new RebelShot(), new Callback() {
@@ -97,7 +120,15 @@ public class RebelSprite extends MobSprite {
 			super.onComplete( anim );
 		}
 	}
-	
+
+	@Override
+	public void die() {
+		super.die();
+		if (chargeParticles != null){
+			chargeParticles.on = false;
+		}
+	}
+
 	public class RebelShot extends Item {
 		{
 			image = ItemSpriteSheet.THROWING_KNIFE;

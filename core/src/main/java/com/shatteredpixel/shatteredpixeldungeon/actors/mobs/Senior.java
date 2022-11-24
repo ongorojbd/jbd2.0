@@ -152,7 +152,7 @@ public class Senior extends Mob {
 
 		super.die( cause );
 
-		Dungeon.level.drop( new Puccidisc(), pos ).sprite.drop( pos );
+		Dungeon.level.drop( new StoneOfEnchantment(), pos ).sprite.drop( pos );
 
 		yell( Messages.get(this, "defeated") );
 
