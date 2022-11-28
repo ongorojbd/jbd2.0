@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -40,7 +41,7 @@ public class GolemSprite extends MobSprite {
 		
 		texture( Assets.Sprites.GOLEM );
 		
-		TextureFilm frames = new TextureFilm( texture, 17, 19 );
+		TextureFilm frames = new TextureFilm( texture, 16, 14 );
 		
 		idle = new Animation( 4, true );
 		idle.frames( frames, 0, 1 );
@@ -125,11 +126,16 @@ public class GolemSprite extends MobSprite {
 	public void onComplete( Animation anim ) {
 		if (anim == die && !died) {
 			died = true;
-			emitter().burst( ElmoParticle.FACTORY, 4 );
 		}
 		if (anim == zap) {
 			idle();
 		}
 		super.onComplete( anim );
+	}
+
+	@Override
+	public void die() {
+		emitter().burst( Speck.factory( Speck.WOOL ), 5 );
+		super.die();
 	}
 }

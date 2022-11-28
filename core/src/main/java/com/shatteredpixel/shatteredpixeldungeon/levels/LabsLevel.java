@@ -64,8 +64,8 @@ import java.util.ArrayList;
 public class LabsLevel extends RegularLevel {
 
 	{
-		color1 = 0x801500;
-		color2 = 0xa68521;
+		color1 = 0x48763c;
+		color2 = 0x59994a;
 	}
 
 	@Override

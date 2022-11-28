@@ -91,7 +91,7 @@ public class Spheaven extends MeleeWeapon{
             Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
             trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
             moveChar(attacker, trajectory, 1, defender.pos, false, false); // 자신이 이동효과
-            CellEmitter.get( hero.pos ).burst( Speck.factory( Speck.WOOL ), 6 );
+            CellEmitter.get( hero.pos ).burst( Speck.factory( Speck.LIGHT ), 3 );
             Sample.INSTANCE.play( Assets.Sounds.PUFF );
         }
         else if (swiching) {

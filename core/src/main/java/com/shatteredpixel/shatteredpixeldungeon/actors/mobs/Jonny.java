@@ -123,7 +123,7 @@ public class Jonny extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(15, 25);
+        return Random.NormalIntRange(15, 20);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class Jonny extends Mob {
                             }
                         if (ch != null&& !(ch instanceof Jonny)&& !isHit) {
                             if ((ch.alignment != alignment || ch instanceof Bee)) {
-                            ch.damage(Random.NormalIntRange(20, 30), this);
+                            ch.damage(Random.NormalIntRange(15, 20), this);
                                 if (ch.isAlive()) Buff.affect(ch, Vertigo.class, 1f);
                                 isHit = true;
 
@@ -326,7 +326,7 @@ public class Jonny extends Mob {
                 Dungeon.observe();
             }
             for (Char ch : affected) {
-               ch.damage(Random.NormalIntRange(15, 25), new Jonny.Blast());
+               ch.damage(Random.NormalIntRange(11, 20), new Jonny.Blast());
 
                 if (Dungeon.level.heroFOV[pos]) {
                     ch.sprite.flash();

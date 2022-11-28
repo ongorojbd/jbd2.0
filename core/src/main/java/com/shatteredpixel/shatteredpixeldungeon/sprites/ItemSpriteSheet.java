@@ -228,8 +228,9 @@ public class ItemSpriteSheet {
 	static{
 		assignItemRect(WORN_SHORTSWORD, 16, 16);
 		assignItemRect(GLOVES,          12, 16);
+		assignItemRect(RAPIER,          13, 14);
 		assignItemRect(DAGGER,          10, 13);
-		assignItemRect(MAGES_STAFF,     15, 16);
+		assignItemRect(MAGES_STAFF,     15, 14);
 	}
 
 	private static final int WEP_TIER2      =                               xy(9, 7);   //8 slots
@@ -241,9 +242,9 @@ public class ItemSpriteSheet {
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
 		assignItemRect(HAND_AXE,        12, 14);
-		assignItemRect(SPEAR,           16, 16);
-		assignItemRect(QUARTERSTAFF,    16, 16);
-		assignItemRect(DIRK,            13, 14);
+		assignItemRect(SPEAR,           14, 16);
+		assignItemRect(QUARTERSTAFF,    14, 16);
+		assignItemRect(DIRK,            13, 13);
 	}
 
 	private static final int WEP_TIER3      =                               xy(1, 8);   //8 slots
@@ -257,9 +258,9 @@ public class ItemSpriteSheet {
 		assignItemRect(SWORD,           12, 14);
 		assignItemRect(MACE,            14, 14);
 		assignItemRect(SCIMITAR,        13, 16);
-		assignItemRect(ROUND_SHIELD,    16, 16);
-		assignItemRect(SAI,             16, 16);
-		assignItemRect(WHIP,            14, 14);
+		assignItemRect(ROUND_SHIELD,    14, 16);
+		assignItemRect(SAI,             14, 14);
+		assignItemRect(WHIP,            10, 14);
 	}
 
 	private static final int WEP_TIER4      =                               xy(9, 8);   //8 slots
@@ -271,7 +272,7 @@ public class ItemSpriteSheet {
 	public static final int CROSSBOW        = WEP_TIER4+5;
 	static{
 		assignItemRect(LONGSWORD,       15, 15);
-		assignItemRect(BATTLE_AXE,      16, 16);
+		assignItemRect(BATTLE_AXE,      14, 16);
 		assignItemRect(FLAIL,           14, 14);
 		assignItemRect(RUNIC_BLADE,     13, 14);
 		assignItemRect(ASSASSINS_BLADE, 14, 15);
@@ -333,7 +334,7 @@ public class ItemSpriteSheet {
 	public static final int FORCE_CUBE      = MISSILE_WEP+15;
 	
 	static{
-		assignItemRect(SPIRIT_BOW,      16, 16);
+		assignItemRect(SPIRIT_BOW,      12, 16);
 		
 		assignItemRect(DART,            9,  9);
 		assignItemRect(THROWING_KNIFE,  12, 13);
@@ -692,7 +693,7 @@ public class ItemSpriteSheet {
 		assignItemRect(RATION,      16, 15);
 		assignItemRect(PASTY,       16, 11);
 		assignItemRect(PUMPKIN_PIE, 16, 12);
-		assignItemRect(CANDY_CANE,  11, 14);
+		assignItemRect(CANDY_CANE,  16, 15);
 		assignItemRect(MEAT_PIE,    16, 16);
 		assignItemRect(BLANDFRUIT,  11, 13);
 		assignItemRect(BLAND_CHUNKS,14, 6);

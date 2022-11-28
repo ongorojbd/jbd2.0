@@ -185,6 +185,6 @@ public class DM300Sprite extends MobSprite {
 
 	@Override
 	public int blood() {
-		return 0xFFFFFF88;
+		return 0x0033CC;
 	}
 }

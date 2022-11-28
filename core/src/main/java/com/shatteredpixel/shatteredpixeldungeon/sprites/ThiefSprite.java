@@ -29,8 +29,8 @@ public class ThiefSprite extends MobSprite {
 	public ThiefSprite() {
 		super();
 		
-		texture( Assets.Sprites.THIEF );
-		TextureFilm film = new TextureFilm( texture, 12, 13 );
+		texture( Assets.Sprites.TUSK1 );
+		TextureFilm film = new TextureFilm( texture, 13, 12 );
 		
 		idle = new Animation( 1, true );
 		idle.frames( film, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
@@ -46,4 +46,10 @@ public class ThiefSprite extends MobSprite {
 		
 		idle();
 	}
+
+	@Override
+	public int blood() {
+		return 0x990000;
+	}
+
 }

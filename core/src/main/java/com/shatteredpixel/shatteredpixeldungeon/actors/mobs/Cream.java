@@ -39,7 +39,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DestOrbSprite;
@@ -90,6 +92,8 @@ public class Cream extends Mob {
     public void die(Object cause) {
 
         Sample.INSTANCE.play( Assets.Sounds.BLAST );
+
+        Dungeon.level.drop( new GooBlob(), pos ).sprite.drop( pos );
 
         super.die(cause);
     }

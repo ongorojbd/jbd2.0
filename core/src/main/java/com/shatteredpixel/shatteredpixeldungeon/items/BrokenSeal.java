@@ -147,7 +147,7 @@ public class BrokenSeal extends Item {
 
 							GLog.p(Messages.get(BrokenSeal.class, "affix"));
 							Dungeon.hero.sprite.operate(Dungeon.hero.pos);
-							Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+							Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
 							armor.affixSeal(seal);
 							seal.detach(Dungeon.hero.belongings.backpack);
 						}
@@ -156,7 +156,7 @@ public class BrokenSeal extends Item {
 				} else {
 					GLog.p(Messages.get(BrokenSeal.class, "affix"));
 					Dungeon.hero.sprite.operate(Dungeon.hero.pos);
-					Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+					Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
 					armor.affixSeal((BrokenSeal)curItem);
 					curItem.detach(Dungeon.hero.belongings.backpack);
 				}

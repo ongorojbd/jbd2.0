@@ -53,6 +53,6 @@ public class Kinga extends Spell {
 
     @Override
     public int value() {
-        return 30 * quantity;
+        return 20 * quantity;
     }
 }

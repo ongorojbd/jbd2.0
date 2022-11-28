@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
 import com.shatteredpixel.shatteredpixeldungeon.items.Teleporter;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
@@ -58,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibili
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfDrago;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
@@ -70,13 +72,21 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Newro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AJA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spheaven;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -117,20 +127,21 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-		//new TengusMask().collect();
-		//new KingsCrown().collect();
-		//new PotionOfHealing().identify().quantity(29).collect();
-		//new AJA().identify().upgrade(100).collect();
-		//new ScrollOfUpgrade().identify().quantity(1000).collect();
-		//new ScrollOfExtract().quantity(20).collect();
-		//new Teleporter().collect();
-		//new PotionOfMindVision().identify().quantity(20).collect();
-		//new ScrollOfMagicMapping().identify().quantity(1000).collect();
-		//new TimekeepersHourglass().upgrade(10).identify().collect();
-		//new AlchemistsToolkit().upgrade(10).identify().collect();
-		//new RingOfArcana().identify().upgrade(9999).collect();
-		//new RingOfDrago().identify().upgrade(9999).collect();
-		//new Sungrass.Seed().quantity(100).collect();
+
+		if (DeviceCompat.isDebug()){
+			new TengusMask().collect();
+			new KingsCrown().collect();
+			new Sleepcmoon().identify().collect();
+			new Spheaven().identify().upgrade(999).collect();
+			new WandOfLightning().identify().upgrade(999).collect();
+			new PlateArmor().identify().upgrade(999).collect();
+			new PotionOfHealing().identify().quantity(29).collect();
+			new PotionOfMindVision().identify().quantity(20).collect();
+			new Kingm().identify().quantity(3).collect();
+			new ScrollOfMagicMapping().identify().quantity(1000).collect();
+			new Neotel().collect();
+		}
+
 
 		switch (this) {
 			case WARRIOR:

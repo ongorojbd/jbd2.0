@@ -97,6 +97,6 @@ public class SpinnerSprite extends MobSprite {
 
 	@Override
 	public int blood() {
-		return 0xFFBFE5B8;
+		return 0xCC0000;
 	}
 }

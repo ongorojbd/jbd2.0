@@ -161,7 +161,7 @@ public class Newro extends Spell {
             inputs =  new Class[]{StoneOfEnchantment.class};
             inQuantity = new int[]{1};
 
-            cost = 15;
+            cost = 5;
 
             output = Newro.class;
             outQuantity = 1;
