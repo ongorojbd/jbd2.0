@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weza;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -114,7 +115,13 @@ public class HallsLevel extends RegularLevel {
 		addItemToSpawn( new Torch() );
 		super.create();
 	}
-	
+
+	@Override
+	protected void createMobs() {
+		Weza.Quest.spawn( this );
+		super.createMobs();
+	}
+
 	@Override
 	public String tilesTex() {
 		return Assets.Environment.TILES_HALLS;

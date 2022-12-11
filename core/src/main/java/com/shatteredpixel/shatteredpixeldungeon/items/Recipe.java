@@ -56,7 +56,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Yoyoma;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
@@ -66,16 +65,22 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Gyro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalPorter;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map1;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map2;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Newro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ogroc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr1;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
@@ -215,6 +220,21 @@ public abstract class Recipe {
 		new StewedMeat.oneMeat(),
 		new Ogroc.Recipe(),
 		new Newro.Recipe(),
+			new LloydsBeacon.Recipe(),
+			new ChaosCatalyst.Recipe(),
+			new WoundsofWar.Recipe(),
+			new ChaosSword.Recipe(),
+			new KSG.Recipe(),
+			new HeavyMachinegun.Recipe(),
+			new ThirdBomb.Recipe(),
+			new PotionOfWeaponEnhance.Recipe(),
+			new PotionOfWeaponUpgrade.Recipe(),
+			new AdvancedEvolution.Recipe(),
+			new CapeOfThorns.Recipe(),
+			new MissileButton.Recipe(),
+			new Sbr1.Recipe(),
+			new Sbr2.Recipe(),
+			new Sbr3.Recipe(),
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
@@ -249,20 +269,8 @@ public abstract class Recipe {
 		new DBLADE.Recipe(),
 			new PINK.Recipe(),
 			new MISTA.Recipe(),
-			new LloydsBeacon.Recipe(),
-			new ChaosCatalyst.Recipe(),
-			new WoundsofWar.Recipe(),
-			new ChaosSword.Recipe(),
-			new KSG.Recipe(),
-			new HeavyMachinegun.Recipe(),
-			new ThirdBomb.Recipe(),
 			new WandOfDestOrb.Recipe(),
-			new PotionOfWeaponEnhance.Recipe(),
-			new PotionOfWeaponUpgrade.Recipe(),
-			new AdvancedEvolution.Recipe(),
 			new ScrollOfExtract.Recipe(),
-			new CapeOfThorns.Recipe(),
-			new MissileButton.Recipe(),
 			new Diodiary.Recipe(),
 			new Jotarodisc.Recipe(),
 			new FlameKatana.Recipe(),
@@ -272,7 +280,6 @@ public abstract class Recipe {
 			new WalkieTalkie.Recipe(),
 			new Yoyoma.Recipe(),
 			new Fugo.Recipe(),
-			new Gyro.Recipe(),
 			new SnowHunter.Recipe(),
 			new Neoro.Recipe(),
 		new StewedMeat.twoMeat()

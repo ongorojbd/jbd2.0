@@ -11,11 +11,11 @@ buildscript {
 allprojects {
 
     ext {
-        appName = '죠기던 2.0'
+        appName = '죠죠의 기묘한 던전'
         appPackageName = 'com.shatteredpixel.shatteredpixeldungeon7'
 
-        appVersionCode = 711
-        appVersionName = '2.0e'
+        appVersionCode = 720
+        appVersionName = '2.0f'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -36,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
@@ -44,13 +47,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MoveDetect;
@@ -62,14 +70,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Stower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.D4CParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
@@ -650,7 +664,7 @@ public class Hero extends Char {
 			return true;
 		}
 
-		KindOfWeapon wep = Dungeon.hero.belongings.weapon();
+		KindOfWeapon wep = hero.belongings.weapon();
 
 		if (wep != null){
 			return wep.canReach(this, enemy.pos);
@@ -1232,7 +1246,7 @@ public class Hero extends Char {
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 
-		if (enemy instanceof Stower && Dungeon.hero.belongings.weapon() instanceof MissileWeapon) {
+		if (enemy instanceof Stower && hero.belongings.weapon() instanceof MissileWeapon) {
 			damage *= 0f;
 		}
 
@@ -1275,15 +1289,76 @@ public class Hero extends Char {
 			damage = belongings.armor().proc( enemy, this, damage );
 		}
 
+		if (buff(D4C.class) != null){
+
+			CellEmitter.get(hero.pos).burst( D4CParticle.FACTORY, 9 );
+
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+				CellEmitter.get(hero.pos + 1).burst( D4CParticle.FACTORY, 3 );
+				if (mob.pos == hero.pos + 1){
+					mob.damage( Dungeon.depth, hero);
+				}
+			}
+			for (Mob mob2 : Dungeon.level.mobs.toArray(new Mob[0])) {
+				CellEmitter.get(hero.pos - 1).burst( D4CParticle.FACTORY, 3 );
+				if (mob2.pos == hero.pos - 1){
+					mob2.damage( Dungeon.depth, hero);
+				}
+			}
+			for (Mob mob3 : Dungeon.level.mobs.toArray(new Mob[0])) {
+				CellEmitter.get(hero.pos + 2).burst( D4CParticle.FACTORY, 3 );
+				if (mob3.pos == hero.pos + 2){
+					mob3.damage( Dungeon.depth, hero);
+				}
+			}
+			for (Mob mob4 : Dungeon.level.mobs.toArray(new Mob[0])) {
+				CellEmitter.get(hero.pos - 2).burst( D4CParticle.FACTORY, 3 );
+				if (mob4.pos == hero.pos - 2){
+					mob4.damage(Dungeon.depth, hero);
+				}
+			}
+			for (Mob mob5 : Dungeon.level.mobs.toArray(new Mob[0])) {
+				CellEmitter.get(hero.pos + 3).burst( D4CParticle.FACTORY, 3 );
+				if (mob5.pos == hero.pos + 3){
+					mob5.damage( Dungeon.depth, hero);
+				}
+			}
+			for (Mob mob6 : Dungeon.level.mobs.toArray(new Mob[0])) {
+				CellEmitter.get(hero.pos - 3).burst( D4CParticle.FACTORY, 3 );
+				if (mob6.pos == hero.pos - 3){
+					mob6.damage( Dungeon.depth, hero);
+				}
+			}
+		}
+
 		WandOfLivingEarth.RockArmor rockArmor = buff(WandOfLivingEarth.RockArmor.class);
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
 		}
 
-		if (Dungeon.hero.belongings.weapon() instanceof RoundShield && (Random.Int(5) == 0)){
+		if (hero.belongings.weapon() instanceof RoundShield && (Random.Int(5) == 0)){
 			Buff.prolong(this, Invisibility.class, Invisibility.DURATION / 6f);
 			Buff.prolong(this, Haste.class, Haste.DURATION / 6f);
 		}
+
+
+		if (Dungeon.hero.buff(Holy1.class) != null && (Random.Int(10) == 0)){
+			Buff.prolong(this, MagicalSight.class, 1f);
+			SpellSprite.show( hero, SpellSprite.PURITY );
+			GLog.h(Messages.get(Civil.class, "22"));
+		}
+		if (Dungeon.hero.buff(Holy2.class) != null && (Random.Int(10) == 0)){
+			Buff.prolong(this, Haste.class, 2f);
+			SpellSprite.show( hero, SpellSprite.PURITY );
+			GLog.h(Messages.get(Civil.class, "23"));
+		}
+		if (Dungeon.hero.buff(Holy3.class) != null && (Random.Int(10) == 0)){
+			Buff.affect(hero, ArtifactRecharge.class).prolong( 5 ).ignoreHornOfPlenty = false;
+			SpellSprite.show( hero, SpellSprite.PURITY );
+			GLog.h(Messages.get(Civil.class, "24"));
+		}
+
+
 
 		return super.defenseProc( enemy, damage );
 	}
@@ -1827,9 +1902,9 @@ public class Hero extends Char {
 		Dungeon.observe();
 		GameScene.updateFog();
 				
-		Dungeon.hero.belongings.identify();
+		hero.belongings.identify();
 
-		int pos = Dungeon.hero.pos;
+		int pos = hero.pos;
 
 		ArrayList<Integer> passable = new ArrayList<>();
 		for (Integer ofs : PathFinder.NEIGHBOURS8) {
@@ -1840,7 +1915,7 @@ public class Hero extends Char {
 		}
 		Collections.shuffle( passable );
 
-		ArrayList<Item> items = new ArrayList<>(Dungeon.hero.belongings.backpack.items);
+		ArrayList<Item> items = new ArrayList<>(hero.belongings.backpack.items);
 		for (Integer cell : passable) {
 			if (items.isEmpty()) {
 				break;

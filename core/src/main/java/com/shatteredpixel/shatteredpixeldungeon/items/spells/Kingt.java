@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -46,9 +47,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDiv
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
@@ -70,7 +71,7 @@ public class Kingt extends Spell {
     protected void onCast(Hero hero) {
 
 
-        switch (Random.Int(25)){
+        switch (Random.Int(29)){
             case 0:
                 Item a = new BossdiscC();
                 Dungeon.level.drop(a, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
@@ -96,7 +97,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(f, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 6:
-                Item g = new SummonElemental().quantity(3);
+                Item g = new Willa().quantity(2);
                 Dungeon.level.drop(g, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 7:
@@ -116,7 +117,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(h1, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 11:
-                Item h2 = new Blandfruit().quantity(5);
+                Item h2 = new Blandfruit().quantity(4);
                 Dungeon.level.drop(h2, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 12:
@@ -171,6 +172,23 @@ public class Kingt extends Spell {
                 Item zz = new ScrollOfTransmutation().quantity(5);
                 Dungeon.level.drop(zz, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
+            case 25:
+                Item we = new Ankh();
+                Dungeon.level.drop(we, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 26:
+                Item we2 = new Highway().quantity(20);
+                Dungeon.level.drop(we2, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 27:
+                Item we4 = new ScrollOfChallenge().quantity(3);
+                Dungeon.level.drop(we4, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 28:
+                Item we6 = new BossdiscE();
+                Dungeon.level.drop(we6, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+
 
         }
 

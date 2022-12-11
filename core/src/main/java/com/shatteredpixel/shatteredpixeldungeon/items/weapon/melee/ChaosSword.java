@@ -78,10 +78,10 @@ public class ChaosSword extends MeleeWeapon {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{BossdiscB.class, ArcaneCatalyst.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{BossdiscB.class};
+            inQuantity = new int[]{1};
 
-            cost = 3;
+            cost = 0;
 
             output = ChaosSword.class;
             outQuantity = 1;

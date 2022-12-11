@@ -48,8 +48,8 @@ public class SnowHunter extends MeleeWeapon{
 
     @Override
     public int max(int lvl) {
-        return  3*(tier+1) +    //15+3
-                lvl*(tier-1);
+        return  4*(tier+1) +    //15+3
+                lvl*(tier);
     }
 
 
@@ -57,12 +57,12 @@ public class SnowHunter extends MeleeWeapon{
     public ArrayList<String> actions(Hero hero) {
         SnowHunter pick = Dungeon.hero.belongings.getItem( SnowHunter.class );
         if (Dungeon.depth > 29) {
-            int lvl = this.level();
-            GLog.p( Messages.get(this, "rev") );
             GameScene.flash(0x00FFFF);
             Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
             Camera.main.shake(31, 3f);
+            GLog.p( Messages.get(this, "rev") );
 
+            int lvl = this.level();
 
             pick.doUnequip( Dungeon.hero, false );
             pick.detach( Dungeon.hero.belongings.backpack );

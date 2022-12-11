@@ -83,7 +83,7 @@ public class SeniorSprite extends MobSprite {
 			idle();
 			CellEmitter.get(ch.pos).burst(EnergyParticle.FACTORY, 2);
 			CellEmitter.center(ch.pos).burst(SacrificialParticle.FACTORY, 2);
-			Sample.INSTANCE.play( Assets.Sounds.READ, 2, Random.Float(0.33f, 0.66f) );
+			Sample.INSTANCE.play( Assets.Sounds.READ);
 			((MissileSprite)parent.recycle( MissileSprite.class )).
 					reset( this, cellToAttack, new SeniorShot(), new Callback() {
 

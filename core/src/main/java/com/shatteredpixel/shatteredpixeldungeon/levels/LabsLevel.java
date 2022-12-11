@@ -68,8 +68,7 @@ public class LabsLevel extends RegularLevel {
 		color2 = 0x59994a;
 	}
 
-	@Override
-	public void playLevelMusic() {
+	public void playLevelMusic(){
 		Music.INSTANCE.playTracks(
 				new String[]{Assets.Music.LABS_1},
 				new float[]{1},

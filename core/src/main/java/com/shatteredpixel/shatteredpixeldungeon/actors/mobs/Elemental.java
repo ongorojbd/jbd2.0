@@ -236,8 +236,8 @@ public abstract class Elemental extends Mob {
 		{
 			spriteClass = ElementalSprite.NewbornFire.class;
 			
-			HT = 60;
-			HP = HT/2; //30
+			HT = 30;
+			HP = 30; //30
 			
 			defenseSkill = 12;
 			

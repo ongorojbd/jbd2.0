@@ -97,7 +97,8 @@ public class DM300Sprite extends MobSprite {
 						((DM300)ch).onZapComplete();
 					}
 				} );
-		Sample.INSTANCE.play( Assets.Sounds.GAS );
+		Sample.INSTANCE.play( Assets.Sounds.BLAST );
+		Sample.INSTANCE.play( Assets.Sounds.BURNING );
 	}
 
 	public void charge(){
@@ -185,6 +186,6 @@ public class DM300Sprite extends MobSprite {
 
 	@Override
 	public int blood() {
-		return 0x0033CC;
+		return 0xCC0000;
 	}
 }

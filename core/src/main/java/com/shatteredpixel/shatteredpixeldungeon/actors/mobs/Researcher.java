@@ -107,7 +107,7 @@ public class Researcher extends Mob {
 		Item toSteal = hero.belongings.randomUnequipped();
 
 		if (toSteal != null && !toSteal.unique && toSteal.level() < 1) {
-
+			Sample.INSTANCE.play(Assets.Sounds.DORA);
 			GLog.w(Messages.get(Researcher.class, "stole", toSteal.name()));
 			if (!toSteal.stackable) {
 				Dungeon.quickslot.convertToPlaceholder(toSteal);

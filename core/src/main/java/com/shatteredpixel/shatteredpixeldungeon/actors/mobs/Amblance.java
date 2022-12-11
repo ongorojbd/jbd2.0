@@ -135,6 +135,14 @@ public class Amblance extends Mob {
     @Override
     public int attackProc(Char enemy, int damage) {
 
+        if (enemy instanceof Diego ){
+
+            GLog.n(Messages.get(Diego.class, "m"));
+
+            this.die(null);
+
+        }
+
 
         new ExplosiveTrap().set(target).activate();
 
@@ -144,7 +152,7 @@ public class Amblance extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 995, 999 );
+        return Random.NormalIntRange( 150, 155 );
     }
 
     @Override

@@ -129,7 +129,7 @@ public class ScrollOfExtract extends InventorySpell {
             inputs =  new Class[]{BossdiscF.class, ScrollOfUpgrade.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 3;
+            cost = 0;
 
             output = ScrollOfExtract.class;
             outQuantity = 1;

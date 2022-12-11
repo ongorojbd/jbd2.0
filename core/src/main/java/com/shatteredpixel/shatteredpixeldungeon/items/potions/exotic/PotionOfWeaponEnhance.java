@@ -53,7 +53,7 @@ public class PotionOfWeaponEnhance extends Potion {
 
     @Override
     public void apply(Hero hero) {
-        Dungeon.hero.damage(Dungeon.hero.HP/4, this);
+        Dungeon.hero.damage(Dungeon.hero.HP/5, this);
         Buff.affect(hero, Might.class, Might.DURATION);
         Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
     }
@@ -62,10 +62,10 @@ public class PotionOfWeaponEnhance extends Potion {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{BossdiscE.class, AlchemicalCatalyst.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{BossdiscE.class};
+            inQuantity = new int[]{1};
 
-            cost = 3;
+            cost = 0;
 
             output = PotionOfWeaponEnhance.class;
             outQuantity = 1;

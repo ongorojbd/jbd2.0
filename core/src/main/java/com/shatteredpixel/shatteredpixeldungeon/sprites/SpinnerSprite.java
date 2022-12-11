@@ -75,7 +75,7 @@ public class SpinnerSprite extends MobSprite {
 		super.zap( cell );
 		
 		MagicMissile.boltFromChar( parent,
-				MagicMissile.MAGIC_MISSILE,
+				MagicMissile.FORCE,
 				this,
 				cell,
 				new Callback() {

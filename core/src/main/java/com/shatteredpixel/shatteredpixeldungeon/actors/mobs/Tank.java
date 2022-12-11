@@ -97,6 +97,7 @@ public class Tank extends Mob {
 		if (this.buff(Doom.class) == null) {
 			if (Random.Int(10) == 0) {
 				new DisarmingTrap().set(target).activate();
+				Sample.INSTANCE.play(Assets.Sounds.ORA);
 			}
 		}
 
@@ -109,6 +110,7 @@ public class Tank extends Mob {
 		damageTaken += damage;
 		if (damageTaken >= 100) {
 			Buff.prolong(this, Invisibility.class, Invisibility.DURATION*5000f);
+			Sample.INSTANCE.play(Assets.Sounds.PLATINUM);
 			damageTaken = 0;
 		}
 		return damage;

@@ -53,8 +53,8 @@ public class Spheaven extends MeleeWeapon{
 
     @Override
     public int max(int lvl) {
-        return  3*(tier+1) +    //15+3
-                lvl*(tier-1);
+        return  4*(tier+1) +    //15+3
+                lvl*(tier);
     }
 
     @Override

@@ -530,7 +530,7 @@ public class YogDzewa extends Mob {
 		super.die( cause );
 
 		if (Random.Int( 10 ) == 0) {
-			GameScene.flash(0xFF00FF);
+			GameScene.flash(0xFFFF00);
 			Dungeon.level.drop( new BossdiscF().identify(), pos ).sprite.drop( pos );
 			new Flare( 5, 32 ).color( 0xFF00FF, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);

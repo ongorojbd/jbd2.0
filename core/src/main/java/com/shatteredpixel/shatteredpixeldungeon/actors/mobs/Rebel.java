@@ -42,6 +42,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover;
+import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover2;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -103,13 +105,13 @@ public class Rebel extends Mob {
 
 	int cleanCooldown = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) ? 15 : 31;
 	int damageTaken = 0;
-	int summonCooldown = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 29 : 39;
+	int summonCooldown = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 9999 : 9999;
 
 	private int LastPos = -1;
 	private int Burstcooldown = 0; // 1이 되면 은신 파괴
 	public int  Phase = 0; // 1~6까지
 	private int GasCoolDown = 15;
-	private int ACoolDown = 29;
+	private int ACoolDown = 9999;
 	private int BurstTime = 0;
 	private int Burstpos = -1;
 	private static final Rect arena = new Rect(0, 0, 33, 26);
@@ -225,16 +227,20 @@ public class Rebel extends Mob {
 			switch(Dungeon.hero.heroClass){
 				case WARRIOR:
 					this.yell(Messages.get(this, "notice"));
+					Sample.INSTANCE.play(Assets.Sounds.OH2);
 					break;
 				case ROGUE:
 					this.yell(Messages.get(this, "notice2"));
+					Sample.INSTANCE.play(Assets.Sounds.OH2);
 					break;
 				case MAGE:
 					GLog.p(Messages.get(Val.class, "6"));
 					this.yell(Messages.get(this, "notice3"));
+					Sample.INSTANCE.play(Assets.Sounds.OH2);
 					break;
 				case HUNTRESS:
 					this.yell(Messages.get(this, "notice4"));
+					Sample.INSTANCE.play(Assets.Sounds.OH2);
 					break;
 			}
 			for (Char ch : Actor.chars()){
@@ -274,7 +280,7 @@ public class Rebel extends Mob {
 			summonCooldown = (39);
 
 			new Flare( 5, 32 ).color( 0xFFFFFF, true ).show( this.sprite, 3f );
-			Sample.INSTANCE.play(Assets.Sounds.CRAZYDIO);
+			Sample.INSTANCE.play(Assets.Sounds.OH1, 1.2f);
 		}
 		else if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
 
@@ -303,7 +309,7 @@ public class Rebel extends Mob {
 			summonCooldown = (37);
 
 				new Flare( 5, 32 ).color( 0xFFFFFF, true ).show( this.sprite, 3f );
-				Sample.INSTANCE.play(Assets.Sounds.CRAZYDIO);
+				Sample.INSTANCE.play(Assets.Sounds.OH1);
 
 			}
 		}
@@ -355,7 +361,7 @@ public class Rebel extends Mob {
 			// at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
 			dmg = 150;
 		}
-
+		BossHealthBar.assignBoss(this);
 		int preHP = HP;
 		int dmgTaken = preHP - HP;
 
@@ -369,11 +375,12 @@ public class Rebel extends Mob {
 			GameScene.flash(0x8B00FF);
 			new Fadeleaf().activate(this);
 			new Fadeleaf().activate(hero);
-			Sample.INSTANCE.play( Assets.Sounds.HAHAH );
 			Buff.prolong(this, Haste.class, Haste.DURATION*5000f);
+			ACoolDown = 12;
+			summonCooldown = 0;
+
 			yell(Messages.get(this, "telling_1"));
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
-			BossHealthBar.assignBoss(this);
 		}
 		else if (Phase==1 && HP < 1200) {
 			Phase = 2;
@@ -389,7 +396,6 @@ public class Rebel extends Mob {
 
 			Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
-			BossHealthBar.assignBoss(this);
 
 		}
 		else if (Phase==2 && HP < 900) {
@@ -415,7 +421,6 @@ public class Rebel extends Mob {
 			yell(Messages.get(this, "telling_3"));
 
 			Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
-			BossHealthBar.assignBoss(this);
 
 		}
 		else if (Phase==3 && HP < 600) {
@@ -434,7 +439,6 @@ public class Rebel extends Mob {
 
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
-			BossHealthBar.assignBoss(this);
 		}
 		else if (Phase==4 && HP < 300) {
 			Phase = 5;
@@ -451,7 +455,7 @@ public class Rebel extends Mob {
 
 			GLog.h(Messages.get(Rebel.class, "blood"));
 			Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
-			BossHealthBar.assignBoss(this);
+
 		}
 
 	}
@@ -519,6 +523,12 @@ public class Rebel extends Mob {
 		yell( Messages.get(this, "defeated") );
 
 		Sample.INSTANCE.play( Assets.Sounds.NANI );
+
+		for (Char c : Actor.chars()){
+			if (c instanceof jojo){
+				((jojo) c).sayHeroKilled();
+			}
+		}
 
 		isDied = true;
 	}
@@ -592,7 +602,16 @@ public class Rebel extends Mob {
 
 				sprite.centerEmitter().start(Speck.factory(Speck.MASK), 0.05f, 20);
 				spend(2f);
-				Sample.INSTANCE.play( Assets.Sounds.OH );
+
+				switch (Random.Int( 2 )) {
+					case 0:
+						Sample.INSTANCE.play( Assets.Sounds.OH);
+						break;
+					case 1:
+						Sample.INSTANCE.play( Assets.Sounds.OH2);
+						break;
+				}
+
 				BurstTime++;
 
 				return false;
@@ -605,12 +624,25 @@ public class Rebel extends Mob {
 						CellEmitter.get(cell).burst(SparkParticle.FACTORY, 31);
 						CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 4);
 						Char ch = Actor.findChar(cell);
-						if (hit( this, enemy, true )) {
-							if (ch != null&& !(ch instanceof Rebel)) {
-								ch.damage(Random.NormalIntRange(65, 70), this);
+
+
+						Char Target = hero;
+						if (Target.buff(PortableCover2.CoverBuff.class) == null) {
+							if (hit( this, enemy, true )) {
+								if (ch != null&& !(ch instanceof Rebel)) {
+									ch.damage(Random.NormalIntRange(65, 70), this);
+								}
 							}
+						}	 else {
+							damage(5, this);
+
+							Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY);
+
 						}
+
+
 					}}
+
 				Camera.main.shake(9, 0.5f);
 				Burstpos = -1;
 				BurstTime = 0;

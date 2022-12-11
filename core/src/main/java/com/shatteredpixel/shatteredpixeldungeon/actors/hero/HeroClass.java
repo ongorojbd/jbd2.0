@@ -71,10 +71,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Newro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr1;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr7;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
@@ -139,6 +144,11 @@ public enum HeroClass {
 			new PotionOfMindVision().identify().quantity(20).collect();
 			new Kingm().identify().quantity(3).collect();
 			new ScrollOfMagicMapping().identify().quantity(1000).collect();
+			new ScrollOfPrismaticImage().identify().quantity(1000).collect();
+			new Sbr1().identify().quantity(1000).collect();
+			new Sbr2().identify().quantity(1000).collect();
+			new Sbr3().identify().quantity(1000).collect();
+			new Sbr7().identify().quantity(1000).collect();
 			new Neotel().collect();
 		}
 

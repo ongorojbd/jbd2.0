@@ -21,16 +21,23 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Whsnake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Whsnake2;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -42,9 +49,12 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WandmakerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndWandmaker;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Point;
@@ -180,25 +190,79 @@ public class Wandmaker extends NPC {
 			final String msg2Final = msg2;
 			
 			Game.runOnRenderThread(new Callback() {
+
 				@Override
 				public void call() {
-					GameScene.show(new WndQuest(Wandmaker.this, msg1Final){
+					GameScene.show(new WndOptions(
+							sprite(),
+							Messages.titleCase(name()),
+							Messages.get(Wandmaker.class, "0"),
+							Messages.get(Wandmaker.class, "1"),
+							Messages.get(Wandmaker.class, "2"),
+							Messages.get(Wandmaker.class, "3")
+					){
 						@Override
-						public void hide() {
-							super.hide();
-							GameScene.show(new WndQuest(Wandmaker.this, msg2Final));
+						protected void onSelect(int index) {
+							if (index == 0){
+								GameScene.show(new WndQuest(Wandmaker.this, msg1Final){
+									@Override
+									public void hide() {
+										super.hide();
+										GameScene.show(new WndQuest(Wandmaker.this, msg2Final));
+									}
+								});
+								super.onBackPressed();
+								Quest.given = true;
+								Notes.add( Notes.Landmark.WANDMAKER );
+							} else if (index == 1) {
+								Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+								yell(Messages.get(Wandmaker.class, "4"));
+
+								destroy();
+								sprite.killAndErase();
+								die(null);
+								Notes.remove(Notes.Landmark.WANDMAKER);
+
+								Whsnake Whsnake = new Whsnake();
+								Whsnake.state = Whsnake.HUNTING;
+								Whsnake.pos = pos;
+								GameScene.add( Whsnake );
+								Whsnake.beckon(Dungeon.hero.pos);
+
+							} else {
+								Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+
+
+								destroy();
+								sprite.killAndErase();
+								die(null);
+								Notes.remove(Notes.Landmark.WANDMAKER);
+
+
+								ScrollOfPolymorph pick = new ScrollOfPolymorph();
+								if (pick.doPickUp( Dungeon.hero )) {
+									GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
+								} else {
+									Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+								}
+								yell(Messages.get(Wandmaker.class, "5"));
+								Whsnake2 Whsnake2 = new Whsnake2();
+								Whsnake2.state = Whsnake2.HUNTING;
+								Whsnake2.pos = pos;
+								GameScene.add( Whsnake2 );
+								Whsnake2.beckon(Dungeon.hero.pos);
+							}
 						}
 					});
 				}
 			});
 
-			Quest.given = true;
-			Notes.add( Notes.Landmark.WANDMAKER );
+
 		}
 
 		return true;
 	}
-	
+
 	public static class Quest {
 
 		private static int type;

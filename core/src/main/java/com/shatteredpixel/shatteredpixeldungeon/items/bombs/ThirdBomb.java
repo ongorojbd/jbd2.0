@@ -77,10 +77,10 @@ public class ThirdBomb extends Bomb {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{BossdiscD.class, Bomb.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{BossdiscD.class};
+            inQuantity = new int[]{1};
 
-            cost = 3;
+            cost = 0;
 
             output = ThirdBomb.class;
             outQuantity = 1;

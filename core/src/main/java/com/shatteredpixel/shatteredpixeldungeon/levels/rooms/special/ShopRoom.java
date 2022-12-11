@@ -47,9 +47,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
@@ -227,7 +227,7 @@ public class ShopRoom extends SpecialRoom {
 
 		switch (Random.Int(4)){
 			case 0:
-				itemsToSpawn.add( new Bomb() );
+				itemsToSpawn.add( new Highway() );
 				break;
 			case 1:
 			case 2:
@@ -280,19 +280,17 @@ public class ShopRoom extends SpecialRoom {
 		}
 		}
 
-		switch (Random.Int(15)){
+		switch (Random.Int(18)){
 			case 0:
 				itemsToSpawn.add( new Maga() );
 				break;
 		}
 
-		switch (Random.Int(30)){
+		switch (Random.Int(40)){
 			case 0:
 				itemsToSpawn.add( new Mdisc() );
 				break;
 		}
-
-
 
 		itemsToSpawn.add( new Ankh() );
 		itemsToSpawn.add( new StoneOfAugmentation() );

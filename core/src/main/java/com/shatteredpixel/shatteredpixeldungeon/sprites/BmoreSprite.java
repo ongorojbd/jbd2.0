@@ -22,18 +22,24 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bmore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fugomob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
 
 public class BmoreSprite extends MobSprite {
+
+    private Emitter cloud;
 
     public BmoreSprite () {
         super();
@@ -66,9 +72,32 @@ public class BmoreSprite extends MobSprite {
     }
 
     @Override
-    public void die() {
-        emitter().burst( Speck.factory( Speck.WOOL ), 8 );
-        super.die();
+    public void link( Char ch ) {
+        super.link( ch );
+
+        if (cloud == null) {
+            cloud = emitter();
+            cloud.pour(SnowParticle.FACTORY, 0.04f );
+        }
+    }
+
+    @Override
+    public void update() {
+
+        super.update();
+
+        if (cloud != null) {
+            cloud.visible = visible;
+        }
+    }
+
+    @Override
+    public void kill() {
+        super.kill();
+
+        if (cloud != null) {
+            cloud.on = false;
+        }
     }
 
     public void zap( int cell ) {
@@ -77,17 +106,16 @@ public class BmoreSprite extends MobSprite {
         play( zap );
 
         MagicMissile.boltFromChar( parent,
-                MagicMissile.CORROSION,
+                MagicMissile.FROST_CONE,
                 this,
                 cell,
                 new Callback() {
                     @Override
                     public void call() {
-                        Sample.INSTANCE.play( Assets.Sounds.ZAP );
-                        ((Fugomob)ch).onZapComplete();
+                        Sample.INSTANCE.play(Assets.Sounds.GAS, 1f, 0.75f);
+                        ((Bmore)ch).onZapComplete();
                     }
                 } );
-        Sample.INSTANCE.play( Assets.Sounds.MISS, 1f, 1.5f );
     }
 
     @Override
@@ -100,7 +128,7 @@ public class BmoreSprite extends MobSprite {
 
     @Override
     public int blood() {
-        return 0xFFFFFF88;
+        return 0xFF0000;
     }
 
 }

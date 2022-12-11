@@ -74,7 +74,7 @@ public class DM200Sprite extends MobSprite {
 						((DM200)ch).onZapComplete();
 					}
 				} );
-		Sample.INSTANCE.play( Assets.Sounds.GAS );
+		Sample.INSTANCE.play( Assets.Sounds.BURNING );
 		GLog.w(Messages.get(DM200.class, "vent"));
 	}
 

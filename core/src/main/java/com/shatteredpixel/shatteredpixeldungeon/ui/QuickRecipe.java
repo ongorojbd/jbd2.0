@@ -60,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
@@ -72,6 +71,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalPorter;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map1;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map2;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Newro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ogroc;
@@ -79,7 +81,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Rocacaca;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr1;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
@@ -293,17 +299,12 @@ public class QuickRecipe extends Component {
 		ArrayList<QuickRecipe> result = new ArrayList<>();
 		switch (pageIdx){
 			case 0: default:
-				result.add(new QuickRecipe( new Potion.SeedToPotion(), new ArrayList<>(Arrays.asList(new Plant.Seed.PlaceHolder().quantity(3))), new WndBag.Placeholder(ItemSpriteSheet.POTION_HOLDER){
-					@Override
-					public String name() {
-						return Messages.get(Potion.SeedToPotion.class, "name");
-					}
-
-					@Override
-					public String info() {
-						return "";
-					}
-				}));
+				result.add(null);
+				result.add(new QuickRecipe(new Ogroc.Recipe()));
+				result.add(null);
+				result.add(new QuickRecipe(new Newro.Recipe()));
+				result.add(null);
+				result.add(new QuickRecipe(new Neoro.Recipe()));
 				return result;
 			case 1:
 				Recipe r = new Scroll.ScrollToStone();
@@ -369,10 +370,11 @@ public class QuickRecipe extends Component {
 				}
 				return result;
 			case 6:
-				result.add(new QuickRecipe(new Ogroc.Recipe()));
+				result.add(new QuickRecipe(new Sbr1.Recipe()));
 				result.add(null);
-				result.add(new QuickRecipe(new Newro.Recipe()));
-				result.add(new QuickRecipe(new Neoro.Recipe()));
+				result.add(new QuickRecipe(new Sbr2.Recipe()));
+				result.add(null);
+				result.add(new QuickRecipe(new Sbr3.Recipe()));
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe(new LloydsBeacon.Recipe()));

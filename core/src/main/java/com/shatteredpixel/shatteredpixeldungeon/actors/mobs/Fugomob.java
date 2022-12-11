@@ -138,7 +138,7 @@ public class Fugomob extends Mob {
         threatened = false;
         spend(TICK);
         sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "G1"));
-        GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(8));
+        GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(1+Dungeon.depth/4));
         for (int i : PathFinder.NEIGHBOURS8){
             if (!Dungeon.level.solid[enemy.pos+i]) {
                 GameScene.add(Blob.seed(enemy.pos + i, 5, CorrosiveGas.class));

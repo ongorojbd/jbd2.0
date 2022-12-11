@@ -135,10 +135,10 @@ public class WoundsofWar extends Artifact {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{BossdiscB.class, ArcaneResin.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{BossdiscB.class};
+            inQuantity = new int[]{1};
 
-            cost = 3;
+            cost = 0;
 
             output = WoundsofWar.class;
             outQuantity = 1;

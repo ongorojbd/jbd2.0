@@ -59,7 +59,7 @@ public class Jotarodisc extends Item {
             inputs =  new Class[]{Diodiary.class, ScrollOfTransmutation.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 50;
+            cost = 30;
 
             output = Jotarodisc.class;
             outQuantity = 1;

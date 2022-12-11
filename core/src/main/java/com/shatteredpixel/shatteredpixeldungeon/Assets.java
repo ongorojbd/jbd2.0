@@ -116,6 +116,7 @@ public class Assets {
 	public static class Music {
 		public static final String THEME_1      = "music/theme_1.ogg";
 		public static final String THEME_2      = "music/theme_2.ogg";
+		public static final String CIV          = "music/civ.ogg";
 
 		public static final String SEWERS_1     = "music/sewers_1.ogg";
 		public static final String SEWERS_2     = "music/sewers_2.ogg";
@@ -172,9 +173,9 @@ public class Assets {
 		public static final String HIT_STRONG       = "sounds/hit_strong.mp3";
 		public static final String HIT_PARRY        = "sounds/hit_parry.mp3";
 		public static final String HIT_ARROW        = "sounds/hit_arrow.mp3";
-		public static final String HIT_SHOTGUN        = "sounds/hit_shotgun.mp3";
-		public static final String HEI            = "sounds/hei.mp3";
-		public static final String RELOAD       = "sounds/reload.mp3";
+		public static final String HIT_SHOTGUN      = "sounds/hit_shotgun.mp3";
+		public static final String HEI              = "sounds/hei.mp3";
+		public static final String RELOAD           = "sounds/reload.mp3";
 		public static final String ATK_SPIRITBOW    = "sounds/atk_spiritbow.mp3";
 		public static final String ATK_CROSSBOW     = "sounds/atk_crossbow.mp3";
 		public static final String HEALTH_WARN      = "sounds/health_warn.mp3";
@@ -224,6 +225,8 @@ public class Assets {
 		public static final String GUITAR    = "sounds/guitar.mp3";
 		public static final String FF    = "sounds/ff.mp3";
 		public static final String OH    = "sounds/oh.mp3";
+		public static final String OH1    = "sounds/oh1.mp3";
+		public static final String OH2    = "sounds/oh2.mp3";
 		public static final String OVERDRIVE   = "sounds/overdrive.mp3";
 		public static final String SP   = "sounds/sp.mp3";
 		public static final String HAHAH    = "sounds/hahah.mp3";
@@ -237,6 +240,13 @@ public class Assets {
 		public static final String YAREYARE = "sounds/yareyare.mp3";
 		public static final String PLATINUM = "sounds/platinum.mp3";
 		public static final String ORA = "sounds/ora.mp3";
+		public static final String DORA = "sounds/dora.mp3";
+		public static final String D4C = "sounds/d4c.mp3";
+		public static final String NANIDI = "sounds/nanidi.mp3";
+		public static final String D1 = "sounds/d1.mp3";
+		public static final String D2 = "sounds/d2.mp3";
+		public static final String DIEGO = "sounds/diego.mp3";
+		public static final String DIEGO2 = "sounds/diego2.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -249,8 +259,8 @@ public class Assets {
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
-				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OVERDRIVE, SP,
-				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA
+				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
+				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2
 		};
 	}
 
@@ -345,6 +355,7 @@ public class Assets {
 		public static final String KHAN= "sprites/khan.png";
 		public static final String VITAMINC= "sprites/vitaminc.png";
 		public static final String HEAVYW= "sprites/heavyw.png";
+		public static final String CIVIL= "sprites/civil.png";
 		public static final String BMORE= "sprites/bmore.png";
 		public static final String DOPPIO= "sprites/doppio.png";
 		public static final String BOYTWO= "sprites/boytwo.png";
@@ -352,9 +363,15 @@ public class Assets {
 		public static final String WILLA= "sprites/willa.png";
 		public static final String STOWER= "sprites/stower.png";
 		public static final String TUSK1= "sprites/tusk1.png";
-		public static final String TUSK2= "sprites/tusk2.png";
 		public static final String TUSK3= "sprites/tusk3.png";
 		public static final String TUSK4= "sprites/tusk4.png";
+		public static final String YUKAKO= "sprites/yukako.png";
+		public static final String RETONIO= "sprites/retonio.png";
+		public static final String POLPO= "sprites/polpo.png";
+		public static final String DIEGO= "sprites/diego.png";
+		public static final String WEZA= "sprites/weza.png";
+		public static final String WORLD21= "sprites/world21.png";
+		public static final String DIEGON= "sprites/diegon.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 	}
 }

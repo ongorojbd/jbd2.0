@@ -35,7 +35,7 @@ public class MoveDetect extends FlavourBuff {
     }
 
     @Override
-    public int icon() {return BuffIndicator.SACRIFICE;}
+    public int icon() {return BuffIndicator.TARGETED;}
 
     @Override
     public float iconFadePercent() {

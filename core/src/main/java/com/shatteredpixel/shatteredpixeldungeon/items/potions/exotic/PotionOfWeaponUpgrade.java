@@ -62,10 +62,10 @@ public class PotionOfWeaponUpgrade extends ExoticPotion {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{BossdiscE.class, LiquidMetal.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{BossdiscE.class};
+            inQuantity = new int[]{1};
 
-            cost = 3;
+            cost = 0;
 
             output = PotionOfWeaponUpgrade.class;
             outQuantity = 1;

@@ -97,6 +97,10 @@ public class jojo extends Mob {
 
     private boolean seenBefore = false;
 
+    public void sayHeroKilled(){
+        this.yell(Messages.get(this, "v"));
+    }
+
     @Override
     public int attackProc(Char enemy, int damage) {
 
@@ -167,7 +171,7 @@ public class jojo extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 17, 29 );
+        return Random.NormalIntRange( 17, 24 );
     }
 
     @Override

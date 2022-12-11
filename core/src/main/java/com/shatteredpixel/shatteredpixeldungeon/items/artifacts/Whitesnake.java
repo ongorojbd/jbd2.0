@@ -295,7 +295,7 @@ public class Whitesnake extends Artifact {
             inputs =  new Class[]{Sword.class, ScrollOfAntiMagic.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 50;
+            cost = 30;
 
             output = Whitesnake.class;
             outQuantity = 1;

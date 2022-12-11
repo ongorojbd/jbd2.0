@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -100,7 +101,7 @@ public class Scimitar extends MeleeWeapon {
 					PathFinder.buildDistanceMap(curUser.pos, BArray.not(Dungeon.level.solid, null), 2);
 					for (int cell = 0; cell < PathFinder.distance.length; cell++) {
 						if (PathFinder.distance[cell] < Integer.MAX_VALUE) {
-							CellEmitter.get( cell ).burst( Speck.factory( Speck.BUBBLE ), 10 );
+							CellEmitter.get( cell ).burst(EnergyParticle.FACTORY, 15);
 							Char ch = Actor.findChar(cell);
 							if (ch != null&& !(ch instanceof Hero)) {
 								ch.damage(Dungeon.hero.damageRoll() / 2, Dungeon.hero);

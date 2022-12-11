@@ -134,7 +134,7 @@ public class Greatsword extends MeleeWeapon {
 
 				final  Greatsword ss;
 				if (curItem instanceof  Greatsword) {
-					Sample.INSTANCE.play( Assets.Sounds.FF, 1f);
+					Sample.INSTANCE.play( Assets.Sounds.RAY, 1f);
 					ss = ( Greatsword)  Greatsword.curItem;
 
 					Ballistica shot = new Ballistica(curUser.pos, target, Ballistica.PROJECTILE);
@@ -174,7 +174,7 @@ public class Greatsword extends MeleeWeapon {
 
 	protected void fx( Ballistica bolt, Callback callback ) {
 		MagicMissile.boltFromChar( curUser.sprite.parent,
-				MagicMissile.SPARK_CONE,
+				MagicMissile.BEACON,
 				curUser.sprite,
 				bolt.collisionPos,
 				callback);

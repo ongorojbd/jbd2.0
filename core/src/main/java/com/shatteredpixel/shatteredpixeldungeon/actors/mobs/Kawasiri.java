@@ -272,7 +272,6 @@ public class Kawasiri extends Mob {
             HP = 51;
             yell(Messages.get(this, "phase7"));
             Music.INSTANCE.play(Assets.Music.KOICHI, true);
-            Buff.affect(this, Barrier.class).setShield(15);
             state = FLEEING;
 
                baseSpeed = 1.1f;

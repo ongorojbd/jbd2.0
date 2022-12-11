@@ -131,7 +131,7 @@ public class WandOfDestOrb extends Wand {
             inputs =  new Class[]{BossdiscD.class, WandOfTransfusion.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 3;
+            cost = 0;
 
             output = WandOfDestOrb.class;
             outQuantity = 1;

@@ -71,7 +71,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARTIFACT_HOLDER, 14, 14);
 		assignItemRect(FOOD_HOLDER,     15, 11);
 		assignItemRect(BOMB_HOLDER,     10, 10);
-		assignItemRect(POTION_HOLDER,   8, 14);
+		assignItemRect(POTION_HOLDER,   8,  14);
 		assignItemRect(SEED_HOLDER,     10, 10);
 		assignItemRect(SCROLL_HOLDER,   14, 14);
 		assignItemRect(STONE_HOLDER,    10, 10);
@@ -172,7 +172,7 @@ public class ItemSpriteSheet {
 		
 		assignItemRect(SEAL,            15, 16);
 		assignItemRect(TORCH,           12, 14);
-		assignItemRect(BEACON,          6,  10);
+		assignItemRect(BEACON,          11, 11);
 		
 		assignItemRect(HONEYPOT,        8, 12);
 		assignItemRect(SHATTPOT,        11, 13);
@@ -386,6 +386,11 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_MAGE      = ARMOR+6;
 	public static final int ARMOR_ROGUE     = ARMOR+7;
 	public static final int ARMOR_HUNTRESS  = ARMOR+8;
+	public static final int MAP0            = ARMOR+11;
+	public static final int HIGHWAY         = ARMOR+12;
+	public static final int MAP1            = ARMOR+13;
+	public static final int MAP2            = ARMOR+14;
+	public static final int MAP3            = ARMOR+15;
 	static{
 		assignItemRect(ARMOR_CLOTH,     16, 16);
 		assignItemRect(ARMOR_LEATHER,   16, 16);
@@ -396,6 +401,11 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_MAGE,      15, 15);
 		assignItemRect(ARMOR_ROGUE,     14, 8);
 		assignItemRect(ARMOR_HUNTRESS,  13, 13);
+		assignItemRect(MAP0,            12, 16);
+		assignItemRect(HIGHWAY,         16, 16);
+		assignItemRect(MAP1,            12, 16);
+		assignItemRect(MAP2,            12, 16);
+		assignItemRect(MAP3,            12, 16);
 	}
 
 	                                                                                    //16 free slots
@@ -466,6 +476,7 @@ public class ItemSpriteSheet {
 	public static final int RO2                 = ARTIFACTS+24;
 	public static final int RO3                 = ARTIFACTS+25;
 	public static final int RAM                 = ARTIFACTS+26;
+	public static final int TUSK                = ARTIFACTS+27;
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      14, 14);
 		assignItemRect(ARTIFACT_ARMBAND,    14, 14);
@@ -494,6 +505,7 @@ public class ItemSpriteSheet {
 		assignItemRect(RO2,      10, 11);
 		assignItemRect(RO3,      7,  14);
 		assignItemRect(RAM,      12, 9);
+		assignItemRect(TUSK,     14, 14);
 	}
 
 	                                                                                    //16 free slots
@@ -731,7 +743,7 @@ public class ItemSpriteSheet {
 	public static final int HOLSTER     = BAGS+5;
 	public static final int VIAL        = BAGS+6;
 	static{
-		assignItemRect(WATERSKIN,   12, 12);
+		assignItemRect(WATERSKIN,   14, 15);
 		assignItemRect(BACKPACK,    16, 16);
 		assignItemRect(POUCH,       15, 14);
 		assignItemRect(HOLDER,      16, 13);

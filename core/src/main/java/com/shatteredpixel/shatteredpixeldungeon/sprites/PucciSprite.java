@@ -82,8 +82,6 @@ public class PucciSprite extends MobSprite {
     public void onComplete( Animation anim ) {
         if (anim == zap) {
             idle();
-            CellEmitter.get(ch.pos).burst(EnergyParticle.FACTORY, 2);
-            CellEmitter.center(ch.pos).burst(SacrificialParticle.FACTORY, 2);
             Sample.INSTANCE.play( Assets.Sounds.HIT_STAB);
             ((MissileSprite)parent.recycle( MissileSprite.class )).
                     reset( this, cellToAttack, new PucciSprite.PucciShot(), new Callback() {

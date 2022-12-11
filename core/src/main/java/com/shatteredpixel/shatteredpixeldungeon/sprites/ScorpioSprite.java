@@ -57,7 +57,7 @@ public class ScorpioSprite extends MobSprite {
 	
 	@Override
 	public int blood() {
-		return 0xFF44FF22;
+		return 0x3366FF;
 	}
 	
 	@Override

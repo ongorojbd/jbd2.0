@@ -22,6 +22,8 @@ public class Kirafood extends Food  {
 
     @Override
     protected void satisfy(Hero hero) {
+
+        hero.HP = Math.min(hero.HP + 50, hero.HT);
         super.satisfy(hero);
         Buff.detach(hero, Poison.class );
         Buff.detach(hero, Cripple.class );

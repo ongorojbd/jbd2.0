@@ -55,6 +55,7 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
+		add_v1_4_Changes(changeInfos);
 		add_v1_3_3_Changes(changeInfos);
 		add_v1_3_Changes(changeInfos);
 	}
@@ -70,6 +71,63 @@ public class v1_X_Changes {
 
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 영웅 : 죠린",
 			""));
+	}
+
+
+
+	public static void add_v1_4_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0f", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes = new ChangeInfo("스틸 볼 런 레이스", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP1), "스틸 볼 런 레이스 지도 1st",
+				"신규 시스템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
+						"스틸 볼 런 레이스 지도 1st를 사용하면 _성인의 안구_의 위치를 알 수 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP2), "스틸 볼 런 레이스 지도 2nd",
+				"신규 시스템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
+						"스틸 볼 런 레이스 지도 2nd를 사용하면 _성인의 척추_의 위치를 알 수 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP3), "스틸 볼 런 레이스 지도 3rd",
+				"신규 시스템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
+						"스틸 볼 런 레이스 지도 3rd를 사용하면 _성인의 심장_의 위치를 알 수 있습니다."));
+		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.RAGE, true), "D4C 러브 트레인",
+				"성인의 유해 3개가 모였을 시 발현되는 강력한 효과가 추가되었습니다."));
+		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.SACRIFICE, true), "성인의 유해",
+				"지도를 통해 성인의 유해를 흡수하면 특수 효과가 제공됩니다.\n\n_성인의 유해를 3개 모으면 D4C 러브 트레인이 발현됩니다._"));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP0), "스틸 볼 런 레이스 지도 4~9th",
+				"???"));
+		changes = new ChangeInfo("신규 7부 적", false, null);
+		changes.hardlight(CharSprite.WARNING);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.CIVIL, 0, 0, 12, 17), "시빌 워",
+				"성인의 유해 앞을 가로막는 신규 적인 시빌 워가 추가되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BMORE, 0, 0, 12, 16), "블랙모어",
+				"성인의 유해 앞을 가로막는 신규 적인 블랙모어가 추가되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIEGO, 0, 0, 12, 15), "디에고 브란도",
+				"성인의 유해 앞을 가로막는 신규 적인 디에고 브란도가 추가되었습니다."));
+
+		changes = new ChangeInfo("신규 아이템/NPC", false, null);
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHWAY), "하이웨이 투 헬",
+				"하이웨이 투 헬이 1/4 확률로 상점에 추가됩니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.WEZA, 0, 0, 12, 15), "웨더 리포트",
+				"21~24층에 신규 NPC인 웨더 리포트가 추가되었습니다."));
+
+
+		changes = new ChangeInfo("히든 보스 추가", false, null);
+		changes.hardlight(CharSprite.NEGATIVE);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI, 0, 0, 12, 15), "퍼니 발렌타인",
+				"추격자들을 보낸 장본인인 퍼니 발렌타인이 직접 보스로 등장합니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SOMETHING), "??? ???(????)",
+				"스틸 볼 런 레이스의 종착점에 기다리는 것은.."));
 	}
 
 	public static void add_v1_3_3_Changes( ArrayList<ChangeInfo> changeInfos ) {

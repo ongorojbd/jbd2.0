@@ -248,10 +248,10 @@ public class AdvancedEvolution extends InventorySpell {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{BossdiscF.class, LiquidMetal.class};
-            inQuantity = new int[]{1, 1};
+            inputs =  new Class[]{BossdiscF.class};
+            inQuantity = new int[]{1};
 
-            cost = 3;
+            cost = 0;
 
             output = AdvancedEvolution.class;
             outQuantity = 1;

@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Greenbaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -27,7 +28,7 @@ public class FlameKatana extends MeleeWeapon {
         hitSoundPitch = 1f;
         identify();
         unique = true;
-        tier = 3;
+        tier = 2;
     }
 
     private int killpoint = 0;
@@ -116,10 +117,10 @@ public class FlameKatana extends MeleeWeapon {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{Jotarodisc.class, StoneOfEnchantment.class};
+            inputs =  new Class[]{Jotarodisc.class, StoneOfAugmentation.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 50;
+            cost = 30;
 
             output = FlameKatana.class;
             outQuantity = 1;

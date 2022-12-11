@@ -107,7 +107,7 @@ public class Sleepcmoon extends MeleeWeapon {
             inputs =  new Class[]{Greenbaby.class, Awakensnake.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 50;
+            cost = 30;
 
             output = Sleepcmoon.class;
             outQuantity = 1;

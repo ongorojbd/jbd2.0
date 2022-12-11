@@ -19,12 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.scrolls;
+package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FetidRat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Heavyw;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -34,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Puccidisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
@@ -49,7 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
-public class ScrollOfPolymorph extends Scroll {
+public class ScrollOfPolymorph extends Spell {
 
     {
         image = ItemSpriteSheet.EXOTIC_BERKANAN;
@@ -65,7 +67,8 @@ public class ScrollOfPolymorph extends Scroll {
     }
 
     @Override
-    public void doRead() {
+    protected void onCast(Hero hero) {
+        detach(Dungeon.hero.belongings.backpack);
 
         Sample.INSTANCE.play( Assets.Sounds.READ );
 
@@ -94,9 +97,6 @@ public class ScrollOfPolymorph extends Scroll {
                 }
             }
         }
-        identify();
-
-        readAnimation();
 
     }
 
@@ -113,12 +113,4 @@ public class ScrollOfPolymorph extends Scroll {
             outQuantity = 1;
         }
     }
-
-
-
-
-
-
-
 }
-
