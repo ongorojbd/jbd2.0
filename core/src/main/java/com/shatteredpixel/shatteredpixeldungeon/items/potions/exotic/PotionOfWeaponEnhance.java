@@ -48,12 +48,10 @@ public class PotionOfWeaponEnhance extends Potion {
     {
         image = ItemSpriteSheet.BREW_BLIZZARD;
         icon = ItemSpriteSheet.Icons.SCROLL_DREAD;
-        identify();
     }
 
     @Override
     public void apply(Hero hero) {
-        Dungeon.hero.damage(Dungeon.hero.HP/5, this);
         Buff.affect(hero, Might.class, Might.DURATION);
         Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
     }

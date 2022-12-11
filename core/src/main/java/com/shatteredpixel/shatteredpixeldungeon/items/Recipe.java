@@ -53,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Yoyoma;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -81,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sleepcmoon3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
@@ -275,7 +275,7 @@ public abstract class Recipe {
 			new Jotarodisc.Recipe(),
 			new FlameKatana.Recipe(),
 			new Whitesnake.Recipe(),
-			new Sleepcmoon.Recipe(),
+			new Sleepcmoon3.Recipe(),
 			new ScrollOfPolymorph.Recipe(),
 			new WalkieTalkie.Recipe(),
 			new Yoyoma.Recipe(),

@@ -53,7 +53,7 @@ public class Neoro extends Spell {
             inputs =  new Class[]{Ogroc.class, StoneOfAugmentation.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 5;
+            cost = 0;
 
             output = Neoro.class;
             outQuantity = 1;

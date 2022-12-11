@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AcidicSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NmoonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -55,7 +56,7 @@ import com.watabou.utils.Random;
 public class Acidic extends Mob {
 
 	{
-		spriteClass = AcidicSprite.class;
+		spriteClass = NmoonSprite.class;
 
 		HP = HT = 175;
 		defenseSkill = 20;

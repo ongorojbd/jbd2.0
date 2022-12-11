@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCor
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
@@ -133,7 +132,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(h5, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 15:
-                Item h6 = new Sleepcmoon();
+                Item h6 = new Sleepcmoon3();
                 Dungeon.level.drop(h6, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 16:
@@ -177,7 +176,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(we, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 26:
-                Item we2 = new Highway().quantity(20);
+                Item we2 = new Highway().quantity(10);
                 Dungeon.level.drop(we2, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 27:

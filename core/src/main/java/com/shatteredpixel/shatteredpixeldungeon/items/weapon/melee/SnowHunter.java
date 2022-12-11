@@ -39,7 +39,7 @@ public class SnowHunter extends MeleeWeapon{
     {
         image = ItemSpriteSheet.SPWORLD;
         hitSound = Assets.Sounds.HIT;
-        identify();
+
         tier = 5;
         RCH = 3;    //extra reach
     }

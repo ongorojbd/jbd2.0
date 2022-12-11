@@ -218,7 +218,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		freerunCooldown = 10 + 4*momentumStacks;
 		Sample.INSTANCE.play(Assets.Sounds.ORA);
 		target.sprite.emitter().burst(Speck.factory(Speck.JET), 5+ momentumStacks);
-		SpellSprite.show(target, SpellSprite.HASTE, 1, 1, 0);
+		SpellSprite.show(target, SpellSprite.HASTE);
 		momentumStacks = 0;
 		BuffIndicator.refreshHero();
 		ActionIndicator.clearAction(this);

@@ -25,7 +25,7 @@ public class Polpol extends MeleeWeapon {
         image = ItemSpriteSheet.SHATTPOT;
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch = 1f;
-        identify();
+
         unique = true;
         tier = 2;
     }

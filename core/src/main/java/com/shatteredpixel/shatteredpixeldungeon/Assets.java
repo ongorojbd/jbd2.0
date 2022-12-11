@@ -372,6 +372,7 @@ public class Assets {
 		public static final String WEZA= "sprites/weza.png";
 		public static final String WORLD21= "sprites/world21.png";
 		public static final String DIEGON= "sprites/diegon.png";
+		public static final String CMOON= "sprites/cmoon.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 	}
 }

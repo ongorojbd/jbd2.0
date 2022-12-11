@@ -54,7 +54,6 @@ public class Whitesnake extends Artifact {
 
         unique = true;
 
-        identify();
     }
 
     public static final String AC_PRICK = "PRICK";
@@ -86,7 +85,7 @@ public class Whitesnake extends Artifact {
 
         if (action.equals(AC_PRICK)){
 
-            int damage = 50;
+            int damage = 100;
 
             if (damage > hero.HP*0.75) {
 
@@ -111,11 +110,9 @@ public class Whitesnake extends Artifact {
 
     }
 
-
-
     private void prick(Hero hero){
         Whitesnake pick = Dungeon.hero.belongings.getItem(  Whitesnake.class );
-        int damage = 50;
+        int damage = 100;
 
         Earthroot.Armor armor = hero.buff(Earthroot.Armor.class);
         if (armor != null) {
@@ -131,7 +128,7 @@ public class Whitesnake extends Artifact {
 
         hero.sprite.operate( hero.pos );
         hero.busy();
-        hero.spend(50f);
+        hero.spend(1f);
 
         if (level() == 0){
             GLog.p( Messages.get(this, "onprick") );

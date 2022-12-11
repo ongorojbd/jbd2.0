@@ -152,7 +152,7 @@ public class Ogroc extends Spell {
             inputs =  new Class[]{Stylus.class};
             inQuantity = new int[]{1};
 
-            cost = 5;
+            cost = 0;
 
             output = Ogroc.class;
             outQuantity = 1;

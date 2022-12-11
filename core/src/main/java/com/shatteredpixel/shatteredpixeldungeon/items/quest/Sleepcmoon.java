@@ -56,8 +56,6 @@ public class Sleepcmoon extends MeleeWeapon {
 
         tier = 1;
 
-        identify();
-
         unique = true;
     }
 
@@ -100,19 +98,5 @@ public class Sleepcmoon extends MeleeWeapon {
             Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
         }
     }
-
-    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
-
-        {
-            inputs =  new Class[]{Greenbaby.class, Awakensnake.class};
-            inQuantity = new int[]{1, 1};
-
-            cost = 30;
-
-            output = Sleepcmoon.class;
-            outQuantity = 1;
-        }
-    }
-
 
 }

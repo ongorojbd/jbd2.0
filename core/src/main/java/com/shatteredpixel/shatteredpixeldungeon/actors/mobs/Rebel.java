@@ -509,8 +509,6 @@ public class Rebel extends Mob {
 		if (beacon != null) {
 			beacon.upgrade();
 		}
-		
-		Dungeon.level.drop( new ScrollOfPassage().identify().quantity(3), pos ).sprite.drop( pos );
 
 		if (Random.Int( 10 ) == 0) {
 			GameScene.flash(0xFFFF00);

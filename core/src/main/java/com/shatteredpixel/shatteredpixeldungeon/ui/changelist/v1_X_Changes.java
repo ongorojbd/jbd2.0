@@ -85,13 +85,13 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP1), "스틸 볼 런 레이스 지도 1st",
-				"신규 시스템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
+				"코코 잠보를 통해 제작 가능한 신규 아이템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
 						"스틸 볼 런 레이스 지도 1st를 사용하면 _성인의 안구_의 위치를 알 수 있습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP2), "스틸 볼 런 레이스 지도 2nd",
-				"신규 시스템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
+				"코코 잠보를 통해 제작 가능한 신규 아이템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
 						"스틸 볼 런 레이스 지도 2nd를 사용하면 _성인의 척추_의 위치를 알 수 있습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP3), "스틸 볼 런 레이스 지도 3rd",
-				"신규 시스템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
+				"코코 잠보를 통해 제작 가능한 신규 아이템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
 						"스틸 볼 런 레이스 지도 3rd를 사용하면 _성인의 심장_의 위치를 알 수 있습니다."));
 		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.RAGE, true), "D4C 러브 트레인",
 				"성인의 유해 3개가 모였을 시 발현되는 강력한 효과가 추가되었습니다."));
@@ -109,6 +109,8 @@ public class v1_X_Changes {
 				"성인의 유해 앞을 가로막는 신규 적인 블랙모어가 추가되었습니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIEGO, 0, 0, 12, 15), "디에고 브란도",
 				"성인의 유해 앞을 가로막는 신규 적인 디에고 브란도가 추가되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI, 0, 0, 12, 15), "퍼니 발렌타인",
+				"추격자들을 보낸 장본인인 퍼니 발렌타인이 직접 보스로 등장합니다."));
 
 		changes = new ChangeInfo("신규 아이템/NPC", false, null);
 		changes.hardlight(Window.TITLE_COLOR);
@@ -124,8 +126,7 @@ public class v1_X_Changes {
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI, 0, 0, 12, 15), "퍼니 발렌타인",
-				"추격자들을 보낸 장본인인 퍼니 발렌타인이 직접 보스로 등장합니다."));
+
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SOMETHING), "??? ???(????)",
 				"스틸 볼 런 레이스의 종착점에 기다리는 것은.."));
 	}
@@ -193,7 +194,7 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), "메이드 인 헤븐의 DISC",
-				"받는 피해 증가 75% -> 30%"));
+				"받는 피해 증가 75% -> 50%"));
 
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_BERKANAN), "웨더 리포트의 기억 DISC",
 				"조합법이 변경되었습니다.\n\n변환의 DISC + DISC의 정수"));

@@ -58,7 +58,6 @@ public class ScrollOfPolymorph extends Spell {
 
         unique = true;
 
-        identify();
     }
 
     @Override

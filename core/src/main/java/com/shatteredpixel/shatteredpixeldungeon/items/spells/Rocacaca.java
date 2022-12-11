@@ -15,7 +15,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 
@@ -114,7 +113,6 @@ public class Rocacaca extends InventorySpell {
                 || item instanceof HeavyMachinegun
                 || item instanceof ChaosSword
                 || item instanceof FlameKatana
-                || item instanceof Sleepcmoon
 
                 || item instanceof AJA
                 || item instanceof PINK

@@ -53,7 +53,6 @@ public class WandOfDestOrb extends Wand {
     {
         image = ItemSpriteSheet.WAND_TRANSFUSION;
         icon = ItemSpriteSheet.Icons.POTION_DIVINE;
-        identify();
 
         collisionProperties = Ballistica.PROJECTILE;
     }

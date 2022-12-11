@@ -1296,37 +1296,37 @@ public class Hero extends Char {
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 				CellEmitter.get(hero.pos + 1).burst( D4CParticle.FACTORY, 3 );
 				if (mob.pos == hero.pos + 1){
-					mob.damage( Dungeon.depth, hero);
+					mob.damage( Dungeon.depth-5, hero);
 				}
 			}
 			for (Mob mob2 : Dungeon.level.mobs.toArray(new Mob[0])) {
 				CellEmitter.get(hero.pos - 1).burst( D4CParticle.FACTORY, 3 );
 				if (mob2.pos == hero.pos - 1){
-					mob2.damage( Dungeon.depth, hero);
+					mob2.damage( Dungeon.depth-5, hero);
 				}
 			}
 			for (Mob mob3 : Dungeon.level.mobs.toArray(new Mob[0])) {
 				CellEmitter.get(hero.pos + 2).burst( D4CParticle.FACTORY, 3 );
 				if (mob3.pos == hero.pos + 2){
-					mob3.damage( Dungeon.depth, hero);
+					mob3.damage( Dungeon.depth-5, hero);
 				}
 			}
 			for (Mob mob4 : Dungeon.level.mobs.toArray(new Mob[0])) {
 				CellEmitter.get(hero.pos - 2).burst( D4CParticle.FACTORY, 3 );
 				if (mob4.pos == hero.pos - 2){
-					mob4.damage(Dungeon.depth, hero);
+					mob4.damage(Dungeon.depth-5, hero);
 				}
 			}
 			for (Mob mob5 : Dungeon.level.mobs.toArray(new Mob[0])) {
 				CellEmitter.get(hero.pos + 3).burst( D4CParticle.FACTORY, 3 );
 				if (mob5.pos == hero.pos + 3){
-					mob5.damage( Dungeon.depth, hero);
+					mob5.damage( Dungeon.depth-5, hero);
 				}
 			}
 			for (Mob mob6 : Dungeon.level.mobs.toArray(new Mob[0])) {
 				CellEmitter.get(hero.pos - 3).burst( D4CParticle.FACTORY, 3 );
 				if (mob6.pos == hero.pos - 3){
-					mob6.damage( Dungeon.depth, hero);
+					mob6.damage( Dungeon.depth-5, hero);
 				}
 			}
 		}

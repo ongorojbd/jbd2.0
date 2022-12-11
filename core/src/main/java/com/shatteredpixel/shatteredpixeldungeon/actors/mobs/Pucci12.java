@@ -264,6 +264,18 @@ public class Pucci12 extends Mob {
     }
 
     @Override
+    public void damage(int dmg, Object src) {
+
+        if (dmg >= 75){
+            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+            dmg = 75;
+        }
+
+        super.damage(dmg, src);
+    }
+
+    @Override
     public void die(Object cause) {
         super.die(cause);
 

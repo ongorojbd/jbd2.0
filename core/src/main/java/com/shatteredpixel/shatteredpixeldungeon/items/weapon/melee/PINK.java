@@ -37,7 +37,7 @@ public class PINK extends MeleeWeapon {
         image = ItemSpriteSheet.PINK;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1.03f;
-        identify();
+
         tier = 5;
         defaultAction = AC_ZAP;
         ACC = 1.20f; //20% boost to accuracy

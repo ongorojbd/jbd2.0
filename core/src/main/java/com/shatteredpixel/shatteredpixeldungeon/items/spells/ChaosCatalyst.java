@@ -37,6 +37,11 @@ public class ChaosCatalyst extends InventorySpell{
     }
 
     @Override
+    protected boolean usableOnItem(Item item) {
+        return item.isUpgradable();
+    }
+
+    @Override
     protected void onItemSelected(Item item) {
 
         item.level(1);

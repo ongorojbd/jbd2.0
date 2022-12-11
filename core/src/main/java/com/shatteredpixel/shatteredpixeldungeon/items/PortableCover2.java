@@ -42,8 +42,6 @@ public class PortableCover2 extends Item {
         return actions;
     }
 
-
-
     @Override
     public String status() {
         if (this.isIdentified()) return "ACT4";
@@ -69,7 +67,7 @@ public class PortableCover2 extends Item {
 
 
                 Sample.INSTANCE.play( Assets.Sounds.EVOKE);
-                Buff.affect(hero, ShovelDigCoolDown.class, 5f);
+                Buff.affect(hero, ShovelDigCoolDown.class, 20f);
             }}
     }
 

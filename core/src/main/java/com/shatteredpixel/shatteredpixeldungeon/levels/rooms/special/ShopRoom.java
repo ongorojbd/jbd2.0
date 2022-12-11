@@ -57,8 +57,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map1;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map2;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Mdisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ram;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr1;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willg;
@@ -266,7 +272,7 @@ public class ShopRoom extends SpecialRoom {
 		}
 
 
-		if (Random.Int(3) == 0) {
+		if (Random.Int(5) == 0) {
 		switch (Random.Int(3)){
 			case 0:
 				itemsToSpawn.add( new Willa() );
@@ -280,7 +286,21 @@ public class ShopRoom extends SpecialRoom {
 		}
 		}
 
-		switch (Random.Int(18)){
+		if (Random.Int(19) == 0) {
+			switch (Random.Int(3)){
+				case 0:
+					itemsToSpawn.add( new Sbr1() );
+					break;
+				case 1:
+					itemsToSpawn.add( new Sbr2() );
+					break;
+				case 2:
+					itemsToSpawn.add( new Sbr3() );
+					break;
+			}
+		}
+
+		switch (Random.Int(17)){
 			case 0:
 				itemsToSpawn.add( new Maga() );
 				break;

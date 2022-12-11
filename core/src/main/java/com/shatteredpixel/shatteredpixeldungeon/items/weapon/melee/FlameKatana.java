@@ -26,7 +26,7 @@ public class FlameKatana extends MeleeWeapon {
         image = ItemSpriteSheet.BEACON;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 1f;
-        identify();
+
         unique = true;
         tier = 2;
     }

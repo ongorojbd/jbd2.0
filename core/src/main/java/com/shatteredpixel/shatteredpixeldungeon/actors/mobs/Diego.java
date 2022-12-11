@@ -27,12 +27,25 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
@@ -67,6 +80,10 @@ public class Diego extends Mob {
         maxLvl = -9;
         HUNTING = new Diego.Hunting();
 
+        immunities.add( Paralysis.class );
+        immunities.add( Vertigo.class );
+        immunities.add( ParalyticGas.class );
+
         properties.add(Property.BOSS);
 
     }
@@ -87,11 +104,23 @@ public class Diego extends Mob {
     }
 
     @Override
+    public void damage(int dmg, Object src) {
+
+        if (dmg >= 50){
+            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+            dmg = 50;
+        }
+
+        super.damage(dmg, src);
+    }
+
+    @Override
     public int attackProc(Char enemy, int damage) {
         if (charge >= 4) {
             SpellSprite.show( this, SpellSprite.FOOD );
             Sample.INSTANCE.play(Assets.Sounds.EAT);
-            Dungeon.hero.damage(enemy.HT/3, this);
+            Dungeon.hero.damage(hero.HT/3, this);
             CellEmitter.get(pos).burst(BloodParticle.BURST, 30);
             GLog.n(Messages.get(Diego.class, "5"));
             charge = 0;
@@ -372,7 +401,7 @@ public class Diego extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 15, 25 );
+        return Random.NormalIntRange( hero.HT/6, hero.HT/4 );
     }
 
     @Override

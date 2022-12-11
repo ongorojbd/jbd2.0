@@ -158,7 +158,7 @@ public class Bmore extends Mob {
             sprite.showStatus(CharSprite.WARNING, Messages.get(Bmore.class, "l"));
             Splash.at( DungeonTilemap.tileCenterToWorld( pos ), -PointF.PI/2, PointF.PI/2, 0x5bc1e3, 100, 0.01f);
             new Fadeleaf().activate(this);
-            sCooldown = (7);
+            sCooldown = (9);
         }
 
 

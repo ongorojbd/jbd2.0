@@ -46,18 +46,14 @@ public class PotionOfWeaponUpgrade extends ExoticPotion {
     {
         image = ItemSpriteSheet.BREW_INFERNAL;
         icon = ItemSpriteSheet.Icons.SCROLL_FORESIGHT;
-        identify();
     }
 
     @Override
     public void apply(Hero hero) {
-        Dungeon.hero.damage(Dungeon.hero.HP/4, this);
         Buff.affect(hero, AnkhInvulnerability.class, 7f);
         Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
 
     }
-
-
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 

@@ -50,11 +50,6 @@ public class CorpseDust extends Item {
 	}
 
 	@Override
-	public ArrayList<String> actions(Hero hero) {
-		return new ArrayList<>(); //yup, no dropping this one
-	}
-
-	@Override
 	public boolean isUpgradable() {
 		return false;
 	}
@@ -66,6 +61,7 @@ public class CorpseDust extends Item {
 
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
+		Sample.INSTANCE.play( Assets.Sounds.ALERT);
 		if (super.doPickUp(hero, pos)){
 			GLog.n( Messages.get( this, "chill") );
 			Buff.affect(hero, DustGhostSpawner.class);

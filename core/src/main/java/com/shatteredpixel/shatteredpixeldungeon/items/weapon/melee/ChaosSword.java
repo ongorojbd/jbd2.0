@@ -50,7 +50,6 @@ public class ChaosSword extends MeleeWeapon {
         image = ItemSpriteSheet.MASK;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1f;
-        identify();
 
         tier = 3;
     }

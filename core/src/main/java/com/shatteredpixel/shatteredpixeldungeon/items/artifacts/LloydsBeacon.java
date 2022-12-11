@@ -68,7 +68,7 @@ public class LloydsBeacon extends Artifact {
 		image = ItemSpriteSheet.ARTIFACT_BEACON;
 
 		levelCap = 3;
-		identify();
+
 		charge = 0;
 		chargeCap = 3+level();
 

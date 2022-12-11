@@ -675,7 +675,7 @@ public abstract class Char extends Actor {
 			dmg *= 2;
 		}
 		if (this.buff(Triplespeed.class) != null){
-			dmg *= 1.3;
+			dmg *= 1.5;
 		}
 		if (this.buff(D4C.class) != null){
 			dmg *= 0.75;

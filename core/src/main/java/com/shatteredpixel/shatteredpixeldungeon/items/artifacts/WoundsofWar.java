@@ -29,7 +29,7 @@ public class WoundsofWar extends Artifact {
         charge = 0;
         partialCharge = 0;
         chargeCap = 1 + level() / 5;
-        identify();
+
         defaultAction = AC_SNAP;
     }
 

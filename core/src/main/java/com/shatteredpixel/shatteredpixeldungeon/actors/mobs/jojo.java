@@ -89,7 +89,6 @@ public class jojo extends Mob {
         HP = HT = 259;
         defenseSkill = 35;
         EXP = 0;
-        baseSpeed = 1.2f;
 
         immunities.add(Blindness.class );
         immunities.add(Dominion.class );
@@ -171,7 +170,7 @@ public class jojo extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 17, 24 );
+        return Random.NormalIntRange( 17, 23 );
     }
 
     @Override
