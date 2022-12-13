@@ -1,10 +1,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing.cleanse;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Acidic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
@@ -27,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Vitaminc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Whsnake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Whsnake2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -66,8 +71,15 @@ public class Neotel extends Item {
         super.execute(hero, action);
         if (action.equals(AC_TELEPORT)) {
 
-            Buff.affect(hero, MagicalSight.class, 5f);
-            Buff.affect(hero, FeatherFall.FeatherBuff.class, 5f);
+            Buff.affect(hero, MindVision.class, 99f);
+            Buff.affect(hero, MagicalSight.class, 99f);
+            Buff.affect(hero, FeatherFall.FeatherBuff.class, 99f);
+            Buff.affect(hero, Awareness.class, 99f);
+
+            Buff.affect(hero, PotionOfCleansing.Cleanse.class, 99f);
+            hero.HP = Math.min(hero.HP + 150, hero.HT);
+            Buff.affect(hero, Invisibility.class, 99f);
+
             Chasm.heroFall(hero.pos);
             int length = Dungeon.level.length();
             int[] map = Dungeon.level.map;

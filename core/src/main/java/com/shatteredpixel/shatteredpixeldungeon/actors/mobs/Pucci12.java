@@ -222,7 +222,7 @@ public class Pucci12 extends Mob {
                     }
 
 
-                summonCooldown = (7);
+                summonCooldown = (10);
 
             yell(Messages.get(this, Random.element( LINE_KEYS )));
 

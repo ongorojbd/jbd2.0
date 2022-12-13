@@ -80,12 +80,13 @@ public class Diego extends Mob {
         maxLvl = -9;
         HUNTING = new Diego.Hunting();
 
+        baseSpeed = 1.5f;
+
         immunities.add( Paralysis.class );
         immunities.add( Vertigo.class );
         immunities.add( ParalyticGas.class );
 
         properties.add(Property.BOSS);
-
     }
 
     private int charge = 0; // 2이 될경우 강화 사격
@@ -135,9 +136,6 @@ public class Diego extends Mob {
         }
         damage = super.attackProc(enemy, damage);
 
-
-
-
         if (Random.Int(3) == 0) {
             sprite.showStatus(CharSprite.WARNING, Messages.get(Diego.class, "t"));
             Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 1f, 3.3f);
@@ -148,7 +146,6 @@ public class Diego extends Mob {
             WandOfBlastWave.throwChar(enemy, trajectory, 3, false, true, getClass());
             return damage;
         }
-
 
         return damage;
     }

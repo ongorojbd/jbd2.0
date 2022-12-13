@@ -33,10 +33,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -59,7 +62,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class Polpo extends NPC {
+public class Rohan extends NPC {
 
     {
         spriteClass = PolpoSprite.class;
@@ -111,53 +114,64 @@ public class Polpo extends NPC {
         if (c != Dungeon.hero){
             return true;
         }
-
-
-     //   if (Quest.completed){
-     //   }
-
-
-
         if (Quest.given) {
-            if (Dungeon.hero.belongings.getItem(VelvetPouch.class) != null) {
+
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
                         GameScene.show(new WndOptions(
                                 sprite(),
                                 Messages.titleCase(name()),
-                                Messages.get(Polpo.class, "quest"),
-                                Messages.get(Polpo.class, "1"),
-                                Messages.get(Polpo.class, "2")
+                                Messages.get(this, "quest"),
+                                Messages.get(this, "1"),
+                                Messages.get(this, "2")
 
 
                         ){
                             @Override
                             protected void onSelect(int index) {
                                 if (index == 0){
+                                    Game.runOnRenderThread(new Callback() {
+                                        @Override
+                                        public void call() {
+                                            GameScene.show(new WndOptions(
+                                                    sprite(),
+                                                    Messages.titleCase(name()),
+                                                    Messages.get(this, "quest"),
+                                                    Messages.get(this, "1"),
+                                                    Messages.get(this, "2")
+                                            ){
+                                                @Override
+                                                protected void onSelect(int index) {
+                                                    if (index == 0){
+                                                        if (Dungeon.gold > 99) {
+
+                                                            switch (Random.Int(2)){
+                                                                case 0:
+                                                                    Dungeon.gold += 100;
+                                                                    break;
+                                                                case 1:
+                                                                    Dungeon.gold -= 100;
+                                                                    break;
+                                                            }
 
 
-                                    yell(Messages.get(Yukako.class, "4"));
-
-                                    if (Dungeon.hero.belongings.getItem(Map1.class) != null) {
-
-                                        Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-                                        Sample.INSTANCE.play(Assets.Sounds.HIT_STAB);
+                                                        }
+                                                        else
+                                                        yell(Messages.get(Yukako.class, "5"));
+                                                    }
 
 
-                                        destroy();
-                                        sprite.killAndErase();
-                                        die(null);
 
-                                        Bee Bee = new Bee();
-                                        Bee.state = Bee.HUNTING;
-                                        Bee.pos = pos;
-                                        GameScene.add( Bee );
-                                        Bee.beckon(Dungeon.hero.pos);
+                                                    else if (index == 1) {
 
+                                                        yell(Messages.get(Yukako.class, "5"));
 
-                                    }
-
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
                                 } else if (index == 1) {
 
                                     yell(Messages.get(Yukako.class, "5"));
@@ -167,18 +181,8 @@ public class Polpo extends NPC {
                         });
                     }
                 });
-            }    else  {
-                Game.runOnRenderThread(new Callback() {
-                    @Override
-                    public void call() {
-                        GameScene.show(new WndOptions(
-                                sprite(),
-                                Messages.titleCase(name()),
-                                Messages.get(Polpo.class, "quest")));
-                    }
-                });
 
-            }
+
         } else {
             Quest.given = true;
             Quest.completed = false;
@@ -254,7 +258,7 @@ public class Polpo extends NPC {
         public static void spawn(PrisonLevel level ) {
             if (!spawned && Dungeon.depth > 5 && Random.Int( 10 - Dungeon.depth ) == 0) {
 
-                Polpo npc = new Polpo();
+                Rohan npc = new Rohan();
                 do {
                     npc.pos = level.randomRespawnCell( npc );
                 } while (
@@ -289,3 +293,7 @@ public class Polpo extends NPC {
         }
     }
 }
+
+
+
+

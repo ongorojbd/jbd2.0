@@ -122,7 +122,7 @@ public class Diego12 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 24, 44 );
+        return Random.NormalIntRange( 26, 44 );
     }
 
     @Override

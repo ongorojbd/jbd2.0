@@ -81,12 +81,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr7;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AJA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FlameKatana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
@@ -131,28 +134,7 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new ScrollOfIdentify().identify();
-
-
-		if (DeviceCompat.isDebug()){
-			new TengusMask().collect();
-			new KingsCrown().collect();
-			new Sleepcmoon().identify().collect();
-			new Spheaven().identify().upgrade(999).collect();
-			new WandOfLightning().identify().upgrade(999).collect();
-			new PlateArmor().identify().upgrade(999).collect();
-			new PotionOfHealing().identify().quantity(29).collect();
-			new PotionOfMindVision().identify().quantity(20).collect();
-			new Kingm().identify().quantity(3).collect();
-			new ScrollOfMagicMapping().identify().quantity(1000).collect();
-			new ScrollOfPrismaticImage().identify().quantity(1000).collect();
-			new Sbr1().identify().quantity(1000).collect();
-			new Sbr2().identify().quantity(1000).collect();
-			new Sbr3().identify().quantity(1000).collect();
-			new Sbr7().identify().quantity(1000).collect();
-			new Neotel().collect();
-		}
-
-
+		
 		switch (this) {
 			case WARRIOR:
 				initWarrior( hero );

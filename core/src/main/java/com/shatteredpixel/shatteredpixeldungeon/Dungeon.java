@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Polpo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weza;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
@@ -264,7 +263,6 @@ public class Dungeon {
 
 		Ghost.Quest.reset();
 		Wandmaker.Quest.reset();
-		Polpo.Quest.reset();
 		Blacksmith.Quest.reset();
 		Imp.Quest.reset();
 		Weza.Quest.reset();
@@ -609,7 +607,6 @@ public class Dungeon {
 			Bundle quests = new Bundle();
 			Ghost		.Quest.storeInBundle( quests );
 			Wandmaker	.Quest.storeInBundle( quests );
-			Polpo       .Quest.storeInBundle( quests );
 			Blacksmith	.Quest.storeInBundle( quests );
 			Imp			.Quest.storeInBundle( quests );
 			Weza        .Quest.storeInBundle( quests );
@@ -717,14 +714,12 @@ public class Dungeon {
 			if (!quests.isNull()) {
 				Ghost.Quest.restoreFromBundle( quests );
 				Wandmaker.Quest.restoreFromBundle( quests );
-				Polpo.Quest.restoreFromBundle( quests );
 				Blacksmith.Quest.restoreFromBundle( quests );
 				Imp.Quest.restoreFromBundle( quests );
 				Weza.Quest.storeInBundle( quests );
 			} else {
 				Ghost.Quest.reset();
 				Wandmaker.Quest.reset();
-				Polpo.Quest.reset();
 				Blacksmith.Quest.reset();
 				Imp.Quest.reset();
 				Weza.Quest.reset();
