@@ -207,7 +207,7 @@ public class Bestiary {
 						Soldier.class,
 						Researcher.class, Researcher.class,
 						Supression.class, Supression.class,
-						Tank.class, SWAT.class,
+						Tank.class,
 						Medic.class, Medic.class));
 			case 30: case 31:
 				// 1x soldier, 2x researcher, 2x supression, 1x tank, 2x medic
@@ -215,7 +215,8 @@ public class Bestiary {
 						Soldier.class,
 						Researcher.class, Researcher.class,
 						Supression.class, Supression.class,
-						Tank.class, Medic.class, Medic.class));
+						Tank.class,
+						Medic.class, Medic.class));
 		}
 		
 	}

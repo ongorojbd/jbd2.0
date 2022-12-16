@@ -46,9 +46,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponEnhance;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponEnhance;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
@@ -224,8 +224,8 @@ public abstract class Recipe {
 			new KSG.Recipe(),
 			new HeavyMachinegun.Recipe(),
 			new ThirdBomb.Recipe(),
-			new PotionOfWeaponEnhance.Recipe(),
-			new PotionOfWeaponUpgrade.Recipe(),
+			new ElixirOfWeaponEnhance.Recipe(),
+			new ElixirOfWeaponUpgrade.Recipe(),
 			new AdvancedEvolution.Recipe(),
 			new CapeOfThorns.Recipe(),
 			new MissileButton.Recipe(),

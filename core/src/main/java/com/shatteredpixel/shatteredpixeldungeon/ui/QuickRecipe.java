@@ -53,9 +53,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponEnhance;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponEnhance;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfWeaponUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -378,8 +378,8 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new HeavyMachinegun.Recipe()));
 				result.add(new QuickRecipe(new ThirdBomb.Recipe()));
 				result.add(new QuickRecipe(new WandOfDestOrb.Recipe()));
-				result.add(new QuickRecipe(new PotionOfWeaponEnhance.Recipe()));
-				result.add(new QuickRecipe(new PotionOfWeaponUpgrade.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfWeaponEnhance.Recipe()));
+				result.add(new QuickRecipe(new ElixirOfWeaponUpgrade.Recipe()));
 				result.add(new QuickRecipe(new AdvancedEvolution.Recipe()));
 				result.add(new QuickRecipe(new ScrollOfExtract.Recipe()));
 				result.add(new QuickRecipe(new CapeOfThorns.Recipe()));

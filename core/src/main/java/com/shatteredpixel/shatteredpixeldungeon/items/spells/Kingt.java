@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScrol
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -70,7 +71,7 @@ public class Kingt extends Spell {
     protected void onCast(Hero hero) {
 
 
-        switch (Random.Int(29)){
+        switch (Random.Int(30)){
             case 0:
                 Item a = new BossdiscC();
                 Dungeon.level.drop(a, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
@@ -124,7 +125,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(h3, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 13:
-                Item h4 = new ScrollOfEnchantment().quantity(3);
+                Item h4 = new ScrollOfMetamorphosis().quantity(5);
                 Dungeon.level.drop(h4, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 14:
@@ -187,7 +188,10 @@ public class Kingt extends Spell {
                 Item we6 = new BossdiscE();
                 Dungeon.level.drop(we6, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
-
+            case 29:
+                Item wq = new ScrollOfPrismaticImage().quantity(2);
+                Dungeon.level.drop(wq, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
 
         }
 

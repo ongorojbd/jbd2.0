@@ -27,39 +27,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map1;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MudaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PolpoSprite;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndImp;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class Rohan extends NPC {
@@ -78,13 +53,6 @@ public class Rohan extends NPC {
             die(null);
             return true;
         }
-        if (!Quest.given && Dungeon.level.heroFOV[pos]) {
-
-            seenBefore = true;
-        } else {
-            seenBefore = false;
-        }
-
         return super.act();
     }
 
@@ -109,24 +77,31 @@ public class Rohan extends NPC {
     @Override
     public boolean interact(Char c) {
 
+
         sprite.turnTo( pos, Dungeon.hero.pos );
 
         if (c != Dungeon.hero){
             return true;
         }
-        if (Quest.given) {
 
+        if (Statistics.duwang > 2) {
+            yell( Messages.get(Rohan.class, "bi") );
+            destroy();
+            sprite.killAndErase();
+            die(null);
+        }
+
+        if (Statistics.duwang < 3) {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
+
                         GameScene.show(new WndOptions(
                                 sprite(),
                                 Messages.titleCase(name()),
-                                Messages.get(this, "quest"),
-                                Messages.get(this, "1"),
-                                Messages.get(this, "2")
-
-
+                                Messages.get(Rohan.class, "i"),
+                                Messages.get(Rohan.class, "1"),
+                                Messages.get(Rohan.class, "2")
                         ){
                             @Override
                             protected void onSelect(int index) {
@@ -137,36 +112,125 @@ public class Rohan extends NPC {
                                             GameScene.show(new WndOptions(
                                                     sprite(),
                                                     Messages.titleCase(name()),
-                                                    Messages.get(this, "quest"),
-                                                    Messages.get(this, "1"),
-                                                    Messages.get(this, "2")
+                                                    Messages.get(Rohan.class, "4"),
+                                                    Messages.get(Rohan.class, "5"),
+                                                    Messages.get(Rohan.class, "6"),
+                                                    Messages.get(Rohan.class, "7"),
+                                                    Messages.get(Rohan.class, "8"),
+                                                    Messages.get(Rohan.class, "9")
                                             ){
                                                 @Override
                                                 protected void onSelect(int index) {
                                                     if (index == 0){
                                                         if (Dungeon.gold > 99) {
-
+                                                            Statistics.duwang += 1;
+                                                            Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                             switch (Random.Int(2)){
                                                                 case 0:
                                                                     Dungeon.gold += 100;
+                                                                    GLog.p( Messages.get(Rohan.class, "w") );
+                                                                    yell(Messages.get(Rohan.class, "lose"));
                                                                     break;
                                                                 case 1:
                                                                     Dungeon.gold -= 100;
+                                                                    GLog.h( Messages.get(Rohan.class, "l") );
+                                                                    yell(Messages.get(Rohan.class, "win"));
                                                                     break;
                                                             }
 
 
                                                         }
                                                         else
-                                                        yell(Messages.get(Yukako.class, "5"));
+                                                        yell(Messages.get(Rohan.class, "no"));
                                                     }
-
-
-
                                                     else if (index == 1) {
+                                                        if (Dungeon.gold > 199) {
 
-                                                        yell(Messages.get(Yukako.class, "5"));
+                                                            switch (Random.Int(2)){
+                                                                case 0:
+                                                                    Dungeon.gold += 200;
+                                                                    Statistics.duwang += 1;
+                                                                    Sample.INSTANCE.play(Assets.Sounds.GOLD);
+                                                                    GLog.p( Messages.get(Rohan.class, "w") );
+                                                                    yell(Messages.get(Rohan.class, "lose"));
+                                                                    break;
+                                                                case 1:
+                                                                    Dungeon.gold -= 200;
+                                                                    Statistics.duwang += 1;
+                                                                    Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+                                                                    GLog.h( Messages.get(Rohan.class, "l") );
+                                                                    yell(Messages.get(Rohan.class, "win"));
+                                                                    break;
+                                                            }
 
+                                                        }
+                                                        else
+                                                            yell(Messages.get(Rohan.class, "no"));
+                                                    }
+                                                    else if (index == 2) {
+                                                        if (Dungeon.gold > 399) {
+                                                            Statistics.duwang += 1;
+                                                            Sample.INSTANCE.play(Assets.Sounds.GOLD);
+                                                            switch (Random.Int(2)){
+                                                                case 0:
+                                                                    Dungeon.gold += 400;
+                                                                    GLog.p( Messages.get(Rohan.class, "w") );
+                                                                    yell(Messages.get(Rohan.class, "lose"));
+                                                                    break;
+                                                                case 1:
+                                                                    Dungeon.gold -= 400;
+                                                                    GLog.h( Messages.get(Rohan.class, "l") );
+                                                                    yell(Messages.get(Rohan.class, "win"));
+                                                                    break;
+                                                            }
+
+                                                        }
+                                                        else
+                                                            yell(Messages.get(Rohan.class, "no"));
+                                                    }
+                                                    else if (index == 3) {
+                                                        if (Dungeon.gold > 599) {
+                                                            Statistics.duwang += 1;
+                                                            Sample.INSTANCE.play(Assets.Sounds.GOLD);
+                                                            switch (Random.Int(2)){
+                                                                case 0:
+                                                                    Dungeon.gold += 600;
+                                                                    GLog.p( Messages.get(Rohan.class, "w") );
+                                                                    yell(Messages.get(Rohan.class, "lose"));
+                                                                    break;
+                                                                case 1:
+                                                                    Dungeon.gold -= 600;
+                                                                    GLog.h( Messages.get(Rohan.class, "l") );
+                                                                    yell(Messages.get(Rohan.class, "win"));
+                                                                    break;
+                                                            }
+
+
+                                                        }
+                                                        else
+                                                            yell(Messages.get(Rohan.class, "no"));
+                                                    }
+                                                    else if (index == 4) {
+                                                        if (Dungeon.gold > 999) {
+                                                            Statistics.duwang += 1;
+                                                            Sample.INSTANCE.play(Assets.Sounds.GOLD);
+                                                            switch (Random.Int(2)){
+                                                                case 0:
+                                                                    Dungeon.gold += 1000;
+                                                                    GLog.p( Messages.get(Rohan.class, "w") );
+                                                                    yell(Messages.get(Rohan.class, "lose"));
+                                                                    break;
+                                                                case 1:
+                                                                    Dungeon.gold -= 1000;
+                                                                    GLog.h( Messages.get(Rohan.class, "l") );
+                                                                    yell(Messages.get(Rohan.class, "win"));
+                                                                    break;
+                                                            }
+
+
+                                                        }
+                                                        else
+                                                            yell(Messages.get(Rohan.class, "no"));
                                                     }
                                                 }
                                             });
@@ -174,26 +238,17 @@ public class Rohan extends NPC {
                                     });
                                 } else if (index == 1) {
 
-                                    yell(Messages.get(Yukako.class, "5"));
+                                    yell(Messages.get(Rohan.class, "play"));
 
                                 }
                             }
                         });
                     }
-                });
+                }  );}
 
 
-        } else {
-            Quest.given = true;
-            Quest.completed = false;
-
-        }
 
         return true;
-    }
-
-    private void tell( String text ) {
-
     }
 
     public void flee() {
@@ -201,97 +256,6 @@ public class Rohan extends NPC {
         sprite.die();
     }
 
-    public static class Quest {
-
-        private static boolean alternative;
-
-        private static boolean spawned;
-        private static boolean given;
-        private static boolean completed;
-
-        public static Ring reward;
-
-        public static void reset() {
-            spawned = false;
-
-            reward = null;
-        }
-
-        private static final String NODE		= "demon";
-
-        private static final String ALTERNATIVE	= "alternative";
-        private static final String SPAWNED		= "spawned";
-        private static final String GIVEN		= "given";
-        private static final String COMPLETED	= "completed";
-        private static final String REWARD		= "reward";
-
-        public static void storeInBundle( Bundle bundle ) {
-
-            Bundle node = new Bundle();
-
-            node.put( SPAWNED, spawned );
-
-            if (spawned) {
-                node.put( ALTERNATIVE, alternative );
-
-                node.put( GIVEN, given );
-                node.put( COMPLETED, completed );
-                node.put( REWARD, reward );
-            }
-
-            bundle.put( NODE, node );
-        }
-
-        public static void restoreFromBundle( Bundle bundle ) {
-
-            Bundle node = bundle.getBundle( NODE );
-
-            if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
-                alternative	= node.getBoolean( ALTERNATIVE );
-
-                given = node.getBoolean( GIVEN );
-                completed = node.getBoolean( COMPLETED );
-                reward = (Ring)node.get( REWARD );
-            }
-        }
-
-        public static void spawn(PrisonLevel level ) {
-            if (!spawned && Dungeon.depth > 5 && Random.Int( 10 - Dungeon.depth ) == 0) {
-
-                Rohan npc = new Rohan();
-                do {
-                    npc.pos = level.randomRespawnCell( npc );
-                } while (
-                        npc.pos == -1 ||
-                                level.heaps.get( npc.pos ) != null ||
-                                level.traps.get( npc.pos) != null ||
-                                level.findMob( npc.pos ) != null ||
-                                //The imp doesn't move, so he cannot obstruct a passageway
-                                !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
-                                !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
-                level.mobs.add( npc );
-
-                spawned = true;
-
-                given = false;
-
-            }
-        }
-
-        public static void process( Mob mob ) {
-
-        }
-
-        public static void complete() {
-            reward = null;
-            completed = true;
-
-        }
-
-        public static boolean isCompleted() {
-            return completed;
-        }
-    }
 }
 
 

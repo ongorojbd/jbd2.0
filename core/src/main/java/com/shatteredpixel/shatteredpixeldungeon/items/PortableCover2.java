@@ -26,6 +26,7 @@ public class PortableCover2 extends Item {
         image = ItemSpriteSheet.TUSK;
         stackable = true;
         defaultAction = AC_USE;
+        unique = true;
 
         icon = ItemSpriteSheet.Icons.POTION_DIVINE;
     }

@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -13,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -22,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
@@ -36,9 +39,12 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class SnowHunter extends MeleeWeapon{
+    public static final String AC_ZAP = "ZAP";
     {
         image = ItemSpriteSheet.SPWORLD;
         hitSound = Assets.Sounds.HIT;
+
+        defaultAction=AC_ZAP;
 
         tier = 5;
         RCH = 3;    //extra reach
@@ -55,34 +61,47 @@ public class SnowHunter extends MeleeWeapon{
 
     @Override
     public ArrayList<String> actions(Hero hero) {
-        SnowHunter pick = Dungeon.hero.belongings.getItem( SnowHunter.class );
-        if (Dungeon.depth > 29) {
-            GameScene.flash(0x00FFFF);
-            Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
-            Camera.main.shake(31, 3f);
-            GLog.p( Messages.get(this, "rev") );
-
-            int lvl = this.level();
-
-            pick.doUnequip( Dungeon.hero, false );
-            pick.detach( Dungeon.hero.belongings.backpack );
-
-            Spheaven n = new Spheaven();
-
-            n.enchantment = enchantment;
-            n.curseInfusionBonus = curseInfusionBonus;
-            n.levelKnown = levelKnown;
-            n.cursedKnown = cursedKnown;
-            n.cursed = cursed;
-            n.augment = augment;
-            n.level(lvl);
-
-            Dungeon.hero.belongings.weapon = n;
-
-            Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
-        }
         ArrayList<String> actions = super.actions(hero);
+        actions.add(AC_ZAP);
         return actions;
+    }
+
+    @Override
+    public void execute(Hero hero, String action) {
+
+        super.execute(hero, action);
+
+        if (action.equals(AC_ZAP)) {
+            if (Dungeon.hero.belongings.weapon == this) {
+                SnowHunter pick = Dungeon.hero.belongings.getItem( SnowHunter.class );
+                if (Dungeon.depth > 29) {
+                    GameScene.flash(0x00FFFF);
+                    Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
+                    Camera.main.shake(31, 3f);
+                    GLog.p( Messages.get(this, "rev") );
+
+                    int lvl = this.level();
+
+                    pick.doUnequip( Dungeon.hero, false );
+                    pick.detach( Dungeon.hero.belongings.backpack );
+
+                    Spheaven n = new Spheaven();
+
+                    n.enchantment = enchantment;
+                    n.curseInfusionBonus = curseInfusionBonus;
+                    n.levelKnown = levelKnown;
+                    n.cursedKnown = cursedKnown;
+                    n.cursed = cursed;
+                    n.augment = augment;
+                    n.level(lvl);
+
+                    Dungeon.hero.belongings.weapon = n;
+
+                    Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
+                } else GLog.w(Messages.get(this, "no"));
+            }
+            else GLog.w(Messages.get(this, "eq"));
+        }
     }
 
     @Override

@@ -163,14 +163,13 @@ public abstract class ElementalSprite extends MobSprite {
 		protected int texOffset() {
 			return 14;
 		}
-		
+
 		@Override
 		protected Emitter createEmitter() {
 			Emitter emitter = emitter();
-			emitter.pour( ElmoParticle.FACTORY, 0.06f );
 			return emitter;
 		}
-		
+
 		@Override
 		public int blood() {
 			return 0xFF85FFC8;

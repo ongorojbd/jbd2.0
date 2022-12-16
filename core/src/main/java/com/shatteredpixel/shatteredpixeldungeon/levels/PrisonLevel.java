@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.PrisonPainter;
@@ -105,12 +106,11 @@ public class PrisonLevel extends RegularLevel {
 		return Assets.Environment.WATER_PRISON;
 	}
 
-//	@Override
-//	protected void createMobs() {
-		//Polpo.Quest.spawn( this );
-		//Yukako.spawn( this );
-		//super.createMobs();
-	//}
+	@Override
+	protected void createItems() {
+		//Yukako.spawn(this);
+		super.createItems();
+	}
 
 	@Override
 	protected Class<?>[] trapClasses() {

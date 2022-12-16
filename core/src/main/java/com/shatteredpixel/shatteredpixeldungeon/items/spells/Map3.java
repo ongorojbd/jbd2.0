@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bmore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Cream;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego12;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fugomob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
@@ -123,6 +124,21 @@ public class Map3 extends Spell {
             Music.INSTANCE.play(Assets.Music.CIV, true);
             GLog.p(Messages.get(Civil.class, "3"));
 
+            switch(Dungeon.hero.heroClass){
+                case WARRIOR:
+                    GLog.n(Messages.get(Diego.class, "1"));
+                    break;
+                case ROGUE:
+                    GLog.n(Messages.get(Diego.class, "1"));
+                    break;
+                case MAGE:
+                    GLog.n(Messages.get(Diego.class, "1"));
+                    break;
+                case HUNTRESS:
+                    GLog.n(Messages.get(Diego.class, "6"));
+                    break;
+            }
+
             for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
                 int p = hero.pos + PathFinder.NEIGHBOURS8[i];
                 if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
@@ -142,6 +158,7 @@ public class Map3 extends Spell {
                 }
 
                 Diego elemental = new Diego();
+                elemental.state = elemental.HUNTING;
                 GameScene.add( elemental );
                 ScrollOfTeleportation.appear( elemental, Random.element(spawnPoints) );
 

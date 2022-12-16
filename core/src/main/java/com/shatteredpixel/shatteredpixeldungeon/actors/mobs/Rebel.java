@@ -79,6 +79,7 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Rebel extends Mob {
 	{
@@ -354,6 +355,16 @@ public class Rebel extends Mob {
 		return super.act();
 	}
 
+	private HashSet<Mob> getSubjects(){
+		HashSet<Mob> subjects = new HashSet<>();
+		for (Mob m : Dungeon.level.mobs){
+			if (m.alignment == alignment && (m instanceof Soldier || m instanceof Medic || m instanceof Supression || m instanceof Researcher || m instanceof Tank)){
+				subjects.add(m);
+			}
+		}
+		return subjects;
+	}
+
 	@Override
 	public void damage(int dmg, Object src) {
 		if (dmg >= 150){
@@ -466,6 +477,18 @@ public class Rebel extends Mob {
 	@Override
 	public void die(Object cause) {
 
+		GameScene.bossSlain();
+
+		super.die(cause);
+
+		//Badges.validateBossSlain();
+
+		Dungeon.level.unseal();
+
+		for (Mob m : getSubjects()){
+			m.die(null);
+		}
+
 		for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
 			if (mob instanceof WO || mob instanceof Newgenkaku || mob instanceof Newcmoon || mob instanceof Mih || mob instanceof Kousaku || mob instanceof Cmoon || mob instanceof Genkaku || mob instanceof Pucci || mob instanceof Dvdol) {
 				mob.die( cause );
@@ -474,11 +497,6 @@ public class Rebel extends Mob {
 
 		Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
 		Camera.main.shake(31, 3f);
-
-		super.die(cause);
-		//Badges.validateBossSlain();
-		GameScene.bossSlain();
-		Dungeon.level.unseal();
 
 		Statistics.yorihimes++;
 		Badges.validateYorihimes();

@@ -291,9 +291,14 @@ public class LabsBossLevel extends Level {
 	public void seal() {
 		super.seal();
 
+        //moves intelligent allies with the hero, preferring closer pos to entrance door
+		int doorPos = bottomDoor;
+		Mob.holdAllies(this, doorPos);
+		Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+
 		Rebel boss = new Rebel();
 		boss.state = boss.WANDERING;
-		boss.pos = bottomDoor-11*33;
+		boss.pos = pointToCell(arena.center());
 		GameScene.add( boss );
 		boss.beckon(Dungeon.hero.pos);
 
@@ -303,14 +308,16 @@ public class LabsBossLevel extends Level {
 			boss.sprite.parent.add( new AlphaTweener( boss.sprite, 1, 0.1f ) );
 		}
 
-		//moves intelligent allies with the hero, preferring closer pos to entrance door
-		int doorPos = bottomDoor;
-		Mob.holdAllies(this, doorPos);
-		Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
-
 		set(bottomDoor, Terrain.LOCKED_DOOR);
 		GameScene.updateMap(bottomDoor);
 		Dungeon.observe();
+
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
+			}
+		});
 	}
 
 	@Override
@@ -318,11 +325,11 @@ public class LabsBossLevel extends Level {
 		super.unseal();
 
 		set(topDoor, Terrain.UNLOCKED_EXIT);
+		GameScene.updateMap(topDoor);
 
 		set(bottomDoor, Terrain.DOOR);
-		GameScene.updateMap(topDoor);
-		CellEmitter.get(topDoor).burst( Speck.factory( Speck.WOOL ), 8 );
 		GameScene.updateMap(bottomDoor);
+
 		isCompleted = true;
 
 		Dungeon.observe();

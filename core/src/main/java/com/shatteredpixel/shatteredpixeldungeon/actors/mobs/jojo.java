@@ -86,7 +86,7 @@ public class jojo extends Mob {
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
         viewDistance = 99;
-        HP = HT = 259;
+        HP = HT = 240;
         defenseSkill = 35;
         EXP = 0;
 
@@ -141,12 +141,7 @@ public class jojo extends Mob {
                     break;
             }
 
-           // for (int i : PathFinder.NEIGHBOURS9){
-           // ScrollOfTeleportation.appear(this, hero.pos);
-            //}
-
             new Flare( 5, 32 ).color( 0x00FFFF, true ).show( this.sprite, 3f );
-            //Buff.affect(hero, Barrier.class).setShield(10);
             Sample.INSTANCE.play( Assets.Sounds.YAREYARE, 3 );
         }
         seenBefore = true;
@@ -163,8 +158,6 @@ public class jojo extends Mob {
         }
 
         super.damage(dmg, src);
-
-
         }
 
 

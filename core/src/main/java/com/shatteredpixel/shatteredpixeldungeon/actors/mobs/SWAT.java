@@ -37,16 +37,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscG;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LabsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -224,6 +219,24 @@ public class SWAT extends Mob implements Callback {
 	@Override
 	public void call() {
 		next();
+	}
+
+	public static void spawn(LabsLevel level) {
+		if (Dungeon.depth >= 29 && !Dungeon.bossLevel()) {
+
+			SWAT npc = new SWAT();
+			do {
+				npc.pos = level.randomRespawnCell( npc );
+			} while (
+					npc.pos == -1 ||
+							level.heaps.get( npc.pos ) != null ||
+							level.traps.get( npc.pos) != null ||
+							level.findMob( npc.pos ) != null ||
+							//The imp doesn't move, so he cannot obstruct a passageway
+							!(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
+							!(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
+			level.mobs.add( npc );
+		}
 	}
 
 }

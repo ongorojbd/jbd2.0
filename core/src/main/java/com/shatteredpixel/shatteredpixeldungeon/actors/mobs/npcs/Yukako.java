@@ -178,8 +178,8 @@ public class Yukako extends NPC {
     }
 
 
-    public static void spawn(PrisonLevel level ) {
-        if (!spawned && Dungeon.depth > 6 && Random.Int( 10 - Dungeon.depth ) == 0) {
+    public static void spawn(PrisonLevel level) {
+        if (Dungeon.depth >= 9 && !Dungeon.bossLevel()) {
 
             Yukako npc = new Yukako();
             do {
@@ -193,11 +193,6 @@ public class Yukako extends NPC {
                             !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
                             !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
             level.mobs.add( npc );
-
-            spawned = true;
-
-            //always assigns monks on floor 17, golems on floor 19, and 50/50 between either on 18
-
         }
     }
 
@@ -205,8 +200,5 @@ public class Yukako extends NPC {
     public boolean reset() {
         return true;
     }
-
-
-
 
 }

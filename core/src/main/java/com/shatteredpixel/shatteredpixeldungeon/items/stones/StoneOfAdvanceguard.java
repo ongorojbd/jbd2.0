@@ -65,6 +65,6 @@ public class StoneOfAdvanceguard extends Runestone {
 
     @Override
     public int value() {
-        return 40 * quantity;
+        return 35 * quantity;
     }
 }

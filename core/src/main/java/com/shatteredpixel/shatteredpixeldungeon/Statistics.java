@@ -62,6 +62,7 @@ public class Statistics {
 
 	public static int timeReset;
 	public static int neoroca;
+	public static int duwang;
 
 	public static boolean qualifiedForNoKilling = false;
 	public static boolean completedWithNoKilling = false;
@@ -104,6 +105,7 @@ public class Statistics {
 
 		timeReset = 0;
 		neoroca = 0;
+		duwang = 0;
 		
 		duration	    = 0;
 		
@@ -128,6 +130,7 @@ public class Statistics {
 
 	private static final String TIMERESET		= "timeReset";
 	private static final String NEOROCA		    = "neoroca";
+	private static final String DUWANG		    = "duwang";
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
 	private static final String TRES_SCORE      = "tres_score";
@@ -169,6 +172,7 @@ public class Statistics {
 
 		bundle.put( TIMERESET,		timeReset );
 		bundle.put( NEOROCA,		neoroca );
+		bundle.put( DUWANG,		     duwang );
 		bundle.put( PROG_SCORE,  progressScore );
 		bundle.put( ITEM_VAL,    heldItemValue );
 		bundle.put( TRES_SCORE,  treasureScore );
@@ -215,6 +219,7 @@ public class Statistics {
 
 		timeReset   = bundle.getInt( TIMERESET );
 		neoroca     = bundle.getInt( NEOROCA );
+		duwang      = bundle.getInt( DUWANG );
 		progressScore   = bundle.getInt( PROG_SCORE );
 		heldItemValue   = bundle.getInt( ITEM_VAL );
 		treasureScore   = bundle.getInt( TRES_SCORE );

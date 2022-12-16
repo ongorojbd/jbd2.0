@@ -32,29 +32,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
-import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BlacksmithRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DogTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RetonioSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.YukakoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBlacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoArmorAbility;
@@ -132,31 +114,21 @@ public class Retonio extends NPC {
 
                             } else if (index == 1) {
                                 Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-                                yell(Messages.get(Yukako.class, "5"));
+
 
                                 destroy();
                                 sprite.killAndErase();
                                 die(null);
 
-                                Yukakomob Yukakomob = new Yukakomob();
-                                Yukakomob.state = Yukakomob.HUNTING;
-                                Yukakomob.pos = pos;
-                                GameScene.add( Yukakomob );
-                                Yukakomob.beckon(Dungeon.hero.pos);
+
 
                             } else {
                                 Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-                                yell(Messages.get(Yukako.class, "6"));
 
                                 destroy();
                                 sprite.killAndErase();
                                 die(null);
 
-                                Yukakomob Yukakomob = new Yukakomob();
-                                Yukakomob.state = Yukakomob.HUNTING;
-                                Yukakomob.pos = pos;
-                                GameScene.add( Yukakomob );
-                                Yukakomob.beckon(Dungeon.hero.pos);
                             }
                         }
                     });

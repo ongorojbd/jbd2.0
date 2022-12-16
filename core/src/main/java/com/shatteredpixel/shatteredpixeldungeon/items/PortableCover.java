@@ -25,6 +25,7 @@ public class PortableCover extends Item {
         image = ItemSpriteSheet.TUSK;
         stackable = true;
         defaultAction = AC_USE;
+        unique = true;
     }
 
     @Override

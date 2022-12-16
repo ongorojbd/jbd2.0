@@ -157,11 +157,11 @@ public class Diego12 extends Mob {
             phase = 3;
 
         }
-        else if (phase==3 && HP < 650) {
+        else if (phase==3 && HP < 700) {
             phase = 4;
 
         }
-        else if (phase==4 && HP < 300) {
+        else if (phase==4 && HP < 500) {
             phase = 5;
             this.sprite.add(CharSprite.State.SHIELDED);
         }

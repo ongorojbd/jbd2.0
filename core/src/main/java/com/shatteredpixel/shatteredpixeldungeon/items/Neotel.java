@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.Poti
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -75,6 +76,8 @@ public class Neotel extends Item {
             Buff.affect(hero, MagicalSight.class, 99f);
             Buff.affect(hero, FeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);
+
+            Buff.affect(hero, AnkhInvulnerability.class, 999f);
 
             Buff.affect(hero, PotionOfCleansing.Cleanse.class, 99f);
             hero.HP = Math.min(hero.HP + 150, hero.HT);

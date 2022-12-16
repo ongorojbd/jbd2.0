@@ -26,18 +26,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wezamob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Willamob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map1;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr1;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WezaSprite;
@@ -57,21 +50,12 @@ public class Weza extends NPC {
         properties.add(Property.IMMOVABLE);
     }
 
-    private boolean seenBefore = false;
-
     @Override
     protected boolean act() {
         if (Dungeon.hero.buff(AscensionChallenge.class) != null){
             die(null);
             return true;
         }
-        if (!Quest.given && Dungeon.level.heroFOV[pos]) {
-
-            seenBefore = true;
-        } else {
-            seenBefore = false;
-        }
-
         return super.act();
     }
 
@@ -101,14 +85,6 @@ public class Weza extends NPC {
         if (c != Dungeon.hero){
             return true;
         }
-
-
-        //   if (Quest.completed){
-        //   }
-
-
-
-        if (Quest.given) {
 
             if (Dungeon.hero.belongings.getItem(ScrollOfPolymorph.class) != null) {
                     Game.runOnRenderThread(new Callback() {
@@ -140,7 +116,6 @@ public class Weza extends NPC {
 
                                                        ScrollOfPolymorph m = Dungeon.hero.belongings.getItem(ScrollOfPolymorph.class);
                                                        m.detachAll(Dungeon.hero.belongings.backpack);
-                                                       Quest.completed = true;
 
 
                                                    } else if (index == 1) {
@@ -169,11 +144,6 @@ public class Weza extends NPC {
 
                 //sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "say"));
             }
-        } else {
-            Quest.given = true;
-            Quest.completed = false;
-
-        }
 
         return true;
     }
@@ -187,95 +157,19 @@ public class Weza extends NPC {
         sprite.die();
     }
 
-    public static class Quest {
 
-        private static boolean alternative;
+    public static void spawn(HallsLevel level) {
+        if (Dungeon.depth == 23 && !Dungeon.bossLevel()) {
 
-        private static boolean spawned;
-        private static boolean given;
-        private static boolean completed;
-
-        public static Ring reward;
-
-        public static void reset() {
-            spawned = false;
-
-            reward = null;
-        }
-
-        private static final String NODE		= "demon";
-
-        private static final String ALTERNATIVE	= "alternative";
-        private static final String SPAWNED		= "spawned";
-        private static final String GIVEN		= "given";
-        private static final String COMPLETED	= "completed";
-        private static final String REWARD		= "reward";
-
-        public static void storeInBundle( Bundle bundle ) {
-
-            Bundle node = new Bundle();
-
-            node.put( SPAWNED, spawned );
-
-            if (spawned) {
-                node.put( ALTERNATIVE, alternative );
-
-                node.put( GIVEN, given );
-                node.put( COMPLETED, completed );
-                node.put( REWARD, reward );
-            }
-
-            bundle.put( NODE, node );
-        }
-
-        public static void restoreFromBundle( Bundle bundle ) {
-
-            Bundle node = bundle.getBundle( NODE );
-
-            if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
-                alternative	= node.getBoolean( ALTERNATIVE );
-
-                given = node.getBoolean( GIVEN );
-                completed = node.getBoolean( COMPLETED );
-                reward = (Ring)node.get( REWARD );
-            }
-        }
-
-        public static void spawn(HallsLevel level ) {
-            if (!spawned && Dungeon.depth > 22 && Random.Int( 24 - Dungeon.depth ) == 0) {
-
-                Weza npc = new Weza();
-                do {
-                    npc.pos = level.randomRespawnCell( npc );
-                } while (
-                        npc.pos == -1 ||
-                                level.heaps.get( npc.pos ) != null ||
-                                level.traps.get( npc.pos) != null ||
-                                level.findMob( npc.pos ) != null ||
-                                //The imp doesn't move, so he cannot obstruct a passageway
-                                !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
-                                !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
-                level.mobs.add( npc );
-
-                spawned = true;
-
-                given = false;
-
-            }
-        }
-
-        public static void process( Mob mob ) {
-
-        }
-
-        public static void complete() {
-            reward = null;
-            completed = true;
-
-        }
-
-        public static boolean isCompleted() {
-            return completed;
+            Weza centinel = new Weza();
+            do {
+                centinel.pos = level.randomRespawnCell(centinel);
+            } while (centinel.pos == -1);
+            level.mobs.add(centinel);
         }
     }
+
+
+
+
 }

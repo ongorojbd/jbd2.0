@@ -117,8 +117,15 @@ public class HallsLevel extends RegularLevel {
 	}
 
 	@Override
+	protected void createItems() {
+
+		Weza.spawn(this);
+
+		super.createItems();
+	}
+
+	@Override
 	protected void createMobs() {
-		Weza.Quest.spawn( this );
 		super.createMobs();
 	}
 

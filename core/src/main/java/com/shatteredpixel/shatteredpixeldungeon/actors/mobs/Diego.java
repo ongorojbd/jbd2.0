@@ -182,29 +182,6 @@ public class Diego extends Mob {
     private int lastEnemyPos = -1;
 
     @Override
-    public void notice() {
-        super.notice();
-        if (!BossHealthBar.isAssigned()) {
-            BossHealthBar.assignBoss(this);
-        }
-        switch(Dungeon.hero.heroClass){
-            case WARRIOR:
-                yell( Messages.get(this, "1") );
-                break;
-            case ROGUE:
-                yell( Messages.get(this, "1") );
-                break;
-            case MAGE:
-                yell( Messages.get(this, "1") );
-                break;
-            case HUNTRESS:
-                yell( Messages.get(this, "6") );
-                break;
-        }
-
-    }
-
-    @Override
     protected boolean act() {
 
 
