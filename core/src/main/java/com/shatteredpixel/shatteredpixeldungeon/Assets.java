@@ -360,6 +360,8 @@ public class Assets {
 		public static final String DOPPIO= "sprites/doppio.png";
 		public static final String BOYTWO= "sprites/boytwo.png";
 		public static final String ACT1= "sprites/act1.png";
+		public static final String ACT2= "sprites/act2.png";
+		public static final String ACT3= "sprites/act3.png";
 		public static final String WILLA= "sprites/willa.png";
 		public static final String STOWER= "sprites/stower.png";
 		public static final String TUSK1= "sprites/tusk1.png";

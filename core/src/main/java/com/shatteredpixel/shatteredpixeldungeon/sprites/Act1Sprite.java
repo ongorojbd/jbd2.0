@@ -31,19 +31,19 @@ public class Act1Sprite extends MobSprite {
 
         texture( Assets.Sprites.ACT1 );
 
-        TextureFilm frames = new TextureFilm( texture, 15, 16 );
+        TextureFilm frames = new TextureFilm( texture, 14, 14 );
 
         idle = new Animation( 2, true );
-        idle.frames( frames, 0 );
+        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
-        run = new Animation( 12, true );
-        run.frames( frames, 0 );
+        run = new Animation( 4, true );
+        run.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
         attack = new Animation( 12, false );
-        attack.frames( frames, 0 );
+        attack.frames( frames, 2, 3, 4 );
 
         die = new Animation( 12, false );
-        die.frames( frames, 0 );
+        die.frames( frames, 5, 6, 7 );
 
         play( idle );
     }

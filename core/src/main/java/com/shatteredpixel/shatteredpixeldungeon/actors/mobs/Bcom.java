@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -48,59 +49,36 @@ public class Bcom extends Mob {
     {
         spriteClass = BcomSprite.class;
 
-        HP = HT = 10;
-        defenseSkill = 5;
+        HP = HT = 25;
+        defenseSkill = 9;
 
-        EXP = 3;
-        maxLvl = 9;
+        EXP = 5;
+        maxLvl = 10;
 
-        loot = new PotionOfHealing();
+        loot = Generator.Category.WEAPON;
         lootChance = 0.1667f; //by default, see lootChance()
+
+        properties.add(Property.UNDEAD);
+        properties.add(Property.INORGANIC);
     }
 
     private boolean seenBefore = false;
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 1, 4 );
+        return Random.NormalIntRange( 2, 10 );
     }
 
 
     @Override
     public int attackSkill( Char target ) {
-        return 10;
+        return 12;
     }
 
     @Override
     protected boolean canAttack(Char enemy) {
-        return this.fieldOfView[enemy.pos] && Dungeon.level.distance(this.pos, enemy.pos) <= 3;
+        return this.fieldOfView[enemy.pos] && Dungeon.level.distance(this.pos, enemy.pos) <= 2;
     }
-
-    @Override
-    public void notice() {
-        super.notice();
-
-        if (!seenBefore) {
-        for (int i : PathFinder.NEIGHBOURS4) {
-
-        Gnoll jojo = new Gnoll();
-        jojo.state = jojo.WANDERING;
-        jojo.pos = this.pos+i;
-        GameScene.add( jojo );
-        jojo.beckon(Dungeon.hero.pos);
-        }}
-
-
-        seenBefore = true;
-    }
-
-
-
-
-
-
-
-
 
     @Override
     public int attackProc( Char enemy, int damage ) {
@@ -109,14 +87,21 @@ public class Bcom extends Mob {
     }
 
     @Override
-    public float lootChance(){
-        return super.lootChance() * ((5f - Dungeon.LimitedDrops.SWARM_HP.count) / 5f);
+    public float lootChance() {
+        //each drop makes future drops 1/2 as likely
+        // so loot chance looks like: 1/6, 1/12, 1/24, 1/48, etc.
+        return super.lootChance() * (float)Math.pow(1/2f, Dungeon.LimitedDrops.SKELE_WEP.count);
     }
 
     @Override
-    public Item createLoot(){
-        Dungeon.LimitedDrops.SWARM_HP.count++;
+    public Item createLoot() {
+        Dungeon.LimitedDrops.SKELE_WEP.count++;
         return super.createLoot();
+    }
+
+    @Override
+    public int drRoll() {
+        return Random.NormalIntRange(0, 5);
     }
 
 }

@@ -64,6 +64,16 @@ public class Mandom extends Mob {
     }
 
     @Override
+    public void beckon (int cell) {
+        //do nothing
+    }
+
+    @Override
+    public int attackSkill(Char target) {
+        return 0;
+    }
+
+    @Override
     protected boolean getCloser(int target) {
         return true;
     }

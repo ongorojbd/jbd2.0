@@ -86,7 +86,7 @@ public class jojo extends Mob {
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
         viewDistance = 99;
-        HP = HT = 240;
+        HP = HT = 200;
         defenseSkill = 35;
         EXP = 0;
 

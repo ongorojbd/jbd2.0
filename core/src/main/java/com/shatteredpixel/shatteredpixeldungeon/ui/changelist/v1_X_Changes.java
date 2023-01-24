@@ -55,6 +55,7 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
+		add_v1_4_1_Changes(changeInfos);
 		add_v1_4_Changes(changeInfos);
 		add_v1_3_3_Changes(changeInfos);
 		add_v1_3_Changes(changeInfos);
@@ -66,12 +67,57 @@ public class v1_X_Changes {
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "신규 영웅 : 죠스케",
-			""));
-
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 영웅 : 죠린",
 			""));
 	}
+
+
+	public static void add_v1_4_1_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0e", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes = new ChangeInfo("신규 캐릭터", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "죠스케",
+				"4부의 주인공 히가시카타 죠스케가 플레이어블 캐릭터로 추가되었습니다!"));
+
+		changes = new ChangeInfo("4부 적", false, null);
+		changes.hardlight(CharSprite.WARNING);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BCOM, 0, 0, 15, 15), "배드 컴퍼니",
+				""));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BOYTWO, 0, 0, 13, 18), "보이 투 맨",
+				""));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.STOWER, 0, 0, 17, 22), "슈퍼 플라이",
+				""));
+
+		changes = new ChangeInfo("4부 NPC", false, null);
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.YUKAKO, 0, 0, 12, 15), "야마기시 유카코",
+				" "));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RETONIO, 0, 0, 12, 15), "토니오 트루사르디",
+				" "));
+
+
+		changes = new ChangeInfo("버프/너프", false, null);
+		changes.hardlight(CharSprite.NEGATIVE);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SOMETHING), "??? ???(????)",
+				""));
+	}
+
+
+
+
+
+
 
 
 

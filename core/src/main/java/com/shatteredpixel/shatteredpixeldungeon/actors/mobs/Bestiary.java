@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MandomSprite;
 import com.watabou.utils.Random;
 
@@ -71,9 +72,9 @@ public class Bestiary {
 			// Prison
 			case 6:
 				//3x skeleton, 1x thief, 1x swarm
-				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
+				return new ArrayList<>(Arrays.asList(Bcom.class, Bcom.class, Bcom.class,
 						Thief.class,
-						Swarm.class));
+						Bcom.class));
 			case 7:
 				//3x skeleton, 1x thief, 1x DM-100, 1x guard
 				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,

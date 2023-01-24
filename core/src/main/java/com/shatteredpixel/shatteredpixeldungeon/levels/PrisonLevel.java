@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
@@ -108,7 +109,8 @@ public class PrisonLevel extends RegularLevel {
 
 	@Override
 	protected void createItems() {
-		//Yukako.spawn(this);
+		Rohan.spawn(this);
+		Yukako.spawn(this);
 		super.createItems();
 	}
 

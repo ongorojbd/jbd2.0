@@ -21,17 +21,27 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
@@ -60,7 +70,7 @@ public class Retonio extends NPC {
 
     @Override
     protected boolean act() {
-        if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+        if (hero.buff(AscensionChallenge.class) != null){
             die(null);
             return true;
         }
@@ -73,7 +83,7 @@ public class Retonio extends NPC {
 
         sprite.turnTo( pos, c.pos );
 
-        if (c != Dungeon.hero){
+        if (c != hero){
             return true;
         }
 
@@ -100,34 +110,72 @@ public class Retonio extends NPC {
                                 yell(Messages.get(Retonio.class, "11"));
                                 GameScene.flash(0xFFFF00);
                                 Sample.INSTANCE.play(Assets.Sounds.EAT);
-                                GLog.h(Messages.get(Retonio.class, "7"));
+                                GLog.p(Messages.get(Retonio.class, "7"));
 
-                                Buff.affect(Dungeon.hero, MagicalSight.class, 50f);
-                                Buff.affect(Dungeon.hero, Haste.class,        10f);
-                                GLog.p(Messages.get(Retonio.class, "13"));
+                                Buff.affect(hero, MagicalSight.class, 50f);
 
                                 destroy();
                                 sprite.killAndErase();
                                 die(null);
-
-
 
                             } else if (index == 1) {
-                                Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+                                yell(Messages.get(Retonio.class, "11"));
+                                GameScene.flash(0xFFFF00);
+                                Sample.INSTANCE.play(Assets.Sounds.EAT);
+                                GLog.p(Messages.get(Retonio.class, "8"));
 
+                                Buff.affect(hero, Recharging.class, 15f);
+                                Buff.affect(hero, ArtifactRecharge.class).prolong( 15 ).ignoreHornOfPlenty = false;
 
                                 destroy();
                                 sprite.killAndErase();
                                 die(null);
+                            } else if (index == 2) {
+                                yell(Messages.get(Retonio.class, "11"));
+                                GameScene.flash(0xFFFF00);
 
+                                Item a = new Food();
+                                Dungeon.level.drop(a, pos).sprite.drop(pos);
 
+                                destroy();
+                                sprite.killAndErase();
+                                die(null);
+                            } else if (index == 3) {
+                                yell(Messages.get(Retonio.class, "11"));
+                                GameScene.flash(0xFFFF00);
+                                Sample.INSTANCE.play(Assets.Sounds.EAT);
+                                GLog.p(Messages.get(Retonio.class, "10"));
 
+                                Buff.affect(hero, FireImbue.class).set(FireImbue.DURATION);
+                                hero.sprite.emitter().burst(FlameParticle.FACTORY, 20);
+
+                                destroy();
+                                sprite.killAndErase();
+                                die(null);
+                            } else if (index == 4) {
+                                yell(Messages.get(Retonio.class, "11"));
+                                GameScene.flash(0xFFFF00);
+                                Sample.INSTANCE.play(Assets.Sounds.EAT);
+                                GLog.p(Messages.get(Retonio.class, "15"));
+
+                                hero.HP = Math.min(hero.HP + 30, hero.HT);
+
+                                destroy();
+                                sprite.killAndErase();
+                                die(null);
                             } else {
-                                Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+                                Sample.INSTANCE.play(Assets.Sounds.ALERT);
+                                yell(Messages.get(Retonio.class, "12"));
 
                                 destroy();
                                 sprite.killAndErase();
                                 die(null);
+
+                                Yukakomob Yukakomob = new Yukakomob();
+                                Yukakomob.state = Yukakomob.HUNTING;
+                                Yukakomob.pos = pos;
+                                GameScene.add( Yukakomob );
+                                Yukakomob.beckon(hero.pos);
 
                             }
                         }

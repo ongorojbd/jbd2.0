@@ -27,20 +27,23 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PolpoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class Rohan extends NPC {
 
     {
-        spriteClass = PolpoSprite.class;
+        spriteClass = ResearcherSprite.class;
 
         properties.add(Property.IMMOVABLE);
     }
@@ -254,6 +257,24 @@ public class Rohan extends NPC {
     public void flee() {
         destroy();
         sprite.die();
+    }
+
+    public static void spawn(PrisonLevel level) {
+        if (Dungeon.depth >= 6 && !Dungeon.bossLevel()) {
+
+            Rohan npc = new Rohan();
+            do {
+                npc.pos = level.randomRespawnCell( npc );
+            } while (
+                    npc.pos == -1 ||
+                            level.heaps.get( npc.pos ) != null ||
+                            level.traps.get( npc.pos) != null ||
+                            level.findMob( npc.pos ) != null ||
+                            //The imp doesn't move, so he cannot obstruct a passageway
+                            !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
+                            !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
+            level.mobs.add( npc );
+        }
     }
 
 }

@@ -29,21 +29,21 @@ public class Act3Sprite extends MobSprite {
     public Act3Sprite() {
         super();
 
-        texture( Assets.Sprites.ACT1 );
+        texture( Assets.Sprites.ACT3 );
 
-        TextureFilm frames = new TextureFilm( texture, 15, 16 );
+        TextureFilm frames = new TextureFilm( texture, 12, 13 );
 
-        idle = new Animation( 2, true );
-        idle.frames( frames, 2 );
+        idle = new Animation( 1, true );
+        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
-        run = new Animation( 12, true );
-        run.frames( frames, 2 );
+        run = new Animation( 20, true );
+        run.frames( frames, 2, 3, 4, 5, 6, 7 );
 
-        attack = new Animation( 12, false );
-        attack.frames( frames, 2 );
+        attack = new Animation( 15, false );
+        attack.frames( frames, 8, 9, 10, 0 );
 
-        die = new Animation( 12, false );
-        die.frames( frames, 2 );
+        die = new Animation( 20, false );
+        die.frames( frames, 11, 12, 13);
 
         play( idle );
     }

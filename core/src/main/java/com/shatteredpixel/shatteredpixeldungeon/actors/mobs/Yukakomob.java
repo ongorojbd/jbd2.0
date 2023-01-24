@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.WalkieTalkie;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkeletonSprite;
@@ -61,6 +63,8 @@ public class Yukakomob extends Mob {
     public void die( Object cause ) {
 
         super.die( cause );
+
+        Dungeon.level.drop( new WalkieTalkie().identify(), pos ).sprite.drop( pos );
 
         yell(Messages.get(Yukako.class, "7"));
 
