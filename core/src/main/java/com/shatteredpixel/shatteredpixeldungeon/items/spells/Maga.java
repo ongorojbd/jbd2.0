@@ -62,7 +62,7 @@ public class Maga extends Spell {
     protected void onCast(Hero hero) {
 
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof Bandit || mob instanceof Mandom || mob instanceof Senior || mob instanceof RipperDemon || mob instanceof DemonSpawner || mob instanceof Vitaminc || mob instanceof Scorpio || mob instanceof Acidic || mob instanceof Newgenkaku || mob instanceof Newcmoon || mob instanceof Mih || mob instanceof Jonny ||  mob instanceof Genkaku  ||  mob instanceof Whsnake ||  mob instanceof Whsnake2 ||  mob instanceof SentryRoom.Sentry ||  mob instanceof Bcom ||  mob instanceof Bcomg ||  mob instanceof Boytwo ||  mob instanceof Stower) {
+            if (mob instanceof Bandit || mob instanceof Mandom || mob instanceof Senior || mob instanceof RipperDemon || mob instanceof Vitaminc || mob instanceof Scorpio || mob instanceof Acidic || mob instanceof Newgenkaku || mob instanceof Newcmoon || mob instanceof Mih || mob instanceof Jonny ||  mob instanceof Genkaku  ||  mob instanceof Whsnake ||  mob instanceof Whsnake2 ||  mob instanceof SentryRoom.Sentry ||  mob instanceof Bcom ||  mob instanceof Bcomg ||  mob instanceof Boytwo ||  mob instanceof Stower) {
                 mob.destroy();
                 mob.sprite.killAndErase();
                 Dungeon.level.mobs.remove(mob);
