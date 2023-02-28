@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
@@ -64,6 +65,9 @@ public class Acidic extends Mob {
 
 		EXP = 15;
 		maxLvl = 28;
+
+		loot = Generator.Category.POTION;
+		lootChance = 0.5f;
 
 		properties.add(Property.BOSS);
 	}
@@ -116,8 +120,6 @@ public class Acidic extends Mob {
 		if (Random.Int( 3 ) == 0) {
 		Dungeon.level.drop( new ArcaneCatalyst().identify(), pos ).sprite.drop( pos );
 		}
-
-		Dungeon.level.drop( new CurseInfusion().identify(), pos ).sprite.drop( pos );
 
 	}
 

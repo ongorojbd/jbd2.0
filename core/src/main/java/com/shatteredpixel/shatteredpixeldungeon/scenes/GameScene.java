@@ -496,6 +496,33 @@ public class GameScene extends PixelScene {
 					}
 				}
 
+				if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1 && Dungeon.depth == 26)
+				{
+					GLog.n(Messages.get(this, "miniboss"));
+				}
+				if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss9 == 1 && Dungeon.depth == 27)
+				{
+					GLog.n(Messages.get(this, "miniboss"));
+				}
+				if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss14 == 1 && Dungeon.depth == 28)
+				{
+					GLog.n(Messages.get(this, "miniboss"));
+				}
+				if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss19 == 1 && Dungeon.depth == 29)
+				{
+					GLog.n(Messages.get(this, "miniboss"));
+				}
+				if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.bossLevel() && Dungeon.depth == 30)
+				{
+					if (Dungeon.mboss4 == 1 || Dungeon.mboss9 == 1 || Dungeon.mboss14 == 1 || Dungeon.mboss19 == 1)
+						GLog.n(Messages.get(this, "miniboss2"));
+				}
+				if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.depth == 30 && Dungeon.bossLevel())
+				{
+					if (Dungeon.mboss4 == 1 && Dungeon.mboss9 == 1 && Dungeon.mboss14 == 1 && Dungeon.mboss19 == 1)
+						GLog.p(Messages.get(this, "miniboss_final"));
+				}
+
 				int spawnersAbove = Statistics.spawnersAlive;
 				if (spawnersAbove > 0 && Dungeon.depth <= 25) {
 					for (Mob m : Dungeon.level.mobs) {

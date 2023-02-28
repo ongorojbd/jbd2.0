@@ -74,7 +74,7 @@ public class Bestiary {
 				//3x skeleton, 1x thief, 1x swarm
 				return new ArrayList<>(Arrays.asList(Bcom.class, Bcom.class, Bcom.class,
 						Thief.class,
-						Bcom.class));
+						Bcomg.class));
 			case 7:
 				//3x skeleton, 1x thief, 1x DM-100, 1x guard
 				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
@@ -238,46 +238,51 @@ public class Bestiary {
 		//	case 6:
 			//	if (Random.Float() < 0.045f) rotation.add(Stower.class);
 			//	return;
-		//	case 7:
-			//	if (Random.Float() < 0.035f) rotation.add(Stower.class);
-			//	return;
-		//	case 8:
-			//	if (Random.Float() < 0.025f) rotation.add(Stower.class);
-			//	return;
+			case 7:
+			if (Random.Float() < 0.035f) rotation.add(Stower.class);
+				return;
+			case 8:
+			if (Random.Float() < 0.025f) rotation.add(Stower.class);
+			    return;
 			case 9:
 				if (Random.Float() < 0.025f) rotation.add(Bat.class);
 				return;
 				
 			// Caves
-		//	case 11:
-			//	if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
-			// return;
 
 			case 14:
-		//		if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
+		     	if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
 				if (Random.Float() < 0.025f) rotation.add(Ghoul.class);
 				return;
 				
 			// City
+
 			case 16:
-			//	if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
+				if (Random.Float() < 0.04f) rotation.add(Retonio.class);
+				return;
+
+			case 17:
+				if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
 				if (Random.Float() < 0.025f) rotation.add(Mandom.class);
 				return;
 
 			case 19:
-			//	if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
+				if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
 				if (Random.Float() < 0.025f) rotation.add(Succubus.class);
 				return;
 
 			case 21:
 				if (Random.Float() < 0.029f) rotation.add(Mandom.class);
+				if (Random.Float() < 0.04f) rotation.add(Retonio.class);
 				return;
 
 			case 23:
 				if (Random.Float() < 0.031f) rotation.add(Mandom.class);
 				return;
 
-
+			case 27:
+				if (Random.Float() < 0.05f) rotation.add(Retonio.class);
+				return;
 		}
 	}
 	

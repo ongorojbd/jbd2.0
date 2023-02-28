@@ -21,54 +21,63 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 public class RunicBlade extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.RUNIC_BLADE;
-		hitSound = Assets.Sounds.FF;
-		hitSoundPitch = 1f;
+		hitSound = Assets.Sounds.HIT_CRUSH;
+		hitSoundPitch = 0.8f;
 
 		tier = 4;
-		RCH = 2;    //extra reach
 	}
+
+	//Essentially it's a tier 4 weapon, with tier 3 base max damage, and tier 5 scaling.
+	//equal to tier 4 in damage at +5
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier) + 2 +  // 22 + 4
-				lvl*(tier);
+		return  5*(tier) +                	//20 base, down from 25
+				Math.round(lvl*(tier+2));	//+6 per level, up from +5
 	}
-
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		float dmgbouns = 1f;
-		if (Dungeon.level.map[attacker.pos] == Terrain.WATER) {
-			dmgbouns += 0.2f;
-		}
-		if (Dungeon.level.map[defender.pos] == Terrain.WATER) {
-			dmgbouns += 0.2f;
+
+
+		if (hero.belongings.getItem(RingOfElements.class) != null) {
+			if (hero.belongings.getItem(RingOfElements.class).isEquipped(hero)) {
+				{
+					Buff.affect( hero, EnhancedRings.class, 3f );
+				}
+			}
 		}
 
-		damage *= dmgbouns;
 		return super.proc(attacker, defender, damage);
 	}
 
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(UnstableSpellbook.class) != null) {
-			if (Dungeon.hero.belongings.getItem(UnstableSpellbook.class).isEquipped(Dungeon.hero))
+		if (hero.belongings.getItem(RingOfElements.class) != null) {
+			if (hero.belongings.getItem(RingOfElements.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( RunicBlade.class, "setbouns");}
 
 		return info;
 	}
+
+
+
 }

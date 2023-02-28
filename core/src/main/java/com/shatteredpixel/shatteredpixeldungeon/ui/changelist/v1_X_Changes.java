@@ -58,7 +58,6 @@ public class v1_X_Changes {
 		add_v1_4_1_Changes(changeInfos);
 		add_v1_4_Changes(changeInfos);
 		add_v1_3_3_Changes(changeInfos);
-		add_v1_3_Changes(changeInfos);
 	}
 
 	public static void add_Coming_Soon( ArrayList<ChangeInfo> changeInfos ) {
@@ -73,7 +72,7 @@ public class v1_X_Changes {
 
 
 	public static void add_v1_4_1_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0e", true, "");
+		ChangeInfo changes = new ChangeInfo("2.0g", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
@@ -89,37 +88,33 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BCOM, 0, 0, 15, 15), "배드 컴퍼니",
-				""));
+				"6층에 신규 적인 배드 컴퍼니가 등장합니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BOYTWO, 0, 0, 13, 18), "보이 투 맨",
-				""));
+				"무작위 계층에 희귀한 확률로 보이 투 맨이 출몰합니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.STOWER, 0, 0, 17, 22), "슈퍼 플라이",
-				""));
+				"무작위 계층에 희귀한 확률로 슈퍼 플라이가 출몰합니다."));
 
 		changes = new ChangeInfo("4부 NPC", false, null);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.YUKAKO, 0, 0, 12, 15), "야마기시 유카코",
-				" "));
+				""));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RETONIO, 0, 0, 12, 15), "토니오 트루사르디",
-				" "));
+				""));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ROHAN, 0, 0, 12, 14), "키시베 로한",
+				""));
 
-
-		changes = new ChangeInfo("버프/너프", false, null);
+		changes = new ChangeInfo("아이템 조정", false, null);
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SOMETHING), "??? ???(????)",
-				""));
+		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "아이템 조정",
+				"여러 무기들이 리워크되었습니다.\n\n" +
+						"반발의 상형문자가 원거리 적을 튕겨내지 않습니다.\n\n" +
+						"이제 충전의 석가면이 레퀴엠 브로치의 능력도 충전합니다.\n\n"+
+						"30층 상자에 스타 플라티나 오버 헤븐의 DISC가 추가되었습니다."));
 	}
-
-
-
-
-
-
-
-
 
 	public static void add_v1_4_Changes( ArrayList<ChangeInfo> changeInfos ) {
 		ChangeInfo changes = new ChangeInfo("2.0f", true, "");
@@ -139,13 +134,13 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP3), "스틸 볼 런 레이스 지도 3rd",
 				"코코 잠보를 통해 제작 가능한 신규 아이템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
 						"스틸 볼 런 레이스 지도 3rd를 사용하면 _성인의 심장_의 위치를 알 수 있습니다."));
-		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.RAGE, true), "D4C 러브 트레인",
-				"성인의 유해 3개가 모였을 시 발현되는 강력한 효과가 추가되었습니다."));
 		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.SACRIFICE, true), "성인의 유해",
 				"지도를 통해 성인의 유해를 흡수하면 특수 효과가 제공됩니다.\n\n_성인의 유해를 3개 모으면 D4C 러브 트레인이 발현됩니다._"));
+		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.RAGE, true), "D4C 러브 트레인",
+				"성인의 유해 3개가 모였을 시 발현되는 강력한 효과가 추가되었습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP0), "스틸 볼 런 레이스 지도 4~9th",
 				"???"));
-		changes = new ChangeInfo("신규 7부 적", false, null);
+		changes = new ChangeInfo("특수 보스", false, null);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
@@ -158,22 +153,20 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI, 0, 0, 12, 15), "퍼니 발렌타인",
 				"추격자들을 보낸 장본인인 퍼니 발렌타인이 직접 보스로 등장합니다."));
 
-		changes = new ChangeInfo("신규 아이템/NPC", false, null);
+		changes = new ChangeInfo("신규 NPC", false, null);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.HIGHWAY), "하이웨이 투 헬",
-				"하이웨이 투 헬이 1/4 확률로 상점에 추가됩니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.WEZA, 0, 0, 12, 15), "웨더 리포트",
 				"21~24층에 신규 NPC인 웨더 리포트가 추가되었습니다."));
 
 
-		changes = new ChangeInfo("히든 보스 추가", false, null);
+		changes = new ChangeInfo("???", false, null);
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SOMETHING), "??? ???(????)",
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.WORLD21, 0, 0, 40, 40), "THE WORLD",
 				"스틸 볼 런 레이스의 종착점에 기다리는 것은.."));
 	}
 
@@ -253,210 +246,6 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton( Icons.get(Icons.TALENT), "시련 난이도 조정",
 				"아이즈 오브 헤븐 : 천국에 도달한 DIO 사망 시 펫 숍의 기억 DISC로 바로 26층으로 올라갈 수 있습니다.\n\n자유인의 광상곡 : 오시리스신의 퀘스트가 정상적으로 진행되도록 수정되었습니다.\n\n타올라라 용의 꿈 : 이제 흉에 방향에서 공격할 시 데미지가 그대로 반사됩니다. 압둘에게도 흉의 방향이 적용됩니다."));
 	}
-
-	public static void add_v1_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0d", true, "");
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes = new ChangeInfo("새로운 요소", false, null);
-		changes.hardlight(CharSprite.POSITIVE);
-		changeInfos.add(changes);
-
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), "메이드 인 헤븐의 DISC",
-				"_최강의 DISC인 메이드 인 헤븐의 DISC가 추가되었습니다!_\n\n메이드 인 헤븐의 DISC를 제작하기 위한 과정의 재료 아이템들이 대거 추가되었습니다.\n\n메이드 인 헤븐의 DISC는 제작 난이도가 상당히 높습니다."));
-
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CAPE), "골드 익스피리언스 레퀴엠의 장비 DISC",
-				"???\n" +
-						"" +
-						"습득 방법은 SPW 재단의 기록에서 확인할 수 있습니다."));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SKULL), "실버 채리엇 레퀴엠의 장비 DISC",
-				"???\n" +
-						"" +
-						"습득 방법은 SPW 재단의 기록에서 확인할 수 있습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_SAPPHIRE), "혼돈의 석가면",
-				"속성/상형문자의 발동 확률과 효과를 강화시켜주는 석가면이 추가되었습니다!"
-		));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GUIDE_PAGE), "SPW재단의 기록",
-				"_신규 수집 아이템인 SPW재단의 기록이 새로 추가됩니다!_\n\n" +
-						"SPW재단의 기록은 한 계층당 6개, 무려 30개에 달하는 양으로 죠죠의 기묘한 던전의 팁이나 배경 설정이 기록되어 있으며, 던전 내에서 일정 확률로 발견할 수 있습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.SCORPIO, 0, 18, 18, 17), "신규 적",
-				"희귀하게 볼 수 있는 적이 3종 추가되었습니다."));
-		changes.addButton( new ChangeButton(new TalentIcon(Talent.THIEFS_INTUITION), "BGM 추가",
-				"이제 일부 보스들의 체력이 낮아질 경우,\n_처형 BGM_이 나옵니다.\n\n" +
-						"천국의 DISC 획득 후, _역행 전용 BGM_이 추가되었습니다."));
-		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.LOCKED_FLOOR, true), "캐릭터 상호작용",
-				"이제 보스와 대면하면 현재 캐릭터에 따라서 특수 등장대사가 출력됩니다." +
-						"" +
-						"" +
-						""));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KIT), "보스 파생 아이템",
-				"이제 모든 보스가 1/10 확률로 드롭하는 강자의 잔재를 이용해서\n\n보스 파생 아이템을 제작할 수 있습니다."));
-
-		Image ic = Icons.get(Icons.SEED);
-		ic.hardlight(1f, 1.5f, 0.67f);
-
-
-
-
-
-		changes = new ChangeInfo("리워크", false, null);
-		changes.hardlight(CharSprite.WARNING);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new Image(Assets.Sprites.REBEL, 144, 0, 16, 16), "천국에 도달한 DIO",
-				"천국에 도달한 DIO의 패턴이 새롭게 리워크되었습니다."));
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.YOG, 0, 2, 20, 19), "DIO",
-				"악의 각성 시련 활성화 시,\n최고로 High해진 모습으로 등장하게 됩니다."));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AJA), "에이자의 석가면 리워크",
-				"에이자의 석가면의 효과가 리워크되었습니다." +
-						""));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_GREAVES), "녹색 아기의 장비 DISC",
-				"골드 익스피리언스의 장비 DISC -> 녹색 아기의 장비 DISC\n\n" +
-						"사용 효과가 리워크되었습니다." ));
-
-		changes.addButton( new ChangeButton(new Image(Assets.Sprites.WARRIOR, 0, 90, 12, 15), "용기의 파문전사 리워크",
-				"용기의 파문전사가 리워크 되었습니다!\n" +
-						"_-_ 부활 능력이 특성으로 이관되었습니다.\n" +
-						"_-_ 용기의 파문전사의 액티브 효과가 추가됩니다.\n" +
-						"_-_ 용기의 파문전사의 특성이 변경되었습니다."));
-
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI, 0, 15, 12, 15), "악의 각성 변경",
-				"악의 각성 시련 활성화 시 천국에 도달한 DIO의 패턴이 일부 변경됩니다."));
-
-		changes.addButton( new ChangeButton(new TalentIcon(Talent.EXCESS_CHARGE), "일부 3단계 특성 리워크",
-				"파문 방출 : 이제 적석 발사 후 근접 공격 피해량과 더불어, 적석의 추가 효과도 강화됩니다.\n\n" +
-						"파문 스승의 가르침 : 에이자의 적석이 전부 충전되어 있을 때 적석의 충전량을 소모하면, 강화 수치에 비례한 보호막이 부여됩니다.\n\n" +
-						"빛의 영수증이다! : 이제 골드 대신 아이템을 떨어트릴 확률이 증가합니다." ));
-
-		changes.addButton( new ChangeButton(BadgeBanner.image( Badges.Badge.YORIHIMES_ALL_CLASSES.image ), "신규 엔드 컨텐츠 뱃지",
-				"천국에 도달한 DIO 관련 신규 뱃지가 3종 추가되었습니다."));
-
-
-		changes = new ChangeInfo("상향", false, null);
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_AGATE), "행운의 석가면",
-						"강화 레벨 +1/+3/+5/+7/+9에서\n+1/+2/+3/+4/+5강 장비 확정 드랍으로 상향"));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION), "소프트&웨트의 사격 DISC",
-				"특수한 적에게 가하는 강화 레벨당 데미지 0.5~1 -> 1~2" ));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TELE_GRAB), "자철석",
-				"이제 같은 장소에 겹쳐있는 아이템이나 적에게 꽃힌 여러 개의 투척 무기들을 전부 회수할 수 있습니다."));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SHORTSWORD, new ItemSprite.Glowing(0x000000)), "짜증나는 저주",
-				"5가지 새로운 대사가 추가되었습니다."));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SAI), "왕 첸의 갈퀴손",
-				"자정부터 새벽 5시 사이, 공격력이 25% 더 강해집니다."));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CHEST), "30층 개편",
-				"30층에 신규 보물상자가 추가되었습니다."));
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.HUNTRESS, 0, 90, 12, 15), "레퀴엠 죠르노",
-				"비선공으로 변경되었습니다.\n\n이제 어떠한 방식으로 데미지를 가해도 버프가 발동됩니다.\n\n반사 능력이 삭제되었습니다.\n\n드롭 아이템이 변경되었습니다."));
-		ic = Icons.get(Icons.CALENDAR);
-		ic.hardlight(1.2f, 0.5f, 1.7f);
-		changes.addButton( new ChangeButton(ic, "일일 도전 리플레이 모드",
-				"이제 플레이한 일일 도전을 다시 반복해서 할 수 있습니다.\n\n" +
-						"리플레이 모드 기록은 24시간이 지나면 삭제됩니다." ));
-
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
-		changes.hardlight(CharSprite.NEGATIVE);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.EXOTIC_RAIDO), "푸치신부의 기억 DISC",
-				"이 DISC를 사용하면 모든 이로운 장비 DISC 효과도 차단합니다." +
-						""));
-
-		changes.addButton( new ChangeButton(new Image(Assets.Sprites.MUDA, 0, 0, 40, 40), "더 월드 오버 헤븐",
-				"체력이 300 감소했습니다." +
-						""));
-
-	}
-
-	public static void add_v1_2_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0c-2", true, "");
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes = new ChangeInfo("히든 보스", false, null);
-		changes.hardlight(Window.SHPX_COLOR);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new Image(Assets.Sprites.REBEL, 144, 0, 16, 16), "천국에 도달한 DIO",
-				"신규 시련 전용 강력한 진 최종보스가 추가되었습니다!" +
-				"" +
-				"" +
-				""));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CRYSTAL_KEY), "신규 시련",
-				"신규 시련인 아이즈 오브 헤븐을 활성화해야 26층 이후가 개방됩니다."));
-
-		Image ic = Icons.get(Icons.SEED);
-		ic.hardlight(1f, 1.5f, 0.67f);
-
-		changes = new ChangeInfo("신규 각성 무기", false, null);
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AJA), "에이자의 석가면",
-				"" +
-				""));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.PINK), "핑크 다크의 소년",
-				"" +
-				"" +
-				"" +
-				""));
-
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GREATSWORD), "신규 무기",
-				"스카이 하이가 새로 추가되었습니다." +
-				"" +
-				""));
-
-		ic = Icons.get(Icons.SEED);
-		ic.hardlight(1f, 1.5f, 0.67f);
-		changes.addButton( new ChangeButton(ic, "시드 고정",
-				"" +
-				"" +
-				"" +
-				""));
-
-		ic = Icons.get(Icons.CALENDAR);
-		ic.hardlight(0.5f, 1f, 2f);
-		changes.addButton( new ChangeButton(ic, "일일 도전",
-				"" +
-						""));
-
-		changes = new ChangeInfo("리워크", false, null);
-		changes.hardlight(CharSprite.WARNING);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SCIMITAR), "아키라의 일렉기타",
-				"" +
-						""));
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ROUND_SHIELD), "바람의 프로텍터",
-				"" +
-						""));
-
-	}
-
-
-
 
 
 }

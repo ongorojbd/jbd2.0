@@ -158,7 +158,7 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 16, 16, 9, 15 ) );
 				break;
 			case MAGE:
-				icon.frame( icon.texture.uvRectBySize( 32, 16, 15, 14 ) );
+				icon.frame( icon.texture.uvRectBySize( 32, 16, 10, 13 ) );
 				break;
 			case ROGUE:
 				icon.frame( icon.texture.uvRectBySize( 48, 16, 9, 15 ) );

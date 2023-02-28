@@ -122,6 +122,12 @@ public class DM201 extends Mob {
 	@Override
 	public void damage(int dmg, Object src) {
 
+		summoncooldown = 1;
+		blastcooldown = 1;
+		barriercooldown = 4;
+		volcanocooldown = 7;
+		restorecooldown = 10;
+
 		if (phase == 2) {
 
 			return;
@@ -137,11 +143,6 @@ public class DM201 extends Mob {
 			HP = 75;
 			phase = 2;
 			Buff.detach(this, Barrier.class);
-			summoncooldown = 1;
-			blastcooldown = 1;
-			barriercooldown = 4;
-			volcanocooldown = 7;
-			restorecooldown = 10;
 		}
 	}
 
@@ -355,12 +356,6 @@ public class DM201 extends Mob {
 				for (Char ch : Actor.chars()){
 				}
 			}
-
-		summoncooldown = 1;
-		blastcooldown = 1;
-		barriercooldown = 4;
-		volcanocooldown = 10;
-		restorecooldown = 10;
 
 	}
 

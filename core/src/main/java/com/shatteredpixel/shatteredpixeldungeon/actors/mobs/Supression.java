@@ -65,7 +65,7 @@ public class Supression extends Mob {
 		maxLvl = 30;
 
 		loot = new PotionOfShielding();
-		lootChance = 0.25f;
+		lootChance = 0.20f;
 	}
 
 	@Override

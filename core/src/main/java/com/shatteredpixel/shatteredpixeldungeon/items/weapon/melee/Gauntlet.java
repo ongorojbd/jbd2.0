@@ -52,19 +52,6 @@ public class Gauntlet extends MeleeWeapon {
 	}
 
 	@Override
-	public int damageRoll(Char owner) {
-		if (owner instanceof Hero) {
-			Hero hero = (Hero) owner;
-			Char enemy = hero.enemy();
-			if (Dungeon.hero.belongings.weapon() instanceof Gauntlet && (Random.Int(20) == 0)) {
-				Buff.prolong(owner, Bless.class, Bless.DURATION);
-			}
-		}
-		return super.damageRoll(owner);
-	}
-
-
-	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
 		if (Dungeon.hero.belongings.getItem(RingOfFuror.class) != null) {

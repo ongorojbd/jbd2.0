@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AcidicSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MihSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RipperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -47,13 +48,12 @@ import com.watabou.utils.Random;
 public class Mih extends Mob {
 
     {
-        spriteClass = RipperSprite.class;
+        spriteClass = MihSprite.class;
 
-        HP = HT = 100;
+        HP = HT = 140;
         defenseSkill = 15;
         maxLvl = 30;
         EXP = 0;
-        baseSpeed = 2f;
 
         immunities.add(Dominion.class );
     }
@@ -71,16 +71,6 @@ public class Mih extends Mob {
     @Override
     public int drRoll() {
         return Random.NormalIntRange(0, 10);
-    }
-
-    @Override
-    public void die(Object cause) {
-        super.die(cause);
-
-        if (Random.Int( 5 ) == 0) {
-            Dungeon.level.drop( new StoneOfBlink().identify(), pos ).sprite.drop( pos );
-        }
-
     }
 
 }

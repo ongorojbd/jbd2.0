@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.watabou.noosa.TextureFilm;
 
 public class BatSprite extends MobSprite {
@@ -32,9 +33,9 @@ public class BatSprite extends MobSprite {
 		texture( Assets.Sprites.BAT );
 		
 		TextureFilm frames = new TextureFilm( texture, 16, 16 );
-		
-		idle = new Animation( 1, true );
-		idle.frames( frames, 0, 1 );
+
+		idle = new Animation( 2, true );
+		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 		
 		run = new Animation( 4, true );
 		run.frames( frames, 2, 3 );

@@ -244,7 +244,7 @@ public class ItemSpriteSheet {
 		assignItemRect(HAND_AXE,        12, 14);
 		assignItemRect(SPEAR,           14, 16);
 		assignItemRect(QUARTERSTAFF,    14, 16);
-		assignItemRect(DIRK,            13, 13);
+		assignItemRect(DIRK,            14, 14);
 	}
 
 	private static final int WEP_TIER3      =                               xy(1, 8);   //8 slots
@@ -256,10 +256,10 @@ public class ItemSpriteSheet {
 	public static final int WHIP            = WEP_TIER3+5;
 	static{
 		assignItemRect(SWORD,           12, 14);
-		assignItemRect(MACE,            14, 14);
-		assignItemRect(SCIMITAR,        13, 16);
+		assignItemRect(MACE,            14, 15);
+		assignItemRect(SCIMITAR,        16, 15);
 		assignItemRect(ROUND_SHIELD,    14, 16);
-		assignItemRect(SAI,             14, 14);
+		assignItemRect(SAI,             16, 16);
 		assignItemRect(WHIP,            10, 14);
 	}
 
@@ -272,9 +272,9 @@ public class ItemSpriteSheet {
 	public static final int CROSSBOW        = WEP_TIER4+5;
 	static{
 		assignItemRect(LONGSWORD,       15, 15);
-		assignItemRect(BATTLE_AXE,      14, 16);
+		assignItemRect(BATTLE_AXE,      16, 16);
 		assignItemRect(FLAIL,           14, 14);
-		assignItemRect(RUNIC_BLADE,     13, 14);
+		assignItemRect(RUNIC_BLADE,     16, 16);
 		assignItemRect(ASSASSINS_BLADE, 14, 15);
 		assignItemRect(CROSSBOW,        15, 15);
 	}
@@ -477,6 +477,7 @@ public class ItemSpriteSheet {
 	public static final int RO3                 = ARTIFACTS+25;
 	public static final int RAM                 = ARTIFACTS+26;
 	public static final int TUSK                = ARTIFACTS+27;
+	public static final int SPOH                = ARTIFACTS+28;
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      14, 14);
 		assignItemRect(ARTIFACT_ARMBAND,    14, 14);
@@ -506,6 +507,7 @@ public class ItemSpriteSheet {
 		assignItemRect(RO3,      7,  14);
 		assignItemRect(RAM,      12, 9);
 		assignItemRect(TUSK,     14, 14);
+		assignItemRect(SPOH,     14, 14);
 	}
 
 	                                                                                    //16 free slots

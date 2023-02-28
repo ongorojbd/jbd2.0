@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Antonio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -66,6 +67,21 @@ public class Retonio extends NPC {
         spriteClass = RetonioSprite.class;
 
         properties.add(Property.IMMOVABLE);
+    }
+
+    @Override
+    public void beckon (int cell) {
+        //do nothing
+    }
+
+    @Override
+    protected boolean getCloser(int target) {
+        return true;
+    }
+
+    @Override
+    protected boolean getFurther(int target) {
+        return true;
     }
 
     @Override
@@ -146,7 +162,7 @@ public class Retonio extends NPC {
                                 Sample.INSTANCE.play(Assets.Sounds.EAT);
                                 GLog.p(Messages.get(Retonio.class, "10"));
 
-                                Buff.affect(hero, FireImbue.class).set(FireImbue.DURATION);
+                                Buff.affect(hero, FireImbue.class).set(50f);
                                 hero.sprite.emitter().burst(FlameParticle.FACTORY, 20);
 
                                 destroy();
@@ -164,6 +180,7 @@ public class Retonio extends NPC {
                                 sprite.killAndErase();
                                 die(null);
                             } else {
+                                Sample.INSTANCE.play(Assets.Sounds.HIT);
                                 Sample.INSTANCE.play(Assets.Sounds.ALERT);
                                 yell(Messages.get(Retonio.class, "12"));
 
@@ -171,12 +188,11 @@ public class Retonio extends NPC {
                                 sprite.killAndErase();
                                 die(null);
 
-                                Yukakomob Yukakomob = new Yukakomob();
-                                Yukakomob.state = Yukakomob.HUNTING;
-                                Yukakomob.pos = pos;
-                                GameScene.add( Yukakomob );
-                                Yukakomob.beckon(hero.pos);
-
+                                Antonio Antonio = new Antonio();
+                                Antonio.state = Antonio.HUNTING;
+                                Antonio.pos = pos;
+                                GameScene.add( Antonio );
+                                Antonio.beckon(hero.pos);
                             }
                         }
                     });
@@ -200,13 +216,9 @@ public class Retonio extends NPC {
     public void add( Buff buff ) {
     }
 
-
     @Override
     public boolean reset() {
         return true;
     }
-
-
-
 
 }

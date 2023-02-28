@@ -347,6 +347,7 @@ public class Assets {
 		public static final String REBEL= "sprites/rebel.png";
 		public static final String MUDA= "sprites/muda.png";
 		public static final String PUCCI= "sprites/pucci.png";
+		public static final String PUCCI4= "sprites/pucci4.png";
 		public static final String KOUSAKU= "sprites/kousaku.png";
 		public static final String JOJO= "sprites/jojo.png";
 		public static final String TONIO= "sprites/tonio.png";
@@ -376,6 +377,11 @@ public class Assets {
 		public static final String DIEGON= "sprites/diegon.png";
 		public static final String CMOON= "sprites/cmoon.png";
 		public static final String BCOM= "sprites/bcom.png";
+		public static final String KIRA= "sprites/kira.png";
+		public static final String BCOMG= "sprites/bcomg.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
+		public static final String ANTONIO= "sprites/antonio.png";
+		public static final String ROHAN= "sprites/rohan.png";
+		public static final String KAKYOIN= "sprites/kakyoin.png";
 	}
 }

@@ -74,7 +74,7 @@ public class Tank extends Mob {
 		maxLvl = 30;
 
 		loot = new ShockingBrew();
-		lootChance = 0.3f;
+		lootChance = 0.2f;
 	}
 	int damageTaken = 0;
 

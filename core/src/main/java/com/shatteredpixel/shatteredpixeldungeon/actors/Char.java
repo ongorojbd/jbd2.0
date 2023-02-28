@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -563,7 +564,11 @@ public abstract class Char extends Actor {
 			}
 		}
 		final Calendar calendar = Calendar.getInstance();
-		if (Dungeon.hero.belongings.weapon() instanceof Sai && calendar.get(Calendar.HOUR_OF_DAY) < 5) {
+	//	if (Dungeon.hero.belongings.weapon() instanceof Sai && calendar.get(Calendar.HOUR_OF_DAY) < 5) {
+		//	damage *= 1.25f;
+	//	}
+
+		if (Dungeon.hero.belongings.weapon() instanceof Sai && enemy.buff(Blindness.class) != null){
 			damage *= 1.25f;
 		}
 
@@ -675,10 +680,10 @@ public abstract class Char extends Actor {
 			dmg *= 2;
 		}
 		if (this.buff(Triplespeed.class) != null){
-			dmg *= 1.5;
+			dmg *= 1.3;
 		}
 		if (this.buff(D4C.class) != null){
-			dmg *= 0.75;
+			dmg *= 0.85;
 		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= 1.25f;

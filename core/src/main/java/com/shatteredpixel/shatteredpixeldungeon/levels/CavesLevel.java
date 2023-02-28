@@ -59,11 +59,10 @@ public class CavesLevel extends RegularLevel {
 		color2 = 0xb9d661;
 	}
 
-	@Override
-	public void playLevelMusic() {
+	public void playLevelMusic(){
 		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.CAVES_2},
-				new float[]{1},
+				new String[]{Assets.Music.CAVES_2, Assets.Music.DRAGON},
+				new float[]{1, 1},
 				false);
 	}
 

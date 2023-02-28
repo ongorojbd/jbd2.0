@@ -14,54 +14,44 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover;
 import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover2;
+import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover4;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LabsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -82,6 +72,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Rebel extends Mob {
+	private static final String[] LINE_KEYS = {"invincibility1", "invincibility2", "invincibility3", "invincibility4", "invincibility5"};
 	{
 		spriteClass = RebelSprite.class;
 
@@ -104,7 +95,7 @@ public class Rebel extends Mob {
 		immunities.add(MagicalSleep.class );
 	}
 
-	int cleanCooldown = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) ? 15 : 31;
+	int cleanCooldown = 9999;
 	int damageTaken = 0;
 	int summonCooldown = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 9999 : 9999;
 
@@ -114,6 +105,7 @@ public class Rebel extends Mob {
 	private int GasCoolDown = 15;
 	private int ACoolDown = 9999;
 	private int BurstTime = 0;
+	private int BurstTimt = 0; // 화염 폭발 발동 시간. 2가 되면 발동함
 	private int Burstpos = -1;
 	private static final Rect arena = new Rect(0, 0, 33, 26);
 	private static final int bottomDoor = 16 + (arena.bottom+1) * 33;
@@ -136,6 +128,7 @@ public class Rebel extends Mob {
 	private static final String CLEAN_COOLDOWN = "cleancooldown";
 	private static final String DMGTAKEN = "damagetaken";
 	private static final String SKILL2TIME   = "BurstTime";
+	private static final String SKILL3TIME   = "BurstTimt";
 	private static final String SKILL2TPOS   = "Burstpos";
 	private static final String SKILL2TCD   = "ACoolDown";
 	private static final String SKILL3TCD   = "GasCoolDown";
@@ -156,6 +149,7 @@ public class Rebel extends Mob {
 		bundle.put( PHASE, Phase );
 		bundle.put( SKILLPOS, LastPos );
 		bundle.put( SKILL2TIME, BurstTime );
+		bundle.put( SKILL3TIME, BurstTimt );
 		bundle.put( SKILL2TCD, ACoolDown );
 		bundle.put( SKILL2TPOS, Burstpos );
 		bundle.put( SKILL3TCD, GasCoolDown );
@@ -177,6 +171,7 @@ public class Rebel extends Mob {
 		Phase = bundle.getInt(PHASE);
 		LastPos = bundle.getInt(SKILLPOS);
 		BurstTime = bundle.getInt(SKILL2TIME);
+		BurstTimt = bundle.getInt(SKILL3TIME);
 		ACoolDown = bundle.getInt(SKILL2TCD);
 		Burstpos = bundle.getInt(SKILL2TPOS);
 		GasCoolDown = bundle.getInt(SKILL3TCD);
@@ -221,6 +216,29 @@ public class Rebel extends Mob {
 	}
 
 	@Override
+	public String description() {
+		String desc = super.description();
+
+		if (Dungeon.mboss4 == 1){
+			desc += "\n" + Messages.get(this, "p1");
+		}
+
+		if (Dungeon.mboss9 == 1){
+			desc += "\n" + Messages.get(this, "p2");
+		}
+
+		if (Dungeon.mboss14 == 1){
+			desc += "\n" + Messages.get(this, "p3");
+		}
+
+		if (Dungeon.mboss19 == 1){
+			desc += "\n" + Messages.get(this, "p4");
+		}
+
+		return desc;
+	}
+
+	@Override
 	public void notice() {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
@@ -249,6 +267,11 @@ public class Rebel extends Mob {
 					((DriedRose.GhostHero) ch).sayBoss();
 				}
 			}
+
+			if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss14 == 1) {
+				Buff.affect(Dungeon.hero, Doom.class);
+			}
+
 		}
 	}
 
@@ -258,79 +281,94 @@ public class Rebel extends Mob {
 		cleanCooldown--;
 
 		if (summonCooldown <= 0 && Dungeon.level instanceof LabsBossLevel) {
-			Newgenkaku Newgenkaku = new Newgenkaku();
+			Mih Newgenkaku = new Mih();
 			Newgenkaku.state = Newgenkaku.HUNTING;
 			Newgenkaku.pos = bottomDoor-26*33;
 			GameScene.add( Newgenkaku );
 			Newgenkaku.beckon(Dungeon.hero.pos);
+			if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1) Buff.affect(Newgenkaku, Adrenaline.class, 30f);
 
-			Newcmoon Newcmoon = new Newcmoon();
+			Mih Newcmoon = new Mih();
 			Newcmoon.state = Newcmoon.HUNTING;
 			Newcmoon.pos = bottomDoor-26*33;
 			GameScene.add( Newcmoon );
 			Newcmoon.beckon(Dungeon.hero.pos);
+			if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1) Buff.affect(Newcmoon, Adrenaline.class, 30f);
 
 			Mih Mih = new Mih();
 			Mih.state = Mih.HUNTING;
 			Mih.pos = bottomDoor-26*33;
 			GameScene.add( Mih );
 			Mih.beckon(Dungeon.hero.pos);
+			if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1) Buff.affect(Mih, Adrenaline.class, 30f);
 
 			GLog.w(Messages.get(Rebel.class, "summon"));
 
-			summonCooldown = (39);
+			summonCooldown = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 20 : 29);
+			if (Phase == 5) summonCooldown = (9);
 
 			new Flare( 5, 32 ).color( 0xFFFFFF, true ).show( this.sprite, 3f );
 			Sample.INSTANCE.play(Assets.Sounds.OH1, 1.2f);
 		}
-		else if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
 
-			if (summonCooldown <= 1 && Dungeon.level instanceof LabsBossLevel) {
-
-				Kousaku Kousaku = new Kousaku();
-				Kousaku.state = Kousaku.HUNTING;
-				Kousaku.pos = bottomDoor-26*33;
-				GameScene.add( Kousaku );
-				Kousaku.beckon(Dungeon.hero.pos);
-
-				Cmoon Cmoon = new Cmoon();
-				Cmoon.state = Cmoon.HUNTING;
-				Cmoon.pos = bottomDoor-26*33;
-				GameScene.add( Cmoon );
-				Cmoon.beckon(Dungeon.hero.pos);
-
-				Genkaku Genkaku = new Genkaku();
-				Genkaku.state = Genkaku.HUNTING;
-				Genkaku.pos = bottomDoor-26*33;
-				GameScene.add( Genkaku );
-				Genkaku.beckon(Dungeon.hero.pos);
-
-				GLog.w(Messages.get(Rebel.class, "summon"));
-
-			summonCooldown = (37);
-
-				new Flare( 5, 32 ).color( 0xFFFFFF, true ).show( this.sprite, 3f );
-				Sample.INSTANCE.play(Assets.Sounds.OH1);
-
-			}
-		}
 		if (cleanCooldown <= 0) {
-			Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1, 1);
-			GameScene.flash(0xFFFF00);
-			GLog.w(Messages.get(Rebel.class, "cleaning"));
-			for (int i = 0; i < 1122; i++) {
-				if (Dungeon.level.map[i] == Terrain.BARRICADE
-						|| Dungeon.level.map[i] == Terrain.HIGH_GRASS
-						|| Dungeon.level.map[i] == Terrain.GRASS
-						|| Dungeon.level.map[i] == Terrain.FURROWED_GRASS
-						|| Dungeon.level.map[i] == Terrain.EMBERS
-						|| Dungeon.level.map[i] == Terrain.WATER  ) {
-					Level.set(i, Terrain.EMPTY);
-					GameScene.updateMap(i);
-				}
-			}
+			if (BurstTimt == 0) {
+				GLog.h(Messages.get(this, "fire_ready"));
 
-			cleanCooldown = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) ? 15 : 31;
+				Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+				SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
+
+				Dungeon.hero.interrupt();
+				spend(1f);
+				BurstTimt++;
+				return true;
+			}
+			else {
+				Char Target = hero;
+
+				if (Target.buff(PortableCover4.CoverBuff.class) == null) {
+					Camera.main.shake(24, 2f);
+					GameScene.flash(0xFF00FF);
+					Sample.INSTANCE.play( Assets.Sounds.BLAST);
+					Sample.INSTANCE.play( Assets.Sounds.HAHAH);
+					hero.damage(hero.HP/2, this);
+					CellEmitter.center(hero.pos).burst(BlastParticle.FACTORY, 20);
+					GLog.n(Messages.get(this, "o"));
+
+					if (enemy == Dungeon.hero && !enemy.isAlive()) {
+						Dungeon.fail(getClass());
+					}
+
+				}
+				else {
+					Camera.main.shake(16, 1.5f);
+					Buff.prolong(this, Paralysis.class, 1f);
+					GLog.p(Messages.get(this, "g"));
+					GLog.n(Messages.get(this, Random.element( LINE_KEYS )));
+
+					Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY);
+				}
+
+
+				BurstTimt = 0;
+
+				//GLog.w(Messages.get(Rebel.class, "cleaning"));
+
+				for (int i = 0; i < 1122; i++) {
+					if (Dungeon.level.map[i] == Terrain.BARRICADE
+							|| Dungeon.level.map[i] == Terrain.HIGH_GRASS
+							|| Dungeon.level.map[i] == Terrain.GRASS
+							|| Dungeon.level.map[i] == Terrain.FURROWED_GRASS
+							|| Dungeon.level.map[i] == Terrain.EMBERS
+							|| Dungeon.level.map[i] == Terrain.WATER  ) {
+						Level.set(i, Terrain.EMPTY);
+						GameScene.updateMap(i);
+					}
+				}
+				cleanCooldown = (35);
+
+				return true;
+			}
 		}
 
 		if (!UseAbility()) {
@@ -367,10 +405,10 @@ public class Rebel extends Mob {
 
 	@Override
 	public void damage(int dmg, Object src) {
-		if (dmg >= 150){
+		if (dmg >= 200){
 			//takes 20/21/22/23/24/25/26/27/28/29/30 dmg
 			// at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
-			dmg = 150;
+			dmg = 200;
 		}
 		BossHealthBar.assignBoss(this);
 		int preHP = HP;
@@ -386,7 +424,7 @@ public class Rebel extends Mob {
 			GameScene.flash(0x8B00FF);
 			new Fadeleaf().activate(this);
 			new Fadeleaf().activate(hero);
-			Buff.prolong(this, Haste.class, Haste.DURATION*5000f);
+			Buff.prolong(this, Haste.class, 1_000_000);
 			ACoolDown = 12;
 			summonCooldown = 0;
 
@@ -396,7 +434,7 @@ public class Rebel extends Mob {
 		else if (Phase==1 && HP < 1200) {
 			Phase = 2;
 			GameScene.flash(0x8B00FF);
-			Buff.prolong(this, Bless.class, Bless.DURATION*5000f);
+			Buff.prolong(this, Bless.class, Bless.DURATION*1_000_000);
 			yell(Messages.get(this, "telling_2"));
 
 			WO WO = new WO();
@@ -407,12 +445,11 @@ public class Rebel extends Mob {
 
 			Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
-
 		}
 		else if (Phase==2 && HP < 900) {
 			Phase = 3;
 			GameScene.flash(0x8B00FF);
-			Buff.prolong(this, BlobImmunity.class, BlobImmunity.DURATION*5000f);
+			Buff.prolong(this, BlobImmunity.class, BlobImmunity.DURATION*1_000_000);
 			Buff.detach(this, Doom.class);
 			Buff.affect(Dungeon.hero, MindVision.class, 3f);
 			immunities.add(Doom.class );
@@ -429,6 +466,8 @@ public class Rebel extends Mob {
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 
 
+			cleanCooldown = 10;
+
 			yell(Messages.get(this, "telling_3"));
 
 			Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
@@ -437,7 +476,7 @@ public class Rebel extends Mob {
 		else if (Phase==3 && HP < 600) {
 			Phase = 4;
 			GameScene.flash(0x8B00FF);
-			Buff.prolong(this, Adrenaline.class, Adrenaline.DURATION*5000f);
+			Buff.prolong(this, Adrenaline.class, Adrenaline.DURATION*1_000_000);
 			yell(Messages.get(this, "telling_4"));
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
@@ -453,11 +492,11 @@ public class Rebel extends Mob {
 		}
 		else if (Phase==4 && HP < 300) {
 			Phase = 5;
-			Buff.prolong(this, MagicImmune.class, MagicImmune.DURATION*5000f);
+			Buff.prolong(this, MagicImmune.class, MagicImmune.DURATION*1_000_000);
 			Buff.affect(Dungeon.hero, Blindness.class, 30f);
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
-			this.sprite.add(CharSprite.State.ILLUMINATED);
+			this.sprite.add(CharSprite.State.SHIELDED);
 
 			GameScene.flash(0x8B00FF);
 			yell(Messages.get(this, "telling_5"));
@@ -466,7 +505,6 @@ public class Rebel extends Mob {
 
 			GLog.h(Messages.get(Rebel.class, "blood"));
 			Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
-
 		}
 
 	}
@@ -519,9 +557,15 @@ public class Rebel extends Mob {
 			Statistics.qualifiedForBossChallengeBadge = false;
 		}
 
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Dungeon.mboss4 == 1 && Dungeon.mboss9 == 1 && Dungeon.mboss14 == 1 && Dungeon.mboss19 == 1 ){
+			Badges.validateOVERHEAVEN();
+		} else {
+			Statistics.qualifiedForBossChallengeBadge = false;
+		}
 
 		PotionOfHealing.cure(hero);
 		PotionOfHealing.heal(hero);
+		Buff.detach(Dungeon.hero, Doom.class);
 
 		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
 		if (beacon != null) {
@@ -576,6 +620,10 @@ public class Rebel extends Mob {
 					GameScene.flash( 0x333333 );
 					Sample.INSTANCE.play( Assets.Sounds.HAHAH );
 					Buff.affect(Dungeon.hero, Blindness.class, 3f);
+
+					if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss9 == 1) {
+						new Fadeleaf().activate(hero);
+					}
 				}
 			} else {
 				if (Random.Int(5) == 0) {
@@ -592,6 +640,9 @@ public class Rebel extends Mob {
 					Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
 					Sample.INSTANCE.play( Assets.Sounds.HAHAH );
 
+					if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss9 == 1) {
+						new Fadeleaf().activate(hero);
+					}
 				}
 			}
 		}

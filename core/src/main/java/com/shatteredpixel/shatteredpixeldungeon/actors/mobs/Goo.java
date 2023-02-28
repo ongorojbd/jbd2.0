@@ -336,6 +336,10 @@ public class Goo extends Mob {
 				case HUNTRESS:
 					this.yell(Messages.get(this, "notice4"));
 					break;
+				//case DUELIST:
+					//this.yell(Messages.get(this, "notice5"));
+					//GLog.p(Messages.get(Val.class, "9"));
+					//break;
 			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){

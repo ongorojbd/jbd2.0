@@ -200,7 +200,7 @@ public class Stower extends Mob {
 
         super.die(cause);
 
-        Dungeon.level.drop( new TelekineticGrab().identify().quantity(10), pos ).sprite.drop( pos );
+        Dungeon.level.drop( new TelekineticGrab().identify().quantity(20), pos ).sprite.drop( pos );
         Sample.INSTANCE.play(Assets.Sounds.BLAST);
     }
 

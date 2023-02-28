@@ -219,10 +219,10 @@ public class WO extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
-        if (dmg >= 250){
+        if (dmg >= 200){
             //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
             // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
-            dmg = 250;
+            dmg = 200;
         }
         super.damage(dmg, src);
     }

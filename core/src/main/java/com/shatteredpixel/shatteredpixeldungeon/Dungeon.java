@@ -189,6 +189,11 @@ public class Dungeon {
 	public static int gold;
 	public static int energy;
 
+	public static int mboss4;
+	public static int mboss9;
+	public static int mboss14;
+	public static int mboss19;
+
 	public static HashSet<Integer> chapters;
 
 	public static SparseArray<ArrayList<Item>> droppedItems;
@@ -249,6 +254,11 @@ public class Dungeon {
 
 		depth = 1;
 		branch = 0;
+
+		mboss4 = 1;
+		mboss9 = 1;
+		mboss14 = 1;
+		mboss19 = 1;
 
 		gold = 0;
 		energy = 0;
@@ -554,6 +564,10 @@ public class Dungeon {
 	private static final String BRANCH		= "branch";
 	private static final String GOLD		= "gold";
 	private static final String ENERGY		= "energy";
+	private static final String MBOSS4		= "mboss4";
+	private static final String MBOSS9		= "mboss9";
+	private static final String MBOSS14		= "mboss14";
+	private static final String MBOSS19		= "mboss19";
 	private static final String DROPPED     = "dropped%d";
 	private static final String PORTED      = "ported%d";
 	private static final String LEVEL		= "level";
@@ -577,6 +591,10 @@ public class Dungeon {
 			bundle.put( HERO, hero );
 			bundle.put( DEPTH, depth );
 			bundle.put( BRANCH, branch );
+			bundle.put (MBOSS4, mboss4);
+			bundle.put (MBOSS9, mboss9);
+			bundle.put (MBOSS14, mboss14);
+			bundle.put (MBOSS19, mboss19);
 
 			bundle.put( GOLD, gold );
 			bundle.put( ENERGY, energy );
@@ -741,6 +759,11 @@ public class Dungeon {
 
 		gold = bundle.getInt( GOLD );
 		energy = bundle.getInt( ENERGY );
+
+		mboss4 = bundle.getInt(MBOSS4);
+		mboss9 = bundle.getInt(MBOSS9);
+		mboss14 = bundle.getInt(MBOSS14);
+		mboss19 = bundle.getInt(MBOSS19);
 
 		Statistics.restoreFromBundle( bundle );
 		Generator.restoreFromBundle( bundle );

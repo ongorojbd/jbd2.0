@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PolpoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RohanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
@@ -43,7 +44,7 @@ import com.watabou.utils.Random;
 public class Rohan extends NPC {
 
     {
-        spriteClass = ResearcherSprite.class;
+        spriteClass = RohanSprite.class;
 
         properties.add(Property.IMMOVABLE);
     }
@@ -125,17 +126,17 @@ public class Rohan extends NPC {
                                                 @Override
                                                 protected void onSelect(int index) {
                                                     if (index == 0){
-                                                        if (Dungeon.gold > 99) {
+                                                        if (Dungeon.gold > 49) {
                                                             Statistics.duwang += 1;
                                                             Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                             switch (Random.Int(2)){
                                                                 case 0:
-                                                                    Dungeon.gold += 100;
+                                                                    Dungeon.gold += 50;
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
                                                                     break;
                                                                 case 1:
-                                                                    Dungeon.gold -= 100;
+                                                                    Dungeon.gold -= 50;
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
                                                                     yell(Messages.get(Rohan.class, "win"));
                                                                     break;
@@ -147,18 +148,18 @@ public class Rohan extends NPC {
                                                         yell(Messages.get(Rohan.class, "no"));
                                                     }
                                                     else if (index == 1) {
-                                                        if (Dungeon.gold > 199) {
+                                                        if (Dungeon.gold > 99) {
 
                                                             switch (Random.Int(2)){
                                                                 case 0:
-                                                                    Dungeon.gold += 200;
+                                                                    Dungeon.gold += 100;
                                                                     Statistics.duwang += 1;
                                                                     Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
                                                                     break;
                                                                 case 1:
-                                                                    Dungeon.gold -= 200;
+                                                                    Dungeon.gold -= 100;
                                                                     Statistics.duwang += 1;
                                                                     Sample.INSTANCE.play(Assets.Sounds.MIMIC);
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
@@ -171,17 +172,17 @@ public class Rohan extends NPC {
                                                             yell(Messages.get(Rohan.class, "no"));
                                                     }
                                                     else if (index == 2) {
-                                                        if (Dungeon.gold > 399) {
+                                                        if (Dungeon.gold > 249) {
                                                             Statistics.duwang += 1;
                                                             Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                             switch (Random.Int(2)){
                                                                 case 0:
-                                                                    Dungeon.gold += 400;
+                                                                    Dungeon.gold += 250;
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
                                                                     break;
                                                                 case 1:
-                                                                    Dungeon.gold -= 400;
+                                                                    Dungeon.gold -= 250;
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
                                                                     yell(Messages.get(Rohan.class, "win"));
                                                                     break;
@@ -192,17 +193,17 @@ public class Rohan extends NPC {
                                                             yell(Messages.get(Rohan.class, "no"));
                                                     }
                                                     else if (index == 3) {
-                                                        if (Dungeon.gold > 599) {
+                                                        if (Dungeon.gold > 499) {
                                                             Statistics.duwang += 1;
                                                             Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                             switch (Random.Int(2)){
                                                                 case 0:
-                                                                    Dungeon.gold += 600;
+                                                                    Dungeon.gold += 500;
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
                                                                     break;
                                                                 case 1:
-                                                                    Dungeon.gold -= 600;
+                                                                    Dungeon.gold -= 500;
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
                                                                     yell(Messages.get(Rohan.class, "win"));
                                                                     break;
@@ -260,7 +261,7 @@ public class Rohan extends NPC {
     }
 
     public static void spawn(PrisonLevel level) {
-        if (Dungeon.depth >= 6 && !Dungeon.bossLevel()) {
+        if (Dungeon.depth == 6 && !Dungeon.bossLevel()) {
 
             Rohan npc = new Rohan();
             do {

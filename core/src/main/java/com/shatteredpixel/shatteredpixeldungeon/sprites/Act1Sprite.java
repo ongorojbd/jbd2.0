@@ -33,11 +33,11 @@ public class Act1Sprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 14, 14 );
 
-        idle = new Animation( 2, true );
-        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
+        idle = new Animation( 5, true );
+        idle.frames( frames, 0, 0, 1, 0, 0, 1 );
 
-        run = new Animation( 4, true );
-        run.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
+        run = new Animation( 5, true );
+        run.frames( frames, 0, 0, 1, 0, 0, 1 );
 
         attack = new Animation( 12, false );
         attack.frames( frames, 2, 3, 4 );

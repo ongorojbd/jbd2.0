@@ -69,11 +69,6 @@ public class Mandom extends Mob {
     }
 
     @Override
-    public int attackSkill(Char target) {
-        return 0;
-    }
-
-    @Override
     protected boolean getCloser(int target) {
         return true;
     }
@@ -81,6 +76,11 @@ public class Mandom extends Mob {
     @Override
     protected boolean getFurther(int target) {
         return true;
+    }
+
+    @Override
+    public int attackSkill(Char target) {
+        return 0;
     }
 
     @Override

@@ -24,6 +24,7 @@ public class HandAxe extends MeleeWeapon {
 		hitSoundPitch = 1.17f;
 
 		tier = 2;
+		ACC = 1.32f; //32% boost to accuracy
 	}
 
 	private int HealCount = 0;

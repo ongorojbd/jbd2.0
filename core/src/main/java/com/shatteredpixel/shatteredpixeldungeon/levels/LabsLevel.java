@@ -23,6 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Centurion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kirakira;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pucci4;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SWAT;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
@@ -115,8 +119,12 @@ public class LabsLevel extends RegularLevel {
 	@Override
 	protected void createItems() {
 
-		SWAT.spawn(this);
+		Goo2.spawn(this);
+		Pucci4.spawn(this);
+		Kirakira.spawn(this);
+		Centurion.spawn(this);
 
+		SWAT.spawn(this);
 		super.createItems();
 	}
 

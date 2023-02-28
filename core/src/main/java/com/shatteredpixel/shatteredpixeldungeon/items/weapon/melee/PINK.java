@@ -6,8 +6,17 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -39,84 +48,50 @@ public class PINK extends MeleeWeapon {
         hitSoundPitch = 1.03f;
 
         tier = 5;
-        defaultAction = AC_ZAP;
         ACC = 1.20f; //20% boost to accuracy
     }
 
     @Override
     public int max(int lvl) {
-        return  4*(tier+1)+
-                lvl*(tier);
+        return  3*(tier) +    		//12 base
+                lvl*(tier-1);     	//+3 per level
     }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        SPCharge(2);
-        return super.proc(attacker, defender, damage);
-    }
-
-    @Override
-    public ArrayList<String> actions(Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(AC_ZAP);
-        return actions;
-    }
-
-
-    @Override
-    public void execute(Hero hero, String action) {
-
-        super.execute(hero, action);
-
-        if (action.equals(AC_ZAP) && isEquipped(hero)) {
-            if (charge >= chargeCap) {
-                MindBrack(hero);
-                Sample.INSTANCE.play(Assets.Sounds.CHARMS);
-                charge = 0;
-
-                updateQuickslot();
-                curUser.spendAndNext(1f);
-            }
+        switch (Random.Int(15)) {
+            case 0: case 1: default:
+                Buff.affect( defender, Weakness.class, 3f );
+                break;
+            case 2: case 3:
+                Buff.affect( defender, Vulnerable.class, 3f );
+                break;
+            case 4:
+                Buff.affect( defender, Cripple.class, 3f );
+                break;
+            case 5:
+                Buff.affect( defender, Blindness.class, 3f );
+                break;
+            case 6:
+                Buff.affect( defender, Terror.class, 3f );
+                break;
+            case 7: case 8: case 9:
+                Buff.affect( defender, Amok.class, 3f );
+                break;
+            case 10: case 11:
+                Buff.affect( defender, Slow.class, 3f );
+                break;
+            case 12: case 13:
+                Buff.affect( defender, Hex.class, 3f );
+                break;
+            case 14:
+                Buff.affect( defender, Paralysis.class, 3f );
+                break;
         }
-    }
-
-    private void MindBrack(Hero hero) {
-        PathFinder.buildDistanceMap(hero.pos, BArray.not(Dungeon.level.solid, null), 2);
-        for (int cell = 0; cell < PathFinder.distance.length; cell++) {
-            if (PathFinder.distance[cell] < Integer.MAX_VALUE) {
-                CellEmitter.get( cell ).burst( Speck.factory( Speck.MASK ), 10 );
-                Char ch = Actor.findChar(cell);
-                if (ch != null&& !(ch instanceof Hero) && ch instanceof Mob && ch.alignment != Char.Alignment.ALLY) {
-                    if (!ch.isImmune(Corruption.class)) {
-                        boolean chance = true;
-
-                        if (chance)Buff.affect(ch, Corruption.class);
-
-                        boolean droppingLoot = ch.alignment != Char.Alignment.ALLY;
-
-                        if (ch.buff(Corruption.class) != null){
-                            if (droppingLoot) ((Mob)ch).rollToDropLoot();
-                            Statistics.enemiesSlain++;
-                            Badges.validateMonstersSlain();
-                            Statistics.qualifiedForNoKilling = false;
-                            if (((Mob)ch).EXP > 0 && curUser.lvl <= ((Mob)ch).maxLvl) {
-                                curUser.sprite.showStatus(CharSprite.POSITIVE, Messages.get(((Mob)ch), "exp", ((Mob)ch).EXP));
-                                curUser.earnExp(((Mob)ch).EXP, ((Mob)ch).getClass());
-                            } else {
-                                curUser.earnExp(0, ((Mob)ch).getClass());
-                            }
-                        }
-                    }
-
-                }}}
-    }
-
-
-    @Override
-    public String status() {
-        if (chargeCap == 100)
-            return Messages.format("%d%%", charge);
-        return null;
+        if (Random.Int(100) <= Math.min(buffedLvl(), 9)) {					//1% base, +1% per lvl, max 10%
+            Buff.affect( defender, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom.class);
+        }
+        return damage;
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{

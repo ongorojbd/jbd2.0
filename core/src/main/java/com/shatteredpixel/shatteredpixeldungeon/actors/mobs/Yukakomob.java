@@ -44,11 +44,11 @@ public class Yukakomob extends Mob {
     {
         spriteClass = YukakoSprite.class;
 
-        HP = HT = 40;
+        HP = HT = 50;
         defenseSkill = 9;
 
         EXP = 5;
-        maxLvl = 10;
+        maxLvl = 14;
 
         properties.add(Property.UNDEAD);
         properties.add(Property.INORGANIC);
@@ -56,7 +56,7 @@ public class Yukakomob extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 2, 10 );
+        return Random.NormalIntRange( 5, 13 );
     }
 
     @Override

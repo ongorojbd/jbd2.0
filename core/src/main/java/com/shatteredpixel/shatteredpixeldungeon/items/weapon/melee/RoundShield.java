@@ -22,10 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -34,27 +31,28 @@ public class RoundShield extends MeleeWeapon {
 	{
 		image = ItemSpriteSheet.ROUND_SHIELD;
 		hitSound = Assets.Sounds.HIT;
-		hitSoundPitch = 1.2f;
+		hitSoundPitch = 1f;
 
 		tier = 3;
-		DLY = 0.8f;//1.25x speed
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //16 base, down from 20
-				lvl*(tier+1);   //scaling unchanged
+		return  Math.round(2.5f*(tier+1)) +     //10 base, down from 20
+				lvl*(tier-1);                   //+2 per level, down from +4
 	}
+
 
 	@Override
-	public String desc() {
-		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(RingOfEvasion.class) != null) {
-			if (Dungeon.hero.belongings.getItem(RingOfEvasion.class).isEquipped(Dungeon.hero))
-				info += "\n\n" + Messages.get( RoundShield.class, "setbouns");}
-
-		return info;
+	public int defenseFactor( Char owner ) {
+		return 4+2*buffedLvl();     //4 extra defence, plus 2 per level;
 	}
 
-
+	public String statsInfo(){
+		if (isIdentified()){
+			return Messages.get(this, "stats_desc", 4+2*buffedLvl());
+		} else {
+			return Messages.get(this, "typical_stats_desc", 4);
+		}
+	}
 }

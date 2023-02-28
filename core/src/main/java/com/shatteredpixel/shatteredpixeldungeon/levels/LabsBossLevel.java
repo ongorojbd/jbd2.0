@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover4;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
@@ -220,22 +221,12 @@ public class LabsBossLevel extends Level {
 	protected void createItems() {
 
 		Item prize1 = Random.oneOf(
-				new CeremonialCandle().quantity(1),
-				new StoneOfEnchantment().quantity(3),
-				new ScrollOfMetamorphosis().quantity(3),
-				new Blandfruit().quantity(3),
-				new ScrollOfPolymorph().quantity(1),
-				new PotionOfEarthenArmor().quantity(1),
-				new PotionOfShielding().quantity(1)
+				new PortableCover4().quantity(1)
 		);
 
 		Item prize5 = Random.oneOf(
-				new CeremonialCandle().quantity(1),
-				new StoneOfEnchantment().quantity(3),
 				new ScrollOfMetamorphosis().quantity(3),
 				new Blandfruit().quantity(3),
-				new ScrollOfPolymorph().quantity(1),
-				new PotionOfEarthenArmor().quantity(1),
 				new PotionOfShielding().quantity(1)
 		);
 

@@ -137,7 +137,7 @@ public class Act1 extends Mob {
         super.die( cause );
 
 
-        if (Random.Int( 1 ) == 0) {
+        if (Random.Int( 2 ) == 0) {
             Sample.INSTANCE.play( Assets.Sounds.SHEEP );
             new Flare( 5, 32 ).color( 0xFFFF00, true ).show( this.sprite, 2f );
             Act2 Act2 = new Act2();

@@ -178,7 +178,7 @@ public class Act2 extends Mob {
         super.die( cause );
 
 
-        if (Random.Int( 1 ) == 0) {
+        if (Random.Int( 2 ) == 0) {
             GLog.n(Messages.get(this, "v"));
             Sample.INSTANCE.play( Assets.Sounds.BLAST );
             Camera.main.shake(9, 0.5f);

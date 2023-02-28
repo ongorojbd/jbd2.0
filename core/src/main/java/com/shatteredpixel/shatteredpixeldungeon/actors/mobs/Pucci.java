@@ -91,7 +91,7 @@ public class Pucci extends Mob {
 
         flying = true;
 
-        Buff.affect(this, Barrier.class).setShield(171);
+        Buff.affect(this, Barrier.class).setShield(160);
 
         immunities.add(Dominion.class );
 
@@ -99,7 +99,7 @@ public class Pucci extends Mob {
 
     private static final Rect arena = new Rect(0, 0, 33, 26);
     private static final int bottomDoor = 16 + (arena.bottom+1) * 33;
-    int summonCooldown = 7;
+    int summonCooldown = 10;
     private static final String SUMMON_COOLDOWN = "summoncooldown";
 
     @Override

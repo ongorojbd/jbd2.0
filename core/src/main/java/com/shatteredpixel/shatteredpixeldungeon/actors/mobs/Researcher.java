@@ -68,7 +68,7 @@ public class Researcher extends Mob {
 		maxLvl = 30;
 
 		loot = new SummonElemental();
-		lootChance = 0.2f;
+		lootChance = 0.15f;
 	}
 
 	@Override

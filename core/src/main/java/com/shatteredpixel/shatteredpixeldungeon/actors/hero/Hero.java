@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -133,9 +134,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachinegun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -1250,6 +1253,10 @@ public class Hero extends Char {
 			damage *= 0f;
 		}
 
+		if (Dungeon.hero.belongings.weapon() instanceof Greatsword && Challenges.activeChallenges() >= 5) {
+			damage *= 1.25f;
+		}
+
 		switch (subClass) {
 		case SNIPER:
 			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
@@ -1336,11 +1343,15 @@ public class Hero extends Char {
 			damage = rockArmor.absorb(damage);
 		}
 
-		if (hero.belongings.weapon() instanceof RoundShield && (Random.Int(5) == 0)){
-			Buff.prolong(this, Invisibility.class, Invisibility.DURATION / 6f);
-			Buff.prolong(this, Haste.class, Haste.DURATION / 6f);
-		}
+		//if (hero.belongings.weapon() instanceof RoundShield && (Random.Int(5) == 0)){
+			//Buff.prolong(this, Invisibility.class, Invisibility.DURATION / 6f);
+			//Buff.prolong(this, Haste.class, Haste.DURATION / 6f);
+	//	}
 
+		if (Dungeon.hero.belongings.weapon() instanceof Mace && (Random.Int(100) == 0)) {
+			hero.HP = hero.HT;
+			GLog.p(Messages.get(Civil.class, "cream"));
+		}
 
 		if (Dungeon.hero.buff(Holy1.class) != null && (Random.Int(10) == 0)){
 			Buff.prolong(this, MagicalSight.class, 1f);
@@ -1353,7 +1364,7 @@ public class Hero extends Char {
 			GLog.h(Messages.get(Civil.class, "23"));
 		}
 		if (Dungeon.hero.buff(Holy3.class) != null && (Random.Int(10) == 0)){
-			Buff.affect(hero, ArtifactRecharge.class).prolong( 5 ).ignoreHornOfPlenty = false;
+			Buff.affect(hero, ArtifactRecharge.class).prolong( 3 ).ignoreHornOfPlenty = false;
 			SpellSprite.show( hero, SpellSprite.PURITY );
 			GLog.h(Messages.get(Civil.class, "24"));
 		}

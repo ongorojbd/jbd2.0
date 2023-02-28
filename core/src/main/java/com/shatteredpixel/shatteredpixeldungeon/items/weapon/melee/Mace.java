@@ -21,14 +21,21 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -39,9 +46,8 @@ public class Mace extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.MACE;
-		hitSound = Assets.Sounds.FF;
-
-		hitSoundPitch = 1.1f;
+		hitSound = Assets.Sounds.HIT;
+		hitSoundPitch = 3.3f;
 
 		tier = 3;
 		ACC = 1.28f; //28% boost to accuracy
@@ -54,23 +60,26 @@ public class Mace extends MeleeWeapon {
 	}
 
 	@Override
-	public int damageRoll(Char owner) {
-		if (owner instanceof Hero) {
-			Hero hero = (Hero) owner;
-			Char enemy = hero.enemy();
-			if (Dungeon.hero.belongings.weapon() instanceof Mace && Random.Int(100) == 0) {
-				PotionOfHealing.cure(hero);
-				PotionOfHealing.heal(hero);
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (attacker instanceof Hero) {
+			if (hero.belongings.getItem(RingOfHaste.class) != null) {
+				if (hero.belongings.getItem(RingOfHaste.class).isEquipped(hero)) {
+					{
+						Buff.affect(hero, Barrier.class).setShield(1);
+					}
+				}
 			}
 		}
-		return super.damageRoll(owner);
+
+		return super.proc(attacker, defender, damage);
 	}
 
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
-			if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero))
+		if (hero.belongings.getItem(HornOfPlenty.class) != null) {
+			if (hero.belongings.getItem(HornOfPlenty.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( Mace.class, "setbouns");}
 
 		return info;

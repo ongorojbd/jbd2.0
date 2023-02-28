@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WoolParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
@@ -344,7 +345,7 @@ public class ShadowClone extends ArmorAbility {
 			if (ch.pos == pos) ch.sprite.place( pos );
 
 			if (Dungeon.level.heroFOV[pos] || ch == Dungeon.hero ) {
-				ch.sprite.emitter().burst(SmokeParticle.FACTORY, 10);
+				ch.sprite.emitter().burst(WoolParticle.FACTORY, 10);
 			}
 		}
 
@@ -365,29 +366,28 @@ public class ShadowClone extends ArmorAbility {
 
 	public static class ShadowSprite extends MobSprite {
 
-		private Emitter smoke;
-
 		public ShadowSprite() {
 			super();
 
-			texture( Dungeon.hero.heroClass.spritesheet() );
+			texture( Assets.Sprites.KAKYOIN );
 
-			TextureFilm film = new TextureFilm( HeroSprite.tiers(), 6, 12, 15 );
+			TextureFilm frames = new TextureFilm( texture, 12, 15 );
 
 			idle = new Animation( 1, true );
-			idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
+			idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
 			run = new Animation( 20, true );
-			run.frames( film, 2, 3, 4, 5, 6, 7 );
-
-			die = new Animation( 20, false );
-			die.frames( film, 0 );
+			run.frames( frames, 2, 3, 4, 5, 6, 7 );
 
 			attack = new Animation( 15, false );
-			attack.frames( film, 13, 14, 15, 0 );
+			attack.frames( frames, 8, 9, 10, 0 );
 
-			idle();
-			resetColor();
+			zap = attack.clone();
+
+			die = new Animation( 20, false );
+			die.frames( frames, 11, 12, 13, 14);
+
+			play( idle );
 		}
 
 		@Override
@@ -396,40 +396,9 @@ public class ShadowClone extends ArmorAbility {
 		}
 
 		@Override
-		public void resetColor() {
-			super.resetColor();
-			alpha(0.8f);
-			brightness(0.0f);
-		}
-
-		@Override
-		public void link( Char ch ) {
-			super.link( ch );
-			renderShadow = false;
-
-			if (smoke == null) {
-				smoke = emitter();
-				smoke.pour( CityLevel.Smoke.factory, 0.2f );
-			}
-		}
-
-		@Override
-		public void update() {
-
-			super.update();
-
-			if (smoke != null) {
-				smoke.visible = visible;
-			}
-		}
-
-		@Override
 		public void kill() {
 			super.kill();
 
-			if (smoke != null) {
-				smoke.on = false;
-			}
 		}
 	}
 }

@@ -122,7 +122,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
 				"To Be Countinued....",
 				Icons.WATA.get(),
-				"Next Update : 2.0e",
+				"Next Update : 2.0h",
 				"",
 				"");
 		if (landscape()){

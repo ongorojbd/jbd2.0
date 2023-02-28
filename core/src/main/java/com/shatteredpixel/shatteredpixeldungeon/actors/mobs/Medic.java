@@ -74,7 +74,7 @@ public class Medic extends Mob {
 		maxLvl = 30;
 
 		loot = new PotionOfShroudingFog();
-		lootChance = 0.4f;
+		lootChance = 0.25f;
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class WarHammer extends MeleeWeapon {
 		if (owner instanceof Hero) {
 			Hero hero = (Hero) owner;
 			Char enemy = hero.enemy();
-			if (Dungeon.hero.belongings.weapon() instanceof WarHammer && (Random.Int(4) == 0)) {
+			if (Dungeon.hero.belongings.weapon() instanceof WarHammer && (Random.Int(5) == 0)) {
 				Dungeon.energy += 1;
 			}
 		}

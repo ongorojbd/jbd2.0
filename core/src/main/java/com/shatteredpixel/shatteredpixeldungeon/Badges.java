@@ -181,6 +181,7 @@ public class Badges {
 		YORIHIMES_ALL_CLASSES       ( 126, true ),
 		NEOROCA                     ( 24, true ),
 		MIH                         ( 25, true ),
+		OVERHEAVEN                  ( 125, true ),
 		;
 
 		public boolean meta;
@@ -1025,6 +1026,12 @@ public class Badges {
 		displayBadge( Badge.MIH );
 	}
 
+	public static void validateOVERHEAVEN() {
+		displayBadge( Badge.OVERHEAVEN );
+	}
+
+
+
 	public static void validateChampion( int challenges ) {
 		if (challenges == 0) return;
 		Badge badge = null;
@@ -1129,9 +1136,9 @@ public class Badges {
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
 			{Badge.VICTORY,      Badge.YORIHIMES},
-			{Badge.YORIHIMES_ALL_CLASSES,   Badge.BOSS_CHALLENGE_6},
 			{Badge.CHAMPION_1,   Badge.NEOROCA},
 			{Badge.CHAMPION_1,   Badge.MIH},
+			{Badge.BOSS_CHALLENGE_6,   Badge.OVERHEAVEN},
 	};
 
 	//If the summary badge is unlocked, don't show the component badges
@@ -1146,7 +1153,7 @@ public class Badges {
 			{Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
 			{Badge.YORIHIMES, Badge.BOSS_CHALLENGE_6 },
-
+			{Badge.BOSS_CHALLENGE_6, Badge.OVERHEAVEN },
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_WANDS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
