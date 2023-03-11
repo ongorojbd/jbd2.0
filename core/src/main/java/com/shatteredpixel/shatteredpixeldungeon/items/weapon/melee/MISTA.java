@@ -21,17 +21,25 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -41,22 +49,22 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
 public class MISTA extends MeleeWeapon {
-    public static final String AC_ZAP = "ZAP";
     {
         image = ItemSpriteSheet.MISTA;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch = 0.9f;
 
-        defaultAction = AC_ZAP;
-
         tier = 5;
         ACC = 1.15f; //24% boost to accuracy
         RCH = 3;    //lots of extra reach
     }
+    private int HealCount = 0;
 
     @Override
     public int max(int lvl) {
@@ -67,54 +75,46 @@ public class MISTA extends MeleeWeapon {
     private int starpower = 0 ;
     private int starpowercap = 6;
 
-    @Override
-    public ArrayList<String> actions(Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(AC_ZAP);
-        return actions;
-    }
-
-    @Override
-    public void execute(Hero hero, String action) {
-
-        super.execute(hero, action);
-
-        if (action.equals(AC_ZAP) && Dungeon.hero.belongings.weapon == this) {
-            if (starpower < starpowercap) {
-                starpower++;
-                updateQuickslot();
-                hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(MISTA.class, "charge"));
-                if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
-                    if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero)) {
-                        curUser.spendAndNext(1f);
-
-                    }
-                    else curUser.spendAndNext(2f);
-                }
-                else curUser.spendAndNext(2f);
-            } else
-                hero.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(MISTA.class, "charge_fail"));
+    private void Heal(Char attacker) {
+        if (HealCount >= 6) {
+            starpower++;
+            HealCount = 0;
         }
     }
 
-
     @Override
     public int proc(Char attacker, Char defender, int damage) {
+
+        HealCount++;
+
+        Heal(attacker);
 
         if (starpower >= 1 && attacker instanceof Hero) {
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                     int dmg = attacker.damageRoll() - defender.drRoll();
-                    dmg = Math.round(dmg * (starpower * 0.35f));
+
+
+
+                    if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
+                        if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero)) {
+                            dmg = Math.round(dmg * 1.35f);
+                    }}
+
+
+
+                    else {
+                        dmg = Math.round(dmg * 1.2f);
+                    }
+
 
                     mob.damage(dmg, attacker);
                 }
             }
-            if (starpower == 3) GameScene.flash( 0x80FFFFFF );
-            Camera.main.shake(2, starpower / 3);
-
+            GameScene.flash( 0x80FFFFFF );
+            Camera.main.shake(2, 1.5f);
             Sample.INSTANCE.play(Assets.Sounds.SP, 1.1f, 1f);
-            attacker.sprite.showStatus(CharSprite.POSITIVE, Messages.get(MISTA.class, "attack"));
+            attacker.sprite.showStatus(CharSprite.POSITIVE, "[섹스 피스톨즈!]");
         }
 
         starpower = 0;
@@ -134,8 +134,7 @@ public class MISTA extends MeleeWeapon {
 
     @Override
     public String status() {
-        if (this.isIdentified()) return starpower + "/" + starpowercap;
-        else return null;}
+        return HealCount + "/" + 6;}
 
     private static final String POWER = "starpower";
 
@@ -158,7 +157,7 @@ public class MISTA extends MeleeWeapon {
             inputs =  new Class[]{Whip.class, WandOfRegrowth.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 4;
+            cost = 15;
 
             output = MISTA.class;
             outQuantity = 1;

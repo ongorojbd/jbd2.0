@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,51 +21,65 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ShockBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DoobieTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FancakeTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlockTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.OozeTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ShockingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MedicSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
+
+import java.util.ArrayList;
 
 public class Medic extends Mob {
 
-	private static final float TIME_TO_ZAP = 1f;
-
 	{
-		spriteClass = MedicSprite.class;
+		spriteClass = TrapperSprite.class;
 
 		HP = HT = 195;
 		defenseSkill = 20;
@@ -74,8 +88,9 @@ public class Medic extends Mob {
 		maxLvl = 30;
 
 		loot = new PotionOfShroudingFog();
-		lootChance = 0.25f;
+		lootChance = 0.15f;
 	}
+
 
 	@Override
 	public int damageRoll() {
@@ -92,70 +107,200 @@ public class Medic extends Mob {
 		return Random.NormalIntRange(0, 5);
 	}
 
+	private boolean hasbolas = true;
 
 	@Override
-	public int attackProc( Char hero, int damage ) {
+	protected boolean canAttack( Char enemy ) {
+
+		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
+
+		if (Dungeon.level.adjacent( pos, enemy.pos )) return true;
+		else if( attack.collisionPos == enemy.pos && this.hasbolas == true ) return true;
+		else return false;
+	}
+
+	@Override
+	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
-		if (this.buff(Doom.class) == null) {
-			if (Random.Int(5) == 0) {
-				new ExplosiveTrap().set(target).activate();
-			}
+
+		if (!Dungeon.level.adjacent( pos, enemy.pos )) {
+			hasbolas = false;
+			Buff.prolong( enemy, Cripple.class, Cripple.DURATION );
 		}
+
 		return damage;
 	}
 
-	@Override
-	protected boolean canAttack(Char enemy) {
-		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+	private int left(int direction){
+		return direction == 0 ? 7 : direction-1;
 	}
 
-	protected boolean doAttack(Char enemy) {
+	private int right(int direction){
+		return direction == 7 ? 0 : direction+1;
+	}
 
-		if (Dungeon.level.adjacent(pos, enemy.pos)) {
+	private int trapcooldown = 0;
+	private int lastEnemyPos = -1;
 
-			return super.doAttack(enemy);
+	public void setTraps(){
 
-		} else {
 
-			if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-				sprite.zap(enemy.pos);
-				return false;
-			} else {
-				zap();
-				return true;
+		Trap[] trapClasses = new Trap[]{
+				new BurningTrap(),new ShockingTrap(),new ToxicTrap(),new DoobieTrap(),
+				new AlarmTrap(),new OozeTrap(),
+				new ConfusionTrap() ,new FrostTrap() ,new DistortionTrap() ,new TeleportationTrap() ,new FancakeTrap() };
+
+
+		int trapPos = trapPos();
+		if (trapPos != -1) {
+			int i;
+			for (i = 0; i < PathFinder.CIRCLE8.length; i++) {
+				if ((enemy.pos + PathFinder.CIRCLE8[i]) == trapPos) {
+					break;
+				}
+			}
+
+			//spread to the tile hero was moving towards and the two adjacent ones
+			int leftPos = enemy.pos + PathFinder.CIRCLE8[left(i)];
+			int rightPos = enemy.pos + PathFinder.CIRCLE8[right(i)];
+
+
+			if (Dungeon.level.passable[leftPos] && Dungeon.level.map[leftPos] != Terrain.EXIT&& Dungeon.level.map[leftPos] != Terrain.ENTRANCE) {
+				Level.set(leftPos, Terrain.SECRET_TRAP);
+
+
+				Trap t = trapClasses[Random.Int(trapClasses.length)];
+
+				Dungeon.level.setTrap(t, leftPos);
+
+				Dungeon.level.discover(leftPos);
+				CellEmitter.get(leftPos).burst(Speck.factory(Speck.LIGHT), 2);
+
+			}
+			if (Dungeon.level.passable[trapPos] && Dungeon.level.map[trapPos] != Terrain.EXIT&& Dungeon.level.map[trapPos] != Terrain.ENTRANCE) {
+				Level.set(trapPos, Terrain.SECRET_TRAP);
+
+
+				Trap t1 = trapClasses[Random.Int(trapClasses.length)];
+
+				Dungeon.level.setTrap(t1, trapPos);
+
+				Dungeon.level.discover(trapPos);
+				CellEmitter.get(trapPos).burst(Speck.factory(Speck.LIGHT), 2);
+			}
+
+			if (Dungeon.level.passable[rightPos] && Dungeon.level.map[rightPos] != Terrain.EXIT&& Dungeon.level.map[rightPos] != Terrain.ENTRANCE) {
+				Level.set(rightPos, Terrain.SECRET_TRAP);
+
+
+				Trap t3 = trapClasses[Random.Int(trapClasses.length)];
+
+				Dungeon.level.setTrap(t3, rightPos);
+
+				Dungeon.level.discover(rightPos);
+				CellEmitter.get(rightPos).burst(Speck.factory(Speck.LIGHT), 2);
+			}
+
+			trapcooldown = 15;
+
+			yell( Messages.get(this, "a") );
+
+			Sample.INSTANCE.play(Assets.Sounds.JOSEPH);
+
+			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+
+			if (Dungeon.level.heroFOV[enemy.pos]) {
+				Dungeon.hero.interrupt();
 			}
 		}
-	}
-
-	//used so resistances can differentiate between melee and magical attacks
-	public static class DarkBolt {
-	}
-
-	private void zap() {
-		spend(TIME_TO_ZAP);
-
-		if (hit(this, enemy, true)) {
-			//TODO would be nice for this to work on ghost/statues too
-			if (enemy == Dungeon.hero && Random.Int(0) == 0) {
-				Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
-				Sample.INSTANCE.play(Assets.Sounds.HIT);
-			}
-
-			int dmg = Random.NormalIntRange(25, 30);
-			enemy.damage( dmg, new DarkBolt() );
-
-			if (enemy == Dungeon.hero && !enemy.isAlive()) {
-				Dungeon.fail(getClass());
-				GLog.n(Messages.get(this, "bolt_kill"));
-			}
-		} else {
-			enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
-		}
-	}
-
-	public void onZapComplete() {
-		zap();
 		next();
+	}
+
+
+	@Override
+	protected boolean act() {
+		trapcooldown--;
+
+		AiState lastState = state;
+		boolean result = super.act();
+
+
+		if (enemy != null && enemySeen) {
+			lastEnemyPos = enemy.pos;
+		} else {
+			lastEnemyPos = Dungeon.hero.pos;
+		}
+
+
+		return result;
+	}
+
+
+
+	public int trapPos(){
+
+		Char enemy = this.enemy;
+		if (enemy == null) return -1;
+
+		Ballistica b;
+		//aims web in direction enemy is moving, or between self and enemy if they aren't moving
+		if (lastEnemyPos == enemy.pos){
+			b = new Ballistica( enemy.pos, pos, Ballistica.WONT_STOP );
+		} else {
+			b = new Ballistica( lastEnemyPos, enemy.pos, Ballistica.WONT_STOP );
+		}
+
+		int collisionIndex = 0;
+		for (int i = 0; i < b.path.size(); i++){
+			if (b.path.get(i) == enemy.pos){
+				collisionIndex = i;
+				break;
+			}
+		}
+
+		//in case target is at the edge of the map and there are no more cells in the path
+		if (b.path.size() <= collisionIndex+1){
+			return -1;
+		}
+
+		int trapPos = b.path.get( collisionIndex+1 );
+
+		//ensure we aren't shooting the web through walls
+		int projectilePos = new Ballistica( pos, trapPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID).collisionPos;
+
+		if (trapPos != enemy.pos && projectilePos == trapPos && Dungeon.level.passable[trapPos]){
+			return trapPos;
+		} else {
+			return -1;
+		}
+
+	}
+
+	@Override
+	public void move(int step, boolean travelling) {
+		if (travelling && enemySeen && trapcooldown <= 0 && lastEnemyPos != -1){
+			if (trapPos() != -1){
+
+				setTraps();
+
+			}
+		}
+		super.move(step, travelling);
+	}
+
+
+	private static final String TRAPCOOLDOWN = "TRAPCOOLDOWN";
+
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put(TRAPCOOLDOWN, trapcooldown);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		trapcooldown = bundle.getInt( TRAPCOOLDOWN );
 	}
 
 	@Override
@@ -170,6 +315,4 @@ public class Medic extends Mob {
 	}
 
 
-
 }
-

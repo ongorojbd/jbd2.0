@@ -66,7 +66,7 @@ public class LifeLink extends FlavourBuff {
 
 	@Override
 	public int icon() {
-		return BuffIndicator.HERB_HEALING;
+		return BuffIndicator.HEART;
 	}
 
 	@Override

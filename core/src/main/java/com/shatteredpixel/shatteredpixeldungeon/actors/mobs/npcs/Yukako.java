@@ -28,27 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
-import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BlacksmithRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DogTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
@@ -103,6 +84,7 @@ public class Yukako extends NPC {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
+                    Sample.INSTANCE.play(Assets.Sounds.YUKAK);
                     GameScene.show(new WndOptions(
                             sprite(),
                             Messages.titleCase(name()),
@@ -115,6 +97,7 @@ public class Yukako extends NPC {
                         protected void onSelect(int index) {
                             if (index == 0){
                                 Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+                                Sample.INSTANCE.play(Assets.Sounds.YUKAK);
                                 yell(Messages.get(Yukako.class, "4"));
 
                                 destroy();
@@ -129,6 +112,7 @@ public class Yukako extends NPC {
 
                             } else if (index == 1) {
                                 Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+                                Sample.INSTANCE.play(Assets.Sounds.YUKAK);
                                 yell(Messages.get(Yukako.class, "5"));
 
                                 destroy();
@@ -143,6 +127,7 @@ public class Yukako extends NPC {
 
                             } else {
                                 Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+                                Sample.INSTANCE.play(Assets.Sounds.YUKAK);
                                 yell(Messages.get(Yukako.class, "6"));
 
                                 destroy();
@@ -179,6 +164,8 @@ public class Yukako extends NPC {
 
 
     public static void spawn(PrisonLevel level) {
+
+        if (Random.Int( 1 ) == 0) {
         if (Dungeon.depth >= 9 && !Dungeon.bossLevel()) {
 
             Yukako npc = new Yukako();
@@ -193,6 +180,7 @@ public class Yukako extends NPC {
                             !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
                             !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
             level.mobs.add( npc );
+        }
         }
     }
 

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
@@ -75,6 +76,7 @@ public class DBLADE extends MeleeWeapon {
                 if (((Hero) attacker).belongings.getItem(RingOfFuror.class).isEquipped(Dungeon.hero)) {
                     if (Random.Int(20) < 1)
                         damage *= 1.5f;
+                    attacker.sprite.showStatus(CharSprite.NEUTRAL, "[치명타 공격!]");
                 }
             }
         }
@@ -87,7 +89,7 @@ public class DBLADE extends MeleeWeapon {
             inputs =  new Class[]{Longsword.class, BattleAxe.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 30;
+            cost = 15;
 
             output = DBLADE.class;
             outQuantity = 1;

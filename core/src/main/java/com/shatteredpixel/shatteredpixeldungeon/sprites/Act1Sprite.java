@@ -37,7 +37,7 @@ public class Act1Sprite extends MobSprite {
         idle.frames( frames, 0, 0, 1, 0, 0, 1 );
 
         run = new Animation( 5, true );
-        run.frames( frames, 0, 0, 1, 0, 0, 1 );
+        run.frames( frames, 2, 2, 3, 2, 2, 3 );
 
         attack = new Animation( 12, false );
         attack.frames( frames, 2, 3, 4 );

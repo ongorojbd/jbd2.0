@@ -24,11 +24,13 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
@@ -61,6 +63,20 @@ public class WarHammer extends MeleeWeapon {
 			}
 		}
 		return super.damageRoll(owner);
+	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (Dungeon.hero.belongings.getItem(RingOfHaste.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfHaste.class).isEquipped(Dungeon.hero)) {
+				if (defender.buff(Burning.class) != null) {
+					damage *= 1.35f;
+					attacker.sprite.showStatus(CharSprite.NEUTRAL, "[+35% 추가 피해!]");
+				}
+			}
+		}
+		return super.proc(attacker, defender, damage);
 	}
 
 	@Override

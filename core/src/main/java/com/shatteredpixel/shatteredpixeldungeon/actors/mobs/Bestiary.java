@@ -192,7 +192,7 @@ public class Bestiary {
 				// 2x Soldier, 2x researcher, 1x supression
 				return new ArrayList<>(Arrays.asList(
 						Soldier.class, Soldier.class,
-						Researcher.class, Researcher.class,
+						Researcher.class, Medic.class,
 						Supression.class));
 			case 28:
 				// 2x soldier, 1x researcher, 1x supression, 1x tank, 1x medic

@@ -1,42 +1,52 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
 public class AJA extends MeleeWeapon {
-    public static final String AC_ZAP = "ZAP";
+
+    private int HealCount = 0;
+    private int mode = 0;
+
     {
         image = ItemSpriteSheet.AJA;
-
-        defaultAction = AC_ZAP;
 
         tier = 5;
         ACC = 1.4f;
         DLY = 1f;
     }
 
-    private int mode = 0;
+
     // 0, 1, 2
 
     @Override
@@ -45,53 +55,43 @@ public class AJA extends MeleeWeapon {
                 lvl*(tier-1);
     }
 
-
-    @Override
-    public ArrayList<String> actions(Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(AC_ZAP);
-        return actions;
-    }
-
-    @Override
-    public void execute(Hero hero, String action) {
-
-        super.execute(hero, action);
-
-        if (action.equals(AC_ZAP) && isEquipped(hero)) {
+    private void Heal(Char attacker) {
+        if (HealCount >= 10) {
             mode++;
-            if (mode > 2) mode = 0;
+            Sample.INSTANCE.play(Assets.Sounds.CHARGEUP, 1f);
+                if (mode > 2) mode = 0;
 
-            switch (mode) {
-                default:
-                case 0:
-                    ACC = 1f;
-                    DLY = 0.75f;
-                    hitSound = Assets.Sounds.HIT;
-                    hitSoundPitch = 3.3f;
-                    break;
-                case 1:
-                    ACC = 1.5f;
-                    DLY = 1f;
-                    hitSound = Assets.Sounds.HIT_STRONG;
-                    hitSoundPitch = 3.3f;
-                    break;
-                case 2:
-                    ACC = 0.5f;
-                    DLY = 0.5f;
-                    hitSound = Assets.Sounds.SP;
-                    hitSoundPitch = 3.3f;
-                    break;
-            }
+                switch (mode) {
+                    default:
+                    case 0:
+                        ACC = 1f;
+                        DLY = 0.75f;
+                        hitSound = Assets.Sounds.HIT;
+                        hitSoundPitch = 3.3f;
+                        break;
+                    case 1:
+                        ACC = 1.5f;
+                        DLY = 1f;
+                        hitSound = Assets.Sounds.HIT_STRONG;
+                        hitSoundPitch = 3.3f;
+                        break;
+                    case 2:
+                        ACC = 0.5f;
+                        DLY = 0.5f;
+                        hitSound = Assets.Sounds.SP;
+                        hitSoundPitch = 3.3f;
+                        break;
+                }
 
-            updateQuickslot();
-            curUser.spendAndNext(0f);
+            attacker.sprite.showStatus(CharSprite.POSITIVE, "[신체 변형!]");
+            HealCount = 0;
         }
     }
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-
+        HealCount++;
+        Heal(attacker);
 
         if (mode == 0) {
         int extratarget = 0;
@@ -124,7 +124,7 @@ public class AJA extends MeleeWeapon {
         }
 
 
-        if (attacker instanceof Hero) {
+
             if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
                 if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero)) {
                     if (Random.Int(12 + buffedLvl()) > 10) {
@@ -133,7 +133,7 @@ public class AJA extends MeleeWeapon {
                     }
                 }
             }
-        }
+
 
         return super.proc(attacker, defender, damage);
     }
@@ -150,16 +150,9 @@ public class AJA extends MeleeWeapon {
         return info;
     }
 
-
-
     @Override
     public String status() {
-        if (this.isIdentified()) {
-            if (mode == 2) return "SQUIRREL";
-            else if (mode == 1) return "TENTACLE";
-            else return "WING";
-        }
-        else return null;}
+        return HealCount + "/" + 10;}
 
     public static boolean VectorSetBouns() {
         if (!(Dungeon.hero.belongings.weapon instanceof AJA)) return false;
@@ -174,6 +167,7 @@ public class AJA extends MeleeWeapon {
     private static final String SWICH = "mode";
     private static final String DLYSAVE = "DLY";
     private static final String ACCSAVE = "ACC";
+    private static final String HEALPOINT = "HealCount";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -181,6 +175,7 @@ public class AJA extends MeleeWeapon {
         bundle.put(SWICH, mode);
         bundle.put(ACCSAVE, ACC);
         bundle.put(DLYSAVE, DLY);
+        bundle.put(HEALPOINT, HealCount);
     }
 
     @Override
@@ -189,7 +184,9 @@ public class AJA extends MeleeWeapon {
         mode = bundle.getInt(SWICH);
         ACC = bundle.getFloat(ACCSAVE);
         DLY = bundle.getFloat(DLYSAVE);
+        HealCount = bundle.getInt(HEALPOINT);
     }
+
 
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
@@ -198,7 +195,7 @@ public class AJA extends MeleeWeapon {
             inputs =  new Class[]{Greataxe.class, Flail.class, Kunai.class};
             inQuantity = new int[]{1, 1, 1};
 
-            cost = 50;
+            cost = 15;
 
             output = AJA.class;
             outQuantity = 1;

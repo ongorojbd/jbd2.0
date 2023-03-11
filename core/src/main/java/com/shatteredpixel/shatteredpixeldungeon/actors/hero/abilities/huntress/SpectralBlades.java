@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
@@ -101,7 +102,7 @@ public class SpectralBlades extends ArmorAbility {
 		armor.charge -= chargeUse(hero);
 		Item.updateQuickslot();
 
-		Item proto = new Shuriken();
+		Item proto = new SpiritBow();
 
 		final HashSet<Callback> callbacks = new HashSet<>();
 
@@ -125,7 +126,6 @@ public class SpectralBlades extends ArmorAbility {
 
 			MissileSprite m = ((MissileSprite)hero.sprite.parent.recycle( MissileSprite.class ));
 			m.reset( hero.sprite, ch.pos, proto, callback );
-			m.hardlight(0.6f, 1f, 1f);
 			m.alpha(0.8f);
 
 			callbacks.add( callback );

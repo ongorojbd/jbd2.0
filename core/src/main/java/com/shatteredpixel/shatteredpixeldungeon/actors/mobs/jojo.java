@@ -98,6 +98,9 @@ public class jojo extends Mob {
 
     public void sayHeroKilled(){
         this.yell(Messages.get(this, "v"));
+
+        destroy();
+        sprite.killAndErase();
     }
 
     @Override

@@ -764,7 +764,7 @@ public class ItemSpriteSheet {
 	public static final int HALLS_PAGE  = DOCUMENTS+6;
 	static{
 		assignItemRect(GUIDE_PAGE,  8, 8);
-		assignItemRect(ALCH_PAGE,   8, 8);
+		assignItemRect(ALCH_PAGE,   12, 15);
 		assignItemRect(SEWER_PAGE,  8, 8);
 		assignItemRect(PRISON_PAGE, 8, 8);
 		assignItemRect(CAVES_PAGE,  8, 8);

@@ -261,6 +261,11 @@ public class Rebel extends Mob {
 					this.yell(Messages.get(this, "notice4"));
 					Sample.INSTANCE.play(Assets.Sounds.OH2);
 					break;
+				//				case DUELIST:
+//					this.yell(Messages.get(this, "notice5"));
+//		Sample.INSTANCE.play(Assets.Sounds.OH2);
+//					break;
+
 			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){
@@ -331,7 +336,7 @@ public class Rebel extends Mob {
 					GameScene.flash(0xFF00FF);
 					Sample.INSTANCE.play( Assets.Sounds.BLAST);
 					Sample.INSTANCE.play( Assets.Sounds.HAHAH);
-					hero.damage(hero.HP/2, this);
+					hero.damage(hero.HP*3/5, this);
 					CellEmitter.center(hero.pos).burst(BlastParticle.FACTORY, 20);
 					GLog.n(Messages.get(this, "o"));
 

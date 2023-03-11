@@ -21,12 +21,19 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 public class Greatshield extends MeleeWeapon {
 
@@ -54,6 +61,22 @@ public class Greatshield extends MeleeWeapon {
 			return Messages.get(this, "typical_stats_desc", 6);
 		}
 	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+			if (hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(hero) && (Random.Int(10) == 0)) {
+				{
+					Buff.affect(hero, Barrier.class).setShield(10);
+				}
+			}
+		}
+
+		return super.proc(attacker, defender, damage);
+	}
+
+
 
 	@Override
 	public String desc() {

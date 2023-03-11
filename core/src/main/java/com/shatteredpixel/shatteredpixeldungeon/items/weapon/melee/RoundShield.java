@@ -21,10 +21,21 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 public class RoundShield extends MeleeWeapon {
 
@@ -42,6 +53,20 @@ public class RoundShield extends MeleeWeapon {
 				lvl*(tier-1);                   //+2 per level, down from +4
 	}
 
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (hero.belongings.getItem(CloakOfShadows.class) != null) {
+
+				{
+					hero.damage( 1, this );
+					Buff.affect( defender, Bleeding.class).set(1f);
+				}
+
+		}
+
+		return super.proc(attacker, defender, damage);
+	}
 
 	@Override
 	public int defenseFactor( Char owner ) {
@@ -54,5 +79,15 @@ public class RoundShield extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_stats_desc", 4);
 		}
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(RingOfMight.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfMight.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( RoundShield.class, "setbouns");}
+
+		return info;
 	}
 }

@@ -378,6 +378,12 @@ public class DM300 extends Mob {
 				case HUNTRESS:
 					GLog.n(Messages.get(this, "notice4"));
 					break;
+//				case DUELIST:
+//						this.yell(Messages.get(this, "notice5"));
+//						GLog.p(Messages.get(Val.class, "9"));
+				//	Sample.INSTANCE.play( Assets.Sounds.BLAST );
+				//	Camera.main.shake(9, 0.5f);
+//					break;
 			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){

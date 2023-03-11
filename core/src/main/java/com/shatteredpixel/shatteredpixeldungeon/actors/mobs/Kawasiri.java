@@ -230,6 +230,12 @@ public class Kawasiri extends Mob {
                 case HUNTRESS:
                     this.yell(Messages.get(this, "phase5"));
                     break;
+                    //case DUELIST:
+//					this.yell(Messages.get(this, "josuke"));
+//					GLog.p(Messages.get(this, "josuke2"));
+                //	Sample.INSTANCE.play( Assets.Sounds.BLAST );
+                //	Camera.main.shake(9, 0.5f);
+//					break;
             }
 
             Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);

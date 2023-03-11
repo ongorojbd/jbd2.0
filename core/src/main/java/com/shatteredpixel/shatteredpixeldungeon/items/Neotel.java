@@ -77,7 +77,7 @@ public class Neotel extends Item {
             Buff.affect(hero, FeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);
 
-            Buff.affect(hero, AnkhInvulnerability.class, 999f);
+
 
             Buff.affect(hero, PotionOfCleansing.Cleanse.class, 99f);
             hero.HP = Math.min(hero.HP + 150, hero.HT);

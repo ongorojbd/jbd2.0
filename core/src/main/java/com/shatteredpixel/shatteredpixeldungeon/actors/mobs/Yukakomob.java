@@ -64,6 +64,8 @@ public class Yukakomob extends Mob {
 
         super.die( cause );
 
+        Sample.INSTANCE.play(Assets.Sounds.CURSED);
+
         Dungeon.level.drop( new WalkieTalkie().identify(), pos ).sprite.drop( pos );
 
         yell(Messages.get(Yukako.class, "7"));

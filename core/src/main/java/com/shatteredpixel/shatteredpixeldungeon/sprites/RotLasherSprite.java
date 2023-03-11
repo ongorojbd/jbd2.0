@@ -50,6 +50,6 @@ public class RotLasherSprite extends MobSprite {
 
 	@Override
 	public int blood() {
-		return 0xFF88CC44;
+		return 0x99FFFF;
 	}
 }

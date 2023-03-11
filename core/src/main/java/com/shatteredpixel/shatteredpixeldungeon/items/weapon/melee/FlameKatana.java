@@ -65,39 +65,8 @@ public class FlameKatana extends MeleeWeapon {
         }
     }
 
-
-
-
-   // public void GetKillPoint() {
-        //killpoint++;
-
-        //if (killpoint == 36) {
-           // int lvl = this.level();
-
-           // WarHammer n = new WarHammer();
-
-            //n.enchantment = enchantment;
-            //n.curseInfusionBonus = curseInfusionBonus;
-            //n.levelKnown = levelKnown;
-           // n.cursedKnown = cursedKnown;
-            //n.cursed = cursed;
-            //n.augment = augment;
-           // n.level(lvl);
-
-           // Dungeon.hero.belongings.weapon = n;
-
-          //  Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
-      //  }
-  //  }
-
-
-
-
-
     @Override
-    public String status() {
-        if (this.isIdentified()) return killpoint + "/" + 36;
-        else return null;}
+    public String status() { return killpoint + "/" + 36;}
 
 
     private static final String KILL = "killpoint";

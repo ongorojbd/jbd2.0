@@ -1,8 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Alchemist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.utils.Callback;
 
 public class CivilSprite extends MobSprite {
 
@@ -29,4 +33,33 @@ public class CivilSprite extends MobSprite {
 
         play( idle );
     }
+
+    public void zap( int cell ) {
+
+        turnTo( ch.pos , cell );
+        play( zap );
+
+        ((MissileSprite)parent.recycle( MissileSprite.class )).
+                reset( this, cell, new CivilSprite.ScorpioShot(), new Callback() {
+                    @Override
+                    public void call() {
+                        ((Civil)ch).onZapComplete();
+                    }
+                } );
+    }
+
+    public class ScorpioShot extends Item {
+        {
+            image = ItemSpriteSheet.POTION_CRIMSON;
+        }
+    }
+
+    @Override
+    public void onComplete( Animation anim ) {
+        if (anim == zap) {
+            idle();
+        }
+        super.onComplete( anim );
+    }
+
 }

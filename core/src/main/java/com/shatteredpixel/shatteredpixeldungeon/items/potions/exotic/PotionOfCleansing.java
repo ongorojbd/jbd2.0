@@ -102,7 +102,7 @@ public class PotionOfCleansing extends ExoticPotion {
 
 		@Override
 		public void tintIcon(Image icon) {
-			icon.hardlight(1f, 0f, 2f);
+			icon.hardlight(0.6f, 0.3f, 0.6f);
 		}
 
 		@Override

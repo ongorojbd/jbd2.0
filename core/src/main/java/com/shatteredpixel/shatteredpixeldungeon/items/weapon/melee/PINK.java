@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -7,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
@@ -41,7 +44,6 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class PINK extends MeleeWeapon {
-    public static final String AC_ZAP = "ZAP";
     {
         image = ItemSpriteSheet.PINK;
         hitSound = Assets.Sounds.HIT_CRUSH;
@@ -53,8 +55,39 @@ public class PINK extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  3*(tier) +    		//12 base
+        return  4*(tier) +    		//12 base
                 lvl*(tier-1);     	//+3 per level
+    }
+
+    private void MindBrack(Hero hero) {
+        PathFinder.buildDistanceMap(hero.pos, BArray.not(Dungeon.level.solid, null), 2);
+        for (int cell = 0; cell < PathFinder.distance.length; cell++) {
+            if (PathFinder.distance[cell] < Integer.MAX_VALUE) {
+                CellEmitter.get( cell ).burst( Speck.factory( Speck.MASK ), 10 );
+                Char ch = Actor.findChar(cell);
+                if (ch != null&& !(ch instanceof Hero) && ch instanceof Mob && ch.alignment != Char.Alignment.ALLY) {
+                    if (!ch.isImmune(Corruption.class)) {
+                        boolean chance = true;
+
+                        if (chance)Buff.affect(ch, Corruption.class);
+
+                        boolean droppingLoot = ch.alignment != Char.Alignment.ALLY;
+
+                        if (ch.buff(Corruption.class) != null){
+                            if (droppingLoot) ((Mob)ch).rollToDropLoot();
+                            Statistics.enemiesSlain++;
+                            Badges.validateMonstersSlain();
+                            Statistics.qualifiedForNoKilling = false;
+                            if (((Mob)ch).EXP > 0 && curUser.lvl <= ((Mob)ch).maxLvl) {
+                                curUser.sprite.showStatus(CharSprite.POSITIVE, Messages.get(((Mob)ch), "exp", ((Mob)ch).EXP));
+                                curUser.earnExp(((Mob)ch).EXP, ((Mob)ch).getClass());
+                            } else {
+                                curUser.earnExp(0, ((Mob)ch).getClass());
+                            }
+                        }
+                    }
+
+                }}}
     }
 
     @Override
@@ -91,6 +124,19 @@ public class PINK extends MeleeWeapon {
         if (Random.Int(100) <= Math.min(buffedLvl(), 9)) {					//1% base, +1% per lvl, max 10%
             Buff.affect( defender, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom.class);
         }
+
+        if (attacker instanceof Hero) {
+            if (hero.belongings.getItem(RingOfHaste.class) != null) {
+                if (hero.belongings.getItem(RingOfHaste.class).isEquipped(hero)) {
+                    if (Random.Int( 100 ) == 0) {
+                        MindBrack(hero);
+                        Sample.INSTANCE.play(Assets.Sounds.CHARMS);
+                        attacker.sprite.showStatus(CharSprite.POSITIVE, "[세이프티 록]");
+                    }
+                }
+            }
+        }
+
         return damage;
     }
 
@@ -100,7 +146,7 @@ public class PINK extends MeleeWeapon {
             inputs =  new Class[]{WarHammer.class, WandOfCorruption.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 30;
+            cost = 15;
 
             output = PINK.class;
             outQuantity = 1;

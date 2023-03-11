@@ -34,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -69,7 +68,7 @@ public class Centurion extends Mob {
         super.damage(dmg, src);
 
         if (Phase==0 && HP < 200) {
-            Music.INSTANCE.play(Assets.Music.CIV, true);
+
             Phase = 1;
             HP = 199;
             state = HUNTING;
@@ -167,7 +166,7 @@ public class Centurion extends Mob {
     @Override
     public void die(Object cause) {
         GLog.n(Messages.get(this, "d"));
-        Music.INSTANCE.play(Assets.Music.LABS_1, true);
+
         Dungeon.mboss19 = 0;
         super.die(cause);
 

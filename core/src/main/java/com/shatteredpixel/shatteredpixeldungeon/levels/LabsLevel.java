@@ -110,13 +110,6 @@ public class LabsLevel extends RegularLevel {
 	}
 
 	@Override
-	public void create() {
-		addItemToSpawn( new Torch() );
-		addItemToSpawn( new Torch() );
-		super.create();
-	}
-
-	@Override
 	protected void createItems() {
 
 		Goo2.spawn(this);

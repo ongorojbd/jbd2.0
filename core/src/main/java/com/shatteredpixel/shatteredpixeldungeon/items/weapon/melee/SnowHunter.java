@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -7,7 +8,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -17,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -39,12 +43,9 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class SnowHunter extends MeleeWeapon{
-    public static final String AC_ZAP = "ZAP";
     {
         image = ItemSpriteSheet.SPWORLD;
         hitSound = Assets.Sounds.HIT;
-
-        defaultAction=AC_ZAP;
 
         tier = 5;
         RCH = 3;    //extra reach
@@ -58,55 +59,33 @@ public class SnowHunter extends MeleeWeapon{
                 lvl*(tier);
     }
 
-
-    @Override
-    public ArrayList<String> actions(Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(AC_ZAP);
-        return actions;
-    }
-
-    @Override
-    public void execute(Hero hero, String action) {
-
-        super.execute(hero, action);
-
-        if (action.equals(AC_ZAP)) {
-            if (Dungeon.hero.belongings.weapon == this) {
-                SnowHunter pick = Dungeon.hero.belongings.getItem( SnowHunter.class );
-                if (Dungeon.depth > 29) {
-                    GameScene.flash(0x00FFFF);
-                    Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
-                    Camera.main.shake(31, 3f);
-                    GLog.p( Messages.get(this, "rev") );
-
-                    int lvl = this.level();
-
-                    pick.doUnequip( Dungeon.hero, false );
-                    pick.detach( Dungeon.hero.belongings.backpack );
-
-                    Spheaven n = new Spheaven();
-
-                    n.enchantment = enchantment;
-                    n.curseInfusionBonus = curseInfusionBonus;
-                    n.levelKnown = levelKnown;
-                    n.cursedKnown = cursedKnown;
-                    n.cursed = cursed;
-                    n.augment = augment;
-                    n.level(lvl);
-
-                    Dungeon.hero.belongings.weapon = n;
-
-                    Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
-                } else GLog.w(Messages.get(this, "no"));
-            }
-            else GLog.w(Messages.get(this, "eq"));
-        }
-    }
-
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         Sample.INSTANCE.play(Assets.Sounds.ORA);
+
+        SnowHunter pick = Dungeon.hero.belongings.getItem( SnowHunter.class );
+        if (depth == 30) {
+            Sample.INSTANCE.play(Assets.Sounds.HAHAH);
+            GLog.p( Messages.get(this, "rev") );
+            GameScene.flash(0xFFFF00);
+            Spheaven n = new Spheaven();
+
+            int lvl = this.level();
+
+            n.enchantment = enchantment;
+            n.curseInfusionBonus = curseInfusionBonus;
+            n.levelKnown = levelKnown;
+            n.cursedKnown = cursedKnown;
+            n.cursed = cursed;
+            n.augment = augment;
+            n.level(lvl);
+
+            pick.doUnequip( Dungeon.hero, false );
+            pick.detach( Dungeon.hero.belongings.backpack );
+
+            Dungeon.hero.belongings.weapon = n;
+        }
+
         if (!swiching) {
             Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
             trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
@@ -117,6 +96,15 @@ public class SnowHunter extends MeleeWeapon{
         else if (swiching) {
             final Ballistica chain = new Ballistica(defender.pos, attacker.pos, Ballistica.STOP_TARGET);
             if (Actor.findChar( chain.collisionPos ) != null) chainEnemy(chain,defender);
+        }
+
+        if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+            if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(Dungeon.hero)) {
+                if (attacker.buff(Levitation.class) != null) {
+                    damage *= 1.35f;
+                    attacker.sprite.showStatus(CharSprite.NEUTRAL, "[스탠드 파워전개]");
+                }
+            }
         }
 
         return super.proc(attacker, defender, damage);
@@ -222,8 +210,12 @@ public class SnowHunter extends MeleeWeapon{
 
     @Override
     public String desc() {
-        if (swiching) return Messages.get(this, "desc_mode");
-        else return Messages.get(this, "desc");
+        String info = Messages.get(this, "desc");
+        if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+            if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(Dungeon.hero))
+                info += "\n\n" + Messages.get( SnowHunter.class, "setbouns");}
+
+        return info;
     }
 
     private static final String SWICH = "swiching";
@@ -247,7 +239,7 @@ public class SnowHunter extends MeleeWeapon{
             inputs =  new Class[]{Dagger.class, Greatshield.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 50;
+            cost = 15;
 
             output = SnowHunter.class;
             outQuantity = 1;

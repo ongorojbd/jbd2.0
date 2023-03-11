@@ -88,31 +88,37 @@ public class Rohan extends NPC {
             return true;
         }
 
-        if (Statistics.duwang > 2) {
+        if (Statistics.duwang > 0) {
             yell( Messages.get(Rohan.class, "bi") );
+            Sample.INSTANCE.play(Assets.Sounds.RO5);
             destroy();
             sprite.killAndErase();
             die(null);
         }
 
-        if (Statistics.duwang < 3) {
+        if (Statistics.duwang < 1) {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {
-
+                        Sample.INSTANCE.play(Assets.Sounds.RO1);
                         GameScene.show(new WndOptions(
                                 sprite(),
                                 Messages.titleCase(name()),
                                 Messages.get(Rohan.class, "i"),
+
+
                                 Messages.get(Rohan.class, "1"),
                                 Messages.get(Rohan.class, "2")
-                        ){
+                        )
+
+                        {
                             @Override
                             protected void onSelect(int index) {
                                 if (index == 0){
                                     Game.runOnRenderThread(new Callback() {
                                         @Override
                                         public void call() {
+                                            Sample.INSTANCE.play(Assets.Sounds.RO2);
                                             GameScene.show(new WndOptions(
                                                     sprite(),
                                                     Messages.titleCase(name()),
@@ -134,11 +140,13 @@ public class Rohan extends NPC {
                                                                     Dungeon.gold += 50;
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                     break;
                                                                 case 1:
                                                                     Dungeon.gold -= 50;
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
                                                                     yell(Messages.get(Rohan.class, "win"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO3);
                                                                     break;
                                                             }
 
@@ -149,19 +157,18 @@ public class Rohan extends NPC {
                                                     }
                                                     else if (index == 1) {
                                                         if (Dungeon.gold > 99) {
-
+                                                            Statistics.duwang += 1;
+                                                            Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                             switch (Random.Int(2)){
                                                                 case 0:
                                                                     Dungeon.gold += 100;
-                                                                    Statistics.duwang += 1;
-                                                                    Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                     break;
                                                                 case 1:
                                                                     Dungeon.gold -= 100;
-                                                                    Statistics.duwang += 1;
-                                                                    Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO3);
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
                                                                     yell(Messages.get(Rohan.class, "win"));
                                                                     break;
@@ -180,11 +187,13 @@ public class Rohan extends NPC {
                                                                     Dungeon.gold += 250;
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                     break;
                                                                 case 1:
                                                                     Dungeon.gold -= 250;
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
                                                                     yell(Messages.get(Rohan.class, "win"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO3);
                                                                     break;
                                                             }
 
@@ -201,11 +210,13 @@ public class Rohan extends NPC {
                                                                     Dungeon.gold += 500;
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                     break;
                                                                 case 1:
                                                                     Dungeon.gold -= 500;
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
                                                                     yell(Messages.get(Rohan.class, "win"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO3);
                                                                     break;
                                                             }
 
@@ -223,11 +234,13 @@ public class Rohan extends NPC {
                                                                     Dungeon.gold += 1000;
                                                                     GLog.p( Messages.get(Rohan.class, "w") );
                                                                     yell(Messages.get(Rohan.class, "lose"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                     break;
                                                                 case 1:
                                                                     Dungeon.gold -= 1000;
                                                                     GLog.h( Messages.get(Rohan.class, "l") );
                                                                     yell(Messages.get(Rohan.class, "win"));
+                                                                    Sample.INSTANCE.play(Assets.Sounds.RO3);
                                                                     break;
                                                             }
 
@@ -241,7 +254,7 @@ public class Rohan extends NPC {
                                         }
                                     });
                                 } else if (index == 1) {
-
+                                    Sample.INSTANCE.play(Assets.Sounds.RO4);
                                     yell(Messages.get(Rohan.class, "play"));
 
                                 }
@@ -261,6 +274,7 @@ public class Rohan extends NPC {
     }
 
     public static void spawn(PrisonLevel level) {
+        if (Random.Int( 2 ) == 0) {
         if (Dungeon.depth == 6 && !Dungeon.bossLevel()) {
 
             Rohan npc = new Rohan();
@@ -277,7 +291,7 @@ public class Rohan extends NPC {
             level.mobs.add( npc );
         }
     }
-
+    }
 }
 
 

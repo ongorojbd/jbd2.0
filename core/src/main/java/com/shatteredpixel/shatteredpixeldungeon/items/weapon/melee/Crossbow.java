@@ -21,8 +21,22 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 public class Crossbow extends MeleeWeapon {
 	
@@ -34,6 +48,27 @@ public class Crossbow extends MeleeWeapon {
 		//check Dart.class for additional properties
 		
 		tier = 4;
+	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (Dungeon.hero.belongings.getItem(RingOfSharpshooting.class) != null) {
+			if (hero.belongings.getItem(RingOfSharpshooting.class).isEquipped(hero) && (Random.Int(20) == 0)) {
+				Buff.affect(defender, SoulMark.class, 3f);
+			}
+		}
+		return super.proc(attacker, defender, damage);
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(RingOfSharpshooting.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfSharpshooting.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( Crossbow.class, "setbouns");}
+
+		return info;
 	}
 	
 	@Override

@@ -75,4 +75,9 @@ public class DestOrbSprite extends MobSprite {
         }
         super.die();
     }
+
+    @Override
+    public int blood() {
+        return 0x99FFFF;
+    }
 }

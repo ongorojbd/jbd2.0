@@ -99,18 +99,18 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.YUKAKO, 0, 0, 12, 15), "야마기시 유카코",
-				""));
+				"특정 계층에 일정 확률로 유카코 npc가 등장합니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RETONIO, 0, 0, 12, 15), "토니오 트루사르디",
-				""));
+				"특정 계층에 일정 확률로 토니오 npc가 등장합니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ROHAN, 0, 0, 12, 14), "키시베 로한",
-				""));
+				"특정 계층에 일정 확률로 로한 npc가 등장합니다."));
 
 		changes = new ChangeInfo("아이템 조정", false, null);
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "아이템 조정",
-				"여러 무기들이 리워크되었습니다.\n\n" +
+				"다양한 무기들이 리워크되었습니다.\n\n" +
 						"반발의 상형문자가 원거리 적을 튕겨내지 않습니다.\n\n" +
 						"이제 충전의 석가면이 레퀴엠 브로치의 능력도 충전합니다.\n\n"+
 						"30층 상자에 스타 플라티나 오버 헤븐의 DISC가 추가되었습니다."));

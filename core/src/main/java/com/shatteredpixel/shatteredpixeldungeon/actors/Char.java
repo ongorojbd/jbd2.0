@@ -109,6 +109,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -419,6 +420,10 @@ public abstract class Char extends Actor {
 			if ( enemy.buff( Vulnerable.class ) != null){
 				effectiveDamage *= 1.33f;
 			}
+
+			if ( enemy.buff( D4C.class ) != null){
+				effectiveDamage *= 0.85f;
+			}
 			
 			effectiveDamage = attackProc( enemy, effectiveDamage );
 			
@@ -560,9 +565,17 @@ public abstract class Char extends Actor {
 		if (Dungeon.hero.belongings.weapon() instanceof Sword){
 			if (this.HP == 2 || this.HP == 3 || this.HP == 5 || this.HP == 7 || this.HP == 11 || this.HP == 13 || this.HP == 17 || this.HP == 19 || this.HP == 23 || this.HP == 29 || this.HP == 31 || this.HP == 37 || this.HP == 41 || this.HP == 43 || this.HP == 47 || this.HP == 53 || this.HP == 59 || this.HP == 61 || this.HP == 67 || this.HP == 71 || this.HP == 73 || this.HP == 79 || this.HP == 83 || this.HP == 89 || this.HP == 97 || this.HP == 101 || this.HP == 103 || this.HP == 107 || this.HP == 109 || this.HP == 113 || this.HP == 127 || this.HP == 131 || this.HP == 137 || this.HP == 139 || this.HP == 149 || this.HP == 151 || this.HP == 157 || this.HP == 163 || this.HP == 167 || this.HP == 173 || this.HP == 179 || this.HP == 181 || this.HP == 191 || this.HP == 193 || this.HP == 197 || this.HP == 199 || this.HP == 211 || this.HP == 223 || this.HP == 227 || this.HP == 229 || this.HP == 233 || this.HP == 239 || this.HP == 241 || this.HP == 251 || this.HP == 257 || this.HP == 263 || this.HP == 269 || this.HP == 271 || this.HP == 277 || this.HP == 281 || this.HP == 283 || this.HP == 293){
 				damage *= 1.9f;
-				GLog.h(Messages.get(Sword.class, "1"));
+				sprite.showStatus(CharSprite.POSITIVE, Messages.get(Sword.class, "1"));
 			}
 		}
+
+		if (Dungeon.hero.belongings.weapon() instanceof LSWORD){
+			if (this.HP == 7 || this.HP == 77){
+				damage *= 7.77f;
+				sprite.showStatus(CharSprite.POSITIVE, Messages.get(LSWORD.class, "1"));
+			}
+		}
+
 		final Calendar calendar = Calendar.getInstance();
 	//	if (Dungeon.hero.belongings.weapon() instanceof Sai && calendar.get(Calendar.HOUR_OF_DAY) < 5) {
 		//	damage *= 1.25f;
@@ -681,9 +694,6 @@ public abstract class Char extends Actor {
 		}
 		if (this.buff(Triplespeed.class) != null){
 			dmg *= 1.3;
-		}
-		if (this.buff(D4C.class) != null){
-			dmg *= 0.85;
 		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= 1.25f;

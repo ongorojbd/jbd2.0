@@ -21,13 +21,22 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 public class Greataxe extends MeleeWeapon {
 
@@ -48,6 +57,20 @@ public class Greataxe extends MeleeWeapon {
 	@Override
 	public int STRReq(int lvl) {
 		return STRReq(tier+1, lvl); //20 base strength req, up from 18
+	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (hero.belongings.getItem(RingOfAccuracy.class) != null) {
+			if (hero.belongings.getItem(RingOfAccuracy.class).isEquipped(hero) && (Random.Int(10) == 0)) {
+				{
+					Buff.affect( defender, Hex.class, 3f);
+				}
+			}
+		}
+
+		return super.proc(attacker, defender, damage);
 	}
 
 	@Override

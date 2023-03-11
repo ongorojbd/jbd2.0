@@ -24,6 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -64,6 +67,12 @@ public class CavesLevel extends RegularLevel {
 				new String[]{Assets.Music.CAVES_2, Assets.Music.DRAGON},
 				new float[]{1, 1},
 				false);
+	}
+
+	@Override
+	protected void createItems() {
+		Rohan2.spawn(this);
+		super.createItems();
 	}
 
 	@Override

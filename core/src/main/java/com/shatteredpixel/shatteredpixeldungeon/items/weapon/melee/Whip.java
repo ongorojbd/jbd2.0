@@ -22,6 +22,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Whip extends MeleeWeapon {
@@ -40,5 +49,29 @@ public class Whip extends MeleeWeapon {
 		return  3*(tier+1) +    //12 base, down from 20
 				lvl*(tier);     //+3 per level, down from +4
 	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (Dungeon.hero.belongings.getItem(MasterThievesArmband.class) != null) {
+			if (Dungeon.hero.belongings.getItem(MasterThievesArmband.class).isEquipped(Dungeon.hero)) {
+				{
+					Buff.affect( defender, Cripple.class, 3f );
+				}
+			}
+		}
+		return super.proc(attacker, defender, damage);
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(MasterThievesArmband.class) != null) {
+			if (Dungeon.hero.belongings.getItem(MasterThievesArmband.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( Whip.class, "setbouns");}
+
+		return info;
+	}
+
 
 }

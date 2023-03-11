@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CmoonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -166,7 +165,7 @@ public class Pucci4 extends Mob {
         //Direct damage is negated, but add-on effects and environmental effects go through as normal.
 
         if (Phase==0 && HP < 200) {
-            Music.INSTANCE.play(Assets.Music.CIV, true);
+
             Phase = 1;
             HP = 199;
             state = HUNTING;
@@ -220,7 +219,6 @@ public class Pucci4 extends Mob {
     @Override
     public void die(Object cause) {
         GLog.n( Messages.get(this, "d") );
-        Music.INSTANCE.play(Assets.Music.LABS_1, true);
 
         new Flare( 5, 32 ).color( 0x00FFFF, true ).show( hero.sprite, 1f );
         Sample.INSTANCE.play(Assets.Sounds.BADGE);

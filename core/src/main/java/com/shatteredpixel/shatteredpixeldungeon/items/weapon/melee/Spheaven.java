@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -28,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
@@ -97,6 +99,15 @@ public class Spheaven extends MeleeWeapon{
         else if (swiching) {
             final Ballistica chain = new Ballistica(defender.pos, attacker.pos, Ballistica.STOP_TARGET);
             if (Actor.findChar( chain.collisionPos ) != null) chainEnemy(chain,defender);
+        }
+
+        if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+            if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(Dungeon.hero)) {
+                if (attacker.buff(Levitation.class) != null) {
+                    damage *= 1.35f;
+                    attacker.sprite.showStatus(CharSprite.NEUTRAL, "[스탠드 파워전개]");
+                }
+            }
         }
 
         return super.proc(attacker, defender, damage);
@@ -202,8 +213,12 @@ public class Spheaven extends MeleeWeapon{
 
     @Override
     public String desc() {
-        if (swiching) return Messages.get(this, "desc_mode");
-        else return Messages.get(this, "desc");
+        String info = Messages.get(this, "desc");
+        if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+            if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(Dungeon.hero))
+                info += "\n\n" + Messages.get( Spheaven.class, "setbouns");}
+
+        return info;
     }
 
     private static final String SWICH = "swiching";

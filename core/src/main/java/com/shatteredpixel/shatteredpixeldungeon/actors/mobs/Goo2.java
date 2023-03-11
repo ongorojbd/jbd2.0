@@ -245,7 +245,7 @@ public class Goo2 extends Mob {
             Phase = 1;
             HP = 199;
             state = HUNTING;
-            Music.INSTANCE.play(Assets.Music.CIV, true);
+
             if (!BossHealthBar.isAssigned()) {
                 BossHealthBar.assignBoss(this);
                 for (Char ch : Actor.chars()){
@@ -274,10 +274,6 @@ public class Goo2 extends Mob {
         new Flare( 5, 32 ).color( 0x00FFFF, true ).show( hero.sprite, 1f );
         Sample.INSTANCE.play(Assets.Sounds.BADGE);
         GLog.p(Messages.get(Pucci4.class, "x"));
-
-        Music.INSTANCE.play(Assets.Music.LABS_1, true);
-
-
 
         Dungeon.mboss4 = 0;
     }

@@ -22,7 +22,19 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class BattleAxe extends MeleeWeapon {
 
@@ -33,6 +45,32 @@ public class BattleAxe extends MeleeWeapon {
 
 		tier = 4;
 		ACC = 1.24f; //24% boost to accuracy
+	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero)) {
+					if (Random.Int( 10 ) == 0) {
+						damage *= 2.0f;
+						Buff.affect(Dungeon.hero, Weakness.class, 2f);
+						attacker.sprite.showStatus(CharSprite.POSITIVE, "[검신 발사!]");
+						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+					}
+			}
+		}
+		return super.proc(attacker, defender, damage);
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get(BattleAxe.class, "setbouns");}
+
+		return info;
 	}
 
 	@Override

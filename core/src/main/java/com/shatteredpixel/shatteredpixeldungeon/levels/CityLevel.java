@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan3;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CityPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
@@ -65,6 +67,12 @@ public class CityLevel extends RegularLevel {
 				new String[]{Assets.Music.CITY_1},
 				new float[]{1},
 				false);
+	}
+
+	@Override
+	protected void createItems() {
+		Rohan3.spawn(this);
+		super.createItems();
 	}
 
 	@Override

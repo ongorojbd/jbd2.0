@@ -23,8 +23,16 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class SupressionSprite extends MobSprite {
+
+	private Animation stab;
+	private Animation prep;
+	private Animation leap;
+
+	private boolean alt = Random.Int(2) == 0;
 
 	public SupressionSprite() {
 		super();
@@ -40,13 +48,46 @@ public class SupressionSprite extends MobSprite {
 		run.frames( frames, 2, 3, 4, 5, 6, 7 );
 
 		attack = new Animation( 15, false );
-		attack.frames( frames, 8, 9, 10, 0 );
-		
-		zap = attack.clone();
+		attack.frames( frames, 0, 8, 9, 10, 0 );
+
+		stab = new Animation( 12, false );
+		stab.frames( frames, 8, 9, 10, 0 );
+
+		prep = new Animation( 1, true );
+		prep.frames( frames, 9 );
+
+		leap = new Animation( 1, true );
+		leap.frames( frames, 10 );
 
 		die = new Animation( 20, false );
 		die.frames( frames, 11, 12, 13, 14, 15);
 		
 		play( idle );
 	}
+
+	public void leapPrep( int cell ){
+		turnTo( ch.pos, cell );
+		play( prep );
+	}
+
+	@Override
+	public void jump(int from, int to, Callback callback) {
+		super.jump(from, to, callback);
+		play( leap );
+	}
+
+	@Override
+	public void attack( int cell ) {
+		super.attack( cell );
+		if (alt) {
+			play( stab );
+		}
+		alt = !alt;
+	}
+
+	@Override
+	public void onComplete( Animation anim ) {
+		super.onComplete( anim == stab ? attack : anim );
+	}
+
 }
