@@ -110,11 +110,11 @@ public class NewLastLevel extends Level {
 			W, W, W, s, t, s, W, W, W,
 			W, W, W, s, t, s, W, W, W,
 			W, W, W, s, t, s, W, W, W,
-			W, W, s, s, t, s, s, W, W,
+			W, W, e, s, t, s, e, W, W,
 			W, W, s, i, i, i, s, W, W,
 			W, W, s, i, E, i, s, W, W,
 			W, W, s, i, i, i, s, W, W,
-			W, W, s, s, s, s, s, W, W,
+			W, W, e, s, s, s, e, W, W,
 			W, W, W, W, W, W, W, W, W
 	};
 

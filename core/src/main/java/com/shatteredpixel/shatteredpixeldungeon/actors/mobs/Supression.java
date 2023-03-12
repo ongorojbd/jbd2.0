@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -87,6 +89,16 @@ public class Supression extends Mob {
 		bundle.put(LAST_ENEMY_POS, lastEnemyPos);
 		bundle.put(LEAP_POS, leapPos);
 		bundle.put(LEAP_CD, leapCooldown);
+	}
+
+	@Override
+	public int attackProc( Char enemy, int damage ) {
+		damage = super.attackProc( enemy, damage );
+		if (Random.Int(3) == 0) {
+			Buff.affect(enemy, Paralysis.class, 1f);
+		}
+
+		return damage;
 	}
 
 	@Override

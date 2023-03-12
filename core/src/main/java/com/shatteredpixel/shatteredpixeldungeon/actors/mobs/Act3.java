@@ -77,7 +77,7 @@ public class Act3 extends Mob {
 
     {
         spriteClass = Act3Sprite.class;
-        HP = HT =  3 + (2 + Dungeon.depth) * 3;
+        HP = HT =  3 + (2 + Dungeon.depth) * 4;
         viewDistance = 5;
         defenseSkill = Dungeon.depth;
         EXP = 0;

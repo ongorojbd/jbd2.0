@@ -60,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscB;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -200,6 +201,7 @@ public class Stower extends Mob {
 
         super.die(cause);
 
+        Dungeon.level.drop( new Kingc().identify(), pos ).sprite.drop( pos );
         Dungeon.level.drop( new TelekineticGrab().identify().quantity(20), pos ).sprite.drop( pos );
         Sample.INSTANCE.play(Assets.Sounds.BLAST);
     }

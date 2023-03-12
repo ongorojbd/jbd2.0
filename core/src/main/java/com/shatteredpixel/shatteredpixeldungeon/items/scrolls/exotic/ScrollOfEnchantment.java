@@ -48,7 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.audio.Sample;
 
 public class ScrollOfEnchantment extends ExoticScroll {
-	
+
 	{
 		icon = ItemSpriteSheet.Icons.SCROLL_ENCHANT;
 
@@ -56,7 +56,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 	}
 
 	protected static boolean identifiedByUse = false;
-	
+
 	@Override
 	public void doRead() {
 		if (!isKnown()) {
@@ -93,7 +93,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 			public void onBackPressed() {}
 		} );
 	}
-	
+
 	protected WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
 
 		@Override
@@ -113,27 +113,27 @@ public class ScrollOfEnchantment extends ExoticScroll {
 
 		@Override
 		public void onSelect(final Item item) {
-			
+
 			if (item instanceof Weapon){
-				
+
 				final Weapon.Enchantment enchants[] = new Weapon.Enchantment[3];
-				
+
 				Class<? extends Weapon.Enchantment> existing = ((Weapon) item).enchantment != null ? ((Weapon) item).enchantment.getClass() : null;
 				enchants[0] = Weapon.Enchantment.randomCommon( existing );
 				enchants[1] = Weapon.Enchantment.randomUncommon( existing );
 				enchants[2] = Weapon.Enchantment.random( existing, enchants[0].getClass(), enchants[1].getClass());
 
 				GameScene.show(new WndEnchantSelect((Weapon) item, enchants[0], enchants[1], enchants[2]));
-			
+
 			} else if (item instanceof Armor) {
-				
+
 				final Armor.Glyph glyphs[] = new Armor.Glyph[3];
-				
+
 				Class<? extends Armor.Glyph> existing = ((Armor) item).glyph != null ? ((Armor) item).glyph.getClass() : null;
 				glyphs[0] = Armor.Glyph.randomCommon( existing );
 				glyphs[1] = Armor.Glyph.randomUncommon( existing );
 				glyphs[2] = Armor.Glyph.random( existing, glyphs[0].getClass(), glyphs[1].getClass());
-				
+
 				GameScene.show(new WndGlyphSelect((Armor) item, glyphs[0], glyphs[1], glyphs[2]));
 			} else {
 				if (!identifiedByUse){
@@ -156,7 +156,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 		}
 
 		public WndEnchantSelect(Weapon wep, Weapon.Enchantment ench1,
-		                           Weapon.Enchantment ench2, Weapon.Enchantment ench3){
+								Weapon.Enchantment ench2, Weapon.Enchantment ench3){
 			super(new ItemSprite(new ScrollOfEnchantment()),
 					Messages.titleCase(new ScrollOfEnchantment().name()),
 					Messages.get(ScrollOfEnchantment.class, "armor") +
@@ -220,7 +220,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 		}
 
 		public WndGlyphSelect(Armor arm, Armor.Glyph glyph1,
-		                      Armor.Glyph glyph2, Armor.Glyph glyph3){
+							  Armor.Glyph glyph2, Armor.Glyph glyph3){
 			super(new ItemSprite(new ScrollOfEnchantment()),
 					Messages.titleCase(new ScrollOfEnchantment().name()),
 					Messages.get(ScrollOfEnchantment.class, "armor") +

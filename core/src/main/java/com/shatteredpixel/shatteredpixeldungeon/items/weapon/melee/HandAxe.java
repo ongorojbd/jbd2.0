@@ -51,16 +51,10 @@ public class HandAxe extends MeleeWeapon {
 				}
 			}
 		}
-
-		float bounsdmg = Math.min(1.5f, 1f+(extratarget*0.1f));
-
 //		if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
 //			if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero) && defender.properties().contains(Char.Property.BOSS))
 //				bounsdmg += 0.1f;
 //		}
-
-		damage = Math.round(damage * bounsdmg);
-
 		Heal(attacker);
 
 		return super.proc(attacker, defender, damage);
@@ -68,7 +62,7 @@ public class HandAxe extends MeleeWeapon {
 
 	private void Heal(Char attacker) {
 		if (HealCount >= 9) {
-			int heal = 3;
+			int heal = 2;
 
 			if (attacker instanceof Hero) {
 				hero.HP += heal;
