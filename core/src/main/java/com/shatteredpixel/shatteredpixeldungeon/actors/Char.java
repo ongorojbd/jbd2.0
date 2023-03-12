@@ -693,7 +693,7 @@ public abstract class Char extends Actor {
 			dmg *= 2;
 		}
 		if (this.buff(Triplespeed.class) != null){
-			dmg *= 1.3;
+			dmg *= 1.25f;
 		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= 1.25f;

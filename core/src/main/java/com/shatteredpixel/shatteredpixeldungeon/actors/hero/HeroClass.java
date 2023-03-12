@@ -96,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AJA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DBLADE;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
@@ -152,7 +153,7 @@ public enum HeroClass {
 			new TimekeepersHourglass().identify().upgrade(9999).collect();
 			new PlateArmor().identify().upgrade(999).collect();
 			new PINK().identify().upgrade(999).collect();
-			new SnowHunter().identify().upgrade(999).collect();
+			new HandAxe().identify().upgrade(3).collect();
 			new PotionOfHealing().identify().quantity(29).collect();
 			new PotionOfLevitation().identify().quantity(29).collect();
 			new ScrollOfMagicMapping().identify().quantity(1000).collect();

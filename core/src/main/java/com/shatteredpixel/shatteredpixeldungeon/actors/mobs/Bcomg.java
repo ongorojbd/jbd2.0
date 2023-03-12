@@ -57,7 +57,7 @@ public class Bcomg extends Mob {
         EXP = 5;
         maxLvl = 10;
 
-        loot = Generator.Category.WEAPON;
+        loot = new PotionOfHealing();
         lootChance = 0.1667f; //by default, see lootChance()
 
         properties.add(Property.UNDEAD);

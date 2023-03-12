@@ -165,7 +165,7 @@ public class Yukako extends NPC {
 
     public static void spawn(PrisonLevel level) {
 
-        if (Random.Int( 1 ) == 0) {
+        if (Random.Int( 2 ) == 0) {
         if (Dungeon.depth >= 9 && !Dungeon.bossLevel()) {
 
             Yukako npc = new Yukako();

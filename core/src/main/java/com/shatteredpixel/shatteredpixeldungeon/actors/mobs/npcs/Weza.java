@@ -159,6 +159,7 @@ public class Weza extends NPC {
 
 
     public static void spawn(HallsLevel level) {
+        if (Random.Int( 2 ) == 0) {
         if (Dungeon.depth == 23 && !Dungeon.bossLevel()) {
 
             Weza centinel = new Weza();
@@ -168,8 +169,5 @@ public class Weza extends NPC {
             level.mobs.add(centinel);
         }
     }
-
-
-
-
+    }
 }

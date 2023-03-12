@@ -233,6 +233,8 @@ public class ShopRoom extends SpecialRoom {
 				itemsToSpawn.add( new Highway() );
 				break;
 			case 1:
+				itemsToSpawn.add( new Bomb() );
+				break;
 			case 2:
 				itemsToSpawn.add( new Bomb.DoubleBomb() );
 				break;

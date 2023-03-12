@@ -390,5 +390,6 @@ public class Assets {
 		public static final String ANTONIO= "sprites/antonio.png";
 		public static final String ROHAN= "sprites/rohan.png";
 		public static final String KAKYOIN= "sprites/kakyoin.png";
+		public static final String ATOM= "sprites/atom.png";
 	}
 }

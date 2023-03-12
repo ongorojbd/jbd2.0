@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -31,8 +33,9 @@ public class HandAxe extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  5*(tier) - 2 +   //14 + 4
-				lvl*(tier); }
+		return  4*(tier+1) +    //12 base, down from 15
+				lvl*(tier+1);   //scaling unchanged
+	}
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
@@ -51,10 +54,10 @@ public class HandAxe extends MeleeWeapon {
 
 		float bounsdmg = Math.min(1.5f, 1f+(extratarget*0.1f));
 
-		if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
-			if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero) && defender.properties().contains(Char.Property.BOSS))
-				bounsdmg += 0.1f;
-		}
+//		if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
+//			if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero) && defender.properties().contains(Char.Property.BOSS))
+//				bounsdmg += 0.1f;
+//		}
 
 		damage = Math.round(damage * bounsdmg);
 
@@ -65,23 +68,11 @@ public class HandAxe extends MeleeWeapon {
 
 	private void Heal(Char attacker) {
 		if (HealCount >= 9) {
-			int heal = 3 + level();
+			int heal = 3;
 
 			if (attacker instanceof Hero) {
-				if (Dungeon.hero.lvl > 7 && Dungeon.depth < 5) {
-					heal /= 4;
-				}
-				else if (Dungeon.hero.lvl > 12 && Dungeon.depth < 10) {
-					heal /= 4;
-				}
-				else if (Dungeon.hero.lvl > 18 && Dungeon.depth < 15) {
-					heal /= 4;
-				}
-				else if (Dungeon.hero.lvl > 23 && Dungeon.depth < 20) {
-					heal /= 4;
-				}}
-
-			attacker.HP = Math.min(attacker.HP + heal, attacker.HT);
+				hero.HP += heal;
+			}
 			attacker.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2);
 			attacker.sprite.showStatus(CharSprite.POSITIVE, "+%dHP", heal);
 			HealCount = 0;
