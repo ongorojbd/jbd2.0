@@ -76,8 +76,8 @@ public class Whitesnake extends Artifact {
 
     @Override
     public String status() {
-        return level() + "/" + 14;
-        }
+        if (this.isIdentified()) return level() + "/" + 14;
+        else return null;}
 
     @Override
     public void execute(Hero hero, String action ) {
@@ -289,8 +289,8 @@ public class Whitesnake extends Artifact {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{ScrollOfAntiMagic.class};
-            inQuantity = new int[]{1};
+            inputs =  new Class[]{Sword.class, ScrollOfAntiMagic.class};
+            inQuantity = new int[]{1, 1};
 
             cost = 30;
 

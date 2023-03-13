@@ -232,7 +232,6 @@ public abstract class Recipe {
 			new Sbr1.Recipe(),
 			new Sbr2.Recipe(),
 			new Sbr3.Recipe(),
-			new Whitesnake.Recipe(),
 	};
 	
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
@@ -272,6 +271,7 @@ public abstract class Recipe {
 			new Diodiary.Recipe(),
 			new Jotarodisc.Recipe(),
 			new FlameKatana.Recipe(),
+			new Whitesnake.Recipe(),
 			new Sleepcmoon3.Recipe(),
 			new ScrollOfPolymorph.Recipe(),
 			new WalkieTalkie.Recipe(),
@@ -279,13 +279,13 @@ public abstract class Recipe {
 			new Fugo.Recipe(),
 			new SnowHunter.Recipe(),
 			new Neoro.Recipe(),
-			new AJA.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
 		new Potion.SeedToPotion(),
 		new StewedMeat.threeMeat(),
+			new AJA.Recipe(),
 		new MeatPie.Recipe()
 	};
 	

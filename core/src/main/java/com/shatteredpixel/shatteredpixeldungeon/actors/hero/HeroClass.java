@@ -161,7 +161,6 @@ public enum HeroClass {
 			new Neotel().collect();
 			new RingOfAccuracy().identify().upgrade(9999).collect();
 			new WalkieTalkie().collect();
-			new HandAxe().identify().collect();
 		}
 
 		switch (this) {

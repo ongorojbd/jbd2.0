@@ -5,8 +5,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -46,13 +44,17 @@ public class HandAxe extends MeleeWeapon {
 		if (attacker instanceof Hero) {
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (Dungeon.level.adjacent(mob.pos, defender.pos) && mob.alignment != Char.Alignment.ALLY) {
-					int dmg = (Dungeon.hero.damageRoll() - Math.max(defender.drRoll(), defender.drRoll()))/4;
+					int dmg = Dungeon.hero.damageRoll() - Math.max(defender.drRoll(), defender.drRoll());
 					mob.damage(dmg, this);
 					extratarget++;
 					HealCount++;
 				}
 			}
 		}
+//		if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
+//			if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero) && defender.properties().contains(Char.Property.BOSS))
+//				bounsdmg += 0.1f;
+//		}
 		Heal(attacker);
 
 		return super.proc(attacker, defender, damage);
@@ -60,13 +62,13 @@ public class HandAxe extends MeleeWeapon {
 
 	private void Heal(Char attacker) {
 		if (HealCount >= 9) {
-			int heal = 3;
+			int heal = 2;
 
 			if (attacker instanceof Hero) {
-				Buff.affect(hero, Barrier.class).setShield(heal);
+				hero.HP += heal;
 			}
-			attacker.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
-			attacker.sprite.showStatus(CharSprite.POSITIVE, "+%d보호막", heal);
+			attacker.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2);
+			attacker.sprite.showStatus(CharSprite.POSITIVE, "+%dHP", heal);
 			HealCount = 0;
 		}
 	}

@@ -108,9 +108,9 @@ public class jojo extends Mob {
 
            {
                 int healAmt = 2*(7-Dungeon.level.distance(pos, hero.pos)); //different per each distance
-                healAmt = Math.min(3,4);
+                healAmt = Math.min( 3,5);
                 if (healAmt > 0 && hero.isAlive()) {
-                    Buff.affect(hero, Barrier.class).setShield(healAmt);
+                    hero.HP += healAmt;
                     if (Dungeon.level.heroFOV[hero.pos]) {
                         hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.4f, 2 );
                         hero.sprite.showStatus( CharSprite.POSITIVE, Integer.toString( healAmt ) );
@@ -142,9 +142,6 @@ public class jojo extends Mob {
                 case HUNTRESS:
                     this.yell(Messages.get(this, "notice4"));
                     break;
-//                case DUELIST:
-//                    this.yell(Messages.get(this, "notice5"));
-//                    break;
             }
 
             new Flare( 5, 32 ).color( 0x00FFFF, true ).show( this.sprite, 3f );
@@ -201,9 +198,6 @@ public class jojo extends Mob {
             case HUNTRESS:
                 this.yell(Messages.get(this, "defeated3"));
                 break;
-//            case DUELIST:
-//                this.yell(Messages.get(this, "defeated3"));
-//                break;
         }
 
     }

@@ -192,7 +192,7 @@ public class AJA extends MeleeWeapon {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {
-            inputs =  new Class[]{Greataxe.class, Flail.class};
+            inputs =  new Class[]{Greataxe.class, Flail.class, Kunai.class};
             inQuantity = new int[]{1, 1, 1};
 
             cost = 15;
