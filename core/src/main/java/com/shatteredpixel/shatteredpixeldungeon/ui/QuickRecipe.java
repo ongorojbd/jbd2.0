@@ -390,8 +390,6 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new Jotarodisc.Recipe()));
 				result.add(null);
 				result.add(new QuickRecipe(new FlameKatana.Recipe()));
-				result.add(null);
-				result.add(null);
 				result.add(new QuickRecipe(new Whitesnake.Recipe()));
 				result.add(null);
 				result.add(new QuickRecipe(new Sleepcmoon3.Recipe()));
