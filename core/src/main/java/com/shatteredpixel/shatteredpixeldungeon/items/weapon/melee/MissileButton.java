@@ -224,7 +224,7 @@ public class MissileButton extends MeleeWeapon {
     public class Rocket extends MissileWeapon {
 
         {
-            image = ItemSpriteSheet.EMPTY_DART;
+            image = ItemSpriteSheet.ARCANE_RESIN;
 
             tier = 7;
 

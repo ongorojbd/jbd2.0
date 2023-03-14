@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -310,10 +310,10 @@ public class ItemSpriteSheet {
 
 	                                                                                    //8 free slots
 
-	private static final int MISSILE_WEP    =                               xy(1, 10);  //16 slots. 3 per tier + boomerang
+	private static final int MISSILE_WEP    =                               xy(1, 10);  //16 slots. 3 per tier + bow
 	public static final int SPIRIT_BOW      = MISSILE_WEP+0;
 	
-	public static final int DART            = MISSILE_WEP+1;
+	public static final int THROWING_SPIKE  = MISSILE_WEP+1;
 	public static final int THROWING_KNIFE  = MISSILE_WEP+2;
 	public static final int THROWING_STONE  = MISSILE_WEP+3;
 	
@@ -335,8 +335,9 @@ public class ItemSpriteSheet {
 	
 	static{
 		assignItemRect(SPIRIT_BOW,      12, 16);
-		
-		assignItemRect(DART,            9,  9);
+
+		assignItemRect(THROWING_SPIKE,  9,   8);
+
 		assignItemRect(THROWING_KNIFE,  12, 13);
 		assignItemRect(THROWING_STONE,  14, 14);
 		
@@ -356,24 +357,25 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_HAMMER, 11, 11);
 		assignItemRect(FORCE_CUBE,      11, 12);
 	}
-	
-	public static final int TIPPED_DARTS    =                               xy(1, 11);  //16 slots
-	public static final int ROT_DART        = TIPPED_DARTS+0;
-	public static final int INCENDIARY_DART = TIPPED_DARTS+1;
-	public static final int ADRENALINE_DART = TIPPED_DARTS+2;
-	public static final int HEALING_DART    = TIPPED_DARTS+3;
-	public static final int CHILLING_DART   = TIPPED_DARTS+4;
-	public static final int SHOCKING_DART   = TIPPED_DARTS+5;
-	public static final int POISON_DART     = TIPPED_DARTS+6;
-	public static final int CLEANSING_DART  = TIPPED_DARTS+7;
-	public static final int PARALYTIC_DART  = TIPPED_DARTS+8;
-	public static final int HOLY_DART       = TIPPED_DARTS+9;
-	public static final int DISPLACING_DART = TIPPED_DARTS+10;
-	public static final int BLINDING_DART   = TIPPED_DARTS+11;
-	public static final int EMPTY_DART   = TIPPED_DARTS+12;
+
+	public static final int DARTS    =                                      xy(1, 11);  //16 slots
+	public static final int DART            = DARTS+0;
+	public static final int ROT_DART        = DARTS+1;
+	public static final int INCENDIARY_DART = DARTS+2;
+	public static final int ADRENALINE_DART = DARTS+3;
+	public static final int HEALING_DART    = DARTS+4;
+	public static final int CHILLING_DART   = DARTS+5;
+	public static final int SHOCKING_DART   = DARTS+6;
+	public static final int POISON_DART     = DARTS+7;
+	public static final int CLEANSING_DART  = DARTS+8;
+	public static final int PARALYTIC_DART  = DARTS+9;
+	public static final int HOLY_DART       = DARTS+10;
+	public static final int DISPLACING_DART = DARTS+11;
+	public static final int BLINDING_DART   = DARTS+12;
 	static {
-		for (int i = TIPPED_DARTS; i < TIPPED_DARTS+16; i++)
+		for (int i = DARTS; i < DARTS+16; i++)
 			assignItemRect(i, 9, 9);
+
 	}
 	
 	private static final int ARMOR          =                               xy(1, 12);  //16 slots
@@ -386,11 +388,13 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_MAGE      = ARMOR+6;
 	public static final int ARMOR_ROGUE     = ARMOR+7;
 	public static final int ARMOR_HUNTRESS  = ARMOR+8;
+	public static final int ARMOR_DUELIST   = ARMOR+9;
 	public static final int MAP0            = ARMOR+11;
 	public static final int HIGHWAY         = ARMOR+12;
 	public static final int MAP1            = ARMOR+13;
 	public static final int MAP2            = ARMOR+14;
 	public static final int MAP3            = ARMOR+15;
+
 	static{
 		assignItemRect(ARMOR_CLOTH,     16, 16);
 		assignItemRect(ARMOR_LEATHER,   16, 16);
@@ -399,6 +403,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_PLATE,     16, 16);
 		assignItemRect(ARMOR_WARRIOR,   14, 14);
 		assignItemRect(ARMOR_MAGE,      15, 15);
+
 		assignItemRect(ARMOR_ROGUE,     14, 8);
 		assignItemRect(ARMOR_HUNTRESS,  13, 13);
 		assignItemRect(MAP0,            12, 16);
@@ -406,6 +411,11 @@ public class ItemSpriteSheet {
 		assignItemRect(MAP1,            12, 16);
 		assignItemRect(MAP2,            12, 16);
 		assignItemRect(MAP3,            12, 16);
+
+		assignItemRect(ARMOR_ROGUE,     14, 8);
+		assignItemRect(ARMOR_HUNTRESS,  13, 13);
+		assignItemRect(ARMOR_DUELIST,   16, 16);
+
 	}
 
 	                                                                                    //16 free slots

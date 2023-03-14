@@ -40,7 +40,7 @@ public enum Languages {
 	JAPANESE("日本語",       "ko", Status.INCOMPLETE, null, new String[]{"Gosamaru", "Otogiri", "Siraore_Rou", "amama", "daingewuvzeevisiddfddd", "grassedge", "kiyofumimanabe", "librada", "mocklike", "oz51199", "tomofumikitano"}),
 	UKRANIAN("українська",  "ko", Status.INCOMPLETE, new String[]{"Oster"}, new String[]{"AlexFenixUA", "Dotsent", "Lyttym", "Sadsaltan1", "TarasUA", "TheGuyBill", "Tomfire", "Volkov", "ZverWolf", "_bor_", "alexfenixva", "ddmaster3463", "filalex77", "ingvarfed", "iu0v1", "lezzen", "oliolioxinfree", "so1der", "qweez", "romanokurg", "vlisivka", "yukete", "zhawty"}),
 	DUTCH("nederlands",     "ko", Status.UNREVIEWED, new String[]{"AlbertBrand"}, new String[]{"AvanLieshout", "Blokheck011", "Frankwert", "Gehenna", "Mvharen", "Valco", "ZephyrZodiac", "link200023", "rmw", "th3f4llenh0rr0r"}),
-	HUNGARIAN("magyar",     "ko", Status.UNREVIEWED, new String[]{"dorheim", "szalaik"}, new String[]{"Navetelen", "acszoltan111", "clarovani", "dhialub", "nanometer", "nardomaa", "savarall", "summoner001"}),
+	HUNGARIAN("magyar",     "ko", Status.UNFINISHED, new String[]{"dorheim", "szalaik"}, new String[]{"Navetelen", "acszoltan111", "clarovani", "dhialub", "nanometer", "nardomaa", "savarall", "summoner001"}),
 	FINNISH("suomi", 		"ko", Status.INCOMPLETE, new String[]{"TenguKnight"}, new String[]{"Allugaattori10", "Dakkus", "Jaskas123", "MailBoxGod", "Oftox", "Sautari", "Tikkari"} ),
 	GREEK("ελληνικά",       "ko", Status.REVIEWED,   new String[]{"Aeonius", "Saxy"}, new String[]{"DU_Clouds", "VasKyr", "YiorgosH", "fr3sh", "stefboi", "toumbo", "val.exe"}),
 	//CATALAN("català",     "ca", Status.INCOMPLETE, new String[]{"Illyatwo2"}, new String[]{"Elosy", "n1ngu"})
@@ -50,6 +50,7 @@ public enum Languages {
 
 	public enum Status{
 		//below 80% complete languages are not added.
+		UNFINISHED,
 		INCOMPLETE, //80-99% complete
 		UNREVIEWED, //100% complete
 		REVIEWED    //100% reviewed

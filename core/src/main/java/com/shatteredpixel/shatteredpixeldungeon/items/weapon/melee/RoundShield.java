@@ -35,6 +35,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class RoundShield extends MeleeWeapon {
@@ -49,8 +59,8 @@ public class RoundShield extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(2.5f*(tier+1)) +     //10 base, down from 20
-				lvl*(tier-1);                   //+2 per level, down from +4
+		return  Math.round(3f*(tier+1)) +   //12 base, down from 20
+				lvl*(tier-1);               //+2 per level, down from +4
 	}
 
 	@Override
@@ -70,12 +80,12 @@ public class RoundShield extends MeleeWeapon {
 
 	@Override
 	public int defenseFactor( Char owner ) {
-		return 4+2*buffedLvl();     //4 extra defence, plus 2 per level;
+		return 4+buffedLvl();               //4 extra defence, plus 1 per level
 	}
 
 	public String statsInfo(){
 		if (isIdentified()){
-			return Messages.get(this, "stats_desc", 4+2*buffedLvl());
+			return Messages.get(this, "stats_desc", 4+buffedLvl());
 		} else {
 			return Messages.get(this, "typical_stats_desc", 4);
 		}
@@ -89,5 +99,37 @@ public class RoundShield extends MeleeWeapon {
 				info += "\n\n" + Messages.get( RoundShield.class, "setbouns");}
 
 		return info;
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		RoundShield.guardAbility(hero, 5, this);
+	}
+
+	public static void guardAbility(Hero hero, int duration, MeleeWeapon wep){
+		wep.beforeAbilityUsed(hero);
+		Buff.prolong(hero, GuardTracker.class, duration);
+		Sample.INSTANCE.play( Assets.Sounds.GUITAR );
+		hero.sprite.operate(hero.pos);
+		hero.spendAndNext(Actor.TICK);
+		wep.afterAbilityUsed(hero);
+	}
+
+	public static class GuardTracker extends FlavourBuff {
+
+		{
+			announced = true;
+			type = buffType.POSITIVE;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.DUEL_GUARD;
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (5 - visualcooldown()) / 5);
+		}
 	}
 }

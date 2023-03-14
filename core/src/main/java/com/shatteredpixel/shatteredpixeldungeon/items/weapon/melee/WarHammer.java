@@ -89,4 +89,13 @@ public class WarHammer extends MeleeWeapon {
 		return info;
 	}
 
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		Mace.heavyBlowAbility(hero, target, 1.35f, this);
+	}
 }

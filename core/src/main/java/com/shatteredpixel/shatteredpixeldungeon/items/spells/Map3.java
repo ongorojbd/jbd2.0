@@ -137,6 +137,12 @@ public class Map3 extends Spell {
                 case HUNTRESS:
                     GLog.n(Messages.get(Diego.class, "6"));
                     break;
+                case DUELIST:
+                    GLog.n(Messages.get(Diego.class, "12"));
+                    GLog.p(Messages.get(Val.class, "9"));
+                    Sample.INSTANCE.play( Assets.Sounds.BLAST );
+                    Camera.main.shake(9, 0.5f);
+                    break;
             }
 
             for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {

@@ -336,7 +336,7 @@ public class HeavyMachinegun extends MeleeWeapon {
     public class Bullet extends MissileWeapon {
 
         {
-            image = ItemSpriteSheet.EMPTY_DART;
+            image = ItemSpriteSheet.FISHING_SPEAR;
 
             tier = 5;
             ACC = 0.7f;

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,14 +101,15 @@ public class Goo extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 2);
+		return super.drRoll() + Random.NormalIntRange(0, 2);
 	}
 
 	@Override
 	public boolean act() {
 
-		if (state != HUNTING){
+		if (state != HUNTING && pumpedUp > 0){
 			pumpedUp = 0;
+			sprite.idle();
 		}
 
 		if (Dungeon.level.water[pos] && HP < HT) {
@@ -336,12 +337,10 @@ public class Goo extends Mob {
 				case HUNTRESS:
 					this.yell(Messages.get(this, "notice4"));
 					break;
-				//case DUELIST:
-					//this.yell(Messages.get(this, "notice5"));
-					//GLog.p(Messages.get(Val.class, "9"));
-				//	Sample.INSTANCE.play( Assets.Sounds.BLAST );
-				//	Camera.main.shake(9, 0.5f);
-					//break;
+				case DUELIST:
+					this.yell(Messages.get(this, "notice5"));
+					GLog.p(Messages.get(Val.class, "9"));
+					break;
 			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){

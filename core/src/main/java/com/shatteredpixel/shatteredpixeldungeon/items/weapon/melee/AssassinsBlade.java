@@ -98,4 +98,14 @@ public class AssassinsBlade extends MeleeWeapon {
 		return info;
 	}
 
+	@Override
+	public float abilityChargeUse( Hero hero ) {
+		return 2*super.abilityChargeUse(hero);
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		Dagger.sneakAbility(hero, 4, this);
+	}
+
 }

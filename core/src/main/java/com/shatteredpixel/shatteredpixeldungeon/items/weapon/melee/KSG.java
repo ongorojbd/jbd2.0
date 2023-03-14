@@ -330,7 +330,7 @@ public class KSG extends MeleeWeapon {
     public class Bullet extends MissileWeapon {
 
         {
-            image = ItemSpriteSheet.EMPTY_DART ;
+            image = ItemSpriteSheet.FISHING_SPEAR;
 
             tier = 5;
         }

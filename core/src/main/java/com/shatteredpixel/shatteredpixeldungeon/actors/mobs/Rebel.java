@@ -261,10 +261,10 @@ public class Rebel extends Mob {
 					this.yell(Messages.get(this, "notice4"));
 					Sample.INSTANCE.play(Assets.Sounds.OH2);
 					break;
-				//				case DUELIST:
-//					this.yell(Messages.get(this, "notice5"));
-//		Sample.INSTANCE.play(Assets.Sounds.OH2);
-//					break;
+				case DUELIST:
+					this.yell(Messages.get(this, "notice5"));
+		            Sample.INSTANCE.play(Assets.Sounds.OH2);
+					break;
 
 			}
 			for (Char ch : Actor.chars()){
@@ -309,7 +309,7 @@ public class Rebel extends Mob {
 
 			GLog.w(Messages.get(Rebel.class, "summon"));
 
-			summonCooldown = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 20 : 29);
+			summonCooldown = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 14 : 26);
 			if (Phase == 5) summonCooldown = (9);
 
 			new Flare( 5, 32 ).color( 0xFFFFFF, true ).show( this.sprite, 3f );
@@ -441,6 +441,8 @@ public class Rebel extends Mob {
 			GameScene.flash(0x8B00FF);
 			Buff.prolong(this, Bless.class, Bless.DURATION*1_000_000);
 			yell(Messages.get(this, "telling_2"));
+
+			Sample.INSTANCE.play(Assets.Sounds.OH);
 
 			WO WO = new WO();
 			WO.state = WO.HUNTING;

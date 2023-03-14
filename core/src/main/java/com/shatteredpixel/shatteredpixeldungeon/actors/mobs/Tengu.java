@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -121,16 +122,6 @@ public class Tengu extends Mob {
 	}
 	
 	@Override
-	protected void onAdd() {
-		//when he's removed and re-added to the fight, his time is always set to now.
-		if (cooldown() > TICK) {
-			timeToNow();
-			spendToWhole();
-		}
-		super.onAdd();
-	}
-	
-	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 6, 12 );
 	}
@@ -146,7 +137,7 @@ public class Tengu extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return super.drRoll() + Random.NormalIntRange(0, 5);
 	}
 
 	boolean loading = false;
@@ -387,12 +378,10 @@ public class Tengu extends Mob {
 					case HUNTRESS:
 						this.yell(Messages.get(this, "notice_gotcha4"));
 						break;
-//					case DUELIST:
-//						this.yell(Messages.get(this, "notice_gotcha5"));
-//						GLog.p(Messages.get(Val.class, "9"));
-					//	Sample.INSTANCE.play( Assets.Sounds.BLAST );
-					//	Camera.main.shake(9, 0.5f);
-//						break;
+					case DUELIST:
+						this.yell(Messages.get(this, "notice_gotcha5"));
+						GLog.p(Messages.get(Val.class, "9"));
+						break;
 				}
 				for (Char ch : Actor.chars()){
 					if (ch instanceof DriedRose.GhostHero){
@@ -622,8 +611,8 @@ public class Tengu extends Mob {
 		//Targets closest cell which is adjacent to target
 		for (int i : PathFinder.NEIGHBOURS8){
 			int cell = target.pos + i;
-			if (targetCell == -1 ||
-					Dungeon.level.trueDistance(cell, thrower.pos) < Dungeon.level.trueDistance(targetCell, thrower.pos)){
+			if (!Dungeon.level.solid[cell] &&
+					(targetCell == -1 || Dungeon.level.trueDistance(cell, thrower.pos) < Dungeon.level.trueDistance(targetCell, thrower.pos))){
 				targetCell = cell;
 			}
 		}

@@ -90,7 +90,11 @@ public class GooSprite extends MobSprite {
 			clearEmitters();
 		} else {
 			play(pump);
-			Sample.INSTANCE.play( Assets.Sounds.CHARGEUP, 1f, warnDist == 1 ? 1.1f : 1.2f );
+			Sample.INSTANCE.play( Assets.Sounds.CHARGEUP, 1f, warnDist == 1 ? 0.8f : 1f );
+			if (ch.fieldOfView == null || ch.fieldOfView.length != Dungeon.level.length()){
+				ch.fieldOfView = new boolean[Dungeon.level.length()];
+				Dungeon.level.updateFieldOfView( ch, ch.fieldOfView );
+			}
 			for (int i = 0; i < Dungeon.level.length(); i++){
 				if (ch.fieldOfView != null && ch.fieldOfView[i]
 						&& Dungeon.level.distance(i, ch.pos) <= warnDist

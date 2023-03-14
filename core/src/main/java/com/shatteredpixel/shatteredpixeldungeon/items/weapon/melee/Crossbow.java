@@ -36,7 +36,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class Crossbow extends MeleeWeapon {
 	
@@ -48,6 +52,21 @@ public class Crossbow extends MeleeWeapon {
 		//check Dart.class for additional properties
 		
 		tier = 4;
+	}
+
+	@Override
+	public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+		if (super.doUnequip(hero, collect, single)){
+			if (hero.buff(ChargedShot.class) != null &&
+					!(hero.belongings.weapon() instanceof Crossbow)
+					&& !(hero.belongings.secondWep() instanceof Crossbow)){
+				//clear charged shot if no crossbow is equipped
+				hero.buff(ChargedShot.class).detach();
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -75,5 +94,35 @@ public class Crossbow extends MeleeWeapon {
 	public int max(int lvl) {
 		return  4*(tier+1) +    //20 base, down from 25
 				lvl*(tier);     //+4 per level, down from +5
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		if (hero.buff(ChargedShot.class) != null){
+			GLog.w(Messages.get(this, "ability_cant_use"));
+			return;
+		}
+
+		beforeAbilityUsed(hero);
+		Buff.affect(hero, ChargedShot.class);
+		Sample.INSTANCE.play(Assets.Sounds.DORA);
+		Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+		hero.sprite.operate(hero.pos);
+		hero.next();
+		afterAbilityUsed(hero);
+	}
+
+	public static class ChargedShot extends Buff{
+
+		{
+			announced = true;
+			type = buffType.POSITIVE;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.DUEL_XBOW;
+		}
+
 	}
 }

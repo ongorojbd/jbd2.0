@@ -104,4 +104,14 @@ public class LSWORD extends MeleeWeapon {
         return info;
     }
 
+    @Override
+    public String targetingPrompt() {
+        return Messages.get(this, "prompt");
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        Sword.cleaveAbility(hero, target, 1.20f, this);
+    }
+
 }

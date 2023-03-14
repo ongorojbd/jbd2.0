@@ -4,10 +4,12 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -25,8 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -150,10 +155,6 @@ public class AJA extends MeleeWeapon {
         return info;
     }
 
-    @Override
-    public String status() {
-        return HealCount + "/" + 10;}
-
     public static boolean VectorSetBouns() {
         if (!(Dungeon.hero.belongings.weapon instanceof AJA)) return false;
 
@@ -200,5 +201,54 @@ public class AJA extends MeleeWeapon {
             output = AJA.class;
             outQuantity = 1;
         }
+    }
+
+    @Override
+    public String targetingPrompt() {
+        return Messages.get(this, "prompt");
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        if (hero.HP / (float)hero.HT >= 0.5f){
+            GLog.w(Messages.get(this, "ability_cant_use"));
+            return;
+        }
+
+        if (target == null) {
+            return;
+        }
+
+        Char enemy = Actor.findChar(target);
+        if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
+            GLog.w(Messages.get(this, "ability_no_target"));
+            return;
+        }
+
+        hero.belongings.abilityWeapon = this;
+        if (!hero.canAttack(enemy)){
+            GLog.w(Messages.get(this, "ability_bad_position"));
+            hero.belongings.abilityWeapon = null;
+            return;
+        }
+        hero.belongings.abilityWeapon = null;
+
+        hero.sprite.attack(enemy.pos, new Callback() {
+            @Override
+            public void call() {
+                beforeAbilityUsed(hero);
+                AttackIndicator.target(enemy);
+                if (hero.attack(enemy, 1.35f, 0, Char.INFINITE_ACCURACY)){
+                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                    Sample.INSTANCE.play(Assets.Sounds.DORA);
+                    if (!enemy.isAlive()){
+                        onAbilityKill(hero);
+                    }
+                }
+                Invisibility.dispel();
+                hero.spendAndNext(hero.attackDelay());
+                afterAbilityUsed(hero);
+            }
+        });
     }
 }

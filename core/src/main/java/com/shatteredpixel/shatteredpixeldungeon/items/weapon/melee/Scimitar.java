@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
@@ -36,6 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class Scimitar extends MeleeWeapon {
@@ -84,6 +87,39 @@ public class Scimitar extends MeleeWeapon {
 				info += "\n\n" + Messages.get( Scimitar.class, "setbouns");}
 
 		return info;
+	}
+
+	@Override
+	public float abilityChargeUse(Hero hero) {
+		return 2*super.abilityChargeUse(hero);
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		beforeAbilityUsed(hero);
+		Buff.prolong(hero, SwordDance.class, 5f); //5 turns as using the ability is instant
+		Sample.INSTANCE.play( Assets.Sounds.GUITAR );
+		hero.sprite.operate(hero.pos);
+		hero.next();
+		afterAbilityUsed(hero);
+	}
+
+	public static class SwordDance extends FlavourBuff {
+
+		{
+			announced = true;
+			type = buffType.POSITIVE;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.DUEL_DANCE;
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (6 - visualcooldown()) / 6);
+		}
 	}
 
 }
