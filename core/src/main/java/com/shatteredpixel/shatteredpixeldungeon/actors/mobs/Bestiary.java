@@ -179,8 +179,7 @@ public class Bestiary {
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class, Eye.class,
-						Scorpio.class, Scorpio.class, Scorpio.class,
-						Acidic.class));
+						Scorpio.class, Scorpio.class, Scorpio.class));
 
 			// Labs
 			case 26:

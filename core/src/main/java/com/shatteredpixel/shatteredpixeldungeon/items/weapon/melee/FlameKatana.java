@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
@@ -94,5 +95,15 @@ public class FlameKatana extends MeleeWeapon {
             output = FlameKatana.class;
             outQuantity = 1;
         }
+    }
+
+    @Override
+    public float abilityChargeUse( Hero hero ) {
+        return 2*super.abilityChargeUse(hero);
+    }
+
+    @Override
+    protected void duelistAbility(Hero hero, Integer target) {
+        Dagger.sneakAbility(hero, 5, this);
     }
 }

@@ -51,6 +51,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LabsLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KiraSprite;
@@ -107,59 +109,6 @@ public class Kirakira extends Mob {
     }
 
     @Override
-    protected boolean act() {
-        alerted = false;
-        super.act();
-
-        if (threatened == false){
-            return true;
-        }
-
-        ArrayList<Integer> shockCells = new ArrayList<>();
-
-        shockCells.add(pos + PathFinder.CIRCLE8[targetNeighbor]);
-
-        {
-            shockCells.add(pos + PathFinder.CIRCLE8[(targetNeighbor+4)%8]);
-        }
-
-        sprite.flash();
-
-        boolean visible = Dungeon.level.heroFOV[pos];
-        for (int cell : shockCells){
-            if (Dungeon.level.heroFOV[cell]){
-                visible = true;
-            }
-        }
-
-        if (visible) {
-            for (int cell : shockCells){
-                CellEmitter.center(cell).burst(BlastParticle.FACTORY, 15);
-                CellEmitter.center(cell).burst(SmokeParticle.FACTORY, 4);
-                Sample.INSTANCE.play( Assets.Sounds.BLAST );
-
-            }
-
-        }
-
-        for (int cell : shockCells) {
-            shockChar(Actor.findChar(cell));
-        }
-
-        targetNeighbor = (targetNeighbor+1)%8;
-
-        return true;
-    }
-
-    private void shockChar( Char ch ){
-        if (ch != null && !(ch instanceof DM300)){
-            ch.sprite.flash();
-            ch.damage(Random.NormalIntRange(20, 30), new Electricity());
-        }
-    }
-
-
-    @Override
     public int damageRoll() {
         return Random.NormalIntRange(35, 40);
     }
@@ -206,6 +155,18 @@ public class Kirakira extends Mob {
         new Flare( 5, 32 ).color( 0x00FFFF, true ).show( hero.sprite, 1f );
         Sample.INSTANCE.play(Assets.Sounds.BADGE);
         GLog.p(Messages.get(Pucci4.class, "x"));
+    }
+
+    @Override
+    public int attackProc( Char hero, int damage ) {
+        damage = super.attackProc( enemy, damage );
+        if (this.buff(Doom.class) == null) {
+            if (Random.Int(2) == 0) {
+                new ExplosiveTrap().set(target).activate();
+            }
+        }
+
+        return damage;
     }
 
     public static void spawn(LabsLevel level) {

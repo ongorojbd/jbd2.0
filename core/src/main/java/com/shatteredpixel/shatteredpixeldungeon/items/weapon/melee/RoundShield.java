@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -66,14 +67,15 @@ public class RoundShield extends MeleeWeapon {
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 
-		if (hero.belongings.getItem(CloakOfShadows.class) != null) {
+		if (Dungeon.hero.belongings.getItem(RingOfMight.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfMight.class).isEquipped(Dungeon.hero)) {
 
 				{
 					hero.damage( 1, this );
 					Buff.affect( defender, Bleeding.class).set(1f);
 				}
 
-		}
+		}}
 
 		return super.proc(attacker, defender, damage);
 	}

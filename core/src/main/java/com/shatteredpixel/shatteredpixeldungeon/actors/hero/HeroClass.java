@@ -98,9 +98,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ChaosSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DBLADE;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FlameKatana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
@@ -153,23 +155,7 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 		new RingOfDrago().identify();
 
-		if (DeviceCompat.isDebug()){
-			new TengusMask().collect();
-			new KingsCrown().collect();
-			new WandOfBlastWave().identify().upgrade(999).collect();
-			new HandAxe().identify().upgrade(3).collect();
-			new Gauntlet().identify().upgrade(3).collect();
-			new PlateArmor().identify().upgrade(999).collect();
-			new Sword().identify().upgrade(3).collect();
-			new PotionOfHealing().identify().quantity(29).collect();
-			new PotionOfExperience().identify().quantity(29).collect();
-			new ScrollOfTransmutation().identify().quantity(1000).collect();
-			new ScrollOfUpgrade().identify().quantity(1000).collect();
-			new AdvancedEvolution().identify().quantity(1000).collect();
-			new Scimitar().identify().upgrade(9999).collect();
-			new Neotel().collect();
-			new RingOfAccuracy().identify().upgrade(9999).collect();
-		}
+
 
 		switch (this) {
 			case WARRIOR:
@@ -308,6 +294,12 @@ public enum HeroClass {
 
 		(hero.belongings.weapon = new Rapier()).identify();
 		hero.belongings.weapon.activate(hero);
+
+		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+			RingOfDrago wealth = new RingOfDrago();
+			(hero.belongings.misc = wealth).identify();
+			hero.belongings.misc.activate( hero );
+		}
 
 		ThrowingSpike spikes = new ThrowingSpike();
 		spikes.quantity(2).collect();

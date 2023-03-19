@@ -73,7 +73,7 @@ public class Kingt extends Spell {
 
         switch (Random.Int(30)){
             case 0:
-                Item a = new BossdiscC();
+                Item a = new Map3();
                 Dungeon.level.drop(a, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 1:

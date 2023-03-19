@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EarthParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscC;
@@ -595,7 +596,25 @@ public class DM300 extends Mob {
 
 		if (Random.Int( 10 ) == 0) {
 			GameScene.flash(0xFFFF00);
-			Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
+
+			switch(Dungeon.hero.heroClass){
+				case WARRIOR:
+					Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
+					break;
+				case ROGUE:
+					Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
+					break;
+				case MAGE:
+					Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
+					break;
+				case HUNTRESS:
+					Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
+					break;
+				case DUELIST:
+					Dungeon.level.drop( new ThirdBomb().identify(), pos ).sprite.drop( pos );
+					break;
+			}
+
 			new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 2f );
 			Sample.INSTANCE.play(Assets.Sounds.BADGE);
 			GLog.p(Messages.get(Kawasiri.class, "rare"));

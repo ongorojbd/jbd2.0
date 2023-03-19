@@ -110,7 +110,7 @@ public class jojo extends Mob {
                 int healAmt = 2*(7-Dungeon.level.distance(pos, hero.pos)); //different per each distance
                 healAmt = Math.min( 3,5);
                 if (healAmt > 0 && hero.isAlive()) {
-                    hero.HP += healAmt;
+                    Buff.affect(hero, Barrier.class).setShield(3);
                     if (Dungeon.level.heroFOV[hero.pos]) {
                         hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.4f, 2 );
                         hero.sprite.showStatus( CharSprite.POSITIVE, Integer.toString( healAmt ) );

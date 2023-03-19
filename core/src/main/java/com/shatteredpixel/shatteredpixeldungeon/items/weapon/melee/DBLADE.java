@@ -83,10 +83,10 @@ public class DBLADE extends MeleeWeapon {
         if (attacker instanceof Hero) {
             if (Dungeon.hero.belongings.getItem(RingOfFuror.class) != null) {
                 if (((Hero) attacker).belongings.getItem(RingOfFuror.class).isEquipped(Dungeon.hero)) {
-                    if (Random.Int(20) < 1)
+                    if (Random.Int(20) == 0) {
                         damage *= 1.5f;
                     attacker.sprite.showStatus(CharSprite.NEUTRAL, "[치명타 공격!]");
-                }
+                }}
             }
         }
         return super.proc(attacker, defender, damage);

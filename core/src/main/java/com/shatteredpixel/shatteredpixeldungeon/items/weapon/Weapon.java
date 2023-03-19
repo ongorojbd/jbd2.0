@@ -222,6 +222,9 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public int reachFactor(Char owner) {
 		int reach = RCH;
+		if (owner.buff(ReachIncrease.class) != null ){
+			return hasEnchant(Projecting.class, owner) ? RCH+3 : RCH+2;
+		}
 		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
 			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
 			if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){
