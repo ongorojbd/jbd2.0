@@ -85,8 +85,8 @@ public class Mace extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (hero.belongings.getItem(HornOfPlenty.class) != null) {
-			if (hero.belongings.getItem(HornOfPlenty.class).isEquipped(hero))
+		if (hero.belongings.getItem(RingOfHaste.class) != null) {
+			if (hero.belongings.getItem(RingOfHaste.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( Mace.class, "setbouns");}
 
 		return info;
