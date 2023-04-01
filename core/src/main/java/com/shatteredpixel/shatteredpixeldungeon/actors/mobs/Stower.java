@@ -163,6 +163,10 @@ public class Stower extends Mob {
             ch.sprite.flash();
             ch.damage(Random.NormalIntRange(5, 10), new Electricity());
         }
+
+        if (enemy == Dungeon.hero && !enemy.isAlive()) {
+            Dungeon.fail(getClass());
+        }
     }
 
 

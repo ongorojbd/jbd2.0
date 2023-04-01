@@ -1339,6 +1339,10 @@ public class Hero extends Char {
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 
+		if (enemy instanceof Stower && wep instanceof MissileWeapon) {
+			damage *= 0f;
+		}
+
 		switch (subClass) {
 			case SNIPER:
 				if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {

@@ -172,6 +172,7 @@ public enum HeroClass {
 			new Scimitar().identify().upgrade(9999).collect();
 			new Neotel().collect();
 			new RingOfAccuracy().identify().upgrade(9999).collect();
+			new RingOfEnergy().identify().upgrade(9999).collect();
 		}
 
 		switch (this) {

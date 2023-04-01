@@ -72,10 +72,6 @@ public class Reimi extends NPC {
     }
 
     @Override
-    public void add( Buff buff ) {
-    }
-
-    @Override
     public boolean interact(Char c) {
         if (c == Dungeon.hero) {
             Dungeon.hero.spendAndNext(1f);

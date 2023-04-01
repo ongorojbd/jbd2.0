@@ -69,10 +69,6 @@ public class Weza extends NPC {
     }
 
     @Override
-    public void add( Buff buff ) {
-    }
-
-    @Override
     public boolean reset() {
         return true;
     }

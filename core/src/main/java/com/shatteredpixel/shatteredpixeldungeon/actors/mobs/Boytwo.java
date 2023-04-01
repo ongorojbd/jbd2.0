@@ -174,6 +174,6 @@ public class Boytwo extends Mob {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(999,999);
+        return Random.NormalIntRange(999,9999);
     }
 }

@@ -146,13 +146,6 @@ public class Willamob extends Mob {
     }
 
     @Override
-    public void add(Buff buff) {
-        super.add(buff);
-        //TODO maybe handle honeyed bees with their own ally buff?
-
-    }
-
-    @Override
     public void die( Object cause ) {
         this.yell(Messages.get(this, "d"));
         super.die( cause );

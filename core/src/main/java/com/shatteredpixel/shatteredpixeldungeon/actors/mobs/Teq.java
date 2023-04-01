@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -49,6 +51,8 @@ public class Teq extends Mob {
         EXP = 15;
         maxLvl = 30;
 
+        loot = new PotionOfCleansing();
+        lootChance = 0.30f;
     }
 
     private boolean seenBefore = false;
@@ -110,10 +114,12 @@ public class Teq extends Mob {
     private void zap() {
         spend(TIME_TO_ZAP);
 
+        Invisibility.dispel(this);
+        Char enemy = this.enemy;
         if (hit(this, enemy, true)) {
             //TODO would be nice for this to work on ghost/statues too
-            if (enemy == Dungeon.hero && Random.Int(0) == 0) {
-                Buff.affect(enemy, Chill.class, 1f);
+            if (enemy == Dungeon.hero && Random.Int(2) == 0) {
+                Buff.affect(enemy, Chill.class, 3f);
                 Sample.INSTANCE.play(Assets.Sounds.HIT);
             }
 
@@ -148,8 +154,6 @@ public class Teq extends Mob {
     public void die( Object cause ) {
 
         super.die( cause );
-
-        Dungeon.level.drop( new PotionOfCleansing(), pos ).sprite.drop( pos );
 
         yell( Messages.get(this, "defeated") );
     }

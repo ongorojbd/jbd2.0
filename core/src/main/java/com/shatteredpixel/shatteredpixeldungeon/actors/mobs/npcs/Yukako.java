@@ -158,11 +158,6 @@ public class Yukako extends NPC {
     public void damage( int dmg, Object src ) {
     }
 
-    @Override
-    public void add( Buff buff ) {
-    }
-
-
     public static void spawn(PrisonLevel level) {
 
         if (Random.Int( 2 ) == 0) {
