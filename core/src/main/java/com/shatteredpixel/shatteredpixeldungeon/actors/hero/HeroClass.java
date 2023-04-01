@@ -156,6 +156,23 @@ public enum HeroClass {
 		new RingOfDrago().identify();
 
 
+		if (DeviceCompat.isDebug()){
+			new TengusMask().collect();
+			new KingsCrown().collect();
+			new WandOfBlastWave().identify().upgrade(999).collect();
+			new RoundShield().identify().upgrade(3).collect();
+			new Gauntlet().identify().upgrade(3).collect();
+			new PlateArmor().identify().upgrade(999).collect();
+			new Sword().identify().upgrade(3).collect();
+			new PotionOfHealing().identify().quantity(29).collect();
+			new PotionOfExperience().identify().quantity(29).collect();
+			new ScrollOfTransmutation().identify().quantity(1000).collect();
+			new ScrollOfUpgrade().identify().quantity(1000).collect();
+			new AdvancedEvolution().identify().quantity(1000).collect();
+			new Scimitar().identify().upgrade(9999).collect();
+			new Neotel().collect();
+			new RingOfAccuracy().identify().upgrade(9999).collect();
+		}
 
 		switch (this) {
 			case WARRIOR:

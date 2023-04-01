@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
@@ -39,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
@@ -85,6 +87,13 @@ public class v1_X_Changes {
 
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "죠스케",
 				"4부의 주인공 히가시카타 죠스케가 플레이어블 캐릭터로 추가되었습니다!"));
+
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 6), "죠스케 상향",
+				"_-_ 무기 충전 속도가 12.5% 상승합니다.\n\n_-_ _다이아몬드는 부서지지 않는다_ 특성의 추가 데미지가 2에서 3으로 상승합니다.\n_-_ _원상복귀_ 특성의 재사용 대기시간이 30턴에서 20턴으로 감소합니다.\n_-_ _황금의 정신_ 특성의 에너지 증가량이 25/50/100/150%에서 33/67/100/150로 증가합니다.\n"+
+						"_-_ _개체 변형_ 특성의 필요 에너지 조건이 100/85/70%에서 100/80/60%로 감소합니다.\n\n_-_ 크레이지 D 능력 발현 - 악퉁 베이비 : 은신 지속 시간 6/5/4턴에서 8/6/4턴으로 증가.\n_-_ 크레이지 D 능력 발현 - '헌팅'하러 가자! :  +15/10%에서 +40/30%로 피해량 증가.\n_-_ 크레이지 D 능력 발현 - 크레이지 D 능력 발현 - 가드 브레이커 :  +50/45/40/35%에서 +65/60/55/50%로 피해량 증가.\n"+
+						"_-_ 크레이지 D 능력 발현 - 연속 공격 : +30/25/20%에서 +40/35/30%로 피해량 증가.\n_-_ 크레이지 D 능력 발현 - 차지 어택 : 힘을 축적할 때마다 +20%에서 +33%로 피해량 증가."
+				));
+
 
 		changes = new ChangeInfo("4부 적", false, null);
 		changes.hardlight(CharSprite.WARNING);
