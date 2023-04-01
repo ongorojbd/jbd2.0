@@ -81,10 +81,12 @@ public class Imp extends NPC {
 
 	@Override
 	public void damage( int dmg, Object src ) {
+		//do nothing
 	}
 
 	@Override
-	public void add( Buff buff ) {
+	public boolean add( Buff buff ) {
+		return false;
 	}
 
 	@Override

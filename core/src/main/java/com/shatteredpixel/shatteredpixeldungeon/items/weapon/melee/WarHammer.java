@@ -96,6 +96,6 @@ public class WarHammer extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		Mace.heavyBlowAbility(hero, target, 1.35f, this);
+		Mace.heavyBlowAbility(hero, target, 1.50f, this);
 	}
 }
