@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
@@ -58,6 +60,26 @@ public class Rohan extends NPC {
             return true;
         }
         return super.act();
+    }
+
+    @Override
+    public void beckon (int cell) {
+        //do nothing
+    }
+
+    @Override
+    protected boolean getCloser(int target) {
+        return true;
+    }
+
+    @Override
+    protected boolean getFurther(int target) {
+        return true;
+    }
+
+    @Override
+    public boolean add( Buff buff ) {
+        return false;
     }
 
     @Override

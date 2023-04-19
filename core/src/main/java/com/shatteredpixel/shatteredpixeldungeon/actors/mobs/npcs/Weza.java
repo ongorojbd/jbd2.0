@@ -60,6 +60,26 @@ public class Weza extends NPC {
     }
 
     @Override
+    public void beckon (int cell) {
+        //do nothing
+    }
+
+    @Override
+    protected boolean getCloser(int target) {
+        return true;
+    }
+
+    @Override
+    protected boolean getFurther(int target) {
+        return true;
+    }
+
+    @Override
+    public boolean add( Buff buff ) {
+        return false;
+    }
+
+    @Override
     public int defenseSkill( Char enemy ) {
         return INFINITE_EVASION;
     }

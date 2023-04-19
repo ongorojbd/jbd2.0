@@ -50,7 +50,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWe
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Yoyoma;
@@ -274,7 +273,6 @@ public abstract class Recipe {
 			new ScrollOfPolymorph.Recipe(),
 			new WalkieTalkie.Recipe(),
 			new Yoyoma.Recipe(),
-			new Fugo.Recipe(),
 			new SnowHunter.Recipe(),
 			new Neoro.Recipe(),
 		new StewedMeat.twoMeat()

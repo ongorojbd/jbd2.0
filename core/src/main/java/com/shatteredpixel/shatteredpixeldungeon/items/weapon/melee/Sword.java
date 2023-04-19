@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -54,6 +55,12 @@ public class Sword extends MeleeWeapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
+
+		if (Dungeon.hero.belongings.weapon() instanceof Sword){
+			if (hero.HP == 2 || hero.HP == 3 || hero.HP == 5 || hero.HP == 7 || hero.HP == 11 || hero.HP == 13 || hero.HP == 17 || hero.HP == 19 || hero.HP == 23 || hero.HP == 29 || hero.HP == 31 || hero.HP == 37 || hero.HP == 41 || hero.HP == 43 || hero.HP == 47 || hero.HP == 53 || hero.HP == 59 || hero.HP == 61 || hero.HP == 67 || hero.HP == 71 || hero.HP == 73 || hero.HP == 79 || hero.HP == 83 || hero.HP == 89 || hero.HP == 97 || hero.HP == 101 || hero.HP == 103 || hero.HP == 107 || hero.HP == 109 || hero.HP == 113 || hero.HP == 127 || hero.HP == 131 || hero.HP == 137 || hero.HP == 139 || hero.HP == 149 || hero.HP == 151 || hero.HP == 157 || hero.HP == 163 || hero.HP == 167 || hero.HP == 173 || hero.HP == 179 || hero.HP == 181 || hero.HP == 191 || hero.HP == 193 || hero.HP == 197 || hero.HP == 199 || hero.HP == 211 || hero.HP == 223 || hero.HP == 227 || hero.HP == 229 || hero.HP == 233 || hero.HP == 239 || hero.HP == 241 || hero.HP == 251 || hero.HP == 257 || hero.HP == 263 || hero.HP == 269 || hero.HP == 271 || hero.HP == 277 || hero.HP == 281 || hero.HP == 283 || hero.HP == 293){
+				damage *= 1.9f;
+			}
+		}
 
 		if (hero.belongings.getItem(UnstableSpellbook.class) != null) {
 			if (hero.belongings.getItem(UnstableSpellbook.class).isEquipped(hero) && (Random.Int(10) == 0)) {

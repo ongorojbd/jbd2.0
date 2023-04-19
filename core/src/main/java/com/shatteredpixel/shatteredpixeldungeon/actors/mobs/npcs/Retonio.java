@@ -75,6 +75,11 @@ public class Retonio extends NPC {
     }
 
     @Override
+    public boolean add( Buff buff ) {
+        return false;
+    }
+
+    @Override
     protected boolean getCloser(int target) {
         return true;
     }

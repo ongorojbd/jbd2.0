@@ -27,6 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -110,6 +114,10 @@ public class Bomb extends Item {
 	@Override
 	protected void onThrow( int cell ) {
 		if (!Dungeon.level.pit[ cell ] && lightingFuse) {
+			if (Dungeon.hero.buff(Kawasiribuff.class) != null){
+				Actor.addDelayed(fuse = new Fuse().ignite(this), 0);
+			}
+		}else{
 			Actor.addDelayed(fuse = new Fuse().ignite(this), 2);
 		}
 		if (Actor.findChar( cell ) != null && !(Actor.findChar( cell ) instanceof Hero) ){

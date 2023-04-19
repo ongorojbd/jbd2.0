@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fugomob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -49,7 +50,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class Yukako extends NPC {
+public class Fugo extends NPC {
 
     {
         spriteClass = YukakoSprite.class;
@@ -99,66 +100,35 @@ public class Yukako extends NPC {
             return true;
         }
 
-       {
+        {
 
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
-                    Sample.INSTANCE.play(Assets.Sounds.YUKAK);
                     GameScene.show(new WndOptions(
                             sprite(),
                             Messages.titleCase(name()),
                             Messages.get(Yukako.class, "0"),
                             Messages.get(Yukako.class, "1"),
-                            Messages.get(Yukako.class, "2"),
-                            Messages.get(Yukako.class, "3")
+                            Messages.get(Yukako.class, "2")
                     ){
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0){
-                                Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-                                Sample.INSTANCE.play(Assets.Sounds.YUKAK);
                                 yell(Messages.get(Yukako.class, "4"));
 
                                 destroy();
                                 sprite.killAndErase();
                                 die(null);
 
-                                Yukakomob Yukakomob = new Yukakomob();
-                                Yukakomob.state = Yukakomob.HUNTING;
-                                Yukakomob.pos = pos;
-                                GameScene.add( Yukakomob );
-                                Yukakomob.beckon(Dungeon.hero.pos);
-
-                            } else if (index == 1) {
-                                Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-                                Sample.INSTANCE.play(Assets.Sounds.YUKAK);
-                                yell(Messages.get(Yukako.class, "5"));
-
-                                destroy();
-                                sprite.killAndErase();
-                                die(null);
-
-                                Yukakomob Yukakomob = new Yukakomob();
-                                Yukakomob.state = Yukakomob.HUNTING;
-                                Yukakomob.pos = pos;
-                                GameScene.add( Yukakomob );
-                                Yukakomob.beckon(Dungeon.hero.pos);
+                                Fugomob Fugomob = new Fugomob();
+                                Fugomob.state = Fugomob.HUNTING;
+                                Fugomob.pos = pos;
+                                GameScene.add( Fugomob );
+                                Fugomob.beckon(Dungeon.hero.pos);
 
                             } else {
-                                Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-                                Sample.INSTANCE.play(Assets.Sounds.YUKAK);
-                                yell(Messages.get(Yukako.class, "6"));
-
-                                destroy();
-                                sprite.killAndErase();
-                                die(null);
-
-                                Yukakomob Yukakomob = new Yukakomob();
-                                Yukakomob.state = Yukakomob.HUNTING;
-                                Yukakomob.pos = pos;
-                                GameScene.add( Yukakomob );
-                                Yukakomob.beckon(Dungeon.hero.pos);
+                                yell(Messages.get(Yukako.class, "5"));
                             }
                         }
                     });
@@ -181,21 +151,21 @@ public class Yukako extends NPC {
     public static void spawn(PrisonLevel level) {
 
         if (Random.Int( 2 ) == 0) {
-        if (Dungeon.depth >= 9 && !Dungeon.bossLevel()) {
+            if (Dungeon.depth >= 9 && !Dungeon.bossLevel()) {
 
-            Yukako npc = new Yukako();
-            do {
-                npc.pos = level.randomRespawnCell( npc );
-            } while (
-                    npc.pos == -1 ||
-                            level.heaps.get( npc.pos ) != null ||
-                            level.traps.get( npc.pos) != null ||
-                            level.findMob( npc.pos ) != null ||
-                            //The imp doesn't move, so he cannot obstruct a passageway
-                            !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
-                            !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
-            level.mobs.add( npc );
-        }
+                Fugo npc = new Fugo();
+                do {
+                    npc.pos = level.randomRespawnCell( npc );
+                } while (
+                        npc.pos == -1 ||
+                                level.heaps.get( npc.pos ) != null ||
+                                level.traps.get( npc.pos) != null ||
+                                level.findMob( npc.pos ) != null ||
+                                //The imp doesn't move, so he cannot obstruct a passageway
+                                !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
+                                !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
+                level.mobs.add( npc );
+            }
         }
     }
 

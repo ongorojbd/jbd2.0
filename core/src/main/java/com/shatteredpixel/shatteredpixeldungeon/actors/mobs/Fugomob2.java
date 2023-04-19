@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.BmoreGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
@@ -37,23 +36,20 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BmoreSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.FugoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Fugo2Sprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class Fugomob extends Mob {
+public class Fugomob2 extends Mob {
 
     {
-        spriteClass = FugoSprite.class;
+        spriteClass = Fugo2Sprite.class;
 
         HP = HT =  30;
         HUNTING = new Mob.Hunting();
         immunities.add(CorrosiveGas.class);
-        viewDistance = 5;
-        state = WANDERING;
-        alignment = Alignment.ALLY;
         //only applicable when the bee is charmed with elixir of honeyed healing
         intelligentAlly = true;
 
@@ -69,17 +65,6 @@ public class Fugomob extends Mob {
         bundle.put(SUMMON_COOLDOWN, summonCooldown);
     }
 
-    @Override
-    public int attackSkill( Char target ) {
-        return 30;
-    }
-
-    @Override
-    public int attackProc( Char hero, int damage ) {
-        damage = super.attackProc( enemy, damage );
-        
-        return damage;
-    }
 
     @Override
     public void restoreFromBundle( Bundle bundle ) {
@@ -152,22 +137,6 @@ public class Fugomob extends Mob {
 
 
     private void zap( ){
-
-        if (Random.Int(3) == 0) {
-
-            yell(Messages.get(Fugo.class, "4"));
-
-            destroy();
-            sprite.killAndErase();
-            die(null);
-
-            Fugomob2 Fugomob2 = new Fugomob2();
-            Fugomob2.state = Fugomob2.HUNTING;
-            Fugomob2.pos = pos;
-            GameScene.add( Fugomob2 );
-            Fugomob2.beckon(Dungeon.hero.pos);
-        }
-
         threatened = false;
         spend(TICK);
         sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "G1"));

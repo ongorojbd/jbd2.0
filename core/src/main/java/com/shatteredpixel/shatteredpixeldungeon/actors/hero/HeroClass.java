@@ -60,6 +60,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -89,6 +92,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMet
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -166,11 +170,13 @@ public enum HeroClass {
 			new Sword().identify().upgrade(3).collect();
 			new PotionOfHealing().identify().quantity(29).collect();
 			new PotionOfExperience().identify().quantity(29).collect();
-			new ScrollOfTransmutation().identify().quantity(1000).collect();
+			new ScrollOfRage().identify().quantity(1000).collect();
 			new ScrollOfUpgrade().identify().quantity(1000).collect();
-			new AdvancedEvolution().identify().quantity(1000).collect();
-			new Scimitar().identify().upgrade(9999).collect();
+			new Bomb().identify().quantity(1000).collect();
+			new HolyBomb().identify().quantity(1000).collect();
+			new RegrowthBomb().identify().quantity(1000).collect();
 			new Neotel().collect();
+			new Neoro().collect();
 			new RingOfAccuracy().identify().upgrade(9999).collect();
 			new RingOfEnergy().identify().upgrade(9999).collect();
 		}
