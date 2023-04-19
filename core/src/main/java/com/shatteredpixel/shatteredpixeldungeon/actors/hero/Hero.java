@@ -1204,7 +1204,7 @@ public class Hero extends Char {
 			Camera.main.shake(1, 1f);
 			ready();
 			return false;
-		} else if (transition != null && transition.inside(pos)) {
+		} else if (!Dungeon.level.locked && transition != null && transition.inside(pos)) {
 
 			if (transition.type == LevelTransition.Type.SURFACE){
 				if (belongings.getItem( Amulet.class ) == null) {
@@ -1687,6 +1687,8 @@ public class Hero extends Char {
 					Chasm.heroJump(this);
 					interrupt();
 				} else {
+					flying = false;
+					remove(buff(Levitation.class)); //directly remove to prevent cell pressing
 					Chasm.heroFall(target);
 				}
 				canSelfTrample = false;

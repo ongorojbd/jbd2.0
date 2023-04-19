@@ -299,7 +299,7 @@ public class ItemSpriteSheet {
 		assignItemRect(GLAIVE,      16, 16);
 		assignItemRect(GREATAXE,    12, 16);
 		assignItemRect(GREATSHIELD, 11, 16);
-		assignItemRect(GAUNTLETS,   13, 15);
+		assignItemRect(GAUNTLETS,   16, 16);
 		assignItemRect(LSWORD,      16, 16);
 		assignItemRect(DBLADE,      16, 16);
 		assignItemRect(MISTA,       15, 14);

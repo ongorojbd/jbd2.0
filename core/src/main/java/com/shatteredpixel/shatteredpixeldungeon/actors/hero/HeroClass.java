@@ -93,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -170,13 +171,10 @@ public enum HeroClass {
 			new Sword().identify().upgrade(3).collect();
 			new PotionOfHealing().identify().quantity(29).collect();
 			new PotionOfExperience().identify().quantity(29).collect();
-			new ScrollOfRage().identify().quantity(1000).collect();
-			new ScrollOfUpgrade().identify().quantity(1000).collect();
-			new Bomb().identify().quantity(1000).collect();
-			new HolyBomb().identify().quantity(1000).collect();
-			new RegrowthBomb().identify().quantity(1000).collect();
+			new ThrowingStone().identify().quantity(29).collect();
 			new Neotel().collect();
 			new Neoro().collect();
+			new StoneOfAugmentation().identify().upgrade(999).collect();
 			new RingOfAccuracy().identify().upgrade(9999).collect();
 			new RingOfEnergy().identify().upgrade(9999).collect();
 		}
