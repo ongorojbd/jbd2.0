@@ -98,22 +98,14 @@ public class Acidic extends Mob {
 
 		if (this.buff(Barkskin.class) == null) {
 
-			{
-				{
-					damage = Math.max(damage, hero.HP / 2);
-				}
+				damage = Math.max(damage, hero.HP / 2);
+
 				Sample.INSTANCE.play(Assets.Sounds.BLAST);
 				CellEmitter.center(Dungeon.hero.pos).burst(BloodParticle.BURST, 31);
 				GLog.w(Messages.get(this, "torment"));
 
-				Ballistica trajectory = new Ballistica(this.pos, enemy.pos, Ballistica.STOP_TARGET);
-				//trim it to just be the part that goes past them
-				trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-				//knock them back along that ballistica
-				WandOfBlastWave.throwChar(enemy, trajectory, 12, false, true, getClass());
-
 				return damage;
-			}
+
 		}
 		return damage;
 	}
