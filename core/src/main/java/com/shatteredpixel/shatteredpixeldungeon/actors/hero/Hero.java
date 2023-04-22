@@ -184,6 +184,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -2064,7 +2065,7 @@ public class Hero extends Char {
 			@Override
 			public void call() {
 				GameScene.gameOver();
-				Sample.INSTANCE.play( Assets.Sounds.DEATH );
+				Music.INSTANCE.play(Assets.Music.THEME_2, true);
 			}
 		});
 

@@ -250,7 +250,7 @@ public class TalentButton extends Button {
 			float oldWidth = fill.width();
 			pointsInTalent++;
 			layout();
-			Sample.INSTANCE.play(Assets.Sounds.LEVELUP, 0.7f, 1.2f);
+			Sample.INSTANCE.play(Assets.Sounds.TALE);
 			Emitter emitter = (Emitter) parent.recycle(Emitter.class);
 			emitter.revive();
 			emitter.pos(fill.x + (fill.width() + oldWidth) / 2f, fill.y + fill.height() / 2f);

@@ -27,10 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -116,9 +113,9 @@ public class Bomb extends Item {
 		if (!Dungeon.level.pit[ cell ] && lightingFuse) {
 			if (Dungeon.hero.buff(Kawasiribuff.class) != null){
 				Actor.addDelayed(fuse = new Fuse().ignite(this), 0);
+			}else{
+				Actor.addDelayed(fuse = new Fuse().ignite(this), 2);
 			}
-		}else{
-			Actor.addDelayed(fuse = new Fuse().ignite(this), 2);
 		}
 		if (Actor.findChar( cell ) != null && !(Actor.findChar( cell ) instanceof Hero) ){
 			ArrayList<Integer> candidates = new ArrayList<>();
@@ -188,6 +185,10 @@ public class Bomb extends Item {
 				}
 
 				int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
+
+				if (Dungeon.hero.buff(Kawasiribuff.class) != null){
+					dmg = dmg * 5/4;
+				}
 
 				//those not at the center of the blast take less damage
 				if (ch.pos != cell){

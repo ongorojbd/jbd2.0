@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -127,7 +128,7 @@ public class Kawasiri extends Mob {
 
         yell( Messages.get(this, "phase4") );
 
-            Dungeon.level.drop( new Kirafood(), pos ).sprite.drop( pos );
+        Buff.affect(hero, Kawasiribuff.class);
 
 
         if (Random.Int( 10 ) == 0) {

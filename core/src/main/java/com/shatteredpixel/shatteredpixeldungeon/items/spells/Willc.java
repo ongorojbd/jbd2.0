@@ -119,6 +119,9 @@ public class Willc extends Spell {
             case HUNTRESS:
                 GLog.n(Messages.get(this, "3"));
                 break;
+            case DUELIST:
+                GLog.n(Messages.get(this, "8"));
+                break;
         }
 
     }

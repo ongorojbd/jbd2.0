@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ram2;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
@@ -226,7 +227,7 @@ public class ShopRoom extends SpecialRoom {
 
 
 		itemsToSpawn.add( new SmallRation() );
-		itemsToSpawn.add( new Ram() );
+		itemsToSpawn.add( new Ram2() );
 
 		switch (Random.Int(4)){
 			case 0:

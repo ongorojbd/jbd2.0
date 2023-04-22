@@ -254,6 +254,7 @@ public class Assets {
 		public static final String RO4 = "sounds/ro4.mp3";
 		public static final String RO5 = "sounds/ro5.mp3";
 		public static final String YUKAK = "sounds/yukak.mp3";
+		public static final String TALE = "sounds/tale.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -267,7 +268,7 @@ public class Assets {
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
-				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH, RO1, RO2, RO3, RO4, RO5, YUKAK
+				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH, RO1, RO2, RO3, RO4, RO5, YUKAK, TALE
 		};
 	}
 

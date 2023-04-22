@@ -78,7 +78,7 @@ public class Endure extends ArmorAbility {
 
 		@Override
 		public int icon() {
-			return enduring ? BuffIndicator.NONE : BuffIndicator.ARMOR;
+			return enduring ? BuffIndicator.NONE : BuffIndicator.FURY;
 		}
 
 		@Override

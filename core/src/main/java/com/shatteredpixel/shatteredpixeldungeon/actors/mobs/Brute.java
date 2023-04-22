@@ -144,7 +144,7 @@ public class Brute extends Mob {
 		
 		@Override
 		public int icon () {
-			return BuffIndicator.FURY;
+			return BuffIndicator.MIND_VISION;
 		}
 		
 		@Override
