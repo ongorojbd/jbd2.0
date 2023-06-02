@@ -51,6 +51,8 @@ public class AscensionChallenge extends Buff {
 		modifiers.put(Crab.class,           8f);
 		modifiers.put(Slime.class,          8f);
 
+		modifiers.put(Bcom.class,      		5f);
+		modifiers.put(Bcomg.class,     		5f);
 		modifiers.put(Skeleton.class,       5f);
 		modifiers.put(Thief.class,          5f);
 		modifiers.put(DM100.class,          4.5f);

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -35,7 +36,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.audio.Sample;
@@ -53,12 +56,23 @@ public class Scimitar extends MeleeWeapon {
 	}
 
 	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+				if (defender.buff(Dread.class) != null || defender.buff(Terror.class) != null) {
+					damage *= 2.0f;
+					attacker.sprite.showStatus(CharSprite.NEUTRAL, "[+200% 추가 피해!]");
+				}
+
+		return super.proc(attacker, defender, damage);
+	}
+
+
+	@Override
 	public int damageRoll(Char owner) {
 		if (owner instanceof Hero) {
 			Hero hero = (Hero) owner;
 			Char enemy = hero.enemy();
 			if (Dungeon.hero.belongings.weapon() instanceof Scimitar && (Random.Int(33) == 0)) {
-				Buff.prolong(enemy, Terror.class, 15f);
 
 				if (hero.belongings.getItem(RingOfArcana.class) != null) {
 					if (hero.belongings.getItem(RingOfArcana.class).isEquipped(hero)) {

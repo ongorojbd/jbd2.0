@@ -106,15 +106,14 @@ public class Rohan3 extends NPC {
             return true;
         }
 
-        if (Statistics.duwang3 > 0) {
+        if (Statistics.duwang == 1) {
             yell( Messages.get(Rohan.class, "bi") );
             Sample.INSTANCE.play(Assets.Sounds.RO5);
             destroy();
             sprite.killAndErase();
             die(null);
-        }
-
-        if (Statistics.duwang3 < 1) {
+            Statistics.duwang = 0;
+        } else {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
@@ -151,7 +150,7 @@ public class Rohan3 extends NPC {
                                             protected void onSelect(int index) {
                                                 if (index == 0){
                                                     if (Dungeon.gold > 49) {
-                                                        Statistics.duwang3 += 1;
+                                                        Statistics.duwang += 1;
                                                         Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                         switch (Random.Int(2)){
                                                             case 0:
@@ -175,7 +174,7 @@ public class Rohan3 extends NPC {
                                                 }
                                                 else if (index == 1) {
                                                     if (Dungeon.gold > 99) {
-                                                        Statistics.duwang3 += 1;
+                                                        Statistics.duwang += 1;
                                                         Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                         switch (Random.Int(2)){
                                                             case 0:
@@ -198,7 +197,7 @@ public class Rohan3 extends NPC {
                                                 }
                                                 else if (index == 2) {
                                                     if (Dungeon.gold > 249) {
-                                                        Statistics.duwang3 += 1;
+                                                        Statistics.duwang += 1;
                                                         Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                         switch (Random.Int(2)){
                                                             case 0:
@@ -221,7 +220,7 @@ public class Rohan3 extends NPC {
                                                 }
                                                 else if (index == 3) {
                                                     if (Dungeon.gold > 499) {
-                                                        Statistics.duwang3 += 1;
+                                                        Statistics.duwang += 1;
                                                         Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                         switch (Random.Int(2)){
                                                             case 0:
@@ -245,7 +244,7 @@ public class Rohan3 extends NPC {
                                                 }
                                                 else if (index == 4) {
                                                     if (Dungeon.gold > 999) {
-                                                        Statistics.duwang3 += 1;
+                                                        Statistics.duwang += 1;
                                                         Sample.INSTANCE.play(Assets.Sounds.GOLD);
                                                         switch (Random.Int(2)){
                                                             case 0:

@@ -21,9 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 public class StormCloud extends Blob {
@@ -31,8 +42,9 @@ public class StormCloud extends Blob {
 	@Override
 	protected void evolve() {
 		super.evolve();
-		
+		Char ch;
 		int cell;
+		int damage = 5;
 
 		Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
 		for (int i = area.left; i < area.right; i++){
@@ -43,10 +55,17 @@ public class StormCloud extends Blob {
 					if (fire != null){
 						fire.clear(i);
 					}
-				}
+
+					if ((ch = Actor.findChar( cell )) != null) {
+					if (!ch.isImmune(this.getClass()) && !(ch instanceof Hero) && hero.belongings.getItem(Jojo9.class) != null ) {
+						Buff.prolong(ch, Hex.class, 1);
+						Buff.prolong(ch, Cripple.class, 1);
+						ch.damage(damage, this);
+					}
+					}
+				}}
 			}
 		}
-	}
 	
 	@Override
 	public void use( BlobEmitter emitter ) {

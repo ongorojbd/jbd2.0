@@ -46,6 +46,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCor
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
@@ -71,7 +74,7 @@ public class Kingt extends Spell {
     protected void onCast(Hero hero) {
 
 
-        switch (Random.Int(30)){
+        switch (Random.Int(33)){
             case 0:
                 Item a = new Map3();
                 Dungeon.level.drop(a, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
@@ -117,7 +120,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(h1, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 11:
-                Item h2 = new Blandfruit().quantity(4);
+                Item h2 = new Blandfruit().quantity(3);
                 Dungeon.level.drop(h2, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 12:
@@ -129,7 +132,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(h4, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 14:
-                Item h5 = new Bomb().quantity(9);
+                Item h5 = new Bomb().quantity(10);
                 Dungeon.level.drop(h5, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 15:
@@ -192,7 +195,18 @@ public class Kingt extends Spell {
                 Item wq = new ScrollOfPrismaticImage().quantity(2);
                 Dungeon.level.drop(wq, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
-
+            case 30:
+                Item wq1 = new Drago().quantity(5);
+                Dungeon.level.drop(wq1, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 31:
+                Item wq3 = new Cen();
+                Dungeon.level.drop(wq3, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 32:
+                Item wq5 = new Araki();
+                Dungeon.level.drop(wq5, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
         }
 
         new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 3.7f);
@@ -209,6 +223,6 @@ public class Kingt extends Spell {
 
     @Override
     public int value() {
-        return 100 * quantity;
+        return 750 * quantity;
     }
 }

@@ -75,6 +75,8 @@ public class Swiftthistle extends Plant {
 		
 		private float left;
 		ArrayList<Integer> presses = new ArrayList<>();
+
+		public void bufftime(float time) { left = time;}
 		
 		@Override
 		public int icon() {

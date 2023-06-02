@@ -57,8 +57,8 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
+		add_v1_4_3_Changes(changeInfos);
 		add_v1_4_1_Changes(changeInfos);
-		add_v1_4_Changes(changeInfos);
 	}
 
 	public static void add_Coming_Soon( ArrayList<ChangeInfo> changeInfos ) {
@@ -67,14 +67,98 @@ public class v1_X_Changes {
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.SUPRESSION, 0, 0, 12, 15), "영웅 밸런스 조정",
-				"2.0H에서는 전체적인 영웅 밸런스 조정이 있을 예정입니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ATOM, 0, 0, 12, 15), "신규 적",
-				"또한 2.0H에서는 신규 적 2종이 추가됩니다.\n\n2.0H 업데이트는 4월 말~5월 초 사이 예정입니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 영웅 : 죠린",
 			""));
 	}
 
+	public static void add_v1_4_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0h", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes = new ChangeInfo("새로운 요소", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.WALL), "벽의 눈",
+				"신규 아이템 벽의 눈이 추가되었습니다!\n\n" +
+						"벽의 눈은 5층의 보스를 처치하면 획득할 수 있습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO1), "죠죠 1~3부 만화책",
+				"소지하기만 해도 강력한 효과를 지닌 신규 아이템 타입이 추가되었습니다!\n\n" +
+						"_죠죠 1~3부 만화책은 벽의 눈에서 3% 확률로 얻을 수 있습니다._"));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO4), "죠죠 4~6부 만화책",
+				"소지하기만 해도 강력한 효과를 지닌 신규 아이템 타입이 추가되었습니다!\n\n" +
+						"_죠죠 4~6부 만화책은 벽의 눈에서 3% 확률로 얻을 수 있습니다._"));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO7), "죠죠 7~9부 만화책",
+				"소지하기만 해도 강력한 효과를 지닌 신규 아이템 타입이 추가되었습니다!\n\n" +
+						"_죠죠 7~9부 만화책은 벽의 눈에서 3% 확률로 얻을 수 있습니다._"));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ATOM, 0, 0, 12, 15), "신규 적",
+				"아톰 하트 파더가 희귀한 확률로 타워 오브 그레이 대신 등장합니다.\n\n푸 파이터즈가 희귀한 확률로 클래시 대신 등장합니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.KEEPER, 0, 0, 15, 15), "상점 개편",
+				"상점 상호작용이 추가되었습니다!\n\n이제 최근에 판매한 물건을 다시 재구매할 수 있습니다.\n\n이제 상점 주인과 대화할 수 있습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.FUGO, 0, 0, 12, 15), "신규 NPC",
+				"히로세 야스호와 판나코타 푸고가 일정 확률로 13층, 17층에 등장합니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SAP), "신규 무기",
+				"신규 2단계 무기 1종,\n신규 4단계 무기 1종,\n신규 5단계 무기 1종이 추가되었습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CEN), "20th 센츄리 보이",
+				"상점에서 판매하는 희귀 아이템이 추가되었습니다."));
+
+		changes = new ChangeInfo("변경", false, null);
+		changes.hardlight(CharSprite.WARNING);
+		changeInfos.add(changes);
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), "천국의 DISC",
+						"천국의 DISC 입수 후, 적들의 방어도가 올라가는 대신 최대 체력이 상승하도록 변경되었습니다."));
+		changes.addButton(new ChangeButton( new TalentIcon(Talent.LIGHTWEIGHT_CHARGE), "죠스케 특성 리워크",
+				"죠스케의 3단계 특성 중, 최종 결전 특성이 리워크되었습니다!\n\n기존 효과 : 죠스케가 1/2/3단계 근접 무기의 능력을 사용할 때, 소모 충전량 감소\n\n변경 효과 : 무기 능력을 발동한 후, 5턴 이내의 다음 번 근접 공격이 정확성을 얻음"));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GRAVE), "드래곤즈 드림 리워크",
+				"드래곤즈 드림의 아이템 효과가 리워크되었습니다.\n\n" +
+						"50% 확률로 길의 방향, 흉의 방향을 발동하는 효과로 변경되었습니다.\n이제 상점에서 드래곤즈 드림을 구입할 수 있습니다."));
+
+		changes = new ChangeInfo("상향", false, null);
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 1), "죠스케 상향",
+				"피해량 및 효과 증가:\n" +
+						"_-_ _크레이지 D 능력 발현 - 악퉁 베이비_ :\n은신 지속 시간 8/6/4턴에서 10/8/6턴으로 증가.\n" +
+						"_-_ _크레이지 D 능력 발현 - 연속 공격_ :\n+40/35/30%에서 +45/40/35%로 피해량 증가.\n" +
+						"_-_ _크레이지 D 능력 발현 - '헌팅'하러 가자!_ :\n+40/30%에서 +45/30%로 피해량 증가.\n" +
+						"_-_ _크레이지 D 능력 발현 - 죠셉의 가호_ :\n회피율 2배에서 회피율 3배로 증가, 지속시간 6턴에서 5턴으로 감소.\n" +
+						"_-_ _크레이지 D 능력 발현 - 혈액 커터_ :\n이제 가장 가까이 있는 적은 무조건 공격에 적중됩니다.\n" +
+						"_-_ _크레이지 D 능력 발현 - 방벽 생성_ :\n방벽 지속 시간 5/4턴에서 8/6턴으로 증가.\n" +
+						"_-_ _크레이지 D 능력 발현 - 치유 펀치_ :\n속성 성능 +250% 증가에서 +300%로 증가.\n" +
+						"\n" +
+						" ",
+				"패널티 효과 제거:\n" +
+						"_-_ _크레이지 D 능력 발현 - 잠재된 폭발력_ :\n-20% 정확도에서 +25% 정확도로 증가, 지속시간 6턴에서 5턴으로 감소.\n" +
+						"_-_ _크레이지 D 능력 발현 - 차지 어택_ :\n힘 축적 횟수와 상관 없이 반드시 명중.\n" +
+						"_-_ _크레이지 D 능력 발현 - 각오 모드_ :\n+35%에서 +50%로 피해량 증가.\n" +
+						"_-_ _크레이지 D 능력 발현 - 가드 브레이커_ :\n_-_ 이제 반드시 명중하는 대신, 기습 공격을 하지 않으면 2의 충전량을 사용합니다.\n_-_ 70-50%에서 50-30%로 추가 피해량 감소\n_-_ 신규 디버프 '방어 해제'를 5턴 동안 부여.\n" +
+						"_-_ _크레이지 D 능력 발현 - 비장의 한발_ :\n_-_ 씨앗을 바른 탄환의 경우 2번에서 4번으로 사용 횟수 증가.\n_-_ 3x3 범위에서 5x5 범위로 증가\n_-_ 해로운 효과는 적에게만 적용되고 이로운 효과는 아군에게만 적용."));
+
+
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 4), "죠스케 보조 직업 상향",
+				"_분노의 스탠드사:_\n" +
+						"_-_ _분노 폭주 특성_ :\n10/20/30% 미만의 체력을 가진 적을 일격사에서 13/27/40% 미만의 체력을 가진 적을 일격사로 변경.\n\n" +
+						"_수복의 스탠드사:_\n" +
+						"_-_ _황금의 정신 특성_ :\n33/67/100% 추가 에너지에서 40/80/120% 추가 에너지로 변경, 장비 미착용 조건 삭제.\n\n" +
+						"_-_ _결정된 승리 특성_ :\n돌려받는 에너지량 33%에서 50%로 증가.\n\n" +
+						"_-_ _개체 변형 특성_ :\n_-_ 하트 히트 어택에 100% 위력의 속성 부여.\n_-_ 스타일리쉬 무브의 범위가 +2에서 +3으로 증가.\n_-_ 그레이트 히트 어택의 피해량이 +33%에서 +50%로 증가."));
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 6), "죠스케 레퀴엠 능력 상향",
+				"_-_ _Crazy noisy bizzare town_ :\n약점 발견 - 초월 특성의 방어력 저하가 1/2/3/4턴에서 2/4/6/8턴으로 증가.\n\n" +
+						 "_-_ _Chase_ :\n명품 교복 - 초월 특성 체력 회복량 증가\n\n" +
+						 "_-_ _Great Days_ :\n피해량 증가."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KINGB), "히가시카타 가족 스탠드",
+				"상점에서 판매하는 8부 스탠드들의 가격이 35% 감소합니다."));
+
+		changes = new ChangeInfo("하향", false, null);
+		changes.hardlight(CharSprite.NEGATIVE);
+		changeInfos.add(changes);
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 5), "죠스케 하향",
+				"고고고 모드 시전 시, 사격/장비DISC 충전의 지속시간이 10턴에서 8턴으로 감소했습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.RAM), "마법의 램프",
+				"이제 상점에서 1/2 확률로 마법의 램프 대신 SPW 재단의 보급품을 대신 판매합니다."));
+	}
 
 	public static void add_v1_4_1_Changes( ArrayList<ChangeInfo> changeInfos ) {
 		ChangeInfo changes = new ChangeInfo("2.0g", true, "");
@@ -134,59 +218,4 @@ public class v1_X_Changes {
 				"카와지리 처치 시, 영구히 지속되는 전용 버프가 추가되었습니다."));
 
 	}
-
-	public static void add_v1_4_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0f", true, "");
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes = new ChangeInfo("스틸 볼 런 레이스", false, null);
-		changes.hardlight(CharSprite.POSITIVE);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP1), "스틸 볼 런 레이스 지도 1st",
-				"코코 잠보를 통해 제작 가능한 신규 아이템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
-						"스틸 볼 런 레이스 지도 1st를 사용하면 _성인의 안구_의 위치를 알 수 있습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP2), "스틸 볼 런 레이스 지도 2nd",
-				"코코 잠보를 통해 제작 가능한 신규 아이템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
-						"스틸 볼 런 레이스 지도 2nd를 사용하면 _성인의 척추_의 위치를 알 수 있습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP3), "스틸 볼 런 레이스 지도 3rd",
-				"코코 잠보를 통해 제작 가능한 신규 아이템인 스틸 볼 런 레이스 지도가 추가되었습니다.\n\n" +
-						"스틸 볼 런 레이스 지도 3rd를 사용하면 _성인의 심장_의 위치를 알 수 있습니다."));
-		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.SACRIFICE, true), "성인의 유해",
-				"지도를 통해 성인의 유해를 흡수하면 특수 효과가 제공됩니다.\n\n_성인의 유해를 3개 모으면 D4C 러브 트레인이 발현됩니다._"));
-		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.RAGE, true), "D4C 러브 트레인",
-				"성인의 유해 3개가 모였을 시 발현되는 강력한 효과가 추가되었습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP0), "스틸 볼 런 레이스 지도 4~9th",
-				"???"));
-		changes = new ChangeInfo("특수 보스", false, null);
-		changes.hardlight(CharSprite.WARNING);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.CIVIL, 0, 0, 12, 17), "시빌 워",
-				"성인의 유해 앞을 가로막는 신규 적인 시빌 워가 추가되었습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BMORE, 0, 0, 12, 16), "블랙모어",
-				"성인의 유해 앞을 가로막는 신규 적인 블랙모어가 추가되었습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIEGO, 0, 0, 12, 15), "디에고 브란도",
-				"성인의 유해 앞을 가로막는 신규 적인 디에고 브란도가 추가되었습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI, 0, 0, 12, 15), "퍼니 발렌타인",
-				"추격자들을 보낸 장본인인 퍼니 발렌타인이 직접 보스로 등장합니다."));
-
-		changes = new ChangeInfo("신규 NPC", false, null);
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.WEZA, 0, 0, 12, 15), "웨더 리포트",
-				"21~24층에 신규 NPC인 웨더 리포트가 추가되었습니다."));
-
-
-		changes = new ChangeInfo(".", false, null);
-		changes.hardlight(CharSprite.NEGATIVE);
-		changeInfos.add(changes);
-
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.WORLD21, 0, 0, 40, 40), "THE WORLD",
-				"스틸 볼 런 레이스의 종착점에 기다리는 것은.."));
-	}
-
 }

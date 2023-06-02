@@ -187,7 +187,7 @@ public class Bomb extends Item {
 				int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
 
 				if (Dungeon.hero.buff(Kawasiribuff.class) != null){
-					dmg = dmg * 5/4;
+					dmg = dmg * 3/2;
 				}
 
 				//those not at the center of the blast take less damage

@@ -106,15 +106,14 @@ public class Rohan extends NPC {
             return true;
         }
 
-        if (Statistics.duwang > 0) {
+        if (Statistics.duwang == 1) {
             yell( Messages.get(Rohan.class, "bi") );
             Sample.INSTANCE.play(Assets.Sounds.RO5);
             destroy();
             sprite.killAndErase();
             die(null);
-        }
-
-        if (Statistics.duwang < 1) {
+            Statistics.duwang = 0;
+        } else {
                 Game.runOnRenderThread(new Callback() {
                     @Override
                     public void call() {

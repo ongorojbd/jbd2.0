@@ -174,6 +174,7 @@ public class Assets {
 		public static final String HIT_PARRY        = "sounds/hit_parry.mp3";
 		public static final String HIT_ARROW        = "sounds/hit_arrow.mp3";
 		public static final String HIT_SHOTGUN      = "sounds/hit_shotgun.mp3";
+		public static final String HIT_ICE 			= "sounds/hit_ice.mp3";
 		public static final String HEI              = "sounds/hei.mp3";
 		public static final String RELOAD           = "sounds/reload.mp3";
 		public static final String ATK_SPIRITBOW    = "sounds/atk_spiritbow.mp3";
@@ -255,6 +256,7 @@ public class Assets {
 		public static final String RO5 = "sounds/ro5.mp3";
 		public static final String YUKAK = "sounds/yukak.mp3";
 		public static final String TALE = "sounds/tale.mp3";
+		public static final String NITOH = "sounds/nitoh.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -262,13 +264,13 @@ public class Assets {
 				OPEN, UNLOCK, ITEM, DEWDROP, STEP, WATER, GRASS, TRAMPLE, STURDY,
 
 				HIT, MISS, HIT_SLASH, HIT_STAB, HIT_CRUSH, HIT_MAGIC, HIT_STRONG, HIT_PARRY,
-				HIT_ARROW, HIT_SHOTGUN, HEI, RELOAD, ATK_SPIRITBOW, ATK_CROSSBOW, HEALTH_WARN, HEALTH_CRITICAL,
+				HIT_ARROW, HIT_SHOTGUN, HIT_ICE, HEI, RELOAD, ATK_SPIRITBOW, ATK_CROSSBOW, HEALTH_WARN, HEALTH_CRITICAL,
 
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
-				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH, RO1, RO2, RO3, RO4, RO5, YUKAK, TALE
+				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH, RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH
 		};
 	}
 
@@ -395,5 +397,7 @@ public class Assets {
 		public static final String KAKYOIN= "sprites/kakyoin.png";
 		public static final String CRAZYDIAMOND= "sprites/crazydiamond.png";
 		public static final String ATOM= "sprites/atom.png";
+		public static final String FUGO= "sprites/fugo.png";
+		public static final String YASU = "sprites/yasu.png";
 	}
 }

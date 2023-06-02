@@ -44,7 +44,7 @@ public class Fugo2Sprite extends MobSprite {
     public Fugo2Sprite () {
         super();
 
-        texture( Assets.Sprites.BMORE );
+        texture( Assets.Sprites.FUGO );
 
         TextureFilm frames = new TextureFilm( texture, 12, 16 );
 

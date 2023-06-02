@@ -46,6 +46,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
@@ -227,9 +230,17 @@ public class ShopRoom extends SpecialRoom {
 
 
 		itemsToSpawn.add( new SmallRation() );
-		itemsToSpawn.add( new Ram2() );
+		switch (Random.Int(2)){
+			case 0:
+			itemsToSpawn.add( new Ram2() );
+			break;
+			case 1:
+			itemsToSpawn.add( new SmallRation() );
+			break;
+		}
 
-		switch (Random.Int(4)){
+
+		switch (Random.Int(5)){
 			case 0:
 				itemsToSpawn.add( new Highway() );
 				break;
@@ -241,6 +252,9 @@ public class ShopRoom extends SpecialRoom {
 				break;
 			case 3:
 				itemsToSpawn.add( new Honeypot() );
+				break;
+			case 4:
+				itemsToSpawn.add( new Drago() );
 				break;
 		}
 
@@ -300,16 +314,20 @@ public class ShopRoom extends SpecialRoom {
 			}
 		}
 
-		switch (Random.Int(17)){
-			case 0:
-				itemsToSpawn.add( new Maga() );
-				break;
+		if (Random.Int(17) == 0) {
+			itemsToSpawn.add(new Maga());
 		}
 
-		switch (Random.Int(40)){
-			case 0:
-				itemsToSpawn.add( new Mdisc() );
-				break;
+		if (Random.Int(20) == 0) {
+			itemsToSpawn.add(new Cen());
+		}
+
+		if (Random.Int(40) == 0) {
+			itemsToSpawn.add(new Mdisc());
+		}
+
+		if (Random.Int(45) == 0) {
+			itemsToSpawn.add(new Araki());
 		}
 
 		itemsToSpawn.add( new Ankh() );

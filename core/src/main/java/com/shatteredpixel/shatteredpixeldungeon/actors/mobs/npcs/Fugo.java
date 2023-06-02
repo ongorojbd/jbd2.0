@@ -30,10 +30,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fugomob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FugoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YukakoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -53,7 +55,7 @@ import java.util.ArrayList;
 public class Fugo extends NPC {
 
     {
-        spriteClass = YukakoSprite.class;
+        spriteClass = FugoSprite.class;
 
         properties.add(Property.IMMOVABLE);
     }
@@ -108,14 +110,14 @@ public class Fugo extends NPC {
                     GameScene.show(new WndOptions(
                             sprite(),
                             Messages.titleCase(name()),
-                            Messages.get(Yukako.class, "0"),
-                            Messages.get(Yukako.class, "1"),
-                            Messages.get(Yukako.class, "2")
+                            Messages.get(Fugo.class, "0"),
+                            Messages.get(Fugo.class, "1"),
+                            Messages.get(Fugo.class, "2")
                     ){
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0){
-                                yell(Messages.get(Yukako.class, "4"));
+                                yell(Messages.get(Fugo.class, "4"));
 
                                 destroy();
                                 sprite.killAndErase();
@@ -128,7 +130,7 @@ public class Fugo extends NPC {
                                 Fugomob.beckon(Dungeon.hero.pos);
 
                             } else {
-                                yell(Messages.get(Yukako.class, "5"));
+                                yell(Messages.get(Fugo.class, "5"));
                             }
                         }
                     });
@@ -148,10 +150,10 @@ public class Fugo extends NPC {
     public void damage( int dmg, Object src ) {
     }
 
-    public static void spawn(PrisonLevel level) {
+    public static void spawn(CityLevel level) {
 
-        if (Random.Int( 2 ) == 0) {
-            if (Dungeon.depth >= 9 && !Dungeon.bossLevel()) {
+        if (Random.Int( 1 ) == 0) {
+            if (Dungeon.depth == 17 && !Dungeon.bossLevel()) {
 
                 Fugo npc = new Fugo();
                 do {

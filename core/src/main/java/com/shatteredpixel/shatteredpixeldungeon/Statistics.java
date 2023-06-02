@@ -66,6 +66,8 @@ public class Statistics {
 	public static int duwang2;
 	public static int duwang3;
 
+	public static int manga;
+
 	public static boolean qualifiedForNoKilling = false;
 	public static boolean completedWithNoKilling = false;
 	public static boolean qualifiedForBossChallengeBadge = false;
@@ -110,6 +112,7 @@ public class Statistics {
 		duwang = 0;
 		duwang2 = 0;
 		duwang3 = 0;
+		manga = 0;
 		
 		duration	    = 0;
 		
@@ -137,6 +140,7 @@ public class Statistics {
 	private static final String DUWANG		    = "duwang";
 	private static final String DUWANG2		    = "duwang2";
 	private static final String DUWANG3 	    = "duwang3";
+	private static final String MANGA		    = "manga";
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
 	private static final String TRES_SCORE      = "tres_score";
@@ -181,6 +185,7 @@ public class Statistics {
 		bundle.put( DUWANG,		     duwang );
 		bundle.put( DUWANG2,	     duwang2 );
 		bundle.put( DUWANG3,		 duwang3 );
+		bundle.put( MANGA,		     manga );
 		bundle.put( PROG_SCORE,  progressScore );
 		bundle.put( ITEM_VAL,    heldItemValue );
 		bundle.put( TRES_SCORE,  treasureScore );
@@ -230,6 +235,7 @@ public class Statistics {
 		duwang      = bundle.getInt( DUWANG );
 		duwang2      = bundle.getInt( DUWANG2 );
 		duwang3      = bundle.getInt( DUWANG3 );
+		manga      = bundle.getInt( MANGA );
 		progressScore   = bundle.getInt( PROG_SCORE );
 		heldItemValue   = bundle.getInt( ITEM_VAL );
 		treasureScore   = bundle.getInt( TRES_SCORE );

@@ -68,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.StowerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -117,7 +118,7 @@ public class Stower extends Mob {
         alerted = false;
         super.act();
 
-        if (threatened == false){
+        if (!threatened){
             return true;
         }
 
@@ -167,6 +168,25 @@ public class Stower extends Mob {
         if (enemy == Dungeon.hero && !enemy.isAlive()) {
             Dungeon.fail(getClass());
         }
+    }
+
+    @Override
+    public boolean interact(Char c) {
+        return true;
+    }
+
+    private static final String TARGET_NEIGHBOUR = "target_neighbour";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(TARGET_NEIGHBOUR, targetNeighbor);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        targetNeighbor = bundle.getInt(TARGET_NEIGHBOUR);
     }
 
 

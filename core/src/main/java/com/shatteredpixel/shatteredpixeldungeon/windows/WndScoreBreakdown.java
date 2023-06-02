@@ -78,7 +78,7 @@ public class WndScoreBreakdown extends Window {
 		if (Statistics.winMultiplier > 1) {
 			pos = statSlot(this, Messages.get(this, "win_multiplier"), Statistics.winMultiplier + "x", pos, false);
 		}
-		if (Statistics.chalMultiplier > 1 || Dungeon.isChallenged(Challenges.GAMBLER)) {
+		if (Statistics.chalMultiplier > 1) {
 			pos = statSlot(this, Messages.get(this, "challenge_multiplier"), Statistics.chalMultiplier + "x", pos, false);
 		}
 		pos = statSlot(this, Messages.get(this, "total"), num.format(Statistics.totalScore), pos, false);

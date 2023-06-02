@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MandomSprite;
 import com.watabou.utils.Random;
 

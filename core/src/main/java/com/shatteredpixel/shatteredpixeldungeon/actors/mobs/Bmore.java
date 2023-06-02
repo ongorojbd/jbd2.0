@@ -78,7 +78,7 @@ public class Bmore extends Mob {
     {
         spriteClass = BmoreSprite.class;
 
-        HP = HT = 25;
+        HP = HT = 30;
         HUNTING = new Mob.Hunting();
         immunities.add(BmoreGas.class);
 

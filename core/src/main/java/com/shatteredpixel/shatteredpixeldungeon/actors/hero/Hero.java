@@ -34,7 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
@@ -51,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
@@ -83,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Stower;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -91,6 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.D4CParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
@@ -115,6 +120,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArm
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
@@ -126,6 +132,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -141,7 +155,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachinegun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
@@ -152,6 +165,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -159,10 +173,18 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -172,6 +194,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
@@ -192,6 +215,7 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1325,6 +1349,10 @@ public class Hero extends Char {
 		resting = fullRest;
 	}
 
+	private static Class[] harmfulPlants = new Class[]{
+			Blindweed.class, Firebloom.class, Icecap.class, Sorrowmoss.class,  Stormvine.class
+	};
+
 	@Override
 	public int attackProc( final Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
@@ -1342,6 +1370,140 @@ public class Hero extends Char {
 
 		if (enemy instanceof Stower && wep instanceof MissileWeapon) {
 			damage *= 0f;
+		}
+
+
+		if (hero.belongings.getItem(Jojo8.class) != null) {
+		if (hero.HP <= hero.HT/4) {
+			damage *= 2f;
+		}
+		else if (hero.HP <= hero.HT / 2){
+			damage *= 1.5f;
+		}
+		else if (hero.HP <= hero.HT - hero.HT/4) {
+			damage *= 1.2f;
+		}
+		}
+
+
+		if (hero.belongings.getItem(Jojo8.class) != null && hero.buff(Swiftthistle.TimeBubble.class) != null) {
+			int barr = Math.min(5 + HT /6, 2 + (damage/3));
+			Buff.affect(this, Barrier.class).incShield(barr);
+		}
+
+		if (hero.belongings.getItem(Jojo4.class) != null && wep instanceof MissileWeapon && Dungeon.gold > 9){
+			new ExplosiveTrap().set(enemy.pos).activate();
+
+			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null ) {
+			new ExplosiveTrap().set(enemy.pos).activate();
+			}
+
+			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
+
+			} else {
+			Dungeon.gold -= 10;
+		}
+		}
+
+		if (hero.belongings.getItem(Jojo5.class) != null && Dungeon.energy > 0 && wep instanceof MeleeWeapon) {
+			Plant plant = (Plant) Reflection.newInstance(Random.element(harmfulPlants));
+			plant.pos = enemy.pos;
+			plant.activate(enemy.isAlive() ? enemy : null);
+
+
+			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
+
+			} else {
+				Dungeon.energy -= 1;
+			}
+
+			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null && wep instanceof MeleeWeapon) {
+				Plant plant2 = (Plant) Reflection.newInstance(Random.element(harmfulPlants));
+				plant2.pos = enemy.pos;
+				plant2.activate(enemy.isAlive() ? enemy : null);
+			}
+		}
+
+		if (hero.belongings.getItem(Jojo6.class) != null && wep instanceof MeleeWeapon){
+
+
+			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
+
+			} else {
+			if (Random.Int( 2 ) == 0) {
+			Dungeon.hero.damage(1, this);
+			}
+
+
+		}}
+
+//		//스타더스트 크루세이더즈 효과
+//		if (hero.belongings.getItem(Jojo3.class) != null) {
+//			hero.HP = Math.min(hero.HP + 2, hero.HT);
+//		}
+
+		//2셋 효과
+		if (hero.belongings.getItem(Jojo1.class) != null && hero.belongings.getItem(Jojo2.class) != null || hero.belongings.getItem(Jojo1.class) != null && hero.belongings.getItem(Jojo3.class) != null || hero.belongings.getItem(Jojo2.class) != null && hero.belongings.getItem(Jojo3.class) != null) {
+			if (enemy.buff(Frost.class) != null) {
+				damage *= 5f;
+				hero.sprite.showStatus(HeroSprite.POSITIVE, Messages.get(Sword.class, "2"));
+				Sample.INSTANCE.play( Assets.Sounds.HAHAH);
+			}
+		}
+
+		//3셋 효과
+		if (hero.belongings.getItem(Jojo1.class) != null && hero.belongings.getItem(Jojo2.class) != null && hero.belongings.getItem(Jojo3.class) != null && wep instanceof MeleeWeapon) {
+
+			Ballistica beam = new Ballistica(hero.pos, enemy.pos, Ballistica.WONT_STOP);
+			int maxDistance = Math.min(5, beam.dist);
+			int cell = beam.path.get(Math.min(beam.dist, maxDistance));
+			hero.sprite.parent.add(new Beam.DeathRay(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+			boolean terrainAffected = false;
+
+			ArrayList<Char> chars = new ArrayList<>();
+
+			Blob web = Dungeon.level.blobs.get(Web.class);
+
+			int terrainPassed = 2;
+			for (int c : beam.subPath(1, maxDistance)) {
+
+				Char ch;
+				if ((ch = Actor.findChar( c )) != null) {
+
+					//we don't want to count passed terrain after the last enemy hit. That would be a lot of bonus levels.
+					//terrainPassed starts at 2, equivalent of rounding up when /3 for integer arithmetic.
+					terrainPassed = terrainPassed%3;
+
+					chars.add( ch );
+				}
+
+				if (Dungeon.level.solid[c]) {
+					terrainPassed++;
+				}
+
+				if (Dungeon.level.flamable[c]) {
+
+					Dungeon.level.destroy( c );
+					GameScene.updateMap( c );
+					terrainAffected = true;
+
+				}
+
+				CellEmitter.center( c ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
+			}
+
+			if (terrainAffected) {
+				Dungeon.observe();
+			}
+
+			int dmg = Random.NormalIntRange(50, 50);
+
+			for (Char ch : chars) {
+				ch.damage(dmg, Bomb.class);
+				ch.sprite.centerEmitter().burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
+				ch.sprite.flash();
+			}
+
 		}
 
 		switch (subClass) {
@@ -1381,6 +1543,14 @@ public class Hero extends Char {
 
 		if (belongings.armor() != null) {
 			damage = belongings.armor().proc( enemy, this, damage );
+		}
+
+		//팬텀블러드 효과
+		if (hero.belongings.getItem(Jojo2.class) != null) {
+			if (Random.Int( 5 ) == 0) {
+			Buff.affect(enemy, Frost.class, 2f);
+			hero.sprite.showStatus(HeroSprite.POSITIVE, Messages.get(Sword.class, "4"));
+			}
 		}
 
 		if (buff(D4C.class) != null){
@@ -1430,11 +1600,6 @@ public class Hero extends Char {
 			damage = rockArmor.absorb(damage);
 		}
 
-		//if (hero.belongings.weapon() instanceof RoundShield && (Random.Int(5) == 0)){
-			//Buff.prolong(this, Invisibility.class, Invisibility.DURATION / 6f);
-			//Buff.prolong(this, Haste.class, Haste.DURATION / 6f);
-	//	}
-
 		if (Dungeon.hero.belongings.weapon() instanceof Mace && (Random.Int(100) == 0)) {
 			hero.HP = hero.HT;
 			GLog.p(Messages.get(Civil.class, "cream"));
@@ -1469,6 +1634,10 @@ public class Hero extends Char {
 		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
 			interrupt();
 			resting = false;
+		}
+
+		if (hero.belongings.getItem(Cen.class) != null && hero.buff(Paralysis.class) != null) {
+			dmg = 0;
 		}
 
 		if (this.buff(Drowsy.class) != null){
@@ -2239,6 +2408,18 @@ public class Hero extends Char {
 				&& belongings.armor().hasGlyph(Brimstone.class, this)){
 			return true;
 		}
+		//스네이크 머플러
+		if (effect == Paralysis.class
+				&& belongings.weapon() != null
+				&& belongings.weapon() instanceof LSWORD){
+			return true;
+		}
+		//전투조류
+		if (effect == Burning.class
+				&& hero.belongings.getItem(Jojo2.class) != null) {
+			return true;
+		}
+
 		return super.isImmune(effect);
 	}
 

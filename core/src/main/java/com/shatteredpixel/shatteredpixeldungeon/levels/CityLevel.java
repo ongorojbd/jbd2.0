@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan3;
@@ -72,6 +73,7 @@ public class CityLevel extends RegularLevel {
 	@Override
 	protected void createItems() {
 		Rohan3.spawn(this);
+		Fugo.spawn(this);
 		super.createItems();
 	}
 

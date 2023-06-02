@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.BmoreGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
@@ -47,12 +48,17 @@ public class Fugomob2 extends Mob {
     {
         spriteClass = Fugo2Sprite.class;
 
-        HP = HT =  30;
+        HP = HT =  120;
         HUNTING = new Mob.Hunting();
         immunities.add(CorrosiveGas.class);
         //only applicable when the bee is charmed with elixir of honeyed healing
         intelligentAlly = true;
 
+    }
+
+    @Override
+    public int attackSkill( Char target ) {
+        return 28;
     }
 
     int summonCooldown = 1;
@@ -74,10 +80,8 @@ public class Fugomob2 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(5, 15);
+        return Random.NormalIntRange( 25, 30 );
     }
-
-
 
     @Override
     protected boolean act() {
@@ -139,13 +143,23 @@ public class Fugomob2 extends Mob {
     private void zap( ){
         threatened = false;
         spend(TICK);
-        sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "G1"));
+        sprite.showStatus(CharSprite.POSITIVE, Messages.get(Fugomob.class, "4"));
         GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(1+Dungeon.depth/4));
         for (int i : PathFinder.NEIGHBOURS8){
             if (!Dungeon.level.solid[enemy.pos+i]) {
                 GameScene.add(Blob.seed(enemy.pos + i, 5, CorrosiveGas.class));
             }
         }
+
+    }
+
+    @Override
+    public void die( Object cause ) {
+
+
+        yell(Messages.get(Fugomob2.class, "0"));
+
+        super.die( cause );
 
     }
 

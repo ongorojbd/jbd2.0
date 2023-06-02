@@ -239,12 +239,14 @@ public class ItemSpriteSheet {
 	public static final int SPEAR           = WEP_TIER2+2;
 	public static final int QUARTERSTAFF    = WEP_TIER2+3;
 	public static final int DIRK            = WEP_TIER2+4;
+	public static final int TONIO            = WEP_TIER2+5;
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
 		assignItemRect(HAND_AXE,        12, 14);
 		assignItemRect(SPEAR,           14, 16);
-		assignItemRect(QUARTERSTAFF,    14, 16);
 		assignItemRect(DIRK,            14, 14);
+		assignItemRect(QUARTERSTAFF,    14, 16);
+		assignItemRect(TONIO,           12, 13);
 	}
 
 	private static final int WEP_TIER3      =                               xy(1, 8);   //8 slots
@@ -270,6 +272,7 @@ public class ItemSpriteSheet {
 	public static final int RUNIC_BLADE     = WEP_TIER4+3;
 	public static final int ASSASSINS_BLADE = WEP_TIER4+4;
 	public static final int CROSSBOW        = WEP_TIER4+5;
+	public static final int SAP             = WEP_TIER4+6;
 	static{
 		assignItemRect(LONGSWORD,       15, 15);
 		assignItemRect(BATTLE_AXE,      16, 16);
@@ -277,6 +280,7 @@ public class ItemSpriteSheet {
 		assignItemRect(RUNIC_BLADE,     16, 16);
 		assignItemRect(ASSASSINS_BLADE, 14, 15);
 		assignItemRect(CROSSBOW,        15, 15);
+		assignItemRect(SAP,             15, 15);
 	}
 
 	private static final int WEP_TIER5      =                               xy(1, 9);   //8 slots
@@ -286,12 +290,13 @@ public class ItemSpriteSheet {
 	public static final int GREATAXE        = WEP_TIER5+3;
 	public static final int GREATSHIELD     = WEP_TIER5+4;
 	public static final int GAUNTLETS       = WEP_TIER5+5;
-	public static final int LSWORD          = WEP_TIER5+6;
-	public static final int DBLADE          = WEP_TIER5+7;
-	public static final int MISTA           = WEP_TIER5+8;
-	public static final int PINK            = WEP_TIER5+9;
-	public static final int AJA             = WEP_TIER5+10;
-	public static final int SPWORLD          = WEP_TIER5+11;
+	public static final int MUFFLER         = WEP_TIER5+6;
+	public static final int LSWORD          = WEP_TIER5+8;
+	public static final int DBLADE          = WEP_TIER5+9;
+	public static final int MISTA           = WEP_TIER5+10;
+	public static final int PINK            = WEP_TIER5+11;
+	public static final int AJA             = WEP_TIER5+12;
+	public static final int SPWORLD          = WEP_TIER5+13;
 
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
@@ -300,6 +305,7 @@ public class ItemSpriteSheet {
 		assignItemRect(GREATAXE,    12, 16);
 		assignItemRect(GREATSHIELD, 11, 16);
 		assignItemRect(GAUNTLETS,   16, 16);
+		assignItemRect(MUFFLER,     15, 11);
 		assignItemRect(LSWORD,      16, 16);
 		assignItemRect(DBLADE,      16, 16);
 		assignItemRect(MISTA,       15, 14);
@@ -452,7 +458,6 @@ public class ItemSpriteSheet {
 	public static final int RING_QUARTZ     = RINGS+9;
 	public static final int RING_AGATE      = RINGS+10;
 	public static final int RING_DIAMOND    = RINGS+11;
-	public static final int RING_HOBAK      = RINGS+12;
 	static {
 		for (int i = RINGS; i < RINGS+16; i++)
 			assignItemRect(i, 13, 16);
@@ -488,6 +493,18 @@ public class ItemSpriteSheet {
 	public static final int RAM                 = ARTIFACTS+26;
 	public static final int TUSK                = ARTIFACTS+27;
 	public static final int SPOH                = ARTIFACTS+28;
+	public static final int WALL                = ARTIFACTS+32;
+	public static final int JOJO1                = ARTIFACTS+33;
+	public static final int JOJO2                = ARTIFACTS+34;
+	public static final int JOJO3                = ARTIFACTS+35;
+	public static final int JOJO4                = ARTIFACTS+36;
+	public static final int JOJO5                = ARTIFACTS+37;
+	public static final int JOJO6                = ARTIFACTS+38;
+	public static final int JOJO7                = ARTIFACTS+39;
+	public static final int JOJO8                = ARTIFACTS+40;
+	public static final int JOJO9                = ARTIFACTS+41;
+	public static final int CEN                  = ARTIFACTS+42;
+
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      14, 14);
 		assignItemRect(ARTIFACT_ARMBAND,    14, 14);
@@ -518,6 +535,17 @@ public class ItemSpriteSheet {
 		assignItemRect(RAM,      12, 9);
 		assignItemRect(TUSK,     14, 14);
 		assignItemRect(SPOH,     14, 14);
+		assignItemRect(WALL,     16, 16);
+		assignItemRect(JOJO1,    12, 16);
+		assignItemRect(JOJO2,    12, 16);
+		assignItemRect(JOJO3,    12, 16);
+		assignItemRect(JOJO4,    12, 16);
+		assignItemRect(JOJO5,    12, 16);
+		assignItemRect(JOJO6,    12, 16);
+		assignItemRect(JOJO7,    12, 16);
+		assignItemRect(JOJO8,    12, 16);
+		assignItemRect(JOJO9,    12, 16);
+		assignItemRect(CEN,      15, 16);
 	}
 
 	                                                                                    //16 free slots

@@ -46,79 +46,40 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.Lighter;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
-import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover;
-import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover4;
-import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
-import com.shatteredpixel.shatteredpixeldungeon.items.WalkieTalkie;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfDrago;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AJA;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ChaosSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DBLADE;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FlameKatana;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -158,23 +119,18 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new ScrollOfIdentify().identify();
-		new RingOfDrago().identify();
-
 
 		if (DeviceCompat.isDebug()){
 			new TengusMask().collect();
 			new KingsCrown().collect();
+			new Scimitar().identify().upgrade(12).collect();
+			new Scimitar().identify().upgrade(12).collect();
 			new WandOfBlastWave().identify().upgrade(999).collect();
-			new RoundShield().identify().upgrade(3).collect();
-			new Gauntlet().identify().upgrade(3).collect();
 			new PlateArmor().identify().upgrade(999).collect();
-			new Sword().identify().upgrade(3).collect();
 			new PotionOfHealing().identify().quantity(29).collect();
+			new NitoDismantleHammer().identify().collect();
 			new PotionOfExperience().identify().quantity(29).collect();
-			new ThrowingStone().identify().quantity(29).collect();
 			new Neotel().collect();
-			new Neoro().collect();
-			new StoneOfAugmentation().identify().upgrade(999).collect();
 			new RingOfAccuracy().identify().upgrade(9999).collect();
 			new RingOfEnergy().identify().upgrade(9999).collect();
 		}
@@ -239,9 +195,7 @@ public enum HeroClass {
 		}
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-			RingOfDrago wealth = new RingOfDrago();
-			(hero.belongings.misc = wealth).identify();
-			hero.belongings.misc.activate( hero );
+			new Drago().quantity(5).collect();
 		}
 
 
@@ -258,9 +212,7 @@ public enum HeroClass {
 		hero.belongings.weapon.activate(hero);
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-			RingOfDrago wealth = new RingOfDrago();
-			(hero.belongings.misc = wealth).identify();
-			hero.belongings.misc.activate( hero );
+			new Drago().quantity(5).collect();
 		}
 
 
@@ -281,9 +233,7 @@ public enum HeroClass {
 		knives.quantity(5).collect();
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-			RingOfDrago wealth = new RingOfDrago();
-			(hero.belongings.misc = wealth).identify();
-			hero.belongings.misc.activate( hero );
+			new Drago().quantity(5).collect();
 		}
 
 
@@ -301,9 +251,7 @@ public enum HeroClass {
 		bow.identify().collect();
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-			RingOfDrago wealth = new RingOfDrago();
-			(hero.belongings.misc = wealth).identify();
-			hero.belongings.misc.activate( hero );
+			new Drago().quantity(5).collect();
 		}
 
 		Dungeon.quickslot.setSlot(0, bow);
@@ -318,9 +266,7 @@ public enum HeroClass {
 		hero.belongings.weapon.activate(hero);
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-			RingOfDrago wealth = new RingOfDrago();
-			(hero.belongings.misc = wealth).identify();
-			hero.belongings.misc.activate( hero );
+			new Drago().quantity(5).collect();
 		}
 
 		ThrowingSpike spikes = new ThrowingSpike();
