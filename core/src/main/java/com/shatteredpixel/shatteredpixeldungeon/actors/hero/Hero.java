@@ -166,6 +166,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -247,7 +248,7 @@ public class Hero extends Char {
 	private int defenseSkill = 5;
 
 	public boolean ready = false;
-	private boolean damageInterrupt = true;
+	public boolean damageInterrupt = true;
 	public HeroAction curAction = null;
 	public HeroAction lastAction = null;
 
@@ -508,7 +509,7 @@ public class Hero extends Char {
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.append( this, Sai.ComboStrikeTracker.class, Sai.ComboStrikeTracker.DURATION);
+			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 		}
 
 		return hit;
@@ -530,7 +531,7 @@ public class Hero extends Char {
 		}
 
 		if (buff(Scimitar.SwordDance.class) != null){
-			accuracy *= 0.8f;
+			accuracy *= 1.25f;
 		}
 
 		if (Dungeon.level.adjacent( pos, target.pos )) {
@@ -591,7 +592,7 @@ public class Hero extends Char {
 		}
 
 		if (buff(Quarterstaff.DefensiveStance.class) != null){
-			evasion *= 2;
+			evasion *= 3;
 		}
 		
 		if (paralysed > 0) {
@@ -622,8 +623,8 @@ public class Hero extends Char {
 			return Messages.get(RoundShield.GuardTracker.class, "guarded");
 		}
 
-		if (buff(MonkEnergy.MonkAbility.Focus.FocusBuff.class) != null){
-			buff(MonkEnergy.MonkAbility.Focus.FocusBuff.class).detach();
+		if (buff(MonkEnergy.MonkAbility.Focus.FocusActivation.class) != null){
+			buff(MonkEnergy.MonkAbility.Focus.FocusActivation.class).detach();
 			if (sprite != null && sprite.visible) {
 				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1, Random.Float(0.96f, 1.05f));
 			}
@@ -666,16 +667,6 @@ public class Hero extends Char {
 
 		if (!RingOfForce.fightingUnarmed(this)) {
 			dmg = wep.damageRoll( this );
-
-			if (heroClass != HeroClass.DUELIST
-					&& hasTalent(Talent.LIGHTWEIGHT_CHARGE)
-					&& wep instanceof MeleeWeapon) {
-				if (((MeleeWeapon) wep).tier == 2) {
-					dmg = Math.round(dmg * (1f + 0.067f*pointsInTalent(Talent.LIGHTWEIGHT_CHARGE)));
-				} else if (((MeleeWeapon) wep).tier == 3) {
-					dmg = Math.round(dmg * (1f + 0.05f*pointsInTalent(Talent.LIGHTWEIGHT_CHARGE)));
-				}
-			}
 
 			if (!(wep instanceof MissileWeapon)) dmg += RingOfForce.armedDamageBonus(this);
 		} else {
@@ -965,7 +956,7 @@ public class Hero extends Char {
 			return true;
 
 		//Hero moves in place if there is grass to trample
-		} else if (canSelfTrample()){
+		} else if (pos == action.dst && canSelfTrample()){
 			canSelfTrample = false;
 			Dungeon.level.pressCell(pos);
 			spendAndNext( 1 / speed() );
@@ -1339,7 +1330,7 @@ public class Hero extends Char {
 			Buff.affect(this, HoldFast.class).pos = pos;
 		}
 		if (hasTalent(Talent.PATIENT_STRIKE)){
-			Buff.prolong(this, Talent.PatientStrikeTracker.class, cooldown());
+			Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
 		}
 		if (!fullRest) {
 			if (sprite != null) {
@@ -1372,26 +1363,7 @@ public class Hero extends Char {
 			damage *= 0f;
 		}
 
-
-		if (hero.belongings.getItem(Jojo8.class) != null) {
-		if (hero.HP <= hero.HT/4) {
-			damage *= 2f;
-		}
-		else if (hero.HP <= hero.HT / 2){
-			damage *= 1.5f;
-		}
-		else if (hero.HP <= hero.HT - hero.HT/4) {
-			damage *= 1.2f;
-		}
-		}
-
-
-		if (hero.belongings.getItem(Jojo8.class) != null && hero.buff(Swiftthistle.TimeBubble.class) != null) {
-			int barr = Math.min(5 + HT /6, 2 + (damage/3));
-			Buff.affect(this, Barrier.class).incShield(barr);
-		}
-
-		if (hero.belongings.getItem(Jojo4.class) != null && wep instanceof MissileWeapon && Dungeon.gold > 9){
+		if (hero.belongings.getItem(Jojo4.class) != null && wep instanceof MissileWeapon && Dungeon.gold > 14){
 			new ExplosiveTrap().set(enemy.pos).activate();
 
 			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null ) {
@@ -1401,11 +1373,11 @@ public class Hero extends Char {
 			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
 
 			} else {
-			Dungeon.gold -= 10;
+			Dungeon.gold -= 15;
 		}
 		}
 
-		if (hero.belongings.getItem(Jojo5.class) != null && Dungeon.energy > 0 && wep instanceof MeleeWeapon) {
+		if (hero.belongings.getItem(Jojo5.class) != null && Dungeon.energy > 1 && wep instanceof MeleeWeapon) {
 			Plant plant = (Plant) Reflection.newInstance(Random.element(harmfulPlants));
 			plant.pos = enemy.pos;
 			plant.activate(enemy.isAlive() ? enemy : null);
@@ -1414,7 +1386,7 @@ public class Hero extends Char {
 			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
 
 			} else {
-				Dungeon.energy -= 1;
+				Dungeon.energy -= 2;
 			}
 
 			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null && wep instanceof MeleeWeapon) {
@@ -1436,11 +1408,6 @@ public class Hero extends Char {
 
 
 		}}
-
-//		//스타더스트 크루세이더즈 효과
-//		if (hero.belongings.getItem(Jojo3.class) != null) {
-//			hero.HP = Math.min(hero.HP + 2, hero.HT);
-//		}
 
 		//2셋 효과
 		if (hero.belongings.getItem(Jojo1.class) != null && hero.belongings.getItem(Jojo2.class) != null || hero.belongings.getItem(Jojo1.class) != null && hero.belongings.getItem(Jojo3.class) != null || hero.belongings.getItem(Jojo2.class) != null && hero.belongings.getItem(Jojo3.class) != null) {
@@ -1546,8 +1513,8 @@ public class Hero extends Char {
 		}
 
 		//팬텀블러드 효과
-		if (hero.belongings.getItem(Jojo2.class) != null) {
-			if (Random.Int( 5 ) == 0) {
+		if (hero.belongings.getItem(Jojo1.class) != null) {
+			if (Random.Int( 6 ) == 0) {
 			Buff.affect(enemy, Frost.class, 2f);
 			hero.sprite.showStatus(HeroSprite.POSITIVE, Messages.get(Sword.class, "4"));
 			}
@@ -1962,8 +1929,11 @@ public class Hero extends Char {
 	}
 	
 	public void earnExp( int exp, Class source ) {
-		
-		this.exp += exp;
+
+		//xp granted by ascension challenge is only for on-exp gain effects
+		if (source != AscensionChallenge.class) {
+			this.exp += exp;
+		}
 		float percent = exp/(float)maxExp();
 
 		EtherealChains.chainsRecharge chains = buff(EtherealChains.chainsRecharge.class);
@@ -2314,7 +2284,7 @@ public class Hero extends Char {
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.append( this, Sai.ComboStrikeTracker.class, Sai.ComboStrikeTracker.DURATION);
+			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 		}
 
 		RingOfForce.BrawlersStance brawlStance = buff(RingOfForce.BrawlersStance.class);
@@ -2411,7 +2381,7 @@ public class Hero extends Char {
 		//스네이크 머플러
 		if (effect == Paralysis.class
 				&& belongings.weapon() != null
-				&& belongings.weapon() instanceof LSWORD){
+				&& belongings.weapon() instanceof WarScythe){
 			return true;
 		}
 		//전투조류

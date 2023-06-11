@@ -22,10 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -66,11 +69,11 @@ public class Longsword extends MeleeWeapon {
 	}
 
 	@Override
-	public float abilityChargeUse( Hero hero ) {
+	public float abilityChargeUse(Hero hero, Char target) {
 		if (hero.buff(Sword.CleaveTracker.class) != null){
 			return 0;
 		} else {
-			return super.abilityChargeUse( hero );
+			return super.abilityChargeUse( hero, target);
 		}
 	}
 
@@ -83,5 +86,4 @@ public class Longsword extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		Sword.cleaveAbility(hero, target, 1.23f, this);
 	}
-
 }

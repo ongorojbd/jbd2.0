@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscG;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LabsLevel;
@@ -82,6 +83,8 @@ public class SWAT extends Mob implements Callback {
 	public void die( Object cause ) {
 
 		super.die( cause );
+
+		Dungeon.level.drop( new Araki().identify(), pos ).sprite.drop( pos );
 
 		if (Random.Int( 4 ) == 0) {
 			GameScene.flash(0xFFFF00);

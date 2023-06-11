@@ -214,7 +214,6 @@ public class Kingt extends Spell {
         GLog.p(Messages.get(this, "a"));
         GameScene.flash(0x80FFFFFF);
 
-
         hero.sprite.operate(hero.pos);
         detach( curUser.belongings.backpack );
         updateQuickslot();
@@ -223,6 +222,6 @@ public class Kingt extends Spell {
 
     @Override
     public int value() {
-        return 750 * quantity;
+        return 75 * quantity;
     }
 }

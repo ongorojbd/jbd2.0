@@ -60,12 +60,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscE;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sleepcmoon3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -117,26 +125,7 @@ public class NitoDismantleHammer extends Item {
     public void execute(final Hero hero, String action) {
         super.execute(hero, action);
 
-        NitoDismantleHammer pick = Dungeon.hero.belongings.getItem(  NitoDismantleHammer.class );
-
-        if (Dungeon.depth > 20) {
-            Sample.INSTANCE.play(Assets.Sounds.HAHAH);
-            GLog.n( Messages.get(this, "rev") );
-            GameScene.flash(0xFFFF00);
-            Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
-            Camera.main.shake(10, 3f);
-
-            Madeinheaven n = new Madeinheaven();
-
-            pick.detach( Dungeon.hero.belongings.backpack );
-
-            if (n.doPickUp( Dungeon.hero )) {
-                GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", n.name()) ));
-            } else {
-                Dungeon.level.drop(n, Dungeon.hero.pos ).sprite.drop();
-            }
-            Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
-        } else if (action.equals(AC_DISMANTLE)) {
+            if (action.equals(AC_DISMANTLE)) {
         GameScene.selectItem(itemSelector);
     }
 
@@ -174,11 +163,11 @@ public class NitoDismantleHammer extends Item {
 
                 item.detach(curUser.belongings.backpack);
                 if (item.level() > 0) {
-                    GLog.p(  "+" + item.level()*3 + " 죠죠 포인트!");
-                    Dungeon.energy += item.level()*3;
+                    GLog.p(  "+" + item.level()*2 + " 죠죠 포인트!");
+                    Dungeon.energy += item.level()*2;
                 } else {
-                    Dungeon.energy += 2;
-                    GLog.p(  "+2 죠죠 포인트!");
+                    Dungeon.energy += 1;
+                    GLog.p(  "+1 죠죠 포인트!");
                 }
                 updateQuickslot();
 
@@ -237,16 +226,87 @@ public class NitoDismantleHammer extends Item {
                         break;
                 }}}
 
-                if (hero.belongings.getItem(Jojo7.class) != null) {
-                    GameScene.flash(0x80FFFFFF);
-                    Buff.affect(Dungeon.hero, Swiftthistle.TimeBubble.class).bufftime(5f);
-                }
-
-                if (hero.belongings.getItem(Jojo8.class) != null) {
+                if (hero.belongings.getItem(Jojo7.class) != null && hero.belongings.getItem(Jojo8.class) != null || hero.belongings.getItem(Jojo7.class) != null && hero.belongings.getItem(Jojo9.class) != null || hero.belongings.getItem(Jojo8.class) != null && hero.belongings.getItem(Jojo9.class) != null) {
                 int dmg = curUser.HP / 5;
                 curUser.HP -= dmg;
                 Buff.affect(curUser, Barrier.class).incShield(dmg * 4);
                 Camera.main.shake(2, 0.25f);
+                }
+
+                if (hero.belongings.getItem(Jojo8.class) != null) {
+                    if (Random.Int( 5 ) == 0) {
+                        new Flare(6, 32).color(0x9966FF, true).show(hero.sprite, 4f);
+                        Sample.INSTANCE.play(Assets.Sounds.CHARMS);
+                        GameScene.flash(0x80FFFFFF);
+                        switch (Random.Int(8)){
+                            case 0:
+                                Item a = new Kingt();
+                                if (a.doPickUp( Dungeon.hero )) {
+                                    GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", a.name()) ));
+                                } else {
+                                    Dungeon.level.drop(a, Dungeon.hero.pos ).sprite.drop();
+                                }
+                                break;
+                            case 1:
+                                Item b = new StoneOfAdvanceguard();
+                                if (b.doPickUp( Dungeon.hero )) {
+                                    GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", b.name()) ));
+                                } else {
+                                    Dungeon.level.drop(b, Dungeon.hero.pos ).sprite.drop();
+                                }
+                                break;
+                            case 2:
+                                Item c = new Xray();
+                                if (c.doPickUp( Dungeon.hero )) {
+                                    GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", c.name()) ));
+                                } else {
+                                    Dungeon.level.drop(c, Dungeon.hero.pos ).sprite.drop();
+                                }
+                                break;
+                            case 3:
+                                Item d = new Kings();
+                                if (d.doPickUp( Dungeon.hero )) {
+                                    GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", d.name()) ));
+                                } else {
+                                    Dungeon.level.drop(d, Dungeon.hero.pos ).sprite.drop();
+                                }
+                                break;
+                            case 4:
+                                Item e = new Kingm();
+                                if (e.doPickUp( Dungeon.hero )) {
+                                    GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", e.name()) ));
+                                } else {
+                                    Dungeon.level.drop(e, Dungeon.hero.pos ).sprite.drop();
+                                }
+                                break;
+                            case 5:
+                                Item f = new Kingw();
+                                if (f.doPickUp( Dungeon.hero )) {
+                                    GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", f.name()) ));
+                                } else {
+                                    Dungeon.level.drop(f, Dungeon.hero.pos ).sprite.drop();
+                                }
+                                break;
+                            case 6:
+                                Item g = new Kingc();
+                                if (g.doPickUp( Dungeon.hero )) {
+                                    GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", g.name()) ));
+                                } else {
+                                    Dungeon.level.drop(g, Dungeon.hero.pos ).sprite.drop();
+                                }
+                                break;
+                            case 7:
+                                Item h = new Kinga();
+                                if (h.doPickUp( Dungeon.hero )) {
+                                    GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", h.name()) ));
+                                } else {
+                                    Dungeon.level.drop(h, Dungeon.hero.pos ).sprite.drop();
+                                }
+                                break;
+                        }
+
+                    }
+
                 }
 
                 if (hero.belongings.getItem(Jojo9.class) != null) {
@@ -255,6 +315,14 @@ public class NitoDismantleHammer extends Item {
                 Sample.INSTANCE.play(Assets.Sounds.GAS, 1f, 0.75f);
                 hero.sprite.showStatus(CharSprite.POSITIVE, "[노멤버 레인]");
                 }
+
+                if (hero.belongings.getItem(Jojo7.class) != null) {
+                    Dungeon.gold += 100;
+                    GLog.h(  "+100골드 획득!");
+                    Sample.INSTANCE.play(Assets.Sounds.GOLD);
+                    CellEmitter.get(curUser.pos).burst(Speck.factory(Speck.COIN), 12);
+                }
+
 
                 Sample.INSTANCE.play(Assets.Sounds.NITOH);
                 curUser.sprite.operate(curUser.pos);
@@ -267,180 +335,5 @@ public class NitoDismantleHammer extends Item {
             }
         }
     };
-
-
-
-
-
-
-
-    public static class Mon3tr extends Mob {
-        {
-            spriteClass = World21Sprite.class;
-            baseSpeed = 3f;
-
-            state = HUNTING;
-            alignment = Alignment.ALLY;
-
-            WANDERING = new Wandering();
-        }
-
-        private int blinkCooldown = 0;
-
-        @Override
-        protected boolean getCloser( int target ) {
-            if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0 && target != Dungeon.hero.pos) {
-
-                blink( target );
-                spend( -1 / speed() );
-                return true;
-
-            } else {
-
-                blinkCooldown--;
-                return super.getCloser( target );
-
-            }
-        }
-
-        private class Wandering extends Mob.Wandering {
-
-            @Override
-            public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-                if ( enemyInFOV ) {
-
-                    enemySeen = true;
-
-                    notice();
-                    alerted = true;
-                    state = HUNTING;
-                    target = enemy.pos;
-
-                } else {
-
-                    enemySeen = false;
-
-                    int oldPos = pos;
-                    target = Dungeon.hero.pos;
-                    //always move towards the hero when wandering
-                    if (getCloser( target )) {
-                        //moves 2 tiles at a time when returning to the hero
-                        if (!Dungeon.level.adjacent(target, pos)){
-                            getCloser( target );
-                        }
-                        spend( 1 / speed() );
-                        return moveSprite( oldPos, pos );
-                    } else {
-                        spend( TICK );
-                    }
-
-                }
-                return true;
-            }
-
-        }
-
-        private void blink( int target ) {
-
-            Ballistica route = new Ballistica( pos, target, Ballistica.PROJECTILE);
-            int cell = route.collisionPos;
-
-            //can't occupy the same cell as another char, so move back one.
-            if (Actor.findChar( cell ) != null && cell != this.pos)
-                cell = route.path.get(route.dist-1);
-
-            if (Dungeon.level.avoid[ cell ]){
-                ArrayList<Integer> candidates = new ArrayList<>();
-                for (int n : PathFinder.NEIGHBOURS8) {
-                    cell = route.collisionPos + n;
-                    if (Dungeon.level.passable[cell] && Actor.findChar( cell ) == null) {
-                        candidates.add( cell );
-                    }
-                }
-                if (candidates.size() > 0)
-                    cell = Random.element(candidates);
-                else {
-                    blinkCooldown = 1;
-                    return;
-                }
-            }
-
-            ScrollOfTeleportation.appear( this, cell );
-            Sample.INSTANCE.play( Assets.Sounds.DIEGO );
-
-            blinkCooldown = 1;
-        }
-
-        @Override
-        protected boolean act() {
-            if (this.buff(StoneOfAggression.Aggression.class) == null) {
-                Buff.prolong(this, StoneOfAggression.Aggression.class, StoneOfAggression.Aggression.DURATION);}
-
-            if (isAlive() || HP <= 1) {
-
-                    int adddamage = HT /50;
-                    if (adddamage < 1) adddamage = 1;
-                    if (state == WANDERING && adddamage > 1) HP -= adddamage / 2;
-                    else  HP -= adddamage;
-
-            }
-
-            if (HP < 1) {
-                this.die(this);
-                return true;
-            }
-            return super.act();
-        }
-
-        @Override
-        public int attackProc(Char enemy, int damage) {
-            HP -= HT/20;
-
-            return super.attackProc(enemy, damage);
-        }
-
-        @Override
-        public void die(Object cause) {
-
-            super.die(cause);
-        }
-
-        @Override
-        public int damageRoll() {
-            return Random.NormalIntRange( 18 + maxLvl * 4, 24 + maxLvl * 6 );
-        }
-
-        @Override
-        public int attackSkill( Char target ) {
-            return 50;
-        }
-
-        @Override
-        public int drRoll() {
-            return Random.NormalIntRange(maxLvl / 2, 2 + maxLvl);
-        }
-
-        public void setting(int setlvl)
-        {
-            HP=HT=120 + depth * 5;
-            defenseSkill = 10 + setlvl * 2;
-            maxLvl = setlvl + depth / 2;
-        }
-
-        private static final String BLINK = "blinkcooldown";
-
-        @Override
-        public void storeInBundle(Bundle bundle) {
-            super.storeInBundle(bundle);
-            bundle.put(BLINK, blinkCooldown);
-        }
-
-        @Override
-        public void restoreFromBundle(Bundle bundle) {
-            super.restoreFromBundle(bundle);
-            blinkCooldown = bundle.getInt(BLINK);
-            enemySeen = true;
-        }
-    }
 
 }

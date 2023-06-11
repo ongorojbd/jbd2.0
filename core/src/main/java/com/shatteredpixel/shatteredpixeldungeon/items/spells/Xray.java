@@ -53,7 +53,7 @@ public class Xray extends Spell {
 
     @Override
     public int value() {
-        return 15 * quantity;
+        return 5 * quantity;
     }
 
 }

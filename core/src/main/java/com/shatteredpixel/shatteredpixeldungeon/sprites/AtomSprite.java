@@ -33,10 +33,10 @@ public class AtomSprite extends MobSprite {
 
         TextureFilm frames = new TextureFilm( texture, 12, 15 );
 
-        idle = new Animation( 12, true );
+        idle = new Animation( 5, true );
         idle.frames( frames, 0, 1 );
 
-        run = new Animation( 9, true );
+        run = new Animation( 8, true );
         run.frames( frames, 0, 1 );
 
         attack = new Animation( 10, false );

@@ -128,6 +128,6 @@ public class Drago extends Item {
 
     @Override
     public int value() {
-        return 5 * quantity;
+        return 2 * quantity;
     }
 }

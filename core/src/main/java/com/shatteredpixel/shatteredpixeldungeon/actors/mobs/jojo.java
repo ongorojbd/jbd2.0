@@ -104,28 +104,6 @@ public class jojo extends Mob {
     }
 
     @Override
-    public int attackProc(Char enemy, int damage) {
-
-           {
-                int healAmt = 2*(7-Dungeon.level.distance(pos, hero.pos)); //different per each distance
-                healAmt = Math.min( 3,5);
-                if (healAmt > 0 && hero.isAlive()) {
-                    Buff.affect(hero, Barrier.class).setShield(3);
-                    if (Dungeon.level.heroFOV[hero.pos]) {
-                        hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.4f, 2 );
-                        hero.sprite.showStatus( CharSprite.POSITIVE, Integer.toString( healAmt ) );
-                    }
-
-                    if (sprite.visible || hero.sprite.visible) {
-                        sprite.parent.add(new Beam.HealthRay(sprite.center(), hero.sprite.center()));
-                    }
-                }
-            }
-        //heals nearby enemies and herself per every attack
-
-        return damage;
-    }
-    @Override
     protected boolean act() {
 
         if (!seenBefore) {

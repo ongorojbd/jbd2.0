@@ -58,7 +58,7 @@ public class Fugomob extends Mob {
     {
         spriteClass = FugoSprite.class;
 
-        HP = HT =  80;
+        HP = HT = 100;
         HUNTING = new Mob.Hunting();
         immunities.add(CorrosiveGas.class);
         viewDistance = 5;

@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.1'
+        classpath 'com.android.tools.build:gradle:8.0.2'
     }
 }
 
@@ -14,7 +14,7 @@ allprojects {
         appName = '죠죠의 기묘한 던전'
         appPackageName = 'com.shatteredpixel.shatteredpixeldungeon7'
 
-        appVersionCode = 745
+        appVersionCode = 750
         appVersionName = '2.0H'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
@@ -24,7 +24,7 @@ allprojects {
         appAndroidTargetSDK = 33
 
         gdxVersion = '1.11.0'
-        gdxControllersVersion = '2.2.3-SNAPSHOT'
+        gdxControllersVersion = '2.2.4-SNAPSHOT'
         robovmVersion = '2.3.18'
     }
     version = appVersionName

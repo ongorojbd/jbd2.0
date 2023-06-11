@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachinegun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
@@ -53,11 +54,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spheaven;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -75,7 +78,6 @@ public class Rocacaca extends InventorySpell {
 
         stackable = true;
     }
-
     @Override
     protected boolean usableOnItem(Item item) {
         return item instanceof Glaive
@@ -84,6 +86,7 @@ public class Rocacaca extends InventorySpell {
                 || item instanceof Greataxe
                 || item instanceof WarHammer
                 || item instanceof Greatsword
+                || item instanceof WarScythe
 
                 || item instanceof Crossbow
                 || item instanceof AssassinsBlade
@@ -91,6 +94,7 @@ public class Rocacaca extends InventorySpell {
                 || item instanceof Flail
                 || item instanceof BattleAxe
                 || item instanceof Longsword
+                || item instanceof Katana
 
                 || item instanceof Sword
                 || item instanceof Mace
@@ -104,6 +108,7 @@ public class Rocacaca extends InventorySpell {
                 || item instanceof Spear
                 || item instanceof Quarterstaff
                 || item instanceof Dirk
+                || item instanceof Sickle
 
                 || item instanceof WornShortsword
                 || item instanceof Gloves

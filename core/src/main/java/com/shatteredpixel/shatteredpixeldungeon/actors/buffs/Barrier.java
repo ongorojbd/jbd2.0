@@ -33,12 +33,19 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo7;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -138,9 +145,10 @@ public class Barrier extends ShieldBuff {
 
 	@Override
 	public void detach() {
+		if (hero.belongings.getItem(Jojo7.class) != null && hero.belongings.getItem(Jojo8.class) != null && hero.belongings.getItem(Jojo9.class) != null) {
+
 		if(target==hero){
 		int damage = target.damageRoll();
-		boolean SONG = false;
 		damage *= 2f;
 
 		PathFinder.buildDistanceMap(target.pos, BArray.not(Dungeon.level.solid, null), 2);
@@ -157,31 +165,7 @@ public class Barrier extends ShieldBuff {
 		Sample.INSTANCE.play( Assets.Sounds.BLAST, 3f, 1.35f );
 		Camera.main.shake(1, 0.17f);
 
-
-			if (hero.belongings.getItem(Jojo7.class) != null && hero.belongings.getItem(Jojo8.class) != null && hero.belongings.getItem(Jojo9.class) != null) {
-
-				if (Random.Int( 2 ) == 0) {
-				ArrayList<Integer> respawnPoints = new ArrayList<>();
-
-				for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-					int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-					if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
-						respawnPoints.add(p);
-					}
-				}
-				int spawnd = 0;
-				while (respawnPoints.size() > 0 && spawnd == 0) {
-					int index = Random.index(respawnPoints);
-
-					NitoDismantleHammer.Mon3tr tr = new NitoDismantleHammer.Mon3tr();
-					GameScene.add(tr);
-					ScrollOfTeleportation.appear(tr, respawnPoints.get(index));
-
-					respawnPoints.remove(index);
-					Sample.INSTANCE.play( Assets.Sounds.DIEGO2 );
-					spawnd++;
-				}}
-			}
+		}
 		}
 
 		super.detach();

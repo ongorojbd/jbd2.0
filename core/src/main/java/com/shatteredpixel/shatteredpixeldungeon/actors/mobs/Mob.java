@@ -133,7 +133,18 @@ public abstract class Mob extends Char {
 	protected boolean alerted = false;
 
 	protected static final float TIME_TO_WAKE_UP = 1f;
-	
+
+	protected boolean firstAdded = true;
+	protected void onAdd(){
+		if (firstAdded) {
+			//modify health for ascension challenge if applicable, only on first add
+			float percent = HP / (float) HT;
+			HT = Math.round(HT * AscensionChallenge.statModifier(this));
+			HP = Math.round(HT * percent);
+			firstAdded = false;
+		}
+	}
+
 	private static final String STATE	= "state";
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
@@ -193,6 +204,9 @@ public abstract class Mob extends Char {
 		if (bundle.contains(ENEMY_ID)) {
 			enemyID = bundle.getInt(ENEMY_ID);
 		}
+
+		//no need to actually save this, must be false
+		firstAdded = false;
 	}
 
 	//mobs need to remember their targets after every actor is added
@@ -792,6 +806,15 @@ public abstract class Mob extends Char {
 				AscensionChallenge.processEnemyKill(this);
 				
 				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : 0;
+
+				//during ascent, under-levelled enemies grant 10 xp each until level 30
+				// after this enemy kills which reduce the amulet curse still grant 10 effective xp
+				// for the purposes of on-exp effects, see AscensionChallenge.processEnemyKill
+				if (Dungeon.hero.buff(AscensionChallenge.class) != null &&
+						exp == 0 && maxLvl > 0 && EXP > 0 && Dungeon.hero.lvl < Hero.MAX_LEVEL){
+					exp = Math.round(10 * spawningWeight());
+				}
+
 				if (exp > 0) {
 					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
 				}
@@ -831,7 +854,7 @@ public abstract class Mob extends Char {
 
 			//스타더스트 크루세이더즈 효과
 			if (hero.belongings.getItem(Jojo3.class) != null) {
-				hero.HP = Math.min(hero.HP + 3, hero.HT);
+				hero.HP = Math.min(hero.HP + 2, hero.HT);
 			}
 		}
 
@@ -850,7 +873,7 @@ public abstract class Mob extends Char {
 		if (!(this instanceof Wraith)
 				&& soulMarked
 				&& Random.Float() < (0.4f*Dungeon.hero.pointsInTalent(Talent.NECROMANCERS_MINIONS)/3f)){
-			Wraith w = Wraith.spawnAt(pos);
+			Wraith w = Wraith.spawnAt(pos, false);
 			if (w != null) {
 				Buff.affect(w, Corruption.class);
 				if (Dungeon.level.heroFOV[pos]) {

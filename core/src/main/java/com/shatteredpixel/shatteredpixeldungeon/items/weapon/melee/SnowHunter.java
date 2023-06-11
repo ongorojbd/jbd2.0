@@ -247,8 +247,8 @@ public class SnowHunter extends MeleeWeapon{
     }
 
     @Override
-    public float abilityChargeUse( Hero hero ) {
-        return 2*super.abilityChargeUse(hero);
+    public float abilityChargeUse(Hero hero, Char target) {
+        return 2*super.abilityChargeUse(hero, target);
     }
 
     @Override

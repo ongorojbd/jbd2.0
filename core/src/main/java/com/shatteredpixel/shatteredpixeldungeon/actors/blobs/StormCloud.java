@@ -42,9 +42,8 @@ public class StormCloud extends Blob {
 	@Override
 	protected void evolve() {
 		super.evolve();
-		Char ch;
 		int cell;
-		int damage = 5;
+		int damage = 3;
 
 		Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
 		for (int i = area.left; i < area.right; i++){
@@ -56,6 +55,14 @@ public class StormCloud extends Blob {
 						fire.clear(i);
 					}
 
+					//fiery enemies take damage as if they are in toxic gas
+					Char ch = Actor.findChar(i);
+					if (ch != null
+							&& !ch.isImmune(getClass())
+							&& Char.hasProp(ch, Char.Property.FIERY)) {
+						ch.damage(1 + Dungeon.scalingDepth() / 5, this);
+					}
+
 					if ((ch = Actor.findChar( cell )) != null) {
 					if (!ch.isImmune(this.getClass()) && !(ch instanceof Hero) && hero.belongings.getItem(Jojo9.class) != null ) {
 						Buff.prolong(ch, Hex.class, 1);
@@ -63,7 +70,9 @@ public class StormCloud extends Blob {
 						ch.damage(damage, this);
 					}
 					}
-				}}
+				}
+
+				}
 			}
 		}
 	

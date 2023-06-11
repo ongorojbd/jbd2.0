@@ -146,6 +146,7 @@ public class Rohan extends NPC {
                                                     Messages.get(Rohan.class, "8"),
                                                     Messages.get(Rohan.class, "9")
                                             ){
+                                                @SuppressWarnings("SuspiciousIndentation")
                                                 @Override
                                                 protected void onSelect(int index) {
                                                     if (index == 0){

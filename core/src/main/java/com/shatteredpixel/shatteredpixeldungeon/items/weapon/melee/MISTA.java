@@ -155,6 +155,7 @@ public class MISTA extends MeleeWeapon {
     protected void duelistAbility(Hero hero, Integer target) {
 
         ArrayList<Char> targets = new ArrayList<>();
+        Char closest = null;
 
         hero.belongings.abilityWeapon = this;
         for (Char ch : Actor.chars()){
@@ -163,6 +164,9 @@ public class MISTA extends MeleeWeapon {
                     && Dungeon.level.heroFOV[ch.pos]
                     && hero.canAttack(ch)){
                 targets.add(ch);
+                if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)){
+                    closest = ch;
+                }
             }
         }
         hero.belongings.abilityWeapon = null;
@@ -173,14 +177,15 @@ public class MISTA extends MeleeWeapon {
         }
 
         throwSound();
+        Char finalClosest = closest;
         hero.sprite.attack(hero.pos, new Callback() {
             @Override
             public void call() {
-                beforeAbilityUsed(hero);
+                beforeAbilityUsed(hero, finalClosest);
                 for (Char ch : targets) {
-                    hero.attack(ch);
+                    hero.attack(ch, 1, 0, ch == finalClosest ? Char.INFINITE_ACCURACY : 1);
                     if (!ch.isAlive()){
-                        onAbilityKill(hero);
+                        onAbilityKill(hero, ch);
                     }
                 }
                 Invisibility.dispel();
@@ -191,7 +196,6 @@ public class MISTA extends MeleeWeapon {
             }
         });
     }
-
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {

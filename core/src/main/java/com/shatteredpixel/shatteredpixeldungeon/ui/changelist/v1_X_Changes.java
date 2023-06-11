@@ -26,18 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -67,6 +55,9 @@ public class v1_X_Changes {
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.PICKAXE), "죠니 퀘스트 개편",
+				""));
+
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 영웅 : 죠린",
 			""));
 	}
@@ -93,12 +84,12 @@ public class v1_X_Changes {
 				"소지하기만 해도 강력한 효과를 지닌 신규 아이템 타입이 추가되었습니다!\n\n" +
 						"_죠죠 7~9부 만화책은 벽의 눈에서 3% 확률로 얻을 수 있습니다._"));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ATOM, 0, 0, 12, 15), "신규 적",
-				"아톰 하트 파더가 희귀한 확률로 타워 오브 그레이 대신 등장합니다.\n\n푸 파이터즈가 희귀한 확률로 클래시 대신 등장합니다."));
+				"_아톰 하트 파더_가 희귀한 확률로 타워 오브 그레이 대신 등장합니다.\n\n_푸 파이터즈_가 희귀한 확률로 클래시 대신 등장합니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.KEEPER, 0, 0, 15, 15), "상점 개편",
 				"상점 상호작용이 추가되었습니다!\n\n이제 최근에 판매한 물건을 다시 재구매할 수 있습니다.\n\n이제 상점 주인과 대화할 수 있습니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.FUGO, 0, 0, 12, 15), "신규 NPC",
 				"히로세 야스호와 판나코타 푸고가 일정 확률로 13층, 17층에 등장합니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SAP), "신규 무기",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.KATANA), "신규 무기",
 				"신규 2단계 무기 1종,\n신규 4단계 무기 1종,\n신규 5단계 무기 1종이 추가되었습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CEN), "20th 센츄리 보이",
 				"상점에서 판매하는 희귀 아이템이 추가되었습니다."));
@@ -108,7 +99,7 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), "천국의 DISC",
 						"천국의 DISC 입수 후, 적들의 방어도가 올라가는 대신 최대 체력이 상승하도록 변경되었습니다."));
-		changes.addButton(new ChangeButton( new TalentIcon(Talent.LIGHTWEIGHT_CHARGE), "죠스케 특성 리워크",
+		changes.addButton(new ChangeButton( new TalentIcon(Talent.PRECISE_ASSAULT), "죠스케 특성 리워크",
 				"죠스케의 3단계 특성 중, 최종 결전 특성이 리워크되었습니다!\n\n기존 효과 : 죠스케가 1/2/3단계 근접 무기의 능력을 사용할 때, 소모 충전량 감소\n\n변경 효과 : 무기 능력을 발동한 후, 5턴 이내의 다음 번 근접 공격이 정확성을 얻음"));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.GRAVE), "드래곤즈 드림 리워크",
 				"드래곤즈 드림의 아이템 효과가 리워크되었습니다.\n\n" +

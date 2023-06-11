@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
@@ -38,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
@@ -53,8 +55,8 @@ public class Mace extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.MACE;
-		hitSound = Assets.Sounds.HIT;
-		hitSoundPitch = 3.3f;
+		hitSound = Assets.Sounds.HAMON;
+		hitSoundPitch = 1.4f;
 
 		tier = 3;
 		ACC = 1.28f; //28% boost to accuracy
@@ -98,8 +100,17 @@ public class Mace extends MeleeWeapon {
 	}
 
 	@Override
+	public float abilityChargeUse(Hero hero, Char target) {
+		if (target == null || (target instanceof Mob && ((Mob) target).surprisedBy(hero))) {
+			return super.abilityChargeUse(hero, target);
+		} else {
+			return 2*super.abilityChargeUse(hero, target);
+		}
+	}
+
+	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		Mace.heavyBlowAbility(hero, target, 1.60f, this);
+		Mace.heavyBlowAbility(hero, target, 1.40f, this);
 	}
 
 	public static void heavyBlowAbility(Hero hero, Integer target, float dmgMulti, MeleeWeapon wep){
@@ -121,19 +132,34 @@ public class Mace extends MeleeWeapon {
 		}
 		hero.belongings.abilityWeapon = null;
 
+		//need to separately check charges here, as non-surprise attacks cost 2
+		if (enemy instanceof Mob && !((Mob) enemy).surprisedBy(hero)){
+			Charger charger = Buff.affect(hero, Charger.class);
+			if (Dungeon.hero.belongings.weapon == wep) {
+				if (charger.charges + charger.partialCharge < wep.abilityChargeUse(hero, enemy)){
+					GLog.w(Messages.get(wep, "ability_no_charge"));
+					return;
+				}
+			} else {
+				if (charger.secondCharges + charger.secondPartialCharge < wep.abilityChargeUse(hero, enemy)){
+					GLog.w(Messages.get(wep, "ability_no_charge"));
+					return;
+				}
+			}
+		}
+
 		hero.sprite.attack(enemy.pos, new Callback() {
 			@Override
 			public void call() {
-				wep.beforeAbilityUsed(hero);
+				wep.beforeAbilityUsed(hero, enemy);
 				AttackIndicator.target(enemy);
-				if (hero.attack(enemy, dmgMulti, 0, 0.25f)) {
+				if (hero.attack(enemy, dmgMulti, 0, Char.INFINITE_ACCURACY)) {
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 					Sample.INSTANCE.play( Assets.Sounds.DORA );
 					if (enemy.isAlive()){
-						Buff.affect(enemy, Vulnerable.class, 5f);
-						Buff.affect(enemy, Weakness.class, 5f);
+						Buff.affect(enemy, Daze.class, Daze.DURATION);
 					} else {
-						wep.onAbilityKill(hero);
+						wep.onAbilityKill(hero, enemy);
 					}
 				}
 				Invisibility.dispel();

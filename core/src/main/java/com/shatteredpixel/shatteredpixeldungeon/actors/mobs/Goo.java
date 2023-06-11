@@ -119,8 +119,11 @@ public class Goo extends Mob {
 			HP += healInc;
 			Statistics.qualifiedForBossChallengeBadge = false;
 
-			LockedFloor lock = hero.buff(LockedFloor.class);
-			if (lock != null) lock.removeTime(healInc*2);
+			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+			if (lock != null){
+				if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.removeTime(healInc);
+				else                                                    lock.removeTime(healInc*1.5f);
+			}
 
 			if (Dungeon.level.heroFOV[pos] ){
 				sprite.emitter().burst( Speck.factory( Speck.HEALING ), healInc );
@@ -150,8 +153,10 @@ public class Goo extends Mob {
 			//we check both from and to in this case as projectile logic isn't always symmetrical.
 			//this helps trim out BS edge-cases
 			return Dungeon.level.distance(enemy.pos, pos) <= 2
-					&& new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
-					&& new Ballistica( enemy.pos, pos, Ballistica.PROJECTILE).collisionPos == pos;
+
+						&& new Ballistica( pos, enemy.pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == enemy.pos
+						&& new Ballistica( enemy.pos, pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID).collisionPos == pos;
+
 		} else {
 			return super.canAttack(enemy);
 		}
@@ -278,8 +283,12 @@ public class Goo extends Mob {
 			((GooSprite)sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
 		}
-		LockedFloor lock = hero.buff(LockedFloor.class);
-		if (lock != null) lock.addTime(dmg*2);
+		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+		if (lock != null){
+			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+			else                                                    lock.addTime(dmg*1.5f);
+		}
+
 	}
 
 	@Override
@@ -292,12 +301,14 @@ public class Goo extends Mob {
 		GameScene.bossSlain();
 		Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
 
-		Item pick = new NitoDismantleHammer();
-		if (pick.doPickUp( Dungeon.hero )) {
-			GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
-		} else {
-			Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
-		}
+//		Item pick = new NitoDismantleHammer();
+//		if (pick.doPickUp( Dungeon.hero )) {
+//
+//		} else {
+//			Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+//		}
+		Dungeon.level.drop( new NitoDismantleHammer().identify(), pos ).sprite.drop( pos );
+
 
 		if (Random.Int( 10 ) == 0) {
 			GameScene.flash(0xFFFF00);

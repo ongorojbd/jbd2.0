@@ -116,6 +116,9 @@ public class Assets {
 	public static class Music {
 		public static final String THEME_1      = "music/theme_1.ogg";
 		public static final String THEME_2      = "music/theme_2.ogg";
+
+		public static final String THEME_3      = "music/theme_3.ogg";
+
 		public static final String CIV          = "music/civ.ogg";
 
 		public static final String SEWERS_1     = "music/sewers_1.ogg";
@@ -257,6 +260,8 @@ public class Assets {
 		public static final String YUKAK = "sounds/yukak.mp3";
 		public static final String TALE = "sounds/tale.mp3";
 		public static final String NITOH = "sounds/nitoh.mp3";
+		public static final String TONIO = "sounds/tonio.mp3";
+		public static final String HAMON = "sounds/hamon.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -270,7 +275,7 @@ public class Assets {
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
-				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH, RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH
+				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH, RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON
 		};
 	}
 
@@ -399,5 +404,6 @@ public class Assets {
 		public static final String ATOM= "sprites/atom.png";
 		public static final String FUGO= "sprites/fugo.png";
 		public static final String YASU = "sprites/yasu.png";
+		public static final String FF = "sprites/ff.png";
 	}
 }

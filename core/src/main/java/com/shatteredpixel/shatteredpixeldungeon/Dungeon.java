@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PoisonDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
@@ -833,7 +834,7 @@ public class Dungeon {
 		Statistics.preview( info, bundle );
 	}
 
-	public static void fail( Class cause ) {
+	public static void fail( Object cause ) {
 		if (WndResurrect.instance == null) {
 			updateLevelExplored();
 			Statistics.gameWon = false;
@@ -841,7 +842,7 @@ public class Dungeon {
 		}
 	}
 
-	public static void win( Class cause ) {
+	public static void win( Object cause ) {
 
 		updateLevelExplored();
 		Statistics.gameWon = true;
