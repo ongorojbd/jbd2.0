@@ -96,6 +96,7 @@ public class Kawasiri extends Mob {
 
         EXP = 15;
         defenseSkill = 15;
+        immunities.add(Vertigo.class);
         properties.add(Property.INORGANIC);
         properties.add(Property.BOSS);
         immunities.add(ShrGas.class);

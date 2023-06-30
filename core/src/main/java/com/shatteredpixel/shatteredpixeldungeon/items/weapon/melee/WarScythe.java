@@ -21,11 +21,21 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class WarScythe extends MeleeWeapon {
 
@@ -42,6 +52,32 @@ public class WarScythe extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(6.67f*(tier+1)) +    //40 base, up from 30
 				lvl*(tier+1);                   //scaling unchanged
+	}
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+
+		if (hero.belongings.getItem(RingOfEvasion.class) != null) {
+			if (hero.belongings.getItem(RingOfEvasion.class).isEquipped(hero) && (Random.Int(20) == 0)) {
+				{
+					Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
+					attacker.sprite.showStatus(CharSprite.POSITIVE, "[파문을 일점집중!]");
+					Buff.affect( defender, Paralysis.class, 1f );
+				}
+			}
+		}
+
+		return super.proc(attacker, defender, damage);
+	}
+
+	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (hero.belongings.getItem(RingOfEvasion.class) != null) {
+			if (hero.belongings.getItem(RingOfEvasion.class).isEquipped(hero))
+				info += "\n\n" + Messages.get( WarScythe.class, "setbouns");}
+
+		return info;
 	}
 
 	public float abilityChargeUse(Hero hero, Char target) {

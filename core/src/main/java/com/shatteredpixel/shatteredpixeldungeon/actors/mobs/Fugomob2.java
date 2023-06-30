@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.BmoreGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -58,6 +59,8 @@ public class Fugomob2 extends Mob {
         HP = HT =  120;
         HUNTING = new Mob.Hunting();
         immunities.add(CorrosiveGas.class);
+        immunities.add(Vertigo.class);
+        properties.add(Property.IMMOVABLE);
         //only applicable when the bee is charmed with elixir of honeyed healing
         intelligentAlly = true;
 

@@ -152,7 +152,7 @@ public class Fugo extends NPC {
 
     public static void spawn(CityLevel level) {
 
-        if (Random.Int( 1 ) == 0) {
+        if (Random.Int( 2 ) == 0) {
             if (Dungeon.depth == 17 && !Dungeon.bossLevel()) {
 
                 Fugo npc = new Fugo();

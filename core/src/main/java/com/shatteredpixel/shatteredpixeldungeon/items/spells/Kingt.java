@@ -35,10 +35,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Lighter;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
@@ -55,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfCha
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -116,7 +119,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(j, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 10:
-                Item h1 = new ReclaimTrap().quantity(10);
+                Item h1 = new ReclaimTrap().quantity(5);
                 Dungeon.level.drop(h1, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 11:
@@ -168,11 +171,11 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(f6, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 23:
-                Item z = new StoneOfBlink().quantity(9);
+                Item z = new StoneOfBlink().quantity(5);
                 Dungeon.level.drop(z, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 24:
-                Item zz = new ScrollOfTransmutation().quantity(5);
+                Item zz = new ScrollOfTransmutation().quantity(3);
                 Dungeon.level.drop(zz, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 25:
@@ -184,7 +187,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(we2, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 27:
-                Item we4 = new ScrollOfChallenge().quantity(3);
+                Item we4 = new ScrollOfChallenge();
                 Dungeon.level.drop(we4, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 28:
@@ -192,7 +195,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(we6, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 29:
-                Item wq = new ScrollOfPrismaticImage().quantity(2);
+                Item wq = new ScrollOfPrismaticImage();
                 Dungeon.level.drop(wq, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 30:
@@ -206,6 +209,26 @@ public class Kingt extends Spell {
             case 32:
                 Item wq5 = new Araki();
                 Dungeon.level.drop(wq5, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 33:
+                Item qw1 = new PhantomMeat();
+                Dungeon.level.drop(qw1, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 34:
+                Item qw2 = new StoneOfAugmentation().quantity(3);
+                Dungeon.level.drop(qw2, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 35:
+                Item qw3 = Generator.random( Generator.Category.RING );
+                Dungeon.level.drop(qw3, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 36:
+                Item qw4 = new Lighter().quantity(4);
+                Dungeon.level.drop(qw4, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                break;
+            case 37:
+                Item qw5 = Generator.random( Generator.Category.WAND );
+                Dungeon.level.drop(qw5, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
         }
 
@@ -222,6 +245,6 @@ public class Kingt extends Spell {
 
     @Override
     public int value() {
-        return 75 * quantity;
+        return 50 * quantity;
     }
 }

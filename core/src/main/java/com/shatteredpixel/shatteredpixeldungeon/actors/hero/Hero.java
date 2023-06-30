@@ -1363,7 +1363,9 @@ public class Hero extends Char {
 			damage *= 0f;
 		}
 
-		if (hero.belongings.getItem(Jojo4.class) != null && wep instanceof MissileWeapon && Dungeon.gold > 14){
+		if (hero.belongings.getItem(Jojo4.class) != null && wep instanceof MissileWeapon && Dungeon.gold > 19 && !(wep instanceof SpiritBow.SpiritArrow)){
+
+
 			new ExplosiveTrap().set(enemy.pos).activate();
 
 			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null ) {
@@ -1373,7 +1375,7 @@ public class Hero extends Char {
 			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
 
 			} else {
-			Dungeon.gold -= 15;
+			Dungeon.gold -= 20;
 		}
 		}
 

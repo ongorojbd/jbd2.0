@@ -85,13 +85,11 @@ public class Pucci extends Mob {
         state = WANDERING;
         intelligentAlly = true;
         properties.add(Property.INORGANIC);
-        HP = HT = 15;
+        HP = HT = 180;
         defenseSkill = 15;
         EXP = 0;
 
         flying = true;
-
-        Buff.affect(this, Barrier.class).setShield(160);
 
         immunities.add(Dominion.class );
 
@@ -114,28 +112,28 @@ public class Pucci extends Mob {
         summonCooldown = bundle.getInt( SUMMON_COOLDOWN );
     }
 
-    @Override
-    protected boolean act() {
-
-        summonCooldown--;
-
-        if (summonCooldown <= 0 && Dungeon.level instanceof LabsBossLevel) {
-
-            for (int i : PathFinder.NEIGHBOURS4){
-                    Val Val = new Val();
-                    Val.state = Val.HUNTING;
-                    Val.pos = this.pos+i;
-                    GameScene.add( Val );
-                    Val.beckon(Dungeon.hero.pos);
-
-                summonCooldown = (7);
-                sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "skill"));
-
-            }
-        }
-
-        return super.act();
-    }
+//    @Override
+//    protected boolean act() {
+//
+//        summonCooldown--;
+//
+//        if (summonCooldown <= 0 && Dungeon.level instanceof LabsBossLevel) {
+//
+//            for (int i : PathFinder.NEIGHBOURS4){
+//                    Val Val = new Val();
+//                    Val.state = Val.HUNTING;
+//                    Val.pos = this.pos+i;
+//                    GameScene.add( Val );
+//                    Val.beckon(Dungeon.hero.pos);
+//
+//                summonCooldown = (7);
+//                sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "skill"));
+//
+//            }
+//        }
+//
+//        return super.act();
+//    }
 
     @Override
     protected boolean canAttack( Char enemy ) {
@@ -144,7 +142,7 @@ public class Pucci extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 15, 15 );
+        return Random.NormalIntRange( 15, 36 );
     }
 
     @Override

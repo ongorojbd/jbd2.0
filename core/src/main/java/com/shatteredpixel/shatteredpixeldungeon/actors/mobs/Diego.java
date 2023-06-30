@@ -118,17 +118,23 @@ public class Diego extends Mob {
 
     @Override
     public int attackProc(Char enemy, int damage) {
+
+
+
         if (charge >= 4) {
             SpellSprite.show( this, SpellSprite.FOOD );
             Sample.INSTANCE.play(Assets.Sounds.EAT);
+
             Dungeon.hero.damage(hero.HT/3, this);
+
+            CellEmitter.get(pos).burst(BloodParticle.BURST, 30);
+            GLog.n(Messages.get(Diego.class, "5"));
+            charge = 0;
+
             if (enemy == Dungeon.hero && !enemy.isAlive()) {
                 Dungeon.fail(getClass());
                 GLog.n(Messages.get(this, "d"));
             }
-            CellEmitter.get(pos).burst(BloodParticle.BURST, 30);
-            GLog.n(Messages.get(Diego.class, "5"));
-            charge = 0;
 
         }
         else {

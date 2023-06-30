@@ -276,7 +276,7 @@ public class AscensionChallenge extends Buff {
 	public boolean act() {
 
 		beckonEnemies();
-		Music.INSTANCE.play(Assets.Music.CAVES_1, true);
+		Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
 
 		//hero starts progressively taking damage over time at 8+ stacks
 		if (stacks >= 8 && !Dungeon.bossLevel()){

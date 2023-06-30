@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -35,11 +37,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 public class Katana extends MeleeWeapon {
 
@@ -66,14 +70,9 @@ public class Katana extends MeleeWeapon {
 
 		Heal(attacker);
 
-
-
-		if (hero.belongings.getItem(RingOfArcana.class) != null) {
-			if (hero.belongings.getItem(RingOfArcana.class).isEquipped(hero)) {
-				if (attacker.buff(Vertigo.class) != null) {
-					damage *= 1.5f;
-					attacker.sprite.showStatus(CharSprite.WARNING, "[크크크...]");
-				}
+		if (hero.belongings.getItem(RingOfWealth.class) != null) {
+			if (hero.belongings.getItem(RingOfWealth.class).isEquipped(hero) && (Random.Int(10) == 0)) {
+				Buff.affect( hero, FrostImbue.class, 3f );
 			}
 		}
 
@@ -107,9 +106,9 @@ public class Katana extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (hero.belongings.getItem(RingOfArcana.class) != null) {
-			if (hero.belongings.getItem(RingOfArcana.class).isEquipped(hero))
-				info += "\n\n" + Messages.get( Longsword.class, "setbouns");}
+		if (hero.belongings.getItem(RingOfWealth.class) != null) {
+			if (hero.belongings.getItem(RingOfWealth.class).isEquipped(hero))
+				info += "\n\n" + Messages.get( Katana.class, "setbouns");}
 
 		return info;
 	}

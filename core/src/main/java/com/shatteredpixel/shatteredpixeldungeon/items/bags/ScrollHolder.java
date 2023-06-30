@@ -25,7 +25,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Spell;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ScrollHolder extends Bag {
@@ -37,7 +44,13 @@ public class ScrollHolder extends Bag {
 	@Override
 	public boolean canHold( Item item ) {
 		if (item instanceof Scroll || item instanceof Spell || item instanceof ArcaneResin){
-			return super.canHold(item);
+
+			if ((item instanceof Kingt || item instanceof Kings || item instanceof Xray || item instanceof Kingc || item instanceof Kingw || item instanceof Kinga || item instanceof Kingm)) {
+				return false;
+			} else {
+				return super.canHold(item);
+			}
+
 		} else {
 			return false;
 		}

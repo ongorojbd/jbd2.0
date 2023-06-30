@@ -257,10 +257,6 @@ public class Bestiary {
 				
 			// City
 
-			case 16:
-				if (Random.Float() < 0.04f) rotation.add(Retonio.class);
-				return;
-
 			case 17:
 				if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
 				if (Random.Float() < 0.025f) rotation.add(Mandom.class);
@@ -269,6 +265,7 @@ public class Bestiary {
 			case 19:
 				if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
 				if (Random.Float() < 0.025f) rotation.add(Succubus.class);
+				if (Random.Float() < 0.04f) rotation.add(Retonio.class);
 				return;
 
 			case 21:

@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -71,18 +72,18 @@ public class LabsBossLevel extends Level {
 		if (locked){
 			Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
 			//if top door isn't unlocked
-		} else if (map[topDoor] == Terrain.LOCKED_DOOR){
+		} else if (map[exit()] != Terrain.EXIT){
 			Music.INSTANCE.end();
 		} else {
 			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.LABS_BOSS},
+					new String[]{Assets.Music.LABS_1},
 					new float[]{1},
 					false);
 		}
 	}
 
-	private static int WIDTH = 33;
-	private static int HEIGHT = 40;
+	private static final int WIDTH = 33;
+	private static final int HEIGHT = 40;
 
 	private static final Rect entry = new Rect(0, 27, 33, 6);
 	private static final Rect arena = new Rect(0, 0, 33, 26);
@@ -362,6 +363,11 @@ public class LabsBossLevel extends Level {
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
+		for (Mob m : mobs){
+			if (m instanceof YogDzewa){
+				((YogDzewa) m).updateVisibility(this);
+			}
+		}
 		isCompleted = bundle.getBoolean( ISCOMPLETED );
 		//pre-1.3.0 saves, modifies exit transition with custom size
 		if (bundle.contains("exit")){

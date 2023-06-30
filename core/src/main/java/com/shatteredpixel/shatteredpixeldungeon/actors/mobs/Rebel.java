@@ -39,6 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover;
@@ -48,10 +50,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LabsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -98,6 +102,8 @@ public class Rebel extends Mob {
 	int cleanCooldown = 9999;
 	int damageTaken = 0;
 	int summonCooldown = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 9999 : 9999;
+
+	private int charge = 0; // 2이 될경우 강화 사격
 
 	private int LastPos = -1;
 	private int Burstcooldown = 0; // 1이 되면 은신 파괴
@@ -155,6 +161,7 @@ public class Rebel extends Mob {
 		bundle.put( SKILL3TCD, GasCoolDown );
 		bundle.put(SUMMON_COOLDOWN, summonCooldown);
 		bundle.put( BURST, Burstcooldown);
+		bundle.put( SKILLCD, charge );
 	}
 
 	@Override
@@ -177,6 +184,7 @@ public class Rebel extends Mob {
 		GasCoolDown = bundle.getInt(SKILL3TCD);
 		summonCooldown = bundle.getInt( SUMMON_COOLDOWN );
 		Burstcooldown = bundle.getInt(BURST);
+		charge = bundle.getInt(SKILLCD);
 	}
 
 	public boolean isDied() {
@@ -197,6 +205,33 @@ public class Rebel extends Mob {
 	@Override
 	public int attackSkill( Char target ) {
 		return 77;
+	}
+
+	@Override
+	public int attackProc(Char enemy, int damage) {
+
+		if (charge >= 4) {
+			enemy.sprite.showStatus(CharSprite.POSITIVE, "5타 추가 피해!", charge+1);
+			SpellSprite.show( this, SpellSprite.PURITY );
+			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+			CellEmitter.get(hero.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+			enemy.damage(10, this);
+			charge = 0;
+
+			if (enemy == Dungeon.hero && !enemy.isAlive()) {
+				Dungeon.fail(getClass());
+				GLog.n(Messages.get(this, "d"));
+			}
+
+		}
+		else {
+			damage = super.attackProc(enemy, damage);
+			enemy.sprite.showStatus(CharSprite.POSITIVE, "%d..", charge+1);
+			charge++;
+		}
+		damage = super.attackProc(enemy, damage);
+
+		return damage;
 	}
 
 	@Override
@@ -440,17 +475,15 @@ public class Rebel extends Mob {
 			Phase = 2;
 			GameScene.flash(0x8B00FF);
 			Buff.prolong(this, Bless.class, Bless.DURATION*1_000_000);
-			yell(Messages.get(this, "telling_2"));
 
-			Sample.INSTANCE.play(Assets.Sounds.OH);
+			GLog.n(Messages.get(Rebel.class, "val"));
 
-			WO WO = new WO();
-			WO.state = WO.HUNTING;
-			WO.pos = bottomDoor-12*33;
-			GameScene.add( WO );
-			WO.beckon(Dungeon.hero.pos);
-
-			Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
+			Pucci Pucci = new Pucci();
+			Pucci.state = Pucci.WANDERING;
+			Pucci.pos = bottomDoor-9*33;
+			GameScene.add( Pucci );
+			Pucci.beckon(Dungeon.hero.pos);
+			yell(Messages.get(this, "telling_3"));
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 		}
 		else if (Phase==2 && HP < 900) {
@@ -462,22 +495,21 @@ public class Rebel extends Mob {
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
 
-			GLog.n(Messages.get(Rebel.class, "val"));
+			yell(Messages.get(this, "telling_2"));
 
-			Pucci Pucci = new Pucci();
-			Pucci.state = Pucci.WANDERING;
-			Pucci.pos = bottomDoor-9*33;
-			GameScene.add( Pucci );
-			Pucci.beckon(Dungeon.hero.pos);
+			Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
+
+			Sample.INSTANCE.play(Assets.Sounds.OH);
+
+			WO WO = new WO();
+			WO.state = WO.HUNTING;
+			WO.pos = bottomDoor-12*33;
+			GameScene.add( WO );
+			WO.beckon(Dungeon.hero.pos);
 
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 
-
 			cleanCooldown = 10;
-
-			yell(Messages.get(this, "telling_3"));
-
-			Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
 
 		}
 		else if (Phase==3 && HP < 600) {
@@ -518,6 +550,8 @@ public class Rebel extends Mob {
 
 	private static final String PHASE   = "Phase";
 	private static final String SKILLPOS   = "LastPos";
+
+	private static final String SKILLCD   = "charge";
 
 	@Override
 	public void die(Object cause) {

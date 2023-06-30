@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.BmoreGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -61,6 +62,8 @@ public class Fugomob extends Mob {
         HP = HT = 100;
         HUNTING = new Mob.Hunting();
         immunities.add(CorrosiveGas.class);
+        immunities.add(Vertigo.class);
+        properties.add(Property.IMMOVABLE);
         viewDistance = 5;
         state = WANDERING;
         alignment = Alignment.ALLY;

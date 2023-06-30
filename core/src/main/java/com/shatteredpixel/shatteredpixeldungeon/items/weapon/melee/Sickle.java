@@ -68,9 +68,8 @@ public class Sickle extends MeleeWeapon {
 			hero.sprite.showStatus(HeroSprite.NEUTRAL, Messages.get(Sickle.class, "skill"));
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 			SpellSprite.show(defender, SpellSprite.FOOD);
-			damage = 4444;
+			damage = Math.round(defender.HP + 20);
 		}
-
 		return super.proc(attacker, defender, damage);
 	}
 

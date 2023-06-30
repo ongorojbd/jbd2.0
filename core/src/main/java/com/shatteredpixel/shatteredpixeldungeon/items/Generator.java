@@ -351,8 +351,8 @@ public class Generator {
 					WornShortsword.class,
 					MagesStaff.class,
 					Dagger.class,
-					Gloves.class,
-					Rapier.class
+					Rapier.class,
+					Gloves.class
 			};
 			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2 };
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();

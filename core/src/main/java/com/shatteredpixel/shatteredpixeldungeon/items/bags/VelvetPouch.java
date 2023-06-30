@@ -24,7 +24,16 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -38,7 +47,11 @@ public class VelvetPouch extends Bag {
 	public boolean canHold( Item item ) {
 		if (item instanceof Plant.Seed || item instanceof Runestone
 				|| item instanceof GooBlob || item instanceof MetalShard){
-			return super.canHold(item);
+			if ((item instanceof StoneOfAdvanceguard)) {
+				return false;
+			} else {
+				return super.canHold(item);
+			}
 		} else {
 			return false;
 		}

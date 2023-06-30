@@ -134,7 +134,7 @@ public class Sleepcmoon3 extends Spell {
             GameScene.flash(0xFFFF00);
             Sample.INSTANCE.play( Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f) );
             Camera.main.shake(31, 3f);
-            Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
+            Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
 
             Madeinheaven pick3 = new Madeinheaven();
             if (pick3.doPickUp( Dungeon.hero )) {

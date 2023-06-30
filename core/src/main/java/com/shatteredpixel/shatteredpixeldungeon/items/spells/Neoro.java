@@ -34,7 +34,6 @@ public class Neoro extends Spell {
         hero.sprite.operate(hero.pos);
         Camera.main.shake(31, 5f);
         GLog.p(Messages.get(this, "c"));
-        Music.INSTANCE.play(Assets.Music.CAVES_1, true);
         Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 0.9f);
         detach( curUser.belongings.backpack );
         updateQuickslot();

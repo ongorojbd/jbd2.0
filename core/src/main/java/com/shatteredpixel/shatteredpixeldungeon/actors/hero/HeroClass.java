@@ -67,12 +67,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo7;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -80,6 +82,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -136,19 +140,17 @@ public enum HeroClass {
 		if (DeviceCompat.isDebug()){
 			new TengusMask().collect();
 			new KingsCrown().collect();
-			new Sickle().identify().upgrade(11).collect();
-			new PhantomMeat().identify().collect();
+			new WarScythe().identify().upgrade(11).collect();
 			new WandOfBlastWave().identify().upgrade(999).collect();
 			new PlateArmor().identify().upgrade(999).collect();
 			new PotionOfHealing().identify().quantity(29).collect();
+			new PotionOfParalyticGas().identify().quantity(29).collect();
 			new NitoDismantleHammer().identify().collect();
 			new PotionOfExperience().identify().quantity(29).collect();
+			new StoneOfAdvanceguard().identify().quantity(29).collect();
 			new Neotel().collect();
-			new Jojo7().collect();
-			new Jojo8().collect();
-			new Jojo9().collect();
 			new RingOfAccuracy().identify().upgrade(9999).collect();
-			new RingOfEnergy().identify().upgrade(9999).collect();
+			new RingOfMight().identify().upgrade(9999).collect();
 		}
 
 		switch (this) {

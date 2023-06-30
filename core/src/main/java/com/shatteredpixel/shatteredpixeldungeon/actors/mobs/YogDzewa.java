@@ -582,6 +582,7 @@ public class YogDzewa extends Mob {
 					break;
 				case ROGUE:
 					this.yell(Messages.get(this, "notice2"));
+					GLog.p(Messages.get(this, "notice29"));
 					break;
 				case MAGE:
 					GLog.p(Messages.get(Val.class, "5"));

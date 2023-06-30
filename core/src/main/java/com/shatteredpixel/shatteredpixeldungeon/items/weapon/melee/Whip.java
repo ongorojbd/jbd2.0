@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -35,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -59,7 +62,7 @@ public class Whip extends MeleeWeapon {
 	public int proc(Char attacker, Char defender, int damage) {
 
 		if (Dungeon.hero.belongings.getItem(MasterThievesArmband.class) != null) {
-			if (Dungeon.hero.belongings.getItem(MasterThievesArmband.class).isEquipped(Dungeon.hero)) {
+			if (Dungeon.hero.belongings.getItem(MasterThievesArmband.class).isEquipped(hero) && (Random.Int(10) == 0)) {
 				{
 					Buff.affect( defender, Cripple.class, 3f );
 				}
