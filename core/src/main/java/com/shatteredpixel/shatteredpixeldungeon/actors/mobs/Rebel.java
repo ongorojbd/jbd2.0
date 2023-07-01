@@ -298,9 +298,13 @@ public class Rebel extends Mob {
 					break;
 				case DUELIST:
 					this.yell(Messages.get(this, "notice5"));
-		            Sample.INSTANCE.play(Assets.Sounds.OH2);
+					GLog.p(Messages.get(Val.class, "9"));
+					Sample.INSTANCE.play(Assets.Sounds.OH2);
+					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
+					GameScene.flash(0xFF0000);
+					Camera.main.shake(9, 0.5f);
+					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
-
 			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){

@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -46,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
@@ -171,7 +174,7 @@ public class Goo extends Mob {
 		}
 
 		if (pumpedUp > 0) {
-			Camera.main.shake( 3, 0.2f );
+			PixelScene.shake( 3, 0.2f );
 		}
 
 		return damage;
@@ -360,6 +363,10 @@ public class Goo extends Mob {
 				case DUELIST:
 					this.yell(Messages.get(this, "notice5"));
 					GLog.p(Messages.get(Val.class, "9"));
+					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
+					GameScene.flash(0xFF0000);
+					Camera.main.shake(9, 0.5f);
+					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
 			}
 			for (Char ch : Actor.chars()){

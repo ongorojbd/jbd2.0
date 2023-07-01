@@ -89,17 +89,12 @@ public class CityBossLevel extends Level {
 	public void playLevelMusic() {
 		if (locked){
 			Music.INSTANCE.play(Assets.Music.CITY_BOSS, true);
-		//if top door isn't unlocked
-		} else if (map[topDoor] == Terrain.LOCKED_DOOR){
+			//if exit isn't unlocked
+		} else if (map[exit()] != Terrain.EXIT){
 			Music.INSTANCE.end();
-			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.ENYA},
-					new float[]{1},
-					false);
-
 		} else {
 			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.ENYA},
+					new String[]{Assets.Music.CITY_1},
 					new float[]{1},
 					false);
 		}

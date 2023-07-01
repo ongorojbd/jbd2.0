@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
@@ -457,6 +458,10 @@ public class DwarfKing extends Mob {
 				case DUELIST:
 					this.yell(Messages.get(this, "notice5"));
 					GLog.p(Messages.get(Val.class, "9"));
+					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
+					GameScene.flash(0xFF0000);
+					Camera.main.shake(9, 0.5f);
+					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
 
 			}

@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -140,8 +141,10 @@ public class Map3 extends Spell {
                 case DUELIST:
                     GLog.n(Messages.get(Diego.class, "12"));
                     GLog.p(Messages.get(Val.class, "9"));
-                    Sample.INSTANCE.play( Assets.Sounds.BLAST );
+                    Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
+                    GameScene.flash(0xFF0000);
                     Camera.main.shake(9, 0.5f);
+                    Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
                     break;
             }
 

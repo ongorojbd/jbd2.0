@@ -30,7 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
@@ -69,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -594,6 +597,10 @@ public class YogDzewa extends Mob {
 				case DUELIST:
 					this.yell(Messages.get(this, "notice5"));
 					GLog.p(Messages.get(Val.class, "9"));
+					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
+					GameScene.flash(0xFF0000);
+					Camera.main.shake(9, 0.5f);
+					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
 			}
 			for (Char ch : Actor.chars()){

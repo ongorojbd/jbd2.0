@@ -60,9 +60,8 @@ public class Pickaxe extends MeleeWeapon {
 	private static final Glowing BLOODY = new Glowing( 0x550000 );
 	
 	{
-		image = ItemSpriteSheet.PICKAXE;
-		hitSound = Assets.Sounds.HIT_STAB;
-		RCH = 2;
+		image = ItemSpriteSheet.TUSK3;
+		hitSound = Assets.Sounds.HIT;
 		levelKnown = true;
 		
 		unique = true;

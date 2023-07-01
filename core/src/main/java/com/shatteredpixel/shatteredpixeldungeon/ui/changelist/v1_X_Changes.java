@@ -45,6 +45,7 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
+		add_v1_4_4_Changes(changeInfos);
 		add_v1_4_3_Changes(changeInfos);
 		add_v1_4_1_Changes(changeInfos);
 	}
@@ -60,6 +61,39 @@ public class v1_X_Changes {
 
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 영웅 : 죠린",
 			""));
+	}
+
+	public static void add_v1_4_4_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0h1", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes = new ChangeInfo("새로운 요소", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TUSK3), "서브 던전",
+				"서브 던전 : 기둥의 남자들이 잠든 곳이 추가되었습니다!\n\n" +
+						"서브 던전은 죠니 근처의 입구를 통해 입장할 수 있으며, 추후 죠니 퀘스트 개편에 사용됩니다."));
+
+		changes = new ChangeInfo("변경", false, null);
+		changes.hardlight(CharSprite.WARNING);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.REBEL, 160, 0, 16, 16), "천국에 도달한 DIO",
+				"일부 패턴이 변경되었습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_SANDALS), "녹색 아기의 장비 DISC",
+				"전용 장비 DISC 이펙트가 추가되었습니다."));
+		changes.addButton(new ChangeButton( new ItemSprite(ItemSpriteSheet.EMBER, new ItemSprite.Glowing(0x00FF00)), "BGM 변경",
+				"천국에 도달한 DIO의 BGM이\n죠죠 6부 TVA 메이드 인 헤븐 BGM으로 변경되었습니다."));
+
+
+		changes = new ChangeInfo("상향", false, null);
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 1), "죠스케 상향",
+						"보스와 조우할 때, 1턴의 폭주 버프를 얻습니다."));
 	}
 
 	public static void add_v1_4_3_Changes( ArrayList<ChangeInfo> changeInfos ) {

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -79,11 +80,19 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbili
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM201;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Stower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -101,12 +110,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ram2;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
@@ -121,6 +133,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesi
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
@@ -132,6 +145,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
@@ -139,7 +153,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -149,7 +164,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -171,9 +196,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -190,6 +217,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -206,7 +234,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -883,7 +910,10 @@ public class Hero extends Char {
 			} else if (curAction instanceof HeroAction.Unlock) {
 				actResult = actUnlock((HeroAction.Unlock) curAction);
 				
-			} else if (curAction instanceof HeroAction.LvlTransition) {
+			} else if (curAction instanceof HeroAction.Mine) {
+				actResult = actMine( (HeroAction.Mine)curAction );
+
+			}else if (curAction instanceof HeroAction.LvlTransition) {
 				actResult = actTransition( (HeroAction.LvlTransition)curAction );
 				
 			} else if (curAction instanceof HeroAction.Attack) {
@@ -898,7 +928,7 @@ public class Hero extends Char {
 		}
 		
 		if(hasTalent(Talent.BARKSKIN) && Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
-			Buff.affect(this, Barkskin.class).set( (lvl*pointsInTalent(Talent.BARKSKIN))/2, 1 );
+			Barkskin.conditionallyAppend(this, (lvl*pointsInTalent(Talent.BARKSKIN))/2, 1 );
 		}
 		
 		return actResult;
@@ -1122,6 +1152,7 @@ public class Hero extends Char {
 	private boolean actOpenChest( HeroAction.OpenChest action ) {
 		int dst = action.dst;
 		if (Dungeon.level.adjacent( pos, dst ) || pos == dst) {
+			path = null;
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
 			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
@@ -1138,7 +1169,7 @@ public class Hero extends Char {
 				switch (heap.type) {
 				case TOMB:
 					Sample.INSTANCE.play( Assets.Sounds.TOMB );
-					Camera.main.shake( 1, 0.5f );
+					PixelScene.shake( 1, 0.5f );
 					break;
 				case SKELETON:
 				case REMAINS:
@@ -1168,6 +1199,7 @@ public class Hero extends Char {
 	private boolean actUnlock( HeroAction.Unlock action ) {
 		int doorCell = action.dst;
 		if (Dungeon.level.adjacent( pos, doorCell )) {
+			path = null;
 			
 			boolean hasKey = false;
 			int door = Dungeon.level.map[doorCell];
@@ -1211,13 +1243,301 @@ public class Hero extends Char {
 			return false;
 		}
 	}
+
+	public boolean actMine(HeroAction.Mine action){
+
+		ArrayList<Integer> spawnPoints = new ArrayList<>();
+		if (Dungeon.level.adjacent(pos, action.dst)){
+			path = null;
+			if ((Dungeon.level.map[action.dst] == Terrain.WALL || Dungeon.level.map[action.dst] == Terrain.WALL_DECO)
+				&& Dungeon.level.insideMap(action.dst)){
+				sprite.attack(action.dst, new Callback() {
+					@Override
+					public void call() {
+
+						if (Dungeon.level.map[action.dst] == Terrain.WALL_DECO){
+
+
+							//여기부터 셀프로 추가한거
+							for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+								int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+								if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
+									spawnPoints.add( p );
+								}
+							}
+
+							if (!spawnPoints.isEmpty()){
+
+								for (Char ch : Actor.chars()){
+									if (ch instanceof Elemental && ch.buff(SummonElemental.InvisAlly.class) != null){
+										ScrollOfTeleportation.appear( ch, Random.element(spawnPoints) );
+										((Elemental) ch).state = ((Elemental) ch).HUNTING;
+										return;
+									}
+								}
+
+								Shaman elemental = new Shaman.RedShaman();
+								Shaman elemental2 = new Shaman.BlueShaman();
+								Shaman elemental3 = new Shaman.PurpleShaman();
+								DM201  elemental4 = new DM201();
+								Diego  elemental5 = new Diego();
+
+								if (Random.Int( 25 ) == 0) {
+									Item ara = new Araki();
+									Sample.INSTANCE.play(Assets.Sounds.MASTERY);
+									if (ara.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", ara.name()) ));
+									} else {
+										Dungeon.level.drop(ara, Dungeon.hero.pos ).sprite.drop();
+									}
+								}
+
+								if (Random.Int( 20 ) == 0) {
+									elemental5.state = elemental5.HUNTING;
+									GameScene.add( elemental5 );
+									Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+									GameScene.flash(0x990000);
+									Music.INSTANCE.play(Assets.Music.CIV, true);
+									GLog.n(Messages.get(Diego.class, "1"));
+
+									ScrollOfTeleportation.appear( elemental5, Random.element(spawnPoints) );
+								}
+
+								if (Random.Int( 7 ) == 0) {
+									Item cl = new ClothArmor();
+									if (cl.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", cl.name()) ));
+									} else {
+										Dungeon.level.drop(cl, Dungeon.hero.pos ).sprite.drop();
+									}
+								}
+
+
+								if (Random.Int( 6 ) == 0) {
+									new ExplosiveTrap().set(pos).activate();
+								}
+
+
+								if (Random.Int( 3 ) == 0) {
+									switch (Random.Int(10)){
+										case 0:
+										case 1:
+										case 2:
+											elemental.state = elemental.HUNTING;
+											GameScene.add( elemental );
+											ScrollOfTeleportation.appear( elemental, Random.element(spawnPoints) );
+											break;
+										case 3:
+										case 4:
+										case 5:
+											elemental2.state = elemental2.HUNTING;
+											GameScene.add( elemental2 );
+											ScrollOfTeleportation.appear( elemental2, Random.element(spawnPoints) );
+											break;
+										case 6:
+										case 7:
+										case 8:
+											elemental3.state = elemental3.HUNTING;
+											GameScene.add( elemental3 );
+											ScrollOfTeleportation.appear( elemental3, Random.element(spawnPoints) );
+											break;
+										case 9:
+											elemental4.state = elemental4.HUNTING;
+											GameScene.add( elemental4 );
+											ScrollOfTeleportation.appear( elemental4, Random.element(spawnPoints) );
+											break;
+									}}
+							} else {
+
+							}
+
+							if (Random.Int( 8 ) == 0) {
+							switch (Random.Int(8)){
+								case 0:
+									Item a = new Kingt();
+									if (a.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", a.name()) ));
+									} else {
+										Dungeon.level.drop(a, Dungeon.hero.pos ).sprite.drop();
+									}
+									break;
+								case 1:
+									Item b = new StoneOfAdvanceguard();
+									if (b.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", b.name()) ));
+									} else {
+										Dungeon.level.drop(b, Dungeon.hero.pos ).sprite.drop();
+									}
+									break;
+								case 2:
+									Item c = new Xray();
+									if (c.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", c.name()) ));
+									} else {
+										Dungeon.level.drop(c, Dungeon.hero.pos ).sprite.drop();
+									}
+									break;
+								case 3:
+									Item d = new Kings();
+									if (d.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", d.name()) ));
+									} else {
+										Dungeon.level.drop(d, Dungeon.hero.pos ).sprite.drop();
+									}
+									break;
+								case 4:
+									Item e = new Kingm();
+									if (e.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", e.name()) ));
+									} else {
+										Dungeon.level.drop(e, Dungeon.hero.pos ).sprite.drop();
+									}
+									break;
+								case 5:
+									Item f = new Kingw();
+									if (f.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", f.name()) ));
+									} else {
+										Dungeon.level.drop(f, Dungeon.hero.pos ).sprite.drop();
+									}
+									break;
+								case 6:
+									Item g = new Kingc();
+									if (g.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", g.name()) ));
+									} else {
+										Dungeon.level.drop(g, Dungeon.hero.pos ).sprite.drop();
+									}
+									break;
+								case 7:
+									Item h = new Kinga();
+									if (h.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", h.name()) ));
+									} else {
+										Dungeon.level.drop(h, Dungeon.hero.pos ).sprite.drop();
+									}
+									break;
+							}}
+
+
+
+							Gold gold = (Gold) new Gold().quantity(50);
+
+							if (gold.doPickUp( Dungeon.hero )) {
+								GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", gold.name())) );
+							} else {
+								Dungeon.level.drop( gold, pos ).sprite.drop();
+							}
+							CellEmitter.center( action.dst ).burst( Speck.factory( Speck.STAR ), 7 );
+
+							Sample.INSTANCE.play( Assets.Sounds.EVOKE );
+						} else {
+							CellEmitter.get( action.dst ).burst( Speck.factory( Speck.ROCK ), 2 );
+							Sample.INSTANCE.play( Assets.Sounds.MINE );
+
+
+							for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+								int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+								if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
+									spawnPoints.add( p );
+								}
+							}
+
+							if (!spawnPoints.isEmpty()){
+
+								for (Char ch : Actor.chars()){
+									if (ch instanceof Elemental && ch.buff(SummonElemental.InvisAlly.class) != null){
+										ScrollOfTeleportation.appear( ch, Random.element(spawnPoints) );
+										((Elemental) ch).state = ((Elemental) ch).HUNTING;
+										return;
+									}
+								}
+
+
+								Shaman elemental = new Shaman.RedShaman();
+								Shaman elemental2 = new Shaman.BlueShaman();
+								Shaman elemental3 = new Shaman.PurpleShaman();
+								DM201  elemental4 = new DM201();
+
+
+
+
+								if (Random.Int( 10 ) == 0) {
+									switch (Random.Int(10)){
+										case 0:
+										case 1:
+										case 2:
+											elemental.state = elemental.HUNTING;
+											GameScene.add( elemental );
+											ScrollOfTeleportation.appear( elemental, Random.element(spawnPoints) );
+											break;
+										case 3:
+										case 4:
+										case 5:
+											elemental2.state = elemental2.HUNTING;
+											GameScene.add( elemental2 );
+											ScrollOfTeleportation.appear( elemental2, Random.element(spawnPoints) );
+											break;
+										case 6:
+										case 7:
+										case 8:
+											elemental3.state = elemental3.HUNTING;
+											GameScene.add( elemental3 );
+											ScrollOfTeleportation.appear( elemental3, Random.element(spawnPoints) );
+											break;
+										case 9:
+											elemental4.state = elemental4.HUNTING;
+											GameScene.add( elemental4 );
+											ScrollOfTeleportation.appear( elemental4, Random.element(spawnPoints) );
+											break;
+									}}
+							} else {
+
+							}
+
+
+
+
+
+
+
+						}
+
+						PixelScene.shake(0.5f, 0.5f);
+
+						Level.set( action.dst, Terrain.EMPTY_DECO );
+						for (int i : PathFinder.NEIGHBOURS9) {
+							Dungeon.level.discoverable[action.dst + i] = true;
+						}
+						for (int i : PathFinder.NEIGHBOURS9) {
+							GameScene.updateMap( action.dst+i );
+						}
+
+						Dungeon.observe();
+
+						spendAndNext(TICK);
+					}
+				});
+			} else {
+				ready();
+			}
+			return false;
+		} else if (getCloser( action.dst )) {
+
+			return true;
+
+		} else {
+			ready();
+			return false;
+		}
+	}
 	
 	private boolean actTransition(HeroAction.LvlTransition action ) {
 		int stairs = action.dst;
 		LevelTransition transition = Dungeon.level.getTransition(stairs);
 
 		if (rooted) {
-			Camera.main.shake(1, 1f);
+			PixelScene.shake(1, 1f);
 			ready();
 			return false;
 		} else if (!Dungeon.level.locked && transition != null && transition.inside(pos)) {
@@ -1274,8 +1594,8 @@ public class Hero extends Char {
 				Level.beforeTransition();
 
 				InterlevelScene.curTransition = transition;
-				//TODO probably want to make this more flexible when more types exist
-				if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
+				if (transition.type == LevelTransition.Type.REGULAR_EXIT
+					|| transition.type == LevelTransition.Type.BRANCH_EXIT) {
 					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 				} else {
 					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
@@ -1757,7 +2077,7 @@ public class Hero extends Char {
 			return false;
 
 		if (rooted) {
-			Camera.main.shake( 1, 1f );
+			PixelScene.shake( 1, 1f );
 			return false;
 		}
 		
@@ -1869,7 +2189,7 @@ public class Hero extends Char {
 		
 		Char ch = Actor.findChar( cell );
 		Heap heap = Dungeon.level.heaps.get( cell );
-		
+
 		if (Dungeon.level.map[cell] == Terrain.ALCHEMY && cell != pos) {
 			
 			curAction = new HeroAction.Alchemy( cell );
@@ -1881,6 +2201,13 @@ public class Hero extends Char {
 			} else {
 				curAction = new HeroAction.Attack( ch );
 			}
+
+		//TODO perhaps only trigger this if hero is already adjacent? reducing mistaps
+		} else if (Dungeon.level instanceof MiningLevel &&
+					belongings.getItem(Pickaxe.class) != null &&
+				(Dungeon.level.map[cell] == Terrain.WALL || Dungeon.level.map[cell] == Terrain.WALL_DECO)){
+
+			curAction = new HeroAction.Mine( cell );
 
 		} else if (heap != null
 				//moving to an item doesn't auto-pickup when enemies are near...

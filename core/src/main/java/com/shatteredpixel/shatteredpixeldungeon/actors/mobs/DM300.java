@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ShrGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
@@ -61,13 +62,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscC;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -334,7 +336,7 @@ public class DM300 extends Mob {
 	public void move(int step, boolean travelling) {
 		super.move(step, travelling);
 
-		if (travelling) Camera.main.shake( supercharged ? 3 : 1, 0.25f );
+		if (travelling) PixelScene.shake( supercharged ? 3 : 1, 0.25f );
 
 		if (Dungeon.level.map[step] == Terrain.INACTIVE_TRAP && state == HUNTING) {
 
@@ -385,6 +387,10 @@ public class DM300 extends Mob {
 				case DUELIST:
 					GLog.n(Messages.get(this, "notice5"));
 					GLog.p(Messages.get(Val.class, "9"));
+					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
+					GameScene.flash(0xFF0000);
+					Camera.main.shake(9, 0.5f);
+					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
 			}
 			for (Char ch : Actor.chars()){
@@ -695,7 +701,7 @@ public class DM300 extends Mob {
 				if (bestpos != pos) {
 					move(bestpos);
 				}
-				Camera.main.shake( 5, 1f );
+				PixelScene.shake( 5, 1f );
 
 				return true;
 			}
@@ -754,7 +760,7 @@ public class DM300 extends Mob {
 				}
 			}
 
-			Camera.main.shake( 3, 0.7f );
+			PixelScene.shake( 3, 0.7f );
 			Sample.INSTANCE.play(Assets.Sounds.ROCKS);
 
 			detach();

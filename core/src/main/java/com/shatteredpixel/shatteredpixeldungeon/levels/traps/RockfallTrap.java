@@ -32,9 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
@@ -108,8 +108,8 @@ public class RockfallTrap extends Trap {
 		}
 		
 		if (seen){
-			Camera.main.shake(3, 0.7f);
-			Sample.INSTANCE.play(Assets.Sounds.BLAST);
+			PixelScene.shake(3, 0.7f);
+			Sample.INSTANCE.play(Assets.Sounds.ROCKS);
 		}
 
 	}

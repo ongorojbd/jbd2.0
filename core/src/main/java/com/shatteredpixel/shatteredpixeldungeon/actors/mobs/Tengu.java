@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
@@ -382,6 +383,10 @@ public class Tengu extends Mob {
 					case DUELIST:
 						this.yell(Messages.get(this, "notice_gotcha5"));
 						GLog.p(Messages.get(Val.class, "9"));
+						Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
+						GameScene.flash(0xFF0000);
+						Camera.main.shake(9, 0.5f);
+						Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 						break;
 				}
 				for (Char ch : Actor.chars()){
