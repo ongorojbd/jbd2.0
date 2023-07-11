@@ -245,6 +245,6 @@ public class Kingt extends Spell {
 
     @Override
     public int value() {
-        return 50 * quantity;
+        return 45 * quantity;
     }
 }

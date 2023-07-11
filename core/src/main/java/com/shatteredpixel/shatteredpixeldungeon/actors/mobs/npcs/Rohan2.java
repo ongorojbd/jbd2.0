@@ -108,10 +108,10 @@ public class Rohan2 extends NPC {
         if (Statistics.duwang == 1) {
             yell( Messages.get(Rohan.class, "bi") );
             Sample.INSTANCE.play(Assets.Sounds.RO5);
+            Statistics.duwang = 0;
             destroy();
             sprite.killAndErase();
             die(null);
-            Statistics.duwang = 0;
         } else {
             Game.runOnRenderThread(new Callback() {
                 @Override
