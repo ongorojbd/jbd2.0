@@ -175,7 +175,7 @@ public class NitoDismantleHammer extends Item {
                 if (hero.belongings.getItem(Jojo7.class) != null && hero.belongings.getItem(Jojo8.class) != null || hero.belongings.getItem(Jojo7.class) != null && hero.belongings.getItem(Jojo9.class) != null || hero.belongings.getItem(Jojo8.class) != null && hero.belongings.getItem(Jojo9.class) != null) {
                 int dmg = curUser.HP / 5;
                 curUser.HP -= dmg;
-                Buff.affect(curUser, Barrier.class).incShield(dmg * 4);
+                Buff.affect(curUser, Barrier.class).incShield(dmg * 3);
                 Camera.main.shake(2, 0.25f);
                 }
 

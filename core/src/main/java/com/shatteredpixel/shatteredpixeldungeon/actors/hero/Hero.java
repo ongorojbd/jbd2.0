@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Might;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
@@ -1292,7 +1293,7 @@ public class Hero extends Char {
 									}
 								}
 
-								if (Random.Int( 20 ) == 0) {
+								if (Random.Int( 25 ) == 0) {
 									elemental5.state = elemental5.HUNTING;
 									GameScene.add( elemental5 );
 									Sample.INSTANCE.play(Assets.Sounds.MIMIC);
@@ -1679,6 +1680,10 @@ public class Hero extends Char {
 
 		damage = Talent.onAttackProc( this, enemy, damage );
 
+		if (buff(Might.class) != null ){
+			damage *= 2f;
+		}
+
 		if (enemy instanceof Stower && wep instanceof MissileWeapon) {
 			damage *= 0f;
 		}
@@ -1836,7 +1841,7 @@ public class Hero extends Char {
 
 		//팬텀블러드 효과
 		if (hero.belongings.getItem(Jojo1.class) != null) {
-			if (Random.Int( 6 ) == 0) {
+			if (Random.Int( 10 ) == 0) {
 			Buff.affect(enemy, Frost.class, 2f);
 			hero.sprite.showStatus(HeroSprite.POSITIVE, Messages.get(Sword.class, "4"));
 			}

@@ -617,22 +617,6 @@ public abstract class Char extends Actor {
 
 	public int attackProc( Char enemy, int damage ) {
 
-		if (Dungeon.hero.belongings.weapon() instanceof LSWORD){
-			if (this.HP == 7 || this.HP == 77){
-				damage *= 7.77f;
-				sprite.showStatus(CharSprite.POSITIVE, Messages.get(LSWORD.class, "1"));
-			}
-		}
-
-		if (Dungeon.hero.belongings.weapon() instanceof Sai && enemy.buff(Blindness.class) != null){
-			damage *= 1.25f;
-			sprite.showStatus(CharSprite.POSITIVE, Messages.get(Sai.class, "1"));
-		}
-
-		if (buff(Might.class) != null ){
-			damage *= 2f;
-		}
-
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			buff.onAttackProc( enemy );
 		}

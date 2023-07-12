@@ -250,15 +250,12 @@ public class Spheaven extends MeleeWeapon{
     }
 
     @Override
-    public float abilityChargeUse(Hero hero, Char target) {
-        return 2*super.abilityChargeUse(hero, target);
+    protected int baseChargeUse(Hero hero, Char target){
+        return 2;
     }
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
         Dagger.sneakAbility(hero, 4, this);
     }
-
-
-
 }

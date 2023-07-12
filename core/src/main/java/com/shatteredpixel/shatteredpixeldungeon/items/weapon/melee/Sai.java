@@ -54,6 +54,11 @@ public class Sai extends MeleeWeapon {
 
 		Heal(attacker);
 
+		if (defender.buff(Blindness.class) != null){
+			damage *= 1.25f;
+			attacker.sprite.showStatus(CharSprite.POSITIVE, Messages.get(Sai.class, "1"));
+		}
+
 		if (hero.belongings.getItem(SandalsOfNature.class) != null) {
 			if (hero.belongings.getItem(SandalsOfNature.class).isEquipped(hero) && (Random.Int(10) == 0)) {
 				{

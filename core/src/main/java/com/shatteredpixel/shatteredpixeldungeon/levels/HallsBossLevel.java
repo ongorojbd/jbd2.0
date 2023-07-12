@@ -235,7 +235,6 @@ public class HallsBossLevel extends Level {
 		int entrance = entrance();
 		set( entrance, Terrain.EMPTY_SP );
 		GameScene.updateMap( entrance );
-		CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
 
 		Dungeon.observe();
 

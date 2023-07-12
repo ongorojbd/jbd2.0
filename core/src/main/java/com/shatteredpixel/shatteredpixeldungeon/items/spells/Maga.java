@@ -50,12 +50,12 @@ import com.watabou.noosa.audio.Sample;
 public class Maga extends Spell {
 
     {
-        image = ItemSpriteSheet.WAR_HAMMER;
+        image = ItemSpriteSheet.ALCH_PAGE;
     }
 
     @Override
     public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0xCC0000, 0.7f);
+        return new ItemSprite.Glowing(0xCC0000, 1f);
     }
 
     @Override

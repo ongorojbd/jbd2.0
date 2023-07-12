@@ -73,8 +73,9 @@ public class Sickle extends MeleeWeapon {
 		return super.proc(attacker, defender, damage);
 	}
 
-	public float abilityChargeUse(Hero hero, Char target) {
-		return 2*super.abilityChargeUse(hero, target);
+
+	protected int baseChargeUse(Hero hero, Char target){
+		return 2;
 	}
 
 	@Override

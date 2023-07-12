@@ -72,9 +72,9 @@ public class v1_X_Changes {
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TUSK3), "서브 던전",
-				"서브 던전 : 기둥의 남자들이 잠든 곳이 추가되었습니다!\n\n" +
-						"서브 던전은 죠니 근처의 입구를 통해 입장할 수 있으며, 추후 죠니 퀘스트 개편에 사용됩니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TUSK3), "미니 던전",
+				"미니 던전 : 기둥의 남자들이 잠든 곳이 추가되었습니다!\n\n" +
+						"미니 던전은 죠니 근처의 입구를 통해 입장할 수 있으며, 추후 죠니 퀘스트 개편에 사용됩니다."));
 
 		changes = new ChangeInfo("변경", false, null);
 		changes.hardlight(CharSprite.WARNING);

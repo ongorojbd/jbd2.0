@@ -84,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -150,7 +151,7 @@ public enum HeroClass {
 			new WandOfBlastWave().identify().upgrade(999).collect();
 			new PlateArmor().identify().upgrade(999).collect();
 			new PotionOfHealing().identify().quantity(29).collect();
-			new ScrollOfMysticalEnergy().identify().quantity(29).collect();
+			new Maga().identify().quantity(29).collect();
 			new Sungrass.Seed().identify().quantity(29).collect();
 			new Icecap.Seed().identify().quantity(29).collect();
 			new Swiftthistle.Seed().identify().quantity(29).collect();

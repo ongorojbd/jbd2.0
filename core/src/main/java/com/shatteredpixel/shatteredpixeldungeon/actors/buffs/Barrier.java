@@ -149,7 +149,7 @@ public class Barrier extends ShieldBuff {
 
 		if(target==hero){
 		int damage = target.damageRoll();
-		damage *= 2f;
+		damage *= 1.5f;
 
 		PathFinder.buildDistanceMap(target.pos, BArray.not(Dungeon.level.solid, null), 2);
 		for (int cell = 0; cell < PathFinder.distance.length; cell++) {

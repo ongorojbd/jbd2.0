@@ -49,6 +49,11 @@ public class LSWORD extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
 
+            if (hero.HP == 7 || hero.HP == 77){
+                damage *= 7.77f;
+                attacker.sprite.showStatus(CharSprite.POSITIVE, Messages.get(LSWORD.class, "1"));
+            }
+
         if (Random.Int( 7 ) == 0) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
