@@ -595,7 +595,7 @@ public class DM300 extends Mob {
 		GameScene.bossSlain();
 		Dungeon.level.unseal();
 
-		Sample.INSTANCE.play( Assets.Sounds.SHEER, 3, 0.33f );
+		Sample.INSTANCE.play( Assets.Sounds.SHEER2);
 
 		Kawasiri Kawasiri = new Kawasiri();
 		Kawasiri.state = Kawasiri.FLEEING;

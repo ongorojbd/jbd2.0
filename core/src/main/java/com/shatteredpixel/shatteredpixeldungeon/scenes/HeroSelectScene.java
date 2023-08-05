@@ -23,11 +23,13 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -87,10 +89,17 @@ public class HeroSelectScene extends PixelScene {
 	public void create() {
 		super.create();
 
-		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.THEME_3, Assets.Music.THEME_3},
-				new float[]{1, 1},
-				false);
+		if (SPDSettings.getDio() >= 1) {
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.HALLS_BOSS, Assets.Music.HALLS_BOSS},
+					new float[]{1, 1},
+					false);
+		} else{
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.THEME_3, Assets.Music.THEME_3},
+					new float[]{1, 1},
+					false);
+		}
 
 		Dungeon.hero = null;
 
@@ -186,31 +195,67 @@ public class HeroSelectScene extends PixelScene {
 		optionsPane.layout();
 		add(optionsPane);
 
-		btnOptions = new IconButton(Icons.get(Icons.PREFS)){
-			@Override
-			protected void onClick() {
-				super.onClick();
-				optionsPane.visible = !optionsPane.visible;
-				optionsPane.active = !optionsPane.active;
-			}
+		if(SPDSettings.getDio() == 0) {
+			btnOptions = new IconButton(Icons.get(Icons.PREFS)) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					optionsPane.visible = !optionsPane.visible;
+					optionsPane.active = !optionsPane.active;
+				}
 
-			@Override
-			protected void onPointerDown() {
-				super.onPointerDown();
-			}
+				@Override
+				protected void onPointerDown() {
+					super.onPointerDown();
+				}
 
-			@Override
-			protected void onPointerUp() {
-				updateOptionsColor();
-			}
+				@Override
+				protected void onPointerUp() {
+					updateOptionsColor();
+				}
 
-			@Override
-			protected String hoverText() {
-				return Messages.get(HeroSelectScene.class, "options");
-			}
-		};
+				@Override
+				protected String hoverText() {
+					return Messages.get(HeroSelectScene.class, "options");
+				}
+			};
+		} else
+			btnOptions = new IconButton(Icons.get(Icons.BACKPACK_LRG)) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					optionsPane.visible = !optionsPane.visible;
+					optionsPane.active = !optionsPane.active;
+				}
+
+				@Override
+				protected void onPointerDown() {
+					super.onPointerDown();
+				}
+
+				@Override
+				protected void onPointerUp() {
+					updateOptionsColor();
+				}
+
+				@Override
+				protected String hoverText() {
+					return Messages.get(HeroSelectScene.class, "options");
+				}
+			};
+
+
+
 		updateOptionsColor();
 		btnOptions.visible = false;
+
+		if(SPDSettings.getDio() == 1){
+			Dungeon.challenges = 0;
+			SPDSettings.challenges(0);
+			SPDSettings.customSeed("");
+		}
+
+
 
 		if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)){
 			add(btnOptions);
@@ -571,7 +616,25 @@ public class HeroSelectScene extends PixelScene {
 
 			buttons = new ArrayList<>();
 			spacers = new ArrayList<>();
-			if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)){
+
+			if (SPDSettings.getDio() >= 1) {
+				StyledButton dailyButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "daily2"), 6){
+					@Override
+					protected void onClick() {
+						super.onClick();
+						ShatteredPixelDungeon.scene().add(
+								new WndMessage(Messages.get(Challenges.class, "castle"))
+						);
+					}
+
+
+				};
+				dailyButton.leftJustify = true;
+				dailyButton.icon(Icons.get(Icons.NEWS));
+				add(dailyButton);
+				buttons.add(dailyButton);
+
+				} else if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)){
 				StyledButton seedButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "custom_seed"), 6){
 					@Override
 					protected void onClick() {
@@ -729,6 +792,8 @@ public class HeroSelectScene extends PixelScene {
 				add(challengeButton);
 				buttons.add(challengeButton);
 			}
+
+
 
 			for (int i = 1; i < buttons.size(); i++){
 				ColorBlock spc = new ColorBlock(1, 1, 0xFF000000);

@@ -113,7 +113,7 @@ public class Rapier extends MeleeWeapon {
 		final int dest = lungeCell;
 		hero.busy();
 		Sample.INSTANCE.play(Assets.Sounds.MISS);
-		Sample.INSTANCE.play(Assets.Sounds.DORA);
+		Sword.doraclass();
 		hero.sprite.jump(hero.pos, dest, 0, 0.1f, new Callback() {
 			@Override
 			public void call() {

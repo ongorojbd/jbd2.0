@@ -507,6 +507,8 @@ public class ItemSpriteSheet {
 	public static final int DEMON                = ARTIFACTS+43;
 	public static final int TUSK3                = ARTIFACTS+44;
 
+	public static final int SMASK                = ARTIFACTS+45;
+
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      14, 14);
 		assignItemRect(ARTIFACT_ARMBAND,    14, 14);
@@ -550,6 +552,7 @@ public class ItemSpriteSheet {
 		assignItemRect(CEN,      15, 16);
 		assignItemRect(DEMON,    16, 12);
 		assignItemRect(TUSK3,    13, 14);
+		assignItemRect(SMASK,    14, 12);
 	}
 
 	                                                                                    //16 free slots

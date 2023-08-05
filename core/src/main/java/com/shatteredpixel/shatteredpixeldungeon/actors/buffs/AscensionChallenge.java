@@ -60,9 +60,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
@@ -257,7 +262,10 @@ public class AscensionChallenge extends Buff {
 						Dungeon.level.mobs.remove( mob );
 					}
 				}
-				Dungeon.level.spawnMob(12);
+
+				if(Dungeon.level instanceof HumanVillageBossLevel || Dungeon.level instanceof Emp2Level){
+
+				} else Dungeon.level.spawnMob(12);
 
 			}
 		}
@@ -304,7 +312,6 @@ public class AscensionChallenge extends Buff {
 	public boolean act() {
 
 		beckonEnemies();
-		Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
 
 		//hero starts progressively taking damage over time at 8+ stacks
 		if (stacks >= 8 && !Dungeon.bossLevel()){

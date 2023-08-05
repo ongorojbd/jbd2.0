@@ -82,7 +82,6 @@ public class Ankh extends Item {
 				hero.spend( 1f );
 				hero.busy();
 
-
 				Sample.INSTANCE.play( Assets.Sounds.DRINK );
 				CellEmitter.get(hero.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 				hero.sprite.operate( hero.pos );

@@ -42,6 +42,7 @@ public class PathFinder {
 	//they are in array-access order for increased memory performance
 	public static int[] NEIGHBOURS1;
 	public static int[] NEIGHBOURS2;
+	public static int[] NEIGHBOURS3;
 	public static int[] NEIGHBOURS4;
 	public static int[] NEIGHBOURS8;
 	public static int[] NEIGHBOURS9;
@@ -69,6 +70,7 @@ public class PathFinder {
 
 		NEIGHBOURS1 = new int[]{+width+2};
 		NEIGHBOURS2 = new int[]{-width};
+		NEIGHBOURS3 = new int[]{-width, +width};
 		NEIGHBOURS4 = new int[]{-width, -1, +1, +width};
 		NEIGHBOURS8 = new int[]{-width-1, -width, -width+1, -1, +1, +width-1, +width, +width+1};
 		NEIGHBOURS9 = new int[]{-width-1, -width, -width+1, -1, 0, +1, +width-1, +width, +width+1};

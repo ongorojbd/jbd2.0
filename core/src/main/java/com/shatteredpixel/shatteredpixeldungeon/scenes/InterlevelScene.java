@@ -32,6 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
@@ -158,22 +160,23 @@ public class InterlevelScene extends PixelScene {
 			lastRegion = region;
 		}
 
-		if      (lastRegion == 1)    loadingAsset = Assets.Interfaces.LOADING_SEWERS;
+		if(Dungeon.level instanceof DioLevel || Dungeon.level instanceof DiobossLevel) loadingAsset = Assets.Interfaces.LOADING_DIO;
+		else if (lastRegion == 1)    loadingAsset = Assets.Interfaces.LOADING_SEWERS;
 		else if (lastRegion == 2)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
 		else if (lastRegion == 3)    loadingAsset = Assets.Interfaces.LOADING_CAVES;
 		else if (lastRegion == 4)    loadingAsset = Assets.Interfaces.LOADING_CITY;
 		else if (lastRegion == 5)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
-		else if (loadingDepth == 26 || loadingDepth == 27 || loadingDepth == 28 || loadingDepth == 29 || loadingDepth == 30 || loadingDepth == 31)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
+		else if (loadingDepth == 26 || loadingDepth == 27 || loadingDepth == 28 || loadingDepth == 29 || loadingDepth == 30 || loadingDepth == 31) loadingAsset = Assets.Interfaces.LOADING_LABS;
 		else                         loadingAsset = Assets.Interfaces.SHADOW;
 		
 		//slow down transition when displaying an install prompt
 		if (Updates.isInstallable()){
 			fadeTime += 0.5f; //adds 1 second total
 			//speed up transition when debugging
-		} else if (DeviceCompat.isDebug()){
+		} else if (DeviceCompat.isDebug()) {
 			fadeTime = 0f;
 		}
-		
+
 		SkinnedBlock bg = new SkinnedBlock(Camera.main.width, Camera.main.height, loadingAsset ){
 			@Override
 			protected NoosaScript script() {

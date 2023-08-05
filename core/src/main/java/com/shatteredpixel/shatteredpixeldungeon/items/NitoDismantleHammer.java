@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
@@ -96,7 +97,7 @@ public class NitoDismantleHammer extends Item {
 
         @Override
         public boolean itemSelectable(Item item) {
-            return item instanceof MeleeWeapon && !item.isEquipped(curUser)||
+            return item instanceof MeleeWeapon && !item.isEquipped(curUser)||  item instanceof Artifact ||
                     item instanceof Armor && ((Armor) item).checkSeal() == null && !item.isEquipped(curUser) || item instanceof Ring && !item.isEquipped(curUser);
         }
 

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -29,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
@@ -53,6 +55,33 @@ public class WndGame extends Window {
 
 		//settings
 		RedButton curBtn;
+
+		if (Badges.isUnlocked(Badges.Badge.VICTORY)){
+
+		addButton( curBtn = new RedButton( Messages.get(this, "coin", SPDSettings.getSpecialcoin()) ) {
+					@Override
+					protected void onClick() {
+						hide();
+						GameScene.show(new WndMessage(Messages.get(WndGame.class, "coin_desc")));
+					}
+				}
+		);
+		curBtn.icon(Icons.get(Icons.NEWS));
+
+
+			addButton( curBtn = new RedButton( Messages.get(this, "dio", SPDSettings.getDio()) ) {
+						@Override
+						protected void onClick() {
+							hide();
+
+							GameScene.show(new WndMessage(Messages.get(WndGame.class, "skin_desc", SPDSettings.getDio(), SPDSettings.getBrando())));
+						}
+					}
+			);
+			curBtn.icon(Icons.get(Icons.STATS));
+
+		}
+
 		addButton( curBtn = new RedButton( Messages.get(this, "settings") ) {
 			@Override
 			protected void onClick() {

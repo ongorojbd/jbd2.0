@@ -65,6 +65,7 @@ public class Statistics {
 	public static int duwang;
 	public static int duwang2;
 	public static int duwang3;
+	public static int diocount;
 
 	public static int manga;
 
@@ -75,7 +76,8 @@ public class Statistics {
 	public static boolean amuletObtained = false;
 	public static boolean gameWon = false;
 	public static boolean ascended = false;
-	
+	public static boolean diokilled = false;
+
 	public static void reset() {
 		
 		goldCollected	= 0;
@@ -112,6 +114,7 @@ public class Statistics {
 		duwang = 0;
 		duwang2 = 0;
 		duwang3 = 0;
+		diocount = 0;
 		manga = 0;
 		
 		duration	    = 0;
@@ -122,7 +125,8 @@ public class Statistics {
 		amuletObtained = false;
 		gameWon = false;
 		ascended = false;
-		
+		diokilled = false;
+
 	}
 	
 	private static final String GOLD		= "score";
@@ -140,6 +144,8 @@ public class Statistics {
 	private static final String DUWANG		    = "duwang";
 	private static final String DUWANG2		    = "duwang2";
 	private static final String DUWANG3 	    = "duwang3";
+
+	private static final String DIOCOUNT 	    = "diocount";
 	private static final String MANGA		    = "manga";
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
@@ -168,7 +174,8 @@ public class Statistics {
 	private static final String AMULET          = "amuletObtained";
 	private static final String WON		        = "won";
 	private static final String ASCENDED		= "ascended";
-	
+	private static final String DIOKILLED		= "diokilled";
+
 	public static void storeInBundle( Bundle bundle ) {
 		bundle.put( GOLD,		goldCollected );
 		bundle.put( DEEPEST,	deepestFloor );
@@ -185,6 +192,7 @@ public class Statistics {
 		bundle.put( DUWANG,		     duwang );
 		bundle.put( DUWANG2,	     duwang2 );
 		bundle.put( DUWANG3,		 duwang3 );
+		bundle.put( DIOCOUNT,		 diocount );
 		bundle.put( MANGA,		     manga );
 		bundle.put( PROG_SCORE,  progressScore );
 		bundle.put( ITEM_VAL,    heldItemValue );
@@ -217,6 +225,7 @@ public class Statistics {
 		bundle.put( AMULET,		amuletObtained );
 		bundle.put( WON,        gameWon );
 		bundle.put( ASCENDED,   ascended );
+		bundle.put( DIOKILLED,   diokilled );
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
@@ -235,6 +244,7 @@ public class Statistics {
 		duwang      = bundle.getInt( DUWANG );
 		duwang2      = bundle.getInt( DUWANG2 );
 		duwang3      = bundle.getInt( DUWANG3 );
+		diocount      = bundle.getInt( DIOCOUNT );
 		manga      = bundle.getInt( MANGA );
 		progressScore   = bundle.getInt( PROG_SCORE );
 		heldItemValue   = bundle.getInt( ITEM_VAL );
@@ -271,6 +281,7 @@ public class Statistics {
 		amuletObtained	= bundle.getBoolean( AMULET );
 		gameWon         = bundle.getBoolean( WON );
 		ascended        = bundle.getBoolean( ASCENDED );
+		diokilled        = bundle.getBoolean( DIOKILLED );
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ){

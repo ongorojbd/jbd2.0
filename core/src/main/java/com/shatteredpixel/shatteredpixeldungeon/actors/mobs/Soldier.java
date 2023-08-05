@@ -65,8 +65,6 @@ public class Soldier extends Mob {
 		lootChance = 0.15f;
 	}
 
-
-
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 30, 43 );

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -38,10 +40,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WO;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.jojo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -59,6 +66,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -415,9 +427,45 @@ public class GameScene extends PixelScene {
 				break;
 			case RETURN:
 				ScrollOfTeleportation.appearVFX( Dungeon.hero );
+				if (Dungeon.level instanceof EmporioLevel){
+					add(new WndStory(Messages.get(this, "emporio") + "\n\n" + Messages.get(this, "emporio2")).setDelays(0.4f, 0.4f));
+				}
+				if (Dungeon.level instanceof Emp2Level){
+					Dungeon.level.seal();
+				}
+				if (Dungeon.level instanceof HumanVillageBossLevel){
+					add(new WndStory(Messages.get(this, "green") + "\n\n" + Messages.get(this, "green2")).setDelays(0.4f, 0.4f));
+					Dungeon.level.seal();
+				}
+				if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0){
+					Statistics.duwang2 = 1;
+					add(new WndStory(Messages.get(this, "dio_title") + "\n\n" + Messages.get(this, "dio_window")).setDelays(0.4f, 0.4f));
+					SpeedWagon jojo = new SpeedWagon();
+					jojo.state = jojo.WANDERING;
+					jojo.pos = Dungeon.hero.pos;
+					GameScene.add( jojo );
+					jojo.beckon(Dungeon.hero.pos);
+				}
 				break;
 			case DESCEND:
 			case FALL:
+				if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0){
+					Statistics.duwang2 = 1;
+					Sample.INSTANCE.play(Assets.Sounds.SPW1);
+					add(new WndStory(Messages.get(this, "dio_title") + "\n\n" + Messages.get(this, "dio_window")).setDelays(0.4f, 0.4f));
+					GLog.n(Messages.get(SpeedWagon.class, "hi"));
+					SpeedWagon jojo = new SpeedWagon();
+					jojo.state = jojo.WANDERING;
+					jojo.pos = Dungeon.hero.pos;
+					GameScene.add( jojo );
+					jojo.beckon(Dungeon.hero.pos);
+					SPDSettings.addDio(-1);
+					Statistics.diocount = 1;
+				} else if(Dungeon.level instanceof DioLevel && Dungeon.depth < 5 && Dungeon.depth > 1){
+					GLog.n(Messages.get(SpeedWagon.class, "floor" + Random.IntRange(1, 6)));
+				} else if(Dungeon.level instanceof DiobossLevel && Dungeon.depth == 5){
+					GLog.n(Messages.get(SpeedWagon.class, "floor20"));
+				}
 				if (Dungeon.depth == Statistics.deepestFloor){
 					switch (Dungeon.depth) {
 						case 1: case 6: case 11: case 16: case 21: case 26:
@@ -432,6 +480,7 @@ public class GameScene extends PixelScene {
 				if (Dungeon.level instanceof MiningLevel){
 					add(new WndStory(Messages.get(this, "blacksmith_quest_window_title") + "\n\n" + Messages.get(this, "blacksmith_quest_window")).setDelays(0.4f, 0.4f));
 				}
+
 				if (Dungeon.hero.isAlive()) {
 					Badges.validateNoKilling();
 				}
@@ -531,8 +580,13 @@ public class GameScene extends PixelScene {
 			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESURRECT) {
 				GLog.h(Messages.get(this, "resurrect"), Dungeon.depth);
 			} else {
+				if (Dungeon.level instanceof Emp2Level && Statistics.duwang != 34){
+					GLog.h(Messages.get(this, "return"), Dungeon.depth);
+					GLog.n(Messages.get(Beast.class, "notice"));
+					Sample.INSTANCE.play(Assets.Sounds.A1);
+				} else{
 				GLog.h(Messages.get(this, "return"), Dungeon.depth);
-			}
+			}}
 
 			if (Dungeon.hero.hasTalent(Talent.ROGUES_FORESIGHT)
 					&& Dungeon.level instanceof RegularLevel){

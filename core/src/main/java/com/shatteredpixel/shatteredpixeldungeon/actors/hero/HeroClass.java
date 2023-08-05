@@ -43,6 +43,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
@@ -53,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer2;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
@@ -61,17 +64,22 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo7;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
@@ -82,10 +90,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -95,8 +106,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
@@ -107,6 +120,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
@@ -146,20 +160,20 @@ public enum HeroClass {
 		if (DeviceCompat.isDebug()){
 			new TengusMask().collect();
 			new KingsCrown().collect();
-			new SandalsOfNature().identify().collect();
-			new WarScythe().identify().upgrade(111).collect();
-			new WandOfBlastWave().identify().upgrade(999).collect();
+			new Shortsword().identify().upgrade(2).collect();
+			new LeatherArmor().identify().upgrade(2).collect();
 			new PlateArmor().identify().upgrade(999).collect();
 			new PotionOfHealing().identify().quantity(29).collect();
-			new Maga().identify().quantity(29).collect();
+			new ScrollOfTeleportation().identify().quantity(29).collect();
+			new PotionOfStrength().identify().quantity(2).collect();
+			new PotionOfExperience().identify().quantity(6).collect();
 			new Sungrass.Seed().identify().quantity(29).collect();
 			new Icecap.Seed().identify().quantity(29).collect();
 			new Swiftthistle.Seed().identify().quantity(29).collect();
-			new PotionOfParalyticGas().identify().quantity(29).collect();
-			new NitoDismantleHammer().identify().collect();
-			new PotionOfExperience().identify().quantity(29).collect();
-			new StoneOfAdvanceguard().identify().quantity(29).collect();
+			new Willa().identify().quantity(29).collect();
+			new Kings().identify().quantity(29).collect();
 			new Neotel().collect();
+			new Amulet().collect();
 			new RingOfAccuracy().identify().upgrade(9999).collect();
 			new RingOfMight().identify().upgrade(9999).collect();
 		}
@@ -216,7 +230,7 @@ public enum HeroClass {
 	private static void initWarrior( Hero hero ) {
 		(hero.belongings.weapon = new WornShortsword()).identify();
 		ThrowingStone stones = new ThrowingStone();
-		stones.quantity(5).collect();
+		stones.quantity(3).collect();
 		Dungeon.quickslot.setSlot(0, stones);
 
 		if (hero.belongings.armor != null){
@@ -227,6 +241,14 @@ public enum HeroClass {
 			new Drago().quantity(5).collect();
 		}
 
+		if (SPDSettings.getDio() >= 1) {
+			NitoDismantleHammer hamm = new NitoDismantleHammer();
+			Diomap map = new Diomap();
+			hamm.collect();
+			map.collect();
+			Dungeon.quickslot.setSlot(1, hamm);
+			Dungeon.quickslot.setSlot(2, map);
+		}
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
@@ -244,6 +266,14 @@ public enum HeroClass {
 			new Drago().quantity(5).collect();
 		}
 
+		if (SPDSettings.getDio() >= 1) {
+			NitoDismantleHammer hamm = new NitoDismantleHammer();
+			Diomap map = new Diomap();
+			hamm.collect();
+			map.collect();
+			Dungeon.quickslot.setSlot(1, hamm);
+			Dungeon.quickslot.setSlot(2, map);
+		}
 
 		Dungeon.quickslot.setSlot(0, staff);
 
@@ -259,7 +289,7 @@ public enum HeroClass {
 		hero.belongings.artifact.activate( hero );
 
 		ThrowingKnife knives = new ThrowingKnife();
-		knives.quantity(5).collect();
+		knives.quantity(3).collect();
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
 			new Drago().quantity(5).collect();
@@ -268,6 +298,15 @@ public enum HeroClass {
 
 		Dungeon.quickslot.setSlot(0, cloak);
 		Dungeon.quickslot.setSlot(1, knives);
+
+		if (SPDSettings.getDio() >= 1) {
+			NitoDismantleHammer hamm = new NitoDismantleHammer();
+			Diomap map = new Diomap();
+			hamm.collect();
+			map.collect();
+			Dungeon.quickslot.setSlot(2, hamm);
+			Dungeon.quickslot.setSlot(3, map);
+		}
 
 		new ScrollOfMagicMapping().identify();
 		new PotionOfInvisibility().identify();
@@ -281,6 +320,15 @@ public enum HeroClass {
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
 			new Drago().quantity(5).collect();
+		}
+
+		if (SPDSettings.getDio() >= 1) {
+			NitoDismantleHammer hamm = new NitoDismantleHammer();
+			Diomap map = new Diomap();
+			hamm.collect();
+			map.collect();
+			Dungeon.quickslot.setSlot(1, hamm);
+			Dungeon.quickslot.setSlot(2, map);
 		}
 
 		Dungeon.quickslot.setSlot(0, bow);
@@ -303,6 +351,15 @@ public enum HeroClass {
 
 		Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
 		Dungeon.quickslot.setSlot(1, spikes);
+
+		if (SPDSettings.getDio() >= 1) {
+			NitoDismantleHammer hamm = new NitoDismantleHammer();
+			Diomap map = new Diomap();
+			hamm.collect();
+			map.collect();
+			Dungeon.quickslot.setSlot(2, hamm);
+			Dungeon.quickslot.setSlot(3, map);
+		}
 
 		new PotionOfStrength().identify();
 		new ScrollOfMirrorImage().identify();
@@ -344,30 +401,58 @@ public enum HeroClass {
 	public String spritesheet() {
 		switch (this) {
 			case WARRIOR: default:
-				return Assets.Sprites.WARRIOR;
+				if (SPDSettings.getSkin() == 1) {
+					return Assets.Sprites.WARRIOR2;
+				} else return Assets.Sprites.WARRIOR;
 			case MAGE:
-				return Assets.Sprites.MAGE;
+				if (SPDSettings.getSkin2() == 1) {
+					return Assets.Sprites.MAGE2;
+				} else return Assets.Sprites.MAGE;
 			case ROGUE:
-				return Assets.Sprites.ROGUE;
-			case HUNTRESS:
-				return Assets.Sprites.HUNTRESS;
+				if (SPDSettings.getSkin3() == 1) {
+					return Assets.Sprites.ROGUE2;
+				} else return Assets.Sprites.ROGUE;
 			case DUELIST:
-				return Assets.Sprites.DUELIST;
+				if (SPDSettings.getSkin4() == 1) {
+					return Assets.Sprites.DUELIST2;
+				} else return Assets.Sprites.DUELIST;
+			case HUNTRESS:
+				if (SPDSettings.getSkin5() == 1) {
+					return Assets.Sprites.HUNTRESS2;
+				} else return Assets.Sprites.HUNTRESS;
 		}
 	}
 
 	public String splashArt(){
 		switch (this) {
 			case WARRIOR: default:
-				return Assets.Splashes.WARRIOR;
+				if (SPDSettings.getDio() >= 1) {
+					return Assets.Splashes.BRANDO;
+				} else return Assets.Splashes.WARRIOR;
+
 			case MAGE:
-				return Assets.Splashes.MAGE;
+
+				if (SPDSettings.getDio() >= 1) {
+					return Assets.Splashes.BRANDO;
+				} else return Assets.Splashes.MAGE;
+
 			case ROGUE:
-				return Assets.Splashes.ROGUE;
+
+				if (SPDSettings.getDio() >= 1) {
+					return Assets.Splashes.BRANDO;
+				} else return Assets.Splashes.ROGUE;
+
 			case HUNTRESS:
-				return Assets.Splashes.HUNTRESS;
+
+				if (SPDSettings.getDio() >= 1) {
+					return Assets.Splashes.BRANDO;
+				} else return Assets.Splashes.HUNTRESS;
+
 			case DUELIST:
-				return Assets.Splashes.DUELIST;
+
+				if (SPDSettings.getDio() >= 1) {
+					return Assets.Splashes.BRANDO;
+				} else return Assets.Splashes.DUELIST;
 		}
 	}
 	

@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -327,15 +328,15 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		//variance in damage dealt
 		switch (moveBeingUsed) {
 			case CLOBBER:
-				Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE, 1);
+				Sword.jclass();
 				dmgMulti = 0;
 				break;
 			case SLAM:
-				Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE, 1);
+				Sword.jclass();
 				dmgBonus = Math.round(target.drRoll() * count / 5f);
 				break;
 			case CRUSH:
-				Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE, 1);
+				Sword.jclass();
 				dmgMulti = 0.25f * count;
 				break;
 			case FURY:
@@ -369,7 +370,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					}
 					break;
 				case PARRY:
-					Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE, 1);
+					Sword.jclass();
 					hit(enemy);
 					break;
 				case CRUSH:

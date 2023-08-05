@@ -23,8 +23,11 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MandomSprite;
 import com.watabou.utils.Random;
 
@@ -48,28 +51,59 @@ public class Bestiary {
 			// Sewers
 			case 1: default:
 				//3x rat, 1x snake
+				if (SPDSettings.getDio() >= 1 || Statistics.diocount == 1) {
+					return new ArrayList<>(Arrays.asList(
+							Zombie.class, Zombie.class, Zombie.class,
+							Zombiedog.class));
+				}
+				else
+				{
 				return new ArrayList<>(Arrays.asList(
 						Rat.class, Rat.class, Rat.class,
 						Snake.class));
+				}
 			case 2:
 				//2x rat, 1x snake, 2x gnoll
-				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
-						Snake.class,
-						Gnoll.class, Gnoll.class));
+				if (Statistics.diocount == 1) {
+					return new ArrayList<>(Arrays.asList(Zombie.class, Zombie.class,
+							Zombiedog.class,
+							Zombied.class, Zombied.class));
+				}
+				else {
+					return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
+							Snake.class,
+							Gnoll.class, Gnoll.class));
+				}
 			case 3:
 				//1x rat, 1x snake, 3x gnoll, 1x swarm, 1x crab
-				return new ArrayList<>(Arrays.asList(Rat.class,
-						Snake.class,
-						Gnoll.class, Gnoll.class, Gnoll.class,
-						Swarm.class,
-						Crab.class));
+				if (Statistics.diocount == 1) {
+					return new ArrayList<>(Arrays.asList(Zombie.class,
+							Zombiedog.class,
+							Zombied.class, Zombied.class, Zombied.class,
+							Zombiez.class,
+							Zombiep.random()));
+				}
+				else {
+					return new ArrayList<>(Arrays.asList(Rat.class,
+							Snake.class,
+							Gnoll.class, Gnoll.class, Gnoll.class,
+							Swarm.class,
+							Crab.class));
+				}
 			case 4: case 5:
 				//1x gnoll, 1x swarm, 2x crab, 2x slime
+				if (Statistics.diocount == 1) {
+					return new ArrayList<>(Arrays.asList(Zombied.class,
+							Zombiez.class,
+							Zombiep.random(), Zombiep.random(),
+							Zombiet.class, Zombiet.class));
+				}
+				else {
 				return new ArrayList<>(Arrays.asList(Gnoll.class,
 						Swarm.class,
 						Crab.class, Crab.class,
 						Slime.class, Slime.class));
-				
+				}
 			// Prison
 			case 6:
 				//3x skeleton, 1x thief, 1x swarm
@@ -224,29 +258,29 @@ public class Bestiary {
 	
 	//has a chance to add a rarely spawned mobs to the rotation
 	public static void addRareMobs( int depth, ArrayList<Class<?extends Mob>> rotation ){
-		
+		if (Statistics.diocount == 0) {
 		switch (depth){
 			
 			// Sewers
 			default:
 				return;
 			case 4:
-				if (Random.Float() < 0.025f) rotation.add(Thief.class);
-				return;
-				
+
+					if (Random.Float() < 0.025f) rotation.add(Thief.class);
+					return;
+
 			// Prison
-		//	case 6:
-			//	if (Random.Float() < 0.045f) rotation.add(Stower.class);
-			//	return;
+
 			case 7:
-			if (Random.Float() < 0.035f) rotation.add(Stower.class);
-				return;
+					if (Random.Float() < 0.035f) rotation.add(Stower.class);
+					return;
+
 			case 8:
-			if (Random.Float() < 0.025f) rotation.add(Stower.class);
-			    return;
+					if (Random.Float() < 0.025f) rotation.add(Stower.class);
+					return;
+
 			case 9:
-				if (Random.Float() < 0.025f) rotation.add(Bat.class);
-				return;
+				if (Random.Float() < 0.025f) rotation.add(Bat.class);return;
 				
 			// Caves
 
@@ -280,7 +314,7 @@ public class Bestiary {
 			case 27:
 				if (Random.Float() < 0.05f) rotation.add(Retonio.class);
 				return;
-		}
+		}}
 	}
 	
 	//switches out regular mobs for their alt versions when appropriate

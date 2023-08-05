@@ -57,6 +57,45 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_GRID 	    = "visual_grid";
 	public static final String KEY_CAMERA_FOLLOW= "camera_follow";
 	public static final String KEY_SCREEN_SHAKE = "screen_shake";
+
+	public static final String KEY_COIN		= "coins";
+	public static final String SKIN = "skin";
+	public static final String SKIN2 = "skin2";
+	public static final String SKIN3 = "skin3";
+	public static final String SKIN4 = "skin4";
+	public static final String SKIN5 = "skin5";
+
+	public static final String DIO = "dio";
+
+	public static final String BRANDO = "brando";
+
+	public static final String JOJO = "jojo";
+
+	// 특수 재화 관련
+	public static void addSpecialcoin(int value) { put(KEY_COIN, getInt(KEY_COIN, 0) + value); }
+	public static int getSpecialcoin() { return getInt(KEY_COIN, 0); }
+
+	public static void addSkin(int value) { put(SKIN, getInt(SKIN, 0) + value); }
+	public static void addSkin2(int value) { put(SKIN2, getInt(SKIN2, 0) + value); }
+	public static void addSkin3(int value) { put(SKIN3, getInt(SKIN3, 0) + value); }
+	public static void addSkin4(int value) { put(SKIN4, getInt(SKIN4, 0) + value); }
+	public static void addSkin5(int value) { put(SKIN5, getInt(SKIN5, 0) + value); }
+	public static int getSkin() { return getInt(SKIN, 0); }
+	public static int getSkin2() { return getInt(SKIN2, 0); }
+	public static int getSkin3() { return getInt(SKIN3, 0); }
+	public static int getSkin4() { return getInt(SKIN4, 0); }
+	public static int getSkin5() { return getInt(SKIN5, 0); }
+
+	public static void addDio(int value) { put(DIO, getInt(DIO, 0) + value); }
+	public static int getDio() { return getInt(DIO, 0); }
+
+	public static void addBrando(int value) { put(BRANDO, getInt(BRANDO, 0) + value); }
+	public static int getBrando() { return getInt(BRANDO, 0); }
+
+	public static void addJojo(int value) { put(JOJO, getInt(JOJO, 0) + value); }
+	public static int getJojo() { return getInt(JOJO, 0); }
+
+
 	
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );

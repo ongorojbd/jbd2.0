@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Centurion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kirakira;
@@ -74,11 +77,17 @@ public class LabsLevel extends RegularLevel {
 	}
 
 	public void playLevelMusic(){
-		Music.INSTANCE.playTracks(
+
+		if (hero.buff(AscensionChallenge.class) != null){
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.CIV},
+					new float[]{1},
+					false);
+		}else {Music.INSTANCE.playTracks(
 				new String[]{Assets.Music.LABS_1},
 				new float[]{1},
 				false);
-	}
+	}}
 
 	@Override
 	protected ArrayList<Room> initRooms() {

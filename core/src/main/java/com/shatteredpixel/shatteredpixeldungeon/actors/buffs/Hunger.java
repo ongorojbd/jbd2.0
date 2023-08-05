@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -70,7 +72,9 @@ public class Hunger extends Buff implements Hero.Doom {
 				|| SPDSettings.intro()
 				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null
 				//this is mainly for the current test sub-level
-				|| Dungeon.level instanceof MiningLevel){
+				|| Dungeon.level instanceof MiningLevel
+				|| Dungeon.level instanceof EmporioLevel
+				|| Dungeon.level instanceof HumanVillageBossLevel){
 			spend(STEP);
 			return true;
 		}

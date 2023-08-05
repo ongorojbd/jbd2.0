@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan2;
@@ -64,11 +67,17 @@ public class CityLevel extends RegularLevel {
 
 	@Override
 	public void playLevelMusic() {
+		if (hero.buff(AscensionChallenge.class) != null){
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.CIV},
+					new float[]{1},
+					false);
+		}else{
 		Music.INSTANCE.playTracks(
 				new String[]{Assets.Music.CITY_1},
 				new float[]{1},
 				false);
-	}
+	}}
 
 	@Override
 	protected void createItems() {

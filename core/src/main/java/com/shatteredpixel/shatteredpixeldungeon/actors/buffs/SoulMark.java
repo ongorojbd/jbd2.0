@@ -36,7 +36,7 @@ public class SoulMark extends FlavourBuff {
 
 	@Override
 	public int icon() {
-		return BuffIndicator.INVERT_MARK;
+		return BuffIndicator.CORRUPT;
 	}
 
 	@Override

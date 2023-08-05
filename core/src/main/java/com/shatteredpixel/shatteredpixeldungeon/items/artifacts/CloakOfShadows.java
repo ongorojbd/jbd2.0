@@ -22,8 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -33,6 +36,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.RogueArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -95,7 +101,13 @@ public class CloakOfShadows extends Artifact {
 					hero.spend( 1f );
 					hero.busy();
 					Sample.INSTANCE.play(Assets.Sounds.MELD);
-					Sample.INSTANCE.play(Assets.Sounds.PLATINUM);
+
+					if (SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof RogueArmor) {
+						Sample.INSTANCE.play(Assets.Sounds.ZAWARUDO);
+					} else {
+						Sample.INSTANCE.play(Assets.Sounds.PLATINUM);
+					}
+
 					activeBuff = activeBuff();
 					activeBuff.attachTo(hero);
 					Talent.onArtifactUsed(Dungeon.hero);

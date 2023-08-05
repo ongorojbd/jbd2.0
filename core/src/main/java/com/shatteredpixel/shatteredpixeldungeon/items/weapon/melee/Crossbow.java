@@ -108,7 +108,7 @@ public class Crossbow extends MeleeWeapon {
 
 		beforeAbilityUsed(hero, null);
 		Buff.affect(hero, ChargedShot.class);
-		Sample.INSTANCE.play(Assets.Sounds.DORA);
+		Sword.doraclass();
 		Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 		hero.sprite.operate(hero.pos);
 		hero.next();

@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
@@ -96,6 +97,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Stower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -176,6 +178,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -196,6 +199,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -1553,6 +1558,8 @@ public class Hero extends Char {
 					});
 					ready();
 				} else {
+					SPDSettings.addSpecialcoin(Challenges.activeChallenges());
+
 					Statistics.ascended = true;
 					Badges.silentValidateHappyEnd();
 					Dungeon.win( Amulet.class );
@@ -1588,7 +1595,42 @@ public class Hero extends Char {
 				});
 				ready();
 
-			} else {
+			}
+			else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+					&& Dungeon.depth == 4 && Dungeon.hero.buff(AscensionChallenge.class) != null && Statistics.duwang <= 30){
+				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+				InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth -1));
+				InterlevelScene.returnBranch = 1;
+				InterlevelScene.returnPos = -2;
+				Game.switchScene( InterlevelScene.class );
+				Statistics.duwang = 32;
+			}
+			else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+					&& Dungeon.depth == 31 && belongings.getItem(Amulet.class) != null){
+				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+				InterlevelScene.returnDepth = Math.max(6, (Dungeon.depth -6));
+				InterlevelScene.returnBranch = 0;
+				InterlevelScene.returnPos = -2;
+				Game.switchScene( InterlevelScene.class );
+			}
+			else if (transition.type == LevelTransition.Type.BRANCH_ENTRANCE
+					&& Dungeon.level instanceof Emp2Level){
+
+				if( Statistics.duwang == 34){
+					InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+					InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth -1));
+					InterlevelScene.returnBranch = 0;
+					InterlevelScene.returnPos = -2;
+					Game.switchScene(InterlevelScene.class);
+				} else {
+					InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+					InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth + 1));
+					InterlevelScene.returnBranch = 1;
+					InterlevelScene.returnPos = -2;
+					Game.switchScene(InterlevelScene.class);
+				}
+			}
+			else {
 
 				curAction = null;
 
@@ -1688,6 +1730,10 @@ public class Hero extends Char {
 			damage *= 0f;
 		}
 
+		if (buff(CursedBlow.class) != null && hero.belongings.weapon() instanceof MeleeWeapon){
+			CursedWand.cursedEffect(null, this, enemy);
+		}
+
 		if (hero.belongings.getItem(Jojo4.class) != null && wep instanceof MissileWeapon && Dungeon.gold > 19 && !(wep instanceof SpiritBow.SpiritArrow)){
 
 
@@ -1697,11 +1743,14 @@ public class Hero extends Char {
 			new ExplosiveTrap().set(enemy.pos).activate();
 			}
 
-			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
+			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
 
+			} else if(hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
+				Dungeon.gold -= 10;
 			} else {
-			Dungeon.gold -= 20;
-		}
+				Dungeon.gold -= 20;
+			}
+
 		}
 
 		if (hero.belongings.getItem(Jojo5.class) != null && Dungeon.energy > 1 && wep instanceof MeleeWeapon) {
@@ -1711,8 +1760,10 @@ public class Hero extends Char {
 
 
 			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
+				Dungeon.energy -= 1;
+			} else if(hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null){
 
-			} else {
+			}else {
 				Dungeon.energy -= 2;
 			}
 
@@ -1727,6 +1778,10 @@ public class Hero extends Char {
 
 
 			if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
+				if (Random.Int( 4 ) == 0) {
+					Dungeon.hero.damage(1, this);
+				}
+			} else if(hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null){
 
 			} else {
 			if (Random.Int( 2 ) == 0) {
@@ -1739,7 +1794,7 @@ public class Hero extends Char {
 		//2셋 효과
 		if (hero.belongings.getItem(Jojo1.class) != null && hero.belongings.getItem(Jojo2.class) != null || hero.belongings.getItem(Jojo1.class) != null && hero.belongings.getItem(Jojo3.class) != null || hero.belongings.getItem(Jojo2.class) != null && hero.belongings.getItem(Jojo3.class) != null) {
 			if (enemy.buff(Frost.class) != null) {
-				damage *= 5f;
+				damage *= 3f;
 				hero.sprite.showStatus(HeroSprite.POSITIVE, Messages.get(Sword.class, "2"));
 				Sample.INSTANCE.play( Assets.Sounds.HAHAH);
 			}
@@ -2718,12 +2773,6 @@ public class Hero extends Char {
 				&& belongings.weapon() instanceof WarScythe){
 			return true;
 		}
-		//전투조류
-		if (effect == Burning.class
-				&& hero.belongings.getItem(Jojo2.class) != null) {
-			return true;
-		}
-
 		return super.isImmune(effect);
 	}
 

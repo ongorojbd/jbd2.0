@@ -101,7 +101,7 @@ public class Spear extends MeleeWeapon {
 						wep.onAbilityKill(hero, enemy);
 					}
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					Sample.INSTANCE.play( Assets.Sounds.DORA );
+					Sword.doraclass();
 				}
 				Invisibility.dispel();
 				hero.spendAndNext(hero.attackDelay());

@@ -32,7 +32,7 @@ public class Neoro extends Spell {
         Buff.affect(hero, Roc.class);
         GameScene.flash(0x00FFFF);
         hero.sprite.operate(hero.pos);
-        Camera.main.shake(31, 5f);
+        Camera.main.shake(15, 3f);
         GLog.p(Messages.get(this, "c"));
         Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 0.9f);
         detach( curUser.belongings.backpack );

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -45,7 +46,7 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
-		add_v1_4_4_Changes(changeInfos);
+		add_v1_4_5_Changes(changeInfos);
 		add_v1_4_3_Changes(changeInfos);
 		add_v1_4_1_Changes(changeInfos);
 	}
@@ -63,37 +64,36 @@ public class v1_X_Changes {
 			""));
 	}
 
-	public static void add_v1_4_4_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0h1", true, "");
+	public static void add_v1_4_5_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0i", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo("새로운 요소", false, null);
+		changes = new ChangeInfo("신규 시스템", false, null);
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TUSK3), "미니 던전",
-				"미니 던전 : 기둥의 남자들이 잠든 곳이 추가되었습니다!\n\n" +
-						"미니 던전은 죠니 근처의 입구를 통해 입장할 수 있으며, 추후 죠니 퀘스트 개편에 사용됩니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIOBRANDO, 0, 0, 12, 15), "신규 던전 : 디오의 성",
+				"신규 던전인 _디오의 성_이 추가되었습니다!\n\n디오의 성은 기존 던전과는 별개의 고난이도 던전으로, 디오의 성에 입장하기 위해서는 클리어 포인트를 이용해 _입장권_을 구매해야 합니다.\n\n보상으로 _스킨 교환권_을 얻을 수 있습니다."));
+		changes.addButton( new ChangeButton(BadgeBanner.image(Badges.Badge.BRANDOKILL.image), "신규 뱃지",
+				"신규 던전 : 디오의 성 관련 뱃지 2종이 추가되었습니다."));
+		changes.addButton( new ChangeButton( Icons.get(Icons.TALENT), "클리어 포인트",
+				"_클리어 포인트_는 게임을 클리어하면 획득할 수 있는 영구적으로 보존되는 재화입니다.\n\n클리어 포인트는 모든 캐릭터가 공용으로 획득하고 사용할 수 있으며, _신규 던전 : 디오의 성 입장권_을 구매하는데 사용됩니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.EMPORIO, 0, 0, 10, 14), "신규 NPC",
+				"신규 NPC인 엠포리오를 통해서 유령의 방으로 이동할 수 있습니다.\n\n엠포리오는 게임을 한번 이상 클리어했다면, 던전 1층에 스폰됩니다.\n\n엠포리오의 방에 있는 특정 npc에게 신규 접속 기념 _공짜 입장권_을 받을 수 있습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ANNASUI, 0, 0, 11, 16), "스킨",
+				"_캐릭터 스킨_이 새로 추가되었습니다!\n\n스킨은 캐릭터별로 적용할 수 있는 고유의 모습이며, 엠포리오의 방에서 디오의 성 클리어 보상인 _스킨 교환권_을 통해 안나수이에게 구입할 수 있습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI4, 0, 0, 12, 15), "히든 보스",
+				"천국의 DISC 획득 후, 일순하는 과정에서 히든 보스가 추가되었습니다.\n\n처치 시, _클리어 포인트 2_를 획득할 수 있습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ZOMBIET, 0, 0, 14, 16), "신규 적",
+				"디오의 성에서만 등장하는 고유한 적들이 대거 추가되었습니다!\n\n디오의 성에서는 디오가 만들어낸 _시생인_들이 적으로 등장합니다."));
 
 		changes = new ChangeInfo("변경", false, null);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.REBEL, 160, 0, 16, 16), "천국에 도달한 DIO",
-				"일부 패턴이 변경되었습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_SANDALS), "녹색 아기의 장비 DISC",
-				"전용 장비 DISC 이펙트가 추가되었습니다."));
-		changes.addButton(new ChangeButton( new ItemSprite(ItemSpriteSheet.EMBER, new ItemSprite.Glowing(0x00FF00)), "BGM 변경",
-				"천국에 도달한 DIO의 BGM이\n죠죠 6부 TVA 메이드 인 헤븐 BGM으로 변경되었습니다."));
+		changes.addButton( new ChangeButton( Icons.get(Icons.STAIRS), "편의성 개선",
+				"31층에서 천국의 DISC 획득 후\n계단을 올라갈 시, 25층으로 한번에 이동하도록 변경되었습니다."));
 
-
-		changes = new ChangeInfo("상향", false, null);
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 1), "죠스케 상향",
-						"보스와 조우할 때, 1턴의 폭주 버프를 얻습니다."));
 	}
 
 	public static void add_v1_4_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -127,7 +127,9 @@ public class v1_X_Changes {
 				"신규 2단계 무기 1종,\n신규 4단계 무기 1종,\n신규 5단계 무기 1종이 추가되었습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CEN), "20th 센츄리 보이",
 				"상점에서 판매하는 희귀 아이템이 추가되었습니다."));
-
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TUSK3), "미니 던전",
+				"미니 던전 : 기둥의 남자들이 잠든 곳이 추가되었습니다!\n\n" +
+						"미니 던전은 죠니 근처의 입구를 통해 입장할 수 있으며, 추후 죠니 퀘스트 개편에 사용됩니다."));
 		changes = new ChangeInfo("변경", false, null);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);

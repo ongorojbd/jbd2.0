@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -563,6 +564,7 @@ public class Rebel extends Mob {
 		GameScene.bossSlain();
 
 		super.die(cause);
+		SPDSettings.addSpecialcoin(3);
 
 		//Badges.validateBossSlain();
 
@@ -586,12 +588,6 @@ public class Rebel extends Mob {
 
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 			Badges.validateBossChallengeCompleted();
-		} else {
-			Statistics.qualifiedForBossChallengeBadge = false;
-		}
-
-		if (Dungeon.hero.buff(Roc.class) != null) {
-			Badges.validateNeoroca();
 		} else {
 			Statistics.qualifiedForBossChallengeBadge = false;
 		}

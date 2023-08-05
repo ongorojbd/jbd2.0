@@ -38,6 +38,10 @@ import com.watabou.utils.Random;
 public class Pucci4Sprite extends MobSprite {
 
     private int cellToAttack;
+    private Animation stab;
+    private Animation prep;
+    private Animation leap;
+
 
     public Pucci4Sprite() {
         super();
@@ -55,6 +59,9 @@ public class Pucci4Sprite extends MobSprite {
         attack = new Animation( 15, false );
         attack.frames( frames, 8, 9, 10, 0 );
 
+        leap = new Animation( 1, false );
+        leap.frames( frames, 10 );
+
         zap = attack.clone();
 
         die = new Animation( 20, false );
@@ -62,4 +69,17 @@ public class Pucci4Sprite extends MobSprite {
 
         play( idle );
     }
+
+
+    public void leapPrep( int cell ){
+        turnTo( ch.pos, cell );
+        play( prep );
+    }
+
+    @Override
+    public void jump(int from, int to, Callback callback) {
+        super.jump(from, to, callback);
+        play( leap );
+    }
+
 }

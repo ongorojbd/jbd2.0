@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
@@ -64,11 +67,16 @@ public class PrisonLevel extends RegularLevel {
 
 	@Override
 	public void playLevelMusic() {
-		Music.INSTANCE.playTracks(
+		if (hero.buff(AscensionChallenge.class) != null){
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.CIV},
+					new float[]{1},
+					false);
+		}else { Music.INSTANCE.playTracks(
 				new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2},
 				new float[]{1, 1, 0.5f},
 				false);
-	}
+	}}
 
 	@Override
 	protected ArrayList<Room> initRooms() {

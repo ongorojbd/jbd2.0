@@ -110,7 +110,7 @@ public class Scimitar extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		beforeAbilityUsed(hero, null);
 		Buff.prolong(hero, SwordDance.class, 4f); //4 turns as using the ability is instant
-		Sample.INSTANCE.play( Assets.Sounds.GUITAR );
+		Sword.gclass();
 		hero.sprite.operate(hero.pos);
 		hero.next();
 		afterAbilityUsed(hero);

@@ -145,7 +145,7 @@ public class Mace extends MeleeWeapon {
 				AttackIndicator.target(enemy);
 				if (hero.attack(enemy, dmgMulti, 0, Char.INFINITE_ACCURACY)) {
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					Sample.INSTANCE.play( Assets.Sounds.DORA );
+					Sword.doraclass();
 					if (enemy.isAlive()){
 						Buff.affect(enemy, Daze.class, Daze.DURATION);
 					} else {

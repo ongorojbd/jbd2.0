@@ -117,7 +117,7 @@ public class Sickle extends MeleeWeapon {
 				Buff.affect(enemy, HarvestBleedTracker.class, 0).bleedFactor = bleedFactor;
 				if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)){
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					Sample.INSTANCE.play( Assets.Sounds.DORA );
+					Sword.doraclass();
 				}
 
 				Invisibility.dispel();

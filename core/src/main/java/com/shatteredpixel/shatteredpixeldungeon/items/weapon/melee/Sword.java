@@ -25,11 +25,19 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.RogueArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -103,6 +111,45 @@ public class Sword extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		Sword.cleaveAbility(hero, target, 1.27f, this);
 	}
+
+
+
+	public static void jclass(){
+
+		if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof WarriorArmor) {
+			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+		} else {
+			Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
+		}
+	}
+
+	public static void oclass(){
+
+		if (SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof RogueArmor) {
+			Sample.INSTANCE.play(Assets.Sounds.HAHAH);
+		} else {
+			Sample.INSTANCE.play(Assets.Sounds.ORA);
+		}
+	}
+
+	public static void doraclass(){
+
+			if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof DuelistArmor) {
+				Sample.INSTANCE.play(Assets.Sounds.ORA2);
+			} else {
+				Sample.INSTANCE.play(Assets.Sounds.DORA);
+			}
+	}
+
+	public static void gclass(){
+
+		if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof DuelistArmor) {
+			Sample.INSTANCE.play(Assets.Sounds.ORA3);
+		} else {
+			Sample.INSTANCE.play(Assets.Sounds.GUITAR);
+		}
+	}
+
 
 	public static void cleaveAbility(Hero hero, Integer target, float dmgMulti, MeleeWeapon wep){
 		if (target == null) {

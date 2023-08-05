@@ -57,7 +57,7 @@ public class RandomStar extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage ) {
-        Sample.INSTANCE.play(Assets.Sounds.DORA);
+        Sword.doraclass();
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             CellEmitter.get(attacker.pos + 1).burst( Speck.factory( Speck.ROCK ), 1 );
             if (mob.pos == attacker.pos + 1){

@@ -16,7 +16,7 @@ public class WillaSprite extends MobSprite {
         idle = new MovieClip.Animation( 1, true );
         idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
-        run = new MovieClip.Animation( 20, true );
+        run = new MovieClip.Animation( 15, true );
         run.frames( frames, 2, 3, 4, 5, 6, 7 );
 
         attack = new MovieClip.Animation( 15, false );

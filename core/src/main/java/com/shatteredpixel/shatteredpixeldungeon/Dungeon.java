@@ -54,8 +54,13 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LabsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LabsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
@@ -306,14 +311,31 @@ public class Dungeon {
 		if (branch == 0) {
 			switch (depth) {
 				case 1:
+					if (SPDSettings.getDio() >= 1) {
+						level = new DioLevel();
+						break;
+					} else {
+						level = new SewerLevel();
+						break;
+					}
 				case 2:
 				case 3:
 				case 4:
-					level = new SewerLevel();
-					break;
+					if (Statistics.diocount == 1) {
+						level = new DioLevel();
+						break;
+					} else {
+						level = new SewerLevel();
+						break;
+					}
 				case 5:
+					if (Statistics.diocount == 1) {
+						level = new DiobossLevel();
+						break;
+					} else {
 					level = new SewerBossLevel();
 					break;
+			}
 				case 6:
 				case 7:
 				case 8:
@@ -374,11 +396,20 @@ public class Dungeon {
 			}
 		} else if (branch == 1) {
 			switch (depth) {
+				case 1:
+					level = new EmporioLevel();
+					break;
+				case 2:
+					level = new Emp2Level();
+					break;
 				case 11:
 				case 12:
 				case 13:
 				case 14:
 					level = new MiningLevel();
+					break;
+				case 3:
+					level = new HumanVillageBossLevel();
 					break;
 				default:
 					level = new DeadEndLevel();

@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -178,7 +179,7 @@ public class Challenge extends ArmorAbility {
 		GameScene.flash(0x80FFFFFF);
 
 		Sample.INSTANCE.play(Assets.Sounds.DESCEND);
-		Sample.INSTANCE.play( Assets.Sounds.DORA );
+		Sword.doraclass();
 
 		armor.charge -= chargeUse( hero );
 		armor.updateQuickslot();

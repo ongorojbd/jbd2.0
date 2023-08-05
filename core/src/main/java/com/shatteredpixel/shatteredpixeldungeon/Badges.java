@@ -184,12 +184,22 @@ public class Badges {
 		BOSS_CHALLENGE_6            ( 125 ),
 		YORIHIMES_WARRIOR,
 		YORIHIMES_MAGE,
+
+		YORIHIMES_DUELIST,
 		YORIHIMES_ROGUE,
 		YORIHIMES_HUNTRESS,
 		YORIHIMES_ALL_CLASSES       ( 126, true ),
-		NEOROCA                     ( 24, true ),
 		MIH                         ( 25, true ),
 		OVERHEAVEN                  ( 125, true ),
+
+		BRANDOKILL                  ( 127, true ),
+
+		BRANDOKILL_WARRIOR,
+		BRANDOKILL_MAGE,
+		BRANDOKILL_DUELIST,
+		BRANDOKILL_ROGUE,
+		BRANDOKILL_HUNTRESS,
+		BRANDOKILL_ALL_CLASSES      ( 127, true ),
 		;
 
 		public boolean meta;
@@ -742,6 +752,35 @@ public class Badges {
 		displayBadge( badge );
 	}
 
+	public static void validateBrandokill() {
+
+
+		Badge badge = Badge.BRANDOKILL;
+		local.add( badge );
+		displayBadge( badge );
+
+		badge =dioClassBadges2.get(Dungeon.hero.heroClass);
+		if (badge == null) return;
+		local.add( badge );
+		unlock(badge);
+
+		boolean allUnlocked = true;
+		for (Badge b : dioClassBadges2.values()){
+			if (!isUnlocked(b)){
+				allUnlocked = false;
+				break;
+			}
+		}
+		if (allUnlocked){
+			badge = Badge.BRANDOKILL_ALL_CLASSES;
+			if (!isUnlocked( badge )) {
+				displayBadge( badge );
+			}
+		}
+
+		displayBadge( badge );
+	}
+
 	private static LinkedHashMap<HeroClass, Badge> firstBossClassBadges = new LinkedHashMap<>();
 	static {
 		firstBossClassBadges.put(HeroClass.WARRIOR, Badge.BOSS_SLAIN_1_WARRIOR);
@@ -779,7 +818,17 @@ public class Badges {
 		dioClassBadges.put(HeroClass.WARRIOR, Badge.YORIHIMES_WARRIOR);
 		dioClassBadges.put(HeroClass.MAGE, Badge.YORIHIMES_MAGE);
 		dioClassBadges.put(HeroClass.ROGUE, Badge.YORIHIMES_ROGUE);
+		dioClassBadges.put(HeroClass.DUELIST, Badge.YORIHIMES_DUELIST);
 		dioClassBadges.put(HeroClass.HUNTRESS, Badge.YORIHIMES_HUNTRESS);
+	}
+
+	private static LinkedHashMap<HeroClass, Badge> dioClassBadges2 = new LinkedHashMap<>();
+	static {
+		dioClassBadges2.put(HeroClass.WARRIOR, Badge.BRANDOKILL_WARRIOR);
+		dioClassBadges2.put(HeroClass.MAGE, Badge.BRANDOKILL_MAGE);
+		dioClassBadges2.put(HeroClass.ROGUE, Badge.BRANDOKILL_ROGUE);
+		dioClassBadges2.put(HeroClass.DUELIST, Badge.BRANDOKILL_DUELIST);
+		dioClassBadges2.put(HeroClass.HUNTRESS, Badge.BRANDOKILL_HUNTRESS);
 	}
 
 	public static void validateBossSlain() {
@@ -1055,10 +1104,6 @@ public class Badges {
 	}
 
 
-	public static void validateNeoroca() {
-		displayBadge( Badge.NEOROCA );
-	}
-
 	public static void validateMih() {
 		displayBadge( Badge.MIH );
 	}
@@ -1173,9 +1218,9 @@ public class Badges {
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
 			{Badge.VICTORY,      Badge.YORIHIMES},
-			{Badge.CHAMPION_1,   Badge.NEOROCA},
 			{Badge.CHAMPION_1,   Badge.MIH},
 			{Badge.BOSS_CHALLENGE_6,   Badge.OVERHEAVEN},
+			{Badge.BRANDOKILL,   Badge.BRANDOKILL_ALL_CLASSES},
 	};
 
 	//If the summary badge is unlocked, don't show the component badges
@@ -1190,6 +1235,7 @@ public class Badges {
 			{Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
 			{Badge.YORIHIMES, Badge.BOSS_CHALLENGE_6 },
+			{Badge.BRANDOKILL, Badge.BRANDOKILL_ALL_CLASSES },
 			{Badge.BOSS_CHALLENGE_6, Badge.OVERHEAVEN },
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
@@ -1314,6 +1360,16 @@ public class Badges {
 			for (HeroClass cls : HeroClass.values()){
 				result += "\n";
 				if (isUnlocked(dioClassBadges.get(cls)))    result += "_" + Messages.titleCase(cls.title()) + "_";
+				else                                            result += Messages.titleCase(cls.title());
+			}
+
+			return result;
+
+		} else if (badge == Badge.BRANDOKILL_ALL_CLASSES) {
+
+			for (HeroClass cls : HeroClass.values()){
+				result += "\n";
+				if (isUnlocked(dioClassBadges2.get(cls)))    result += "_" + Messages.titleCase(cls.title()) + "_";
 				else                                            result += Messages.titleCase(cls.title());
 			}
 

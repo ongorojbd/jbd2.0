@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
@@ -38,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.EarthGuardianSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SnakeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -88,10 +91,17 @@ public class SurfaceScene extends PixelScene {
 		
 		super.create();
 
-		Music.INSTANCE.playTracks(
+		if (Statistics.diocount == 1) {
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.JONATHAN},
+					new float[]{1},
+					false);
+		} else {
+			Music.INSTANCE.playTracks(
 				new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
 				new float[]{1, 1},
 				false);
+		}
 		
 		uiCamera.visible = false;
 		
@@ -199,7 +209,11 @@ public class SurfaceScene extends PixelScene {
 				wardLevel = Math.max(wardLevel, staff.level());
 			}
 		}
-		
+
+		if (Statistics.diocount == 1) {
+			allySprite = new SpeedwagonSprite();
+		}
+
 		if (roseLevel >= 3 && roseLevel >= earthLevel && roseLevel >= wardLevel){
 			allySprite = new DvdolSprite();
 			if (dayTime) allySprite.alpha(0.4f);
@@ -209,7 +223,7 @@ public class SurfaceScene extends PixelScene {
 			allySprite = new WardSprite();
 			((WardSprite) allySprite).updateTier(Math.min(3, 3));
 		}
-		
+
 		if (allySprite != null){
 			allySprite.add(CharSprite.State.PARALYSED);
 			allySprite.scale = new PointF(2, 2);
@@ -218,7 +232,7 @@ public class SurfaceScene extends PixelScene {
 			align(allySprite);
 			window.add(allySprite);
 		}
-		
+
 		window.add( a );
 		window.add( pet );
 		

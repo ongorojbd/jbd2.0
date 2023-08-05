@@ -21,10 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Acidic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Bdth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weza;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter;
@@ -60,11 +68,17 @@ public class SewerLevel extends RegularLevel {
 	}
 
 	public void playLevelMusic(){
+		if (hero.buff(AscensionChallenge.class) != null){
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.CIV},
+					new float[]{1},
+					false);
+		}else{
 		Music.INSTANCE.playTracks(
 				new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2},
 				new float[]{1, 1, 0.5f},
 				false);
-	}
+	}}
 
 	@Override
 	protected int standardRooms(boolean forceMax) {
@@ -97,7 +111,8 @@ public class SewerLevel extends RegularLevel {
 	public String waterTex() {
 		return Assets.Environment.WATER_SEWERS;
 	}
-	
+
+
 	@Override
 	protected Class<?>[] trapClasses() {
 		return Dungeon.depth == 1 ?
@@ -123,6 +138,7 @@ public class SewerLevel extends RegularLevel {
 	@Override
 	protected void createItems() {
 		Ghost.Quest.spawn( this );
+		Bdth.spawn(this);
 		
 		super.createItems();
 	}

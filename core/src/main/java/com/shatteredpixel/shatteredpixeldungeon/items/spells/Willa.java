@@ -82,6 +82,7 @@ public class Willa extends Spell {
 
     @Override
     protected void onCast(Hero hero) {
+        Sample.INSTANCE.play( Assets.Sounds.WILLA );
 
         ArrayList<Integer> spawnPoints = new ArrayList<>();
 

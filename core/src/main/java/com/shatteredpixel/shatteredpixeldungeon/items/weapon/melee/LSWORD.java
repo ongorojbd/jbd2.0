@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HamonPartice;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -79,7 +80,7 @@ public class LSWORD extends MeleeWeapon {
         }
 
         if (defender.properties().contains(Char.Property.DEMONIC) || defender.properties().contains(Char.Property.UNDEAD)){
-            defender.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
+            defender.sprite.emitter().start( HamonPartice.UP, 0.05f, 10 );
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
             damage *= 1.3333f; //deals more damage to the demons and the undeads
         }

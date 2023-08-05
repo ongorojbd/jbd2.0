@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -357,7 +358,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 					public void call() {
 						AttackIndicator.target(enemy);
 						hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY);
-						Sample.INSTANCE.play( Assets.Sounds.DORA );
+						Sword.doraclass();
 						if (enemy.isAlive()){
 							hero.sprite.attack(enemy.pos, new Callback() {
 								@Override
@@ -409,7 +410,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 			@Override
 			public void doAbility(Hero hero, Integer target) {
 				Buff.prolong(hero, FocusBuff.class, 30f);
-				Sample.INSTANCE.play( Assets.Sounds.GUITAR );
+				Sword.gclass();
 				if (Buff.affect(hero, MonkEnergy.class).abilitiesEmpowered(hero)){
 					hero.next();
 				} else {
@@ -498,7 +499,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 				hero.busy();
 				Sample.INSTANCE.play(Assets.Sounds.MISS);
-				Sample.INSTANCE.play( Assets.Sounds.GUITAR );
+				Sword.gclass();
 				hero.sprite.emitter().start(Speck.factory(Speck.JET), 0.01f, Math.round(4 + 2*Dungeon.level.trueDistance(hero.pos, target)));
 				hero.sprite.jump(hero.pos, target, 0, 0.1f, new Callback() {
 					@Override
@@ -582,7 +583,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 							}
 						}
 						Invisibility.dispel();
-						Sample.INSTANCE.play( Assets.Sounds.DORA );
+						Sword.doraclass();
 						hero.spendAndNext(hero.attackDelay());
 						tracker.detach();
 						Buff.affect(hero, MonkEnergy.class).abilityUsed(DragonKick.this);
@@ -629,7 +630,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 				hero.sprite.operate(hero.pos);
 				GameScene.flash(0xFF66FF, false);
 				Sample.INSTANCE.play(Assets.Sounds.CHARMS);
-				Sample.INSTANCE.play( Assets.Sounds.GUITAR );
+				Sword.gclass();
 
 				for (Buff b : hero.buffs()){
 					if (b.type == Buff.buffType.NEGATIVE

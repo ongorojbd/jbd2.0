@@ -189,7 +189,7 @@ public class MISTA extends MeleeWeapon {
                     }
                 }
                 Invisibility.dispel();
-                Sample.INSTANCE.play( Assets.Sounds.DORA );
+                Sword.doraclass();
 
                 hero.spendAndNext(hero.attackDelay());
                 afterAbilityUsed(hero);

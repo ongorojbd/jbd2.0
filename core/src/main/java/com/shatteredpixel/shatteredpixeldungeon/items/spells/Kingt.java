@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -179,7 +180,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(zz, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 25:
-                Item we = new Ankh();
+                Item we = new Starflower.Seed().quantity(3);;
                 Dungeon.level.drop(we, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 26:

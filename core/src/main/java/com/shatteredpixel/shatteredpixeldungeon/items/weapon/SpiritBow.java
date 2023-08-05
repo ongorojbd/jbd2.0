@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -32,6 +35,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.HuntressArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -289,9 +295,14 @@ public class SpiritBow extends Weapon {
 	public class SpiritArrow extends MissileWeapon {
 		
 		{
-			image = ItemSpriteSheet.SPIRIT_ARROW;
+			if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof HuntressArmor) {
+				image = ItemSpriteSheet.FISHING_SPEAR;
+			} else {
+				image = ItemSpriteSheet.SPIRIT_ARROW;
+			}
 
 			hitSound = Assets.Sounds.HIT_ARROW;
+
 		}
 
 		@Override
@@ -346,10 +357,18 @@ public class SpiritBow extends Weapon {
 			Char enemy = Actor.findChar( cell );
 			if (enemy == null || enemy == curUser) {
 				parent = null;
-				Splash.at( cell, 0xCC99FFFF, 1 );
+				if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof HuntressArmor) {
+					Splash.at( cell, 0xFFCC99, 1 );
+				} else {
+					Splash.at( cell, 0xCC99FFFF, 1 );
+				}
 			} else {
 				if (!curUser.shoot( enemy, this )) {
-					Splash.at(cell, 0xCC99FFFF, 1);
+					if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof HuntressArmor) {
+						Splash.at( cell, 0xFFCC99, 1 );
+					} else {
+						Splash.at( cell, 0xCC99FFFF, 1 );
+					}
 				}
 				if (sniperSpecial && SpiritBow.this.augment != Augment.SPEED) sniperSpecial = false;
 			}
@@ -357,7 +376,14 @@ public class SpiritBow extends Weapon {
 
 		@Override
 		public void throwSound() {
-			Sample.INSTANCE.play( Assets.Sounds.ATK_SPIRITBOW, 1, Random.Float(0.87f, 1.15f) );
+
+
+			if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof HuntressArmor) {
+				Sample.INSTANCE.play( Assets.Sounds.HIT_STAB, 1, Random.Float(0.87f, 1.15f) );
+			} else {
+				Sample.INSTANCE.play( Assets.Sounds.ATK_SPIRITBOW, 1, Random.Float(0.87f, 1.15f) );
+			}
+
 		}
 
 		int flurryCount = -1;

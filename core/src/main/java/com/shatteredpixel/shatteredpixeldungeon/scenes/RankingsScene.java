@@ -223,7 +223,10 @@ public class RankingsScene extends PixelScene {
 			int odd = pos % 2;
 			
 			if (rec.win) {
-				shield.copy( new ItemSprite(ItemSpriteSheet.AMULET, null) );
+				if(rec.depth ==5 ){
+					shield.copy( new ItemSprite(ItemSpriteSheet.SMASK, null) );
+				} else shield.copy( new ItemSprite(ItemSpriteSheet.AMULET, null) );
+
 				position.hardlight( TEXT_WIN[odd] );
 				desc.hardlight( TEXT_WIN[odd] );
 				depth.hardlight( TEXT_WIN[odd] );

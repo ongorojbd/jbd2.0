@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Enemytonio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kawasiri;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -107,9 +108,17 @@ public class Shopkeeper extends NPC {
 
 		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
 
-		new DogTrap().set(pos).activate();
 
-		Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+		if (Dungeon.hero.buff(AscensionChallenge.class) == null) {
+			Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+			GameScene.flash(0x660000);
+			Enemytonio Kawasiri = new Enemytonio();
+			Kawasiri.state = Kawasiri.HUNTING;
+			Kawasiri.pos = this.pos;
+			GameScene.add(Kawasiri);
+			Kawasiri.beckon(Dungeon.hero.pos);
+		}
+
 	}
 
 	@Override
