@@ -128,6 +128,7 @@ public class LabsLevel extends RegularLevel {
 
 		SWAT.spawn(this);
 		super.createItems();
+
 	}
 
 	@Override

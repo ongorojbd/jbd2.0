@@ -170,7 +170,6 @@ public enum HeroClass {
 			new Sungrass.Seed().identify().quantity(29).collect();
 			new Icecap.Seed().identify().quantity(29).collect();
 			new Swiftthistle.Seed().identify().quantity(29).collect();
-			new Willa().identify().quantity(29).collect();
 			new Kings().identify().quantity(29).collect();
 			new Neotel().collect();
 			new Amulet().collect();

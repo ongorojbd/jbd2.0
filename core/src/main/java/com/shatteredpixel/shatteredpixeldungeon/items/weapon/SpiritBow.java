@@ -295,7 +295,7 @@ public class SpiritBow extends Weapon {
 	public class SpiritArrow extends MissileWeapon {
 		
 		{
-			if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof HuntressArmor) {
+			if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof HuntressArmor) {
 				image = ItemSpriteSheet.FISHING_SPEAR;
 			} else {
 				image = ItemSpriteSheet.SPIRIT_ARROW;
@@ -357,14 +357,14 @@ public class SpiritBow extends Weapon {
 			Char enemy = Actor.findChar( cell );
 			if (enemy == null || enemy == curUser) {
 				parent = null;
-				if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof HuntressArmor) {
+				if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof HuntressArmor) {
 					Splash.at( cell, 0xFFCC99, 1 );
 				} else {
 					Splash.at( cell, 0xCC99FFFF, 1 );
 				}
 			} else {
 				if (!curUser.shoot( enemy, this )) {
-					if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof HuntressArmor) {
+					if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof HuntressArmor) {
 						Splash.at( cell, 0xFFCC99, 1 );
 					} else {
 						Splash.at( cell, 0xCC99FFFF, 1 );
@@ -378,7 +378,7 @@ public class SpiritBow extends Weapon {
 		public void throwSound() {
 
 
-			if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof HuntressArmor) {
+			if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof HuntressArmor) {
 				Sample.INSTANCE.play( Assets.Sounds.HIT_STAB, 1, Random.Float(0.87f, 1.15f) );
 			} else {
 				Sample.INSTANCE.play( Assets.Sounds.ATK_SPIRITBOW, 1, Random.Float(0.87f, 1.15f) );

@@ -116,7 +116,7 @@ public class Sword extends MeleeWeapon {
 
 	public static void jclass(){
 
-		if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof WarriorArmor) {
+		if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof WarriorArmor) {
 			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
@@ -125,7 +125,7 @@ public class Sword extends MeleeWeapon {
 
 	public static void oclass(){
 
-		if (SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof RogueArmor) {
+		if (SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof RogueArmor) {
 			Sample.INSTANCE.play(Assets.Sounds.HAHAH);
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.ORA);
@@ -134,7 +134,7 @@ public class Sword extends MeleeWeapon {
 
 	public static void doraclass(){
 
-			if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof DuelistArmor) {
+			if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
 				Sample.INSTANCE.play(Assets.Sounds.ORA2);
 			} else {
 				Sample.INSTANCE.play(Assets.Sounds.DORA);
@@ -143,7 +143,7 @@ public class Sword extends MeleeWeapon {
 
 	public static void gclass(){
 
-		if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof DuelistArmor) {
+		if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
 			Sample.INSTANCE.play(Assets.Sounds.ORA3);
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.GUITAR);

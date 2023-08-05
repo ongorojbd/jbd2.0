@@ -102,7 +102,7 @@ public class CloakOfShadows extends Artifact {
 					hero.busy();
 					Sample.INSTANCE.play(Assets.Sounds.MELD);
 
-					if (SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof ClothArmor || hero.belongings.armor() instanceof RogueArmor) {
+					if (SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof RogueArmor) {
 						Sample.INSTANCE.play(Assets.Sounds.ZAWARUDO);
 					} else {
 						Sample.INSTANCE.play(Assets.Sounds.PLATINUM);

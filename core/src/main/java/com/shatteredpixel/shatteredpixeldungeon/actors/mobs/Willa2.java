@@ -83,8 +83,8 @@ public class Willa2 extends Mob {
 
     {
         spriteClass = WillaSprite.class;
-        HP = HT = 50;
-        viewDistance = 5;
+        HP = HT = 45;
+        viewDistance = 7;
         defenseSkill = Dungeon.depth;
         EXP = 0;
 
