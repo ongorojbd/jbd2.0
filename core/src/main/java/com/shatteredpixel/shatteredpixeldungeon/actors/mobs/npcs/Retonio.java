@@ -185,8 +185,8 @@ public class Retonio extends NPC {
                                 sprite.killAndErase();
                                 die(null);
                             } else {
-                                Sample.INSTANCE.play(Assets.Sounds.HIT);
-                                Sample.INSTANCE.play(Assets.Sounds.ALERT);
+                                Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+                                Sample.INSTANCE.play(Assets.Sounds.TONIO2);
                                 yell(Messages.get(Retonio.class, "12"));
 
                                 destroy();

@@ -24,11 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
@@ -37,11 +35,11 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EarthGuardianSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SnakeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WardSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WillaSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.watabou.gltextures.SmartTexture;
@@ -83,7 +81,7 @@ public class SurfaceScene extends PixelScene {
 	private static final int NSTARS		= 100;
 	private static final int NCLOUDS	= 5;
 
-	private Pet[] rats;
+	private Pet2[] rats;
 
 	private Camera viewport;
 	@Override
@@ -163,9 +161,9 @@ public class SurfaceScene extends PixelScene {
 		align(a);
 
 		if (Dungeon.hero.armorAbility instanceof Ratmogrify) {
-			rats = new Pet[30];
+			rats = new Pet2[30];
 			for (int i = 0; i < rats.length; i++){
-				Pet pet = new Pet();
+				Pet2 pet = new Pet2();
 				pet.rm = pet.gm = pet.bm = 1.2f;
 				pet.x = Random.Int(SKY_WIDTH)-10;
 				pet.y = SKY_HEIGHT - pet.height;
@@ -234,8 +232,11 @@ public class SurfaceScene extends PixelScene {
 		}
 
 		window.add( a );
-		window.add( pet );
-		
+
+		if (Statistics.diocount != 1) {
+			window.add( pet );
+		}
+
 		window.add( new PointerArea( sky ) {
 			protected void onClick( PointerEvent event ) {
 				pet.jump();
@@ -434,6 +435,20 @@ public class SurfaceScene extends PixelScene {
 			play( run );
 		}
 		
+		@Override
+		public void onComplete( Animation anim ) {
+			if (anim == run) {
+				idle();
+			}
+		}
+	}
+
+	private static class Pet2 extends ZombieSprite {
+
+		public void jump() {
+			play( run );
+		}
+
 		@Override
 		public void onComplete( Animation anim ) {
 			if (anim == run) {

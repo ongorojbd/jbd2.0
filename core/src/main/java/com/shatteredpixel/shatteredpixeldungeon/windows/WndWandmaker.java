@@ -106,7 +106,7 @@ public class WndWandmaker extends Window {
 		} else {
 			Dungeon.level.drop( reward, wandmaker.pos ).sprite.drop();
 		}
-		
+		Sample.INSTANCE.play(Assets.Sounds.WS1);
 		wandmaker.yell( Messages.get(this, "farewell", Messages.titleCase(Dungeon.hero.name())) );
 		wandmaker.destroy();
 		

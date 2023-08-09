@@ -280,7 +280,7 @@ public class Beast extends Mob {
             }
         }
 
-        SPDSettings.addSpecialcoin(2);
+        SPDSettings.addSpecialcoin(4);
 
         Camera.main.shake( 3, 1f );
         GLog.p(Messages.get(this, "r"));

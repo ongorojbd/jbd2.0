@@ -62,7 +62,7 @@ public class Castleintro extends Item {
     public static final String AC_LIGHT	= "LIGHT";
 
     {
-        image = ItemSpriteSheet.ALCH_PAGE;
+        image = ItemSpriteSheet.DIOCASTLE;
 
         stackable = true;
 
@@ -96,11 +96,6 @@ public class Castleintro extends Item {
     }
 
     @Override
-    public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x999999, 1f);
-    }
-
-    @Override
     public boolean isUpgradable() {
         return false;
     }
@@ -112,7 +107,7 @@ public class Castleintro extends Item {
 
     @Override
     public int value() {
-        return 30 * quantity;
+        return 10 * quantity;
     }
 
 }

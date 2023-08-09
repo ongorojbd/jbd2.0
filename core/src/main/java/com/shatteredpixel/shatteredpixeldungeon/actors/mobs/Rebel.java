@@ -564,9 +564,7 @@ public class Rebel extends Mob {
 		GameScene.bossSlain();
 
 		super.die(cause);
-		SPDSettings.addSpecialcoin(3);
-
-		//Badges.validateBossSlain();
+		SPDSettings.addSpecialcoin(6);
 
 		Dungeon.level.unseal();
 

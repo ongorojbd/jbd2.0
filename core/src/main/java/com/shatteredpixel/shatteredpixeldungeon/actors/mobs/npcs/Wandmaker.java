@@ -104,6 +104,8 @@ public class Wandmaker extends NPC {
 	
 	@Override
 	public boolean interact(Char c) {
+		Sample.INSTANCE.play(Assets.Sounds.WS3);
+
 		sprite.turnTo( pos, Dungeon.hero.pos );
 
 		if (c != Dungeon.hero){

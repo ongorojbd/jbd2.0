@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -29,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
+import com.watabou.noosa.audio.Sample;
 
 public class ImpShopkeeper extends Shopkeeper {
 
@@ -40,10 +42,10 @@ public class ImpShopkeeper extends Shopkeeper {
 
 	@Override
 	protected boolean act() {
-
 		if (!seenBefore && Dungeon.level.heroFOV[pos]) {
 			if (Dungeon.hero.buff(AscensionChallenge.class) == null) {
 				yell(Messages.get(this, "greetings", Messages.titleCase(Dungeon.hero.name())));
+				Sample.INSTANCE.play(Assets.Sounds.DARBY);
 			} else {
 				yell(Messages.get(this, "greetings_ascent", Messages.titleCase(Dungeon.hero.name())));
 			}

@@ -33,6 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cfree;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -65,9 +67,20 @@ public class Com extends NPC {
 
     private static final String SPAWNED		= "spawned";
     private static boolean spawned;
+    private boolean seenBefore = false;
 
     @Override
     protected boolean act() {
+
+        if(SPDSettings.getJojo() == 1 && !seenBefore){
+            Sample.INSTANCE.play( Assets.Sounds.SECRET, 2,  0.66f );
+            this.yell(Messages.get(this, "notice"));
+            seenBefore = true;
+        } else if(SPDSettings.getJojo() == 2 && !seenBefore){
+            Sample.INSTANCE.play( Assets.Sounds.SECRET, 2,  0.66f );
+            this.yell(Messages.get(this, "notice"));
+            seenBefore = true;
+        }
 
         return super.act();
     }
@@ -94,6 +107,30 @@ public class Com extends NPC {
 
         if (c != Dungeon.hero){
             return true;
+        }
+
+        if (SPDSettings.getJojo() == 1) {
+            Item q = new Cfree().quantity(3);
+            GLog.h(Messages.get(Jolyne.class, "3"));
+            if (q.doPickUp(Dungeon.hero)) {
+                GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", q.name())));
+            } else {
+                Dungeon.level.drop(q, Dungeon.hero.pos).sprite.drop();
+            }
+            Sample.INSTANCE.play(Assets.Sounds.BADGE);
+            SPDSettings.addJojo(2);
+        }
+
+        if (SPDSettings.getJojo() == 2) {
+            Item z = new Cfree().quantity(3);
+            GLog.h(Messages.get(Jolyne.class, "3"));
+            if (z.doPickUp(Dungeon.hero)) {
+                GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", z.name())));
+            } else {
+                Dungeon.level.drop(z, Dungeon.hero.pos).sprite.drop();
+            }
+            Sample.INSTANCE.play(Assets.Sounds.BADGE);
+            SPDSettings.addJojo(1);
         }
 
         Game.runOnRenderThread(new Callback() {

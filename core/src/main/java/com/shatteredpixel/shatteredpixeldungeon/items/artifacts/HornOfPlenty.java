@@ -124,6 +124,7 @@ public class HornOfPlenty extends Artifact {
 				hero.busy();
 				SpellSprite.show(hero, SpellSprite.FOOD);
 				Sample.INSTANCE.play(Assets.Sounds.EAT);
+				Sample.INSTANCE.play(Assets.Sounds.TONIO3);
 				GLog.i( Messages.get(this, "eat") );
 
 				if (Dungeon.hero.hasTalent(Talent.IRON_STOMACH)
@@ -232,11 +233,17 @@ public class HornOfPlenty extends Artifact {
 			if (level() == 10){
 				storedFoodEnergy = 0;
 				GLog.p( Messages.get(this, "maxlevel") );
+				Sample.INSTANCE.play(Assets.Sounds.EAT);
+				Sample.INSTANCE.play(Assets.Sounds.TONIO3);
 			} else {
 				GLog.p( Messages.get(this, "levelup") );
+				Sample.INSTANCE.play(Assets.Sounds.EAT);
+				Sample.INSTANCE.play(Assets.Sounds.TONIO3);
 			}
 		} else {
 			GLog.i( Messages.get(this, "feed") );
+			Sample.INSTANCE.play(Assets.Sounds.EAT);
+			Sample.INSTANCE.play(Assets.Sounds.TONIO3);
 		}
 	}
 	

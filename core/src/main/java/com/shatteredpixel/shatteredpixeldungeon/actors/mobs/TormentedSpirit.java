@@ -42,6 +42,19 @@ public class TormentedSpirit extends Wraith {
 		spriteClass = AtomSprite.class;
 	}
 
+	private boolean seenBefore = false;
+
+
+	@Override
+	public void notice() {
+		super.notice();
+		if(!seenBefore){
+			this.yell(Messages.get(this, "notice"));
+			Sample.INSTANCE.play(Assets.Sounds.YOSHIHIRO);
+		}
+		seenBefore = true;
+	}
+
 	//50% more damage scaling than regular wraiths
 	@Override
 	public int damageRoll() {

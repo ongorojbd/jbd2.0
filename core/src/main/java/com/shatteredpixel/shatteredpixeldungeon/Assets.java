@@ -308,9 +308,26 @@ public class Assets {
 
 		public static final String SPW1 = "sounds/spw1.mp3";
 		public static final String SPW2 = "sounds/spw2.mp3";
-		public static final String WILLA = "sounds/willa.mp3";
 
+		public static final String SPW3 = "sounds/spw3.mp3";
+		public static final String SPW4 = "sounds/spw4.mp3";
+		public static final String SPW5 = "sounds/spw5.mp3";
+		public static final String SPW6 = "sounds/spw6.mp3";
+		public static final String WILLA = "sounds/willa.mp3";
 		public static final String MIH = "sounds/mih.mp3";
+
+		public static final String ENYA = "sounds/enya1.mp3";
+		public static final String ENYA2 = "sounds/enya2.mp3";
+		public static final String DARBY = "sounds/darby.mp3";
+		public static final String JUDGE = "sounds/judge.mp3";
+		public static final String NUKESAKU = "sounds/nukesaku.mp3";
+		public static final String REIMI = "sounds/reimi.mp3";
+		public static final String TONIO2 = "sounds/tonio2.mp3";
+		public static final String TONIO3 = "sounds/tonio3.mp3";
+		public static final String YOSHIHIRO = "sounds/yoshihiro.mp3";
+		public static final String WS1 = "sounds/ws1.mp3";
+		public static final String WS2 = "sounds/ws2.mp3";
+		public static final String WS3 = "sounds/ws3.mp3";
 
 		public static final String[] all = new String[]{
 				CLICK, BADGE, GOLD,
@@ -325,7 +342,8 @@ public class Assets {
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
 				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
 				HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO ,YAREYARE, PLATINUM, ORA, DORA, ORA2, ORA3, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH,
-				RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5,DIO6, SPW1, SPW2, WILLA, MIH};
+				RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5,DIO6,
+				SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3};
 	}
 
 	public static class Splashes {
@@ -471,9 +489,6 @@ public class Assets {
 		public static final String ZOMBIED = "sprites/zombied.png";
 
 		public static final String ZOMBIEZ = "sprites/zombiez.png";
-		public static final String ZOMBIE1 = "sprites/zombie1.png";
-		public static final String ZOMBIE2 = "sprites/zombie2.png";
-
 		public static final String ZOMBIEP = "sprites/zombiep.png";
 
 		public static final String ZOMBIET = "sprites/zombiet.png";

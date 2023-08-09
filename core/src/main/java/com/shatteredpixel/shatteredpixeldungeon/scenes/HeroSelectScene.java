@@ -219,7 +219,7 @@ public class HeroSelectScene extends PixelScene {
 					return Messages.get(HeroSelectScene.class, "options");
 				}
 			};
-		} else
+		} else {
 			btnOptions = new IconButton(Icons.get(Icons.BACKPACK_LRG)) {
 				@Override
 				protected void onClick() {
@@ -243,8 +243,7 @@ public class HeroSelectScene extends PixelScene {
 					return Messages.get(HeroSelectScene.class, "options");
 				}
 			};
-
-
+		}
 
 		updateOptionsColor();
 		btnOptions.visible = false;
@@ -254,8 +253,6 @@ public class HeroSelectScene extends PixelScene {
 			SPDSettings.challenges(0);
 			SPDSettings.customSeed("");
 		}
-
-
 
 		if (DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY)){
 			add(btnOptions);

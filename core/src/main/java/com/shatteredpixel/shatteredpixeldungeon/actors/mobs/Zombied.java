@@ -77,8 +77,7 @@ public class Zombied extends Mob {
         damage = super.attackProc( enemy, damage );
 
         if (enemy.buff(CursedBlow.class) != null){
-            int duration = Random.IntRange(3, 4);
-            Buff.affect(enemy, Poison.class).set(duration);
+            Buff.affect(enemy, Poison.class).set(3f);
         }
 
         if (Random.Int( 3 ) == 0) {

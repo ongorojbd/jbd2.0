@@ -56,6 +56,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer2;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscF;
@@ -480,7 +482,7 @@ public class YogDzewa extends Mob {
 
 
 		Sample.INSTANCE.play( Assets.Sounds.ZAWARUDO );
-
+		GameScene.flash(0x666666);
 		Dungeon.level.occupyCell(fist);
 
 	}
@@ -567,10 +569,14 @@ public class YogDzewa extends Mob {
 			GLog.p(Messages.get(Kawasiri.class, "rare"));
 		}
 
+		if (Badges.isUnlocked(Badges.Badge.VICTORY) && !Dungeon.isChallenged(Challenges.EOH)) {
+			Dungeon.level.drop( new Castleintro().identify(), pos ).sprite.drop( pos );
+		}
+
 		yell( Messages.get(this, "defeated") );
 
 		Sample.INSTANCE.play( Assets.Sounds.NANI );
-		SPDSettings.addSpecialcoin(1);
+		SPDSettings.addSpecialcoin(3);
 	}
 
 	@Override

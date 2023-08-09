@@ -57,7 +57,9 @@ public class Zombiedog extends Mob {
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
 
-        CursedWand.cursedEffect(null, this, enemy);
+        if (Random.Int( 2 ) == 0) {
+            CursedWand.cursedEffect(null, this, enemy);
+        }
 
         return damage;
     }

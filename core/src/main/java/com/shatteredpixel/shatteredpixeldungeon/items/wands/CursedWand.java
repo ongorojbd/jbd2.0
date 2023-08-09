@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -263,7 +264,7 @@ public class CursedWand {
 			case 0: default:
 
 				Char ch = Actor.findChar( targetPos );
-				if (ch != null && !(ch instanceof Hero)
+				if (ch != null && !(ch instanceof Hero) && !(ch instanceof SpeedWagon)
 						&& !ch.properties().contains(Char.Property.BOSS)
 						&& !ch.properties().contains(Char.Property.MINIBOSS)){
 					Sheep sheep = new Sheep();

@@ -62,7 +62,7 @@ public class Cfree extends Item {
     public static final String AC_LIGHT	= "LIGHT";
 
     {
-        image = ItemSpriteSheet.ALCH_PAGE;
+        image = ItemSpriteSheet.DIOCASTLE;
 
         stackable = true;
 
@@ -93,11 +93,6 @@ public class Cfree extends Item {
             updateQuickslot();
             hero.spendAndNext( 1f );
         }
-    }
-
-    @Override
-    public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x999999, 1f);
     }
 
     @Override

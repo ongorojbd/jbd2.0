@@ -496,7 +496,8 @@ public class DriedRose extends Artifact {
 				} else
 					GLog.i( Messages.get(this, "levelup") );
 
-				Sample.INSTANCE.play( Assets.Sounds.GHOST );
+				Sample.INSTANCE.play( Assets.Sounds.JUDGE );
+				Sample.INSTANCE.play( Assets.Sounds.ITEM );
 				GameScene.pickUp(this, pos);
 				hero.spendAndNext(TIME_TO_PICK_UP);
 				return true;

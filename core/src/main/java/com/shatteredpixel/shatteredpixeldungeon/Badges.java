@@ -181,7 +181,6 @@ public class Badges {
 		HIGH_SCORE_5                ( 122 ),
 		CHAMPION_2                  ( 123 ),
 		CHAMPION_3                  ( 124 ),
-		BOSS_CHALLENGE_6            ( 125 ),
 		YORIHIMES_WARRIOR,
 		YORIHIMES_MAGE,
 
@@ -915,9 +914,6 @@ public class Badges {
 			case 25:
 				badge = Badge.BOSS_CHALLENGE_5;
 				break;
-			case 30:
-				badge = Badge.BOSS_CHALLENGE_6;
-				break;
 		}
 
 		if (badge != null) {
@@ -1218,8 +1214,8 @@ public class Badges {
 			{Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
 			{Badge.VICTORY,      Badge.BOSS_CHALLENGE_5},
 			{Badge.VICTORY,      Badge.YORIHIMES},
-			{Badge.CHAMPION_1,   Badge.MIH},
-			{Badge.BOSS_CHALLENGE_6,   Badge.OVERHEAVEN},
+			{Badge.VICTORY,      Badge.MIH},
+			{Badge.CHAMPION_1,   Badge.OVERHEAVEN},
 			{Badge.BRANDOKILL,   Badge.BRANDOKILL_ALL_CLASSES},
 	};
 
@@ -1234,9 +1230,7 @@ public class Badges {
 			{Badge.DEATH_FROM_FRIENDLY_MAGIC, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
-			{Badge.YORIHIMES, Badge.BOSS_CHALLENGE_6 },
 			{Badge.BRANDOKILL, Badge.BRANDOKILL_ALL_CLASSES },
-			{Badge.BOSS_CHALLENGE_6, Badge.OVERHEAVEN },
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_WANDS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},

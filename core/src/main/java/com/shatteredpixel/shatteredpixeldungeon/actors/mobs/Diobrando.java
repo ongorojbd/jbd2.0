@@ -208,21 +208,6 @@ public class Diobrando extends Mob {
             this.sprite.add(CharSprite.State.MARKED);
             this.sprite.add(CharSprite.State.BURNING);
         }
-
-
-        if (this.buff(IceBlow.class) != null) {
-            enemy.damage(enemy.HP/3, this);
-            GameScene.flash(0x33CCFF);
-            Sample.INSTANCE.play(Assets.Sounds.DIO3);
-            new ChillingTrap().set(enemy.pos).activate();
-            Buff.affect(enemy, Frost.class, Frost.DURATION);
-            yell( Messages.get(this, "armad") );
-            Buff.detach(this, IceBlow.class);
-            if (enemy == Dungeon.hero && !enemy.isAlive()) {
-                Dungeon.fail(getClass());
-                GLog.n(Messages.get(this, "d"));
-            }
-        }
     }
 
 
@@ -282,8 +267,25 @@ public class Diobrando extends Mob {
 
         damage = super.attackProc(enemy, damage);
 
-        //summonRats(Random.Int(2, 5));
+        return damage;
+    }
 
+    @Override
+    public int defenseProc( Char enemy, int damage ) {
+        damage = super.defenseProc( enemy, damage );
+        if (this.buff(IceBlow.class) != null) {
+            enemy.damage(enemy.HP/3, this);
+            GameScene.flash(0x33CCFF);
+            Sample.INSTANCE.play(Assets.Sounds.DIO3);
+            new ChillingTrap().set(enemy.pos).activate();
+            Buff.affect(enemy, Frost.class, Frost.DURATION);
+            yell( Messages.get(this, "armad") );
+            Buff.detach(this, IceBlow.class);
+            if (enemy == Dungeon.hero && !enemy.isAlive()) {
+                Dungeon.fail(getClass());
+                GLog.n(Messages.get(this, "d"));
+            }
+        }
         return damage;
     }
 
@@ -566,6 +568,7 @@ public class Diobrando extends Mob {
         Dungeon.level.drop( new Smask(), pos ).sprite.drop( pos );
 
         yell( Messages.get(this, "6") );
+        GLog.n(Messages.get(this, "t6"));
 
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
@@ -631,8 +634,11 @@ public class Diobrando extends Mob {
             }
 
             for (Char ch : affected) {
-                ch.damage(Random.NormalIntRange(11, 20), new Diobrando.Blast());
+                if(ch instanceof SpeedWagon) {
 
+                } else {
+                    ch.damage(Random.NormalIntRange(15, 20), new Diobrando.Blast());
+                }
                 if (Dungeon.level.heroFOV[pos]) {
                     ch.sprite.flash();
                     CellEmitter.center(pos).burst(PurpleParticle.BURST, Random.IntRange(1, 2));

@@ -97,7 +97,7 @@ public class NitoDismantleHammer extends Item {
 
         @Override
         public boolean itemSelectable(Item item) {
-            return item instanceof MeleeWeapon && !item.isEquipped(curUser)||  item instanceof Artifact ||
+            return item instanceof MeleeWeapon && !item.isEquipped(curUser)||  item instanceof Artifact && !item.isEquipped(curUser)||
                     item instanceof Armor && ((Armor) item).checkSeal() == null && !item.isEquipped(curUser) || item instanceof Ring && !item.isEquipped(curUser);
         }
 

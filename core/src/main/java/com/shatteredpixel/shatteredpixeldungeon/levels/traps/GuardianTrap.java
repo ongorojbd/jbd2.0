@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -31,8 +32,10 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class GuardianTrap extends Trap {
 
@@ -86,6 +89,18 @@ public class GuardianTrap extends Trap {
 		}
 
 		@Override
+		public void die( Object cause ) {
+
+			super.die( cause );
+
+			if (Dungeon.level.heroFOV[pos]) {
+				Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );
+				Sample.INSTANCE.play(Assets.Sounds.BURNING);
+			}
+
+		}
+
+		@Override
 		public void beckon(int cell) {
 			//Beckon works on these ones, unlike their superclass.
 			notice();
@@ -98,11 +113,20 @@ public class GuardianTrap extends Trap {
 
 	}
 
-	public static class GuardianSprite extends GhoulSprite {
+	public static class GuardianSprite extends ZombieSprite {
 
 		public GuardianSprite(){
 			super();
 			tint(0, 0, 1, 0.2f);
+		}
+
+		@Override
+		public void link( Char ch ) {
+			super.link( ch );
+
+			if (ch instanceof GuardianTrap.Guardian) {
+				alpha( 0.4f );
+			}
 		}
 
 		@Override

@@ -57,11 +57,8 @@ public class v1_X_Changes {
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.PICKAXE), "죠니 퀘스트 개편",
-				""));
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 영웅 : 죠린",
-			""));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TUSK3), "죠니 퀘스트 개편",
+				"2.0j 업데이트에서는 죠니 퀘스트가 압둘, 화이트 스네이크 퀘스트처럼 3가지 조건 중 무작위 하나를 수행하는 방식으로 개편됩니다."));
 	}
 
 	public static void add_v1_4_5_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -83,7 +80,7 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ANNASUI, 0, 0, 11, 16), "스킨",
 				"_캐릭터 스킨_이 새로 추가되었습니다!\n\n스킨은 캐릭터별로 적용할 수 있는 고유의 모습이며, 엠포리오의 방에서 디오의 성 클리어 보상인 _스킨 교환권_을 통해 안나수이에게 구입할 수 있습니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.PUCCI4, 0, 0, 12, 15), "히든 보스",
-				"천국의 DISC 획득 후, 일순하는 과정에서 히든 보스가 추가되었습니다.\n\n처치 시, _클리어 포인트 2_를 획득할 수 있습니다."));
+				"천국의 DISC 획득 후, 일순하는 과정에서 히든 보스가 추가되었습니다.\n\n처치 시, _클리어 포인트 4_를 획득할 수 있습니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ZOMBIET, 0, 0, 14, 16), "신규 적",
 				"디오의 성에서만 등장하는 고유한 적들이 대거 추가되었습니다!\n\n디오의 성에서는 디오가 만들어낸 _시생인_들이 적으로 등장합니다."));
 
@@ -93,7 +90,10 @@ public class v1_X_Changes {
 
 		changes.addButton( new ChangeButton( Icons.get(Icons.STAIRS), "편의성 개선",
 				"31층에서 천국의 DISC 획득 후\n계단을 올라갈 시, 25층으로 한번에 이동하도록 변경되었습니다."));
-
+		changes.addButton( new ChangeButton( Icons.get(Icons.CHALLENGE_OFF), "편의성 개선 2",
+				"특정 보스 처치 및 시련 활성화 시,\n클리어 포인트 획득량이 더 증가되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.SPEEDWAGON, 0, 0, 12, 15), "편의성 개선 3",
+				"이제 스피드왜건과 시야가 공유되며, 스피드왜건의 체력이 더 증가했습니다."));
 	}
 
 	public static void add_v1_4_3_Changes( ArrayList<ChangeInfo> changeInfos ) {

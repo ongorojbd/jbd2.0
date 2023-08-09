@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDiv
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
@@ -196,7 +197,7 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(we6, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 29:
-                Item wq = new ScrollOfPrismaticImage();
+                Item wq = new Castleintro();
                 Dungeon.level.drop(wq, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 break;
             case 30:

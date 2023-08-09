@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Lighter;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -304,12 +305,6 @@ public class Goo extends Mob {
 		GameScene.bossSlain();
 		Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
 
-//		Item pick = new NitoDismantleHammer();
-//		if (pick.doPickUp( Dungeon.hero )) {
-//
-//		} else {
-//			Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
-//		}
 		Dungeon.level.drop( new NitoDismantleHammer().identify(), pos ).sprite.drop( pos );
 
 

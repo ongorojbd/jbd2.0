@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Sh
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.Lighter;
@@ -58,7 +59,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -94,15 +97,21 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willg;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -139,6 +148,7 @@ public enum HeroClass {
 	}
 
 	public void initHero( Hero hero ) {
+		SPDSettings.quickslotWaterskin(true);
 
 		hero.heroClass = this;
 		Talent.initClassTalents(hero);
@@ -157,25 +167,7 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-		if (DeviceCompat.isDebug()){
-			new TengusMask().collect();
-			new KingsCrown().collect();
-			new Shortsword().identify().upgrade(2).collect();
-			new LeatherArmor().identify().upgrade(2).collect();
-			new PlateArmor().identify().upgrade(999).collect();
-			new PotionOfHealing().identify().quantity(29).collect();
-			new ScrollOfTeleportation().identify().quantity(29).collect();
-			new PotionOfStrength().identify().quantity(2).collect();
-			new PotionOfExperience().identify().quantity(6).collect();
-			new Sungrass.Seed().identify().quantity(29).collect();
-			new Icecap.Seed().identify().quantity(29).collect();
-			new Swiftthistle.Seed().identify().quantity(29).collect();
-			new Kings().identify().quantity(29).collect();
-			new Neotel().collect();
-			new Amulet().collect();
-			new RingOfAccuracy().identify().upgrade(9999).collect();
-			new RingOfMight().identify().upgrade(9999).collect();
-		}
+
 
 		switch (this) {
 			case WARRIOR:

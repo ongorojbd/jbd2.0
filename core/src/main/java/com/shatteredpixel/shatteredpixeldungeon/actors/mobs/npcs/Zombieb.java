@@ -141,7 +141,7 @@ public class Zombieb extends NPC {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
-                    Sample.INSTANCE.play( Assets.Sounds.BONES );
+                    Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
                     GameScene.show(new WndOptions(
                             sprite(),
                             Messages.titleCase(name()),

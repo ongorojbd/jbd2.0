@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -40,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndImp;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -96,6 +98,7 @@ public class Imp extends NPC {
 
 	@Override
 	public boolean interact(Char c) {
+		Sample.INSTANCE.play(Assets.Sounds.DARBY);
 
 		sprite.turnTo( pos, Dungeon.hero.pos );
 
@@ -141,7 +144,7 @@ public class Imp extends NPC {
 	public void flee() {
 
 		yell( Messages.get(this, "cya", Messages.titleCase(Dungeon.hero.name())) );
-
+		Sample.INSTANCE.play(Assets.Sounds.DARBY);
 		destroy();
 		sprite.die();
 	}

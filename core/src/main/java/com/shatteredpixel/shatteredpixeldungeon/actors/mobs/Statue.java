@@ -21,9 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment;
@@ -33,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -46,6 +51,8 @@ public class Statue extends Mob {
 		
 		properties.add(Property.INORGANIC);
 	}
+
+	private int hty = 0;
 	
 	protected Weapon weapon;
 
@@ -151,7 +158,14 @@ public class Statue extends Mob {
 	@Override
 	public void die( Object cause ) {
 		weapon.identify(false);
-		Dungeon.level.drop( weapon, pos ).sprite.drop();
+
+		if(spriteClass == StatueSprite.class) {
+			Sample.INSTANCE.play(Assets.Sounds.JUDGE);
+			new Flare(5, 32).color(0xFFFF00, true).show(this.sprite, 3f);
+		}
+
+		Dungeon.level.drop(weapon, pos).sprite.drop();
+
 		super.die( cause );
 	}
 	

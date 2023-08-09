@@ -58,7 +58,7 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
-public class Zombiebr extends Crab {
+public class Zombiebr extends Mob {
 
     {
         spriteClass = ZombiebrSprite.class;
@@ -112,7 +112,7 @@ public class Zombiebr extends Crab {
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
         }
 
-        switch (Random.Int(3)) {
+        switch (Random.Int(2)) {
             case 0:
                 Item qwe = Generator.random( Generator.Category.WEP_T2 );
                 Dungeon.level.drop(qwe.identify(), this.pos).sprite.drop();
@@ -120,9 +120,6 @@ public class Zombiebr extends Crab {
             case 1:
                 Item a = new LeatherArmor();
                 Dungeon.level.drop(a.identify(), this.pos).sprite.drop();
-                break;
-            case 2:
-                Dungeon.level.drop( new ChaosCatalyst(), pos ).sprite.drop( pos );
                 break;
         }
 

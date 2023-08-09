@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class RatKing extends NPC {
@@ -108,6 +110,8 @@ public class RatKing extends NPC {
 	@Override
 	public boolean interact(Char c) {
 		sprite.turnTo( pos, c.pos );
+
+		Sample.INSTANCE.play(Assets.Sounds.NUKESAKU);
 
 		if (c != Dungeon.hero){
 			return super.interact(c);

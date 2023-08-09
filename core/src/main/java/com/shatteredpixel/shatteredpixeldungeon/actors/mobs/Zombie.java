@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -53,6 +55,15 @@ public class Zombie extends Mob {
     }
 
     @Override
+    protected boolean act() {
+        if (Dungeon.level.heroFOV[pos] && Dungeon.hero.armorAbility instanceof Ratmogrify){
+            alignment = Alignment.ALLY;
+            if (state == SLEEPING) state = WANDERING;
+        }
+        return super.act();
+    }
+
+    @Override
     public int damageRoll() {
         return Random.NormalIntRange( 1, 4 );
     }
@@ -61,9 +72,8 @@ public class Zombie extends Mob {
     public int attackProc( Char enemy, int damage ) {
         damage = super.attackProc( enemy, damage );
         if (Random.Int( 3 ) == 0) {
-            Buff.affect(enemy, CursedBlow.class, 3f);
+            if(enemy instanceof Hero || enemy instanceof SpeedWagon || enemy instanceof Willa2) Buff.affect(enemy, CursedBlow.class, 3f);
         }
-
         return damage;
     }
 

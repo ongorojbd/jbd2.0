@@ -24,12 +24,15 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cfree;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -77,6 +80,18 @@ public class Pian extends NPC {
     public boolean interact(Char c) {
 
         this.sprite.emitter().start(Speck.factory( Speck.BUBBLE ), 0.2f, 3 );
+
+        if (SPDSettings.getJojo() == 3) {
+            Item z = new Cfree().quantity(3);
+            GLog.h(Messages.get(Jolyne.class, "3"));
+            if (z.doPickUp(Dungeon.hero)) {
+                GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", z.name())));
+            } else {
+                Dungeon.level.drop(z, Dungeon.hero.pos).sprite.drop();
+            }
+            Sample.INSTANCE.play(Assets.Sounds.BADGE);
+            SPDSettings.addJojo(2);
+        }
 
         return true;
     }

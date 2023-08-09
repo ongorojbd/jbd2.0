@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
@@ -53,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -79,8 +81,6 @@ public class Diego extends Mob {
         EXP = 0;
         maxLvl = -9;
         HUNTING = new Diego.Hunting();
-
-        baseSpeed = 1.5f;
 
         immunities.add( Paralysis.class );
         immunities.add( Vertigo.class );
@@ -113,19 +113,25 @@ public class Diego extends Mob {
             dmg = 50;
         }
 
+        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+            if (mob instanceof Willcmob  ||  mob instanceof Willgmob) {
+                mob.destroy();
+                mob.sprite.killAndErase();
+                Dungeon.level.mobs.remove(mob);
+            }
+        }
+
         super.damage(dmg, src);
     }
 
     @Override
     public int attackProc(Char enemy, int damage) {
 
-
-
         if (charge >= 4) {
             SpellSprite.show( this, SpellSprite.FOOD );
             Sample.INSTANCE.play(Assets.Sounds.EAT);
 
-            Dungeon.hero.damage(hero.HT/3, this);
+            enemy.damage(enemy.HP/2, this);
 
             CellEmitter.get(pos).burst(BloodParticle.BURST, 30);
             GLog.n(Messages.get(Diego.class, "5"));
@@ -144,6 +150,9 @@ public class Diego extends Mob {
         damage = super.attackProc(enemy, damage);
 
         if (Random.Int(3) == 0) {
+
+            Invisibility.dispel(this);
+
             sprite.showStatus(CharSprite.WARNING, Messages.get(Diego.class, "t"));
             Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 1f, 3.3f);
             Ballistica trajectory = new Ballistica(this.pos, enemy.pos, Ballistica.STOP_TARGET);

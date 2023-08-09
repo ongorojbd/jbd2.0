@@ -39,8 +39,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DogTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -181,6 +183,13 @@ public class Shopkeeper extends NPC {
 
 	@Override
 	public boolean interact(Char c) {
+
+		if(spriteClass == ShopkeeperSprite.class) {
+			Sample.INSTANCE.play(Assets.Sounds.REIMI);
+		} else if(spriteClass == ImpSprite.class) {
+			Sample.INSTANCE.play(Assets.Sounds.DARBY);
+		}
+
 		if (c != Dungeon.hero) {
 			return true;
 		}

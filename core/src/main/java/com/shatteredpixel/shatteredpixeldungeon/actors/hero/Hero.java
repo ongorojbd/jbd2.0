@@ -96,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Stower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -150,6 +151,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMi
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
@@ -1298,6 +1300,17 @@ public class Hero extends Char {
 									}
 								}
 
+								if (Random.Int( 35 ) == 0) {
+									Item asd = new Diomap();
+									Sample.INSTANCE.play(Assets.Sounds.MASTERY);
+									Sample.INSTANCE.play(Assets.Sounds.DIO5);
+									if (asd.doPickUp( Dungeon.hero )) {
+										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", asd.name()) ));
+									} else {
+										Dungeon.level.drop(asd, Dungeon.hero.pos ).sprite.drop();
+									}
+								}
+
 								if (Random.Int( 25 ) == 0) {
 									elemental5.state = elemental5.HUNTING;
 									GameScene.add( elemental5 );
@@ -1312,7 +1325,7 @@ public class Hero extends Char {
 								if (Random.Int( 7 ) == 0) {
 									Item cl = new ClothArmor();
 									if (cl.doPickUp( Dungeon.hero )) {
-										GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", cl.name()) ));
+										GLog.w( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", cl.name()) ));
 									} else {
 										Dungeon.level.drop(cl, Dungeon.hero.pos ).sprite.drop();
 									}
@@ -1558,7 +1571,7 @@ public class Hero extends Char {
 					});
 					ready();
 				} else {
-					SPDSettings.addSpecialcoin(Challenges.activeChallenges());
+					SPDSettings.addSpecialcoin(Challenges.activeChallenges() * 2);
 
 					Statistics.ascended = true;
 					Badges.silentValidateHappyEnd();
@@ -1802,7 +1815,7 @@ public class Hero extends Char {
 
 		//3셋 효과
 		if (hero.belongings.getItem(Jojo1.class) != null && hero.belongings.getItem(Jojo2.class) != null && hero.belongings.getItem(Jojo3.class) != null && wep instanceof MeleeWeapon) {
-
+			if (Random.Int( 4 ) == 0) {
 			Ballistica beam = new Ballistica(hero.pos, enemy.pos, Ballistica.WONT_STOP);
 			int maxDistance = Math.min(5, beam.dist);
 			int cell = beam.path.get(Math.min(beam.dist, maxDistance));
@@ -1853,7 +1866,7 @@ public class Hero extends Char {
 				ch.sprite.flash();
 			}
 
-		}
+		}}
 
 		switch (subClass) {
 			case SNIPER:
@@ -2586,6 +2599,10 @@ public class Hero extends Char {
 		for (Char c : Actor.chars()){
 			if (c instanceof DriedRose.GhostHero){
 				((DriedRose.GhostHero) c).sayHeroKilled();
+			}
+
+			if (c instanceof SpeedWagon){
+				((SpeedWagon) c).sayHeroKilled();
 			}
 		}
 

@@ -49,7 +49,7 @@ public class WillgSprite extends MobSprite {
         idle = new Animation( 1, true );
         idle.frames( frames, 21, 21, 21, 22, 21, 21, 21, 22 );
 
-        run = new Animation( 20, true );
+        run = new Animation( 15, true );
         run.frames( frames, 23, 24, 25, 26, 27, 28 );
 
         attack = new Animation( 15, false );

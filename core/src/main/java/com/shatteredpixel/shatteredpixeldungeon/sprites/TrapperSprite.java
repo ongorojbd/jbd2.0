@@ -41,7 +41,7 @@ public class TrapperSprite extends MobSprite {
         idle = new Animation( 1, true );
         idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
-        run = new Animation( 20, true );
+        run = new Animation( 15, true );
         run.frames( frames, 2, 3, 4, 5, 6, 7 );
 
         attack = new Animation( 15, false );

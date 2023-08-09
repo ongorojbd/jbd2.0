@@ -66,6 +66,7 @@ public class Sickle extends MeleeWeapon {
 
 		if (defender.isAlive() && defender.HP < defender.HT * 0.2f && defender != Dungeon.hero && Dungeon.hero.belongings.weapon instanceof Sickle && !defender.properties().contains(Char.Property.BOSS) && !defender.properties().contains(Char.Property.MINIBOSS)) {
 			hero.sprite.showStatus(HeroSprite.NEUTRAL, Messages.get(Sickle.class, "skill"));
+			Sample.INSTANCE.play(Assets.Sounds.TONIO2);
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 			SpellSprite.show(defender, SpellSprite.FOOD);
 			damage = Math.round(defender.HP + 20);

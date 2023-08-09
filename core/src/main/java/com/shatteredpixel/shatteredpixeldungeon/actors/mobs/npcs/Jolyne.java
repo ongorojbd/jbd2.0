@@ -36,6 +36,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Val;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Willamob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cfree;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
@@ -125,17 +127,18 @@ public class Jolyne extends NPC {
 
         }
 
-        if(SPDSettings.getJojo() == 0){
-        Cfree pick = new Cfree();
-        if (pick.doPickUp( Dungeon.hero )) {
-            GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
-        } else {
-            Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
-        }
+        if (SPDSettings.getJojo() == 0) {
 
-        GLog.p(Messages.get(Jolyne.class, "3"));
+            Item pick = new Cfree().quantity(3);
+            GLog.h(Messages.get(Jolyne.class, "3"));
+            if (pick.doPickUp(Dungeon.hero)) {
+                GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name())));
+            } else {
+                Dungeon.level.drop(pick, Dungeon.hero.pos).sprite.drop();
+            }
+            Sample.INSTANCE.play(Assets.Sounds.BADGE);
 
-        SPDSettings.addJojo(1);
+            SPDSettings.addJojo(1);
         }
 
 

@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
@@ -42,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LarvaSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -103,7 +105,7 @@ public class Ratmogrify extends ArmorAbility {
 				while (ratsToSpawn > 0 && spawnPoints.size() > 0) {
 					int index = Random.index( spawnPoints );
 
-					Rat rat = new Rat();
+					Zombie rat = new Zombie();
 					rat.alignment = Char.Alignment.ALLY;
 					rat.state = rat.HUNTING;
 					Buff.affect(rat, AscensionChallenge.AscensionBuffBlocker.class);
@@ -159,6 +161,7 @@ public class Ratmogrify extends ArmorAbility {
 			TargetHealthIndicator.instance.target(null);
 			CellEmitter.get(rat.pos).burst(Speck.factory(Speck.WOOL), 4);
 			Sample.INSTANCE.play(Assets.Sounds.PUFF);
+			Sample.INSTANCE.play(Assets.Sounds.HAHAH);
 
 			Dungeon.level.occupyCell(rat);
 		}
@@ -184,7 +187,7 @@ public class Ratmogrify extends ArmorAbility {
 
 		{
 
-			spriteClass = LarvaSprite.class;
+			spriteClass = ZombieSprite.class;
 
 			//always false, as we derive stats from what we are transmogging from (which was already added)
 			firstAdded = false;
@@ -192,6 +195,18 @@ public class Ratmogrify extends ArmorAbility {
 
 		private Mob original;
 		private boolean allied;
+
+		@Override
+		public void die( Object cause ) {
+
+			super.die( cause );
+
+			if (Dungeon.level.heroFOV[pos]) {
+				Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );
+				Sample.INSTANCE.play(Assets.Sounds.BURNING);
+			}
+
+		}
 
 		public void setup(Mob original) {
 			this.original = original;

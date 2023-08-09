@@ -136,6 +136,7 @@ public class Willa2 extends Mob {
 
     @Override
     public void die( Object cause ) {
+        Sample.INSTANCE.play(Assets.Sounds.SPW6);
         this.yell(Messages.get(Willa2.class, "d"));
         GLog.n(Messages.get(Willa2.class, "h"));
         super.die( cause );

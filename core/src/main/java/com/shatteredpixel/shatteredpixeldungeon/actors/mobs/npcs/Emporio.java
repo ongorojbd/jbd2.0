@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cfree;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -139,11 +140,13 @@ public class Emporio extends NPC {
                             if (SPDSettings.getSpecialcoin() >= 3) {
                                 SPDSettings.addSpecialcoin(-3);
                                 Item pick = new Castleintro();
-                                if (pick.doPickUp( Dungeon.hero )) {
-                                    GLog.p(Messages.get(Weather.class, "p"));
+                                GLog.p(Messages.get(Weather.class, "p"));
+                                if (pick.doPickUp(Dungeon.hero)) {
+                                    GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name())));
                                 } else {
-                                    Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+                                    Dungeon.level.drop(pick, Dungeon.hero.pos).sprite.drop();
                                 }
+                                Sample.INSTANCE.play(Assets.Sounds.BADGE);
                             } else {
                                 GLog.p(Messages.get(Weather.class, "q"));
                             }

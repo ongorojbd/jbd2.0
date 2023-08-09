@@ -113,7 +113,7 @@ public class UnstableSpellbook extends Artifact {
 		if (hero.buff(MagicImmune.class) != null) return;
 
 		if (action.equals( AC_READ )) {
-
+			Sample.INSTANCE.play(Assets.Sounds.WS2);
 			if (hero.buff( Blindness.class ) != null) GLog.w( Messages.get(this, "blinded") );
 			else if (!isEquipped( hero ))             GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (charge <= 0)                     GLog.i( Messages.get(this, "no_charge") );
@@ -163,7 +163,7 @@ public class UnstableSpellbook extends Artifact {
 							}
 							updateQuickslot();
 						}
-						
+
 						@Override
 						public void onBackPressed() {
 							//do nothing
@@ -342,6 +342,7 @@ public class UnstableSpellbook extends Artifact {
 						hero.busy();
 						hero.spend( 2f );
 						Sample.INSTANCE.play(Assets.Sounds.BURNING);
+						Sample.INSTANCE.play(Assets.Sounds.WS1);
 						hero.sprite.emitter().burst( ElmoParticle.FACTORY, 12 );
 
 						scrolls.remove(i);

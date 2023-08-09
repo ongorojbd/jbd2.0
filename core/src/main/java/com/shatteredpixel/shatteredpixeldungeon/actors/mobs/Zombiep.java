@@ -103,7 +103,7 @@ public abstract class Zombiep extends Mob {
                 Char ch = Actor.findChar(i);
 
                 if (ch != null && ch.isAlive()) {
-                    Buff.affect(ch, Vitam.class, 5f);
+                    Buff.affect(ch, Vitam.class, 4f);
                 }
             }
             Camera.main.shake(3, 0.7f);

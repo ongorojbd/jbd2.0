@@ -450,6 +450,8 @@ public class GameScene extends PixelScene {
 			case DESCEND:
 			case FALL:
 				if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0){
+					Dungeon.challenges = 0;
+					SPDSettings.challenges(0);
 					Statistics.duwang2 = 1;
 					Sample.INSTANCE.play(Assets.Sounds.SPW1);
 					add(new WndStory(Messages.get(this, "dio_title") + "\n\n" + Messages.get(this, "dio_window")).setDelays(0.4f, 0.4f));

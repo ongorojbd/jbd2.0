@@ -209,7 +209,7 @@ public class DwarfKing extends Mob {
 				if (summonsMade < 6){
 					if (summonsMade == 0) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
-						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+						Sample.INSTANCE.play(Assets.Sounds.ENYA2);
 						yell(Messages.get(this, "wave_1"));
 					}
 					summonSubject(3, DKGhoul.class);
@@ -260,7 +260,7 @@ public class DwarfKing extends Mob {
 				if (summonsMade < 4) {
 					if (summonsMade == 0) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
-						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+						Sample.INSTANCE.play(Assets.Sounds.ENYA2);
 						yell(Messages.get(this, "wave_1"));
 					}
 					summonSubject(3, DKGhoul.class);
@@ -440,25 +440,26 @@ public class DwarfKing extends Mob {
 			switch(Dungeon.hero.heroClass){
 				case WARRIOR:
 					this.yell(Messages.get(this, "notice"));
-					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
+					Sample.INSTANCE.play( Assets.Sounds.ENYA);
 					break;
 				case ROGUE:
 					this.yell(Messages.get(this, "notice2"));
-					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
+					Sample.INSTANCE.play( Assets.Sounds.ENYA);
 					break;
 				case MAGE:
 					GLog.p(Messages.get(Val.class, "4"));
 					this.yell(Messages.get(this, "notice3"));
-					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
+					Sample.INSTANCE.play( Assets.Sounds.ENYA);
 					break;
 				case HUNTRESS:
 					this.yell(Messages.get(this, "notice4"));
-					Sample.INSTANCE.play( Assets.Sounds.CHALLENGE);
+					Sample.INSTANCE.play( Assets.Sounds.ENYA);
 					break;
 				case DUELIST:
 					this.yell(Messages.get(this, "notice5"));
 					GLog.p(Messages.get(Val.class, "9"));
 					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
+					Sample.INSTANCE.play( Assets.Sounds.ENYA);
 					GameScene.flash(0xFF0000);
 					Camera.main.shake(9, 0.5f);
 					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
@@ -543,7 +544,7 @@ public class DwarfKing extends Mob {
 			summonsMade = 1; //monk/warlock on 3rd summon
 			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
 			Sample.INSTANCE.play( Assets.Sounds.BLAST );
-			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+			Sample.INSTANCE.play( Assets.Sounds.ENYA2 );
 			Camera.main.shake(9, 0.5f);
 			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
 		} else if (phase == 3 && preHP > 20 && HP < 20){

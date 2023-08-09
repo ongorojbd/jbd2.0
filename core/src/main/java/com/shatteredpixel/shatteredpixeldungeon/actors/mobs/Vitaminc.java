@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vitam;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
@@ -110,7 +111,8 @@ public class Vitaminc extends Mob {
 
     private void zap() {
         spend(TIME_TO_ZAP);
-
+        Invisibility.dispel(this);
+        Char enemy = this.enemy;
         if (hit(this, enemy, true)) {
             //TODO would be nice for this to work on ghost/statues too
             if (enemy == Dungeon.hero && Random.Int(2) == 0) {
@@ -120,6 +122,10 @@ public class Vitaminc extends Mob {
 
             int dmg = Random.NormalIntRange(5, 10);
             enemy.damage(dmg, new DarkBolt());
+
+            if (enemy == Dungeon.hero && !enemy.isAlive()) {
+                Dungeon.fail(getClass());
+            }
 
         } else {
             enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());

@@ -79,6 +79,7 @@ public class Ram2 extends Item {
 
     @Override
     public void execute(Hero hero, String action) {
+        Sample.INSTANCE.play(Assets.Sounds.JUDGE);
         super.execute( hero, action );
         ArrayList<Integer> spawnPoints = new ArrayList<>();
         if (action.equals( AC_LIGHT )) {
