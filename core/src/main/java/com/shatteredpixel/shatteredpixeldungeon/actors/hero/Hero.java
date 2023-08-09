@@ -1301,7 +1301,7 @@ public class Hero extends Char {
 									}
 								}
 
-								if (Random.Int( 35 ) == 0) {
+								if (Random.Int( 45 ) == 0) {
 									Item asd = new Castleintro();
 									Sample.INSTANCE.play(Assets.Sounds.MASTERY);
 									Sample.INSTANCE.play(Assets.Sounds.DIO5);
