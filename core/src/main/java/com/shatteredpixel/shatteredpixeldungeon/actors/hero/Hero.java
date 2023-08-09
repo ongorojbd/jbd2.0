@@ -150,6 +150,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
@@ -1301,7 +1302,7 @@ public class Hero extends Char {
 								}
 
 								if (Random.Int( 35 ) == 0) {
-									Item asd = new Diomap();
+									Item asd = new Castleintro();
 									Sample.INSTANCE.play(Assets.Sounds.MASTERY);
 									Sample.INSTANCE.play(Assets.Sounds.DIO5);
 									if (asd.doPickUp( Dungeon.hero )) {
