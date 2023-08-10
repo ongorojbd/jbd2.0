@@ -220,6 +220,10 @@ public class HeroSelectScene extends PixelScene {
 				}
 			};
 		} else {
+
+			Dungeon.challenges = 0;
+			SPDSettings.challenges(0);
+			SPDSettings.customSeed("");
 			btnOptions = new IconButton(Icons.get(Icons.BACKPACK_LRG)) {
 				@Override
 				protected void onClick() {

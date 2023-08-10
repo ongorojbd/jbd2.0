@@ -105,6 +105,7 @@ public class Kawasiri extends Mob {
         immunities.add(Terror.class );
         immunities.add(Blindness.class );
         immunities.add(Sleep.class );
+        immunities.add(Doom.class );
 
     }
     int damageTaken = 0;

@@ -75,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
@@ -120,6 +121,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -167,7 +169,18 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-
+		if(DeviceCompat.isDebug()){
+			new Amulet().collect();
+			new RingOfMight().identify().upgrade(999).collect();
+			new RingOfAccuracy().identify().upgrade(999).collect();
+			new Castleintro().quantity(33).collect();
+			new Neotel().quantity(33).collect();
+			new PotionOfExperience().identify().quantity(33).collect();
+			new PotionOfHealing().identify().quantity(100).collect();
+			new Spear().identify().upgrade(3).collect();
+			new PlateArmor().identify().upgrade(333).collect();
+			new PotionOfStrength().identify().quantity(33).collect();
+		}
 
 		switch (this) {
 			case WARRIOR:

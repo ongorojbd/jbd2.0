@@ -63,12 +63,22 @@ public class Annasui extends NPC {
         properties.add(Property.IMMOVABLE);
     }
 
+    private boolean seenBefore = false;
+
     @Override
     protected boolean act() {
         if (Dungeon.hero.buff(AscensionChallenge.class) != null){
             die(null);
             return true;
         }
+
+        if (SPDSettings.getSkin() == 0 || SPDSettings.getSkin2() == 0 || SPDSettings.getSkin3() == 0 || SPDSettings.getSkin4() == 0 || SPDSettings.getSkin5() == 0 ) {
+            if(SPDSettings.getBrando() >= 3 && !seenBefore){
+            Sample.INSTANCE.play(Assets.Sounds.ANNA);
+            this.yell(Messages.get(this, "notice"));
+            seenBefore = true;
+        }}
+
         return super.act();
     }
 

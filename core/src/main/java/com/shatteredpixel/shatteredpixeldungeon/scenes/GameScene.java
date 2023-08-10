@@ -450,9 +450,11 @@ public class GameScene extends PixelScene {
 			case DESCEND:
 			case FALL:
 				if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0){
+
 					Dungeon.challenges = 0;
 					SPDSettings.challenges(0);
-					Statistics.duwang2 = 1;
+					SPDSettings.customSeed("");
+
 					Sample.INSTANCE.play(Assets.Sounds.SPW1);
 					add(new WndStory(Messages.get(this, "dio_title") + "\n\n" + Messages.get(this, "dio_window")).setDelays(0.4f, 0.4f));
 					GLog.n(Messages.get(SpeedWagon.class, "hi"));
@@ -466,6 +468,7 @@ public class GameScene extends PixelScene {
 				} else if(Dungeon.level instanceof DioLevel && Dungeon.depth < 5 && Dungeon.depth > 1){
 					GLog.n(Messages.get(SpeedWagon.class, "floor" + Random.IntRange(1, 6)));
 				} else if(Dungeon.level instanceof DiobossLevel && Dungeon.depth == 5){
+					Sample.INSTANCE.play(Assets.Sounds.SPW3);
 					GLog.n(Messages.get(SpeedWagon.class, "floor20"));
 				}
 				if (Dungeon.depth == Statistics.deepestFloor){

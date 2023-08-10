@@ -75,12 +75,11 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class Stower extends Mob {
-    private boolean threatened = false;
 
     {
         spriteClass = StowerSprite.class;
 
-        HP = HT = 10;
+        HP = HT = 5;
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.INORGANIC);
@@ -103,90 +102,12 @@ public class Stower extends Mob {
         immunities.addAll(AntiMagic.RESISTS);
 
         state = PASSIVE;
-        threatened = false;
     }
 
-    private int targetNeighbor = Random.Int(8);
 
     @Override
     public void beckon (int cell) {
         //do nothing
-    }
-
-    @Override
-    protected boolean act() {
-        alerted = false;
-        super.act();
-
-        if (!threatened){
-            return true;
-        }
-
-        ArrayList<Integer> shockCells = new ArrayList<>();
-
-        shockCells.add(pos + PathFinder.CIRCLE8[targetNeighbor]);
-
-        {
-            shockCells.add(pos + PathFinder.CIRCLE8[(targetNeighbor+3)%8]);
-            shockCells.add(pos + PathFinder.CIRCLE8[(targetNeighbor+5)%8]);
-        }
-
-        sprite.flash();
-
-        boolean visible = Dungeon.level.heroFOV[pos];
-        for (int cell : shockCells){
-            if (Dungeon.level.heroFOV[cell]){
-                visible = true;
-            }
-        }
-
-        if (visible) {
-            for (int cell : shockCells){
-                CellEmitter.get(cell).burst(ElmoParticle.FACTORY, 9);
-                CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 4);
-                Sample.INSTANCE.play( Assets.Sounds.HIT_CRUSH, 1.5f, 0.67f );
-
-            }
-
-        }
-
-        for (int cell : shockCells) {
-            shockChar(Actor.findChar(cell));
-        }
-
-        targetNeighbor = (targetNeighbor+1)%8;
-
-        return true;
-    }
-
-    private void shockChar( Char ch ){
-        if (ch != null && !(ch instanceof DM300)){
-            ch.sprite.flash();
-            ch.damage(Random.NormalIntRange(5, 10), new Electricity());
-        }
-
-        if (enemy == Dungeon.hero && !enemy.isAlive()) {
-            Dungeon.fail(getClass());
-        }
-    }
-
-    @Override
-    public boolean interact(Char c) {
-        return true;
-    }
-
-    private static final String TARGET_NEIGHBOUR = "target_neighbour";
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(TARGET_NEIGHBOUR, targetNeighbor);
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        targetNeighbor = bundle.getInt(TARGET_NEIGHBOUR);
     }
 
 
@@ -198,7 +119,6 @@ public class Stower extends Mob {
     @Override
     public void damage(int dmg, Object src) {
     {
-            threatened = true;
 
         if (dmg >= 1){
             //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
@@ -219,6 +139,19 @@ public class Stower extends Mob {
     protected boolean getFurther(int target) {
         return true;
     }
+
+
+    @Override
+    public int defenseProc(Char enemy, int damage) {
+        Sample.INSTANCE.play(Assets.Sounds.HIT_CRUSH);
+        enemy.damage(damage / 2, target);
+        GLog.w(Messages.get(this, "reflect"));
+        if (enemy == Dungeon.hero && !enemy.isAlive()) {
+            Dungeon.fail(getClass());
+        }
+        return super.defenseProc(enemy, damage);
+    }
+
 
     @Override
     public void die(Object cause) {

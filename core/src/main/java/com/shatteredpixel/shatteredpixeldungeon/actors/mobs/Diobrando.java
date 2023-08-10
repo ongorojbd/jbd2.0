@@ -66,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
@@ -193,7 +194,7 @@ public class Diobrando extends Mob {
             Sample.INSTANCE.play(Assets.Sounds.DIO6);
             Sample.INSTANCE.play( Assets.Sounds.BLAST );
             Camera.main.shake(12, 0.5f);
-            summonRats(Random.Int(2, 5));
+            summonRats(2);
             yell(Messages.get(this, "t"));
             zcooldown = 26;
         }
@@ -230,7 +231,7 @@ public class Diobrando extends Mob {
             yell( Messages.get(this, "zomb") );
             CellEmitter.get( this.pos ).burst( MagicMissile.MagicParticle.FACTORY, 12 );
             Sample.INSTANCE.play(Assets.Sounds.DIO6);
-            summonRats(Random.Int(2, 5));
+            summonRats(Random.Int(2, 3));
             new Flare( 5, 32 ).color( 0xFF0000, true ).show( this.sprite, 2f );
             zcooldown = 30;
 
@@ -251,7 +252,7 @@ public class Diobrando extends Mob {
     public int attackProc(Char enemy, int damage) {
 
         if (this.buff(IceBlow.class) != null) {
-            enemy.damage(enemy.HP/3, this);
+
             GameScene.flash(0x33CCFF);
             Sample.INSTANCE.play(Assets.Sounds.DIO3);
             new ChillingTrap().set(enemy.pos).activate();
@@ -274,7 +275,14 @@ public class Diobrando extends Mob {
     public int defenseProc( Char enemy, int damage ) {
         damage = super.defenseProc( enemy, damage );
         if (this.buff(IceBlow.class) != null) {
-            enemy.damage(enemy.HP/3, this);
+
+            if(enemy == hero) {
+                for (int i : PathFinder.NEIGHBOURS8){
+                    int cell = enemy.pos+i;
+                    ScrollOfTeleportation.appear(this, cell);
+                }
+                enemy.damage(Random.NormalIntRange(15, 20), this);
+            }
             GameScene.flash(0x33CCFF);
             Sample.INSTANCE.play(Assets.Sounds.DIO3);
             new ChillingTrap().set(enemy.pos).activate();
@@ -570,11 +578,8 @@ public class Diobrando extends Mob {
         yell( Messages.get(this, "6") );
         GLog.n(Messages.get(this, "t6"));
 
-        if (Dungeon.level.heroFOV[pos]) {
-            Sample.INSTANCE.play(Assets.Sounds.BURNING);
-        }
-
         Sample.INSTANCE.play(Assets.Sounds.NANI);
+        Sample.INSTANCE.play(Assets.Sounds.SPW5);
 
         GameScene.bossSlain();
 
@@ -590,8 +595,10 @@ public class Diobrando extends Mob {
 
     @Override
     public int damageRoll() {
+        int ice = 1;
+        if (this.buff(IceBlow.class) != null) ice = 3;
         return enemy == Dungeon.hero || enemy instanceof Willa2 ?
-                Random.NormalIntRange( 2, 12 ) :
+                Random.NormalIntRange( 2 * ice, 12 * ice) :
                 Random.NormalIntRange( 2, 5 );
     }
 
@@ -637,7 +644,7 @@ public class Diobrando extends Mob {
                 if(ch instanceof SpeedWagon) {
 
                 } else {
-                    ch.damage(Random.NormalIntRange(15, 20), new Diobrando.Blast());
+                    ch.damage(Random.NormalIntRange(20, 25), new Diobrando.Blast());
                 }
                 if (Dungeon.level.heroFOV[pos]) {
                     ch.sprite.flash();
@@ -710,8 +717,8 @@ public class Diobrando extends Mob {
 
             ArrayList<Integer> respawnPoints = new ArrayList<>();
 
-            for (int i = 0; i < PathFinder.NEIGHBOURS3.length; i++) {
-                int p = this.pos + PathFinder.NEIGHBOURS3[i];
+            for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                int p = this.pos + PathFinder.NEIGHBOURS8[i];
                 if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
                     respawnPoints.add(p);
                 }
