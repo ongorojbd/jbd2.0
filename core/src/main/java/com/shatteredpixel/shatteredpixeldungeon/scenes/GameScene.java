@@ -437,15 +437,6 @@ public class GameScene extends PixelScene {
 					add(new WndStory(Messages.get(this, "green") + "\n\n" + Messages.get(this, "green2")).setDelays(0.4f, 0.4f));
 					Dungeon.level.seal();
 				}
-				if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0){
-					Statistics.duwang2 = 1;
-					add(new WndStory(Messages.get(this, "dio_title") + "\n\n" + Messages.get(this, "dio_window")).setDelays(0.4f, 0.4f));
-					SpeedWagon jojo = new SpeedWagon();
-					jojo.state = jojo.WANDERING;
-					jojo.pos = Dungeon.hero.pos;
-					GameScene.add( jojo );
-					jojo.beckon(Dungeon.hero.pos);
-				}
 				break;
 			case DESCEND:
 			case FALL:

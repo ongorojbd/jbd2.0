@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscD;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -57,11 +58,8 @@ public class ThirdBomb extends Bomb {
             return;
 
         }
-        InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-        InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1 - (Dungeon.depth-2)%5));
-        InterlevelScene.returnBranch = 0;
-        InterlevelScene.returnPos = -1;
-        Game.switchScene( InterlevelScene.class );
+
+        new Fadeleaf().activate(hero);
 
         GLog.n(Messages.get(ThirdBomb.class, "return"));
 
