@@ -569,7 +569,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 							Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 						}
 
-						if (enemy.isAlive() && oldPos == enemy.pos){
+						if (oldPos == enemy.pos){
 							//trace a ballistica to our target (which will also extend past them
 							Ballistica trajectory = new Ballistica(hero.pos, enemy.pos, Ballistica.STOP_TARGET);
 							//trim it to just be the part that goes past them
@@ -577,7 +577,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 							//knock them back along that ballistica
 							WandOfBlastWave.throwChar(enemy, trajectory, 6, true, false, hero);
 
-							if (trajectory.dist > 0) {
+							if (trajectory.dist > 0 && enemy.isActive()) {
 								Buff.affect(enemy, Paralysis.class, Math.min( 6, trajectory.dist));
 							}
 						}
@@ -599,7 +599,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 									//knock them back along that ballistica
 									WandOfBlastWave.throwChar(ch, trajectory, 6, true, false, hero);
 
-									if (trajectory.dist > 0) {
+									if (trajectory.dist > 0 && enemy.isActive()) {
 										Buff.affect(ch, Paralysis.class, Math.min( 6, trajectory.dist));
 									}
 								}
@@ -666,6 +666,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 				}, hero.cooldown()-1);
 
 				hero.next();
+				hero.busy();
 				Buff.affect(hero, MonkEnergy.class).abilityUsed(this);
 			}
 
