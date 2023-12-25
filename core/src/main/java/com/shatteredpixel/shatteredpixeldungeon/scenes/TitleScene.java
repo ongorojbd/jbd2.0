@@ -252,6 +252,7 @@ public class TitleScene extends PixelScene {
 						update.versionName == null ? Messages.get(this,"title") : Messages.get(this,"versioned_title", update.versionName),
 						update.desc == null ? Messages.get(this,"desc") : update.desc,
 						Messages.get(this,"update"),
+						Messages.get(this,"playstore"),
 						Messages.get(this,"changes")
 				) {
 					@Override
@@ -259,7 +260,9 @@ public class TitleScene extends PixelScene {
 						if (index == 0) {
 							Updates.launchUpdate(Updates.updateData());
 						} else if (index == 1){
-							ChangesScene.changesSelected = 0;
+							String linkUrl = "https://play.google.com/store/apps/details?id=com.shatteredpixel.shatteredpixeldungeon7";
+							ShatteredPixelDungeon.platform.openURI( linkUrl );
+						} else if (index == 2){
 							ShatteredPixelDungeon.switchNoFade( ChangesScene.class );
 						}
 					}

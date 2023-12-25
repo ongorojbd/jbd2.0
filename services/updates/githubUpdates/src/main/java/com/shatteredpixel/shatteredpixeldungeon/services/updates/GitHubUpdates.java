@@ -56,7 +56,7 @@ public class GitHubUpdates extends UpdateService {
 		}
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-		httpGet.setUrl("https://youtu.be/ub3EI4xw48c?list=RDD62nT3X0k2Y");
+		httpGet.setUrl("https://api.github.com/repos/ongorojbd/jbd2.0/releases");
 		httpGet.setHeader("Accept", "application/vnd.github.v3+json");
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {

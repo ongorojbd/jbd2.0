@@ -173,6 +173,7 @@ public class Diobrando2 extends Mob {
 
         if (volcanocooldown <= 0) {
             if (Burstpos == -1) {
+                GLog.w(Messages.get(this, "i"));
                 // 위치 미지정시, 이번 턴에는 폭발을 일으킬 지점을 정합니다.
 
                 Burstpos = hero.pos;
@@ -215,7 +216,7 @@ public class Diobrando2 extends Mob {
                             CellEmitter.center(cell).burst(BlastParticle.FACTORY, 15);
                             CellEmitter.center(cell).burst(SmokeParticle.FACTORY, 4);
                             GameScene.add( Blob.seed( cell, 50, Fire.class ) );
-                            CellEmitter.get( cell ).burst( FlameParticle.FACTORY, 15 );
+//                            CellEmitter.get( cell ).burst( FlameParticle.FACTORY, 15 );
                         }
                         if (ch != null&& !(ch instanceof Diobrando2)) {
                             if ((ch.alignment != alignment || ch instanceof Zombie || ch instanceof Zombiedog)) {
@@ -227,6 +228,7 @@ public class Diobrando2 extends Mob {
                             }
                         }}}
 
+                Camera.main.shake(9, 0.5f);
                 Sample.INSTANCE.play( Assets.Sounds.BLAST );
                 Burstpos = -1;
                 volcanotime=0;
@@ -351,7 +353,6 @@ public class Diobrando2 extends Mob {
 
         if (volcanocooldown == 1)  {
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
-            GLog.w(Messages.get(this, "i"));
             hero.interrupt();
         }
 

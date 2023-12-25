@@ -52,7 +52,7 @@ public class v1_X_Changes {
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 16, 12, 15), "신규 캐릭터",
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 캐릭터",
 				"6번째 플레이어블 캐릭터로 쿠죠 죠린이 추가될 예정입니다."));
 	}
 
@@ -66,8 +66,10 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "죠니 퀘스트 & 보상 개편",
 				"12~14층에서 수행할 수 있는 죠니의 퀘스트가 대폭 개편되었습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.CRYSTAL_GUARDIAN, 0, 0, 12, 15), "퀘스트 전용 서브 던전",
+		changes.addButton( new ChangeButton( Icons.get(Icons.ENTER), "퀘스트 전용 서브 던전",
 				"죠니 퀘스트 전용 서브 던전 3종이 추가되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIOBRANDO2, 0, 0, 13, 16), "디오의 성 신규 히든보스",
+				"디오의 성에서 만날 수 있는 히든보스가 추가되었습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.REMAINS), "신규 아이템",
 				"캐릭터가 사망한 후, 상자에서 획득할 수 있는 캐릭터의 고유 아이템 5종이 추가되었습니다."));
 
@@ -110,10 +112,6 @@ public class v1_X_Changes {
 
 		changes.addButton( new ChangeButton( Icons.get(Icons.STAIRS), "편의성 개선",
 				"31층에서 천국의 DISC 획득 후\n계단을 올라갈 시, 25층으로 한번에 이동하도록 변경되었습니다."));
-		changes.addButton( new ChangeButton( Icons.get(Icons.CHALLENGE_OFF), "편의성 개선 2",
-				"특정 보스 처치 및 시련 활성화 시,\n클리어 포인트 획득량이 더 증가되었습니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.SPEEDWAGON, 0, 0, 12, 15), "편의성 개선 3",
-				"이제 스피드왜건과 시야가 공유되며, 스피드왜건의 체력이 더 증가했습니다."));
 	}
 
 	public static void add_v1_4_3_Changes( ArrayList<ChangeInfo> changeInfos ) {
