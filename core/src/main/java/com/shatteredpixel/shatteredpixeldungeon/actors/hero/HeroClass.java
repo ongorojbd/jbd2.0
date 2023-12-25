@@ -115,6 +115,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
@@ -183,7 +184,7 @@ public enum HeroClass {
 			new PotionOfExperience().identify().quantity(33).collect();
 			new Bomb().identify().quantity(33).collect();
 			new PotionOfHealing().identify().quantity(100).collect();
-			new Sbr9().identify().collect();
+			new HandAxe().identify().collect();
 			new PortableCover().identify().collect();
 			new PlateArmor().identify().upgrade(333).collect();
 			new Shortsword().identify().upgrade(3).collect();

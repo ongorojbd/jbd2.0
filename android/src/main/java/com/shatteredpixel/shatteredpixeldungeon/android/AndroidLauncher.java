@@ -48,11 +48,11 @@ import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
 public class AndroidLauncher extends AndroidApplication {
-	
+
 	public static AndroidApplication instance;
-	
+
 	private static AndroidPlatformSupport support;
-	
+
 	@SuppressLint("SetTextI18n")
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -103,14 +103,14 @@ public class AndroidLauncher extends AndroidApplication {
 		} else {
 			instance = this;
 		}
-		
+
 		//set desired orientation (if it exists) before initializing the app.
 		if (SPDSettings.landscape() != null) {
 			instance.setRequestedOrientation( SPDSettings.landscape() ?
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT );
 		}
-		
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.depth = 0;
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
@@ -119,19 +119,19 @@ public class AndroidLauncher extends AndroidApplication {
 			config.g = 6;
 			config.b = 5;
 		}
-		
+
 		config.useCompass = false;
 		config.useAccelerometer = false;
-		
+
 		if (support == null) support = new AndroidPlatformSupport();
 		else                 support.reloadGenerators();
-		
+
 		support.updateSystemUI();
 
 		Button.longClick = ViewConfiguration.getLongPressTimeout()/1000f;
-		
+
 		initialize(new ShatteredPixelDungeon(support), config);
-		
+
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onWindowFocusChanged(hasFocus);
 		support.updateSystemUI();
 	}
-	
+
 	@Override
 	public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
 		super.onMultiWindowModeChanged(isInMultiWindowMode);

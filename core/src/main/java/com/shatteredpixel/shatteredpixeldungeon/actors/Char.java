@@ -434,14 +434,12 @@ public abstract class Char extends Actor {
 					effectiveDamage *= 1.33f;
 				}
 
-				effectiveDamage = attackProc(enemy, effectiveDamage);
+				effectiveDamage = attackProc( enemy, effectiveDamage );
 			}
 
 			if ( enemy.buff( D4C.class ) != null){
 				effectiveDamage *= 0.85f;
 			}
-
-			effectiveDamage = attackProc( enemy, effectiveDamage );
 
 			if (visibleFight) {
 				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
