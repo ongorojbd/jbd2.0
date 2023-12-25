@@ -91,7 +91,7 @@ public class WarScythe extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		Sickle.harvestAbility(hero, target, 0.8f, this);
+		Sickle.harvestAbility(hero, target, 0.9f, this);
 	}
 
 }

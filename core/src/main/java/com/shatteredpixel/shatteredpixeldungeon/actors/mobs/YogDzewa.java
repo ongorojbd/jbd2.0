@@ -219,7 +219,13 @@ public class YogDzewa extends Mob {
 			summonCooldown = -15; //summon a burst of minions!
 			phase = 5;
 			BossHealthBar.bleed(true);
-			Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
+
+			Game.runOnRenderThread(new Callback() {
+						@Override
+						public void call() {
+							Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
+						}
+					});
 		}
 
 		if (phase == 0){
@@ -359,7 +365,7 @@ public class YogDzewa extends Mob {
 				if (spawnPos != -1) {
 					summon.pos = spawnPos;
 					GameScene.add( summon );
-					Actor.addDelayed( new Pushing( summon, pos, summon.pos ), -1 );
+					Actor.add( new Pushing( summon, pos, summon.pos ) );
 					summon.beckon(Dungeon.hero.pos);
 					Dungeon.level.occupyCell(summon);
 
@@ -478,11 +484,12 @@ public class YogDzewa extends Mob {
 		}
 
 		GameScene.add(fist, 4);
-		Actor.addDelayed( new Pushing( fist, Dungeon.level.exit(), fist.pos ), -1 );
 
+		Actor.add( new Pushing( fist, Dungeon.level.exit(), fist.pos ) );
 
 		Sample.INSTANCE.play( Assets.Sounds.ZAWARUDO );
 		GameScene.flash(0x666666);
+
 		Dungeon.level.occupyCell(fist);
 
 	}
@@ -560,6 +567,7 @@ public class YogDzewa extends Mob {
 
 		Dungeon.level.unseal();
 		super.die( cause );
+		Music.INSTANCE.end();
 
 		if (Random.Int( 10 ) == 0) {
 			GameScene.flash(0xFFFF00);

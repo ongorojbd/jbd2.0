@@ -62,6 +62,8 @@ public class MudaSprite extends MobSprite {
         die = new Animation( 10, false );
         die.frames( frames, 0, 2, 3, 4);
 
+        scale.set(0.75f);
+
         play( idle );
     }
 }

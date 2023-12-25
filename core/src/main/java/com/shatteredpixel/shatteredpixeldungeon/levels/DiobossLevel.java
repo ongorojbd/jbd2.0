@@ -115,7 +115,6 @@ public class DiobossLevel extends Level {
     private static final short P = Terrain.CHASM;
     private static final short S = Terrain.PEDESTAL;
 
-    private static final short s = Terrain.SIGN;
 
     private static short[] level = {
             P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P,

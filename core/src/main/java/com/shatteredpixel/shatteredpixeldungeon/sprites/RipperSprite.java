@@ -62,6 +62,8 @@ public class RipperSprite extends MobSprite {
 		die = new Animation( 15, false );
 		die.frames( frames, 1, 13, 14, 15, 16 );
 
+		scale.set(0.9f);
+
 		play( idle );
 	}
 

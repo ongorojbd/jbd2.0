@@ -92,9 +92,8 @@ public class ItemSpriteSheet {
 	public static final int TENGU_BOMB      = UNCOLLECTIBLE+8;
 	public static final int TENGU_SHOCKER   = UNCOLLECTIBLE+9;
 
-	public static final int SHOTGUN      = UNCOLLECTIBLE+10;
-	public static final int STURO        = UNCOLLECTIBLE+11;
-	public static final int OVERH        = UNCOLLECTIBLE+12;
+	public static final int SHOTGUN      = UNCOLLECTIBLE+11;
+	public static final int STURO        = UNCOLLECTIBLE+12;
 	static{
 		assignItemRect(GOLD,        15, 13);
 		assignItemRect(ENERGY,      16, 16);
@@ -109,8 +108,6 @@ public class ItemSpriteSheet {
 
 		assignItemRect(SHOTGUN,      16, 8);
 		assignItemRect(STURO,        16, 11);
-		assignItemRect(OVERH,        14, 14);
-
 	}
 
 	private static final int CONTAINERS     =                               xy(1, 3);   //16 slots
@@ -215,7 +212,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SHRAPNEL_BOMB,   12, 12);
 	}
 
-	
+
 	                                                                                    //16 free slots
 
 	private static final int WEP_TIER1      =                               xy(1, 7);   //8 slots
@@ -227,6 +224,7 @@ public class ItemSpriteSheet {
 	public static final int MAGES_STAFF     = WEP_TIER1+5;
 	static{
 		assignItemRect(WORN_SHORTSWORD, 16, 16);
+		assignItemRect(CUDGEL, 			16, 16);
 		assignItemRect(GLOVES,          12, 16);
 		assignItemRect(RAPIER,          13, 14);
 		assignItemRect(DAGGER,          10, 13);
@@ -739,13 +737,15 @@ public class ItemSpriteSheet {
 	public static final int CARPACCIO   = FOOD+4;
 	public static final int RATION      = FOOD+5;
 	public static final int PASTY       = FOOD+6;
-	public static final int PUMPKIN_PIE = FOOD+7;
-	public static final int CANDY_CANE  = FOOD+8;
-	public static final int MEAT_PIE    = FOOD+9;
-	public static final int BLANDFRUIT  = FOOD+10;
-	public static final int BLAND_CHUNKS= FOOD+11;
-	public static final int BERRY =       FOOD+12;
-	public static final int PHANTOM_MEAT= FOOD+13;
+	public static final int MEAT_PIE    = FOOD+7;
+	public static final int BLANDFRUIT  = FOOD+8;
+	public static final int BLAND_CHUNKS= FOOD+9;
+	public static final int BERRY =       FOOD+10;
+	public static final int PHANTOM_MEAT= FOOD+11;
+
+	public static final int PUMPKIN_PIE= FOOD+12;
+
+	public static final int CANDY_CANE= FOOD+13;
 	static{
 		assignItemRect(MEAT,        13, 13);
 		assignItemRect(STEAK,       13, 13);
@@ -763,7 +763,7 @@ public class ItemSpriteSheet {
 		assignItemRect(PHANTOM_MEAT,12, 16);
 	}
 
-	private static final int QUEST  =                                       xy(1, 29);  //32 slots
+	private static final int QUEST  =                                       xy(1, 30);  //32 slots
 	public static final int SKULL   = QUEST+0;
 	public static final int DUST    = QUEST+1;
 	public static final int CANDLE  = QUEST+2;
@@ -779,7 +779,7 @@ public class ItemSpriteSheet {
 		assignItemRect(CANDLE,  10, 12);
 		assignItemRect(EMBER,   10, 10);
 		assignItemRect(PICKAXE, 10, 13);
-		assignItemRect(ORE,     10, 10);
+		assignItemRect(ORE,     14, 14);
 		assignItemRect(TOKEN,   10, 10);
 		assignItemRect(BLOB,    8,  8);
 		assignItemRect(SHARD,   8,  9);

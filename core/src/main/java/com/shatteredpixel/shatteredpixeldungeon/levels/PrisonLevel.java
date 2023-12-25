@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
@@ -49,10 +51,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -64,6 +68,11 @@ public class PrisonLevel extends RegularLevel {
 		color1 = 0x6a723d;
 		color2 = 0x88924c;
 	}
+
+	public static final String[] PRISON_TRACK_LIST
+			= new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2,
+			Assets.Music.PRISON_1, Assets.Music.PRISON_1, Assets.Music.PRISON_2};
+	public static final float[] PRISON_TRACK_CHANCES = new float[]{1f, 1f, 0.5f, 0.25f, 1f, 0.5f};
 
 	@Override
 	public void playLevelMusic() {
@@ -82,7 +91,13 @@ public class PrisonLevel extends RegularLevel {
 	protected ArrayList<Room> initRooms() {
 		return Wandmaker.Quest.spawnRoom(super.initRooms());
 	}
-	
+
+	@Override
+	protected void createMobs() {
+		Wandmaker.Quest.spawnWandmaker(this, roomEntrance);
+		super.createMobs();
+	}
+
 	@Override
 	protected int standardRooms(boolean forceMax) {
 		if (forceMax) return 6;
@@ -136,6 +151,38 @@ public class PrisonLevel extends RegularLevel {
 				4, 4, 4, 4, 4,
 				2, 2, 2,
 				1, 1, 1, 1, 1, 1 };
+	}
+
+	@Override
+	public void occupyCell(Char ch) {
+		super.occupyCell(ch);
+		if (ch == Dungeon.hero) {
+			updateWandmakerQuestMusic();
+		}
+	}
+
+	private Boolean wandmakerQuestWasActive = null;
+
+	public void updateWandmakerQuestMusic(){
+		if (wandmakerQuestWasActive == null) {
+			wandmakerQuestWasActive = Wandmaker.Quest.active();
+			return;
+		}
+		if (Wandmaker.Quest.active() != wandmakerQuestWasActive) {
+			wandmakerQuestWasActive = Wandmaker.Quest.active();
+
+			Game.runOnRenderThread(new Callback() {
+
+						@Override
+						public void call() {
+							if (Dungeon.level != null) {
+								Dungeon.level.playLevelMusic();
+							}
+						}
+
+
+			});
+		}
 	}
 
 	@Override

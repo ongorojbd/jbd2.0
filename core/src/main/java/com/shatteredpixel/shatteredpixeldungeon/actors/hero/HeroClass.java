@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Lighter;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer2;
+import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -101,6 +102,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr9;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
@@ -110,6 +112,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
@@ -133,6 +136,8 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.DeviceCompat;
+
+import javax.sound.sampled.Port;
 
 public enum HeroClass {
 
@@ -176,9 +181,12 @@ public enum HeroClass {
 			new Castleintro().quantity(33).collect();
 			new Neotel().quantity(33).collect();
 			new PotionOfExperience().identify().quantity(33).collect();
+			new Bomb().identify().quantity(33).collect();
 			new PotionOfHealing().identify().quantity(100).collect();
-			new Spear().identify().upgrade(3).collect();
+			new Sbr9().identify().collect();
+			new PortableCover().identify().collect();
 			new PlateArmor().identify().upgrade(333).collect();
+			new Shortsword().identify().upgrade(3).collect();
 			new PotionOfStrength().identify().quantity(33).collect();
 		}
 

@@ -485,7 +485,7 @@ public enum Rankings {
 
 		public String desc(){
 			if (win){
-				if(depth == 5){
+				if(depth == 5 || depth == 6){
 					return Messages.get(this, "diok");
 				}
 				else if (ascending){

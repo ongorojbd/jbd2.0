@@ -725,6 +725,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				motion = null;
 				ch.onMotionComplete();
 
+				GameScene.sortMobSprites();
 				notifyAll();
 			}
 

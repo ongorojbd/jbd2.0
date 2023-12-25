@@ -223,7 +223,7 @@ public class RankingsScene extends PixelScene {
 			int odd = pos % 2;
 			
 			if (rec.win) {
-				if(rec.depth ==5 ){
+				if(rec.depth ==5 || rec.depth ==6){
 					shield.copy( new ItemSprite(ItemSpriteSheet.SMASK, null) );
 				} else shield.copy( new ItemSprite(ItemSpriteSheet.AMULET, null) );
 

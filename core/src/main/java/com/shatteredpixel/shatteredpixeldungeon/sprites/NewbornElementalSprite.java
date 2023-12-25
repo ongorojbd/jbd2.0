@@ -26,15 +26,23 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.particles.Emitter;
 
-public class NewbornElementalSprite extends MobSprite{
+public abstract class NewbornElementalSprite extends MobSprite{
+
+	protected int boltType;
+
+	protected abstract int texOffset();
+
+	private Emitter particles;
+	protected abstract Emitter createEmitter();
 
 	public NewbornElementalSprite() {
 		super();
 
 		texture( Assets.Sprites.ELEMENTAL );
 
-		int ofs = 21;
+		int ofs = 14;
 
 		TextureFilm frames = new TextureFilm( texture, 12, 14 );
 
@@ -47,6 +55,8 @@ public class NewbornElementalSprite extends MobSprite{
 		attack = new MovieClip.Animation( 15, false );
 		attack.frames( frames, ofs+4, ofs+5, ofs+6 );
 
+		zap = attack.clone();
+
 		die = new MovieClip.Animation( 15, false );
 		die.frames( frames, ofs+7, ofs+8, ofs+9, ofs+10, ofs+11, ofs+12, ofs+13, ofs+12 );
 
@@ -56,9 +66,11 @@ public class NewbornElementalSprite extends MobSprite{
 	@Override
 	public void link( Char ch ) {
 		super.link( ch );
-		add( CharSprite.State.BURNING );
-	}
 
+		if (particles == null) {
+			particles = createEmitter();
+		}
+	}
 	@Override
 	public void die() {
 		super.die();

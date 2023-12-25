@@ -24,17 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -46,9 +41,9 @@ public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
 		add_Coming_Soon(changeInfos);
+		add_v1_4_6_Changes(changeInfos);
 		add_v1_4_5_Changes(changeInfos);
 		add_v1_4_3_Changes(changeInfos);
-		add_v1_4_1_Changes(changeInfos);
 	}
 
 	public static void add_Coming_Soon( ArrayList<ChangeInfo> changeInfos ) {
@@ -57,8 +52,33 @@ public class v1_X_Changes {
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TUSK3), "죠니 퀘스트 개편",
-				"2.0j 업데이트에서는 죠니 퀘스트가 압둘, 화이트 스네이크 퀘스트처럼 3가지 조건 중 무작위 하나를 수행하는 방식으로 개편됩니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 16, 12, 15), "신규 캐릭터",
+				"6번째 플레이어블 캐릭터로 쿠죠 죠린이 추가될 예정입니다."));
+	}
+
+	public static void add_v1_4_6_Changes( ArrayList<ChangeInfo> changeInfos ) {
+		ChangeInfo changes = new ChangeInfo("2.0j", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		changes = new ChangeInfo("새로운 요소", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
+		changeInfos.add(changes);
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "죠니 퀘스트 & 보상 개편",
+				"12~14층에서 수행할 수 있는 죠니의 퀘스트가 대폭 개편되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.CRYSTAL_GUARDIAN, 0, 0, 12, 15), "퀘스트 전용 서브 던전",
+				"죠니 퀘스트 전용 서브 던전 3종이 추가되었습니다."));
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.REMAINS), "신규 아이템",
+				"캐릭터가 사망한 후, 상자에서 획득할 수 있는 캐릭터의 고유 아이템 5종이 추가되었습니다."));
+
+		changes = new ChangeInfo("변경", false, null);
+		changes.hardlight(CharSprite.WARNING);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "텍스트 UI 개선",
+				"이제 전투 시 물리 공격 / 스탠드 공격, 화염 / 중독 피해 등을 직관적으로 나타내는 아이콘이 추가됩니다."));
+		changes.addButton(new ChangeButton( new TalentIcon(Talent.LIQUID_WILLPOWER), "특성 리워크",
+				"자주 사용되지 않는 특성들이 리워크 및 상향되었습니다."));
 	}
 
 	public static void add_v1_4_5_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -66,7 +86,7 @@ public class v1_X_Changes {
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo("신규 시스템", false, null);
+		changes = new ChangeInfo("새로운 요소", false, null);
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIOBRANDO, 0, 0, 12, 15), "신규 던전 : 디오의 성",
@@ -187,62 +207,4 @@ public class v1_X_Changes {
 				"이제 상점에서 1/2 확률로 마법의 램프 대신 SPW 재단의 보급품을 대신 판매합니다."));
 	}
 
-	public static void add_v1_4_1_Changes( ArrayList<ChangeInfo> changeInfos ) {
-		ChangeInfo changes = new ChangeInfo("2.0g", true, "");
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes = new ChangeInfo("신규 캐릭터", false, null);
-		changes.hardlight(CharSprite.POSITIVE);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "죠스케",
-				"4부의 주인공 히가시카타 죠스케가 플레이어블 캐릭터로 추가되었습니다!"));
-		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.MONK_ENERGY, true), "보조 직업 UI 개선",
-				"다음 보조 직업들의 시각적 인터페이스가 개선되었습니다 :\n\n용기의 파문전사 각성의 파문전사\n파괴의 스탠드사 속도의 스탠드사\n분노의 스탠드사 수복의 스탠드사\n의식 폭주의 스탠드사"));
-
-		changes = new ChangeInfo("4부 적", false, null);
-		changes.hardlight(CharSprite.WARNING);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BCOM, 0, 0, 15, 15), "배드 컴퍼니",
-				"6층에 신규 적인 배드 컴퍼니가 등장합니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.BOYTWO, 0, 0, 13, 18), "보이 투 맨",
-				"무작위 계층에 희귀한 확률로 보이 투 맨이 출몰합니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.STOWER, 0, 0, 17, 22), "슈퍼 플라이",
-				"무작위 계층에 희귀한 확률로 슈퍼 플라이가 출몰합니다."));
-
-		changes = new ChangeInfo("4부 NPC", false, null);
-		changes.hardlight(Window.TITLE_COLOR);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.YUKAKO, 0, 0, 12, 15), "야마기시 유카코",
-				"특정 계층에 일정 확률로 유카코 npc가 등장합니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RETONIO, 0, 0, 12, 15), "토니오 트루사르디",
-				"특정 계층에 일정 확률로 토니오 npc가 등장합니다."));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.ROHAN, 0, 0, 12, 14), "키시베 로한",
-				"특정 계층에 일정 확률로 로한 npc가 등장합니다."));
-
-		changes = new ChangeInfo("밸런스 조정", false, null);
-		changes.hardlight(CharSprite.NEGATIVE);
-		changeInfos.add(changes);
-
-		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "아이템 조정",
-				"다양한 무기들이 리워크되었습니다.\n\n" +
-						"반발의 상형문자가 원거리 적을 튕겨내지 않습니다.\n\n" +
-						"이제 충전의 석가면이 레퀴엠 브로치의 능력도 충전합니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SPOH), "26~30층 변경점",
-				"30층 상자에 스타 플라티나 오버 헤븐의 DISC가 추가되었습니다.\n\n" +
-						"26~29층에 천국에 도달한 DIO를 지원하는 적이 추가되었습니다.\n\n"+
-						"죠나단, 죠셉의 패턴이 변경되었습니다.\n\n" +
-						"천국에 도달한 DIO의 패턴이 추가/변경되었습니다."));
-		changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 6), "죠스케 상향",
-				"_-_ _무기 충전 속도_가 12.5% 상승합니다.\n\n_-_ _다이아몬드는 부서지지 않는다_ 특성의 추가 데미지가 2에서 3으로 상승합니다.\n_-_ _원상복귀_ 특성의 재사용 대기시간이 30턴에서 20턴으로 감소합니다.\n_-_ _황금의 정신_ 특성의 에너지 증가량이 25/50/100/150%에서 33/67/100/150로 증가합니다.\n"+
-						"_-_ _개체 변형_ 특성의 필요 에너지 조건이 100/85/70%에서 100/80/60%로 감소합니다.\n\n_-_ _크레이지 D 능력 발현 - 악퉁 베이비_ :\n은신 지속 시간 6/5/4턴에서 8/6/4턴으로 증가.\n_-_ _크레이지 D 능력 발현 - '헌팅'하러 가자!_ :\n+15/10%에서 +40/30%로 피해량 증가.\n_-_ _크레이지 D 능력 발현 - 가드 브레이커_ :\n+50/45/40/35%에서 +65/60/55/50%로 피해량 증가.\n"+
-						"_-_ _크레이지 D 능력 발현 - 연속 공격_ :\n+30/25/20%에서 +40/35/30%로 피해량 증가.\n_-_ _크레이지 D 능력 발현 - 차지 어택_ :\n힘을 축적할 때마다 +20%에서 +33%로 피해량 증가."
-		));
-		changes.addButton( new ChangeButton( new Image(Assets.Sprites.KOUSAKU, 0, 0, 12, 15), "카와지리 보상 강화",
-				"카와지리 처치 시, 영구히 지속되는 전용 버프가 추가되었습니다."));
-
-	}
 }

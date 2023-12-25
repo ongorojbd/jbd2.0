@@ -56,6 +56,8 @@ public class DM300Sprite extends MobSprite {
 
 		TextureFilm frames = new TextureFilm( texture, 32, 25 );
 
+		scale.set(0.75f);
+
 		idle = new Animation( enraged ? 15 : 10, true );
 		idle.frames( frames, c+0, c+1 );
 
