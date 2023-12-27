@@ -72,7 +72,7 @@ public class Rebel extends Mob {
 	{
 		spriteClass = RebelSprite.class;
 
-		HP = HT = 1800;
+		HP = HT = 1500;
 		defenseSkill = 25;
 		viewDistance = 10;
 
@@ -196,7 +196,7 @@ public class Rebel extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 77;
+		return 70;
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public class Rebel extends Mob {
 			SpellSprite.show( this, SpellSprite.PURITY );
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 			CellEmitter.get(hero.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-			enemy.damage(10, this);
+			enemy.damage(20, this);
 			charge = 0;
 
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {
@@ -230,9 +230,9 @@ public class Rebel extends Mob {
 	public int drRoll() {
 		int dr;
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-			dr = Random.NormalIntRange(9, 19);
+			dr = Random.NormalIntRange(10, 25);
 		} else {
-			dr = Random.NormalIntRange(5, 15);
+			dr = Random.NormalIntRange(5, 25);
 		}
 		return dr;
 	}
@@ -455,7 +455,7 @@ public class Rebel extends Mob {
 
 		super.damage(dmg, src);
 
-		if (Phase==0 && HP < 1500) {
+		if (Phase==0 && HP < 1200) {
 			Phase = 1;
 			GameScene.flash(0x8B00FF);
 			new Fadeleaf().activate(this);
@@ -467,7 +467,7 @@ public class Rebel extends Mob {
 			yell(Messages.get(this, "telling_1"));
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 		}
-		else if (Phase==1 && HP < 1200) {
+		else if (Phase==1 && HP < 900) {
 			Phase = 2;
 			GameScene.flash(0x8B00FF);
 			Buff.prolong(this, Bless.class, Bless.DURATION*1_000_000);
@@ -482,7 +482,7 @@ public class Rebel extends Mob {
 			yell(Messages.get(this, "telling_3"));
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 		}
-		else if (Phase==2 && HP < 900) {
+		else if (Phase==2 && HP < 600) {
 			Phase = 3;
 			GameScene.flash(0x8B00FF);
 			Buff.prolong(this, BlobImmunity.class, BlobImmunity.DURATION*1_000_000);
@@ -508,7 +508,7 @@ public class Rebel extends Mob {
 			cleanCooldown = 10;
 
 		}
-		else if (Phase==3 && HP < 600) {
+		else if (Phase==3 && HP < 300) {
 			Phase = 4;
 			GameScene.flash(0x8B00FF);
 			Buff.prolong(this, Adrenaline.class, Adrenaline.DURATION*1_000_000);
@@ -525,7 +525,7 @@ public class Rebel extends Mob {
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 		}
-		else if (Phase==4 && HP < 300) {
+		else if (Phase==4 && HP < 150) {
 			Phase = 5;
 			Buff.prolong(this, MagicImmune.class, MagicImmune.DURATION*1_000_000);
 			Buff.affect(Dungeon.hero, Blindness.class, 30f);

@@ -31,7 +31,7 @@ public class Updates {
 	public static UpdateService service;
 
 	public static boolean supportsUpdates(){
-		return service != null;
+		return true; // 뭔진 모르겠지만 이부분 바꾸니까 됨
 	}
 
 	private static Date lastCheck = null;

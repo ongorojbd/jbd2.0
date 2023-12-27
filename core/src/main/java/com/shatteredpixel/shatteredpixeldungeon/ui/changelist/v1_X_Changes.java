@@ -25,11 +25,16 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RollerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -81,6 +86,17 @@ public class v1_X_Changes {
 				"이제 전투 시 물리 공격 / 스탠드 공격, 화염 / 중독 피해 등을 직관적으로 나타내는 아이콘이 추가됩니다."));
 		changes.addButton(new ChangeButton( new TalentIcon(Talent.LIQUID_WILLPOWER), "특성 리워크",
 				"자주 사용되지 않는 특성들이 리워크 및 상향되었습니다."));
+		changes.addButton( new ChangeButton( Icons.get(Icons.INFO), "업데이트 알림",
+				"업데이트가 출시될 경우, 메인화면에 업데이트를 알려주는 기능이 추가되었습니다."));
+
+		changes = new ChangeInfo("상향\n", false, null);
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
+
+		Image i = new Image(Assets.Sprites.ROLLER, 785, 0, 157, 144);
+		i.scale.set(PixelScene.align(0.1f));
+		changes.addButton( new ChangeButton(i, "로드롤러다!",
+				"이제 DIO의 함정을 밟으면 로드롤러가 소환됩니다.\n\n_DIO의 패턴에 로드롤러가 추가되었습니다._"));
 	}
 
 	public static void add_v1_4_5_Changes( ArrayList<ChangeInfo> changeInfos ) {
@@ -145,9 +161,6 @@ public class v1_X_Changes {
 				"신규 2단계 무기 1종,\n신규 4단계 무기 1종,\n신규 5단계 무기 1종이 추가되었습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CEN), "20th 센츄리 보이",
 				"상점에서 판매하는 희귀 아이템이 추가되었습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.TUSK3), "미니 던전",
-				"미니 던전 : 기둥의 남자들이 잠든 곳이 추가되었습니다!\n\n" +
-						"미니 던전은 죠니 근처의 입구를 통해 입장할 수 있으며, 추후 죠니 퀘스트 개편에 사용됩니다."));
 		changes = new ChangeInfo("변경", false, null);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);

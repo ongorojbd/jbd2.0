@@ -240,9 +240,7 @@ public class Shopkeeper extends NPC {
 	@Override
 	public boolean interact(Char c) {
 
-		if(spriteClass == ShopkeeperSprite.class) {
-			Sample.INSTANCE.play(Assets.Sounds.REIMI);
-		} else if(spriteClass == ImpSprite.class) {
+		if(spriteClass == ImpSprite.class) {
 			Sample.INSTANCE.play(Assets.Sounds.DARBY);
 		}
 

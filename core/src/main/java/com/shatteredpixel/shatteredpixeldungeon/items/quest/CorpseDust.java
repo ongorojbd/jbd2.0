@@ -143,19 +143,6 @@ public class CorpseDust extends Item {
 					mob.die(null);
 				}
 			}
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					Music.INSTANCE.fadeOut(1f, new Callback() {
-						@Override
-						public void call() {
-							if (Dungeon.level != null) {
-								Dungeon.level.playLevelMusic();
-							}
-						}
-					});
-				}
-			});
 		}
 
 		private static String SPAWNPOWER = "spawnpower";

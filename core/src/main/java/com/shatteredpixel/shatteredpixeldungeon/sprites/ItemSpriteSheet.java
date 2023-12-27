@@ -550,7 +550,7 @@ public class ItemSpriteSheet {
 		assignItemRect(JOJO9,    12, 16);
 		assignItemRect(CEN,      15, 16);
 		assignItemRect(DEMON,    16, 12);
-		assignItemRect(TUSK3,    13, 14);
+		assignItemRect(TUSK3,    14, 14);
 		assignItemRect(SMASK,    14, 12);
 		assignItemRect(DIOCASTLE,16, 16);
 	}

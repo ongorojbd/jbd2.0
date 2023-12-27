@@ -58,7 +58,7 @@ public class Ghost extends NPC {
 
 	{
 		spriteClass = GhostSprite.class;
-		
+
 		flying = true;
 
 		WANDERING = new Wandering();
@@ -96,12 +96,12 @@ public class Ghost extends NPC {
 	public int defenseSkill( Char enemy ) {
 		return INFINITE_EVASION;
 	}
-	
+
 	@Override
 	public float speed() {
 		return 0.5f;
 	}
-	
+
 	@Override
 	protected Char chooseEnemy() {
 		return null;
@@ -116,22 +116,22 @@ public class Ghost extends NPC {
 	public boolean add( Buff buff ) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean interact(Char c) {
 		sprite.turnTo( pos, c.pos );
-		
+
 		Sample.INSTANCE.play( Assets.Sounds.GHOST );
 
 		if (c != Dungeon.hero){
 			return super.interact(c);
 		}
-		
+
 		if (Quest.given) {
 			if (Quest.weapon != null) {
 				if (Quest.processed) {
@@ -191,14 +191,6 @@ public class Ghost extends NPC {
 							@Override
 							public void hide() {
 								super.hide();
-								Music.INSTANCE.fadeOut(1f, new Callback() {
-									@Override
-									public void call() {
-										if (Dungeon.level != null) {
-											Dungeon.level.playLevelMusic();
-										}
-									}
-								});
 							}
 						} );
 					}
@@ -211,32 +203,32 @@ public class Ghost extends NPC {
 	}
 
 	public static class Quest {
-		
+
 		private static boolean spawned;
 
 		private static int type;
 
 		private static boolean given;
 		private static boolean processed;
-		
+
 		private static int depth;
-		
+
 		public static Weapon weapon;
 		public static Armor armor;
 		public static Weapon.Enchantment enchant;
 		public static Armor.Glyph glyph;
-		
+
 		public static void reset() {
 			spawned = false;
-			
+
 			weapon = null;
 			armor = null;
 			enchant = null;
 			glyph = null;
 		}
-		
+
 		private static final String NODE		= "sadGhost";
-		
+
 		private static final String SPAWNED		= "spawned";
 		private static final String TYPE        = "type";
 		private static final String GIVEN		= "given";
@@ -246,21 +238,21 @@ public class Ghost extends NPC {
 		private static final String ARMOR		= "armor";
 		private static final String ENCHANT		= "enchant";
 		private static final String GLYPH		= "glyph";
-		
+
 		public static void storeInBundle( Bundle bundle ) {
-			
+
 			Bundle node = new Bundle();
-			
+
 			node.put( SPAWNED, spawned );
-			
+
 			if (spawned) {
-				
+
 				node.put( TYPE, type );
-				
+
 				node.put( GIVEN, given );
 				node.put( DEPTH, depth );
 				node.put( PROCESSED, processed );
-				
+
 				node.put( WEAPON, weapon );
 				node.put( ARMOR, armor );
 
@@ -269,12 +261,12 @@ public class Ghost extends NPC {
 					node.put(GLYPH, glyph);
 				}
 			}
-			
+
 			bundle.put( NODE, node );
 		}
-		
+
 		public static void restoreFromBundle( Bundle bundle ) {
-			
+
 			Bundle node = bundle.getBundle( NODE );
 
 			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
@@ -284,7 +276,7 @@ public class Ghost extends NPC {
 				processed = node.getBoolean( PROCESSED );
 
 				depth	= node.getInt( DEPTH );
-				
+
 				weapon	= (Weapon)node.get( WEAPON );
 				armor	= (Armor)node.get( ARMOR );
 
@@ -296,21 +288,21 @@ public class Ghost extends NPC {
 				reset();
 			}
 		}
-		
+
 		public static void spawn( SewerLevel level, Room room ) {
 			if (!spawned && Dungeon.depth > 1 && Random.Int( 5 - Dungeon.depth ) == 0) {
-				
+
 				Ghost ghost = new Ghost();
 				do {
 					ghost.pos = level.pointToCell(room.random());
 				} while (ghost.pos == -1 || ghost.pos == level.exit());
 				level.mobs.add( ghost );
-				
+
 				spawned = true;
 				//dungeon depth determines type of quest.
 				//depth2=fetid rat, 3=gnoll trickster, 4=great crab
 				type = Dungeon.depth-1;
-				
+
 				given = false;
 				processed = false;
 				depth = Dungeon.depth;
@@ -355,7 +347,7 @@ public class Ghost extends NPC {
 
 			}
 		}
-		
+
 		public static void process() {
 			if (spawned && given && !processed && (depth == Dungeon.depth)) {
 				GLog.n( Messages.get(Ghost.class, "find_me") );
@@ -366,14 +358,7 @@ public class Ghost extends NPC {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-						Music.INSTANCE.fadeOut(1f, new Callback() {
-							@Override
-							public void call() {
-								if (Dungeon.level != null) {
-									Dungeon.level.playLevelMusic();
-								}
-							}
-						});
+
 					}
 				});
 			}
@@ -382,18 +367,18 @@ public class Ghost extends NPC {
 		public static boolean active(){
 			return spawned && given && !processed && depth == Dungeon.depth;
 		}
-		
+
 		public static void complete() {
 			weapon = null;
 			armor = null;
-			
+
 			Notes.remove( Notes.Landmark.GHOST );
 		}
 
 		public static boolean processed(){
 			return spawned && processed;
 		}
-		
+
 		public static boolean completed(){
 			return processed() && weapon == null && armor == null;
 		}

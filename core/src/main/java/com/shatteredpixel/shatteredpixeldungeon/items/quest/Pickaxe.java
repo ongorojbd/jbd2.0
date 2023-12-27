@@ -34,17 +34,29 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Annasui;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Bdth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Com;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Emporio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Emporio2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Emporio3;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Pian;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weather;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite.Glowing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
@@ -53,6 +65,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -149,6 +162,21 @@ public class Pickaxe extends MeleeWeapon {
 
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
+
+		if (Random.Int( 100 ) == 0) {
+			if (defender.properties().contains(Char.Property.BOSS) || defender.properties().contains(Char.Property.MINIBOSS) || defender instanceof Hero) {
+
+			} else {
+				CellEmitter.center( defender.pos ).burst( Speck.factory( Speck.STAR ), 7 );
+				defender.destroy();
+				defender.sprite.killAndErase();
+				Sample.INSTANCE.play(Assets.Sounds.PUFF, 1f);
+				Sample.INSTANCE.play(Assets.Sounds.EVOKE, 1f);
+				attacker.sprite.showStatus(CharSprite.POSITIVE, Messages.get(Pickaxe.class, "1"));
+			}
+		}
+
+
 		if (Blacksmith.Quest.oldBloodQuest() && !bloodStained && defender instanceof Bat) {
 			Actor.add(new Actor() {
 

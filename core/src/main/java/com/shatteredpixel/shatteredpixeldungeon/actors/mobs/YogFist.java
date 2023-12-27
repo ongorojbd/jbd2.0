@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -42,6 +45,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Roller;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
@@ -57,9 +62,13 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FistSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public abstract class YogFist extends Mob {
 
@@ -90,10 +99,10 @@ public abstract class YogFist extends Mob {
 	protected boolean act() {
 		if (paralysed <= 0 && rangedCooldown > 0) rangedCooldown--;
 
-		if (Dungeon.hero.invisible <= 0 && state == WANDERING){
-			beckon(Dungeon.hero.pos);
+		if (hero.invisible <= 0 && state == WANDERING){
+			beckon(hero.pos);
 			state = HUNTING;
-			enemy = Dungeon.hero;
+			enemy = hero;
 		}
 
 		return super.act();
@@ -150,7 +159,7 @@ public abstract class YogFist extends Mob {
 		super.damage(dmg, src);
 		int dmgTaken = preHP - HP;
 
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+		LockedFloor lock = hero.buff(LockedFloor.class);
 		if (dmgTaken > 0 && lock != null){
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmgTaken/4f);
 			else                                                    lock.addTime(dmgTaken/2f);
@@ -501,7 +510,7 @@ public abstract class YogFist extends Mob {
 				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam() );
 				Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
 
-				if (!enemy.isAlive() && enemy == Dungeon.hero) {
+				if (!enemy.isAlive() && enemy == hero) {
 					Badges.validateDeathFromEnemyMagic();
 					Dungeon.fail( this );
 					GLog.n( Messages.get(Char.class, "kill", name()) );
@@ -516,11 +525,19 @@ public abstract class YogFist extends Mob {
 
 		@Override
 		public void damage(int dmg, Object src) {
+			ArrayList<Integer> spawnPoints = new ArrayList<>();
+			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+				int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+				if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+					spawnPoints.add(p);
+				}
+			}
+
 			int beforeHP = HP;
 			super.damage(dmg, src);
 			if (isAlive() && beforeHP > HT/2 && HP < HT/2){
 				HP = HT/2;
-				Buff.prolong( Dungeon.hero, Blindness.class, Blindness.DURATION*1.5f );
+				Buff.prolong( hero, Blindness.class, Blindness.DURATION*1.5f );
 				int i;
 				do {
 					i = Random.Int(Dungeon.level.length());
@@ -530,10 +547,25 @@ public abstract class YogFist extends Mob {
 						|| PathFinder.getStep(i, Dungeon.level.exit(), Dungeon.level.passable) == -1);
 				ScrollOfTeleportation.appear(this, i);
 				state = WANDERING;
-				GameScene.flash(0x80FFFFFF);
-				GLog.w( Messages.get( this, "teleport" ));
+
+				if (!spawnPoints.isEmpty()){
+					Rollermob Rollermob = new Rollermob();
+					Rollermob.state = Rollermob.PASSIVE;
+					Rollermob.pos = Random.element(spawnPoints);
+					GameScene.add( Rollermob );
+					Rollermob.beckon(hero.pos);
+					Camera.main.shake(5, 2.5f);
+					Buff.prolong( this, Blindness.class, 10f );
+					Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
+					Sample.INSTANCE.play(Assets.Sounds.BLAST);
+					GameScene.flash(0x80FFFFFF);
+					GLog.n( Messages.get( this, "teleport" ));
+				} else {
+
+				}
+
 			} else if (!isAlive()){
-				Buff.prolong( Dungeon.hero, Blindness.class, Blindness.DURATION*3f );
+				Buff.prolong( hero, Blindness.class, Blindness.DURATION*3f );
 				GameScene.flash(0x80FFFFFF);
 			}
 		}
@@ -571,7 +603,7 @@ public abstract class YogFist extends Mob {
 					l.weaken(50);
 				}
 
-				if (!enemy.isAlive() && enemy == Dungeon.hero) {
+				if (!enemy.isAlive() && enemy == hero) {
 					Badges.validateDeathFromEnemyMagic();
 					Dungeon.fail( this );
 					GLog.n( Messages.get(Char.class, "kill", name()) );
@@ -586,11 +618,19 @@ public abstract class YogFist extends Mob {
 
 		@Override
 		public void damage(int dmg, Object src) {
+			ArrayList<Integer> spawnPoints = new ArrayList<>();
+			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+				int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+				if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+					spawnPoints.add(p);
+				}
+			}
+
 			int beforeHP = HP;
 			super.damage(dmg, src);
 			if (isAlive() && beforeHP > HT/2 && HP < HT/2){
 				HP = HT/2;
-				Light l = Dungeon.hero.buff(Light.class);
+				Light l = hero.buff(Light.class);
 				if (l != null){
 					l.detach();
 				}
@@ -603,10 +643,24 @@ public abstract class YogFist extends Mob {
 						|| PathFinder.getStep(i, Dungeon.level.exit(), Dungeon.level.passable) == -1);
 				ScrollOfTeleportation.appear(this, i);
 				state = WANDERING;
-				GameScene.flash(0, false);
-				GLog.w( Messages.get( this, "teleport" ));
+
+				if (!spawnPoints.isEmpty()){
+					Rollermob Rollermob = new Rollermob();
+					Rollermob.state = Rollermob.PASSIVE;
+					Rollermob.pos = Random.element(spawnPoints);
+					GameScene.add( Rollermob );
+					Rollermob.beckon(hero.pos);
+					Camera.main.shake(5, 2.5f);
+					Buff.prolong( this, Blindness.class, 10f );
+					Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
+					Sample.INSTANCE.play(Assets.Sounds.BLAST);
+					GameScene.flash(0x80FFFFFF);
+					GLog.n( Messages.get( this, "teleport" ));
+				} else {
+
+				}
 			} else if (!isAlive()){
-				Light l = Dungeon.hero.buff(Light.class);
+				Light l = hero.buff(Light.class);
 				if (l != null){
 					l.detach();
 				}

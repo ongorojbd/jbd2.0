@@ -51,6 +51,8 @@ public class VitamincSprite extends MobSprite {
         die = new MovieClip.Animation( 15, false );
         die.frames( frames, 5, 6, 7);
 
+        scale.set(0.85f);
+
         play( idle );
     }
 

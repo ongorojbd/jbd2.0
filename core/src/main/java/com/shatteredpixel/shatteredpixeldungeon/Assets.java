@@ -330,6 +330,8 @@ public class Assets {
         public static final String WS2 = "sounds/ws2.mp3";
         public static final String WS3 = "sounds/ws3.mp3";
 
+        public static final String ROLLERDA = "sounds/roller.mp3";
+
         public static final String[] all = new String[]{
                 CLICK, BADGE, GOLD,
 
@@ -344,7 +346,7 @@ public class Assets {
                 BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
                 HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, ORA2, ORA3, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6,
-                SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3};
+                SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA};
     }
 
     public static class Splashes {
@@ -508,5 +510,6 @@ public class Assets {
         public static final String INA = "sprites/ina.png";
 
         public static final String GREEN_CAT_HEAD	= "sprites/green_cat_head.png";
+        public static final String ROLLER	= "sprites/roller.png";
     }
 }

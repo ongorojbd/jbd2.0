@@ -26,11 +26,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rollermob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Roller;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -97,14 +100,28 @@ public class GrimTrap extends Trap {
 									public void call() {
 										finalTarget.damage(finalDmg, GrimTrap.this);
 										if (finalTarget == Dungeon.hero) {
-											Sample.INSTANCE.play(Assets.Sounds.HAHAH);
+											Roller Roller = new Roller();
+											Roller.state = Roller.PASSIVE;
+											Roller.pos = finalTarget.pos;
+											GameScene.add( Roller );
+											Roller.beckon(Dungeon.hero.pos);
+
+											Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
+											Sample.INSTANCE.play(Assets.Sounds.BLAST);
 											if (!finalTarget.isAlive()) {
 												Badges.validateDeathFromGrimOrDisintTrap();
 												Dungeon.fail( GrimTrap.this );
 												GLog.n( Messages.get(GrimTrap.class, "ondeath") );
 											}
 										} else {
-											Sample.INSTANCE.play(Assets.Sounds.HAHAH);
+											Roller Roller = new Roller();
+											Roller.state = Roller.PASSIVE;
+											Roller.pos = finalTarget.pos;
+											GameScene.add( Roller );
+											Roller.beckon(Dungeon.hero.pos);
+
+											Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
+											Sample.INSTANCE.play(Assets.Sounds.BLAST);
 										}
 										finalTarget.sprite.emitter().burst(ShadowParticle.UP, 10);
 										next();
@@ -117,7 +134,8 @@ public class GrimTrap extends Trap {
 					}
 				} else {
 					CellEmitter.get(pos).burst(ShadowParticle.UP, 10);
-					Sample.INSTANCE.play(Assets.Sounds.HAHAH);
+					Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
+					Sample.INSTANCE.play(Assets.Sounds.BLAST);
 					return true;
 				}
 			}

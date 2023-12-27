@@ -22,41 +22,45 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.watabou.noosa.TextureFilm;
 
-public class LarvaSprite extends MobSprite {
-	
-	public LarvaSprite() {
-		super();
-		
-		texture( Assets.Sprites.LARVA );
-		
-		TextureFilm frames = new TextureFilm( texture, 12, 8 );
-		
-		idle = new Animation( 5, true );
-		idle.frames( frames, 4, 4, 4, 4, 4, 5, 5 );
-		
-		run = new Animation( 12, true );
-		run.frames( frames, 0, 1, 2, 3 );
-		
-		attack = new Animation( 15, false );
-		attack.frames( frames, 6, 5, 7 );
-		
-		die = new Animation( 10, false );
-		die.frames( frames, 8 );
-		
-		play( idle );
-	}
-	
-	@Override
-	public int blood() {
-		return 0xCC0000;
-	}
-	
-	@Override
-	public void die() {
-		Splash.at( center(), blood(), 10 );
-		super.die();
-	}
+public class RollerSprite extends MobSprite {
+
+
+    public RollerSprite() {
+        super();
+
+        texture( Assets.Sprites.ROLLER );
+        TextureFilm film = new TextureFilm( texture, 157, 144 );
+
+        idle = new Animation( 25, false );
+        idle.frames( film,  0, 1, 2, 3, 4, 5 );
+
+        die = new Animation( 20, false );
+        die.frames( film, 6 );
+
+        run = idle.clone();
+
+        attack = idle.clone();
+
+        scale.set(0.2f);
+
+        idle();
+    }
+
+    @Override
+    public void play(Animation anim) {
+        if (isMoving && anim != run){
+            synchronized (this){
+                isMoving = false;
+                notifyAll();
+            }
+        }
+        super.play(anim);
+    }
+
+    @Override
+    public void onComplete( Animation anim ) {
+        super.onComplete( anim );
+    }
 }

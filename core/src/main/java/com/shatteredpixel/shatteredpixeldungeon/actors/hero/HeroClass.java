@@ -184,10 +184,9 @@ public enum HeroClass {
 			new PotionOfExperience().identify().quantity(33).collect();
 			new Bomb().identify().quantity(33).collect();
 			new PotionOfHealing().identify().quantity(100).collect();
-			new HandAxe().identify().collect();
 			new PortableCover().identify().collect();
 			new PlateArmor().identify().upgrade(333).collect();
-			new Shortsword().identify().upgrade(3).collect();
+			new HandAxe().identify().upgrade(20).collect();
 			new PotionOfStrength().identify().quantity(33).collect();
 		}
 

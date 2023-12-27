@@ -168,7 +168,7 @@ public abstract class FistSprite extends MobSprite {
 
 		@Override
 		public int blood() {
-			return 0xFFFFDD34;
+			return 0x666666;
 		}
 
 	}
@@ -193,7 +193,7 @@ public abstract class FistSprite extends MobSprite {
 
 		@Override
 		public int blood() {
-			return 0xFF7F5424;
+			return 0x666666;
 		}
 
 	}
@@ -218,7 +218,7 @@ public abstract class FistSprite extends MobSprite {
 
 		@Override
 		public int blood() {
-			return 0xFFB8BBA1;
+			return 0x666666;
 		}
 
 	}
@@ -243,7 +243,7 @@ public abstract class FistSprite extends MobSprite {
 
 		@Override
 		public int blood() {
-			return 0xFF7F7F7F;
+			return 0x666666;
 		}
 
 	}
@@ -274,7 +274,7 @@ public abstract class FistSprite extends MobSprite {
 		}
 		@Override
 		public int blood() {
-			return 0xFFFFFFFF;
+			return 0xCC9900;
 		}
 
 	}
@@ -299,7 +299,7 @@ public abstract class FistSprite extends MobSprite {
 
 		@Override
 		public int blood() {
-			return 0xFF4A2F53;
+			return 0xCC9900;
 		}
 
 	}

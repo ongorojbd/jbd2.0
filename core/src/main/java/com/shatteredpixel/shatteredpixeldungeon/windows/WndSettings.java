@@ -801,7 +801,7 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep1;
 		CheckBox chkNews;
 		CheckBox chkUpdates;
-		CheckBox chkBetas;
+//		CheckBox chkBetas;
 		CheckBox chkWifi;
 
 		@Override
@@ -836,18 +836,18 @@ public class WndSettings extends WndTabbed {
 				chkUpdates.checked(SPDSettings.updates());
 				add(chkUpdates);
 
-				if (Updates.supportsBetaChannel()){
-					chkBetas = new CheckBox(Messages.get(this, "betas")) {
-						@Override
-						protected void onClick() {
-							super.onClick();
-							SPDSettings.updates(checked());
-							Updates.clearUpdate();
-						}
-					};
-					chkBetas.checked(SPDSettings.betas());
-					add(chkBetas);
-				}
+//				if (Updates.supportsBetaChannel()){
+//					chkBetas = new CheckBox(Messages.get(this, "betas")) {
+//						@Override
+//						protected void onClick() {
+//							super.onClick();
+//							SPDSettings.updates(checked());
+//							Updates.clearUpdate();
+//						}
+//					};
+//					chkBetas.checked(SPDSettings.betas());
+//					add(chkBetas);
+//				}
 			}
 
 			if (!DeviceCompat.isDesktop()){
@@ -883,10 +883,10 @@ public class WndSettings extends WndTabbed {
 				}
 			}
 
-			if (chkBetas != null){
-				chkBetas.setRect(0, pos + GAP, width, BTN_HEIGHT);
-				pos = chkBetas.bottom();
-			}
+//			if (chkBetas != null){
+//				chkBetas.setRect(0, pos + GAP, width, BTN_HEIGHT);
+//				pos = chkBetas.bottom();
+//			}
 
 			if (chkWifi != null){
 				chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
@@ -1086,8 +1086,7 @@ public class WndSettings extends WndTabbed {
 
 			txtLangInfo = PixelScene.renderTextBlock(6);
 			String info = "_" + Messages.titleCase(currLang.nativeName()) + "_ - ";
-			if (currLang == Languages.ENGLISH) info += " ";
-			else if (currLang.status() == Languages.Status.REVIEWED) info += Messages.get(this, "completed");
+			if (currLang == Languages.KOREAN) info += "이 언어는 기본 언어로, 개발자에 의해 작성됩니다.";
 			else if (currLang.status() == Languages.Status.UNREVIEWED) info += Messages.get(this, "unreviewed");
 			else if (currLang.status() == Languages.Status.UNFINISHED) info += Messages.get(this, "unfinished");
 			txtLangInfo.text(info);
@@ -1144,7 +1143,7 @@ public class WndSettings extends WndTabbed {
 			txtTranifex.text(Messages.get(this, "transifex"));
 			add(txtTranifex);
 
-			if (currLang != Languages.ENGLISH) {
+			if (currLang != Languages.KOREAN) {
 				String credText = Messages.titleCase(Messages.get(this, "credits"));
 				btnCredits = new RedButton(credText, credText.length() > 9 ? 6 : 9) {
 					@Override

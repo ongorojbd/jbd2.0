@@ -51,7 +51,7 @@ public class Bestiary {
 			// Sewers
 			case 1: default:
 				//3x rat, 1x snake
-				if (SPDSettings.getDio() >= 1 || Statistics.diocount == 1) {
+				if (Statistics.diocount == 1) {
 					return new ArrayList<>(Arrays.asList(
 							Zombie.class, Zombie.class, Zombie.class,
 							Zombiedog.class));
