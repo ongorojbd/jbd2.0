@@ -70,6 +70,7 @@ public class SPDSettings extends GameSettings {
 	public static final String BRANDO = "brando";
 
 	public static final String JOJO = "jojo";
+	public static final String SID = "sid";
 
 	// 특수 재화 관련
 	public static void addSpecialcoin(int value) { put(KEY_COIN, getInt(KEY_COIN, 0) + value); }
@@ -95,7 +96,8 @@ public class SPDSettings extends GameSettings {
 	public static void addJojo(int value) { put(JOJO, getInt(JOJO, 0) + value); }
 	public static int getJojo() { return getInt(JOJO, 0); }
 
-
+	public static void addSid(int value) { put(SID, getInt(SID, 0) + value); }
+	public static int getSid() { return getInt(SID, 0); }
 	
 	public static void fullscreen( boolean value ) {
 		put( KEY_FULLSCREEN, value );

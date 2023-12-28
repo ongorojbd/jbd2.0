@@ -65,12 +65,11 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class Smask extends Item {
+public class Diocoffin extends Item {
     public static final String AC_LIGHT	= "LIGHT";
-    public static final String AC_BOSS	= "BOSS";
 
     {
-        image = ItemSpriteSheet.SMASK;
+        image = ItemSpriteSheet.DIOCOFFIN;
 
         stackable = true;
 
@@ -83,7 +82,6 @@ public class Smask extends Item {
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
         actions.add( AC_LIGHT );
-        actions.add( AC_BOSS );
         return actions;
     }
 
@@ -91,29 +89,12 @@ public class Smask extends Item {
     public void execute(Hero hero, String action) {
         super.execute( hero, action );
         if (action.equals( AC_LIGHT )) {
-            SPDSettings.addBrando(1);
+            SPDSettings.addSid(2);
             Statistics.diokilled = true;
             Dungeon.win( Amulet.class );
             Dungeon.deleteGame( GamesInProgress.curSlot, true );
             Game.switchScene( SurfaceScene.class );
         }
-
-        if (action.equals( AC_BOSS )) {
-            SPDSettings.addBrando(1);
-            Statistics.diokilled = true;
-            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth +1));
-            InterlevelScene.returnBranch = 0;
-            InterlevelScene.returnPos = -2;
-            Game.switchScene(InterlevelScene.class);
-            detach( curUser.belongings.backpack );
-            updateQuickslot();
-        }
-    }
-
-    @Override
-    public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0xCC0000, 1f);
     }
 
     @Override

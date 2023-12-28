@@ -182,7 +182,7 @@ public enum HeroClass {
 			new Castleintro().quantity(33).collect();
 			new Neotel().quantity(33).collect();
 			new PotionOfExperience().identify().quantity(33).collect();
-			new Bomb().identify().quantity(33).collect();
+			new ScrollOfUpgrade().identify().quantity(33).collect();
 			new PotionOfHealing().identify().quantity(100).collect();
 			new PortableCover().identify().collect();
 			new PlateArmor().identify().upgrade(333).collect();

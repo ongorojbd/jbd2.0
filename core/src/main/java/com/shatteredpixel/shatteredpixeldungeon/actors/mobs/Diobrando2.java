@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diocoffin;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -395,7 +396,7 @@ public class Diobrando2 extends Mob {
 
         Badges.validateBrandokill();
 
-        Dungeon.level.drop( new Smask(), pos ).sprite.drop( pos );
+        Dungeon.level.drop( new Diocoffin(), pos ).sprite.drop( pos );
 
         yell( Messages.get(this, "6"));
 
@@ -405,7 +406,7 @@ public class Diobrando2 extends Mob {
         GameScene.bossSlain();
 
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof Zombie || mob instanceof Zombiedog) {
+            if (mob instanceof Zombie) {
                 mob.die( cause );
             }
         }
@@ -551,7 +552,7 @@ public class Diobrando2 extends Mob {
                 if (type <= 30) {
                     mob = new Zombie();
                 } else if (type <= 38) {
-                    mob = new Zombiedog();
+                    mob = new Zombie();
                 } else {
                     mob = new Zombie();
                 }

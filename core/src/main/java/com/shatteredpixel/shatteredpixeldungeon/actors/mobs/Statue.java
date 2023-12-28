@@ -42,25 +42,23 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class Statue extends Mob {
-	
+
 	{
 		spriteClass = StatueSprite.class;
 
 		EXP = 0;
 		state = PASSIVE;
-		
+
 		properties.add(Property.INORGANIC);
 	}
 
-	private int hty = 0;
-	
-	protected Weapon weapon;
+	public Weapon weapon;
 
 	public boolean levelGenStatue = true;
-	
+
 	public Statue() {
 		super();
-		
+
 		HP = HT = 15 + Dungeon.depth * 5;
 		defenseSkill = 4 + Dungeon.depth;
 	}
@@ -75,21 +73,21 @@ public class Statue extends Mob {
 		weapon.cursed = false;
 		weapon.enchant( Enchantment.random() );
 	}
-	
+
 	private static final String WEAPON	= "weapon";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( WEAPON, weapon );
 	}
-	
+
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		weapon = (Weapon)bundle.get( WEAPON );
 	}
-	
+
 	@Override
 	protected boolean act() {
 		if (levelGenStatue && Dungeon.level.visited[pos]) {
@@ -97,17 +95,17 @@ public class Statue extends Mob {
 		}
 		return super.act();
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return weapon.damageRoll(this);
 	}
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return (int)((9 + Dungeon.depth) * weapon.accuracyFactor( this, target ));
 	}
-	
+
 	@Override
 	public float attackDelay() {
 		return super.attackDelay()*weapon.delayFactor( this );
@@ -122,7 +120,7 @@ public class Statue extends Mob {
 	public int drRoll() {
 		return super.drRoll() + Random.NormalIntRange(0, Dungeon.depth + weapon.defenseFactor(this));
 	}
-	
+
 	@Override
 	public boolean add(Buff buff) {
 		if (super.add(buff)) {
@@ -140,10 +138,10 @@ public class Statue extends Mob {
 		if (state == PASSIVE) {
 			state = HUNTING;
 		}
-		
+
 		super.damage( dmg, src );
 	}
-	
+
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
@@ -154,12 +152,12 @@ public class Statue extends Mob {
 		}
 		return damage;
 	}
-	
+
 	@Override
 	public void beckon( int cell ) {
 		// Do nothing
 	}
-	
+
 	@Override
 	public void die( Object cause ) {
 		weapon.identify(false);
@@ -173,7 +171,7 @@ public class Statue extends Mob {
 
 		super.die( cause );
 	}
-	
+
 	@Override
 	public void destroy() {
 		if (levelGenStatue) {
@@ -197,7 +195,7 @@ public class Statue extends Mob {
 	public String description() {
 		return Messages.get(this, "desc", weapon.name());
 	}
-	
+
 	{
 		resistances.add(Grim.class);
 	}
@@ -216,5 +214,5 @@ public class Statue extends Mob {
 		statue.createWeapon(useDecks);
 		return statue;
 	}
-	
+
 }

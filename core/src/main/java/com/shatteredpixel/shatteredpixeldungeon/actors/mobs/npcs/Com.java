@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -38,6 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.SeedAnalysisScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.SeedFindScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ComSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PianSprite;
@@ -140,10 +143,12 @@ public class Com extends NPC {
                 GameScene.show(new WndOptions(
                         sprite(),
                         Messages.titleCase(name()),
-                        Messages.get(Com.class, "0"),
+                        Messages.get(Com.class, "0", SPDSettings.getSid()),
                         Messages.get(Com.class, "1"),
                         Messages.get(Com.class, "2"),
-                        Messages.get(Com.class, "3")
+                        Messages.get(Com.class, "3"),
+                        Messages.get(Com.class, "4"),
+                        Messages.get(Com.class, "5")
                 ){
                     @Override
                     protected void onSelect(int index) {
@@ -151,8 +156,20 @@ public class Com extends NPC {
                             tell(Messages.get(Com.class, "q", SPDSettings.getSpecialcoin()));
                         } else if (index == 1) {
                             tell(Messages.get(Com.class, "w", SPDSettings.getDio()));
+                        } else if (index == 2) {
+                            tell(Messages.get(Com.class, "w", SPDSettings.getDio()));
+                        } else if (index == 3) {
+                            if (SPDSettings.getSid() >= 1) {
+                                ShatteredPixelDungeon.switchScene(SeedFindScene.class);
+                            }  else {
+                                GLog.p(Messages.get(Annasui.class, "sid"));
+                            }
                         } else {
-                            tell(Messages.get(Com.class, "e", SPDSettings.getBrando()));
+                            if (SPDSettings.getSid() >= 1) {
+                                ShatteredPixelDungeon.switchScene( SeedAnalysisScene.class );
+                            }  else {
+                                GLog.p(Messages.get(Annasui.class, "sid"));
+                            }
                         }
 
                     }

@@ -26,15 +26,22 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diobrando;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diobrando2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.tweeners.AlphaTweener;
@@ -92,7 +99,7 @@ public class ShipbossLevel extends Level {
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
 
-        transitions.add(new LevelTransition(this, 8 + (22)*17, LevelTransition.Type.REGULAR_ENTRANCE));
+        transitions.add(new LevelTransition(this, 8 + (21)*17, LevelTransition.Type.REGULAR_ENTRANCE));
 
         buildLevel();
 
@@ -180,6 +187,20 @@ public class ShipbossLevel extends Level {
         super.occupyCell(ch);
     }
 
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+
+            if (!Blacksmith.Quest.given()) {
+                GLog.w(Messages.get(Blacksmith.class, "entrance_blocked2"));
+            }
+            return false;
+
+        } else {
+            return super.activateTransition(hero, transition);
+        }
+    }
 
     @Override
     protected void createMobs() {

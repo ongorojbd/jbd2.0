@@ -74,7 +74,7 @@ public class WndGame extends Window {
 						protected void onClick() {
 							hide();
 
-							GameScene.show(new WndMessage(Messages.get(WndGame.class, "skin_desc", SPDSettings.getDio(), SPDSettings.getBrando())));
+							GameScene.show(new WndMessage(Messages.get(WndGame.class, "skin_desc", SPDSettings.getDio(), SPDSettings.getBrando(), SPDSettings.getSid())));
 						}
 					}
 			);

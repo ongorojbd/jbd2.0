@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Emporio2;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -121,6 +122,18 @@ public class LabsBossLevel extends Level {
 		transitions.add(exit);
 
 		buildLevel();
+
+//		Emporio2 npc = new Emporio2();
+//		npc.pos = 30 * width() + 16;
+//		mobs.add( npc );
+//
+//		Emporio2 npc2 = new Emporio2();
+//		npc2.pos = 28 * width() + 14;
+//		mobs.add( npc2 );
+//
+//		Emporio2 npc3 = new Emporio2();
+//		npc3.pos = 28 * width() + 18;
+//		mobs.add( npc3 );
 
 		return true;
 	}

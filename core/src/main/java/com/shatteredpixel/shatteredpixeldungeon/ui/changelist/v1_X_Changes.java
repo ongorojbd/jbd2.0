@@ -74,7 +74,7 @@ public class v1_X_Changes {
 		changes.addButton( new ChangeButton( Icons.get(Icons.ENTER), "퀘스트 전용 서브 던전",
 				"죠니 퀘스트 전용 서브 던전 3종이 추가되었습니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIOBRANDO2, 0, 0, 13, 16), "디오의 성 신규 히든보스",
-				"디오의 성에서 만날 수 있는 히든보스가 추가되었습니다."));
+				"디오의 성에서 만날 수 있는 히든보스가 추가되었습니다.\n\n히든 보스 처치 시, 신규 교환권인 _특별 교환권_ 2개를 획득할 수 있습니다."));
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.REMAINS), "신규 아이템",
 				"캐릭터가 사망한 후, 상자에서 획득할 수 있는 캐릭터의 고유 아이템 5종이 추가되었습니다."));
 
@@ -88,6 +88,8 @@ public class v1_X_Changes {
 				"자주 사용되지 않는 특성들이 리워크 및 상향되었습니다."));
 		changes.addButton( new ChangeButton( Icons.get(Icons.INFO), "업데이트 알림",
 				"업데이트가 출시될 경우, 메인화면에 업데이트를 알려주는 기능이 추가되었습니다."));
+		changes.addButton( new ChangeButton( new Image(Assets.Sprites.COM, 0, 0, 15, 13), "시드 검색 / 시드 분석",
+				"이제 엠포리오의 방에 있는 컴퓨터를 통해,\n특별 교환권 1개를 소모하여 시드 검색 및 시드 분석을 할 수 있습니다."));
 
 		changes = new ChangeInfo("상향\n", false, null);
 		changes.hardlight(Window.TITLE_COLOR);

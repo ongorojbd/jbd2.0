@@ -508,6 +508,8 @@ public class ItemSpriteSheet {
 	public static final int SMASK                = ARTIFACTS+45;
 	public static final int DIOCASTLE            = ARTIFACTS+46;
 
+	public static final int DIOCOFFIN            = ARTIFACTS+47;
+
 	static{
 		assignItemRect(ARTIFACT_CLOAK,      14, 14);
 		assignItemRect(ARTIFACT_ARMBAND,    14, 14);
@@ -553,6 +555,7 @@ public class ItemSpriteSheet {
 		assignItemRect(TUSK3,    14, 14);
 		assignItemRect(SMASK,    14, 12);
 		assignItemRect(DIOCASTLE,16, 16);
+		assignItemRect(DIOCOFFIN,16, 16);
 	}
 
 	                                                                                    //16 free slots

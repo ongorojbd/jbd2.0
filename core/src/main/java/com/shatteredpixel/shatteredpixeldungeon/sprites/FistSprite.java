@@ -74,7 +74,7 @@ public abstract class FistSprite extends MobSprite {
 		die = new Animation( 10, false );
 		die.frames( frames, c+0, c+2, c+3, c+4 );
 
-		scale.set(0.75f);
+		scale.set(0.65f);
 
 		play( idle );
 	}

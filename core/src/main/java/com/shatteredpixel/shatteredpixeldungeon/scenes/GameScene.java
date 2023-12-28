@@ -445,6 +445,12 @@ public class GameScene extends PixelScene {
 					add(new WndStory(Messages.get(this, "green") + "\n\n" + Messages.get(this, "green2")).setDelays(0.4f, 0.4f));
 					Dungeon.level.seal();
 				}
+
+				if (Dungeon.level instanceof ShipbossLevel){
+					Sample.INSTANCE.play(Assets.Sounds.SPW5);
+					GLog.n(Messages.get(Diobrando.class, "t7"));
+					add(new WndStory(Messages.get(this, "ship_title") + "\n\n" + Messages.get(this, "ship_window")).setDelays(0.4f, 0.4f));
+				}
 				break;
 			case DESCEND:
 			case FALL:

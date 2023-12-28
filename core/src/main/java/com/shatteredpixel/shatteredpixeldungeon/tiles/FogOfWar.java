@@ -40,22 +40,22 @@ public class FogOfWar extends Image {
 			0x00000000, //-1 brightness
 			0x00000000, //0  brightness
 			0x00000000, //1  brightness
-			}, {
+	}, {
 			//visited
 			0xCC000000,
 			0x99000000,
 			0x55000000
-			}, {
+	}, {
 			//mapped
 			0xCC112244,
 			0x99193366,
 			0x55224488
-			}, {
+	}, {
 			//invisible
 			0xFF000000,
 			0xFF000000,
 			0xFF000000
-			}};
+	}};
 
 	private static final int VISIBLE    =   0;
 	private static final int VISITED    =   1;
@@ -65,10 +65,10 @@ public class FogOfWar extends Image {
 	private int mapWidth;
 	private int mapHeight;
 	private int mapLength;
-	
+
 	private int pWidth;
 	private int pHeight;
-	
+
 	private int width2;
 	private int height2;
 
@@ -84,7 +84,7 @@ public class FogOfWar extends Image {
 	similar to the existing fog effect in vanilla (although probably with more precision)
 	the advantage here is that it may be possible to totally eliminate the tile blocking map
 	*/
-	
+
 	public FogOfWar( int mapWidth, int mapHeight ) {
 
 		super();
@@ -129,7 +129,7 @@ public class FogOfWar extends Image {
 		toUpdate.clear();
 		toUpdate.add(new Rect(0, 0, mapWidth, mapHeight));
 	}
-	
+
 	public synchronized void updateFog(Rect update){
 		for (Rect r : toUpdate.toArray(new Rect[0])){
 			if (!r.intersect(update).isEmpty()){
@@ -168,7 +168,7 @@ public class FogOfWar extends Image {
 	private boolean[] visited;
 	private boolean[] mapped;
 	private int brightness;
-	
+
 	private void updateTexture( boolean[] visible, boolean[] visited, boolean[] mapped ) {
 		this.visible = visible;
 		this.visited = visited;
@@ -176,7 +176,7 @@ public class FogOfWar extends Image {
 		this.brightness = SPDSettings.brightness() + 1;
 
 		moveToUpdating();
-		
+
 		boolean fullUpdate = false;
 		if (updating.size() == 1){
 			Rect update = updating.get(0);
@@ -189,14 +189,14 @@ public class FogOfWar extends Image {
 		fog.setBlending(Pixmap.Blending.None);
 
 		int cell;
-		
+
 		for (Rect update : updating) {
 			for (int i = update.top; i < update.bottom; i++) {
 				cell = mapWidth * i + update.left;
 				for (int j = update.left; j < update.right; j++) {
-					
+
 					if (cell >= Dungeon.level.length()) continue; //do nothing
-					
+
 					if (!Dungeon.level.discoverable[cell]
 							|| (!visible[cell] && !visited[cell] && !mapped[cell])) {
 						//we skip filling cells here if it isn't a full update
@@ -206,81 +206,81 @@ public class FogOfWar extends Image {
 						cell++;
 						continue;
 					}
-					
+
 					//wall tiles
 					if (wall(cell)) {
-						
+
 						//always dark if nothing is beneath them
 						if (cell + mapWidth >= mapLength) {
 							fillCell(fog, j, i, FOG_COLORS[INVISIBLE][brightness]);
-							
-						//internal wall tiles, need to check both the left and right side,
-						// to account for only one half of them being seen
+
+							//internal wall tiles, need to check both the left and right side,
+							// to account for only one half of them being seen
 						} else if (wall(cell + mapWidth)) {
-							
+
 							//left side
 							if (cell % mapWidth != 0) {
-								
+
 								//picks the darkest fog between current tile, left, and below-left(if left is a wall).
 								if (wall(cell - 1)) {
-									
+
 									//if below-left is also a wall, then we should be dark no matter what.
 									if (wall(cell + mapWidth - 1)) {
 										fillLeft(fog, j, i, FOG_COLORS[INVISIBLE][brightness]);
 									} else {
 										fillLeft(fog, j, i, FOG_COLORS[Math.max(getCellFog(cell), Math.max(getCellFog(cell + mapWidth - 1), getCellFog(cell - 1)))][brightness]);
 									}
-									
+
 								} else {
 									fillLeft(fog, j, i, FOG_COLORS[Math.max(getCellFog(cell), getCellFog(cell - 1))][brightness]);
 								}
-								
+
 							} else {
 								fillLeft(fog, j, i, FOG_COLORS[INVISIBLE][brightness]);
 							}
-							
+
 							//right side
 							if ((cell + 1) % mapWidth != 0) {
-								
+
 								//picks the darkest fog between current tile, right, and below-right(if right is a wall).
 								if (wall(cell + 1)) {
-									
+
 									//if below-right is also a wall, then we should be dark no matter what.
 									if (wall(cell + mapWidth + 1)) {
 										fillRight(fog, j, i, FOG_COLORS[INVISIBLE][brightness]);
 									} else {
 										fillRight(fog, j, i, FOG_COLORS[Math.max(getCellFog(cell), Math.max(getCellFog(cell + mapWidth + 1), getCellFog(cell + 1)))][brightness]);
 									}
-									
+
 								} else {
 									fillRight(fog, j, i, FOG_COLORS[Math.max(getCellFog(cell), getCellFog(cell + 1))][brightness]);
 								}
-								
+
 							} else {
 								fillRight(fog, j, i, FOG_COLORS[INVISIBLE][brightness]);
 							}
-							
-						//camera-facing wall tiles
-						//darkest between themselves and the tile below them
+
+							//camera-facing wall tiles
+							//darkest between themselves and the tile below them
 						} else {
 							fillCell(fog, j, i, FOG_COLORS[Math.max(getCellFog(cell), getCellFog(cell + mapWidth))][brightness]);
 						}
-						
-					//other tiles, just their direct value
+
+						//other tiles, just their direct value
 					} else {
 						fillCell(fog, j, i, FOG_COLORS[getCellFog(cell)][brightness]);
 					}
-					
+
 					cell++;
 				}
 			}
-			
+
 		}
-		
+
 		texture.bitmap(fog);
 
 	}
-	
+
 	private boolean wall(int cell) {
 		return DungeonTileSheet.wallStitcheable(Dungeon.level.map[cell]);
 	}
@@ -297,12 +297,12 @@ public class FogOfWar extends Image {
 			return INVISIBLE;
 		}
 	}
-	
+
 	private void fillLeft( Pixmap fog, int x, int y, int color){
 		fog.setColor((color << 8) | (color >>> 24));
 		fog.fillRectangle(x * PIX_PER_TILE, y*PIX_PER_TILE, PIX_PER_TILE/2, PIX_PER_TILE);
 	}
-	
+
 	private void fillRight( Pixmap fog, int x, int y, int color){
 		fog.setColor((color << 8) | (color >>> 24));
 		fog.fillRectangle(x * PIX_PER_TILE + PIX_PER_TILE/2, y*PIX_PER_TILE, PIX_PER_TILE/2, PIX_PER_TILE);
@@ -327,7 +327,7 @@ public class FogOfWar extends Image {
 
 		super.draw();
 	}
-	
+
 	@Override
 	public void destroy() {
 		super.destroy();
