@@ -71,11 +71,11 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "죠니 퀘스트 & 보상 개편",
 				"12~14층에서 수행할 수 있는 죠니의 퀘스트가 대폭 개편되었습니다."));
-		changes.addButton( new ChangeButton( Icons.get(Icons.ENTER), "퀘스트 전용 서브 던전",
-				"죠니 퀘스트 전용 서브 던전 3종이 추가되었습니다."));
+		changes.addButton( new ChangeButton( Icons.get(Icons.ENTER), "DIO의 저택 비밀 공간",
+				"DIO의 저택의 숨겨진 비밀 공간이 추가되었습니다.\n\n난이도는 어렵지만 특별한 보상을 획득할 수 있습니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIOBRANDO2, 0, 0, 13, 16), "디오의 성 신규 히든보스",
 				"디오의 성에서 만날 수 있는 히든보스가 추가되었습니다.\n\n히든 보스 처치 시, 신규 교환권인 _특별 교환권_ 2개를 획득할 수 있습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.REMAINS), "신규 아이템",
+		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.REMAINS), "신규 아이템 타입",
 				"캐릭터가 사망한 후, 상자에서 획득할 수 있는 캐릭터의 고유 아이템 5종이 추가되었습니다."));
 
 		changes = new ChangeInfo("변경", false, null);

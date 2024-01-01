@@ -219,7 +219,7 @@ public class DwarfKing extends Mob {
 				} else if (shielding() <= 300 && summonsMade < 12){
 					if (summonsMade == 6) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
-						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+						Sample.INSTANCE.play(Assets.Sounds.ENYA);
 						yell(Messages.get(this, "wave_2"));
 					}
 					summonSubject(3, DKGhoul.class);
@@ -235,7 +235,7 @@ public class DwarfKing extends Mob {
 				} else if (shielding() <= 150 && summonsMade < 18) {
 					if (summonsMade == 12) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
-						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+						Sample.INSTANCE.play(Assets.Sounds.ENYA2);
 						yell(Messages.get(this, "wave_3"));
 						summonSubject(3, DKWarlock.class);
 						summonSubject(3, DKMonk.class);
@@ -269,7 +269,7 @@ public class DwarfKing extends Mob {
 				} else if (shielding() <= 200 && summonsMade < 8) {
 					if (summonsMade == 4) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
-						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+						Sample.INSTANCE.play(Assets.Sounds.ENYA);
 						yell(Messages.get(this, "wave_2"));
 					}
 					if (summonsMade == 7) {
@@ -282,7 +282,7 @@ public class DwarfKing extends Mob {
 					return true;
 				} else if (shielding() <= 100 && summonsMade < 12) {
 					sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
-					Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+					Sample.INSTANCE.play(Assets.Sounds.ENYA2);
 					yell(Messages.get(this, "wave_3"));
 					summonSubject(4, DKWarlock.class);
 					summonSubject(4, DKMonk.class);

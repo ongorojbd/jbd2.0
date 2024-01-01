@@ -31,8 +31,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -142,6 +145,8 @@ public class Imp extends NPC {
 	}
 
 	public void flee() {
+		Item a = new Bmap();
+		Dungeon.level.drop(a, this.pos).sprite.drop();
 
 		yell( Messages.get(this, "cya", Messages.titleCase(Dungeon.hero.name())) );
 		Sample.INSTANCE.play(Assets.Sounds.DARBY);

@@ -1032,6 +1032,11 @@ public abstract class Level implements Bundlable {
 		GameScene.updateMap(pos);
 	}
 
+	public void emptyTrap( int pos ) {
+		set(pos, Terrain.EMPTY);
+		GameScene.updateMap(pos);
+	}
+
 	public void discover( int cell ) {
 		set( cell, Terrain.discover( map[cell] ) );
 		Trap trap = traps.get( cell );

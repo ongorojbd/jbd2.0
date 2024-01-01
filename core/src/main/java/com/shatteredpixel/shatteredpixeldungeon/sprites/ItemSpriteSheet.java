@@ -491,6 +491,9 @@ public class ItemSpriteSheet {
 	public static final int RAM                 = ARTIFACTS+26;
 	public static final int TUSK                = ARTIFACTS+27;
 	public static final int SPOH                = ARTIFACTS+28;
+
+	public static final int BCOM                = ARTIFACTS+29;
+
 	public static final int WALL                = ARTIFACTS+32;
 	public static final int JOJO1                = ARTIFACTS+33;
 	public static final int JOJO2                = ARTIFACTS+34;
@@ -503,8 +506,7 @@ public class ItemSpriteSheet {
 	public static final int JOJO9                = ARTIFACTS+41;
 	public static final int CEN                  = ARTIFACTS+42;
 	public static final int DEMON                = ARTIFACTS+43;
-	public static final int TUSK3                = ARTIFACTS+44;
-
+	public static final int DANNY                = ARTIFACTS+44;
 	public static final int SMASK                = ARTIFACTS+45;
 	public static final int DIOCASTLE            = ARTIFACTS+46;
 
@@ -540,6 +542,7 @@ public class ItemSpriteSheet {
 		assignItemRect(RAM,      12, 9);
 		assignItemRect(TUSK,     14, 14);
 		assignItemRect(SPOH,     14, 14);
+		assignItemRect(BCOM,     14, 14);
 		assignItemRect(WALL,     16, 16);
 		assignItemRect(JOJO1,    12, 16);
 		assignItemRect(JOJO2,    12, 16);
@@ -552,7 +555,7 @@ public class ItemSpriteSheet {
 		assignItemRect(JOJO9,    12, 16);
 		assignItemRect(CEN,      15, 16);
 		assignItemRect(DEMON,    16, 12);
-		assignItemRect(TUSK3,    14, 14);
+		assignItemRect(DANNY,    16, 13);
 		assignItemRect(SMASK,    14, 12);
 		assignItemRect(DIOCASTLE,16, 16);
 		assignItemRect(DIOCOFFIN,16, 16);
@@ -746,13 +749,15 @@ public class ItemSpriteSheet {
 	public static final int BERRY =       FOOD+10;
 	public static final int PHANTOM_MEAT= FOOD+11;
 
+	public static final int STEAMED_FISH= FOOD+16;
+
 	public static final int PUMPKIN_PIE= FOOD+12;
 
-	public static final int CANDY_CANE= FOOD+13;
+	public static final int CANDY_CANE= FOOD+24;
 	static{
 		assignItemRect(MEAT,        13, 13);
 		assignItemRect(STEAK,       13, 13);
-		assignItemRect(STEWED,      16, 16);
+		assignItemRect(STEWED,      15, 14);
 		assignItemRect(OVERPRICED,  12, 11);
 		assignItemRect(CARPACCIO,   13, 13);
 		assignItemRect(RATION,      16, 15);
@@ -764,6 +769,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BLAND_CHUNKS,14, 6);
 		assignItemRect(BERRY,       14, 15);
 		assignItemRect(PHANTOM_MEAT,12, 16);
+		assignItemRect(STEAMED_FISH,16, 12);
 	}
 
 	private static final int QUEST  =                                       xy(1, 30);  //32 slots
@@ -781,7 +787,7 @@ public class ItemSpriteSheet {
 		assignItemRect(DUST,    13, 8);
 		assignItemRect(CANDLE,  10, 12);
 		assignItemRect(EMBER,   10, 10);
-		assignItemRect(PICKAXE, 10, 13);
+		assignItemRect(PICKAXE, 14, 14);
 		assignItemRect(ORE,     14, 14);
 		assignItemRect(TOKEN,   10, 10);
 		assignItemRect(BLOB,    8,  8);

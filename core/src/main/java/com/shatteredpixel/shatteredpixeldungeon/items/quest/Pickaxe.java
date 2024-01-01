@@ -79,7 +79,7 @@ public class Pickaxe extends MeleeWeapon {
 	private static final Glowing BLOODY = new Glowing( 0x550000 );
 
 	{
-		image = ItemSpriteSheet.TUSK3;
+		image = ItemSpriteSheet.PICKAXE;
 
 		levelKnown = true;
 

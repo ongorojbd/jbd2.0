@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Mdisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ram;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr1;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
@@ -242,7 +243,7 @@ public class ShopRoom extends SpecialRoom {
 		}
 
 
-		switch (Random.Int(5)){
+		switch (Random.Int(6)){
 			case 0:
 				itemsToSpawn.add( new Highway() );
 				break;
@@ -257,6 +258,9 @@ public class ShopRoom extends SpecialRoom {
 				break;
 			case 4:
 				itemsToSpawn.add( new Drago() );
+				break;
+			case 5:
+				itemsToSpawn.add( new Neoro() );
 				break;
 		}
 

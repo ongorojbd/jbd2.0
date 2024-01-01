@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,89 +21,43 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.traps;
 
-
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcom;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Cream;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 
 public class BcomTrap extends Trap {
 
-    private static final ArrayList<Class<?extends Mob>> RARE = new ArrayList<>(Arrays.asList(
-            Bcom.class, Bcom.class));
+    {
+        color = WHITE;
+        shape = CROSSHAIR;
+    }
 
     @Override
     public void activate() {
+        new Bomb().explode(pos);
 
-        int nMobs = 4;
+        Char c = Actor.findChar( pos );
 
+        if (c != null) {
+            Buff.affect( c, Bleeding.class ).set( 2f );
+            Buff.prolong( c, Cripple.class, 2f );
 
-        GameScene.flash(0x660000);
-        Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1, 1);
-
-        ArrayList<Integer> candidates = new ArrayList<>();
-
-        for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-            int p = pos + PathFinder.NEIGHBOURS8[i];
-            if (Actor.findChar( p ) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-                candidates.add( p );
+            if (c instanceof Mob) {
+                if (((Mob)c).state == ((Mob)c).HUNTING) ((Mob)c).state = ((Mob)c).WANDERING;
+                ((Mob)c).beckon( Dungeon.level.randomDestination( c ) );
             }
         }
-
-        ArrayList<Integer> respawnPoints = new ArrayList<>();
-
-        while (nMobs > 0 && candidates.size() > 0) {
-            int index = Random.index( candidates );
-
-            respawnPoints.add( candidates.remove( index ) );
-            nMobs--;
-        }
-
-        ArrayList<Mob> mobs = new ArrayList<>();
-
-        int summoned = 0;
-        for (Integer point : respawnPoints) {
-            summoned++;
-            Mob mob;
-            switch (summoned){
-                case 0: default:
-                    mob = new Cream();
-                    break;
-            }
-
-            mob.maxLvl = Hero.MAX_LEVEL;
-            mob.state = mob.WANDERING;
-            mob.pos = point;
-            GameScene.add(mob);
-            mobs.add(mob);
-        }
-
-        //important to process the visuals and pressing of cells last, so spawned mobs have a chance to occupy cells first
-        Trap t;
-        for (Mob mob : mobs){
-            //manually trigger traps first to avoid sfx spam
-            if ((t = Dungeon.level.traps.get(mob.pos)) != null && t.active){
-                if (t.disarmedByActivation) t.disarm();
-                t.reveal();
-                t.activate();
-            }
-            ScrollOfTeleportation.appear(mob, mob.pos);
-            Dungeon.level.occupyCell(mob);
-        }
-
     }
+
+    @Override
+    public void disarm(){
+        active = false;
+        Dungeon.level.emptyTrap(pos);
+    }
+
 }

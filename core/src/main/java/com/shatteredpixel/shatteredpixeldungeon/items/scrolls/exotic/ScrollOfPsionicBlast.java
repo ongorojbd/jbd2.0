@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsolg;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -53,7 +54,7 @@ public class ScrollOfPsionicBlast extends ExoticScroll {
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 			if (Dungeon.level.heroFOV[mob.pos]) {
 				targets ++;
-				if (!(mob instanceof Rebel)) {
+				if (!(mob instanceof Rebel || mob instanceof Bcomsolg)) {
 					mob.damage(Math.round(mob.HT/2f + mob.HP/2f), this);
 				}
 				if (mob instanceof Rebel) {

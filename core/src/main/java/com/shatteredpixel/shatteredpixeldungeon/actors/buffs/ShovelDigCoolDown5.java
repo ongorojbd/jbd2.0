@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2020 Evan Debenham
+ * Copyright (C) 2014-2021 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,47 +22,40 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 
-public class Roc extends FlavourBuff {
+public class ShovelDigCoolDown5 extends FlavourBuff {
 
     {
-        type = buffType.POSITIVE;
-        announced = true;
+        type = buffType.NEUTRAL;
+        announced = false;
     }
 
-    public static final float DURATION = 35f;
-
-    @Override
-    public void fx(boolean on) {
-        if (on) target.sprite.add(CharSprite.State.DARKENED);
-        else target.sprite.remove(CharSprite.State.DARKENED);
-    }
+    public static final float DURATION	= 499f;
 
     @Override
     public int icon() {
-        return BuffIndicator.UPGRADE;
+        return BuffIndicator.TIME;
     }
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0, 1, 1);
+        icon.hardlight(0.0f, 0.3f, 0.0f);
+    }
+
+    @Override
+    public float iconFadePercent() {
+        return Math.max(0, (DURATION - visualcooldown()) / DURATION);
     }
 
     @Override
     public String toString() {
         return Messages.get(this, "name");
     }
-    @Override
-    public float iconFadePercent() {
-        return Math.max(0, (DURATION - visualcooldown()) / DURATION);
-    }
+
     @Override
     public String desc() {
         return Messages.get(this, "desc", dispTurns());
     }
-
 }

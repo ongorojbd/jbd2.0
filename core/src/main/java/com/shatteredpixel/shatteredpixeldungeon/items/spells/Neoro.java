@@ -2,8 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
@@ -25,16 +27,12 @@ public class Neoro extends Spell {
 
     @Override
     protected void onCast(Hero hero) {
-
-        hero.HP = 30;
-        hero.HT = 30;
-
-        Buff.affect(hero, Roc.class);
-        GameScene.flash(0x00FFFF);
+        Buff.affect(hero, Roc.class, 35f);
+        Sample.INSTANCE.play(Assets.Sounds.DRINK);
+        Sample.INSTANCE.play(Assets.Sounds.CHARMS);
+        new Flare(6, 32).color(0x00CCFF, true).show(hero.sprite, 3f);
         hero.sprite.operate(hero.pos);
-        Camera.main.shake(15, 3f);
         GLog.p(Messages.get(this, "c"));
-        Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 0.9f);
         detach( curUser.belongings.backpack );
         updateQuickslot();
         hero.spendAndNext( 1f );

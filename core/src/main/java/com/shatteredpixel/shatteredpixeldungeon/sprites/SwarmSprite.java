@@ -45,7 +45,7 @@ public class SwarmSprite extends MobSprite {
 		die = new Animation( 15, false );
 		die.frames( frames, 10, 11, 12, 13, 14 );
 
-		scale.set(0.75f);
+		scale.set(0.8f);
 		
 		play( idle );
 	}

@@ -92,6 +92,7 @@ public class Diobrando2 extends Mob {
         properties.add(Property.DEMONIC);
         properties.add(Property.FIERY);
     }
+
     private ArrayList<Integer> targetedCells = new ArrayList<>();
 
     public int  Phase = 0;
@@ -417,11 +418,7 @@ public class Diobrando2 extends Mob {
 
     @Override
     public int damageRoll() {
-        int ice = 1;
-        if (this.buff(IceBlow.class) != null) ice = 3;
-        return enemy == hero || enemy instanceof Willa2 ?
-                Random.NormalIntRange( 2 * ice, 12 * ice) :
-                Random.NormalIntRange( 2, 5 );
+        return Random.NormalIntRange(4, 12);
     }
 
     @Override

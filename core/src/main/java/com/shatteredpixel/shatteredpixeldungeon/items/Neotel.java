@@ -81,8 +81,8 @@ public class Neotel extends Item {
 
             Buff.affect(hero, MindVision.class, 99f);
             Buff.affect(hero, MagicalSight.class, 99f);
-            Buff.affect(hero, FeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);
+            Buff.affect(hero, FeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, PotionOfCleansing.Cleanse.class, 99f);
 
 //            Buff.affect(hero, AscensionChallenge.class);

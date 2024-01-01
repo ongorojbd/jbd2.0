@@ -76,10 +76,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PoisonDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
@@ -419,14 +419,17 @@ public class Dungeon {
 				case 2:
 					level = new Emp2Level();
 					break;
+				case 3:
+					level = new HumanVillageBossLevel();
+					break;
 				case 11:
 				case 12:
 				case 13:
 				case 14:
 					level = new MiningLevel();
 					break;
-				case 3:
-					level = new HumanVillageBossLevel();
+				case 17:
+					level = new TempleLastLevel();
 					break;
 				default:
 					level = new DeadEndLevel();

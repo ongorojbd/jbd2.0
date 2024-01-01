@@ -24,28 +24,37 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.TextureFilm;
 
-public class BcomgSprite extends MobSprite {
+public class KeichoSprite extends MobSprite {
 
-    public BcomgSprite() {
+    private Animation prep;
+
+    public KeichoSprite() {
         super();
 
-        texture( Assets.Sprites.BCOMG );
+        texture( Assets.Sprites.KEICHO );
 
-        TextureFilm frames = new TextureFilm( texture, 11, 15 );
+        TextureFilm frames = new TextureFilm( texture, 40, 39 );
 
-        idle = new Animation( 1, true );
-        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
+        idle = new Animation( 2, true );
+        idle.frames( frames, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
-        run = new Animation( 15, true );
-        run.frames( frames, 4, 5, 6, 7, 8 ,9 );
+        run = new Animation( 2, true );
+        run.frames( frames, 0, 0, 1);
 
-        attack = new Animation( 19, false );
-        attack.frames( frames, 2, 3, 2, 3);
+        prep = new Animation( 3, false );
+        prep.frames( frames, 2, 2, 2, 2);
 
         die = new Animation( 12, false );
-        die.frames( frames, 10, 11, 12, 13 );
+        die.frames( frames, 3);
+
+        scale.set(0.4f);
 
         play( idle );
+    }
+
+    public void leapPrep( int cell ){
+        turnTo( ch.pos, cell );
+        play( prep );
     }
 
 }

@@ -247,6 +247,7 @@ public class SentryRoom extends SpecialRoom {
 					if (curChargeDelay > 0.001f){ //helps prevent rounding errors
 						if (curChargeDelay == initialChargeDelay) {
 							((SentrySprite) sprite).charge();
+							Sample.INSTANCE.play( Assets.Sounds.WOU );
 						}
 						curChargeDelay -= Dungeon.hero.cooldown();
 						//pity mechanic so mistaps don't get people instakilled

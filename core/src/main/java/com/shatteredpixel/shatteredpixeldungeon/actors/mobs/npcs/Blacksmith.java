@@ -29,9 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Danny;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.BlacksmithRoom;
@@ -217,8 +220,18 @@ public class Blacksmith extends NPC {
 			});
 
 		} else {
+			Danny danny = Dungeon.hero.belongings.getItem(Danny.class);
+			if(danny != null){
+				tell( Messages.get(this, "danny") );
+				danny.detach(Dungeon.hero.belongings.backpack);
+				Araki handAxe = new Araki();
+				if (handAxe.doPickUp( Dungeon.hero )) {
+					GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", handAxe.name()) ));
+				} else {
+					Dungeon.level.drop( handAxe, Dungeon.hero.pos ).sprite.drop();
+				}
 
-			tell( Messages.get(this, "get_lost") );
+			} else tell( Messages.get(this, "get_lost") );
 
 		}
 

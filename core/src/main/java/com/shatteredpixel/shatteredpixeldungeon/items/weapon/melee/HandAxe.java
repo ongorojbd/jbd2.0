@@ -81,7 +81,7 @@ public class HandAxe extends MeleeWeapon {
 				Buff.affect(hero, Barrier.class).setShield(3);
 			}
 
-			attacker.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2);
+//			attacker.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2);
 			attacker.sprite.showStatus(CharSprite.POSITIVE, "+%d 보호막", heal);
 			HealCount = 0;
 		}

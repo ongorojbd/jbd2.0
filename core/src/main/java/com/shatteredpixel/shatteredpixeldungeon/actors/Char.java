@@ -730,6 +730,9 @@ public abstract class Char extends Actor {
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= 1.25f;
 		}
+		if (buff( Roc.class ) != null) {
+			dmg *= 3f;
+		}
 
 		Class<?> srcClass = src.getClass();
 		if (isImmune( srcClass )) {

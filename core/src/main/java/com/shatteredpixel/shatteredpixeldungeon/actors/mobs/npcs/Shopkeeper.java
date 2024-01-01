@@ -158,15 +158,6 @@ public class Shopkeeper extends NPC {
 
 	public void flee() {
 
-		destroy();
-
-		Notes.remove(Notes.Landmark.SHOP);
-
-		sprite.killAndErase();
-
-		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
-
-
 		if (Dungeon.hero.buff(AscensionChallenge.class) == null) {
 			Sample.INSTANCE.play(Assets.Sounds.MIMIC);
 			GameScene.flash(0x660000);
@@ -176,6 +167,14 @@ public class Shopkeeper extends NPC {
 			GameScene.add(Kawasiri);
 			Kawasiri.beckon(Dungeon.hero.pos);
 		}
+
+		destroy();
+
+		Notes.remove(Notes.Landmark.SHOP);
+
+		sprite.killAndErase();
+
+		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
 
 	}
 

@@ -61,7 +61,7 @@ public class Roller extends NPC {
 
             destroy();
             sprite.die();
-            GLog.w(Messages.get(Roller.class, "notice"));
+            GLog.n(Messages.get(Roller.class, "notice"));
 
         } else {
             initialized = true;

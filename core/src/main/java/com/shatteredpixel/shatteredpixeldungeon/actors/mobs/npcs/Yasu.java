@@ -28,6 +28,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Lighter;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -104,7 +112,19 @@ public class Yasu extends NPC {
         } else {
             if (Statistics.duwang3 >= 5) {
                 yell( Messages.get(this, "2") );
-                Item pick = new Lighter().quantity(4);
+
+                Item pick = Random.oneOf(
+                        new Kingt().quantity(1),
+                        new StoneOfAdvanceguard().quantity(1),
+                        new Xray().quantity(1),
+                        new Kings().quantity(1),
+                        new Kingm().quantity(1),
+                        new Kingw().quantity(1),
+                        new Kingc().quantity(1),
+                        new Kinga().quantity(1)
+
+                );
+
                 if (pick.doPickUp( Dungeon.hero )) {
                     GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
                 } else {
@@ -126,7 +146,7 @@ public class Yasu extends NPC {
     }
 
     public static void spawn(CavesLevel level) {
-        if (Random.Int( 2 ) == 0) {
+        if (Random.Int( 3 ) == 0) {
             if (Dungeon.depth == 13 && !Dungeon.bossLevel()) {
 
                 Yasu npc = new Yasu();

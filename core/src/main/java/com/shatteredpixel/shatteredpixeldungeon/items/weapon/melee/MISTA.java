@@ -33,6 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsolg;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
@@ -68,15 +70,16 @@ public class MISTA extends MeleeWeapon {
         ACC = 1.15f; //24% boost to accuracy
         RCH = 3;    //lots of extra reach
     }
+
     private int HealCount = 0;
 
     @Override
     public int max(int lvl) {
-        return  3*(tier+1) +    //15+3
-                lvl*(tier-1);
+        return 3 * (tier + 1) +    //15+3
+                lvl * (tier - 1);
     }
 
-    private int starpower = 0 ;
+    private int starpower = 0;
     private int starpowercap = 6;
 
     private void Heal(Char attacker) {
@@ -94,28 +97,25 @@ public class MISTA extends MeleeWeapon {
         Heal(attacker);
 
         if (starpower >= 1 && attacker instanceof Hero) {
-            for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                     int dmg = attacker.damageRoll() - defender.drRoll();
-
-
 
                     if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
                         if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero)) {
                             dmg = Math.round(dmg * 1.35f);
-                    }}
-
-
-
-                    else {
+                        }
+                    } else if(defender instanceof Bcomsolg) {
+                        dmg = Math.round(dmg * 0.3f);
+                    }  else {
                         dmg = Math.round(dmg * 1.2f);
                     }
-
 
                     mob.damage(dmg, attacker);
                 }
             }
-            GameScene.flash( 0x80FFFFFF );
+
+            GameScene.flash(0x80FFFFFF);
             Camera.main.shake(2, 1.5f);
             Sample.INSTANCE.play(Assets.Sounds.SP, 1.1f, 1f);
             attacker.sprite.showStatus(CharSprite.POSITIVE, "[섹스 피스톨즈!]");
@@ -131,7 +131,8 @@ public class MISTA extends MeleeWeapon {
         String info = Messages.get(this, "desc");
         if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
             if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero))
-                info += "\n\n" + Messages.get(MISTA.class, "setbouns");}
+                info += "\n\n" + Messages.get(MISTA.class, "setbouns");
+        }
 
         return info;
     }
@@ -158,13 +159,13 @@ public class MISTA extends MeleeWeapon {
         Char closest = null;
 
         hero.belongings.abilityWeapon = this;
-        for (Char ch : Actor.chars()){
+        for (Char ch : Actor.chars()) {
             if (ch.alignment == Char.Alignment.ENEMY
                     && !hero.isCharmedBy(ch)
                     && Dungeon.level.heroFOV[ch.pos]
-                    && hero.canAttack(ch)){
+                    && hero.canAttack(ch)) {
                 targets.add(ch);
-                if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)){
+                if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)) {
                     closest = ch;
                 }
             }
@@ -184,7 +185,7 @@ public class MISTA extends MeleeWeapon {
                 beforeAbilityUsed(hero, finalClosest);
                 for (Char ch : targets) {
                     hero.attack(ch, 1, 0, ch == finalClosest ? Char.INFINITE_ACCURACY : 1);
-                    if (!ch.isAlive()){
+                    if (!ch.isAlive()) {
                         onAbilityKill(hero, ch);
                     }
                 }
@@ -196,10 +197,11 @@ public class MISTA extends MeleeWeapon {
             }
         });
     }
-    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{Whip.class, WandOfRegrowth.class};
+            inputs = new Class[]{Whip.class, WandOfRegrowth.class};
             inQuantity = new int[]{1, 1};
 
             cost = 15;
