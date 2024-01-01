@@ -180,7 +180,6 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
@@ -1408,7 +1407,7 @@ public class Hero extends Char {
 	}
 
 	private static Class[] harmfulPlants = new Class[]{
-			Blindweed.class, Firebloom.class, Icecap.class, Sorrowmoss.class,  Stormvine.class
+			Blindweed.class, Firebloom.class, Sorrowmoss.class,  Stormvine.class
 	};
 
 	@Override

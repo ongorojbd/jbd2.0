@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ram2;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
@@ -71,7 +70,7 @@ public class ScrollHolder extends Bag {
 		if (item instanceof Scroll || item instanceof Spell || item instanceof ArcaneResin){
 
 			if ((item instanceof Kingt || item instanceof Kings || item instanceof Xray || item instanceof Kingc || item instanceof Kingw || item instanceof Kinga || item instanceof Kingm || item instanceof ChaosCatalyst
-					|| item instanceof ScrollOfExtract || item instanceof AdvancedEvolution || item instanceof Rocacaca || item instanceof Newro
+					|| item instanceof ScrollOfExtract || item instanceof AdvancedEvolution || item instanceof Rocacaca || item instanceof Newro || item instanceof Neoro
 					|| item instanceof Map1 || item instanceof Map2 || item instanceof Map3 || item instanceof Sbr1 || item instanceof Sbr2 || item instanceof Sbr3 || item instanceof Sbr4 || item instanceof Sbr5 || item instanceof Sbr6
 					|| item instanceof Sbr7 || item instanceof Sbr8 || item instanceof Sbr9 || item instanceof Willa || item instanceof Willc || item instanceof Willg || item instanceof Highway || item instanceof Mdisc || item instanceof Maga
 

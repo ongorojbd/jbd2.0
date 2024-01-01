@@ -125,6 +125,6 @@ public class Katana extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		Rapier.lungeAbility(hero, target, 1.67f, 0, this);
+		Rapier.lungeAbility(hero, target, 1.35f, 0, this);
 	}
 }

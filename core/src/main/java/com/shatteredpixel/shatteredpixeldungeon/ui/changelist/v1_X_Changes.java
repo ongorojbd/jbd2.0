@@ -82,8 +82,10 @@ public class v1_X_Changes {
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
-		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "텍스트 UI 개선",
-				"이제 전투 시 물리 공격 / 스탠드 공격, 화염 / 중독 피해 등을 직관적으로 나타내는 아이콘이 추가됩니다."));
+		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "변경사항",
+				"천국에 도달한 DIO의 체력이 1500으로 감소했습니다.\n\n천국에 도달한 DIO의 5타 추가 피해량이\n10에서 20으로 증가합니다.\n\n히로세 야스호의 퀘스트 보상이 무작위 8부 스탠드로 변경되었습니다.\n\n이제 4부 책에서 더이상 빙결풀의 효과가 발동하지 않습니다.\n\n이제 특정한 날짜에 더 다양한 종류의 음식이 등장합니다.\n\n전투 시, 물리 공격 / 스탠드 공격, 화염 / 중독 피해 등을 직관적으로 나타내는 아이콘이 추가되었습니다."));
+//		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "텍스트 UI 개선",
+//				"이제 전투 시 물리 공격 / 스탠드 공격, 화염 / 중독 피해 등을 직관적으로 나타내는 아이콘이 추가됩니다."));
 		changes.addButton(new ChangeButton( new TalentIcon(Talent.LIQUID_WILLPOWER), "특성 리워크",
 				"자주 사용되지 않는 특성들이 리워크 및 상향되었습니다."));
 		changes.addButton( new ChangeButton( Icons.get(Icons.INFO), "업데이트 알림",

@@ -155,7 +155,6 @@ public class Diobrando2 extends Mob {
             Buff.prolong(hero, Blindness.class, 15f);
             Buff.prolong(hero, Vulnerable.class, 15f);
 
-
             zcooldown = 10;
         }
 
@@ -186,7 +185,6 @@ public class Diobrando2 extends Mob {
                         sprite.parent.addToBack(new TargetedCell(Burstpos + i, 0xFF00FF));
                     }
                 }
-
 
                 volcanotime++;
                 return false;

@@ -27,7 +27,7 @@ public class Neoro extends Spell {
 
     @Override
     protected void onCast(Hero hero) {
-        Buff.affect(hero, Roc.class, 35f);
+        Buff.affect(hero, Roc.class, 50f);
         Sample.INSTANCE.play(Assets.Sounds.DRINK);
         Sample.INSTANCE.play(Assets.Sounds.CHARMS);
         new Flare(6, 32).color(0x00CCFF, true).show(hero.sprite, 3f);

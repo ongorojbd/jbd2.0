@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
@@ -60,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite.Glowing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -168,8 +170,14 @@ public class Pickaxe extends MeleeWeapon {
 
 			} else {
 				CellEmitter.center( defender.pos ).burst( Speck.factory( Speck.STAR ), 7 );
+
+				((Mob) defender).EXP = 0;
+
 				defender.destroy();
 				defender.sprite.killAndErase();
+				Dungeon.level.mobs.remove(((Mob) defender));
+				TargetHealthIndicator.instance.target(null);
+
 				Sample.INSTANCE.play(Assets.Sounds.PUFF, 1f);
 				Sample.INSTANCE.play(Assets.Sounds.EVOKE, 1f);
 				attacker.sprite.showStatus(CharSprite.POSITIVE, Messages.get(Pickaxe.class, "1"));

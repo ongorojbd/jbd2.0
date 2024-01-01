@@ -34,7 +34,7 @@ public class Roc extends FlavourBuff {
         announced = true;
     }
 
-    public static final float DURATION = 35f;
+    public static final float DURATION = 50f;
 
     @Override
     public void fx(boolean on) {

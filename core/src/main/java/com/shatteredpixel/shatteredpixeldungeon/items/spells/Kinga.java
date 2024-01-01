@@ -35,7 +35,7 @@ public class Kinga extends Spell {
         for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                 new Fadeleaf().activate(mob);
-                Buff.affect(mob, Paralysis.class, 20f);
+                Buff.affect(mob, Paralysis.class, 30f);
             }
         }
 
