@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
@@ -51,7 +52,7 @@ public class Bestiary {
 			// Sewers
 			case 1: default:
 				//3x rat, 1x snake
-				if (SPDSettings.getDio() >= 1 || Statistics.diocount == 1) {
+				if (SPDSettings.getDio() >= 1 && Dungeon.hero.buff(AscensionChallenge.class) == null|| Statistics.diocount == 1) {
 					return new ArrayList<>(Arrays.asList(
 							Zombie.class, Zombie.class, Zombie.class,
 							Zombiedog.class));

@@ -69,21 +69,21 @@ public class v1_X_Changes {
 		changes = new ChangeInfo("새로운 요소", false, null);
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
+		changes.addButton( new ChangeButton(BadgeBanner.image(Badges.Badge.YORIHIMES_ALL_CLASSES.image), "죠죠의 기묘한 던전 5주년",
+				"죠죠의 기묘한 던전이 출시 후 5주년을 맞이했습니다!\n\n" +
+						"앞으로도 흥미진진한 콘텐츠와 업데이트가 기다리고 있으니, 기대해주시기 바랍니다.\n\n함께 해주셔서 진심으로 감사합니다!"));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "죠니 퀘스트 & 보상 개편",
 				"12~14층에서 수행할 수 있는 죠니의 퀘스트가 대폭 개편되었습니다."));
 		changes.addButton( new ChangeButton( Icons.get(Icons.ENTER), "DIO의 저택 비밀 공간",
 				"DIO의 저택의 숨겨진 비밀 공간이 추가되었습니다.\n\n난이도는 어렵지만 특별한 보상을 획득할 수 있습니다."));
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.DIOBRANDO2, 0, 0, 13, 16), "디오의 성 신규 히든보스",
 				"디오의 성에서 만날 수 있는 히든보스가 추가되었습니다.\n\n히든 보스 처치 시, 신규 교환권인 _특별 교환권_ 2개를 획득할 수 있습니다."));
-		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.REMAINS), "신규 아이템 타입",
-				"캐릭터가 사망한 후, 상자에서 획득할 수 있는 캐릭터의 고유 아이템 5종이 추가되었습니다."));
-
 		changes = new ChangeInfo("변경", false, null);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "변경사항",
-				"천국에 도달한 DIO의 체력이 1500으로 감소했습니다.\n\n천국에 도달한 DIO의 5타 추가 피해량이\n10에서 20으로 증가합니다.\n\n히로세 야스호의 퀘스트 보상이 무작위 8부 스탠드로 변경되었습니다.\n\n이제 4부 책에서 더이상 빙결풀의 효과가 발동하지 않습니다.\n\n이제 특정한 날짜에 더 다양한 종류의 음식이 등장합니다.\n\n전투 시, 물리 공격 / 스탠드 공격, 화염 / 중독 피해 등을 직관적으로 나타내는 아이콘이 추가되었습니다."));
+				"천국에 도달한 DIO의 체력이 1500으로 감소했습니다.\n\n천국에 도달한 DIO의 5타 추가 피해량이\n10에서 20으로 증가합니다.\n\n히로세 야스호의 퀘스트 보상이 무작위 8부 스탠드로 변경되었습니다.\n\n이제 5부 책에서 더이상 빙결풀의 효과가 발동하지 않습니다.\n\n이제 특정한 날짜에 더 다양한 종류의 음식이 등장합니다.\n\n전투 시, 물리 공격 / 스탠드 공격 등을 직관적으로 나타내는 아이콘이 추가되었습니다.\n\n신규 배지 3종이 추가되었습니다.\n\n이제 캐릭터가 사망한 후, 유품에서 해당 캐릭터의 고유 아이템을 획득할 수 있습니다."));
 //		changes.addButton( new ChangeButton( Icons.get(Icons.PREFS), "텍스트 UI 개선",
 //				"이제 전투 시 물리 공격 / 스탠드 공격, 화염 / 중독 피해 등을 직관적으로 나타내는 아이콘이 추가됩니다."));
 		changes.addButton(new ChangeButton( new TalentIcon(Talent.LIQUID_WILLPOWER), "특성 리워크",
