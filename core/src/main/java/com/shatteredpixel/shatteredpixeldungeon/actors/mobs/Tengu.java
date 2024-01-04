@@ -230,6 +230,8 @@ public class Tengu extends Mob {
 
 	@Override
 	public void die( Object cause ) {
+
+		Sample.INSTANCE.play(Assets.Sounds.DIAVOLO2);
 		
 		if (Dungeon.hero.subClass == HeroSubClass.NONE) {
 			Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
@@ -301,7 +303,7 @@ public class Tengu extends Mob {
 				move( newPos );
 				
 				if (level.heroFOV[newPos]) CellEmitter.get( newPos ).burst( Speck.factory( Speck.WOOL ), 6 );
-				Sample.INSTANCE.play( Assets.Sounds.DIAVOLO );
+				Sample.INSTANCE.play( Assets.Sounds.DIAVOLO1 );
 				GameScene.flash( 0xCC3366 );
 
 				float fill = 0.9f - 0.5f*((HP-(HT/2f))/(HT/2f));
@@ -334,7 +336,9 @@ public class Tengu extends Mob {
 				if (arenaJumps < 4) arenaJumps++;
 				
 				if (level.heroFOV[newPos]) CellEmitter.get( newPos ).burst( Speck.factory( Speck.WOOL ), 6 );
-				Sample.INSTANCE.play( Assets.Sounds.DIAVOLO );
+
+				Sample.INSTANCE.play( Assets.Sounds.DIAVOLO1 );
+
 				GameScene.flash( 0xCC3366 );
 				
 			}
@@ -351,7 +355,7 @@ public class Tengu extends Mob {
 			move( newPos );
 			
 			if (level.heroFOV[newPos]) CellEmitter.get( newPos ).burst( Speck.factory( Speck.WOOL ), 6 );
-			Sample.INSTANCE.play( Assets.Sounds.DIAVOLO );
+			Sample.INSTANCE.play( Assets.Sounds.DIAVOLO1 );
 			GameScene.flash( 0xCC3366 );
 			
 		}
@@ -366,6 +370,7 @@ public class Tengu extends Mob {
 			GameScene.flash( 0xCC3366 );
 			if (HP <= HT/2) BossHealthBar.bleed(true);
 			if (HP == HT) {
+				Sample.INSTANCE.play(Assets.Sounds.DIAVOLO3);
 				switch(Dungeon.hero.heroClass){
 					case WARRIOR:
 						this.yell(Messages.get(this, "notice_gotcha"));

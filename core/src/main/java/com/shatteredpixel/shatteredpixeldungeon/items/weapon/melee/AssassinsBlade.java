@@ -96,6 +96,14 @@ public class AssassinsBlade extends MeleeWeapon {
 		return info;
 	}
 
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	public boolean useTargeting(){
+		return false;
+	}
 
 	@Override
 	protected int baseChargeUse(Hero hero, Char target){

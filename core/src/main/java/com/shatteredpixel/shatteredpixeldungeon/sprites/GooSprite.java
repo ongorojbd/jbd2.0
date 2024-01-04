@@ -90,7 +90,7 @@ public class GooSprite extends MobSprite {
 			clearEmitters();
 		} else {
 			play(pump);
-			Sample.INSTANCE.play( Assets.Sounds.CHARGEUP, 1f, warnDist == 1 ? 0.8f : 1f );
+			Sample.INSTANCE.play( Assets.Sounds.CREAM, 1f, warnDist == 1 ? 1f : 1.2f );
 			if (ch.fieldOfView == null || ch.fieldOfView.length != Dungeon.level.length()){
 				ch.fieldOfView = new boolean[Dungeon.level.length()];
 				Dungeon.level.updateFieldOfView( ch, ch.fieldOfView );

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AtomSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TormentedSpiritSprite;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class TormentedSpirit extends Wraith {
@@ -42,17 +43,32 @@ public class TormentedSpirit extends Wraith {
 		spriteClass = AtomSprite.class;
 	}
 
-	private boolean seenBefore = false;
+	boolean left = false;
+
+	private static final String LEFT	= "left";
+
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle( bundle );
+		bundle.put( LEFT, left );
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle(bundle);
+		left = bundle.getBoolean(LEFT);
+	}
 
 
 	@Override
-	public void notice() {
-		super.notice();
-		if(!seenBefore){
+	protected boolean act() {
+		if(!left){
 			this.yell(Messages.get(this, "notice"));
 			Sample.INSTANCE.play(Assets.Sounds.YOSHIHIRO);
 		}
-		seenBefore = true;
+		left = true;
+
+		return super.act();
 	}
 
 	//50% more damage scaling than regular wraiths

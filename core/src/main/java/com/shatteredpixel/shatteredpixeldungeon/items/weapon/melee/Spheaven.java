@@ -242,6 +242,15 @@ public class Spheaven extends MeleeWeapon{
     }
 
     @Override
+    public String targetingPrompt() {
+        return Messages.get(this, "prompt");
+    }
+
+    public boolean useTargeting(){
+        return false;
+    }
+
+    @Override
     protected int baseChargeUse(Hero hero, Char target){
         return 2;
     }

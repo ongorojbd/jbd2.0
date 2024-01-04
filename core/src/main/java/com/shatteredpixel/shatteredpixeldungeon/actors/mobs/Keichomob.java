@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
@@ -59,7 +60,7 @@ public class Keichomob extends Mob {
     {
         spriteClass = KeichoSprite.class;
 
-        HP = HT = 15;
+        HP = HT = 25;
         defenseSkill = 0;
 
         EXP = 0;

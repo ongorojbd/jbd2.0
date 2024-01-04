@@ -99,7 +99,7 @@ public class Goo2Sprite extends MobSprite {
             clearEmitters();
         } else {
             play(pump);
-            Sample.INSTANCE.play( Assets.Sounds.CHARGEUP, 1f, warnDist == 1 ? 1.1f : 1.2f );
+            Sample.INSTANCE.play( Assets.Sounds.CREAM, 1f, warnDist == 1 ? 1f : 1.2f );
             for (int i = 0; i < Dungeon.level.length(); i++){
                 if (ch.fieldOfView != null && ch.fieldOfView[i]
                         && Dungeon.level.distance(i, ch.pos) <= warnDist

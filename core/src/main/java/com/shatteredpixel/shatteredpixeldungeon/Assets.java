@@ -259,6 +259,11 @@ public class Assets {
         public static final String TBOMB = "sounds/tbomb.mp3";
         public static final String SHEER = "sounds/sheer.mp3";
         public static final String DIAVOLO = "sounds/diavolo.mp3";
+        public static final String CREAM = "sounds/cream.mp3";
+        public static final String DIAVOLO1 = "sounds/diavolo1.mp3";
+        public static final String DIAVOLO2 = "sounds/diavolo2.mp3";
+
+        public static final String DIAVOLO3 = "sounds/diavolo3.mp3";
         public static final String STANDO = "sounds/stando.mp3";
         public static final String CRAZYDIO = "sounds/crazydio.mp3";
         public static final String YAREYARE = "sounds/yareyare.mp3";
@@ -349,7 +354,7 @@ public class Assets {
                 CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
                 TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
                 BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
-                HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, DIAVOLO, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, ORA2, ORA3, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH,
+                HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, ORA2, ORA3, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, K1, K2, K3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA};
     }

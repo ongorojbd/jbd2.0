@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
@@ -89,11 +90,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FlameKatana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spheaven;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tusk4;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -138,9 +145,6 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 
 		if(DeviceCompat.isDebug()){
-			new Jojo4().collect();
-			new Jojo5().collect();
-			new Jojo6().collect();
 			new RingOfMight().identify().upgrade(999).collect();
 			new RingOfAccuracy().identify().upgrade(999).collect();
 			new Castleintro().quantity(33).collect();
@@ -149,10 +153,8 @@ public enum HeroClass {
 			new PotionOfExperience().identify().quantity(33).collect();
 			new Bmap().identify().quantity(33).collect();
 			new PotionOfHealing().identify().quantity(100).collect();
-			new Neoro().identify().quantity(1).collect();
 			new Bcomdisc().identify().collect();
 			new HandAxe().identify().upgrade(20).collect();
-			new PotionOfStrength().identify().quantity(33).collect();
 		}
 
 		switch (this) {
