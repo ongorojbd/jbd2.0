@@ -33,7 +33,6 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class LSWORD extends MeleeWeapon {
-    public static final String AC_ZAP = "ZAP";
     {
         image = ItemSpriteSheet.LSWORD;
         hitSound = Assets.Sounds.HIT_SLASH;
@@ -52,7 +51,6 @@ public class LSWORD extends MeleeWeapon {
 
             if (hero.HP == 7 || hero.HP == 77){
                 damage *= 7.77f;
-                attacker.sprite.showStatus(CharSprite.POSITIVE, Messages.get(LSWORD.class, "1"));
             }
 
         if (Random.Int( 7 ) == 0) {
@@ -65,6 +63,7 @@ public class LSWORD extends MeleeWeapon {
                     mob.damage(dmg, this);
                 }
             }
+
             CellEmitter.get( curUser.pos ).burst( Speck.factory( Speck.STAR ), 10 );
             Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
             hero.sprite.zap(hero.pos);
@@ -82,7 +81,7 @@ public class LSWORD extends MeleeWeapon {
         if (defender.properties().contains(Char.Property.DEMONIC) || defender.properties().contains(Char.Property.UNDEAD)){
             defender.sprite.emitter().start( HamonPartice.UP, 0.05f, 10 );
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
-            damage *= 1.3333f; //deals more damage to the demons and the undeads
+            damage *= 1.3333f;
         }
         return super.proc( attacker, defender, damage );
     }

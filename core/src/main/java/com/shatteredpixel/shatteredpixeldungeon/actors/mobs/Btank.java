@@ -112,7 +112,7 @@ public class Btank extends Mob implements Callback {
             //TODO would be nice for this to work on ghost/statues too
 
             Sample.INSTANCE.play(Assets.Sounds.HIT);
-            int dmg = Random.NormalIntRange( 12, 18 );
+            int dmg = Random.NormalIntRange( 12, 16 );
 
             CellEmitter.center(enemy.pos).burst(BlastParticle.FACTORY, 15);
             CellEmitter.center(enemy.pos).burst(SmokeParticle.FACTORY, 4);

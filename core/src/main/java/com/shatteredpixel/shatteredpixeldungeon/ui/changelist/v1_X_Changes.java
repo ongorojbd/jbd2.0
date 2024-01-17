@@ -58,7 +58,7 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton( new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 캐릭터",
-				"6번째 플레이어블 캐릭터로 쿠죠 죠린이 추가될 예정입니다."));
+				"올해 안에 6번째 플레이어블 캐릭터로 쿠죠 죠린이 추가될 예정입니다."));
 	}
 
 	public static void add_v1_4_6_Changes( ArrayList<ChangeInfo> changeInfos ) {

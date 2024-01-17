@@ -314,6 +314,9 @@ public class Beast extends Mob {
         @Override
         public boolean act(boolean enemyInFOV, boolean justAlerted) {
 
+            if(Phase == 2){
+                GameScene.add(Blob.seed(pos, 60, Wgas.class));
+            }
 
             if (Random.Int(2) == 0) {
 
@@ -324,12 +327,12 @@ public class Beast extends Mob {
                 else {
                     sprite.move(pos, newPos);
                     pos = newPos;
-                    if(Phase == 2){
-                    GameScene.add(Blob.seed(pos, 60, Wgas.class));
-                }}
-            } else if (Random.Int(5) == 2) if (Phase == 2) {} else state = HUNTING;
-
-
+                 }
+            } else if (Random.Int(5) == 2) {
+                if(Phase != 2){
+                state = HUNTING;
+                }
+            }
             return super.act(enemyInFOV, justAlerted);
         }
 

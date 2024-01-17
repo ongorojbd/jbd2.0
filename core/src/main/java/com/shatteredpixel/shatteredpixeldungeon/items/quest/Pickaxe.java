@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -269,6 +270,7 @@ public class Pickaxe extends MeleeWeapon {
 					} else {
 						onAbilityKill(hero, enemy);
 					}
+					Sword.doraclass();
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 				}
 				Invisibility.dispel();
