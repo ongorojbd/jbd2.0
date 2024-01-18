@@ -396,6 +396,9 @@ public class Assets {
         public static final String PIRANHA = "sprites/piranha.png";
         public static final String EYE = "sprites/eye.png";
         public static final String GNOLL = "sprites/gnoll.png";
+        public static final String GNOLL2 = "sprites/gnoll2.png";
+        public static final String GNOLL3 = "sprites/gnoll3.png";
+        public static final String GNOLL4 = "sprites/gnoll4.png";
         public static final String CRAB = "sprites/crab.png";
         public static final String GOO = "sprites/goo.png";
         public static final String SWARM = "sprites/swarm.png";
