@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
@@ -41,6 +42,7 @@ public class Xray extends Spell {
     @Override
     protected void onCast(Hero hero) {
         Buff.affect(hero, Awareness.class, 2f);
+        Buff.affect(hero, MindVision.class, 2f);
         hero.sprite.operate(hero.pos);
         Sample.INSTANCE.play(Assets.Sounds.BEACON, 1f, 0.65f);
 
