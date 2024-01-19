@@ -169,6 +169,7 @@ public class Diobrando2 extends Mob {
         }
     }
 
+    public static class DarkBolt{}
 
     private boolean UseAbility() {
 
@@ -220,7 +221,7 @@ public class Diobrando2 extends Mob {
                         }
                         if (ch != null&& !(ch instanceof Diobrando2)) {
                             if ((ch.alignment != alignment || ch instanceof Zombie || ch instanceof Zombiedog)) {
-                                ch.damage(Random.NormalIntRange(15, 20), this);
+                                ch.damage(Random.NormalIntRange(15, 20), new DarkBolt());
 
                                 if (enemy == hero && !enemy.isAlive()) {
                                     Dungeon.fail(getClass());
@@ -261,7 +262,7 @@ public class Diobrando2 extends Mob {
         return false;
     }
 
-    public class Blast { }
+    public static class Blast { }
 
     @Override
     public int attackProc(Char enemy, int damage) {

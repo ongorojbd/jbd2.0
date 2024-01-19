@@ -245,14 +245,18 @@ public class LabsBossLevel extends Level {
 		drop( prize1, 6+(28)*33 ).type = Heap.Type.CHEST;
 		drop( prize5, 26+(28)*33 ).type = Heap.Type.CHEST;
 
-		Item item = Bones.get();
-		if (item != null) {
+		Random.pushGenerator(Random.Long());
+		ArrayList<Item> bonesItems = Bones.get();
+		if (bonesItems != null) {
 			int pos;
 			do {
 				pos = randomRespawnCell(null);
 			} while (pos == entrance());
-			drop( item, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
+			for (Item i : bonesItems) {
+				drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+			}
 		}
+		Random.popGenerator();
 	}
 
 	public int randomCellPos() {

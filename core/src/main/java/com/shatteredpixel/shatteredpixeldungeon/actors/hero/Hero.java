@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -89,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Stower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
@@ -849,6 +851,15 @@ public class Hero extends Char {
                 ready();
             }
 
+            //if we just loaded into a level and have a search buff, make sure to process them
+            if(Actor.now() == 0){
+                if (buff(Foresight.class) != null){
+                    search(false);
+                } else if (buff(TalismanOfForesight.Foresight.class) != null){
+                    buff(TalismanOfForesight.Foresight.class).checkAwareness();
+                }
+            }
+
             actResult = false;
 
         } else {
@@ -1061,6 +1072,15 @@ public class Hero extends Char {
                             || item instanceof Key
                             || item instanceof Guidebook) {
                         //Do Nothing
+                    } else if (item instanceof DarkGold) {
+                        DarkGold existing = belongings.getItem(DarkGold.class);
+                        if (existing != null){
+                            if (existing.quantity() >= 40) {
+                                GLog.p(Messages.get(DarkGold.class, "you_now_have", existing.quantity()));
+                            } else {
+                                GLog.i(Messages.get(DarkGold.class, "you_now_have", existing.quantity()));
+                            }
+                        }
                     } else {
 
                         //TODO make all unique items important? or just POS / SOU?
@@ -1275,9 +1295,9 @@ public class Hero extends Char {
 
                             //1 hunger spent total
                         } else if (Dungeon.level.map[action.dst] == Terrain.MINE_BOULDER) {
-                            Splash.at(action.dst, ColorMath.random(0x444444, 0x777766), 5);
+                            Splash.at(action.dst, 0x555555, 5);
                             Sample.INSTANCE.play(Assets.Sounds.MINE, 0.6f);
-                            Level.set(action.dst, Terrain.EMPTY);
+                            Level.set(action.dst, Terrain.EMPTY_DECO);
                         }
 
                         for (int i : PathFinder.NEIGHBOURS9) {
@@ -1362,19 +1382,28 @@ public class Hero extends Char {
     }
 
 
-    private boolean actAttack(HeroAction.Attack action) {
+    private boolean actAttack( HeroAction.Attack action ) {
 
         enemy = action.target;
 
-        if (enemy.isAlive() && canAttack(enemy) && !isCharmedBy(enemy) && enemy.invisible == 0) {
+        if (enemy.isAlive() && canAttack( enemy ) && !isCharmedBy( enemy ) && enemy.invisible == 0) {
 
-            sprite.attack(enemy.pos);
+            if (heroClass != HeroClass.DUELIST
+                    && hasTalent(Talent.AGGRESSIVE_BARRIER)
+                    && buff(Talent.AggressiveBarrierCooldown.class) == null
+                    && (HP / (float)HT) < 0.20f*(1+pointsInTalent(Talent.AGGRESSIVE_BARRIER))){
+                Buff.affect(this, Barrier.class).setShield(3);
+                sprite.showStatusWithIcon(CharSprite.POSITIVE, "3", FloatingText.SHIELDING);
+                Buff.affect(this, Talent.AggressiveBarrierCooldown.class, 50f);
+
+            }
+            sprite.attack( enemy.pos );
 
             return false;
 
         } else {
 
-            if (fieldOfView[enemy.pos] && getCloser(enemy.pos)) {
+            if (fieldOfView[enemy.pos] && getCloser( enemy.pos )) {
 
                 return true;
 
@@ -1456,7 +1485,7 @@ public class Hero extends Char {
 
         }
 
-        if (hero.belongings.getItem(Jojo5.class) != null && Dungeon.energy > 1 && wep instanceof MeleeWeapon) {
+        if (hero.belongings.getItem(Jojo5.class) != null && Dungeon.energy > 1) {
             Plant plant = (Plant) Reflection.newInstance(Random.element(harmfulPlants));
             plant.pos = enemy.pos;
             plant.activate(enemy.isAlive() ? enemy : null);
@@ -1722,6 +1751,7 @@ public class Hero extends Char {
         if (belongings.armor() != null && belongings.armor().hasGlyph(AntiMagic.class, this)
                 && AntiMagic.RESISTS.contains(src.getClass())) {
             dmg -= AntiMagic.drRoll(this, belongings.armor().buffedLvl());
+            dmg = Math.max(dmg, 0);
         }
 
         if (buff(Talent.WarriorFoodImmunity.class) != null) {
@@ -1957,7 +1987,7 @@ public class Hero extends Char {
 
         } else if (fieldOfView[cell] && ch instanceof Mob) {
 
-            if (ch.alignment != Alignment.ENEMY && ch.buff(Amok.class) == null) {
+            if (((Mob) ch).heroShouldInteract()) {
                 curAction = new HeroAction.Interact(ch);
             } else {
                 curAction = new HeroAction.Attack(ch);
@@ -2000,6 +2030,7 @@ public class Hero extends Char {
                 //moving to a transition doesn't automatically trigger it when enemies are near
                 && (visibleEnemies.size() == 0 || cell == pos)
                 && !Dungeon.level.locked
+                && !Dungeon.level.plants.containsKey(cell)
                 && (Dungeon.depth < 31 || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE)) {
 
             curAction = new HeroAction.LvlTransition(cell);
@@ -2631,6 +2662,10 @@ public class Hero extends Char {
 
         if (foresight) {
             GameScene.updateFog(pos, Foresight.DISTANCE + 1);
+        }
+
+        if (talisman != null){
+            talisman.checkAwareness();
         }
 
         return smthFound;

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -45,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBlacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
@@ -67,7 +69,7 @@ public class Blacksmith extends NPC {
 			Notes.remove( Notes.Landmark.TROLL );
 			return true;
 		}
-		if (Dungeon.level.visited[pos]){
+		if (Dungeon.level.visited[pos] && !Quest.started()){
 			Notes.add( Notes.Landmark.TROLL );
 		}
 		return super.act();
@@ -91,7 +93,7 @@ public class Blacksmith extends NPC {
 				//pre-v2.2.0 saves
 				msg1 = Quest.alternative ? Messages.get(Blacksmith.this, "blood_1") : Messages.get(Blacksmith.this, "gold_1");
 			} else {
-
+				Sample.INSTANCE.play(Assets.Sounds.JONNY);
 				switch (Dungeon.hero.heroClass){
 					case WARRIOR:   msg1 += Messages.get(Blacksmith.this, "intro_quest_warrior"); break;
 					case MAGE:      msg1 += Messages.get(Blacksmith.this, "intro_quest_mage"); break;
@@ -105,8 +107,8 @@ public class Blacksmith extends NPC {
 
 				switch (Quest.type){
 					case Quest.CRYSTAL: msg2 += Messages.get(Blacksmith.this, "intro_quest_crystal"); break;
-					case Quest.FUNGI:   msg2 += Messages.get(Blacksmith.this, "intro_quest_fungi"); break;
 					case Quest.GNOLL:   msg2 += Messages.get(Blacksmith.this, "intro_quest_gnoll"); break;
+					case Quest.FUNGI:   msg2 += Messages.get(Blacksmith.this, "intro_quest_fungi"); break;
 				}
 
 			}
@@ -145,7 +147,7 @@ public class Blacksmith extends NPC {
 
 			if (Quest.type == Quest.OLD) {
 				if (Quest.alternative) {
-
+					Sample.INSTANCE.play(Assets.Sounds.JONNY2);
 					Pickaxe pick = Dungeon.hero.belongings.getItem(Pickaxe.class);
 					if (pick == null) {
 						tell(Messages.get(this, "lost_pick"));
@@ -167,7 +169,7 @@ public class Blacksmith extends NPC {
 					}
 
 				} else {
-
+					Sample.INSTANCE.play(Assets.Sounds.JONNY2);
 					Pickaxe pick = Dungeon.hero.belongings.getItem(Pickaxe.class);
 					DarkGold gold = Dungeon.hero.belongings.getItem(DarkGold.class);
 					if (pick == null) {
@@ -192,8 +194,14 @@ public class Blacksmith extends NPC {
 
 				}
 			} else {
-
-				tell(Messages.get(this, "reminder"));
+				Sample.INSTANCE.play(Assets.Sounds.JONNY);
+				String msg = Messages.get(this, "reminder") + "\n\n";
+				switch (Quest.type){
+					case Quest.CRYSTAL: msg += Messages.get(Blacksmith.this, "reminder_crystal"); break;
+					case Quest.GNOLL:   msg += Messages.get(Blacksmith.this, "reminder_gnoll"); break;
+					case Quest.FUNGI:   msg += Messages.get(Blacksmith.this, "reminder_fungi"); break;
+				}
+				tell(msg);
 
 			}
 		} else if (Quest.type == Quest.OLD && Quest.reforges == 0) {
@@ -205,7 +213,7 @@ public class Blacksmith extends NPC {
 				}
 			});
 
-		} else if (Quest.favor > 0 || Quest.pickaxe != null && Statistics.questScores[2] >= 2500) {
+		} else if (Quest.rewardsAvailable()) {
 
 			Game.runOnRenderThread(new Callback() {
 				@Override
@@ -220,6 +228,7 @@ public class Blacksmith extends NPC {
 			});
 
 		} else {
+			Sample.INSTANCE.play(Assets.Sounds.JONNY2);
 			Danny danny = Dungeon.hero.belongings.getItem(Danny.class);
 			if(danny != null){
 				tell( Messages.get(this, "danny") );
@@ -272,8 +281,8 @@ public class Blacksmith extends NPC {
 		private static int type = 0;
 		public static final int OLD = 0;
 		public static final int CRYSTAL = 1;
-		public static final int FUNGI = 2;
-		public static final int GNOLL = 3;
+		public static final int GNOLL = 2;
+		public static final int FUNGI = 3; //The fungi quest is not implemented, only exists partially in code
 		//pre-v2.2.0
 		private static boolean alternative; //false for mining gold, true for bat blood
 
@@ -406,9 +415,8 @@ public class Blacksmith extends NPC {
 				rooms.add(new BlacksmithRoom());
 				spawned = true;
 
-				//currently only the crystal quest is ready to play
-				//we still roll for quest type however, to ensure seed consistency
-				type = 1+Random.Int(1);
+				//Currently cannot roll the fungi quest, as it is not fully implemented
+				type = Random.IntRange(1, 2);
 				alternative = false;
 
 				given = false;
@@ -508,6 +516,12 @@ public class Blacksmith extends NPC {
 			if (bossBeaten) favor += 1000;
 
 			Statistics.questScores[2] = favor;
+		}
+
+		public static boolean rewardsAvailable(){
+			return favor > 0
+					|| (Quest.smithRewards != null && Quest.smiths > 0)
+					|| (pickaxe != null && Statistics.questScores[2] >= 2500);
 		}
 
 		//if the blacksmith is generated pre-v2.2.0, and the player never spawned a mining test floor

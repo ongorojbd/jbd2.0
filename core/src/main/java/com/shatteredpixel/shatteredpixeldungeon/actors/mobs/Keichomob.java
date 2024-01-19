@@ -28,9 +28,28 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ParalyticGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ShrGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
@@ -69,6 +88,25 @@ public class Keichomob extends Mob {
 
         properties.add(Property.IMMOVABLE);
         properties.add(Property.MINIBOSS);
+
+        immunities.add( Blizzard.class );
+        immunities.add( CorrosiveGas.class );
+        immunities.add( ShrGas.class );
+        immunities.add( Electricity.class );
+        immunities.add( Fire.class );
+        immunities.add( Freezing.class );
+        immunities.add( Inferno.class );
+        immunities.add( ParalyticGas.class );
+        immunities.add( StenchGas.class );
+        immunities.add( StormCloud.class );
+        immunities.add( Paralysis.class );
+        immunities.add( Amok.class );
+        immunities.add( Sleep.class );
+        immunities.add( Terror.class );
+        immunities.add( Vertigo.class );
+        immunities.add( ToxicGas.class );
+        immunities.add( Chill.class );
+        immunities.add( MagicalSleep.class );
     }
 
     private static final String SPAWN_COOLDOWN = "spawnCooldown";
@@ -87,7 +125,6 @@ public class Keichomob extends Mob {
 
     private float spawnCooldown = 5;
 
-
     @Override
     public int drRoll() {
         return super.drRoll() + Random.NormalIntRange(0, 15);
@@ -96,6 +133,16 @@ public class Keichomob extends Mob {
     @Override
     public void beckon(int cell) {
         //do nothing
+    }
+
+    @Override
+    protected boolean getCloser(int target) {
+        return true;
+    }
+
+    @Override
+    protected boolean getFurther(int target) {
+        return true;
     }
 
     @Override

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -149,7 +150,7 @@ public class CavesLevel extends RegularLevel {
 				GLog.w(Messages.get(Blacksmith.class, "cant_enter_old"));
 			} else if (smith == null || !Blacksmith.Quest.given() || Blacksmith.Quest.completed()) {
 				GLog.w(Messages.get(Blacksmith.class, "entrance_blocked"));
-			} else if (!Blacksmith.Quest.started() && Blacksmith.Quest.Type() != 0){
+			} else if (!Blacksmith.Quest.started() && Blacksmith.Quest.Type() != Blacksmith.Quest.OLD){
 				final Pickaxe pick = hero.belongings.getItem(Pickaxe.class);
 				Game.runOnRenderThread(new Callback() {
 					@Override
@@ -160,6 +161,7 @@ public class CavesLevel extends RegularLevel {
 									Messages.get(Blacksmith.class, "lost_pick"))
 							);
 						} else {
+							Sample.INSTANCE.play(Assets.Sounds.JONNY);
 							GameScene.show( new WndOptions( new BlacksmithSprite(),
 									Messages.titleCase(Messages.get(Blacksmith.class, "name")),
 									Messages.get(Blacksmith.class, "quest_start_prompt"),

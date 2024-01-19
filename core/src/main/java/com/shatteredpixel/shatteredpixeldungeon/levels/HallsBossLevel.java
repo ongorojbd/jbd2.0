@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -199,14 +199,18 @@ public class HallsBossLevel extends Level {
 
     @Override
     protected void createItems() {
-        Item item = Bones.get();
-        if (item != null) {
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
             int pos;
             do {
                 pos = randomRespawnCell(null);
             } while (pos == entrance());
-            drop(item, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
         }
+        Random.popGenerator();
     }
 
     @Override
@@ -311,8 +315,6 @@ public class HallsBossLevel extends Level {
     @Override
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
-                //ascension challenge only works on runs started on v1.3+
-                && Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
                 && hero.belongings.getItem(Amulet.class) != null
                 && hero.buff(AscensionChallenge.class) == null) {
 

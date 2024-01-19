@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+
+import java.util.ArrayList;
 
 public class ScrollOfRetribution extends Scroll {
 
@@ -52,18 +55,28 @@ public class ScrollOfRetribution extends Scroll {
 		
 		Sample.INSTANCE.play( Assets.Sounds.BLAST );
 
+		GLog.i(Messages.get(this, "blast"));
+
+		ArrayList<Mob> targets = new ArrayList<>();
+
+		//calculate targets first, in case damaging/blinding a target affects hero vision
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 			if (Dungeon.level.heroFOV[mob.pos]) {
-				//deals 10%HT, plus 0-90%HP based on scaling
-				if (!(mob instanceof Rebel || mob instanceof Bcomsolg)) {
-					mob.damage(Math.round(mob.HT/10f + (mob.HP * power * 0.225f)), this);
-				}
-				if (mob instanceof Rebel) {
-					mob.yell(Messages.get(mob, "no_scroll"));
-				}
-				if (mob.isAlive()) {
-					Buff.prolong(mob, Blindness.class, Blindness.DURATION);
-				}
+				targets.add(mob);
+			}
+		}
+
+		for (Mob mob : targets){
+			//deals 10%HT, plus 0-90%HP based on scaling
+			if (!(mob instanceof Rebel || mob instanceof Bcomsolg)) {
+				mob.damage(Math.round(mob.HT / 10f + (mob.HP * power * 0.225f)), this);
+			}
+			if (mob instanceof Rebel) {
+				mob.yell(Messages.get(mob, "no_scroll"));
+			}
+			if (mob.isAlive()) {
+				Buff.prolong(mob, Blindness.class, Blindness.DURATION);
+
 			}
 		}
 		

@@ -114,7 +114,7 @@ public class Bcopter extends Elemental.FireElemental {
             return super.doAttack(enemy);
         }
     }
-
+    public static class DarkBolt{}
     @Override
     protected void zap() {
         if (targetingPos != -1) {
@@ -129,7 +129,7 @@ public class Bcopter extends Elemental.FireElemental {
 
                     Char target = Actor.findChar(targetingPos + i);
                     if (target != null && target.alignment != alignment) {
-                        target.damage(Random.NormalIntRange(15, 20), this);
+                        target.damage(Random.NormalIntRange(15, 20), new DarkBolt());
                         if (enemy == hero && !enemy.isAlive()) {
                             Dungeon.fail(getClass());
                         }

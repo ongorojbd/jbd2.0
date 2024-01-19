@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public abstract class CrystalWispSprite extends MobSprite {
 		run.frames( frames, 0, 1, 2, 3, 2, 1 );
 
 		attack = new Animation( 16, false );
-		attack.frames( frames, 4, 5, 6, 0 );
+		attack.frames( frames, 4, 5, 6, 5, 4, 0 );
 
 		zap = attack.clone();
 
@@ -65,7 +65,7 @@ public abstract class CrystalWispSprite extends MobSprite {
 
 		super.zap( cell );
 
-		parent.add(new AlphaTweener(light, 1f, 0.2f) {
+		parent.add(new AlphaTweener(light, 0.3f, 0.2f) {
 			@Override
 			public void onComplete() {
 				light.alpha(0.3f);
@@ -81,7 +81,7 @@ public abstract class CrystalWispSprite extends MobSprite {
 	@Override
 	public synchronized void attack(int cell) {
 		super.attack(cell);
-		parent.add(new AlphaTweener(light, 1f, 0.2f) {
+		parent.add(new AlphaTweener(light, 0.3f, 0.2f) {
 			@Override
 			public void onComplete() {
 				light.alpha(0.3f);

@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
@@ -198,7 +199,8 @@ public class Rebel extends Mob {
 	public int attackSkill( Char target ) {
 		return 70;
 	}
-
+	public static class SummoningBlockDamage2{}
+	public static class SummoningBlockDamage3{}
 	@Override
 	public int attackProc(Char enemy, int damage) {
 
@@ -207,7 +209,7 @@ public class Rebel extends Mob {
 			SpellSprite.show( this, SpellSprite.PURITY );
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 			CellEmitter.get(hero.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-			enemy.damage(20, this);
+			enemy.damage(20, new SummoningBlockDamage2());
 			charge = 0;
 
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {
@@ -727,7 +729,7 @@ public class Rebel extends Mob {
 						if (Target.buff(PortableCover2.CoverBuff.class) == null) {
 							if (hit( this, enemy, true )) {
 								if (ch != null&& !(ch instanceof Rebel)) {
-									ch.damage(Random.NormalIntRange(65, 70), this);
+									ch.damage(Random.NormalIntRange(65, 70), new SummoningBlockDamage3());
 								}
 							}
 						}	 else {

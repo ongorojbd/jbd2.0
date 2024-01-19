@@ -26,11 +26,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsolg;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcopter;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Btank;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Bcomdisc;
@@ -39,6 +41,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
@@ -53,8 +58,17 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BcomTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -209,13 +223,44 @@ public class TempleLastLevel extends Level {
 
         drop( new Bcomdisc(), 15+WIDTH*2).type = Heap.Type.CHEST;
 
-        Item item = Bones.get();
-        if (item != null) {
+        Random.pushGenerator(Random.Long());
+        ArrayList<Item> bonesItems = Bones.get();
+        if (bonesItems != null) {
             int pos;
             do {
                 pos = randomRespawnCell(null);
             } while (pos == entrance());
-            drop( item, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            for (Item i : bonesItems) {
+                drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+            }
+        }
+        Random.popGenerator();
+    }
+
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if (transition.type == LevelTransition.Type.BRANCH_ENTRANCE) {
+
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.MAP0),
+                            Messages.titleCase(Messages.get(Bmap.class, "name")),
+                            Messages.get(Bmap.class, "1"),
+                            Messages.get(Bmap.class, "yes"),
+                            Messages.get(Bmap.class, "no")){
+                        @Override
+                        protected void onSelect(int index) {
+                            if (index == 0){
+                                TempleLastLevel.super.activateTransition(hero, transition);
+                            }
+                        }
+                    } );
+                }
+            });
+            return false;
+
+        } else {
+            return super.activateTransition(hero, transition);
         }
     }
 
