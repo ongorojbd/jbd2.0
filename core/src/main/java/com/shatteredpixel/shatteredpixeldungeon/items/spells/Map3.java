@@ -157,15 +157,6 @@ public class Map3 extends Spell {
 
             if (!spawnPoints.isEmpty()){
 
-                for (Char ch : Actor.chars()){
-                    if (ch instanceof Elemental && ch.buff(SummonElemental.InvisAlly.class) != null){
-                        ScrollOfTeleportation.appear( ch, Random.element(spawnPoints) );
-                        ((Elemental) ch).state = ((Elemental) ch).HUNTING;
-                        curUser.spendAndNext(Actor.TICK);
-                        return;
-                    }
-                }
-
                 Diego elemental = new Diego();
                 elemental.state = elemental.HUNTING;
                 GameScene.add( elemental );

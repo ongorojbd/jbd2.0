@@ -152,15 +152,6 @@ public class Sbr7 extends Spell {
 
             if (!spawnPoints.isEmpty()){
 
-                for (Char ch : Actor.chars()){
-                    if (ch instanceof Elemental && ch.buff(SummonElemental.InvisAlly.class) != null){
-                        ScrollOfTeleportation.appear( ch, Random.element(spawnPoints) );
-                        ((Elemental) ch).state = ((Elemental) ch).HUNTING;
-                        curUser.spendAndNext(Actor.TICK);
-                        return;
-                    }
-                }
-
                 GLog.n(Messages.get(Pucci12.class, "4"));
                 Pucci12 elemental = new Pucci12();
                 GameScene.add( elemental );

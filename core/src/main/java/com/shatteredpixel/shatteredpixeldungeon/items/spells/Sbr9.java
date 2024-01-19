@@ -144,15 +144,6 @@ public class Sbr9 extends Spell {
 
             if (!spawnPoints.isEmpty()){
 
-                for (Char ch : Actor.chars()){
-                    if (ch instanceof Elemental && ch.buff(SummonElemental.InvisAlly.class) != null){
-                        ScrollOfTeleportation.appear( ch, Random.element(spawnPoints) );
-                        ((Elemental) ch).state = ((Elemental) ch).HUNTING;
-                        curUser.spendAndNext(Actor.TICK);
-                        return;
-                    }
-                }
-
                 Diego12 elemental = new Diego12();
                 GameScene.add( elemental );
                 ScrollOfTeleportation.appear( elemental, Random.element(spawnPoints) );

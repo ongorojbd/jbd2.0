@@ -66,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibili
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
@@ -92,6 +93,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsi
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr9;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
@@ -155,25 +157,24 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-		if(DeviceCompat.isDebug()){
-			new RingOfMight().identify().upgrade(999).collect();
-			new RingOfAccuracy().identify().upgrade(999).collect();
-			new Castleintro().quantity(33).collect();
-			new Neotel().quantity(33).collect();
-			new Kingt().quantity(55).collect();
-			new PotionOfExperience().identify().quantity(33).collect();
-			new Bmap().identify().quantity(33).collect();
-			new PotionOfHealing().identify().quantity(100).collect();
-			new ScrollOfEnchantment().identify().quantity(100).collect();
-			new PotionOfFrost().identify().quantity(100).collect();
-			new StoneOfDeepSleep().identify().quantity(100).collect();
-			new Fadeleaf.Seed().identify().quantity(100).collect();
-			new Amulet().identify().collect();
-			new TengusMask().identify().collect();
-			new HandAxe().identify().upgrade(20).collect();
-			new PlateArmor().identify().upgrade(999).collect();
-			new WandOfFrost().identify().upgrade(2).collect();
-		}
+//		if(DeviceCompat.isDebug()){
+//			new RingOfMight().identify().upgrade(999).collect();
+//			new RingOfAccuracy().identify().upgrade(999).collect();
+//			new Castleintro().quantity(33).collect();
+//			new Neotel().quantity(33).collect();
+//			new Kingt().quantity(55).collect();
+//			new PotionOfExperience().identify().quantity(33).collect();
+//			new Bmap().identify().quantity(33).collect();
+//			new PotionOfHealing().identify().quantity(100).collect();
+//			new PotionOfDivineInspiration().identify().quantity(100).collect();
+//			new PotionOfFrost().identify().quantity(100).collect();
+//			new StoneOfDeepSleep().identify().quantity(100).collect();
+//			new Fadeleaf.Seed().identify().quantity(100).collect();
+//			new Bcomdisc().identify().collect();
+//			new HandAxe().identify().upgrade(20).collect();
+//			new PlateArmor().identify().upgrade(999).collect();
+//			new WandOfFrost().identify().upgrade(2).collect();
+//		}
 
 		switch (this) {
 			case WARRIOR:
