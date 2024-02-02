@@ -21,20 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.emitter;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.EvoSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MonkSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -44,10 +42,7 @@ import com.watabou.utils.Random;
 public class Monk extends Mob {
 	
 	{
-		spriteClass = Random.oneOf(
-				MonkSprite.class,
-				EvoSprite.class
-		);
+		spriteClass = MonkSprite.class;
 		
 		HP = HT = 70;
 		defenseSkill = 30;
@@ -60,7 +55,7 @@ public class Monk extends Mob {
 
 		properties.add(Property.UNDEAD);
 	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 12, 25 );
@@ -95,6 +90,9 @@ public class Monk extends Mob {
 		boolean result = super.act();
 		if (buff(Focus.class) == null && state == HUNTING && focusCooldown <= 0) {
 			Buff.affect( this, Focus.class );
+			sprite.centerEmitter().burst(Speck.factory(Speck.WOOL), 5);
+			sprite.centerEmitter().burst(ShadowParticle.UP, 4);
+			Sample.INSTANCE.play(Assets.Sounds.EVO1);
 		}
 		return result;
 	}
@@ -123,6 +121,7 @@ public class Monk extends Mob {
 	
 	@Override
 	public String defenseVerb() {
+		Sample.INSTANCE.play(Assets.Sounds.EVO2);
 		Focus f = buff(Focus.class);
 		if (f == null) {
 			return super.defenseVerb();
@@ -166,6 +165,17 @@ public class Monk extends Mob {
 		public void tintIcon(Image icon) {
 			icon.hardlight(0.25f, 1.5f, 1f);
 		}
+	}
+
+	@Override
+	public void die( Object cause ) {
+
+		super.die( cause );
+
+		if (Dungeon.level.heroFOV[pos]) {
+			Sample.INSTANCE.play(Assets.Sounds.EVO3);
+		}
+
 	}
 
 }

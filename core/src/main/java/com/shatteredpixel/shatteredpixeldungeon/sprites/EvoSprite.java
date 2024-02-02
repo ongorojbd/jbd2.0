@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Random;
 
@@ -32,24 +34,26 @@ public class EvoSprite extends MobSprite {
     public EvoSprite() {
         super();
 
-        texture( Assets.Sprites.MONK );
+        texture( Assets.Sprites.EVO );
 
-        TextureFilm frames = new TextureFilm( texture, 14, 16 );
+        TextureFilm frames = new TextureFilm( texture, 35, 37 );
 
         idle = new Animation( 6, true );
-        idle.frames( frames, 18, 17, 18, 19 );
+        idle.frames( frames, 0, 2, 0, 2 );
 
-        run = new Animation( 15, true );
-        run.frames( frames, 28, 29, 30, 31, 32, 33 );
+        run = new Animation( 10, true );
+        run.frames( frames, 2, 1, 0, 2, 1, 0 );
 
         attack = new Animation( 12, false );
-        attack.frames( frames, 20, 21, 20, 21 );
+        attack.frames( frames, 6, 7, 8, 7, 6 );
 
         kick = new Animation( 10, false );
-        kick.frames( frames, 22, 23, 22 );
+        kick.frames( frames, 3, 4, 5, 4, 3 );
 
         die = new Animation( 15, false );
-        die.frames( frames, 18, 24, 25, 25, 26, 27 );
+        die.frames( frames, 9, 10, 11 );
+
+        scale.set(0.45f);
 
         play( idle );
     }
@@ -57,9 +61,16 @@ public class EvoSprite extends MobSprite {
     @Override
     public void attack( int cell ) {
         super.attack( cell );
-        if (Random.Float() < 0.3f) {
+        if (Random.Float() < 0.5f) {
             play( kick );
         }
+    }
+
+    @Override
+    public void die() {
+        emitter().burst( Speck.factory( Speck.WOOL ), 5 );
+        emitter().burst( ShadowParticle.UP, 4 );
+        super.die();
     }
 
     @Override

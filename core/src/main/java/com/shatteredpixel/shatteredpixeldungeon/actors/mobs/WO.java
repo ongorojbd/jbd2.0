@@ -81,7 +81,6 @@ public class WO extends Mob {
         defenseSkill = 25;
         EXP = 0;
         maxLvl = 30;
-        flying = true;
         viewDistance = 55;
 
         HUNTING = new WO.Hunting();
@@ -114,7 +113,7 @@ public class WO extends Mob {
                 case 2:
                     CellEmitter.get( this.pos ).burst( FlameParticle.FACTORY, 99 );
                     sprite.showStatus(CharSprite.WARNING, Messages.get(this, "W2"));
-                    Buff.affect(this, Light.class, 3f);
+                    Buff.affect(this, Invisibility.class, 3f);
                     Buff.affect(this, FireImbue.class).set(3f);
                     this.beckon( Dungeon.hero.pos );
                     break;

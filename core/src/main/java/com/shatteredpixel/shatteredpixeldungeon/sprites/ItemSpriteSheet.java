@@ -177,7 +177,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BEACON,          11, 11);
 		
 		assignItemRect(HONEYPOT,        8, 12);
-		assignItemRect(SHATTPOT,        11, 13);
+		assignItemRect(SHATTPOT,        11, 15);
 		assignItemRect(IRON_KEY,        8,  14);
 		assignItemRect(GOLDEN_KEY,      8,  14);
 		assignItemRect(CRYSTAL_KEY,     8,  14);
@@ -566,7 +566,7 @@ public class ItemSpriteSheet {
 		assignItemRect(JOJO9,    12, 16);
 		assignItemRect(CEN,      15, 16);
 		assignItemRect(DEMON,    16, 12);
-		assignItemRect(DANNY,    16, 13);
+		assignItemRect(DANNY,    15, 11);
 		assignItemRect(SMASK,    14, 12);
 		assignItemRect(DIOCASTLE,16, 16);
 		assignItemRect(DIOCOFFIN,16, 16);

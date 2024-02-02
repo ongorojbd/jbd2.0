@@ -21,82 +21,40 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.BanditSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HarvestSprite;
 import com.watabou.utils.Random;
 
-public class Bandit extends Mob {
+public class Bandit extends Thief {
+
+	public Item item;
 
 	{
-		spriteClass = BanditSprite.class;
+		spriteClass = HarvestSprite.class;
 
-		HP = HT = 35;
-		defenseSkill = 12;
-
-		EXP = 5;
-		maxLvl = 11;
-
+		//guaranteed first drop, then 1/3, 1/9, etc.
+		lootChance = 1f;
 	}
 
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 10 );
-	}
+	protected boolean steal( Hero hero ) {
+		if (super.steal( hero )) {
 
-	@Override
-	public int attackSkill(Char target) {return 15;}
+			Buff.prolong( hero, Blindness.class, Blindness.DURATION/2f );
+			Buff.affect( hero, Poison.class ).set(Random.IntRange(5, 6) );
+			Buff.prolong( hero, Cripple.class, Cripple.DURATION/2f );
+			Dungeon.observe();
 
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 3);
-	}
-
-	@Override
-	public int attackProc( Char hero, int damage ) {
-		damage = super.attackProc(enemy, damage);
-		if (this.buff(Doom.class) == null) {
-			if (Random.Int(1) == 0 && hero instanceof Hero) {
-				if (Dungeon.gold > 101) {
-					Dungeon.gold -= 100;
-					Sample.INSTANCE.play(Assets.Sounds.CHARMS);
-					CellEmitter.get(pos).burst( Speck.factory( Speck.COIN ), 12 );
-					GLog.w(Messages.get(this, "losemoney"));
-				}
-
-				return damage;
-			}
+			return true;
+		} else {
+			return false;
 		}
-		return damage;
 	}
 
-
-	@Override
-	public void die(Object cause) {
-
-		super.die(cause);
-
-
-		{
-			Dungeon.level.drop( new Gold().identify().quantity(1000), pos ).sprite.drop( pos );
-		}
-
-	}
 }

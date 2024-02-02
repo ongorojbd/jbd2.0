@@ -68,7 +68,7 @@ public abstract class ElementalSprite extends MobSprite {
 		die = new Animation( 15, false );
 		die.frames( frames, c+7, c+8, c+9, c+10, c+11, c+12, c+13, c+12 );
 
-		scale.set(0.75f);
+		scale.set(0.7f);
 		
 		play( idle );
 	}

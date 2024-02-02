@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -30,15 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Whsnake;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Whsnake2;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -51,12 +47,9 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WandmakerSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndWandmaker;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Point;
@@ -71,7 +64,7 @@ public class Wandmaker extends NPC {
 
 		properties.add(Property.IMMOVABLE);
 	}
-	
+
 	@Override
 	protected boolean act() {
 		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
@@ -83,7 +76,7 @@ public class Wandmaker extends NPC {
 		}
 		return super.act();
 	}
-	
+
 	@Override
 	public int defenseSkill( Char enemy ) {
 		return INFINITE_EVASION;
@@ -98,12 +91,12 @@ public class Wandmaker extends NPC {
 	public boolean add( Buff buff ) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean interact(Char c) {
 		sprite.turnTo( pos, Dungeon.hero.pos );
@@ -113,7 +106,7 @@ public class Wandmaker extends NPC {
 		}
 
 		if (Quest.given) {
-			
+
 			Item item;
 			switch (Quest.type) {
 				case 1:
@@ -155,7 +148,7 @@ public class Wandmaker extends NPC {
 					}
 				});
 			}
-			
+
 		} else {
 
 			String msg1 = "";
@@ -195,76 +188,22 @@ public class Wandmaker extends NPC {
 			msg2 += Messages.get(this, "intro_2");
 			final String msg1Final = msg1;
 			final String msg2Final = msg2;
-			
-			Game.runOnRenderThread(new Callback() {
 
+			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
-					GameScene.show(new WndOptions(
-							sprite(),
-							Messages.titleCase(name()),
-							Messages.get(Wandmaker.class, "0"),
-							Messages.get(Wandmaker.class, "1"),
-							Messages.get(Wandmaker.class, "2"),
-							Messages.get(Wandmaker.class, "3")
-					){
+					GameScene.show(new WndQuest(Wandmaker.this, msg1Final){
 						@Override
-						protected void onSelect(int index) {
-							if (index == 0){
-								GameScene.show(new WndQuest(Wandmaker.this, msg1Final){
-									@Override
-									public void hide() {
-										super.hide();
-										GameScene.show(new WndQuest(Wandmaker.this, msg2Final));
-									}
-								});
-								super.onBackPressed();
-								Quest.given = true;
-								Notes.add( Notes.Landmark.WANDMAKER );
-							} else if (index == 1) {
-								Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-								yell(Messages.get(Wandmaker.class, "4"));
-
-								destroy();
-								sprite.killAndErase();
-								die(null);
-								Notes.remove(Notes.Landmark.WANDMAKER);
-
-								Whsnake Whsnake = new Whsnake();
-								Whsnake.state = Whsnake.HUNTING;
-								Whsnake.pos = pos;
-								GameScene.add( Whsnake );
-								Whsnake.beckon(Dungeon.hero.pos);
-
-							} else {
-								Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-
-
-								destroy();
-								sprite.killAndErase();
-								die(null);
-								Notes.remove(Notes.Landmark.WANDMAKER);
-
-
-								ScrollOfPolymorph pick = new ScrollOfPolymorph();
-								if (pick.doPickUp( Dungeon.hero )) {
-									GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
-								} else {
-									Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
-								}
-								yell(Messages.get(Wandmaker.class, "5"));
-								Whsnake2 Whsnake2 = new Whsnake2();
-								Whsnake2.state = Whsnake2.HUNTING;
-								Whsnake2.pos = pos;
-								GameScene.add( Whsnake2 );
-								Whsnake2.beckon(Dungeon.hero.pos);
-							}
+						public void hide() {
+							super.hide();
+							GameScene.show(new WndQuest(Wandmaker.this, msg2Final));
 						}
 					});
 				}
 			});
 
-
+			Quest.given = true;
+			Notes.add( Notes.Landmark.WANDMAKER );
 		}
 
 		return true;
@@ -276,14 +215,14 @@ public class Wandmaker extends NPC {
 		// 1 = corpse dust quest
 		// 2 = elemental embers quest
 		// 3 = rotberry quest
-		
+
 		private static boolean spawned;
-		
+
 		private static boolean given;
-		
+
 		public static Wand wand1;
 		public static Wand wand2;
-		
+
 		public static void reset() {
 			spawned = false;
 			type = 0;
@@ -291,9 +230,9 @@ public class Wandmaker extends NPC {
 			wand1 = null;
 			wand2 = null;
 		}
-		
+
 		private static final String NODE		= "wandmaker";
-		
+
 		private static final String SPAWNED		= "spawned";
 		private static final String TYPE		= "type";
 		private static final String GIVEN		= "given";
@@ -301,19 +240,19 @@ public class Wandmaker extends NPC {
 		private static final String WAND2		= "wand2";
 
 		private static final String RITUALPOS	= "ritualpos";
-		
+
 		public static void storeInBundle( Bundle bundle ) {
-			
+
 			Bundle node = new Bundle();
-			
+
 			node.put( SPAWNED, spawned );
-			
+
 			if (spawned) {
-				
+
 				node.put( TYPE, type );
-				
+
 				node.put( GIVEN, given );
-				
+
 				node.put( WAND1, wand1 );
 				node.put( WAND2, wand2 );
 
@@ -322,20 +261,20 @@ public class Wandmaker extends NPC {
 				}
 
 			}
-			
+
 			bundle.put( NODE, node );
 		}
-		
+
 		public static void restoreFromBundle( Bundle bundle ) {
 
 			Bundle node = bundle.getBundle( NODE );
-			
+
 			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
 
 				type = node.getInt(TYPE);
-				
+
 				given = node.getBoolean( GIVEN );
-				
+
 				wand1 = (Wand)node.get( WAND1 );
 				wand2 = (Wand)node.get( WAND2 );
 
@@ -347,14 +286,14 @@ public class Wandmaker extends NPC {
 				reset();
 			}
 		}
-		
+
 		private static boolean questRoomSpawned;
-		
+
 		public static void spawnWandmaker( Level level, Room room ) {
 			if (questRoomSpawned) {
-				
+
 				questRoomSpawned = false;
-				
+
 				Wandmaker npc = new Wandmaker();
 				boolean validPos;
 				//Do not spawn wandmaker on the entrance, a trap, or in front of a door.
@@ -393,17 +332,17 @@ public class Wandmaker extends NPC {
 				}
 				wand2.cursed = false;
 				wand2.upgrade();
-				
+
 			}
 		}
-		
+
 		public static ArrayList<Room> spawnRoom( ArrayList<Room> rooms) {
 			questRoomSpawned = false;
 			if (!spawned && (type != 0 || (Dungeon.depth > 6 && Random.Int( 10 - Dungeon.depth ) == 0))) {
-				
+
 				// decide between 1,2, or 3 for quest type.
 				if (type == 0) type = Random.Int(3)+1;
-				
+
 				switch (type){
 					case 1: default:
 						rooms.add(new MassGraveRoom());
@@ -415,9 +354,9 @@ public class Wandmaker extends NPC {
 						rooms.add(new RotGardenRoom());
 						break;
 				}
-		
+
 				questRoomSpawned = true;
-				
+
 			}
 			return rooms;
 		}
@@ -494,11 +433,11 @@ public class Wandmaker extends NPC {
 				return false;
 			}
 		}
-		
+
 		public static void complete() {
 			wand1 = null;
 			wand2 = null;
-			
+
 			Notes.remove( Notes.Landmark.WANDMAKER );
 			Statistics.questScores[1] = 2000;
 		}

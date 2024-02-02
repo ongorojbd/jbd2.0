@@ -40,6 +40,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Com;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Emporio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Pian;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So1;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weather;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weza;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
@@ -132,8 +134,16 @@ public class EmporioLevel extends Level {
         mobs.add( npc3 );
 
         Jolyne npc4 = new Jolyne();
-        npc4.pos = 2 * width() + 3;
+        npc4.pos = 3 * width() + 3;
         mobs.add( npc4 );
+
+//        So1 So1 = new So1();
+//        So1.pos = 3 * width() + 4;
+//        mobs.add( So1 );
+//
+//        So2 So2 = new So2();
+//        So2.pos = 5 * width() + 8;
+//        mobs.add( So2 );
 
         Com npcc = new Com();
         npcc.pos = 9 * width() + 3;
@@ -142,7 +152,6 @@ public class EmporioLevel extends Level {
         Emporio npc5 = new Emporio();
         npc5.pos = 7 * width() + 5;
         mobs.add( npc5 );
-
 
         return true;
     }

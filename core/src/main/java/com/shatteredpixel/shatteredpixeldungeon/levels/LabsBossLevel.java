@@ -80,7 +80,12 @@ public class LabsBossLevel extends Level {
 		} else if (map[exit()] != Terrain.EXIT){
 			Music.INSTANCE.end();
 		} else {
-			Music.INSTANCE.playTracks(
+			if (hero.buff(AscensionChallenge.class) != null) {
+				Music.INSTANCE.playTracks(
+						new String[]{Assets.Music.CIV},
+						new float[]{1},
+						false);
+			} else Music.INSTANCE.playTracks(
 					new String[]{Assets.Music.LABS_1},
 					new float[]{1},
 					false);

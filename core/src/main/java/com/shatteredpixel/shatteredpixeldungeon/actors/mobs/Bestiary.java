@@ -27,9 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
-import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.MandomSprite;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -137,20 +134,20 @@ public class Bestiary {
 				//3x bat, 1x brute, 1x shaman
 				return new ArrayList<>(Arrays.asList(
 						Bat.class, Bat.class, Bat.class,
-						Brute.random(),
+						Brute.class,
 						Shaman.random()));
 			case 12:
 				//2x bat, 2x brute, 1x shaman, 1x spinner
 				return new ArrayList<>(Arrays.asList(
 						Bat.class, Bat.class,
-						Brute.random(), Brute.random(),
+						Brute.class, Brute.class,
 						Shaman.random(),
 						Spinner.class));
 			case 13:
 				//1x bat, 2x brute, 2x shaman, 2x spinner, 1x DM-200
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
-						Brute.random(), Brute.random(),
+						Brute.class, Brute.class,
 						Shaman.random(), Shaman.random(),
 						Spinner.class, Spinner.class,
 						DM200.class));
@@ -158,7 +155,7 @@ public class Bestiary {
 				//1x bat, 1x brute, 2x shaman, 2x spinner, 2x DM-300
 				return new ArrayList<>(Arrays.asList(
 						Bat.class,
-						Brute.random(),
+						Brute.class,
 						Shaman.random(), Shaman.random(),
 						Spinner.class, Spinner.class,
 						DM200.class, DM200.class));
@@ -266,7 +263,6 @@ public class Bestiary {
 			default:
 				return;
 			case 4:
-
 					if (Random.Float() < 0.025f) rotation.add(Thief.class);
 					return;
 
@@ -322,7 +318,7 @@ public class Bestiary {
 	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
 		for (int i = 0; i < rotation.size(); i++){
 			int max = 50;
-			if (Dungeon.isChallenged(Challenges.RAPSO)) max = 0;
+			if (Dungeon.isChallenged(Challenges.RAPSO)) max = 3;
 
 			if (Random.Int( max ) == 0) {
 				Class<? extends Mob> cl = rotation.get(i);
@@ -334,16 +330,14 @@ public class Bestiary {
 					cl = Bandit.class;
 				} else if (cl == Necromancer.class){
 					cl = SpectralNecromancer.class;
-				} else if (cl == Brute.BlueBrute.class) {
+				} else if (cl == Brute.class) {
 					cl = ArmoredBrute.class;
-				} else if (cl == Brute.RedBrute.class) {
-					cl = ArmoredBrute.class;
-				} else if (cl == DM200.class) {
+				}  else if (cl == DM200.class) {
 					cl = DM201.class;
-				} else if (cl == Warlock.class) {
+				} else if (cl == Monk.class) {
 					cl = Senior.class;
-				} else if (cl == Eye.class) {
-					cl = Vitaminc.class;
+				} else if (cl == Scorpio.class) {
+					cl = Acidic.class;
 				}  else if (cl == Soldier.class) {
 					cl = Teq.class;
 				}

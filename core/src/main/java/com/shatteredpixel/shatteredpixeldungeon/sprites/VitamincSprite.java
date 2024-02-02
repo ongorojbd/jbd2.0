@@ -22,14 +22,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Vitaminc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class VitamincSprite extends MobSprite {
+
+    private int cellToAttack;
 
     public VitamincSprite() {
         super();
@@ -51,34 +55,45 @@ public class VitamincSprite extends MobSprite {
         die = new MovieClip.Animation( 15, false );
         die.frames( frames, 5, 6, 7);
 
-        scale.set(0.85f);
+        scale.set(0.75f);
 
         play( idle );
     }
 
-    public void zap( int cell ) {
+    @Override
+    public void attack( int cell ) {
+        if (!Dungeon.level.adjacent( cell, ch.pos )) {
 
-        turnTo( ch.pos , cell );
-        play( zap );
+            cellToAttack = cell;
+            zap(cell);
 
-        MagicMissile.boltFromChar( parent,
-                MagicMissile.RAINBOW,
-                this,
-                cell,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        ((Vitaminc)ch).onZapComplete();
-                    }
-                } );
-        Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        } else {
+
+            super.attack( cell );
+
+        }
     }
 
     @Override
-    public void onComplete( MovieClip.Animation anim ) {
+    public void onComplete( Animation anim ) {
         if (anim == zap) {
             idle();
+
+            ((MissileSprite)parent.recycle( MissileSprite.class )).
+                    reset( this, cellToAttack, new ScorpioShot(), new Callback() {
+                        @Override
+                        public void call() {
+                            ch.onAttackComplete();
+                        }
+                    } );
+        } else {
+            super.onComplete( anim );
         }
-        super.onComplete( anim );
+    }
+
+    public class ScorpioShot extends Item {
+        {
+            image = ItemSpriteSheet.HEALING_DART;
+        }
     }
 }

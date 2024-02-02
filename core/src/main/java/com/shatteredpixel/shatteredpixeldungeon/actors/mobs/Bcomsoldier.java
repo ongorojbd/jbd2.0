@@ -105,9 +105,8 @@ public class Bcomsoldier extends Mob {
                 }
             }
 
-            if (Dungeon.level.passable[trapPos] && Dungeon.level.map[trapPos] != Terrain.EXIT&& Dungeon.level.map[trapPos] != Terrain.ENTRANCE) {
+            if (Dungeon.level.passable[trapPos] && Dungeon.level.map[trapPos] != Terrain.EXIT&& Dungeon.level.map[trapPos] != Terrain.ENTRANCE && Dungeon.level.map[trapPos] != Terrain.EMPTY_SP) {
 
-                if(trapPos != Terrain.EMPTY_SP){
                     Level.set(trapPos, Terrain.SECRET_TRAP);
 
                     Trap t1 = trapClasses[Random.Int(trapClasses.length)];
@@ -122,9 +121,6 @@ public class Bcomsoldier extends Mob {
                     Sample.INSTANCE.play(Assets.Sounds.MINE);
 
                     Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-                } else {
-
-                }
 
             }
 

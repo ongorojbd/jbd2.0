@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,21 +31,26 @@ public class GnollSprite2 extends MobSprite {
 
         texture( Assets.Sprites.GNOLL2 );
 
-        TextureFilm frames = new TextureFilm( texture, 15, 15 );
+        TextureFilm frames = new TextureFilm( texture, 45, 45 );
 
-        idle = new Animation( 2, true );
-        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
+        idle = new Animation( 8, true );
+        idle.frames( frames, 0, 1, 2, 1, 0 );
 
         run = new Animation( 12, true );
-        run.frames( frames, 2, 3, 4, 3, 2 );
+        idle.frames( frames, 0, 1, 2, 1, 0 );
 
         attack = new Animation( 12, false );
-        attack.frames( frames, 5, 6, 0 );
+        idle.frames( frames, 0, 1, 2, 1, 0 );
 
         die = new Animation( 12, false );
-        die.frames( frames, 7, 8, 9, 10, 11 );
+        idle.frames( frames, 0, 1, 2, 1, 0 );
 
+        scale.set(0.35f);
         play( idle );
     }
 
+    @Override
+    public int blood() {
+        return 0x000000;
+    }
 }

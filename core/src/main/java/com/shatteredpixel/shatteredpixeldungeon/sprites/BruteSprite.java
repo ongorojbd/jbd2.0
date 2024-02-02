@@ -24,7 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.TextureFilm;
 
-public class BruteSprite extends MobSprite {
+public abstract class BruteSprite extends MobSprite {
 	
 	public BruteSprite() {
 		super();
@@ -32,19 +32,38 @@ public class BruteSprite extends MobSprite {
 		texture( Assets.Sprites.BRUTE );
 		
 		TextureFilm frames = new TextureFilm( texture, 12, 16 );
-		
+
+		int c = texOffset();
+
 		idle = new Animation( 2, true );
-		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
-		
+		idle.frames( frames, 0+c, 0+c, 0+c, 1+c, 0+c, 0+c, 1+c, 1+c );
+
 		run = new Animation( 12, true );
-		run.frames( frames, 4, 5, 6, 7 );
-		
+		run.frames( frames, 4+c, 5+c, 6+c, 7+c );
+
 		attack = new Animation( 12, false );
-		attack.frames( frames, 2, 3, 0 );
-		
+		attack.frames( frames, 2+c, 3+c, 0+c );
+
 		die = new Animation( 12, false );
-		die.frames( frames, 8, 9, 10 );
-		
+		die.frames( frames, 8+c, 9+c, 10+c );
+
 		play( idle );
 	}
+
+	protected abstract int texOffset();
+
+	public static class Blue extends BruteSprite {
+		@Override
+		protected int texOffset() {
+			return 0;
+		}
+	}
+
+	public static class Green extends BruteSprite {
+		@Override
+		protected int texOffset() {
+			return 11;
+		}
+	}
+
 }

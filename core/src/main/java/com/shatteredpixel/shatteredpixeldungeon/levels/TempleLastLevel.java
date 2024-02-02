@@ -96,7 +96,7 @@ public class TempleLastLevel extends Level {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_PRISON;
+        return Assets.Environment.TILES_KEICHO;
     }
 
     @Override

@@ -34,16 +34,16 @@ public class ShieldedSprite extends MobSprite {
 		TextureFilm frames = new TextureFilm( texture, 12, 16 );
 		
 		idle = new Animation( 2, true );
-		idle.frames( frames, 21, 21, 21, 22, 21, 21, 22, 22 );
+		idle.frames( frames, 22, 22, 22, 23, 22, 22, 23, 23 );
 		
 		run = new Animation( 12, true );
-		run.frames( frames, 25, 26, 27, 28 );
+		run.frames( frames, 26, 27, 28, 29 );
 		
 		attack = new Animation( 12, false );
-		attack.frames( frames, 23, 24 );
+		attack.frames( frames, 24, 25 );
 		
 		die = new Animation( 12, false );
-		die.frames( frames, 29, 30, 31 );
+		die.frames( frames, 30, 31, 32 );
 		
 		play( idle );
 	}

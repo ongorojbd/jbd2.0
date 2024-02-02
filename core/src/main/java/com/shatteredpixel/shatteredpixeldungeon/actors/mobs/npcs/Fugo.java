@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fugomob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -59,9 +60,6 @@ public class Fugo extends NPC {
 
         properties.add(Property.IMMOVABLE);
     }
-
-    private static final String SPAWNED		= "spawned";
-    private static boolean spawned;
 
     @Override
     protected boolean act() {
@@ -124,10 +122,9 @@ public class Fugo extends NPC {
                                 die(null);
 
                                 Fugomob Fugomob = new Fugomob();
-                                Fugomob.state = Fugomob.HUNTING;
                                 Fugomob.pos = pos;
                                 GameScene.add( Fugomob );
-                                Fugomob.beckon(Dungeon.hero.pos);
+                                Buff.affect(Fugomob, SummonElemental.InvisAlly.class);
 
                             } else {
                                 yell(Messages.get(Fugo.class, "5"));

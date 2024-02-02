@@ -22,61 +22,74 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.watabou.noosa.TextureFilm;
-import com.watabou.utils.Random;
 
-public class GhoulSprite extends MobSprite {
+public abstract class GhoulSprite extends MobSprite {
 
-	private Animation crumple;
-	
-	public GhoulSprite() {
-		super();
+    private Animation crumple;
 
-		switch (Random.Int( 3 )) {
-			case 0:
-				texture( Assets.Sprites.GHOUL );
-				break;
-			case 1:
-				texture( Assets.Sprites.GHOUL2 );
-				break;
-			case 2:
-				texture( Assets.Sprites.GHOUL3 );
-				break;
+    public GhoulSprite() {
+        super();
 
-		}
+        texture(Assets.Sprites.GHOUL);
 
-		TextureFilm frames = new TextureFilm( texture, 12, 15 );
+        TextureFilm frames = new TextureFilm(texture, 12, 15);
 
-		idle = new Animation( 2, true );
-		idle.frames( frames, 0, 0, 0, 1 );
+        int c = texOffset();
 
-		run = new Animation( 12, true );
-		run.frames( frames, 2, 3, 4, 5, 6, 7 );
+        idle = new Animation(2, true);
+        idle.frames(frames, 0 + c, 0 + c, 0 + c, 1 + c);
 
-		attack = new Animation( 12, false );
-		attack.frames( frames, 0, 8, 9 );
+        run = new Animation(12, true);
+        run.frames(frames, 2 + c, 3 + c, 4 + c, 5 + c, 6 + c, 7 + c);
 
-		crumple = new Animation( 15, false);
-		crumple.frames( frames, 0, 10, 11, 12 );
+        attack = new Animation(12, false);
+        attack.frames(frames, 0 + c, 8 + c, 9 + c);
 
-		die = new Animation( 15, false );
-		die.frames( frames, 0, 10, 11, 12, 13 );
-		
-		play( idle );
-	}
+        crumple = new Animation(15, false);
+        crumple.frames(frames, 0 + c, 10 + c, 11 + c, 12 + c);
 
-	public void crumple(){
-		hideEmo();
-		play(crumple);
-	}
+        die = new Animation(15, false);
+        die.frames(frames, 0 + c, 10 + c, 11 + c, 12 + c, 13 + c);
 
-	@Override
-	public void die() {
-		if (curAnim == crumple){
-			//causes the sprite to not rise then fall again when dieing.
-			die.frames[0] = die.frames[1] = die.frames[2] = die.frames[3];
-		}
-		super.die();
-	}
+        play(idle);
+    }
+
+    protected abstract int texOffset();
+
+    public static class Blue extends GhoulSprite {
+        @Override
+        protected int texOffset() {
+            return 0;
+        }
+    }
+
+    public static class Green extends GhoulSprite {
+        @Override
+        protected int texOffset() {
+            return 14;
+        }
+    }
+
+    public static class Red extends GhoulSprite {
+        @Override
+        protected int texOffset() { return 28; }
+    }
+
+    public void crumple() {
+        hideEmo();
+        play(crumple);
+    }
+
+    @Override
+    public void die() {
+        if (curAnim == crumple) {
+            //causes the sprite to not rise then fall again when dieing.
+            die.frames[0] = die.frames[1] = die.frames[2] = die.frames[3];
+        }
+
+        emitter().burst( Speck.factory( Speck.WOOL ), 5 );
+        super.die();
+    }
 }

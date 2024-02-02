@@ -89,7 +89,12 @@ public class HallsBossLevel extends Level {
         } else if (map[exit()] != Terrain.EXIT || Statistics.amuletObtained) {
             Music.INSTANCE.end();
         } else {
-            Music.INSTANCE.playTracks(HallsLevel.HALLS_TRACK_LIST, HallsLevel.HALLS_TRACK_CHANCES, false);
+            if (hero.buff(AscensionChallenge.class) != null) {
+                Music.INSTANCE.playTracks(
+                        new String[]{Assets.Music.CIV},
+                        new float[]{1},
+                        false);
+            } else Music.INSTANCE.playTracks(HallsLevel.HALLS_TRACK_LIST, HallsLevel.HALLS_TRACK_CHANCES, false);
         }
     }
 

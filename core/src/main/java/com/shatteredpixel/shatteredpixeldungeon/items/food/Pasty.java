@@ -21,18 +21,36 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReachIncrease;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ToxicImbue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class Pasty extends Food {
 
@@ -90,6 +108,35 @@ public class Pasty extends Food {
 				break;
 			case APRIL_FOOLS:
 				Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+
+				switch (Random.Int(8)){
+					case 0:
+						Buff.affect( hero, Triplespeed.class, 3f );
+						break;
+					case 1:
+						Buff.affect(hero, Swiftthistle.TimeBubble.class).threeTurns();
+						break;
+					case 2:
+						Buff.affect(hero, Poison.class).set(3f);
+						break;
+					case 3:
+						Buff.affect( hero, Hex.class, 3f );
+						break;
+					case 4:
+						Buff.affect(hero, ToxicImbue.class).set(3f);
+						break;
+					case 5:
+						Buff.affect( hero, ReachIncrease.class, 3f );
+						break;
+					case 6:
+						Buff.affect( hero, Vertigo.class, 3f );
+						break;
+					case 7:
+						Buff.affect( hero, Bless.class, 3f );
+						break;
+				}
+
+				break;
 			case EASTER:
 				ArtifactRecharge.chargeArtifacts(hero, 2f);
 				ScrollOfRecharging.charge( hero );

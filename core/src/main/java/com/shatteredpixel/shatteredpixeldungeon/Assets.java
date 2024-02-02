@@ -45,12 +45,11 @@ public class Assets {
         public static final String TILES_CAVES_CRYSTAL  = "environment/tiles_caves_crystal.png";
         public static final String TILES_CAVES_GNOLL    = "environment/tiles_caves_gnoll.png";
         public static final String TILES_LABS = "environment/tiles_labs.png";
-
         public static final String TILES_EMPO = "environment/tiles_empo.png";
-
         public static final String TILES_DIO = "environment/tiles_dio.png";
-
         public static final String TILES_SHIP = "environment/tiles_ship.png";
+
+        public static final String TILES_KEICHO = "environment/tiles_keicho.png";
 
         public static final String WATER_SEWERS = "environment/water0.png";
         public static final String WATER_PRISON = "environment/water1.png";
@@ -344,6 +343,11 @@ public class Assets {
         public static final String K3 = "sounds/k3.mp3";
         public static final String JONNY = "sounds/jonny.mp3";
         public static final String JONNY2 = "sounds/jonny2.mp3";
+        public static final String SO1 = "sounds/so1.mp3";
+        public static final String SO2 = "sounds/so2.mp3";
+        public static final String EVO1 = "sounds/evo1.mp3";
+        public static final String EVO2 = "sounds/evo2.mp3";
+        public static final String EVO3 = "sounds/evo3.mp3";
 
         public static final String[] all = new String[]{
                 CLICK, BADGE, GOLD,
@@ -358,7 +362,7 @@ public class Assets {
                 TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
                 BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
                 HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, ORA2, ORA3, D4C, NANIDI, D1, D2, DIEGO, DIEGO2, JOSEPH,
-                RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, K1, K2, K3, JONNY, JONNY2,
+                RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, K1, K2, K3, JONNY, JONNY2, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA};
     }
 
@@ -401,7 +405,9 @@ public class Assets {
         public static final String GNOLL = "sprites/gnoll.png";
         public static final String GNOLL2 = "sprites/gnoll2.png";
         public static final String GNOLL3 = "sprites/gnoll3.png";
-        public static final String GNOLL4 = "sprites/gnoll4.png";
+        public static final String HARVEST = "sprites/harvest.png";
+        public static final String SO1 = "sprites/so1.png";
+        public static final String SO2 = "sprites/so2.png";
         public static final String CRAB = "sprites/crab.png";
         public static final String GOO = "sprites/goo.png";
         public static final String SWARM = "sprites/swarm.png";
@@ -413,7 +419,9 @@ public class Assets {
         public static final String KEEPER = "sprites/shopkeeper.png";
         public static final String BAT = "sprites/bat.png";
         public static final String ELEMENTAL = "sprites/elemental.png";
+
         public static final String MONK = "sprites/monk.png";
+        public static final String EVO = "sprites/evo.png";
         public static final String WARLOCK = "sprites/warlock.png";
         public static final String GOLEM = "sprites/golem.png";
         public static final String STATUE = "sprites/statue.png";
@@ -445,6 +453,7 @@ public class Assets {
         public static final String DM100 = "sprites/dm100.png";
         public static final String PYLON = "sprites/pylon.png";
         public static final String DM200 = "sprites/dm200.png";
+        public static final String DM201 = "sprites/dm201.png";
         public static final String LOTUS = "sprites/lotus.png";
 
         public static final String NINJA_LOG        = "sprites/ninja_log.png";

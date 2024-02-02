@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Whitesnake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
@@ -38,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class WndWandmaker extends Window {
 
@@ -117,6 +120,13 @@ public class WndWandmaker extends Window {
 
 		questItem.detach( Dungeon.hero.belongings.backpack );
 
+		if (Random.Int( 4 ) == 0) {
+			Whitesnake Kawasiri = new Whitesnake();
+			Kawasiri.pos = wandmaker.pos;
+			GameScene.add(Kawasiri);
+			Kawasiri.beckon(Dungeon.hero.pos);
+		}
+
 		reward.identify(false);
 		if (reward.doPickUp( Dungeon.hero )) {
 			GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", reward.name())) );
@@ -128,7 +138,7 @@ public class WndWandmaker extends Window {
 		wandmaker.destroy();
 		
 		wandmaker.sprite.die();
-		
+
 		Wandmaker.Quest.complete();
 	}
 

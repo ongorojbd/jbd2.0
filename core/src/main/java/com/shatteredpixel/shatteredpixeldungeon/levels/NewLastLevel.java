@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.SurfaceScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -52,6 +53,11 @@ public class NewLastLevel extends Level {
 
 	private static int WIDTH = 9;
 	private static int HEIGHT = 34;
+
+	@Override
+	public void playLevelMusic() {
+		Music.INSTANCE.end();
+	}
 
 	@Override
 	public String tilesTex() {

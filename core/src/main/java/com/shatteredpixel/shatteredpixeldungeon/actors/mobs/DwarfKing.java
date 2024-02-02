@@ -701,13 +701,13 @@ public class DwarfKing extends Mob {
 					Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 				} else if (summon == DKWarlock.class){
 					particles.burst(ShadowParticle.CURSE, 10);
-					Sample.INSTANCE.play(Assets.Sounds.CURSED);
+					Sample.INSTANCE.play(Assets.Sounds.TOMB);
 				} else if (summon == DKMonk.class){
 					particles.burst(ElmoParticle.FACTORY, 10);
 					Sample.INSTANCE.play(Assets.Sounds.BURNING);
 				} else {
 					particles.burst(Speck.factory(Speck.STEAM), 10);
-					Sample.INSTANCE.play(Assets.Sounds.BONES);
+					Sample.INSTANCE.play(Assets.Sounds.GAS);
 				}
 				particles = null;
 

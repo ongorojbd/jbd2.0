@@ -47,7 +47,7 @@ public class ThrowingSpike extends MissileWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  9 * tier +                  //16 base, down from 20
+		return  8 * tier +                  //16 base, down from 20
 				(tier) * lvl;               //scaling unchanged
 	}
 

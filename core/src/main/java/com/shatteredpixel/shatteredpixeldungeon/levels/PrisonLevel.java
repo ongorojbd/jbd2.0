@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Marilin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -134,6 +135,7 @@ public class PrisonLevel extends RegularLevel {
 	protected void createItems() {
 		Rohan.spawn(this);
 		Yukako.spawn(this);
+		Marilin.spawn(this);
 		super.createItems();
 	}
 

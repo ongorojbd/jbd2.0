@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -35,7 +36,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CrystalGuardianSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -61,6 +64,21 @@ public class Ghoul extends Mob {
 		lootChance = 0.2f;
 		
 		properties.add(Property.UNDEAD);
+	}
+
+	public Ghoul(){
+		super();
+		switch (Random.Int(3)){
+			case 0: default:
+				spriteClass = GhoulSprite.Blue.class;
+				break;
+			case 1:
+				spriteClass = GhoulSprite.Green.class;
+				break;
+			case 2:
+				spriteClass = GhoulSprite.Red.class;
+				break;
+		}
 	}
 
 	@Override
@@ -150,6 +168,11 @@ public class Ghoul extends Mob {
 
 	@Override
 	public void die(Object cause) {
+
+		if (Dungeon.level.heroFOV[pos]) {
+			Sample.INSTANCE.play( Assets.Sounds.BONES );
+		}
+
 		if (cause != Chasm.class && cause != GhoulLifeLink.class && !Dungeon.level.pit[pos]){
 			Ghoul nearby = GhoulLifeLink.searchForHost(this);
 			if (nearby != null){

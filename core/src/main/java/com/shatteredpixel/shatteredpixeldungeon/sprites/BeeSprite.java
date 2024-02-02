@@ -50,6 +50,6 @@ public class BeeSprite extends MobSprite {
 	
 	@Override
 	public int blood() {
-		return 0xffd500;
+		return 0x000000;
 	}
 }

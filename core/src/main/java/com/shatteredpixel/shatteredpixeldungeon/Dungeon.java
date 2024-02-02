@@ -518,9 +518,17 @@ public class Dungeon {
 		}
 	}
 
-	public static boolean interfloorTeleportAllowed(){
+	public static boolean interfloorTeleportAllowed(){  // 텔포 못함
 		if (Dungeon.level.locked
 				|| Dungeon.level instanceof MiningLevel
+				|| Dungeon.level instanceof ShipbossLevel
+				|| Dungeon.level instanceof HumanVillageBossLevel
+				|| Dungeon.level instanceof TempleLastLevel
+				|| Dungeon.level instanceof LabsBossLevel
+				|| Dungeon.level instanceof EmporioLevel
+				|| Dungeon.level instanceof DiobossLevel
+				|| Dungeon.level instanceof Emp2Level
+				|| Dungeon.level instanceof DioLevel
 				|| (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)){
 			return false;
 		}

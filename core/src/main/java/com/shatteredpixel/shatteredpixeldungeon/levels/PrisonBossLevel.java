@@ -97,7 +97,12 @@ public class PrisonBossLevel extends Level {
 		if (state == State.START){
 			Music.INSTANCE.end();
 		} else if (state == State.WON) {
-			Music.INSTANCE.playTracks(PrisonLevel.PRISON_TRACK_LIST, PrisonLevel.PRISON_TRACK_CHANCES, false);
+			if (hero.buff(AscensionChallenge.class) != null) {
+				Music.INSTANCE.playTracks(
+						new String[]{Assets.Music.CIV},
+						new float[]{1},
+						false);
+			} else Music.INSTANCE.playTracks(PrisonLevel.PRISON_TRACK_LIST, PrisonLevel.PRISON_TRACK_CHANCES, false);
 		} else {
 			Music.INSTANCE.play(Assets.Music.PRISON_BOSS, true);
 		}

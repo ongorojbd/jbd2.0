@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -30,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
@@ -87,7 +90,12 @@ public class CavesBossLevel extends Level {
                     new float[]{1},
                     false);
         } else {
-            Music.INSTANCE.playTracks(
+            if (hero.buff(AscensionChallenge.class) != null) {
+                Music.INSTANCE.playTracks(
+                        new String[]{Assets.Music.CIV},
+                        new float[]{1},
+                        false);
+            } else Music.INSTANCE.playTracks(
                     new String[]{Assets.Music.KIRA},
                     new float[]{1},
                     false);

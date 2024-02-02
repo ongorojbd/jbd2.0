@@ -54,7 +54,7 @@ public class Whsnake extends Mob {
     {
         spriteClass = WhsnakeSprite.class;
 
-        HP = HT = 35;
+        HP = HT = 50;
         defenseSkill = 10;
 
         EXP = 10;
@@ -79,8 +79,6 @@ public class Whsnake extends Mob {
 
     @Override
     public void notice() {
-
-
         super.notice();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
@@ -105,7 +103,7 @@ public class Whsnake extends Mob {
             HP = 25;
 
             GameScene.flash(0x99FFFF);
-            Sample.INSTANCE.play( Assets.Sounds.CURSED, 2, 0.33f );
+            Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
             Buff.affect(Dungeon.hero, Blindness.class, 15f);
             Buff.affect( hero, Ooze.class ).set( Ooze.DURATION );
             Buff.affect(Dungeon.hero, Silence.class,  30f);
@@ -148,7 +146,6 @@ public class Whsnake extends Mob {
         Dungeon.level.drop( new ArcaneResin(), pos ).sprite.drop( pos );
 
         yell( Messages.get(this, "4") );
-
     }
 
     @Override

@@ -21,35 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.BmoreGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.BmoreSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FugoSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -60,16 +40,13 @@ public class Fugomob extends Mob {
         spriteClass = FugoSprite.class;
 
         HP = HT = 100;
-        HUNTING = new Mob.Hunting();
         immunities.add(CorrosiveGas.class);
         immunities.add(Vertigo.class);
-        properties.add(Property.IMMOVABLE);
         viewDistance = 5;
+
         state = WANDERING;
         alignment = Alignment.ALLY;
-        //only applicable when the bee is charmed with elixir of honeyed healing
         intelligentAlly = true;
-
     }
 
     @Override
@@ -82,56 +59,30 @@ public class Fugomob extends Mob {
     private boolean threatened = false;
 
     @Override
-    public void storeInBundle( Bundle bundle ) {
+    public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(SUMMON_COOLDOWN, summonCooldown);
     }
 
     @Override
-    public int attackSkill( Char target ) {
+    public int attackSkill(Char target) {
         return 45;
     }
 
     @Override
-    public int attackProc( Char hero, int damage ) {
-        damage = super.attackProc( enemy, damage );
-
-//        if (Random.Int(5) == 0) {
-//
-//            destroy();
-//            sprite.killAndErase();
-//            die(null);
-//
-//            yell(Messages.get(Fugo.class, "7"));
-//
-//            Fugomob2 Fugomob2 = new Fugomob2();
-//            Fugomob2.state = Fugomob2.HUNTING;
-//            Fugomob2.pos = this.pos;
-//            GameScene.add( Fugomob2 );
-//        }
-        
-        return damage;
-    }
-
-    @Override
-    public void restoreFromBundle( Bundle bundle ) {
-        super.restoreFromBundle( bundle );
-        summonCooldown = bundle.getInt( SUMMON_COOLDOWN );
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        summonCooldown = bundle.getInt(SUMMON_COOLDOWN);
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 25, 30 );
+        return Random.NormalIntRange(25, 30);
     }
 
     @Override
     protected boolean act() {
         summonCooldown--;
-        //in case DM-201 hasn't been able to act yet
-        if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()){
-            fieldOfView = new boolean[Dungeon.level.length()];
-            Dungeon.level.updateFieldOfView( this, fieldOfView );
-        }
 
         if (summonCooldown <= 0) {
             threatened = true;
@@ -139,10 +90,10 @@ public class Fugomob extends Mob {
         }
 
         if (paralysed <= 0 && state == HUNTING && enemy != null && enemySeen
-                && threatened && !Dungeon.level.adjacent(pos, enemy.pos) && fieldOfView[enemy.pos]){
+                && threatened && !Dungeon.level.adjacent(pos, enemy.pos) && fieldOfView[enemy.pos]) {
             enemySeen = enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
             if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                sprite.zap( enemy.pos );
+                sprite.zap(enemy.pos);
                 return false;
             } else {
                 zap();
@@ -154,14 +105,14 @@ public class Fugomob extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
-        if ((src instanceof Char && !Dungeon.level.adjacent(pos, ((Char)src).pos))
-                || enemy == null || !Dungeon.level.adjacent(pos, enemy.pos)){
+        if ((src instanceof Char && !Dungeon.level.adjacent(pos, ((Char) src).pos))
+                || enemy == null || !Dungeon.level.adjacent(pos, enemy.pos)) {
             threatened = true;
         }
         super.damage(dmg, src);
     }
 
-    public void onZapComplete(){
+    public void onZapComplete() {
         zap();
         next();
     }
@@ -177,18 +128,16 @@ public class Fugomob extends Mob {
 
         target = Dungeon.hero.pos;
 
-        return super.getCloser( target );
+        return super.getCloser(target);
     }
 
-
-    private void zap( ){
-
+    private void zap() {
         threatened = false;
         spend(TICK);
         sprite.showStatus(CharSprite.POSITIVE, Messages.get(Fugomob.class, "4"));
-        GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(1+Dungeon.depth/4));
-        for (int i : PathFinder.NEIGHBOURS8){
-            if (!Dungeon.level.solid[enemy.pos+i]) {
+        GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(1 + Dungeon.depth / 4));
+        for (int i : PathFinder.NEIGHBOURS8) {
+            if (!Dungeon.level.solid[enemy.pos + i]) {
                 GameScene.add(Blob.seed(enemy.pos + i, 5, CorrosiveGas.class));
             }
         }
@@ -196,15 +145,15 @@ public class Fugomob extends Mob {
     }
 
     @Override
-    public void die( Object cause ) {
-            sprite.killAndErase();
-            yell(Messages.get(Fugomob.class, "0"));
+    public void die(Object cause) {
+        sprite.killAndErase();
+        yell(Messages.get(Fugomob.class, "0"));
 
-            Fugomob2 Fugomob2 = new Fugomob2();
-            Fugomob2.state = Fugomob2.HUNTING;
-            Fugomob2.pos = this.pos;
-            GameScene.add( Fugomob2 );
-        super.die( cause );
+        Fugomob2 Fugomob2 = new Fugomob2();
+        Fugomob2.state = Fugomob2.HUNTING;
+        Fugomob2.pos = this.pos;
+        GameScene.add(Fugomob2);
+        super.die(cause);
     }
 
 }

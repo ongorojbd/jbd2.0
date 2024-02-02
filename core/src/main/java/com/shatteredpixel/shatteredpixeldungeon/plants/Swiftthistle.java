@@ -101,6 +101,14 @@ public class Swiftthistle extends Plant {
 		public void reset(){
 			left = 7f;
 		}
+
+		public void fiveTurns() {
+			left = 5f;
+		}
+
+		public void threeTurns() {
+			left = 3f;
+		}
 		
 		@Override
 		public String desc() {

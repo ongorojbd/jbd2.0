@@ -39,6 +39,7 @@ public class Sai extends MeleeWeapon {
 		hitSoundPitch = 1.17f;
 
 		tier = 3;
+		DLY = 0.5f; //2x speed
 	}
 
 	private int HealCount = 0;

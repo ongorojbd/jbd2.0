@@ -118,7 +118,7 @@ public class Ram extends Spell {
                                 Sample.INSTANCE.play(Assets.Sounds.BADGE, 1, 1);
                                 GLog.w(Messages.get(Willamob.class, "z4"));
                                 GLog.p(Messages.get(Willamob.class, "ap3"));
-                                Buff.affect(hero, Swiftthistle.TimeBubble.class).reset();;
+                                Buff.affect(hero, Swiftthistle.TimeBubble.class).fiveTurns();
                                 detach(Dungeon.hero.belongings.backpack);
                                }
                             else if (index == 3){

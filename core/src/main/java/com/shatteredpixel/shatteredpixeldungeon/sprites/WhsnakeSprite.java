@@ -62,11 +62,11 @@ public class WhsnakeSprite extends MobSprite {
         play( idle );
     }
 
-    @Override
-    public void link( Char ch ) {
-        super.link( ch );
-        add(State.SHIELDED);
-    }
+//    @Override
+//    public void link( Char ch ) {
+//        super.link( ch );
+//        add(State.SHIELDED);
+//    }
 
     @Override
     public void die() {
@@ -97,7 +97,6 @@ public class WhsnakeSprite extends MobSprite {
             Sample.INSTANCE.play( Assets.Sounds.READ);
             ((MissileSprite)parent.recycle( MissileSprite.class )).
                     reset( this, cellToAttack, new WhsnakeSprite.WhsnakeShot(), new Callback() {
-
                         @Override
                         public void call() {
                             ch.onAttackComplete();

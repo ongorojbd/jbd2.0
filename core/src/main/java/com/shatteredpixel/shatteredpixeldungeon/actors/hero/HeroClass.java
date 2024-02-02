@@ -46,7 +46,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Sh
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Bcomdisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.Lighter;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
@@ -71,14 +73,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSna
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Danny;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -89,16 +94,23 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr9;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willg;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
@@ -111,6 +123,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spheaven;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tusk4;
@@ -157,24 +170,27 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-//		if(DeviceCompat.isDebug()){
-//			new RingOfMight().identify().upgrade(999).collect();
-//			new RingOfAccuracy().identify().upgrade(999).collect();
-//			new Castleintro().quantity(33).collect();
-//			new Neotel().quantity(33).collect();
-//			new Kingt().quantity(55).collect();
-//			new PotionOfExperience().identify().quantity(33).collect();
-//			new Bmap().identify().quantity(33).collect();
-//			new PotionOfHealing().identify().quantity(100).collect();
-//			new PotionOfDivineInspiration().identify().quantity(100).collect();
-//			new PotionOfFrost().identify().quantity(100).collect();
-//			new StoneOfDeepSleep().identify().quantity(100).collect();
-//			new Fadeleaf.Seed().identify().quantity(100).collect();
-//			new Bcomdisc().identify().collect();
-//			new HandAxe().identify().upgrade(20).collect();
-//			new PlateArmor().identify().upgrade(999).collect();
-//			new WandOfFrost().identify().upgrade(2).collect();
-//		}
+		if(DeviceCompat.isDebug()){
+			new RingOfMight().identify().upgrade(999).collect();
+			new RingOfAccuracy().identify().upgrade(999).collect();
+			new Castleintro().quantity(33).collect();
+			new Neotel().collect();
+			new KingsCrown().collect();
+			new Honeypot().quantity(33).collect();
+			new Pasty().quantity(33).collect();
+			new PotionOfExperience().identify().quantity(33).collect();
+			new Bmap().identify().quantity(33).collect();
+			new PotionOfHealing().identify().quantity(100).collect();
+			new PotionOfLiquidFlame().identify().quantity(100).collect();
+			new PotionOfExperience().identify().quantity(100).collect();
+			new StoneOfDeepSleep().identify().quantity(100).collect();
+			new Fadeleaf.Seed().identify().quantity(100).collect();
+			new Bcomdisc().identify().collect();
+			new RunicBlade().identify().upgrade(20).collect();
+			new WandOfCorruption().identify().upgrade(20).collect();
+			new PlateArmor().identify().upgrade(999).collect();
+			new ScrollOfPassage().identify().quantity(999).collect();
+		}
 
 		switch (this) {
 			case WARRIOR:

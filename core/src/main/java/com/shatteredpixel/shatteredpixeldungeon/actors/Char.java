@@ -750,7 +750,7 @@ public abstract class Char extends Actor {
 			dmg *= 1.67f;
 		}
 		if (this.buff(Triplespeed.class) != null){
-			dmg *= 1.25f;
+			dmg *= 1.35f;
 		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= 1.25f;
@@ -1208,7 +1208,7 @@ public abstract class Char extends Actor {
 		UNDEAD,
 		DEMONIC,
 		INORGANIC ( new HashSet<Class>(),
-				new HashSet<Class>( Arrays.asList(Bleeding.class, ToxicGas.class, Poison.class) )),
+				new HashSet<Class>( Arrays.asList(Bleeding.class, ToxicGas.class, Diavolo.class, Poison.class, ShrGas.class) )),
 		FIERY ( new HashSet<Class>( Arrays.asList(WandOfFireblast.class, Elemental.FireElemental.class)),
 				new HashSet<Class>( Arrays.asList(Burning.class, Blazing.class))),
 		ICY ( new HashSet<Class>( Arrays.asList(WandOfFrost.class, Elemental.FrostElemental.class)),

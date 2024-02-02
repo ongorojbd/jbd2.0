@@ -99,6 +99,8 @@ public class Bmore extends Mob {
         immunities.add( ToxicGas.class );
         properties.add(Property.BOSS);
 
+        flying = true;
+
         EXP = 0;
         maxLvl = -9;
     }

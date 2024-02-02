@@ -22,35 +22,56 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Random;
 
 public class MonkSprite extends MobSprite {
 	
 	private Animation kick;
-	
+
 	public MonkSprite() {
 		super();
-		
-		texture( Assets.Sprites.MONK );
-		
-		TextureFilm frames = new TextureFilm( texture, 14, 16 );
-		
+
+		texture(Assets.Sprites.MONK);
+
+		updateAnims();
+
+		scale.set(0.45f);
+	}
+
+	@Override
+	public void link( Char ch ) {
+		super.link( ch );
+
+		if (ch != null){
+			updateAnims();
+		}
+	}
+
+
+	private void updateAnims(){
+
+		TextureFilm frames = new TextureFilm( texture, 35, 37 );
+
 		idle = new Animation( 6, true );
-		idle.frames( frames, 1, 0, 1, 2 );
+		idle.frames( frames, 0, 2, 0, 2 );
 		
-		run = new Animation( 15, true );
-		run.frames( frames, 11, 12, 13, 14, 15, 16 );
+		run = new Animation( 10, true );
+		run.frames( frames, 2, 1, 0, 2, 1, 0 );
 		
 		attack = new Animation( 12, false );
-		attack.frames( frames, 3, 4, 3, 4 );
+		attack.frames( frames, 6, 7, 8, 7, 6 );
 		
 		kick = new Animation( 10, false );
-		kick.frames( frames, 5, 6, 5 );
+		kick.frames( frames, 3, 4, 5, 4, 3 );
 		
 		die = new Animation( 15, false );
-		die.frames( frames, 1, 7, 8, 8, 9, 10 );
-		
+		die.frames( frames, 9, 10, 11 );
+
 		play( idle );
 	}
 	
@@ -60,6 +81,13 @@ public class MonkSprite extends MobSprite {
 		if (Random.Float() < 0.5f) {
 			play( kick );
 		}
+	}
+
+	@Override
+	public void die() {
+		emitter().burst( Speck.factory( Speck.WOOL ), 5 );
+		emitter().burst( ShadowParticle.UP, 4 );
+		super.die();
 	}
 	
 	@Override

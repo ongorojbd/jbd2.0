@@ -68,7 +68,7 @@ import java.util.ArrayList;
 public class Beast extends Mob {
 
     {
-        HP = HT = 900;
+        HP = HT = 1000;
 
         EXP = 0;
         maxLvl = 30;
@@ -130,12 +130,9 @@ public class Beast extends Mob {
         }
         else if (Phase==1 && HP < 151) {
             Phase = 2;
-            state = FLEEING;
-            baseSpeed = 0.8f;
             GLog.p(Messages.get(this, "e"));
             yell(Messages.get(this, "2"));
             Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
-
         }
     }
 
@@ -164,6 +161,11 @@ public class Beast extends Mob {
                 }
             }
 
+        }
+
+        if (Phase == 2) {
+            state = FLEEING;
+            baseSpeed = 0.8f;
         }
 
         if (state != SLEEPING) {

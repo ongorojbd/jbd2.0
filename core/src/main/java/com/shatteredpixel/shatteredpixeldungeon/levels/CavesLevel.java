@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kars;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan2;
@@ -102,6 +103,7 @@ public class CavesLevel extends RegularLevel {
 	protected void createItems() {
 		Rohan2.spawn(this);
 		Yasu.spawn(this);
+		Kars.spawn(this);
 		super.createItems();
 
 	}

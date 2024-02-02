@@ -79,7 +79,12 @@ public class SewerBossLevel extends SewerLevel {
 		if (gooAlive){
 			Music.INSTANCE.end();
 		} else {
-			Music.INSTANCE.playTracks(SewerLevel.SEWER_TRACK_LIST, SewerLevel.SEWER_TRACK_CHANCES, false);
+			if (hero.buff(AscensionChallenge.class) != null) {
+				Music.INSTANCE.playTracks(
+						new String[]{Assets.Music.CIV},
+						new float[]{1},
+						false);
+			} else Music.INSTANCE.playTracks(SewerLevel.SEWER_TRACK_LIST, SewerLevel.SEWER_TRACK_CHANCES, false);
 		}
 
 	}

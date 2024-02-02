@@ -95,7 +95,7 @@ public class Honeypot extends Item {
 		
 		if (Dungeon.level.heroFOV[pos]) {
 			Sample.INSTANCE.play( Assets.Sounds.BURNING );
-			Splash.at( pos, 0xffd500, 5 );
+			Splash.at( pos, 0xff9933, 5 );
 		}
 		
 		int newPos = pos;

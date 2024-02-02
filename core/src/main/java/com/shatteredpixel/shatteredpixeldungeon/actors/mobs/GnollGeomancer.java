@@ -243,6 +243,7 @@ public class GnollGeomancer extends Mob {
 					if (buff(RockArmor.class) == null){
 						Splash.around(sprite, 0x555555, 30);
 						sprite.idle();
+						sprite.add(CharSprite.State.INVISIBLE);
 					}
 
 					Sample.INSTANCE.play(Assets.Sounds.HIT, 1f, Random.Float(0.85f, 1.15f));
@@ -281,6 +282,7 @@ public class GnollGeomancer extends Mob {
 
 			carveRockAndDash();
 			Buff.affect(this, RockArmor.class).setShield(25);
+			sprite.remove(CharSprite.State.INVISIBLE);
 		}
 	}
 
@@ -296,7 +298,7 @@ public class GnollGeomancer extends Mob {
 		this.sapperID = sapper.id();
 		if (sprite instanceof GnollGeomancerSprite){
 			((GnollGeomancerSprite) sprite).setupArmor();
-			this.sprite.add(CharSprite.State.SHIELDED);
+			this.sprite.add(CharSprite.State.BURNING);
 		}
 	}
 
@@ -563,6 +565,8 @@ public class GnollGeomancer extends Mob {
 				if (hasSapper()){
 					((GnollSapper)Actor.findById(sapperID)).aggro(enemy);
 				}
+
+
 
 				if (abilityCooldown-- <= 0){
 

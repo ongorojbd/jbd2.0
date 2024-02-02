@@ -32,29 +32,30 @@ public class BanditSprite extends MobSprite {
 		super();
 		
 		texture( Assets.Sprites.THIEF );
-		TextureFilm film = new TextureFilm( texture, 12, 13 );
+		TextureFilm film = new TextureFilm( texture, 13, 17 );
 		
-		idle = new Animation( 1, true );
-		idle.frames( film, 21, 21, 21, 22, 21, 21, 21, 21, 22 );
+		idle = new Animation( 10, true );
+		idle.frames( film, 0, 1, 2, 3, 2, 1, 0);
 		
-		run = new Animation( 15, true );
-		run.frames( film, 21, 21, 23, 24, 24, 25 );
+		run = new Animation( 12, true );
+		run.frames( film, 4, 14, 5, 4, 14, 5 );
 		
 		die = new Animation( 10, false );
-		die.frames( film, 25, 27, 28, 29, 30 );
+		die.frames( film, 10, 11, 12, 13 );
 		
 		attack = new Animation( 12, false );
-		attack.frames( film, 31, 32, 33 );
+		attack.frames( film, 6, 7, 8, 9 );
+
+		scale.set(0.8f);
 		
 		idle();
 	}
-
 
 	@Override
 	public void die() {
 		super.die();
 		if (Dungeon.level.heroFOV[ch.pos]) {
-			emitter().burst( Speck.factory( Speck.COIN ), 39 );
+			emitter().burst( Speck.factory( Speck.COIN ), 30 );
 		}
 	}
 }

@@ -151,12 +151,18 @@ public class Emitter extends Group {
 				y + Random.Float( height ) );
 		} else {
 			if (fillTarget) {
+				float randomWidth = Random.Float(target.width);
+				float randomHeight = Random.Float(target.height);
+				randomWidth = Math.max(0, Math.min(randomWidth, 16)); // 0 이상 16 이하로 제한
+				randomHeight = Math.max(0, Math.min(randomHeight, 16)); // 0 이상 16 이하로 제한
+
 				factory.emit(
 						this,
 						index,
-						target.x + Random.Float( target.width ),
-						target.y + Random.Float( target.height ) );
-			} else {
+						target.x + randomWidth,
+						target.y + randomHeight
+				);
+			}else {
 				factory.emit(
 						this,
 						index,
