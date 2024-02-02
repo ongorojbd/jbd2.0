@@ -519,10 +519,6 @@ public class CrystalSpire extends Mob {
 
 		super.die( cause );
 
-		if (Random.Int( 4 ) == 0) {
-			Dungeon.level.drop( new Map3().identify(), pos ).sprite.drop( pos );
-		}
-
 		yell( Messages.get(this, "defeated") );
 		Sample.INSTANCE.play( Assets.Sounds.BURNING );
 	}

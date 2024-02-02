@@ -513,9 +513,6 @@ public class GnollGeomancer extends Mob {
 		super.die(cause);
 		Blacksmith.Quest.beatBoss();
 		Sample.INSTANCE.playDelayed(Assets.Sounds.SHEEP, 0.1f);
-		if (Random.Int( 4 ) == 0) {
-			Dungeon.level.drop( new Map3().identify(), pos ).sprite.drop( pos );
-		}
 		PixelScene.shake( 3, 0.7f );
 		yell( Messages.get(this, "die") );
 		for (int i = 0; i < Dungeon.level.length(); i++){
