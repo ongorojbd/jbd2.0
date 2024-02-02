@@ -120,6 +120,9 @@ public class AndroidLauncher extends AndroidApplication {
 			config.b = 5;
 		}
 
+		//we manage this ourselves
+		config.useImmersiveMode = false;
+
 		config.useCompass = false;
 		config.useAccelerometer = false;
 

@@ -107,7 +107,7 @@ public class v1_X_Changes {
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 		changes.addButton( new ChangeButton( Icons.get(Icons.CHALLENGE_OFF), "밸런스 및 버그 수정",
-				"일부 희귀 적들이 추가되었습니다.\n\n6부 만화책의 효과가 지면의 기록에게도 적용되는 버그가 수정되었습니다.\n\n스카이 하이의 빠른 공격 속도가 적용되지 않는 버그가 수정되었습니다.\n\n디오의 성에서 1층에서 나갈 수 있는 버그가 수정되었습니다."));
+				"일부 희귀 적들이 추가되었습니다.\n\n6부 만화책의 효과가 지면의 기록에게도 적용되는 버그가주 수정되었습니다.\n\n스카이 하이의 빠른 공격 속도가 적용되지 않는 버그가 수정되었습니다.\n\n디오의 성에서 1층에서 나갈 수 있는 버그가 수정되었습니다."));
 	}
 
 	public static void add_v1_4_5_Changes( ArrayList<ChangeInfo> changeInfos ) {

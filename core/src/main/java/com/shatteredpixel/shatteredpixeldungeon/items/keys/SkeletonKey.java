@@ -47,24 +47,24 @@ public class SkeletonKey extends Key {
 		this.depth = depth;
 	}
 
-	@Override
-	public boolean doPickUp(Hero hero, int pos) {
-		if(!SPDSettings.supportNagged()){
-			try {
-				Dungeon.saveAll();
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						ShatteredPixelDungeon.scene().add(new WndSupportPrompt());
-					}
-				});
-			} catch (IOException e) {
-				ShatteredPixelDungeon.reportException(e);
-			}
-			
-		}
-		
-		return super.doPickUp(hero, pos);
-	}
+//	@Override
+//	public boolean doPickUp(Hero hero, int pos) {
+//		if(!SPDSettings.supportNagged()){
+//			try {
+//				Dungeon.saveAll();
+//				Game.runOnRenderThread(new Callback() {
+//					@Override
+//					public void call() {
+//						ShatteredPixelDungeon.scene().add(new WndSupportPrompt());
+//					}
+//				});
+//			} catch (IOException e) {
+//				ShatteredPixelDungeon.reportException(e);
+//			}
+//
+//		}
+//
+//		return super.doPickUp(hero, pos);
+//	}
 
 }
