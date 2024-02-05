@@ -100,11 +100,14 @@ public class GrimTrap extends Trap {
 									public void call() {
 										finalTarget.damage(finalDmg, GrimTrap.this);
 										if (finalTarget == Dungeon.hero) {
-											Roller Roller = new Roller();
-											Roller.state = Roller.PASSIVE;
-											Roller.pos = finalTarget.pos;
-											GameScene.add( Roller );
-											Roller.beckon(Dungeon.hero.pos);
+
+											if (Dungeon.depth != 30) {
+												Roller Roller = new Roller();
+												Roller.state = Roller.PASSIVE;
+												Roller.pos = finalTarget.pos;
+												GameScene.add(Roller);
+												Roller.beckon(Dungeon.hero.pos);
+											}
 
 											Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
 											Sample.INSTANCE.play(Assets.Sounds.BLAST);
@@ -114,11 +117,14 @@ public class GrimTrap extends Trap {
 												GLog.n( Messages.get(GrimTrap.class, "ondeath") );
 											}
 										} else {
-											Roller Roller = new Roller();
-											Roller.state = Roller.PASSIVE;
-											Roller.pos = finalTarget.pos;
-											GameScene.add( Roller );
-											Roller.beckon(Dungeon.hero.pos);
+
+											if (Dungeon.depth != 30) {
+												Roller Roller = new Roller();
+												Roller.state = Roller.PASSIVE;
+												Roller.pos = finalTarget.pos;
+												GameScene.add(Roller);
+												Roller.beckon(Dungeon.hero.pos);
+											}
 
 											Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
 											Sample.INSTANCE.play(Assets.Sounds.BLAST);

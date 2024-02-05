@@ -23,7 +23,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -33,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
@@ -91,15 +89,12 @@ public class Rebel extends Mob {
 		immunities.add(Blindness.class );
 		immunities.add(MagicalSleep.class );
 	}
-
 	int cleanCooldown = 9999;
-	int damageTaken = 0;
 	int summonCooldown = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 9999 : 9999;
-
 	private int charge = 0; // 2이 될경우 강화 사격
-
 	private int LastPos = -1;
 	private int Burstcooldown = 0; // 1이 되면 은신 파괴
+
 	public int  Phase = 0; // 1~6까지
 	private int GasCoolDown = 15;
 	private int ACoolDown = 9999;
@@ -108,24 +103,18 @@ public class Rebel extends Mob {
 	private int Burstpos = -1;
 	private static final Rect arena = new Rect(0, 0, 33, 26);
 	private static final int bottomDoor = 16 + (arena.bottom+1) * 33;
-
 	private float abilityCooldown;
-
-	public boolean isDied = false;
 	private static boolean telling_1 = false;
 	private static boolean telling_2 = false;
 	private static boolean telling_3 = false;
 	private static boolean telling_4 = false;
 	private static boolean telling_5 = false;
-
-	private static final String ISDIED = "isdied";
 	private static final String TELLING_1 = "telling_1";
 	private static final String TELLING_2 = "telling_2";
 	private static final String TELLING_3 = "telling_3";
 	private static final String TELLING_4 = "telling_4";
 	private static final String TELLING_5 = "telling_5";
 	private static final String CLEAN_COOLDOWN = "cleancooldown";
-	private static final String DMGTAKEN = "damagetaken";
 	private static final String SKILL2TIME   = "BurstTime";
 	private static final String SKILL3TIME   = "BurstTimt";
 	private static final String SKILL2TPOS   = "Burstpos";
@@ -137,14 +126,12 @@ public class Rebel extends Mob {
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);
-		bundle.put(ISDIED, isDied);
 		bundle.put(TELLING_1, telling_1);
 		bundle.put(TELLING_2, telling_2);
 		bundle.put(TELLING_3, telling_3);
 		bundle.put(TELLING_4, telling_4);
 		bundle.put(TELLING_5, telling_5);
 		bundle.put(CLEAN_COOLDOWN, cleanCooldown);
-		bundle.put(DMGTAKEN, damageTaken);
 		bundle.put( PHASE, Phase );
 		bundle.put( SKILLPOS, LastPos );
 		bundle.put( SKILL2TIME, BurstTime );
@@ -160,14 +147,12 @@ public class Rebel extends Mob {
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
-		isDied = bundle.getBoolean( ISDIED );
 		telling_1 = bundle.getBoolean( TELLING_1 );
 		telling_2 = bundle.getBoolean( TELLING_2 );
 		telling_3 = bundle.getBoolean( TELLING_3 );
 		telling_4 = bundle.getBoolean( TELLING_4 );
 		telling_5 = bundle.getBoolean( TELLING_5 );
 		cleanCooldown = bundle.getInt( CLEAN_COOLDOWN );
-		damageTaken = bundle.getInt( DMGTAKEN );
 		Phase = bundle.getInt(PHASE);
 		LastPos = bundle.getInt(SKILLPOS);
 		BurstTime = bundle.getInt(SKILL2TIME);
@@ -178,10 +163,6 @@ public class Rebel extends Mob {
 		summonCooldown = bundle.getInt( SUMMON_COOLDOWN );
 		Burstcooldown = bundle.getInt(BURST);
 		charge = bundle.getInt(SKILLCD);
-	}
-
-	public boolean isDied() {
-		return isDied;
 	}
 
 	@Override
@@ -449,12 +430,6 @@ public class Rebel extends Mob {
 			dmg = 150;
 		}
 		BossHealthBar.assignBoss(this);
-		int preHP = HP;
-		int dmgTaken = preHP - HP;
-
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null) lock.addTime(dmgTaken);
-
 		super.damage(dmg, src);
 
 		if (Phase==0 && HP < 1200) {
@@ -622,15 +597,12 @@ public class Rebel extends Mob {
 			}
 		}
 
-		isDied = true;
 	}
 
 
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
 		damage = super.defenseProc( enemy, damage );
-
-		damageTaken += damage;
 
 		int newPos;
 

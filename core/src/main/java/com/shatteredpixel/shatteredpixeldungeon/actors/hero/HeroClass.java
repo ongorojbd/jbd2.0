@@ -176,7 +176,7 @@ public enum HeroClass {
 			new Castleintro().quantity(33).collect();
 			new Neotel().collect();
 			new KingsCrown().collect();
-			new Honeypot().quantity(33).collect();
+			new ReclaimTrap().quantity(33).collect();
 			new Pasty().quantity(33).collect();
 			new PotionOfExperience().identify().quantity(33).collect();
 			new Bmap().identify().quantity(33).collect();
@@ -187,7 +187,7 @@ public enum HeroClass {
 			new Fadeleaf.Seed().identify().quantity(100).collect();
 			new Bcomdisc().identify().collect();
 			new RunicBlade().identify().upgrade(20).collect();
-			new WandOfCorruption().identify().upgrade(20).collect();
+			new WandOfRegrowth().identify().upgrade(20).collect();
 			new PlateArmor().identify().upgrade(999).collect();
 			new ScrollOfPassage().identify().quantity(999).collect();
 		}
