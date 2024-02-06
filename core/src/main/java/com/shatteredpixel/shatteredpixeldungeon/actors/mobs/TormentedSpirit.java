@@ -84,7 +84,6 @@ public class TormentedSpirit extends Wraith {
 	}
 
 	public void cleanse(){
-		Sample.INSTANCE.play( Assets.Sounds.GHOST );
 		yell(Messages.get(this, "thank_you"));
 
 		//50/50 between weapon or armor, always uncursed

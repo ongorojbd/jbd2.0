@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.LabsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -194,6 +195,31 @@ public class Centurion extends Mob {
             HP=HT=50;
             baseSpeed = 1f;
             properties.add(Property.UNDEAD);
+        }
+
+        public CenturionMinion(){
+            super();
+            switch (Random.Int(3)){
+                case 0: default:
+                    spriteClass = GhoulSprite.Blue.class;
+                    break;
+                case 1:
+                    spriteClass = GhoulSprite.Green.class;
+                    break;
+                case 2:
+                    spriteClass = GhoulSprite.Red.class;
+                    break;
+            }
+        }
+
+        @Override
+        public void die(Object cause) {
+
+            if (Dungeon.level.heroFOV[pos]) {
+                Sample.INSTANCE.play( Assets.Sounds.BONES );
+            }
+
+            super.die(cause);
         }
 
         @Override
