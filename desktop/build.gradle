@@ -112,7 +112,7 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
 
-    //we use LWJGL tinyFD directly to display crash messages
+    //we use LWJGL tinyFD directly to display crash message
     implementation "org.lwjgl:lwjgl-tinyfd:3.3.3"
     implementation "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-windows"
     implementation "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos"

@@ -39,6 +39,7 @@ public class ControllerHandler implements ControllerListener {
 		PLAYSTATION,
 		NINTENDO,
 		OTHER
+
 	}
 
 	public static ControllerType lastUsedType = ControllerType.OTHER;

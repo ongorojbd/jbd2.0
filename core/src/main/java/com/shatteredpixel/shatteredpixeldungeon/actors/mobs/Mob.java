@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
@@ -73,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FlameKatana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -664,6 +666,30 @@ public abstract class Mob extends Char {
 				&& ((Hero) enemy).belongings.attackingWeapon() instanceof MissileWeapon){
 			Statistics.thrownAttacks++;
 			Badges.validateHuntressUnlock();
+		}
+
+		for (int i : PathFinder.NEIGHBOURS4) {
+			if (Dungeon.isChallenged(Challenges.GAMBLER) && enemy instanceof Hero && enemy.pos == this.pos+i){
+
+				Dungeon.hero.damage(damage, this);
+
+				damage *= 0f;
+
+				Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN);
+				GLog.n(Messages.get(Act3.class, "d"));
+			}
+		}
+
+		for (int i : PathFinder.NEIGHBOURS4) {
+			if (Dungeon.isChallenged(Challenges.GAMBLER) && enemy instanceof DriedRose.GhostHero && enemy.pos == this.pos+i){
+
+				Dungeon.hero.damage(damage, this);
+
+				damage *= 0f;
+
+				Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN);
+				GLog.n(Messages.get(Act3.class, "s"));
+			}
 		}
 
 		if (surprisedBy(enemy)) {
@@ -1266,6 +1292,11 @@ public abstract class Mob extends Char {
 			} else if (mob.alignment == Alignment.ALLY
 					&& mob.intelligentAlly
 					&& Dungeon.level.distance(holdFromPos, mob.pos) <= 5){
+				level.mobs.remove( mob );
+				heldAllies.add(mob);
+			}
+			else if (mob.alignment == Alignment.ALLY && mob.intelligentAlly
+					&& Dungeon.level instanceof DioLevel){
 				level.mobs.remove( mob );
 				heldAllies.add(mob);
 			}
