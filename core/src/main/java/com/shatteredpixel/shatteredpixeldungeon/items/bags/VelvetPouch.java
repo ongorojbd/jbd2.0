@@ -23,6 +23,15 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo7;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
@@ -46,6 +55,8 @@ public class VelvetPouch extends Bag {
 	@Override
 	public boolean canHold( Item item ) {
 		if (item instanceof Plant.Seed || item instanceof Runestone
+				|| item instanceof Jojo1 || item instanceof Jojo2 || item instanceof Jojo3 || item instanceof Jojo4 || item instanceof Jojo5
+				|| item instanceof Jojo6 || item instanceof Jojo7 || item instanceof Jojo8 || item instanceof Jojo9
 				|| item instanceof GooBlob || item instanceof MetalShard){
 			if ((item instanceof StoneOfAdvanceguard)) {
 				return false;
