@@ -402,6 +402,19 @@ public abstract class Elemental extends Mob {
 			if (alignment == Alignment.ENEMY) {
 				Dungeon.level.drop( new Embers(), pos ).sprite.drop();
 				Statistics.questScores[1] = 2000;
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						Music.INSTANCE.fadeOut(1f, new Callback() {
+							@Override
+							public void call() {
+								if (Dungeon.level != null) {
+									Dungeon.level.playLevelMusic();
+								}
+							}
+						});
+					}
+				});
 			}
 		}
 

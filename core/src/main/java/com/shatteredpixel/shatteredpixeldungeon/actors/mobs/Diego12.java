@@ -378,7 +378,6 @@ public class Diego12 extends Mob {
         }
     }
 
-
     private static final String PHASE   = "phase";
     private static final String SKILL1CD   = "IgniteCooldown";
     private static final String SKILL2CD   = "BurstCooldown";

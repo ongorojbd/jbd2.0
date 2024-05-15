@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel.itemPlace;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -85,6 +86,7 @@ public class Diobrando extends Mob {
 
         properties.add(Property.BOSS);
         properties.add(Property.DEMONIC);
+        properties.add(Property.IMMOVABLE);
     }
     private ArrayList<Integer> targetedCells = new ArrayList<>();
 
@@ -545,7 +547,7 @@ public class Diobrando extends Mob {
 
         Badges.validateBrandokill();
 
-        Dungeon.level.drop( new Smask(), pos ).sprite.drop( pos );
+        Dungeon.level.drop( new Smask(), itemPlace ).sprite.drop( itemPlace );
 
         yell( Messages.get(this, "6") );
         GLog.n(Messages.get(this, "t6"));

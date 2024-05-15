@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer2;
 import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover;
 import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover2;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
@@ -288,7 +289,14 @@ public class Pucci12 extends Mob {
                 mob.die( cause );
             }
         }
-        Dungeon.level.drop( new Sbr8(), pos ).sprite.drop( pos );
+
+        Item pick = new Sbr8();
+        if (pick.doPickUp( Dungeon.hero )) {
+            GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
+        } else {
+            Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+        }
+
     }
 
 }

@@ -409,7 +409,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 			@Override
 			public void doAbility(Hero hero, Integer target) {
 				Buff.prolong(hero, FocusBuff.class, 30f);
-				Sword.gclass();
+				Sword.doraclass();
 				if (Buff.affect(hero, MonkEnergy.class).abilitiesEmpowered(hero)){
 					hero.next();
 				} else {
@@ -498,7 +498,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 				hero.busy();
 				Sample.INSTANCE.play(Assets.Sounds.MISS);
-				Sword.gclass();
+				Sword.doraclass();
 				hero.sprite.emitter().start(Speck.factory(Speck.JET), 0.01f, Math.round(4 + 2*Dungeon.level.trueDistance(hero.pos, target)));
 				hero.sprite.jump(hero.pos, target, 0, 0.1f, new Callback() {
 					@Override
@@ -628,7 +628,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 				hero.sprite.operate(hero.pos);
 				GameScene.flash(0xFF66FF, false);
 				Sample.INSTANCE.play(Assets.Sounds.CHARMS);
-				Sword.gclass();
+				Sword.doraclass();
 
 				for (Buff b : hero.buffs()){
 					if (b.type == Buff.buffType.NEGATIVE

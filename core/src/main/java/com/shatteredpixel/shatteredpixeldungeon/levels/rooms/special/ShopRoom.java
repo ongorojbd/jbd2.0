@@ -383,7 +383,7 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add(new Mdisc());
 		}
 
-		if (Random.Int(45) == 0) {
+		if (Random.Int(50) == 0) {
 			itemsToSpawn.add(new Araki());
 		}
 

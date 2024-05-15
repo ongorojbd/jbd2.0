@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -32,8 +33,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ram2;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Gmap;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -52,225 +56,240 @@ import com.watabou.utils.Random;
 
 public class Imp extends NPC {
 
-	{
-		spriteClass = ImpSprite.class;
+    {
+        spriteClass = ImpSprite.class;
 
-		properties.add(Property.IMMOVABLE);
-	}
+        properties.add(Property.IMMOVABLE);
+    }
 
-	private boolean seenBefore = false;
+    private boolean seenBefore = false;
 
-	@Override
-	protected boolean act() {
-		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
-			die(null);
-			return true;
-		}
-		if (!Quest.given && Dungeon.level.visited[pos]) {
-			Notes.add( Notes.Landmark.IMP );
-			if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-				yell(Messages.get(this, "hey", Messages.titleCase(Dungeon.hero.name())));
-				seenBefore = true;
-			}
-		} else {
-			seenBefore = false;
-		}
+    @Override
+    protected boolean act() {
+        if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
+            die(null);
+            return true;
+        }
+        if (!Quest.given && Dungeon.level.visited[pos]) {
+            Notes.add(Notes.Landmark.IMP);
+            if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+                yell(Messages.get(this, "hey", Messages.titleCase(Dungeon.hero.name())));
+                seenBefore = true;
+            }
+        } else {
+            seenBefore = false;
+        }
 
-		return super.act();
-	}
+        return super.act();
+    }
 
-	@Override
-	public int defenseSkill( Char enemy ) {
-		return INFINITE_EVASION;
-	}
+    @Override
+    public int defenseSkill(Char enemy) {
+        return INFINITE_EVASION;
+    }
 
-	@Override
-	public void damage( int dmg, Object src ) {
-		//do nothing
-	}
+    @Override
+    public void damage(int dmg, Object src) {
+        //do nothing
+    }
 
-	@Override
-	public boolean add( Buff buff ) {
-		return false;
-	}
+    @Override
+    public boolean add(Buff buff) {
+        return false;
+    }
 
-	@Override
-	public boolean reset() {
-		return true;
-	}
+    @Override
+    public boolean reset() {
+        return true;
+    }
 
-	@Override
-	public boolean interact(Char c) {
-		Sample.INSTANCE.play(Assets.Sounds.DARBY);
+    @Override
+    public boolean interact(Char c) {
+        Sample.INSTANCE.play(Assets.Sounds.DARBY);
 
-		sprite.turnTo( pos, Dungeon.hero.pos );
+        sprite.turnTo(pos, Dungeon.hero.pos);
 
-		if (c != Dungeon.hero){
-			return true;
-		}
+        if (c != Dungeon.hero) {
+            return true;
+        }
 
-		if (Quest.given) {
+        if (Quest.given) {
 
-			DwarfToken tokens = Dungeon.hero.belongings.getItem( DwarfToken.class );
-			if (tokens != null && (tokens.quantity() >= 5 || (!Quest.alternative && tokens.quantity() >= 4))) {
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						GameScene.show( new WndImp( Imp.this, tokens ) );
-					}
-				});
-			} else {
-				tell( Quest.alternative ?
-						Messages.get(this, "monks_2", Messages.titleCase(Dungeon.hero.name()))
-						: Messages.get(this, "golems_2", Messages.titleCase(Dungeon.hero.name())) );
-			}
+            DwarfToken tokens = Dungeon.hero.belongings.getItem(DwarfToken.class);
+            if (tokens != null && (tokens.quantity() >= 5 || (!Quest.alternative && tokens.quantity() >= 4))) {
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndImp(Imp.this, tokens));
+                    }
+                });
+            } else {
+                tell(Quest.alternative ?
+                        Messages.get(this, "monks_2", Messages.titleCase(Dungeon.hero.name()))
+                        : Messages.get(this, "golems_2", Messages.titleCase(Dungeon.hero.name())));
+            }
 
-		} else {
-			tell( Quest.alternative ? Messages.get(this, "monks_1") : Messages.get(this, "golems_1") );
-			Quest.given = true;
-			Quest.completed = false;
-			Notes.add( Notes.Landmark.IMP );
-		}
+        } else {
+            tell(Quest.alternative ? Messages.get(this, "monks_1") : Messages.get(this, "golems_1"));
+            Quest.given = true;
+            Quest.completed = false;
+            Notes.add(Notes.Landmark.IMP);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	private void tell( String text ) {
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				GameScene.show( new WndQuest( Imp.this, text ));
-			}
-		});
-	}
+    private void tell(String text) {
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                GameScene.show(new WndQuest(Imp.this, text));
+            }
+        });
+    }
 
-	public void flee() {
-		Item a = new Bmap();
-		Dungeon.level.drop(a, this.pos).sprite.drop();
+    public void flee() {
 
-		yell( Messages.get(this, "cya", Messages.titleCase(Dungeon.hero.name())) );
-		Sample.INSTANCE.play(Assets.Sounds.DARBY);
-		destroy();
-		sprite.die();
-	}
+        if (Badges.isUnlocked(Badges.Badge.VICTORY)) {
 
-	public static class Quest {
+            if (Random.Int(2) == 0) {
+                switch (Random.Int(2)) {
+                    case 0:
+                        Item a = new Bmap();
+                        Dungeon.level.drop(a, this.pos).sprite.drop();
+                        break;
+                    case 1:
+                        Item b = new Gmap();
+                        Dungeon.level.drop(b, this.pos).sprite.drop();
+                        break;
+                }
+            }
+        }
 
-		private static boolean alternative;
+        yell(Messages.get(this, "cya", Messages.titleCase(Dungeon.hero.name())));
+        Sample.INSTANCE.play(Assets.Sounds.DARBY);
+        destroy();
+        sprite.die();
+    }
 
-		private static boolean spawned;
-		private static boolean given;
-		private static boolean completed;
+    public static class Quest {
 
-		public static Ring reward;
+        private static boolean alternative;
 
-		public static void reset() {
-			spawned = false;
-			given = false;
-			completed = false;
+        private static boolean spawned;
+        private static boolean given;
+        private static boolean completed;
 
-			reward = null;
-		}
+        public static Ring reward;
 
-		private static final String NODE		= "demon";
+        public static void reset() {
+            spawned = false;
+            given = false;
+            completed = false;
 
-		private static final String ALTERNATIVE	= "alternative";
-		private static final String SPAWNED		= "spawned";
-		private static final String GIVEN		= "given";
-		private static final String COMPLETED	= "completed";
-		private static final String REWARD		= "reward";
+            reward = null;
+        }
 
-		public static void storeInBundle( Bundle bundle ) {
+        private static final String NODE = "demon";
 
-			Bundle node = new Bundle();
+        private static final String ALTERNATIVE = "alternative";
+        private static final String SPAWNED = "spawned";
+        private static final String GIVEN = "given";
+        private static final String COMPLETED = "completed";
+        private static final String REWARD = "reward";
 
-			node.put( SPAWNED, spawned );
+        public static void storeInBundle(Bundle bundle) {
 
-			if (spawned) {
-				node.put( ALTERNATIVE, alternative );
+            Bundle node = new Bundle();
 
-				node.put( GIVEN, given );
-				node.put( COMPLETED, completed );
-				node.put( REWARD, reward );
-			}
+            node.put(SPAWNED, spawned);
 
-			bundle.put( NODE, node );
-		}
+            if (spawned) {
+                node.put(ALTERNATIVE, alternative);
 
-		public static void restoreFromBundle( Bundle bundle ) {
+                node.put(GIVEN, given);
+                node.put(COMPLETED, completed);
+                node.put(REWARD, reward);
+            }
 
-			Bundle node = bundle.getBundle( NODE );
+            bundle.put(NODE, node);
+        }
 
-			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
-				alternative	= node.getBoolean( ALTERNATIVE );
+        public static void restoreFromBundle(Bundle bundle) {
 
-				given = node.getBoolean( GIVEN );
-				completed = node.getBoolean( COMPLETED );
-				reward = (Ring)node.get( REWARD );
-			}
-		}
+            Bundle node = bundle.getBundle(NODE);
 
-		public static void spawn( CityLevel level ) {
-			if (!spawned && Dungeon.depth > 16 && Random.Int( 20 - Dungeon.depth ) == 0) {
+            if (!node.isNull() && (spawned = node.getBoolean(SPAWNED))) {
+                alternative = node.getBoolean(ALTERNATIVE);
 
-				Imp npc = new Imp();
-				do {
-					npc.pos = level.randomRespawnCell( npc );
-				} while (
-						npc.pos == -1 ||
-								level.heaps.get( npc.pos ) != null ||
-								level.traps.get( npc.pos) != null ||
-								level.findMob( npc.pos ) != null ||
-								//The imp doesn't move, so he cannot obstruct a passageway
-								!(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
-								!(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
-				level.mobs.add( npc );
+                given = node.getBoolean(GIVEN);
+                completed = node.getBoolean(COMPLETED);
+                reward = (Ring) node.get(REWARD);
+            }
+        }
 
-				spawned = true;
+        public static void spawn(CityLevel level) {
+            if (!spawned && Dungeon.depth > 16 && Random.Int(20 - Dungeon.depth) == 0) {
 
-				//always assigns monks on floor 17, golems on floor 19, and 50/50 between either on 18
-				switch (Dungeon.depth){
-					case 17: default:
-						alternative = true;
-						break;
-					case 18:
-						alternative = Random.Int(2) == 0;
-						break;
-					case 19:
-						alternative = false;
-						break;
-				}
+                Imp npc = new Imp();
+                do {
+                    npc.pos = level.randomRespawnCell(npc);
+                } while (
+                        npc.pos == -1 ||
+                                level.heaps.get(npc.pos) != null ||
+                                level.traps.get(npc.pos) != null ||
+                                level.findMob(npc.pos) != null ||
+                                //The imp doesn't move, so he cannot obstruct a passageway
+                                !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
+                                !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
+                level.mobs.add(npc);
 
-				given = false;
+                spawned = true;
 
-				do {
-					reward = (Ring)Generator.random( Generator.Category.RING );
-				} while (reward.cursed);
-				reward.upgrade( 2 );
-				reward.cursed = true;
-			}
-		}
+                //always assigns monks on floor 17, golems on floor 19, and 50/50 between either on 18
+                switch (Dungeon.depth) {
+                    case 17:
+                    default:
+                        alternative = true;
+                        break;
+                    case 18:
+                        alternative = Random.Int(2) == 0;
+                        break;
+                    case 19:
+                        alternative = false;
+                        break;
+                }
 
-		public static void process( Mob mob ) {
-			if (spawned && given && !completed && Dungeon.depth != 20) {
-				if ((alternative && mob instanceof Monk) ||
-						(!alternative && mob instanceof Golem)) {
+                given = false;
 
-					Dungeon.level.drop( new DwarfToken(), mob.pos ).sprite.drop();
-				}
-			}
-		}
+                do {
+                    reward = (Ring) Generator.random(Generator.Category.RING);
+                } while (reward.cursed);
+                reward.upgrade(2);
+                reward.cursed = true;
+            }
+        }
 
-		public static void complete() {
-			reward = null;
-			completed = true;
+        public static void process(Mob mob) {
+            if (spawned && given && !completed && Dungeon.depth != 20) {
+                if ((alternative && mob instanceof Monk) ||
+                        (!alternative && mob instanceof Golem)) {
 
-			Statistics.questScores[3] = 4000;
-			Notes.remove( Notes.Landmark.IMP );
-		}
+                    Dungeon.level.drop(new DwarfToken(), mob.pos).sprite.drop();
+                }
+            }
+        }
 
-		public static boolean isCompleted() {
-			return completed;
-		}
-	}
+        public static void complete() {
+            reward = null;
+            completed = true;
+
+            Statistics.questScores[3] = 4000;
+            Notes.remove(Notes.Landmark.IMP);
+        }
+
+        public static boolean isCompleted() {
+            return completed;
+        }
+    }
 }

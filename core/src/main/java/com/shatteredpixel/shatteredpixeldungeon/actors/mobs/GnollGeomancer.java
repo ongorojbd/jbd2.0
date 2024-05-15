@@ -298,7 +298,6 @@ public class GnollGeomancer extends Mob {
 		this.sapperID = sapper.id();
 		if (sprite instanceof GnollGeomancerSprite){
 			((GnollGeomancerSprite) sprite).setupArmor();
-			this.sprite.add(CharSprite.State.BURNING);
 		}
 	}
 

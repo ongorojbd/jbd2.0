@@ -568,6 +568,8 @@ public class YogDzewa extends Mob {
 		super.die( cause );
 		Music.INSTANCE.end();
 
+		Statistics.zombiecount = 2;
+
 		if (Random.Int( 10 ) == 0) {
 			GameScene.flash(0xFFFF00);
 			Dungeon.level.drop( new BossdiscF().identify(), pos ).sprite.drop( pos );

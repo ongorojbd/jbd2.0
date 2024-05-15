@@ -115,7 +115,6 @@ public class Marilin extends Mob {
 
     public static void spawn(PrisonLevel level) {
         int max = 4;
-        if (Dungeon.isChallenged(Challenges.RAPSO)) max = 1;
         if (Random.Int(max) == 0) {
             if (Dungeon.depth == 8 && !Dungeon.bossLevel()) {
 

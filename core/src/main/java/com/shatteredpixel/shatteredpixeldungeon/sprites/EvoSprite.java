@@ -44,10 +44,10 @@ public class EvoSprite extends MobSprite {
         run = new Animation( 10, true );
         run.frames( frames, 2, 1, 0, 2, 1, 0 );
 
-        attack = new Animation( 12, false );
+        attack = new Animation( 14, false );
         attack.frames( frames, 6, 7, 8, 7, 6 );
 
-        kick = new Animation( 10, false );
+        kick = new Animation( 14, false );
         kick.frames( frames, 3, 4, 5, 4, 3 );
 
         die = new Animation( 15, false );

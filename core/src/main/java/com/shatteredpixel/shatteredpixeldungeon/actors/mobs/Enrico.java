@@ -167,7 +167,6 @@ public class Enrico extends Mob {
 
     public static void spawn(CityLevel level) {
         int max = 4;
-        if (Dungeon.isChallenged(Challenges.RAPSO)) max = 1;
         if (Random.Int( max ) == 0) {
             if (Dungeon.depth == 19 && !Dungeon.bossLevel()) {
 

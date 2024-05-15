@@ -94,32 +94,38 @@ public class Bmap extends Item {
         super.execute(hero, action);
         if (action.equals(AC_LIGHT)) {
             if (Dungeon.depth == 17) {
-                GameScene.show(
-                        new WndOptions(new ItemSprite(this),
-                                Messages.titleCase(name()),
-                                Messages.get(this, "prick_warn"),
-                                Messages.get(this, "yes"),
-                                Messages.get(this, "no")) {
-                            @Override
-                            protected void onSelect(int index) {
-                                if (index == 0) {
-                                    InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                                    InterlevelScene.returnDepth = Math.max(0, (Dungeon.depth));
-                                    InterlevelScene.returnBranch = 1;
-                                    InterlevelScene.returnPos = -2;
-                                    Game.switchScene(InterlevelScene.class);
+                if (Statistics.zombiecount == 0) {
+                    GameScene.show(
+                            new WndOptions(new ItemSprite(this),
+                                    Messages.titleCase(name()),
+                                    Messages.get(this, "prick_warn"),
+                                    Messages.get(this, "yes"),
+                                    Messages.get(this, "no")) {
+                                @Override
+                                protected void onSelect(int index) {
+                                    if (index == 0) {
+                                        InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                        InterlevelScene.returnDepth = Math.max(0, (Dungeon.depth));
+                                        InterlevelScene.returnBranch = 1;
+                                        InterlevelScene.returnPos = -2;
+                                        Game.switchScene(InterlevelScene.class);
 
-                                    detach( curUser.belongings.backpack );
-                                    updateQuickslot();
-                                } else {
+                                        detach(curUser.belongings.backpack);
+                                        updateQuickslot();
+                                    } else {
 
+                                    }
                                 }
                             }
-                        }
-                );
+                    );
+                } else {
+                    GLog.h(Messages.get(Bmap.class, "6"));
+                    SpellSprite.show(curUser, SpellSprite.MAP);
+                    Sample.INSTANCE.play(Assets.Sounds.READ);
+                }
             } else {
                 GLog.h(Messages.get(Bmap.class, "4"));
-                SpellSprite.show( curUser, SpellSprite.MAP );
+                SpellSprite.show(curUser, SpellSprite.MAP);
                 Sample.INSTANCE.play(Assets.Sounds.READ);
             }
         }

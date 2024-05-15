@@ -58,7 +58,7 @@ public class ZombietSprite extends MobSprite {
         die = new Animation( 20, false );
         die.frames( frames, 11, 12, 13, 14, 15, 16);
 
-        scale.set(1.25f);
+        scale.set(1.2f);
 
         play( idle );
     }

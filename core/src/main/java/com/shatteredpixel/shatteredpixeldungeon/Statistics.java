@@ -68,6 +68,7 @@ public class Statistics {
     public static int duwang2;
     public static int duwang3;
     public static int diocount;
+    public static int zombiecount;
 
     public static int manga;
 
@@ -119,6 +120,7 @@ public class Statistics {
         duwang2 = 0;
         duwang3 = 0;
         diocount = 0;
+        zombiecount = 0;
         manga = 0;
 
         duration = 0;
@@ -150,8 +152,8 @@ public class Statistics {
     private static final String DUWANG = "duwang";
     private static final String DUWANG2 = "duwang2";
     private static final String DUWANG3 = "duwang3";
-
     private static final String DIOCOUNT = "diocount";
+    private static final String ZOMBIECOUNT = "zombiecount";
     private static final String MANGA = "manga";
     private static final String PROG_SCORE = "prog_score";
     private static final String ITEM_VAL = "item_val";
@@ -202,6 +204,7 @@ public class Statistics {
         bundle.put(DUWANG2, duwang2);
         bundle.put(DUWANG3, duwang3);
         bundle.put(DIOCOUNT, diocount);
+        bundle.put(ZOMBIECOUNT, zombiecount);
         bundle.put(MANGA, manga);
         bundle.put(PROG_SCORE, progressScore);
         bundle.put(ITEM_VAL, heldItemValue);
@@ -256,6 +259,7 @@ public class Statistics {
         duwang2 = bundle.getInt(DUWANG2);
         duwang3 = bundle.getInt(DUWANG3);
         diocount = bundle.getInt(DIOCOUNT);
+        zombiecount = bundle.getInt(ZOMBIECOUNT);
         manga = bundle.getInt(MANGA);
         progressScore = bundle.getInt(PROG_SCORE);
         heldItemValue = bundle.getInt(ITEM_VAL);

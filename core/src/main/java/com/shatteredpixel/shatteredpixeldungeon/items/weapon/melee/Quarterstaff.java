@@ -64,7 +64,7 @@ public class Quarterstaff extends MeleeWeapon {
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
 		beforeAbilityUsed(hero, null);
-		Sword.gclass();
+		Sword.doraclass();
 		Buff.prolong(hero, DefensiveStance.class, 4f); //4 turns as using the ability is instant
 		hero.sprite.operate(hero.pos);
 		hero.next();

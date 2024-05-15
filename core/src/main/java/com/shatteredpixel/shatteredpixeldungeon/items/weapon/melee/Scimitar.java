@@ -46,7 +46,7 @@ public class Scimitar extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.SCIMITAR;
-		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSound = Assets.Sounds.TONIO;
 		hitSoundPitch = 0.8f;
 
 		tier = 3;
@@ -110,7 +110,7 @@ public class Scimitar extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		beforeAbilityUsed(hero, null);
 		Buff.prolong(hero, SwordDance.class, 4f); //4 turns as using the ability is instant
-		Sword.gclass();
+		Sword.doraclass();
 		hero.sprite.operate(hero.pos);
 		hero.next();
 		afterAbilityUsed(hero);

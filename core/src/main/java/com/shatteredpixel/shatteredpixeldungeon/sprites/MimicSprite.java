@@ -56,7 +56,7 @@ public class MimicSprite extends MobSprite {
 		idle.frames( frames, 2+c, 2+c, 2+c, 3+c, 3+c );
 
 		run = new Animation( 10, true );
-		run.frames( frames, 2+c, 3+c, 4+c, 5+c, 5+c, 4+c, 3+c );
+		run.frames( frames, 2+c, 4+c, 2+c, 5+c);
 
 		attack = new Animation( 10, false );
 		attack.frames( frames, 2+c, 6+c, 7+c, 8+c );

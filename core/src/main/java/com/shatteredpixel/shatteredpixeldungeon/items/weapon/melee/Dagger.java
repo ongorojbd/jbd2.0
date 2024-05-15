@@ -130,7 +130,7 @@ public class Dagger extends MeleeWeapon {
 		Dungeon.hero.sprite.place( Dungeon.hero.pos );
 		CellEmitter.get( Dungeon.hero.pos ).burst( Speck.factory( Speck.WOOL ), 6 );
 		Sample.INSTANCE.play( Assets.Sounds.PUFF );
-		Sword.gclass();
+		Sword.doraclass();
 		wep.afterAbilityUsed(hero);
 	}
 }

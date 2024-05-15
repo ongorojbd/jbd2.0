@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Marilin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -71,22 +72,20 @@ public class PrisonLevel extends RegularLevel {
 	}
 
 	public static final String[] PRISON_TRACK_LIST
-			= new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2,
-			Assets.Music.PRISON_1, Assets.Music.PRISON_1, Assets.Music.PRISON_2};
-	public static final float[] PRISON_TRACK_CHANCES = new float[]{1f, 1f, 0.5f, 0.25f, 1f, 0.5f};
+			= new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2};
+	public static final float[] PRISON_TRACK_CHANCES = new float[]{1f, 1f};
 
 	@Override
-	public void playLevelMusic() {
-		if (hero.buff(AscensionChallenge.class) != null){
-			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.CIV},
-					new float[]{1},
-					false);
-		}else { Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2},
-				new float[]{1, 1, 0.5f},
-				false);
-	}}
+	public void playLevelMusic(){
+		if (Wandmaker.Quest.active()){
+			Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
+		} else if (hero.buff(AscensionChallenge.class) != null) {
+			Music.INSTANCE.play(Assets.Music.CIV, true);
+		} else {
+			Music.INSTANCE.playTracks(PRISON_TRACK_LIST, PRISON_TRACK_CHANCES, false);
+		}
+		wandmakerQuestWasActive = Wandmaker.Quest.active();
+	}
 
 	@Override
 	protected ArrayList<Room> initRooms() {
@@ -174,15 +173,17 @@ public class PrisonLevel extends RegularLevel {
 			wandmakerQuestWasActive = Wandmaker.Quest.active();
 
 			Game.runOnRenderThread(new Callback() {
-
+				@Override
+				public void call() {
+					Music.INSTANCE.fadeOut(1f, new Callback() {
 						@Override
 						public void call() {
 							if (Dungeon.level != null) {
 								Dungeon.level.playLevelMusic();
 							}
 						}
-
-
+					});
+				}
 			});
 		}
 	}

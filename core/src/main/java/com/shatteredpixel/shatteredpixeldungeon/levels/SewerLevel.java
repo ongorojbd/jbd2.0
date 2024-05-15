@@ -76,21 +76,16 @@ public class SewerLevel extends RegularLevel {
     }
 
     public static final String[] SEWER_TRACK_LIST
-            = new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2,
-            Assets.Music.SEWERS_1};
-    public static final float[] SEWER_TRACK_CHANCES = new float[]{1f, 1f, 0.5f, 0.25f};
+            = new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2};
+    public static final float[] SEWER_TRACK_CHANCES = new float[]{1f, 1f};
 
-    public void playLevelMusic() {
-        if (hero.buff(AscensionChallenge.class) != null) {
-            Music.INSTANCE.playTracks(
-                    new String[]{Assets.Music.CIV},
-                    new float[]{1},
-                    false);
+    public void playLevelMusic(){
+        if (Ghost.Quest.active()){
+            Music.INSTANCE.play(Assets.Music.SEWERS_TENSE, true);
+        } else if (hero.buff(AscensionChallenge.class) != null) {
+            Music.INSTANCE.play(Assets.Music.CIV, true);
         } else {
-            Music.INSTANCE.playTracks(
-                    new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2},
-                    new float[]{1, 1, 0.5f},
-                    false);
+            Music.INSTANCE.playTracks(SEWER_TRACK_LIST, SEWER_TRACK_CHANCES, false);
         }
     }
 

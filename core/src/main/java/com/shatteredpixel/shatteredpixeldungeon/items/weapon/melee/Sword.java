@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.RogueArmor;
@@ -137,7 +138,26 @@ public class Sword extends MeleeWeapon {
 			if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
 				Sample.INSTANCE.play(Assets.Sounds.ORA2);
 			} else {
-				Sample.INSTANCE.play(Assets.Sounds.DORA);
+				switch (Random.Int( 6 )) {
+					case 0:
+						Sample.INSTANCE.play( Assets.Sounds.JOSUKE1);
+						break;
+					case 1:
+						Sample.INSTANCE.play( Assets.Sounds.JOSUKE2);
+						break;
+					case 2:
+						Sample.INSTANCE.play( Assets.Sounds.JOSUKE3);
+						break;
+					case 3:
+						Sample.INSTANCE.play( Assets.Sounds.JOSUKE4);
+						break;
+					case 4:
+						Sample.INSTANCE.play( Assets.Sounds.JOSUKE5);
+						break;
+					case 5:
+						Sample.INSTANCE.play( Assets.Sounds.GUITAR);
+						break;
+				}
 			}
 	}
 

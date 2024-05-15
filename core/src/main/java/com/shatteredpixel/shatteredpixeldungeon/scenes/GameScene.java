@@ -74,6 +74,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
@@ -456,6 +458,9 @@ public class GameScene extends PixelScene {
 				if (Dungeon.level instanceof TempleLastLevel){
 					add(new WndStory(Messages.get(this, "temple") + "\n\n" + Messages.get(this, "temple2")).setDelays(0.4f, 0.4f));
 				}
+				if (Dungeon.level instanceof Dio2bossLevel){
+					add(new WndStory(Messages.get(this, "diolevel") + "\n\n" + Messages.get(this, "diolevel2")).setDelays(0.4f, 0.4f));
+				}
 
 				if (Dungeon.level instanceof ShipbossLevel){
 					Sample.INSTANCE.play(Assets.Sounds.SPW5);
@@ -597,7 +602,7 @@ public class GameScene extends PixelScene {
 						}
 					}
 
-					if (spawnersAbove > 0) {
+					if (spawnersAbove > 0 && Dungeon.branch == 0) {
 						if (Dungeon.bossLevel()) {
 							GLog.n(Messages.get(this, "spawner_warn_final"));
 						} else {

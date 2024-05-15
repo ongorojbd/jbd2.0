@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -32,12 +34,23 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Bundle;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AboutScene extends PixelScene {
+
+	private static Pattern descPattern = Pattern.compile("(.*?)(\r\n|\n|\r)(\r\n|\n|\r)---", Pattern.DOTALL + Pattern.MULTILINE);
+	private static Pattern versionCodePattern = Pattern.compile("kakao version number: ([0-9]*)", Pattern.CASE_INSENSITIVE);
+
+	private static String kakao = "kakao : ";
+	private static String link = "링크";
 
 	@Override
 	public void create() {
@@ -83,32 +96,82 @@ public class AboutScene extends PixelScene {
 		}
 		content.add(shpx);
 
+
+		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
+		httpGet.setUrl("https://api.github.com/repos/orogno24/myJavaPRJ/releases");
+		httpGet.setHeader("Accept", "application/vnd.github.v3+json");
+
 		CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
-				" ",
+				"",
 				Icons.ALEKS.get(),
-				" ",
-				" ",
-				" ");
+				"",
+				"",
+				"");
 		alex.setSize(colWidth/2f, 0);
 		if (landscape()){
 			alex.setPos(shpx.right(), shpx.top() + (shpx.height() - alex.height()*2)/2f);
 		} else {
 			alex.setPos(w/2f - colWidth/2f, shpx.bottom()+5);
 		}
-		content.add(alex);
+
+		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
+			@Override
+			public void handleHttpResponse(Net.HttpResponse httpResponse) {
+				try {
+
+					for (Bundle b : Bundle.read( httpResponse.getResultAsStream() ).getBundleArray()){
+						Matcher m = versionCodePattern.matcher(b.getString("body"));
+
+						if (m.find()){
+							int releaseVersion = Integer.parseInt(m.group(1));
+							if (releaseVersion > 2){
+
+								CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
+										"Link",
+										Icons.KRISTJAN.get(),
+										kakao,
+										"url",
+										"https://open.kakao.com/o/gC7ZgGjd");
+								alex.setSize(colWidth/2f, 0);
+								if (landscape()){
+									alex.setPos(shpx.right(), shpx.top() + (shpx.height() - alex.height()*2)/2f);
+								} else {
+									alex.setPos(w/2f - colWidth/2f, shpx.bottom()+5);
+								}
+								content.add(alex);
+							}
+						}
+					}
+
+				} catch (Exception e) {
+					Game.reportException( e );
+				}
+			}
+
+			@Override
+			public void failed(Throwable t) {
+
+			}
+
+			@Override
+			public void cancelled() {
+
+			}
+
+		});
 
 		CreditsBlock charlie = new CreditsBlock(false, Window.SHPX_COLOR,
 				"Pixel Design",
 				Icons.CELESTI.get(),
-				"",
 				"너구리풀",
+				"",
 				"https://www.youtube.com/watch?v=FPyIMtXsIcY");
 		charlie.setRect(alex.right(), alex.top(), colWidth/2f, 0);
 		content.add(charlie);
 
 		CreditsBlock kristjan = new CreditsBlock(false, Window.SHPX_COLOR,
 				"",
-				Icons.KRISTJAN.get(),
+				Icons.ALEKS.get(),
 				"",
 				"",
 				"");
@@ -121,7 +184,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
 				"To Be Countinued....",
 				Icons.WATA.get(),
-				"Next Update : 2.0K",
+				"Next Update : 2.0L",
 				"",
 				"");
 		if (landscape()){

@@ -77,11 +77,11 @@ public class Bdth extends NPC {
             die(null);
             return true;
         }
-        if (SPDSettings.getSpecialcoin() >= 3 && !seenBefore && Dungeon.level.heroFOV[pos]) {
-            Sample.INSTANCE.play(Assets.Sounds.EMP);
-            this.yell(Messages.get(this, "notice"));
-            seenBefore = true;
-        }
+//        if (SPDSettings.getSpecialcoin() >= 3 && !seenBefore && Dungeon.level.heroFOV[pos]) {
+//            Sample.INSTANCE.play(Assets.Sounds.EMP);
+//            this.yell(Messages.get(this, "notice"));
+//            seenBefore = true;
+//        }
         return super.act();
     }
 

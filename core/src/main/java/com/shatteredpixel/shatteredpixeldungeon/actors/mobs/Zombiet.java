@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -213,7 +214,6 @@ public class Zombiet extends Mob {
     public void die( Object cause ) {
 
         super.die( cause );
-
         if (Random.Int( 10 ) == 0) {
             Dungeon.level.drop( new ChaosCatalyst().identify(), pos ).sprite.drop( pos );
         }

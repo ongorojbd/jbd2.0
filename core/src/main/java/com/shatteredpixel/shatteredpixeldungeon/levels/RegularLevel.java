@@ -120,6 +120,9 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
+		if (this instanceof Dio2Level) {
+			standards *= 3;
+		}
 		for (int i = 0; i < standards; i++) {
 			StandardRoom s;
 			do {
@@ -218,6 +221,11 @@ public abstract class RegularLevel extends Level {
 				}
 			}
 		}
+
+		if (Dungeon.depth == 22 && Dungeon.branch == 1){
+			mobsToSpawn = 20; // Dio2Level 스폰율
+		}
+
 		Random.shuffle(stdRooms);
 		Iterator<Room> stdRoomIter = stdRooms.iterator();
 

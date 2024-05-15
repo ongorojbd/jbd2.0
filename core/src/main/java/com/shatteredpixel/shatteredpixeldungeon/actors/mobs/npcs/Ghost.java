@@ -191,6 +191,14 @@ public class Ghost extends NPC {
 							@Override
 							public void hide() {
 								super.hide();
+								Music.INSTANCE.fadeOut(1f, new Callback() {
+									@Override
+									public void call() {
+										if (Dungeon.level != null) {
+											Dungeon.level.playLevelMusic();
+										}
+									}
+								});
 							}
 						} );
 					}
@@ -358,7 +366,14 @@ public class Ghost extends NPC {
 				Game.runOnRenderThread(new Callback() {
 					@Override
 					public void call() {
-
+						Music.INSTANCE.fadeOut(1f, new Callback() {
+							@Override
+							public void call() {
+								if (Dungeon.level != null) {
+									Dungeon.level.playLevelMusic();
+								}
+							}
+						});
 					}
 				});
 			}

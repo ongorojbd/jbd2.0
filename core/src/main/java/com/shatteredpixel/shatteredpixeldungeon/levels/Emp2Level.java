@@ -125,7 +125,6 @@ public class Emp2Level extends Level {
 
         map[entrance] = Terrain.ENTRANCE;
 
-
         Pian npc2 = new Pian();
         npc2.pos = 7 * width() + 7;
         mobs.add( npc2 );

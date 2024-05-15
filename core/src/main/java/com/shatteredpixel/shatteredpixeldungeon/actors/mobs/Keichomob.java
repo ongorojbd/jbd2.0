@@ -79,7 +79,7 @@ public class Keichomob extends Mob {
     {
         spriteClass = KeichoSprite.class;
 
-        HP = HT = 25;
+        HP = HT = 20;
         defenseSkill = 0;
 
         EXP = 0;

@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
@@ -98,7 +99,7 @@ public class NitoDismantleHammer extends Item {
 
         @Override
         public boolean itemSelectable(Item item) {
-            return item instanceof MeleeWeapon && !item.isEquipped(curUser) && !(item instanceof Pickaxe) ||  item instanceof Artifact && !item.isEquipped(curUser)||
+            return item instanceof MeleeWeapon && !item.isEquipped(curUser) && !(item instanceof Pickaxe) ||  item instanceof Artifact && !item.isEquipped(curUser) && !(item instanceof CloakOfShadows)||
                     item instanceof Armor && ((Armor) item).checkSeal() == null && !item.isEquipped(curUser) || item instanceof Ring && !item.isEquipped(curUser);
         }
 
@@ -111,8 +112,8 @@ public class NitoDismantleHammer extends Item {
 
                 item.detach(curUser.belongings.backpack);
                 if (item.level() > 0) {
-                    GLog.p(  "+" + item.level()*2 + " 죠죠 포인트!");
-                    Dungeon.energy += item.level()*2;
+                    GLog.p(  "+" + item.level() + 1 +  " 죠죠 포인트!");
+                    Dungeon.energy += item.level() + 1;
                 } else {
                     Dungeon.energy += 1;
                     GLog.p(  "+1 죠죠 포인트!");

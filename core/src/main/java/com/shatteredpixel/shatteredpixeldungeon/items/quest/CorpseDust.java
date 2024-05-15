@@ -42,21 +42,26 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class CorpseDust extends Item {
-	
+
 	{
 		image = ItemSpriteSheet.DUST;
-		
+
 		cursed = true;
 		cursedKnown = true;
-		
+
 		unique = true;
+	}
+
+	@Override
+	public ArrayList<String> actions(Hero hero) {
+		return new ArrayList<>(); //yup, no dropping this one
 	}
 
 	@Override
 	public boolean isUpgradable() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isIdentified() {
 		return true;
@@ -64,7 +69,6 @@ public class CorpseDust extends Item {
 
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
-		Sample.INSTANCE.play( Assets.Sounds.ALERT);
 		if (super.doPickUp(hero, pos)){
 			GLog.n( Messages.get( this, "chill") );
 			Buff.affect(hero, DustGhostSpawner.class);
@@ -143,6 +147,19 @@ public class CorpseDust extends Item {
 					mob.die(null);
 				}
 			}
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.fadeOut(1f, new Callback() {
+						@Override
+						public void call() {
+							if (Dungeon.level != null) {
+								Dungeon.level.playLevelMusic();
+							}
+						}
+					});
+				}
+			});
 		}
 
 		private static String SPAWNPOWER = "spawnpower";

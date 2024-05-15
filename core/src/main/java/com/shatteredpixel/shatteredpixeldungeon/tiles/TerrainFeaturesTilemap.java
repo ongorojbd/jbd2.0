@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.tiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastShopLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -67,6 +69,8 @@ public class TerrainFeaturesTilemap extends DungeonTilemap {
 		int stage = (Dungeon.depth-1)/5;
 
 		if (Dungeon.depth == 21 && Dungeon.level instanceof LastShopLevel) stage--;
+
+		if (Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel) stage = 0;
 		stage = Math.min(stage, 4);
 
 		if (tile == Terrain.HIGH_GRASS){

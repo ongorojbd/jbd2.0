@@ -57,6 +57,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
@@ -216,6 +218,8 @@ public class Dungeon {
 	public static int mboss14;
 	public static int mboss19;
 
+	public static boolean diolevel;
+
 	public static HashSet<Integer> chapters;
 
 	public static SparseArray<ArrayList<Item>> droppedItems;
@@ -282,6 +286,7 @@ public class Dungeon {
 		mboss9 = 1;
 		mboss14 = 1;
 		mboss19 = 1;
+		diolevel = false;
 
 		gold = 0;
 		energy = 0;
@@ -324,6 +329,7 @@ public class Dungeon {
 			switch (depth) {
 				case 1:
 					if (SPDSettings.getDio() >= 1) {
+						diolevel = true;
 						level = new DioLevel();
 						break;
 					} else {
@@ -431,6 +437,12 @@ public class Dungeon {
 				case 17:
 					level = new TempleLastLevel();
 					break;
+				case 22:
+					level = new Dio2Level();
+					break;
+				case 23:
+					level = new Dio2bossLevel();
+					break;
 				default:
 					level = new DeadEndLevel();
 			}
@@ -527,8 +539,10 @@ public class Dungeon {
 				|| Dungeon.level instanceof LabsBossLevel
 				|| Dungeon.level instanceof EmporioLevel
 				|| Dungeon.level instanceof DiobossLevel
+				|| Dungeon.level instanceof Dio2bossLevel
 				|| Dungeon.level instanceof Emp2Level
 				|| Dungeon.level instanceof DioLevel
+				|| Dungeon.level instanceof Dio2Level
 				|| (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)){
 			return false;
 		}
@@ -656,6 +670,8 @@ public class Dungeon {
 	private static final String MBOSS9		= "mboss9";
 	private static final String MBOSS14		= "mboss14";
 	private static final String MBOSS19		= "mboss19";
+
+	private static final String DIOLEVEL    = "diolevel";
 	private static final String DROPPED     = "dropped%d";
 	private static final String PORTED      = "ported%d";
 	private static final String LEVEL		= "level";
@@ -683,6 +699,7 @@ public class Dungeon {
 			bundle.put (MBOSS9, mboss9);
 			bundle.put (MBOSS14, mboss14);
 			bundle.put (MBOSS19, mboss19);
+			bundle.put (DIOLEVEL, diolevel);
 
 			bundle.put( GOLD, gold );
 			bundle.put( ENERGY, energy );
@@ -858,6 +875,7 @@ public class Dungeon {
 		mboss9 = bundle.getInt(MBOSS9);
 		mboss14 = bundle.getInt(MBOSS14);
 		mboss19 = bundle.getInt(MBOSS19);
+		diolevel = bundle.getBoolean(DIOLEVEL);
 
 		Statistics.restoreFromBundle( bundle );
 		Generator.restoreFromBundle( bundle );

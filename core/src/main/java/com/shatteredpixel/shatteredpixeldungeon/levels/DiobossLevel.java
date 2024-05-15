@@ -78,6 +78,7 @@ public class DiobossLevel extends Level {
     private static int HEIGHT = 35;
 
     private static final int bottomDoor = 8 + (16) * 17; //냅둬야함
+    public static final int itemPlace = 8 + (9) * 17;
     private static boolean isCompleted = false;
     private static final Rect arena = new Rect(0, 0, 17, 14);
 

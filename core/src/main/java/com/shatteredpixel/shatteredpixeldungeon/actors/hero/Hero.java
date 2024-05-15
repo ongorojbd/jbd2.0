@@ -1268,7 +1268,7 @@ public class Hero extends Char {
                                 Dungeon.level.drop(gold, pos).sprite.drop();
                             }
 
-                            if (Random.Int(300) == 0) {
+                            if (Random.Int(400) == 0) {
                                 Dungeon.level.drop(new Danny().identify(), pos).sprite.drop(pos);
                             }
 

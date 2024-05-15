@@ -84,7 +84,7 @@ public class TempleLastLevel extends Level {
     @Override
     public void playLevelMusic() {
         Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.CIV},
+                new String[]{Assets.Music.PRISON_TENSE},
                 new float[]{1},
                 false);
     }

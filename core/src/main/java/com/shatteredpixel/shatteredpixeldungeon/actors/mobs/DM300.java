@@ -597,11 +597,13 @@ public class DM300 extends Mob {
 
 		Sample.INSTANCE.play( Assets.Sounds.SHEER2);
 
-		Kawasiri Kawasiri = new Kawasiri();
-		Kawasiri.state = Kawasiri.FLEEING;
-		Kawasiri.pos = this.pos;
-		GameScene.add( Kawasiri );
-		Kawasiri.beckon(Dungeon.hero.pos);
+		if (Random.Int( 2 ) == 0) {
+			Kawasiri Kawasiri = new Kawasiri();
+			Kawasiri.state = Kawasiri.FLEEING;
+			Kawasiri.pos = this.pos;
+			GameScene.add(Kawasiri);
+			Kawasiri.beckon(Dungeon.hero.pos);
+		}
 
 		if (Random.Int( 10 ) == 0) {
 			GameScene.flash(0xFFFF00);

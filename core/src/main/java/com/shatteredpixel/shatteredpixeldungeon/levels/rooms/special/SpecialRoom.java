@@ -155,7 +155,7 @@ public abstract class SpecialRoom extends Room {
 	}
 	
 	public static SpecialRoom createRoom(){
-		if (Dungeon.depth == pitNeededDepth){
+		if (Dungeon.depth == pitNeededDepth && Dungeon.branch == 0){
 			pitNeededDepth = -1;
 			
 			useType( PitRoom.class );
@@ -167,9 +167,9 @@ public abstract class SpecialRoom extends Room {
 			return new LaboratoryRoom();
 		
 		} else {
-			
-			if (Dungeon.bossLevel(Dungeon.depth + 1)){
-				floorSpecials.remove(WeakFloorRoom.class);
+
+			if (Dungeon.bossLevel(Dungeon.depth + 1) || Dungeon.branch != 0 || Dungeon.depth >= 26){
+				floorSpecials.remove(WeakFloorRoom.class); // Dio2Level 방 생성 수정
 			}
 
 			//60% chance for front of queue, 30% chance for next, 10% for one after that

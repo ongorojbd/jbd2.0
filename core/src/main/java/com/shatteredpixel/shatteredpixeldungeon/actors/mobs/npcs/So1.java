@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer2;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cfree;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -71,7 +72,7 @@ public class So1 extends NPC {
 
     @Override
     protected boolean act() {
-        if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+        if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
             die(null);
             return true;
         }
@@ -79,7 +80,7 @@ public class So1 extends NPC {
     }
 
     @Override
-    public void beckon (int cell) {
+    public void beckon(int cell) {
         //do nothing
     }
 
@@ -94,7 +95,7 @@ public class So1 extends NPC {
     }
 
     @Override
-    public boolean add( Buff buff ) {
+    public boolean add(Buff buff) {
         return false;
     }
 
@@ -102,50 +103,24 @@ public class So1 extends NPC {
     public boolean interact(Char c) {
         Sample.INSTANCE.play(Assets.Sounds.SO1);
 
-        sprite.turnTo( pos, c.pos );
+        sprite.turnTo(pos, c.pos);
 
-        if (c != Dungeon.hero){
+        if (c != Dungeon.hero) {
             return true;
         }
 
-
-
-        Game.runOnRenderThread(new Callback() {
-
-            @Override
-            public void call() {
-                GameScene.show(new WndOptions(
-                        sprite(),
-                        Messages.titleCase(name()),
-                        Messages.get(Emporio.class, "0"),
-                        Messages.get(Emporio.class, "1"),
-                        Messages.get(Emporio.class, "2")
-                ){
-                    @Override
-                    protected void onSelect(int index) {
-                        if (index == 0){
-
-
-                        } else if (index == 1) {
-
-                        }
-                    }
-                });
-            }
-        });
-
-
+        this.yell(Messages.get(this, "0"));
 
         return true;
     }
 
     @Override
-    public int defenseSkill( Char enemy ) {
+    public int defenseSkill(Char enemy) {
         return INFINITE_EVASION;
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src) {
     }
 
     @Override

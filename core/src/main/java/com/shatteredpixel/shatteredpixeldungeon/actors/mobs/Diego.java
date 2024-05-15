@@ -149,7 +149,7 @@ public class Diego extends Mob {
         }
         damage = super.attackProc(enemy, damage);
 
-        if (Random.Int(3) == 0) {
+        if (Random.Int(4) == 0) {
 
             Invisibility.dispel(this);
 

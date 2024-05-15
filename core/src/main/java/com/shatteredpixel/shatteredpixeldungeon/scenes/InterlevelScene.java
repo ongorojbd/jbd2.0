@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -31,6 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -157,13 +160,13 @@ public class InterlevelScene extends PixelScene {
 			lastRegion = region;
 		}
 
-		if(Dungeon.level instanceof DioLevel || Dungeon.level instanceof DiobossLevel || Dungeon.level instanceof ShipbossLevel) loadingAsset = Assets.Interfaces.LOADING_DIO;
+		if(Dungeon.level instanceof DioLevel || Dungeon.level instanceof DiobossLevel || Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel || Dungeon.level instanceof ShipbossLevel) loadingAsset = Assets.Interfaces.LOADING_DIO;
 		else if (lastRegion == 1)    loadingAsset = Assets.Interfaces.LOADING_SEWERS;
 		else if (lastRegion == 2)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
 		else if (lastRegion == 3)    loadingAsset = Assets.Interfaces.LOADING_CAVES;
 		else if (lastRegion == 4)    loadingAsset = Assets.Interfaces.LOADING_CITY;
 		else if (lastRegion == 5)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
-		else if (loadingDepth == 26 || loadingDepth == 27 || loadingDepth == 28 || loadingDepth == 29 || loadingDepth == 30 || loadingDepth == 31) loadingAsset = Assets.Interfaces.LOADING_LABS;
+		else if (Dungeon.isChallenged(Challenges.EOH) && loadingDepth >= 26 && loadingDepth <= 31) loadingAsset = Assets.Interfaces.LOADING_LABS;
 		else                         loadingAsset = Assets.Interfaces.SHADOW;
 
 		if (DeviceCompat.isDebug()){

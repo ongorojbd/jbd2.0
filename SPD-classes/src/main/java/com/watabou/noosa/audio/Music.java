@@ -31,14 +31,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public enum Music {
-	
+
 	INSTANCE;
-	
+
 	private com.badlogic.gdx.audio.Music player;
-	
+
 	private String lastPlayed;
 	private boolean looping;
-	
+
 	private boolean enabled = true;
 	private float volume = 1f;
 
@@ -50,21 +50,21 @@ public enum Music {
 	float[] trackChances;
 	private final ArrayList<String> trackQueue = new ArrayList<>();
 	boolean shuffle = false;
-	
+
 	public synchronized void play( String assetName, boolean looping ) {
 
 		//iOS cannot play ogg, so we use an mp3 alternative instead
 		if (assetName != null && DeviceCompat.isiOS()){
 			assetName = assetName.replace(".ogg", ".mp3");
 		}
-		
+
 		if (isPlaying() && lastPlayed != null && lastPlayed.equals( assetName )) {
 			player.setVolume(volumeWithFade());
 			return;
 		}
-		
+
 		stop();
-		
+
 		lastPlayed = assetName;
 		trackList = null;
 
@@ -94,19 +94,12 @@ public enum Music {
 
 		if (isPlaying() && this.trackList != null && tracks.length == trackList.length){
 
-			//lists are considered the same if they are identical or merely shifted
-			// e.g. the regular title theme and the victory theme are considered equivalent
-			boolean sameList = false;
-			for (int ofs = 0; ofs < tracks.length; ofs++){
-				sameList = true;
-				for (int j = 0; j < tracks.length; j++){
-					int i = (j+ofs)%tracks.length;
-					if (!tracks[i].equals(trackList[j]) || chances[i] != trackChances[j]){
-						sameList = false;
-						break;
-					}
+			boolean sameList = true;
+			for (int i = 0; i < tracks.length; i ++){
+				if (!tracks[i].equals(trackList[i]) || chances[i] != trackChances[i]){
+					sameList = false;
+					break;
 				}
-				if (sameList) break;
 			}
 
 			if (sameList) {
@@ -226,19 +219,19 @@ public enum Music {
 			player = null;
 		}
 	}
-	
+
 	public synchronized void end() {
 		lastPlayed = null;
 		trackList = null;
 		stop();
 	}
-	
+
 	public synchronized void pause() {
 		if (player != null) {
 			player.pause();
 		}
 	}
-	
+
 	public synchronized void resume() {
 		if (player != null) {
 			player.play();
@@ -252,7 +245,7 @@ public enum Music {
 			player = null;
 		}
 	}
-	
+
 	public synchronized void volume( float value ) {
 		volume = value;
 		if (player != null) {
@@ -267,11 +260,11 @@ public enum Music {
 			return volume;
 		}
 	}
-	
+
 	public synchronized boolean isPlaying() {
 		return player != null && player.isPlaying();
 	}
-	
+
 	public synchronized void enable( boolean value ) {
 		enabled = value;
 		if (isPlaying() && !value) {
@@ -285,9 +278,9 @@ public enum Music {
 			}
 		}
 	}
-	
+
 	public synchronized boolean isEnabled() {
 		return enabled;
 	}
-	
+
 }

@@ -34,7 +34,7 @@ public class GreatCrabSprite extends MobSprite {
 
 		TextureFilm frames = new TextureFilm( texture, 16, 16 );
 
-		idle = new MovieClip.Animation( 5, true );
+		idle = new MovieClip.Animation( 3, true );
 		idle.frames( frames, 16, 17, 16, 18 );
 
 		run = new MovieClip.Animation( 10, true );

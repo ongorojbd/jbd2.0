@@ -73,14 +73,6 @@ public class Bcomsoldier extends Mob {
         maxLvl = 21;
     }
 
-    private int left(int direction){
-        return direction == 0 ? 7 : direction-1;
-    }
-
-    private int right(int direction){
-        return direction == 7 ? 0 : direction+1;
-    }
-
     private int trapcooldown = 0;
     private int lastEnemyPos = -1;
 
@@ -105,14 +97,13 @@ public class Bcomsoldier extends Mob {
                 }
             }
 
-            if (Dungeon.level.passable[trapPos] && Dungeon.level.map[trapPos] != Terrain.EXIT&& Dungeon.level.map[trapPos] != Terrain.ENTRANCE && Dungeon.level.map[trapPos] != Terrain.EMPTY_SP) {
+            if (Dungeon.level.passable[trapPos] && Dungeon.level.map[trapPos] != Terrain.EXIT && Dungeon.level.map[trapPos] != Terrain.ENTRANCE && Dungeon.level.map[trapPos] != Terrain.EMPTY_SP && Dungeon.level.map[trapPos] != Terrain.PEDESTAL) {
 
                     Level.set(trapPos, Terrain.SECRET_TRAP);
 
                     Trap t1 = trapClasses[Random.Int(trapClasses.length)];
 
                     Dungeon.level.setTrap(t1, trapPos);
-
                     Dungeon.level.discover(trapPos);
                     CellEmitter.get(trapPos).burst(Speck.factory(Speck.LIGHT), 12);
 
