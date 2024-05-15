@@ -30,7 +30,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsolg;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie2p;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombied2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiedog2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiez2;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -67,7 +74,7 @@ public class ScrollOfPsionicBlast extends ExoticScroll {
 		for (Mob mob : targets){
 			//always kills non-resistant enemies
 			//resistant enemies take 50% current HP at full health, scaling to 75% at 1/2 HP, and 100% at 1/3 hp
-			if (!(mob instanceof Rebel || mob instanceof Bcomsolg)) {
+			if (!(mob instanceof Rebel || mob instanceof Bcomsolg || mob instanceof Zombie2 || mob instanceof Zombiedog2 || mob instanceof Zombied2 || mob instanceof Zombiez2 || mob instanceof Zombie2p || mob instanceof Zombiet2)) {
 				mob.damage(Math.round(mob.HT / 2f + mob.HP / 2f), this);
 			}
 			if (mob instanceof Rebel) {

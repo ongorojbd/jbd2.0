@@ -40,7 +40,7 @@ public class SealShard extends RemainsItem {
 	protected void doEffect(Hero hero) {
 		Buff.affect(hero, Barrier.class).incShield(hero.HT/10);
 		hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(hero.HT/10), FloatingText.SHIELDING );
-		Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+		Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 	}
 
 }

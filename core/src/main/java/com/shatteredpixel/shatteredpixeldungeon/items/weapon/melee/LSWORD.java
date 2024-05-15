@@ -66,8 +66,6 @@ public class LSWORD extends MeleeWeapon {
 
             CellEmitter.get( curUser.pos ).burst( Speck.factory( Speck.STAR ), 10 );
             Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
-            hero.sprite.zap(hero.pos);
-            Invisibility.dispel();
 
             if (hero.belongings.getItem(RingOfWealth.class) != null) {
                 if (hero.belongings.getItem(RingOfWealth.class).isEquipped(hero)) {

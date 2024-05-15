@@ -84,119 +84,50 @@ import java.util.ArrayList;
 
 public class Dioprize extends Spell {
 
+    private static final Item[] jojoItems = {
+            new Jojo1(), new Jojo2(), new Jojo3(), new Jojo4(),
+            new Jojo5(), new Jojo6(), new Jojo7(), new Jojo8(), new Jojo9()
+    };
+
     {
         image = ItemSpriteSheet.DIA;
-
         unique = true;
     }
 
     @Override
-    public ArrayList<String> actions(Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-
-        return actions;
-    }
-
-    @Override
-    public void execute(Hero hero, String action) {
-        super.execute(hero, action);
-
-    }
-
-    @Override
     protected void onCast(Hero hero) {
-
-        ArrayList<Integer> spawnPoints = new ArrayList<>();
-
-        GameScene.show(
-                new WndOptions(new RebelSprite(),
-                        Messages.get(Dioprize.class, "00"),
-                        Messages.get(Dioprize.class, "0"),
-                        Messages.get(Dioprize.class, "1"),
-                        Messages.get(Dioprize.class, "2"),
-                        Messages.get(Dioprize.class, "3"),
-                        Messages.get(Dioprize.class, "4"),
-                        Messages.get(Dioprize.class, "5"),
-                        Messages.get(Dioprize.class, "6"),
-                        Messages.get(Dioprize.class, "7"),
-                        Messages.get(Dioprize.class, "8"),
-                        Messages.get(Dioprize.class, "9")
-                ) {
-                    @Override
-                    protected void onSelect(int index) {
-                        if (index == 0) {
-                            Item a = new Jojo1();
-                            Dungeon.level.drop(a, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "1"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        } else if (index == 1) {
-                            Item b = new Jojo2();
-                            Dungeon.level.drop(b, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "2"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        } else if (index == 2) {
-                            Item c = new Jojo3();
-                            Dungeon.level.drop(c, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "3"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        } else if (index == 3) {
-                            Item d = new Jojo4();
-                            Dungeon.level.drop(d, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "4"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        } else if (index == 4) {
-                            Item e = new Jojo5();
-                            Dungeon.level.drop(e, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "5"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        } else if (index == 5) {
-                            Item f = new Jojo6();
-                            Dungeon.level.drop(f, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "6"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        } else if (index == 6) {
-                            Item g = new Jojo7();
-                            Dungeon.level.drop(g, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "7"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        } else if (index == 7) {
-                            Item h = new Jojo8();
-                            Dungeon.level.drop(h, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "8"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        } else {
-                            Item i = new Jojo9();
-                            Dungeon.level.drop(i, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                            GLog.h(Messages.get(Araki.class, "9"));
-                            new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
-                            Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
-                            GameScene.flash(0xFFCC00);
-                        }
-                    }
-
+        GameScene.show(new WndOptions(new RebelSprite(),
+                Messages.get(Dioprize.class, "00"),
+                Messages.get(Dioprize.class, "0"),
+                Messages.get(Dioprize.class, "1"),
+                Messages.get(Dioprize.class, "2"),
+                Messages.get(Dioprize.class, "3"),
+                Messages.get(Dioprize.class, "4"),
+                Messages.get(Dioprize.class, "5"),
+                Messages.get(Dioprize.class, "6"),
+                Messages.get(Dioprize.class, "7"),
+                Messages.get(Dioprize.class, "8"),
+                Messages.get(Dioprize.class, "9")
+        ) {
+            @Override
+            protected void onSelect(int index) {
+                if (index >= 0 && index < jojoItems.length) {
+                    performJojoAction(jojoItems[index], index + 1);
                 }
-        );
+            }
+        });
+    }
 
+    private void performJojoAction(Item item, int index) {
+        Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+        GLog.h(Messages.get(Araki.class, String.valueOf(index)));
+        new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
+        Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
+        GameScene.flash(0xFFCC00);
         hero.sprite.operate(hero.pos);
-        detach( curUser.belongings.backpack );
+        detach(curUser.belongings.backpack);
         updateQuickslot();
-        hero.spendAndNext( 1f );
+        hero.spendAndNext(1f);
     }
 
     @Override
@@ -218,5 +149,5 @@ public class Dioprize extends Spell {
     public int value() {
         return 100 * quantity;
     }
-
 }
+

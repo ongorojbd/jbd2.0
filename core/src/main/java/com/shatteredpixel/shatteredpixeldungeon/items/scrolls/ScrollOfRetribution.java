@@ -29,6 +29,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsolg;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie2p;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombied2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiedog2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiez2;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -68,7 +76,7 @@ public class ScrollOfRetribution extends Scroll {
 
 		for (Mob mob : targets){
 			//deals 10%HT, plus 0-90%HP based on scaling
-			if (!(mob instanceof Rebel || mob instanceof Bcomsolg)) {
+			if (!(mob instanceof Rebel || mob instanceof Bcomsolg || mob instanceof Zombie2 || mob instanceof Zombiedog2 || mob instanceof Zombied2 || mob instanceof Zombiez2 || mob instanceof Zombie2p || mob instanceof Zombiet2)) {
 				mob.damage(Math.round(mob.HT / 10f + (mob.HP * power * 0.225f)), this);
 			}
 			if (mob instanceof Rebel) {
@@ -76,7 +84,6 @@ public class ScrollOfRetribution extends Scroll {
 			}
 			if (mob.isAlive()) {
 				Buff.prolong(mob, Blindness.class, Blindness.DURATION);
-
 			}
 		}
 		

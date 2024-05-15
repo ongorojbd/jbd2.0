@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceBlow;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -79,16 +80,17 @@ public class Dio2brando extends Mob {
         maxLvl = -9;
         HUNTING = new Dio2brando.Hunting();
 
-        immunities.add( Chill.class );
-        immunities.add( Frost.class );
+        immunities.add(Chill.class);
+        immunities.add(Frost.class);
 
         properties.add(Property.BOSS);
         properties.add(Property.DEMONIC);
         properties.add(Property.IMMOVABLE);
     }
+
     private ArrayList<Integer> targetedCells = new ArrayList<>();
 
-    public int  Phase = 0;
+    public int Phase = 0;
     private float leapCooldown = 3;
     private int blastcooldown = 14;
     private int barriercooldown = 9;
@@ -99,7 +101,26 @@ public class Dio2brando extends Mob {
         super.notice();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
-            this.yell(Messages.get(this, "12"));
+            if (Phase == 0) {
+                Phase = 1;
+                ArrayList<Integer> respawnPoints = new ArrayList<>();
+                for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                    int p = this.pos + PathFinder.NEIGHBOURS8[i];
+                    if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
+                        respawnPoints.add(p);
+                    }
+                }
+                if (respawnPoints.size() > 0) {
+                    Mob mob = new Diego2();
+                    mob.pos = Random.element(respawnPoints);
+                    GameScene.add(mob, 1);
+                    mob.state = mob.HUNTING;
+                    Dungeon.level.occupyCell(mob);
+                }
+                GLog.n(Messages.get(this, "13"));
+                GLog.newLine();
+                yell(Messages.get(this, "t"));
+            }
             Sample.INSTANCE.play(Assets.Sounds.DIO1);
         }
     }
@@ -109,13 +130,13 @@ public class Dio2brando extends Mob {
 
         target = Dungeon.hero.pos;
 
-        return super.getCloser( target );
+        return super.getCloser(target);
     }
 
     @Override
     public void damage(int dmg, Object src) {
 
-        if (dmg >= 150){
+        if (dmg >= 150) {
             //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
             // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
             dmg = 150;
@@ -126,49 +147,29 @@ public class Dio2brando extends Mob {
 
         super.damage(dmg, src);
 
-        if (Phase==0 && HP < 500) {
-            Phase = 1;
-            immunities.add(Grim.class );
-            GameScene.flash( 0xFF0000 );
-            new Flare( 5, 32 ).color( 0xFF0000, true ).show( this.sprite, 2f );
+        if (Phase == 1 && HP < 400) {
+            Phase = 2;
+            immunities.add(Grim.class);
+            GameScene.flash(0xFF0000);
+            yell(Messages.get(this, "12"));
+            new Flare(5, 32).color(0xFF0000, true).show(this.sprite, 2f);
             Sample.INSTANCE.play(Assets.Sounds.DIO6);
             Camera.main.shake(12, 0.5f);
-            Music.INSTANCE.play(Assets.Music.CIV, true);
-            ArrayList<Integer> respawnPoints = new ArrayList<>();
-
-            for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-                int p = this.pos + PathFinder.NEIGHBOURS8[i];
-                if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
-                    respawnPoints.add(p);
-                }
-            }
-
-            if (respawnPoints.size() > 0) {
-                Mob mob = new Diego2();
-                mob.pos = Random.element(respawnPoints);
-                GameScene.add(mob, 1);
-                mob.state = mob.HUNTING;
-                Dungeon.level.occupyCell(mob);
-            }
-            GLog.n(Messages.get(this, "13"));
-            GLog.newLine();
-            yell(Messages.get(this, "t"));
         }
-
     }
 
     private boolean UseAbility() {
 
         if (barriercooldown <= 0) {
             Buff.affect(this, IceBlow.class, 1f);
-            CellEmitter.get( this.pos ).burst( MagicMissile.MagicParticle.FACTORY, 12 );
+            CellEmitter.get(this.pos).burst(MagicMissile.MagicParticle.FACTORY, 12);
             Sample.INSTANCE.play(Assets.Sounds.DIO1);
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
             barriercooldown = 14;
             return true;
         }
 
-        if (FireBlast()){
+        if (FireBlast()) {
             sprite.showStatus(CharSprite.WARNING, Messages.get(Diobrando.class, "u"));
             Sample.INSTANCE.play(Assets.Sounds.DIO4);
             return true;
@@ -187,12 +188,19 @@ public class Dio2brando extends Mob {
             Sample.INSTANCE.play(Assets.Sounds.DIO3);
             new ChillingTrap().set(enemy.pos).activate();
             Buff.affect(enemy, Frost.class, Frost.DURATION);
-            yell( Messages.get(this, "armad") );
+            yell(Messages.get(this, "armad"));
             Buff.detach(this, IceBlow.class);
 
             if (enemy == Dungeon.hero && !enemy.isAlive()) {
                 Dungeon.fail(getClass());
                 GLog.n(Messages.get(this, "d"));
+            }
+        }
+
+        if (Phase == 2) {
+            if (Random.Int(3) == 0) {
+                Buff.affect(enemy, CursedBlow.class, 1f);
+                sprite.showStatus(CharSprite.WARNING, Messages.get(this, "t3"));
             }
         }
 
@@ -202,13 +210,13 @@ public class Dio2brando extends Mob {
     }
 
     @Override
-    public int defenseProc( Char enemy, int damage ) {
-        damage = super.defenseProc( enemy, damage );
+    public int defenseProc(Char enemy, int damage) {
+        damage = super.defenseProc(enemy, damage);
         if (this.buff(IceBlow.class) != null) {
 
-            if(enemy == hero) {
-                for (int i : PathFinder.NEIGHBOURS8){
-                    int cell = enemy.pos+i;
+            if (enemy == hero) {
+                for (int i : PathFinder.NEIGHBOURS8) {
+                    int cell = enemy.pos + i;
                     ScrollOfTeleportation.appear(this, cell);
                 }
                 enemy.damage(Random.NormalIntRange(35, 60), this);
@@ -218,7 +226,7 @@ public class Dio2brando extends Mob {
             Sample.INSTANCE.play(Assets.Sounds.DIO3);
             new ChillingTrap().set(enemy.pos).activate();
             Buff.affect(enemy, Frost.class, Frost.DURATION);
-            yell( Messages.get(this, "armad") );
+            yell(Messages.get(this, "armad"));
             Buff.detach(this, IceBlow.class);
             if (enemy == Dungeon.hero && !enemy.isAlive()) {
                 Dungeon.fail(getClass());
@@ -229,34 +237,34 @@ public class Dio2brando extends Mob {
     }
 
     @Override
-    public void move( int step, boolean travelling) {
+    public void move(int step, boolean travelling) {
         charge = 0;
-        super.move( step, travelling);
+        super.move(step, travelling);
     }
 
-    private static final String BLAST_CD   = "blastcooldown";
+    private static final String BLAST_CD = "blastcooldown";
     private static final String LAST_ENEMY_POS = "last_enemy_pos";
     private static final String LEAP_POS = "leap_pos";
     private static final String LEAP_CD = "leap_cd";
-    private static final String SKILLCD   = "charge";
-    private static final String PHASE   = "Phase";
+    private static final String SKILLCD = "charge";
+    private static final String PHASE = "Phase";
     private static final String TARGETED_CELLS = "targeted_cells";
 
-    private static final String BARRIER_CD  = "barriercooldown";
+    private static final String BARRIER_CD = "barriercooldown";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
-        bundle.put( BLAST_CD, blastcooldown );
+        bundle.put(BLAST_CD, blastcooldown);
         bundle.put(LAST_ENEMY_POS, lastEnemyPos);
         bundle.put(LEAP_POS, leapPos);
         bundle.put(LEAP_CD, leapCooldown);
-        bundle.put( SKILLCD, charge );
-        bundle.put( PHASE, Phase );
-        bundle.put( BARRIER_CD, barriercooldown );
+        bundle.put(SKILLCD, charge);
+        bundle.put(PHASE, Phase);
+        bundle.put(BARRIER_CD, barriercooldown);
 
         int[] bundleArr = new int[targetedCells.size()];
-        for (int i = 0; i < targetedCells.size(); i++){
+        for (int i = 0; i < targetedCells.size(); i++) {
             bundleArr[i] = targetedCells.get(i);
         }
         bundle.put(TARGETED_CELLS, bundleArr);
@@ -273,7 +281,7 @@ public class Dio2brando extends Mob {
         Phase = bundle.getInt(PHASE);
         barriercooldown = bundle.getInt(BARRIER_CD);
 
-        for (int i : bundle.getIntArray(TARGETED_CELLS)){
+        for (int i : bundle.getIntArray(TARGETED_CELLS)) {
             targetedCells.add(i);
         }
     }
@@ -283,16 +291,16 @@ public class Dio2brando extends Mob {
     @Override
     protected boolean act() {
 
-        if (Phase == 1 && HP <= 500) {
+        if (Phase == 2 && HP < 399) {
             HP += 2;
-            if (Dungeon.level.heroFOV[pos] ){
-                sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
+            if (Dungeon.level.heroFOV[pos]) {
+                sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
             }
         }
 
-        if (barriercooldown == 1)  {
+        if (barriercooldown == 1) {
 
-            if(blastcooldown < 3){
+            if (blastcooldown < 3) {
                 blastcooldown += 4;
             }
 
@@ -316,7 +324,7 @@ public class Dio2brando extends Mob {
 
         AiState lastState = state;
         boolean result = super.act();
-        if (paralysed <= 0) leapCooldown --;
+        if (paralysed <= 0) leapCooldown--;
 
         //if state changed from wandering to hunting, we haven't acted yet, don't update.
         if (!(lastState == WANDERING && state == HUNTING)) {
@@ -336,19 +344,19 @@ public class Dio2brando extends Mob {
     public class Hunting extends Mob.Hunting {
 
         @Override
-        public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+        public boolean act(boolean enemyInFOV, boolean justAlerted) {
 
-            if (leapPos != -1){
+            if (leapPos != -1) {
                 charge = 0;
                 leapCooldown = Random.NormalIntRange(5, 9);
 
-                switch (Random.Int( 2 )) {
+                switch (Random.Int(2)) {
                     case 0:
-                        Sample.INSTANCE.play( Assets.Sounds.DIO2);
+                        Sample.INSTANCE.play(Assets.Sounds.DIO2);
                         sprite.showStatus(CharSprite.WARNING, Messages.get(Diobrando.class, "3"));
                         break;
                     case 1:
-                        Sample.INSTANCE.play( Assets.Sounds.DIO5);
+                        Sample.INSTANCE.play(Assets.Sounds.DIO5);
                         sprite.showStatus(CharSprite.WARNING, Messages.get(Diobrando.class, "4"));
                         break;
                 }
@@ -356,7 +364,7 @@ public class Dio2brando extends Mob {
                 Ballistica b = new Ballistica(pos, leapPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
 
                 //check if leap pos is not obstructed by terrain
-                if (rooted || b.collisionPos != leapPos){
+                if (rooted || b.collisionPos != leapPos) {
                     leapPos = -1;
                     return true;
                 }
@@ -365,12 +373,12 @@ public class Dio2brando extends Mob {
                 final int endPos;
 
                 //ensure there is somewhere to land after leaping
-                if (leapVictim != null){
+                if (leapVictim != null) {
                     int bouncepos = -1;
-                    for (int i : PathFinder.NEIGHBOURS8){
-                        if ((bouncepos == -1 || Dungeon.level.trueDistance(pos, leapPos+i) < Dungeon.level.trueDistance(pos, bouncepos))
-                                && Actor.findChar(leapPos+i) == null && Dungeon.level.passable[leapPos+i]){
-                            bouncepos = leapPos+i;
+                    for (int i : PathFinder.NEIGHBOURS8) {
+                        if ((bouncepos == -1 || Dungeon.level.trueDistance(pos, leapPos + i) < Dungeon.level.trueDistance(pos, bouncepos))
+                                && Actor.findChar(leapPos + i) == null && Dungeon.level.passable[leapPos + i]) {
+                            bouncepos = leapPos + i;
                         }
                     }
                     if (bouncepos == -1) {
@@ -389,13 +397,13 @@ public class Dio2brando extends Mob {
                     @Override
                     public void call() {
 
-                        if (leapVictim != null && alignment != leapVictim.alignment){
-                            Buff.affect(leapVictim, Bleeding.class).set(0.75f*damageRoll());
+                        if (leapVictim != null && alignment != leapVictim.alignment) {
+                            Buff.affect(leapVictim, Bleeding.class).set(0.75f * damageRoll());
                             leapVictim.sprite.flash();
                             Sample.INSTANCE.play(Assets.Sounds.HIT);
                         }
 
-                        if (endPos != leapPos){
+                        if (endPos != leapPos) {
                             Actor.addDelayed(new Pushing(Dio2brando.this, leapPos, endPos), -1);
                         }
 
@@ -410,9 +418,9 @@ public class Dio2brando extends Mob {
             }
 
             enemySeen = enemyInFOV;
-            if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
+            if (enemyInFOV && !isCharmedBy(enemy) && canAttack(enemy)) {
 
-                return doAttack( enemy );
+                return doAttack(enemy);
 
             } else {
 
@@ -420,7 +428,7 @@ public class Dio2brando extends Mob {
                     target = enemy.pos;
                 } else if (enemy == null) {
                     state = WANDERING;
-                    target = Dungeon.level.randomDestination( Dio2brando.this );
+                    target = Dungeon.level.randomDestination(Dio2brando.this);
                     return true;
                 }
 
@@ -428,11 +436,11 @@ public class Dio2brando extends Mob {
                         && Dungeon.level.distance(pos, enemy.pos) >= 3) {
 
                     int targetPos = enemy.pos;
-                    if (lastEnemyPos != enemy.pos){
+                    if (lastEnemyPos != enemy.pos) {
                         int closestIdx = 0;
-                        for (int i = 1; i < PathFinder.CIRCLE8.length; i++){
+                        for (int i = 1; i < PathFinder.CIRCLE8.length; i++) {
                             if (Dungeon.level.trueDistance(lastEnemyPos, enemy.pos)
-                                    < Dungeon.level.trueDistance(lastEnemyPos, enemy.pos)){
+                                    < Dungeon.level.trueDistance(lastEnemyPos, enemy.pos)) {
                                 closestIdx = i;
                             }
                         }
@@ -441,19 +449,19 @@ public class Dio2brando extends Mob {
 
                     Ballistica b = new Ballistica(pos, targetPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
                     //try aiming directly at hero if aiming near them doesn't work
-                    if (b.collisionPos != targetPos && targetPos != enemy.pos){
+                    if (b.collisionPos != targetPos && targetPos != enemy.pos) {
                         targetPos = enemy.pos;
                         b = new Ballistica(pos, targetPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
                     }
-                    if (b.collisionPos == targetPos){
+                    if (b.collisionPos == targetPos) {
                         //get ready to leap
                         leapPos = targetPos;
                         //don't want to overly punish players with slow move or attack speed
-                        spend(GameMath.gate(TICK, enemy.cooldown(), 3*TICK));
-                        if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos]){
+                        spend(GameMath.gate(TICK, enemy.cooldown(), 3 * TICK));
+                        if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos]) {
 
                             sprite.parent.addToBack(new TargetedCell(leapPos, 0xFF00FF));
-                            ((DiobrandoSprite)sprite).leapPrep( leapPos );
+                            ((DiobrandoSprite) sprite).leapPrep(leapPos);
                             Dungeon.hero.interrupt();
                         }
                         return true;
@@ -461,17 +469,17 @@ public class Dio2brando extends Mob {
                 }
 
                 int oldPos = pos;
-                if (target != -1 && getCloser( target )) {
+                if (target != -1 && getCloser(target)) {
 
-                    spend( 1 / speed() );
-                    return moveSprite( oldPos,  pos );
+                    spend(1 / speed());
+                    return moveSprite(oldPos, pos);
 
                 } else {
-                    spend( TICK );
+                    spend(TICK);
                     if (!enemyInFOV) {
                         sprite.showLost();
                         state = WANDERING;
-                        target = Dungeon.level.randomDestination( Dio2brando.this );
+                        target = Dungeon.level.randomDestination(Dio2brando.this);
                     }
                     return true;
                 }
@@ -481,22 +489,22 @@ public class Dio2brando extends Mob {
     }
 
     @Override
-    public void die( Object cause ) {
+    public void die(Object cause) {
 
-        super.die( cause );
+        super.die(cause);
 
-        Dungeon.level.drop( new Dioprize(), itemPlace2 ).sprite.drop( itemPlace2 );
-        Dungeon.level.drop( new Rmap(), itemPlace2 ).sprite.drop( itemPlace2 );
+        Dungeon.level.drop(new Dioprize(), itemPlace2).sprite.drop(itemPlace2);
+        Dungeon.level.drop(new Rmap(), itemPlace2).sprite.drop(itemPlace2);
 
-        yell( Messages.get(this, "6") );
+        yell(Messages.get(this, "6"));
 
         Sample.INSTANCE.play(Assets.Sounds.NANI);
 
         GameScene.bossSlain();
 
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof Zombie || mob instanceof Zombiedog || mob instanceof Diego2) {
-                mob.die( cause );
+        for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
+            if (mob instanceof Zombie2 || mob instanceof Zombiedog2 || mob instanceof Zombied2  || mob instanceof Zombiez2 || mob instanceof Zombie2p || mob instanceof Zombiet2  || mob instanceof Diego2) {
+                mob.die(cause);
             }
         }
 
@@ -508,11 +516,11 @@ public class Dio2brando extends Mob {
     public int damageRoll() {
         int ice = 1;
         if (this.buff(IceBlow.class) != null) ice = 2;
-        return Random.NormalIntRange( 35 * ice, 50 * ice);
+        return Random.NormalIntRange(35 * ice, 50 * ice);
     }
 
     @Override
-    public int attackSkill( Char target ) {
+    public int attackSkill(Char target) {
         return 35;
     }
 
@@ -521,7 +529,8 @@ public class Dio2brando extends Mob {
         return Random.NormalIntRange(0, 12);
     }
 
-    public class Blast { }
+    public class Blast {
+    }
 
     private boolean FireBlast() {
         boolean terrainAffected = false;
@@ -550,7 +559,7 @@ public class Dio2brando extends Mob {
         }
 
         for (Char ch : affected) {
-            if(ch instanceof SpeedWagon) {
+            if (ch instanceof SpeedWagon) {
 
             } else {
                 ch.damage(Random.NormalIntRange(30, 50), new Dio2brando.Blast());
@@ -568,14 +577,14 @@ public class Dio2brando extends Mob {
         targetedCells.clear();
 
 
-        if (blastcooldown <= 0){
+        if (blastcooldown <= 0) {
 
             int beams = 2;
             HashSet<Integer> affectedCells = new HashSet<>();
-            for (int i = 0; i < beams; i++){
+            for (int i = 0; i < beams; i++) {
 
                 int targetPos = Dungeon.hero.pos;
-                if (i != 0){
+                if (i != 0) {
                     do {
                         targetPos = Dungeon.hero.pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
                     } while (Dungeon.level.trueDistance(pos, Dungeon.hero.pos)
@@ -588,18 +597,18 @@ public class Dio2brando extends Mob {
 
             //remove one beam if multiple shots would cause every cell next to the hero to be targeted
             boolean allAdjTargeted = true;
-            for (int i : PathFinder.NEIGHBOURS9){
-                if (!affectedCells.contains(Dungeon.hero.pos + i) && Dungeon.level.passable[Dungeon.hero.pos + i]){
+            for (int i : PathFinder.NEIGHBOURS9) {
+                if (!affectedCells.contains(Dungeon.hero.pos + i) && Dungeon.level.passable[Dungeon.hero.pos + i]) {
                     allAdjTargeted = false;
                     break;
                 }
             }
-            if (allAdjTargeted){
-                targetedCells.remove(targetedCells.size()-1);
+            if (allAdjTargeted) {
+                targetedCells.remove(targetedCells.size() - 1);
             }
-            for (int i : targetedCells){
+            for (int i : targetedCells) {
                 Ballistica b = new Ballistica(pos, i, Ballistica.WONT_STOP);
-                for (int p : b.path){
+                for (int p : b.path) {
                     sprite.parent.addToBack(new TargetedCell(p, 0xFF00FF));
                     affectedCells.add(p);
                 }
@@ -609,7 +618,7 @@ public class Dio2brando extends Mob {
             Dungeon.hero.interrupt();
             blastcooldown = 8;
 
-            spend(GameMath.gate(TICK, Dungeon.hero.cooldown(), 2*TICK));
+            spend(GameMath.gate(TICK, Dungeon.hero.cooldown(), 2 * TICK));
             return true;
 
         }
