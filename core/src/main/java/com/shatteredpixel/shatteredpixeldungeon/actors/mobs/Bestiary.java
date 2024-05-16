@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.watabou.utils.Random;
 
@@ -334,8 +335,9 @@ public class Bestiary {
 
     //switches out regular mobs for their alt versions when appropriate
     private static void swapMobAlts(ArrayList<Class<? extends Mob>> rotation) {
-        for (int i = 0; i < rotation.size(); i++) {
-            if (Random.Int(50) == 0) {
+        float altChance = 1/50f * RatSkull.exoticChanceMultiplier();
+        for (int i = 0; i < rotation.size(); i++){
+            if (Random.Float() < altChance) {
                 Class<? extends Mob> cl = rotation.get(i);
                 if (cl == Rat.class) {
                     cl = Albino.class;

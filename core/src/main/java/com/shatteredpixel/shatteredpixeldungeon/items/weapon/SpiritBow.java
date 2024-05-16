@@ -220,7 +220,7 @@ public class SpiritBow extends Weapon {
 		if (owner instanceof Hero) {
 			int exStr = ((Hero)owner).STR() - STRReq();
 			if (exStr > 0) {
-				damage += Random.IntRange( 0, exStr );
+				damage += Char.combatRoll( 0, exStr );
 			}
 		}
 
@@ -363,14 +363,14 @@ public class SpiritBow extends Weapon {
 				if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof HuntressArmor) {
 					Splash.at( cell, 0xFFCC99, 1 );
 				} else {
-					Splash.at( cell, 0xCC99FFFF, 1 );
+					Splash.at( cell, 0x99FF99, 1 );
 				}
 			} else {
 				if (!curUser.shoot( enemy, this )) {
 					if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof HuntressArmor) {
 						Splash.at( cell, 0xFFCC99, 1 );
 					} else {
-						Splash.at( cell, 0xCC99FFFF, 1 );
+						Splash.at( cell, 0x99FF99, 1 );
 					}
 				}
 				if (sniperSpecial && SpiritBow.this.augment != Augment.SPEED) sniperSpecial = false;
@@ -505,6 +505,7 @@ public class SpiritBow extends Weapon {
 					if (Actor.findChar(shotPos) == null) {
 						RevealedArea a = Buff.affect(user, RevealedArea.class, 5 * user.pointsInTalent(Talent.SEER_SHOT));
 						a.depth = Dungeon.depth;
+						a.branch = Dungeon.branch;
 						a.pos = shotPos;
 						Buff.affect(user, Talent.SeerShotCooldown.class, 20f);
 					}

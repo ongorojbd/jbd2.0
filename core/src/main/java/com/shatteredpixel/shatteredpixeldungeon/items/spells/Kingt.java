@@ -23,15 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -41,23 +34,21 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
@@ -81,7 +72,7 @@ public class Kingt extends Spell {
 
         switch (Random.Int(39)){
             case 0:
-                Item a = new Map3();
+                Item a = new Sbr3();
                 Dungeon.level.drop(a, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", a.name()) ));
                 break;
@@ -161,12 +152,12 @@ public class Kingt extends Spell {
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", h6.name()) ));
                 break;
             case 16:
-                Item f0 = new FeatherFall().quantity(3);
+                Item f0 = new ElixirOfFeatherFall().quantity(3);
                 Dungeon.level.drop(f0, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", f0.name()) ));
                 break;
             case 17:
-                Item f1 = new AquaBlast().quantity(15);
+                Item f1 = new AquaBrew().quantity(15);
                 Dungeon.level.drop(f1, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", f1.name()) ));
                 break;
@@ -266,17 +257,22 @@ public class Kingt extends Spell {
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", qw4.name()) ));
                 break;
             case 37:
-                Item qw5 = Generator.random( Generator.Category.WAND );
-                Dungeon.level.drop(qw5, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-                GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", qw5.name()) ));
-                break;
-            case 38:
                 Item neoro = new Neoro().quantity(4);
                 Dungeon.level.drop(neoro, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", neoro.name()) ));
                 break;
-        }
+            case 38:
+                Item qwe = new UnstableSpell().quantity(3);
+                Dungeon.level.drop(qwe, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", qwe.name()) ));
+                break;
+            case 39:
+                Item qwe2 = new UnstableBrew().quantity(3);
+                Dungeon.level.drop(qwe2, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", qwe2.name()) ));
+                break;
 
+        }
         new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 3.7f);
         Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1f, 3f);
         GameScene.flash(0x80FFFFFF);

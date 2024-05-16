@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
 
 public class AssassinsBlade extends MeleeWeapon {
 
@@ -59,12 +58,12 @@ public class AssassinsBlade extends MeleeWeapon {
 			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
 				//deals 50% toward max to max on surprise, instead of min to max.
 				int diff = max() - min();
-				int damage = augment.damageFactor(Random.NormalIntRange(
+				int damage = augment.damageFactor(Char.combatRoll(
 						min() + Math.round(diff*0.50f),
 						max()));
 				int exStr = hero.STR() - STRReq();
 				if (exStr > 0) {
-					damage += Random.IntRange(0, exStr);
+					damage += Char.combatRoll(0, exStr);
 				}
 				return damage;
 			}
@@ -106,13 +105,17 @@ public class AssassinsBlade extends MeleeWeapon {
 	}
 
 	@Override
-	protected int baseChargeUse(Hero hero, Char target){
-		return 2;
+	protected void duelistAbility(Hero hero, Integer target) {
+		Dagger.sneakAbility(hero, target, 3, 2+buffedLvl(), this);
 	}
 
 	@Override
-	protected void duelistAbility(Hero hero, Integer target) {
-		Dagger.sneakAbility(hero, target, 4, this);
+	public String abilityInfo() {
+		if (levelKnown){
+			return Messages.get(this, "ability_desc", 2+buffedLvl());
+		} else {
+			return Messages.get(this, "typical_ability_desc", 2);
+		}
 	}
 
 }

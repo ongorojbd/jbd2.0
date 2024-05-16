@@ -293,7 +293,7 @@ public class Zombiet extends Mob {
 
                 boolean[] visibleCells = new boolean[Dungeon.level.length()];
                 Point c = Dungeon.level.cellToPoint(pos);
-                ShadowCaster.castShadow(c.x, c.y, visibleCells, Dungeon.level.losBlocking, 8);
+                ShadowCaster.castShadow(c.x, c.y, Dungeon.level.width(), visibleCells, Dungeon.level.losBlocking, 8);
                 int count=0;
                 for (boolean b : visibleCells){
                     if (b) count++;

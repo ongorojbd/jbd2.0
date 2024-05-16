@@ -90,7 +90,7 @@ public class Dioprize extends Spell {
     };
 
     {
-        image = ItemSpriteSheet.DIA;
+        image = ItemSpriteSheet.TRINKET_CATA;
         unique = true;
     }
 

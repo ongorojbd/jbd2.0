@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
@@ -68,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Speed;
@@ -111,6 +113,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
@@ -165,6 +168,7 @@ public abstract class Char extends Actor {
 	public boolean rooted		= false;
 	public boolean flying		= false;
 	public int invisible		= 0;
+
 
 	//these are relative to the hero
 	public enum Alignment{
@@ -400,7 +404,10 @@ public abstract class Char extends Actor {
 				dmg = damageRoll();
 			}
 
-			dmg = Math.round(dmg*dmgMulti);
+			dmg = dmg*dmgMulti;
+
+			//flat damage bonus is affected by multipliers
+			dmg += dmgBonus;
 
 			Berserk berserk = buff(Berserk.class);
 			if (berserk != null) dmg = berserk.damageFactor(dmg);
@@ -418,9 +425,6 @@ public abstract class Char extends Actor {
 			}
 
 			dmg *= AscensionChallenge.statModifier(this);
-
-			//flat damage bonus is applied after positive multipliers, but before negative ones
-			dmg += dmgBonus;
 
 			//friendly endure
 			Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
@@ -605,15 +609,25 @@ public abstract class Char extends Actor {
 
 		float defRoll = Random.Float( defStat );
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
-		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
-		if (defender.buff(  Zombiet.LeaderArena.class) != null) defRoll *= 0.8f;
-		if (defender.buff( Daze.class) != null) defRoll *= 0.5f;
+		if (defender.buff(Hex.class) != null) defRoll *= 0.8f;
+		if (defender.buff(Zombiet.LeaderArena.class) != null) defRoll *= 0.8f;
+		if (defender.buff(Daze.class) != null) defRoll *= 0.5f;
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
 		defRoll *= AscensionChallenge.statModifier(defender);
 
 		return (acuRoll * accMulti) >= defRoll;
+	}
+
+	//used for damage and blocking calculations, normally just calls NormalIntRange
+	// but may be affected by things that specifically impact combat number ranges
+	public static int combatRoll(int min, int max ){
+		if (Random.Float() < ThirteenLeafClover.combatDistributionInverseChance()){
+			return ThirteenLeafClover.invCombatRoll(min, max);
+		} else {
+			return Random.NormalIntRange(min, max);
+		}
 	}
 
 	public int attackSkill( Char target ) {
@@ -631,7 +645,7 @@ public abstract class Char extends Actor {
 	public int drRoll() {
 		int dr = 0;
 
-		dr += Random.NormalIntRange( 0 , Barkskin.currentLevel(this) );
+		dr += combatRoll( 0 , Barkskin.currentLevel(this) );
 
 		return dr;
 	}
@@ -768,7 +782,7 @@ public abstract class Char extends Actor {
 
 		//TODO improve this when I have proper damage source logic
 		if (AntiMagic.RESISTS.contains(src.getClass()) && buff(ArcaneArmor.class) != null){
-			dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
+			dmg -= combatRoll(0, buff(ArcaneArmor.class).level());
 			if (dmg < 0) dmg = 0;
 		}
 
@@ -784,7 +798,7 @@ public abstract class Char extends Actor {
 				b = new Bleeding();
 			}
 			b.announced = false;
-			b.set(dmg*buff(Sickle.HarvestBleedTracker.class).bleedFactor, Sickle.HarvestBleedTracker.class);
+			b.set(dmg, Sickle.HarvestBleedTracker.class);
 			b.attachTo(this);
 			sprite.showStatus(CharSprite.WARNING, Messages.titleCase(b.name()) + " " + (int)b.level());
 			buff(Sickle.HarvestBleedTracker.class).detach();
@@ -805,6 +819,12 @@ public abstract class Char extends Actor {
 		}
 		shielded -= dmg;
 		HP -= dmg;
+
+		if (HP > 0 && shielded > 0 && shielding() == 0){
+			if (this instanceof Hero && ((Hero) this).hasTalent(Talent.PROVOKED_ANGER)){
+				Buff.affect(this, Talent.ProvokedAngerTracker.class, 5f);
+			}
+		}
 
 		if (HP > 0 && buff(Grim.GrimTracker.class) != null){
 
@@ -852,7 +872,7 @@ public abstract class Char extends Actor {
 
 			if (src instanceof Hunger)                                  icon = FloatingText.HUNGER;
 			if (src instanceof Burning || src instanceof ShrGas)        icon = FloatingText.BURNING;
-			if (src instanceof Chill || src instanceof Frost)           icon = FloatingText.FROST;
+			if (src instanceof Chill || src instanceof Frost) 			icon = FloatingText.FROST;
 			if (src instanceof GeyserTrap || src instanceof StormCloud) icon = FloatingText.WATER;
 			if (src instanceof Electricity)                             icon = FloatingText.SHOCKING;
 			if (src instanceof Bleeding || src instanceof Diavolo)      icon = FloatingText.BLEEDING;
@@ -886,6 +906,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(GnollRockfallTrap.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DwarfKing.KingDamager.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DwarfKing.Summoning.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(LifeLink.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Chasm.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(WandOfBlastWave.Knockback.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Heap.class); //damage from wraiths attempting to spawn from heaps
@@ -1215,11 +1236,18 @@ public abstract class Char extends Actor {
 				new HashSet<Class>( Arrays.asList(Frost.class, Chill.class))),
 		ACIDIC ( new HashSet<Class>( Arrays.asList(Corrosion.class)),
 				new HashSet<Class>( Arrays.asList(Ooze.class))),
-		ELECTRIC ( new HashSet<Class>( Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class, Electricity.class, ShockingDart.class, Elemental.ShockElemental.class )),
+		ELECTRIC ( new HashSet<Class>( Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class,
+				Electricity.class, ShockingDart.class, Elemental.ShockElemental.class )),
 				new HashSet<Class>()),
 		LARGE,
-		IMMOVABLE;
-		
+		IMMOVABLE ( new HashSet<Class>(),
+				new HashSet<Class>( Arrays.asList(Vertigo.class) )),
+		//A character that acts in an unchanging manner. immune to AI state debuffs or stuns/slows
+		STATIC( new HashSet<Class>(),
+				new HashSet<Class>( Arrays.asList(AllyBuff.class, Dread.class, Terror.class, Amok.class, Charm.class, Sleep.class,
+						Paralysis.class, Frost.class, Chill.class, Slow.class, Speed.class) ));
+
+
 		private HashSet<Class> resistances;
 		private HashSet<Class> immunities;
 		

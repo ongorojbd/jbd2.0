@@ -79,6 +79,7 @@ public abstract class GhoulSprite extends MobSprite {
 
     public void crumple() {
         hideEmo();
+        remove(State.PARALYSED);
         play(crumple);
     }
 

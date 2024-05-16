@@ -340,6 +340,7 @@ public class Assets {
 
         public static final String ROLLERDA = "sounds/roller.mp3";
         public static final String WOU = "sounds/wou.mp3";
+        public static final String WOU2 = "sounds/wou2.mp3";
         public static final String K1 = "sounds/k1.mp3";
         public static final String K2 = "sounds/k2.mp3";
 
@@ -394,7 +395,7 @@ public class Assets {
                 JOSEPH, JOSEPH0, JOSEPH1, JOSEPH2, JOSEPH3, JOSEPH4, JOSEPH5, JOSEPH6, JOSEPH7, JOSEPH8,
                 JOSUKE0, JOSUKE1, JOSUKE2, JOSUKE3, JOSUKE4, JOSUKE5,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
-                RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
+                RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA};
     }
 

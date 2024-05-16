@@ -24,22 +24,18 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class Scimitar extends MeleeWeapon {
@@ -102,18 +98,23 @@ public class Scimitar extends MeleeWeapon {
 	}
 
 	@Override
-	protected int baseChargeUse(Hero hero, Char target){
-		return 2;
-	}
-
-	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
 		beforeAbilityUsed(hero, null);
-		Buff.prolong(hero, SwordDance.class, 4f); //4 turns as using the ability is instant
+		//1 turn less as using the ability is instant
+		Buff.prolong(hero, SwordDance.class, 3+buffedLvl());
 		Sword.doraclass();
 		hero.sprite.operate(hero.pos);
 		hero.next();
 		afterAbilityUsed(hero);
+	}
+
+	@Override
+	public String abilityInfo() {
+		if (levelKnown){
+			return Messages.get(this, "ability_desc", 4+buffedLvl());
+		} else {
+			return Messages.get(this, "typical_ability_desc", 4);
+		}
 	}
 
 	public static class SwordDance extends FlavourBuff {
@@ -130,8 +131,9 @@ public class Scimitar extends MeleeWeapon {
 
 		@Override
 		public float iconFadePercent() {
-			return Math.max(0, (5 - visualcooldown()) / 5);
+			return Math.max(0, (4 - visualcooldown()) / 4);
 		}
+
 	}
 
 }

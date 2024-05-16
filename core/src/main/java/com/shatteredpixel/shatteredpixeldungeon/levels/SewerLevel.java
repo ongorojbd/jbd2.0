@@ -178,9 +178,6 @@ public class SewerLevel extends RegularLevel {
                 SPDSettings.addSpecialcoin(Challenges.activeChallenges() * 2);
 
                 Statistics.ascended = true;
-                Badges.silentValidateHappyEnd();
-                Dungeon.win(Amulet.class);
-                Dungeon.deleteGame(GamesInProgress.curSlot, true);
                 Game.switchScene(SurfaceScene.class);
                 return true;
             }

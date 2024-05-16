@@ -42,20 +42,20 @@ public class RatKing extends NPC {
 
 	{
 		spriteClass = RatKingSprite.class;
-		
+
 		state = SLEEPING;
 	}
-	
+
 	@Override
 	public int defenseSkill( Char enemy ) {
 		return INFINITE_EVASION;
 	}
-	
+
 	@Override
 	public float speed() {
 		return 2f;
 	}
-	
+
 	@Override
 	protected Char chooseEnemy() {
 		return null;
@@ -70,7 +70,7 @@ public class RatKing extends NPC {
 	public boolean add( Buff buff ) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean reset() {
 		return true;
@@ -162,7 +162,7 @@ public class RatKing extends NPC {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public String description() {
 		if (Holiday.getCurrentHoliday() == Holiday.WINTER_HOLIDAYS){

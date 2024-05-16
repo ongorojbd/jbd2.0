@@ -56,6 +56,8 @@ public class Cudgel extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Sword.cleaveAbility(hero, target, 1.33f, this);
+        //+(4+lvl) damage, roughly +35% base dmg, +40% scaling
+        int dmgBoost = augment.damageFactor(4 + buffedLvl());
+        Sword.cleaveAbility(hero, target, 1, dmgBoost, this);
     }
 }

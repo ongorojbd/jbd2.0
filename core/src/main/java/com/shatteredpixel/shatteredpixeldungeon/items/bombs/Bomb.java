@@ -193,7 +193,7 @@ public class Bomb extends Item {
 					continue;
 				}
 
-				int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
+				int dmg = Char.combatRoll(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
 
 				if (Dungeon.hero.buff(Kawasiribuff.class) != null){
 					dmg = dmg * 3/2;

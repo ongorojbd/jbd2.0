@@ -58,7 +58,7 @@ public class v1_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 캐릭터",
-                "다음 업데이트에서는 6번째 플레이어블 캐릭터로 쿠죠 죠린이 추가될 예정입니다!"));
+                "3.0 업데이트에서는 6번째 플레이어블 캐릭터로 쿠죠 죠린이 추가될 예정입니다!"));
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOLYNE), "스톤 프리의 장비 DISC",
                 "죠린의 전용 장비 DISC로, 특성을 통해 강화되는 다양한 능력을 시전할 수 있습니다."));
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CUDGEL), "스톤 프리의 주먹",
@@ -74,10 +74,10 @@ public class v1_X_Changes {
         changes = new ChangeInfo("새로운 요소", false, null);
         changes.hardlight(CharSprite.POSITIVE);
         changeInfos.add(changes);
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DIA), "신규 아이템 타입 :\n위험한 물건",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TRINKET_CATA), "신규 아이템 타입 :\n위험한 물건",
                 "_새로운 아이템 타입인 위험한 물건 시리즈가 추가되었습니다!_\n\n" +
                         "위험한 물건은 게임 플레이에 도움이 되지만 특정한 상황에서는 이름 그대로 위험해질 수 있는 아이템입니다.\n\n" +
-                        "게임 초반에 미식별 상태의 위험한 물건을 획득하면 코코 잠보에서 죠죠 포인트를 통해 식별하여 획득 가능합니다.\n\n" +
+                        "게임 초반에 미식별 상태의 위험한 물건을 획득하면 코코 잠보에서 식별할 수 있으며,\n죠죠 포인트를 통해서 강화도 가능합니다.\n\n" +
                         "현재 _11종_의 위험한 물건이 추가되었습니다. 사용처에 맞는 적절한 유형을 골라보세요!"));
         changes.addButton(new ChangeButton(Icons.get(Icons.MAGNIFY), "신규 던전 구조",
                 "다양한 계층에 새로운 구조가 추가되었습니다!\n\n" +

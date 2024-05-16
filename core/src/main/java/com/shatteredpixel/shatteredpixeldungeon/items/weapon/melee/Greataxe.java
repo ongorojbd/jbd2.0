@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,34 +21,25 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class Greataxe extends MeleeWeapon {
 
 	{
 		image = ItemSpriteSheet.GREATAXE;
 		hitSound = Assets.Sounds.HIT_SLASH;
-		hitSoundPitch = 1.4f;
+		hitSoundPitch = 1f;
 
 		tier = 5;
 	}
@@ -62,30 +53,6 @@ public class Greataxe extends MeleeWeapon {
 	@Override
 	public int STRReq(int lvl) {
 		return STRReq(tier+1, lvl); //20 base strength req, up from 18
-	}
-
-	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-
-		if (hero.belongings.getItem(RingOfAccuracy.class) != null) {
-			if (hero.belongings.getItem(RingOfAccuracy.class).isEquipped(hero) && (Random.Int(10) == 0)) {
-				{
-					Buff.affect( defender, Hex.class, 3f);
-				}
-			}
-		}
-
-		return super.proc(attacker, defender, damage);
-	}
-
-	@Override
-	public String desc() {
-		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
-			if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero))
-				info += "\n\n" + Messages.get( Greataxe.class, "setbouns");}
-
-		return info;
 	}
 
 	@Override
@@ -112,7 +79,7 @@ public class Greataxe extends MeleeWeapon {
 
 		hero.belongings.abilityWeapon = this;
 		if (!hero.canAttack(enemy)){
-			GLog.w(Messages.get(this, "ability_bad_position"));
+			GLog.w(Messages.get(this, "ability_target_range"));
 			hero.belongings.abilityWeapon = null;
 			return;
 		}
@@ -123,18 +90,34 @@ public class Greataxe extends MeleeWeapon {
 			public void call() {
 				beforeAbilityUsed(hero, enemy);
 				AttackIndicator.target(enemy);
-				if (hero.attack(enemy, 1.50f, 0, Char.INFINITE_ACCURACY)){
+
+				//+(12+(2*lvl)) damage, roughly +50% base damage, +55% scaling
+				int dmgBoost = augment.damageFactor(12 + 2*buffedLvl());
+
+				if (hero.attack(enemy, 1, dmgBoost, Char.INFINITE_ACCURACY)){
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 					Sword.doraclass();
-					if (!enemy.isAlive()){
-						onAbilityKill(hero, enemy);
-					}
 				}
+
 				Invisibility.dispel();
-				hero.spendAndNext(hero.attackDelay());
+				if (!enemy.isAlive()){
+					hero.next();
+					onAbilityKill(hero, enemy);
+				} else {
+					hero.spendAndNext(hero.attackDelay());
+				}
 				afterAbilityUsed(hero);
 			}
 		});
 	}
 
+	@Override
+	public String abilityInfo() {
+		int dmgBoost = levelKnown ? 12 + 2*buffedLvl() : 12;
+		if (levelKnown){
+			return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+		} else {
+			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+		}
+	}
 }

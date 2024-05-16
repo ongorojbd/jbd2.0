@@ -28,17 +28,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscF;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscG;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
+
 
 public class CapeOfThorns extends Artifact {
 
@@ -116,9 +112,10 @@ public class CapeOfThorns extends Artifact {
 					}
 				}
 
-				if (cooldown != 0){
-					int deflected = Random.NormalIntRange(damage/17 * 7, damage);
-					damage -= deflected;
+
+			if (cooldown != 0){
+				int deflected = Char.combatRoll(0, damage);
+				damage -= deflected;
 
 					if (attacker != null && Dungeon.level.adjacent(attacker.pos, defender.pos)) {
 						attacker.damage(deflected, this);

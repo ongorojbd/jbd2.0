@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -42,161 +43,163 @@ import com.watabou.utils.Random;
 
 public class ThrowingSpike extends MissileWeapon {
 
-	{
-		image = ItemSpriteSheet.THROWING_SPIKE;
-		hitSound = Assets.Sounds.HIT_SLASH;
-		hitSoundPitch = 1.3f;
+    {
+        image = ItemSpriteSheet.THROWING_SPIKE;
+        hitSound = Assets.Sounds.HIT_SLASH;
+        hitSoundPitch = 1.3f;
 
-		bones = false;
+        bones = false;
 
-		tier = 1;
-	}
+        tier = 1;
+    }
 
-	@Override
-	public int max(int lvl) {
-		return  8 * tier +                  //16 base, down from 20
-				(tier) * lvl;               //scaling unchanged
-	}
+    @Override
+    public int max(int lvl) {
+        return 8 * tier +                  //16 base, down from 20
+                (tier) * lvl;               //scaling unchanged
+    }
 
-	boolean circleBackhit = false;
+    boolean circleBackhit = false;
 
-	@Override
-	protected float adjacentAccFactor(Char owner, Char target) {
-		if (circleBackhit){
-			circleBackhit = false;
-			return 1.5f;
-		}
-		return super.adjacentAccFactor(owner, target);
-	}
+    @Override
+    protected float adjacentAccFactor(Char owner, Char target) {
+        if (circleBackhit) {
+            circleBackhit = false;
+            return 1.5f;
+        }
+        return super.adjacentAccFactor(owner, target);
+    }
 
-	@Override
-	protected void rangedHit(Char enemy, int cell) {
-		decrementDurability();
-		if (durability > 0){
-			Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
-		}
-	}
+    @Override
+    protected void rangedHit(Char enemy, int cell) {
+        decrementDurability();
+        if (durability > 0) {
+            Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
+        }
+    }
 
-	@Override
-	protected void rangedMiss(int cell) {
-		parent = null;
-		Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
-	}
+    @Override
+    protected void rangedMiss(int cell) {
+        parent = null;
+        Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
+    }
 
-	public static class CircleBack extends Buff {
+    public static class CircleBack extends Buff {
 
-		{
-			revivePersists = true;
-		}
+        {
+            revivePersists = true;
+        }
 
-		private ThrowingSpike boomerang;
-		private int thrownPos;
-		private int returnPos;
-		private int returnDepth;
+        private ThrowingSpike boomerang;
+        private int thrownPos;
+        private int returnPos;
+        private int returnDepth;
 
-		private int left;
+        private int left;
 
-		public void setup( ThrowingSpike boomerang, int thrownPos, int returnPos, int returnDepth){
-			this.boomerang = boomerang;
-			this.thrownPos = thrownPos;
-			this.returnPos = returnPos;
-			this.returnDepth = returnDepth;
-			left = 2;
-		}
+        public void setup(ThrowingSpike boomerang, int thrownPos, int returnPos, int returnDepth) {
+            this.boomerang = boomerang;
+            this.thrownPos = thrownPos;
+            this.returnPos = returnPos;
+            this.returnDepth = returnDepth;
+            left = 2;
+        }
 
-		public int returnPos(){
-			return returnPos;
-		}
+        public int returnPos() {
+            return returnPos;
+        }
 
-		public MissileWeapon cancel(){
-			detach();
-			return boomerang;
-		}
+        public MissileWeapon cancel() {
+            detach();
+            return boomerang;
+        }
 
-		public int activeDepth(){
-			return returnDepth;
-		}
+        public int activeDepth() {
+            return returnDepth;
+        }
 
-		@Override
-		public boolean act() {
-			if (returnDepth == Dungeon.depth){
-				left--;
-				if (left <= 0){
+        @Override
+        public boolean act() {
+            if (returnDepth == Dungeon.depth) {
+                left--;
+                if (left <= 0) {
 
-					if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
+                    if (hero.heroClass != HeroClass.DUELIST) {
+                        if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
 
-					} else {
-						if (Random.Int( 4 ) == 0) {
-							Sample.INSTANCE.play(Assets.Sounds.JOSUKE0);
-						}
-					}
+                        } else {
+                            if (Random.Int(4) == 0) {
+                                Sample.INSTANCE.play(Assets.Sounds.JOSUKE0);
+                            }
+                        }
+                    }
 
-					final Char returnTarget = Actor.findChar(returnPos);
-					final Char target = this.target;
-					MissileSprite visual = ((MissileSprite) Dungeon.hero.sprite.parent.recycle(MissileSprite.class));
-					visual.reset( thrownPos,
-							returnPos,
-							boomerang,
-							new Callback() {
-								@Override
-								public void call() {
-									if (returnTarget == target){
-										if (target instanceof Hero && boomerang.doPickUp((Hero) target)) {
-											//grabbing the boomerang takes no time
-											((Hero) target).spend(-TIME_TO_PICK_UP);
-										} else {
-											Dungeon.level.drop(boomerang, returnPos).sprite.drop();
-										}
+                    final Char returnTarget = Actor.findChar(returnPos);
+                    final Char target = this.target;
+                    MissileSprite visual = ((MissileSprite) Dungeon.hero.sprite.parent.recycle(MissileSprite.class));
+                    visual.reset(thrownPos,
+                            returnPos,
+                            boomerang,
+                            new Callback() {
+                                @Override
+                                public void call() {
+                                    if (returnTarget == target) {
+                                        if (target instanceof Hero && boomerang.doPickUp((Hero) target)) {
+                                            //grabbing the boomerang takes no time
+                                            ((Hero) target).spend(-TIME_TO_PICK_UP);
+                                        } else {
+                                            Dungeon.level.drop(boomerang, returnPos).sprite.drop();
+                                        }
 
-									} else if (returnTarget != null){
-										boomerang.circleBackhit = true;
-										if (((Hero)target).shoot( returnTarget, boomerang )) {
-											boomerang.decrementDurability();
-										}
-										if (boomerang.durability > 0) {
-											Dungeon.level.drop(boomerang, returnPos).sprite.drop();
-										}
+                                    } else if (returnTarget != null) {
+                                        boomerang.circleBackhit = true;
+                                        if (((Hero) target).shoot(returnTarget, boomerang)) {
+                                            boomerang.decrementDurability();
+                                        }
+                                        if (boomerang.durability > 0) {
+                                            Dungeon.level.drop(boomerang, returnPos).sprite.drop();
+                                        }
 
-									} else {
-										Dungeon.level.drop(boomerang, returnPos).sprite.drop();
-									}
-									CircleBack.this.next();
-								}
-							});
-					visual.alpha(0f);
-					float duration = Dungeon.level.trueDistance(thrownPos, returnPos) / 20f;
-					target.sprite.parent.add(new AlphaTweener(visual, 1f, duration));
-					detach();
-					return false;
-				}
-			}
-			spend( TICK );
+                                    } else {
+                                        Dungeon.level.drop(boomerang, returnPos).sprite.drop();
+                                    }
+                                    CircleBack.this.next();
+                                }
+                            });
+                    visual.alpha(0f);
+                    float duration = Dungeon.level.trueDistance(thrownPos, returnPos) / 20f;
+                    target.sprite.parent.add(new AlphaTweener(visual, 1f, duration));
+                    detach();
+                    return false;
+                }
+            }
+            spend(TICK);
 
-			return true;
-		}
+            return true;
+        }
 
-		private static final String BOOMERANG = "boomerang";
-		private static final String THROWN_POS = "thrown_pos";
-		private static final String RETURN_POS = "return_pos";
-		private static final String RETURN_DEPTH = "return_depth";
+        private static final String BOOMERANG = "boomerang";
+        private static final String THROWN_POS = "thrown_pos";
+        private static final String RETURN_POS = "return_pos";
+        private static final String RETURN_DEPTH = "return_depth";
 
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put(BOOMERANG, boomerang);
-			bundle.put(THROWN_POS, thrownPos);
-			bundle.put(RETURN_POS, returnPos);
-			bundle.put(RETURN_DEPTH, returnDepth);
-		}
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(BOOMERANG, boomerang);
+            bundle.put(THROWN_POS, thrownPos);
+            bundle.put(RETURN_POS, returnPos);
+            bundle.put(RETURN_DEPTH, returnDepth);
+        }
 
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			boomerang = (ThrowingSpike) bundle.get(BOOMERANG);
-			thrownPos = bundle.getInt(THROWN_POS);
-			returnPos = bundle.getInt(RETURN_POS);
-			returnDepth = bundle.getInt(RETURN_DEPTH);
-		}
-	}
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            boomerang = (ThrowingSpike) bundle.get(BOOMERANG);
+            thrownPos = bundle.getInt(THROWN_POS);
+            returnPos = bundle.getInt(RETURN_POS);
+            returnDepth = bundle.getInt(RETURN_DEPTH);
+        }
+    }
 
 }

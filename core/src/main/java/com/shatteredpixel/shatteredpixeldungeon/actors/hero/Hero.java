@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -48,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
@@ -205,7 +205,6 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.ColorMath;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
@@ -526,7 +525,7 @@ public class Hero extends Char {
         }
 
         if (buff(Scimitar.SwordDance.class) != null) {
-            accuracy *= 1.25f;
+            accuracy *= 1.50f;
         }
 
         if (Dungeon.level.adjacent(pos, target.pos)) {
@@ -612,7 +611,8 @@ public class Hero extends Char {
         }
 
         if (buff(RoundShield.GuardTracker.class) != null) {
-            buff(RoundShield.GuardTracker.class).detach();
+            buff(RoundShield.GuardTracker.class).hasBlocked = true;
+            BuffIndicator.refreshHero();
             Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1, Random.Float(0.96f, 1.05f));
             return Messages.get(RoundShield.GuardTracker.class, "guarded");
         }
@@ -633,14 +633,14 @@ public class Hero extends Char {
         int dr = super.drRoll();
 
         if (belongings.armor() != null) {
-            int armDr = Random.NormalIntRange(belongings.armor().DRMin(), belongings.armor().DRMax());
+            int armDr = Char.combatRoll( belongings.armor().DRMin(), belongings.armor().DRMax());
             if (STR() < belongings.armor().STRReq()) {
                 armDr -= 2 * (belongings.armor().STRReq() - STR());
             }
             if (armDr > 0) dr += armDr;
         }
         if (belongings.weapon() != null && !RingOfForce.fightingUnarmed(this)) {
-            int wepDr = Random.NormalIntRange(0, belongings.weapon().defenseFactor(this));
+            int wepDr = Char.combatRoll( 0 , belongings.weapon().defenseFactor( this ) );
             if (STR() < ((Weapon) belongings.weapon()).STRReq()) {
                 wepDr -= 2 * (((Weapon) belongings.weapon()).STRReq() - STR());
             }
@@ -1231,7 +1231,7 @@ public class Hero extends Char {
         }
     }
 
-    public boolean actMine(HeroAction.Mine action) {
+    private boolean actMine(HeroAction.Mine action) {
         if (Dungeon.level.adjacent(pos, action.dst)) {
             path = null;
             if ((Dungeon.level.map[action.dst] == Terrain.WALL
@@ -1387,7 +1387,13 @@ public class Hero extends Char {
 
         enemy = action.target;
 
-        if (enemy.isAlive() && canAttack( enemy ) && !isCharmedBy( enemy ) && enemy.invisible == 0) {
+        if (isCharmedBy( enemy )){
+            GLog.w( Messages.get(Charm.class, "cant_attack"));
+            ready();
+            return false;
+        }
+
+        if (enemy.isAlive() && canAttack( enemy ) && enemy.invisible == 0) {
 
             if (heroClass != HeroClass.DUELIST
                     && hasTalent(Talent.AGGRESSIVE_BARRIER)
@@ -2411,19 +2417,6 @@ public class Hero extends Char {
         if (hit && heroClass == HeroClass.DUELIST && wasEnemy) {
             Buff.affect(this, Sai.ComboStrikeTracker.class).addHit();
         }
-
-        RingOfForce.BrawlersStance brawlStance = buff(RingOfForce.BrawlersStance.class);
-        if (brawlStance != null && brawlStance.hitsLeft() > 0) {
-            MeleeWeapon.Charger charger = Buff.affect(this, MeleeWeapon.Charger.class);
-            charger.partialCharge -= RingOfForce.BrawlersStance.HIT_CHARGE_USE;
-            while (charger.partialCharge < 0) {
-                charger.charges--;
-                charger.partialCharge++;
-            }
-            BuffIndicator.refreshHero();
-            Item.updateQuickslot();
-        }
-
 
         curAction = null;
 

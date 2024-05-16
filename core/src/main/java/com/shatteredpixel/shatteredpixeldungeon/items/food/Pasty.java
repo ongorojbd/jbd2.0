@@ -61,7 +61,7 @@ public class Pasty extends Food {
 
 		bones = true;
 	}
-	
+
 	@Override
 	public void reset() {
 		super.reset();
@@ -86,7 +86,7 @@ public class Pasty extends Food {
 				break;
 		}
 	}
-	
+
 	@Override
 	protected void satisfy(Hero hero) {
 		if (Holiday.getCurrentHoliday() == Holiday.LUNAR_NEW_YEAR){
@@ -95,7 +95,7 @@ public class Pasty extends Food {
 		}
 
 		super.satisfy(hero);
-		
+
 		switch(Holiday.getCurrentHoliday()){
 			default:
 				break; //do nothing extra
@@ -189,7 +189,7 @@ public class Pasty extends Food {
 				return Messages.get(this, "cane_desc");
 		}
 	}
-	
+
 	@Override
 	public int value() {
 		return 20 * quantity;

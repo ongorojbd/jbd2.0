@@ -21,11 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.MageArmor;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class Bolas extends MissileWeapon {
 	
@@ -47,6 +56,15 @@ public class Bolas extends MissileWeapon {
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 		Buff.prolong( defender, Cripple.class, Cripple.DURATION );
+
+		if (hero.heroClass == HeroClass.MAGE) {
+			if (SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof MageArmor) {
+
+			} else {
+				Sample.INSTANCE.play(Assets.Sounds.JOSEPH0);
+			}
+		}
+
 		return super.proc( attacker, defender, damage );
 	}
 }

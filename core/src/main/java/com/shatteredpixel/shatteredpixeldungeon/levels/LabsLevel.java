@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kirakira;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pucci4;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SWAT;
-import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -43,19 +42,14 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DoobieTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FancakeTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlashingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.MachineTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RockfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WiredTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -91,9 +85,8 @@ public class LabsLevel extends RegularLevel {
 
 	@Override
 	protected ArrayList<Room> initRooms() {
-		ArrayList<Room> rooms = super.initRooms();
 
-		return rooms;
+		return super.initRooms();
 	}
 
 	@Override
@@ -129,6 +122,11 @@ public class LabsLevel extends RegularLevel {
 		SWAT.spawn(this);
 		super.createItems();
 
+	}
+
+	@Override
+	protected void createMobs() {
+		super.createMobs();
 	}
 
 	@Override

@@ -25,11 +25,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -91,7 +89,19 @@ public class WarScythe extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		Sickle.harvestAbility(hero, target, 0.9f, this);
+		//replaces damage with 22.5+3.5*lvl bleed, exactly 100% avg damage.
+		int bleedAmt = augment.damageFactor(Math.round(22.5f + 3.5f*buffedLvl()));
+		Sickle.harvestAbility(hero, target, 0f, bleedAmt, this);
+	}
+
+	@Override
+	public String abilityInfo() {
+		int bleedAmt = levelKnown ? Math.round(22.5f + 3.5f*buffedLvl()) : 23;
+		if (levelKnown){
+			return Messages.get(this, "ability_desc", augment.damageFactor(bleedAmt));
+		} else {
+			return Messages.get(this, "typical_ability_desc", bleedAmt);
+		}
 	}
 
 }

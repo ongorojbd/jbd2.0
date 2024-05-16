@@ -159,13 +159,13 @@ public class MISTA extends MeleeWeapon {
         Char closest = null;
 
         hero.belongings.abilityWeapon = this;
-        for (Char ch : Actor.chars()) {
+        for (Char ch : Actor.chars()){
             if (ch.alignment == Char.Alignment.ENEMY
                     && !hero.isCharmedBy(ch)
                     && Dungeon.level.heroFOV[ch.pos]
-                    && hero.canAttack(ch)) {
+                    && hero.canAttack(ch)){
                 targets.add(ch);
-                if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)) {
+                if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)){
                     closest = ch;
                 }
             }
@@ -183,9 +183,11 @@ public class MISTA extends MeleeWeapon {
             @Override
             public void call() {
                 beforeAbilityUsed(hero, finalClosest);
+                //+(2+0.5*lvl) damage, roughly +20% base damage, +25% scaling
+                int dmgBoost = augment.damageFactor(2 + Math.round(0.5f*buffedLvl()));
                 for (Char ch : targets) {
-                    hero.attack(ch, 1, 0, ch == finalClosest ? Char.INFINITE_ACCURACY : 1);
-                    if (!ch.isAlive()) {
+                    hero.attack(ch, 1, dmgBoost, Char.INFINITE_ACCURACY);
+                    if (!ch.isAlive()){
                         onAbilityKill(hero, ch);
                     }
                 }
@@ -196,6 +198,15 @@ public class MISTA extends MeleeWeapon {
                 afterAbilityUsed(hero);
             }
         });
+    }
+    @Override
+    public String abilityInfo() {
+        int dmgBoost = levelKnown ? 2 + Math.round(0.5f*buffedLvl()) : 2;
+        if (levelKnown){
+            return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+        } else {
+            return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+        }
     }
 
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
