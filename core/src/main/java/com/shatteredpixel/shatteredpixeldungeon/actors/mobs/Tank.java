@@ -29,7 +29,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
@@ -67,10 +71,16 @@ public class Tank extends Mob {
 	@Override
 	public int attackProc( Char hero, int damage ) {
 		damage = super.attackProc( enemy, damage );
-		if (this.buff(Doom.class) == null) {
-			if (Random.Int(10) == 0) {
-				new DisarmingTrap().set(target).activate();
+		if (hero == Dungeon.hero) {
+			if (Random.Int(3) == 0) {
+				Invisibility.dispel(this);
 				Sample.INSTANCE.play(Assets.Sounds.ORA);
+				Ballistica trajectory = new Ballistica(this.pos, enemy.pos, Ballistica.STOP_TARGET);
+				//trim it to just be the part that goes past them
+				trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+				//knock them back along that ballistica
+				WandOfBlastWave.throwChar(enemy, trajectory, 6, false, true, getClass());
+				return damage;
 			}
 		}
 

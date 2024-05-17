@@ -142,7 +142,7 @@ public class Supression extends Mob {
 				GLog.n(Messages.get(Supression.class, "g"));
 
 				leapCooldown = Random.NormalIntRange(1, 2);
-				Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
+				Sample.INSTANCE.play(Assets.Sounds.JONATHAN2);
 				Ballistica b = new Ballistica(pos, leapPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
 
 				//check if leap pos is not obstructed by terrain

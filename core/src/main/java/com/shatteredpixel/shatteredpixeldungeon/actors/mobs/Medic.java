@@ -124,6 +124,7 @@ public class Medic extends Mob {
 		damage = super.attackProc( enemy, damage );
 
 		if (!Dungeon.level.adjacent( pos, enemy.pos )) {
+			Sample.INSTANCE.play(Assets.Sounds.JOSEPH0);
 			hasbolas = false;
 			Buff.prolong( enemy, Cripple.class, Cripple.DURATION );
 		}
