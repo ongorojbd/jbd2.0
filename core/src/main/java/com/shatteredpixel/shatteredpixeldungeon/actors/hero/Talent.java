@@ -21,9 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -52,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -423,6 +427,13 @@ public enum Talent {
 
 		if (talent == VETERANS_INTUITION && hero.pointsInTalent(VETERANS_INTUITION) == 2){
 			if (hero.belongings.armor() != null)  hero.belongings.armor.identify();
+			if (hero.heroClass == HeroClass.WARRIOR) {
+				if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof WarriorArmor) {
+
+				} else {
+					Sample.INSTANCE.play(Assets.Sounds.JONATHAN3);
+				}
+			}
 		}
 		if (talent == THIEFS_INTUITION && hero.pointsInTalent(THIEFS_INTUITION) == 2){
 			if (hero.belongings.ring instanceof Ring) hero.belongings.ring.identify();
@@ -685,12 +696,14 @@ public enum Talent {
 		if (hero.hasTalent(Talent.PROVOKED_ANGER)
 			&& hero.buff(ProvokedAngerTracker.class) != null){
 			dmg += Random.IntRange(hero.pointsInTalent(Talent.PROVOKED_ANGER) , 2);
+			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 			hero.buff(ProvokedAngerTracker.class).detach();
 		}
 
 		if (hero.hasTalent(Talent.LINGERING_MAGIC)
 				&& hero.buff(LingeringMagicTracker.class) != null){
 			dmg += Random.IntRange(hero.pointsInTalent(Talent.LINGERING_MAGIC) , 2);
+			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 			hero.buff(LingeringMagicTracker.class).detach();
 		}
 
@@ -698,6 +711,7 @@ public enum Talent {
 				&& enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)
 				&& enemy.buff(SuckerPunchTracker.class) == null){
 			dmg += Random.IntRange(hero.pointsInTalent(Talent.SUCKER_PUNCH) , 2);
+			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 			Buff.affect(enemy, SuckerPunchTracker.class);
 		}
 
@@ -707,6 +721,7 @@ public enum Talent {
 			} else if (hero.buff(FollowupStrikeTracker.class) != null
 					&& hero.buff(FollowupStrikeTracker.class).object == enemy.id()){
 				dmg += 1 + hero.pointsInTalent(FOLLOWUP_STRIKE);
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 				hero.buff(FollowupStrikeTracker.class).detach();
 			}
 		}

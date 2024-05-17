@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
@@ -140,6 +141,16 @@ public class Sword extends MeleeWeapon {
 			Sample.INSTANCE.play(Assets.Sounds.HAHAH);
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.ORA);
+		}
+	}
+
+	public static void hclass() {
+		if (hero.heroClass == HeroClass.WARRIOR) {
+			if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof WarriorArmor) {
+				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+			} else {
+				Sample.INSTANCE.play(Assets.Sounds.JONATHAN2);
+			}
 		}
 	}
 

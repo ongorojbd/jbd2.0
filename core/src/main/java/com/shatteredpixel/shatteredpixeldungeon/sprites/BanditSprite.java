@@ -46,7 +46,7 @@ public class BanditSprite extends MobSprite {
 		attack = new Animation( 12, false );
 		attack.frames( film, 6, 7, 8, 9 );
 
-		scale.set(0.8f);
+		scale.set(0.7f);
 		
 		idle();
 	}

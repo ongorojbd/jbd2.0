@@ -140,26 +140,27 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-//		if(DeviceCompat.isDebug()){
-//			new RingOfMight().identify().upgrade(999).collect();
-//			new RingOfAccuracy().identify().upgrade(999).collect();
-//			new RingOfEnergy().identify().upgrade(999).collect();
-//			new WandOfLightning().identify().collect();
-//			new Gmap().quantity(33).collect();
-//			new Bmap().quantity(33).collect();
-//			new Neotel().collect();
-//			new Bcomdisc().collect();
-//			new TengusMask().collect();
-//			new NitoDismantleHammer().collect();
-//			new TrinketCatalyst().identify().quantity(33).collect();
-//			new UnstableSpell().identify().quantity(33).collect();
-//			new UnstableBrew().identify().quantity(33).collect();
-//			new PotionOfHealing().identify().quantity(100).collect();
-//			new StoneOfDeepSleep().identify().quantity(100).collect();
-//			new Fadeleaf.Seed().identify().quantity(100).collect();
-//			new WandOfRegrowth().identify().upgrade(20).collect();
-//			new ScrollOfPsionicBlast().identify().quantity(999).collect();
-//		}
+		if(DeviceCompat.isDebug()){
+			new RingOfMight().identify().upgrade(999).collect();
+			new RingOfAccuracy().identify().upgrade(999).collect();
+			new RingOfEnergy().identify().upgrade(999).collect();
+			new WandOfLightning().identify().collect();
+			new Gmap().quantity(33).collect();
+			new Bmap().quantity(33).collect();
+			new Neotel().collect();
+			new Bcomdisc().collect();
+			new TengusMask().collect();
+			new NitoDismantleHammer().collect();
+			new TrinketCatalyst().identify().quantity(33).collect();
+			new UnstableSpell().identify().quantity(33).collect();
+			new UnstableBrew().identify().quantity(33).collect();
+			new PotionOfHealing().identify().quantity(100).collect();
+			new PotionOfExperience().identify().quantity(100).collect();
+			new StoneOfDeepSleep().identify().quantity(100).collect();
+			new Fadeleaf.Seed().identify().quantity(100).collect();
+			new WandOfRegrowth().identify().upgrade(20).collect();
+			new ScrollOfPsionicBlast().identify().quantity(999).collect();
+		}
 
 		switch (this) {
 			case WARRIOR:

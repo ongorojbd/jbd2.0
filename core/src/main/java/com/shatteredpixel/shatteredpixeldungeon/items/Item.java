@@ -21,9 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -31,8 +34,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vitam;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
@@ -228,9 +234,9 @@ public class Item implements Bundlable {
 				if (isSimilar( item )) {
 					item.merge( this );
 					item.updateQuickslot();
-					if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
+					if (hero != null && hero.isAlive()) {
 						Badges.validateItemLevelAquired( this );
-						Talent.onItemCollected(Dungeon.hero, item);
+						Talent.onItemCollected(hero, item);
 						if (isIdentified()) Catalog.setSeen(getClass());
 					}
 					if (TippedDart.lostDarts > 0){
@@ -243,7 +249,7 @@ public class Item implements Bundlable {
 								{ actPriority = VFX_PRIO; }
 								@Override
 								protected boolean act() {
-									Dungeon.level.drop(d, Dungeon.hero.pos).sprite.drop();
+									Dungeon.level.drop(d, hero.pos).sprite.drop();
 									Actor.remove(this);
 									return true;
 								}
@@ -255,9 +261,9 @@ public class Item implements Bundlable {
 			}
 		}
 
-		if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
+		if (hero != null && hero.isAlive()) {
 			Badges.validateItemLevelAquired( this );
-			Talent.onItemCollected( Dungeon.hero, this );
+			Talent.onItemCollected( hero, this );
 			if (isIdentified()) Catalog.setSeen(getClass());
 		}
 
@@ -270,7 +276,7 @@ public class Item implements Bundlable {
 	}
 	
 	public boolean collect() {
-		return collect( Dungeon.hero.belongings.backpack );
+		return collect( hero.belongings.backpack );
 	}
 	
 	//returns a new item if the split was sucessful and there are now 2 items, otherwise null
@@ -375,10 +381,10 @@ public class Item implements Bundlable {
 
 	public int buffedLvl(){
 		//only the hero can be affected by Degradation
-		if (Dungeon.hero.buff( Degrade.class ) != null
-			&& (isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this ))) {
+		if (hero.buff( Degrade.class ) != null
+			&& (isEquipped( hero ) || hero.belongings.contains( this ))) {
 			return Degrade.reduceLevel(level());
-		} else if (Dungeon.hero.buff(Vitam.class) != null) {
+		} else if (hero.buff(Vitam.class) != null) {
 			return Vitam.reduceLevel(level());
 		}
 		return level();
@@ -452,9 +458,9 @@ public class Item implements Bundlable {
 
 	public Item identify( boolean byHero ) {
 
-		if (byHero && Dungeon.hero != null && Dungeon.hero.isAlive()){
+		if (byHero && hero != null && hero.isAlive()){
 			Catalog.setSeen(getClass());
-			if (!isIdentified()) Talent.onItemIdentified(Dungeon.hero, this);
+			if (!isIdentified()) Talent.onItemIdentified(hero, this);
 		}
 
 		levelKnown = true;
@@ -589,7 +595,7 @@ public class Item implements Bundlable {
 		cursed	= bundle.getBoolean( CURSED );
 
 		//only want to populate slot on first load.
-		if (Dungeon.hero == null) {
+		if (hero == null) {
 			if (bundle.contains(QUICKSLOT)) {
 				Dungeon.quickslot.setSlot(bundle.getInt(QUICKSLOT), this);
 			}
@@ -638,9 +644,18 @@ public class Item implements Bundlable {
 									&& !(Item.this instanceof MissileWeapon)
 									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
 								if (enemy != null && enemy.alignment != curUser.alignment){
-									Sample.INSTANCE.play(Assets.Sounds.HIT);
+
+									if (hero.heroClass == HeroClass.WARRIOR) {
+										if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof WarriorArmor) {
+
+										} else {
+											Sample.INSTANCE.play(Assets.Sounds.JONATHAN1);
+										}
+									}
+
 									Buff.affect(enemy, Blindness.class, 1f + curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
 									Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 50f);
+									Sample.INSTANCE.play(Assets.Sounds.HIT);
 								}
 							}
 							if (user.buff(Talent.LethalMomentumTracker.class) != null){

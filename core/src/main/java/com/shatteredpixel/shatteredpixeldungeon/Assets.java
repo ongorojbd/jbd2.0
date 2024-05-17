@@ -345,6 +345,9 @@ public class Assets {
         public static final String K2 = "sounds/k2.mp3";
 
         public static final String K3 = "sounds/k3.mp3";
+        public static final String JONATHAN1 = "sounds/jonathan1.mp3";
+        public static final String JONATHAN2 = "sounds/jonathan2.mp3";
+        public static final String JONATHAN3 = "sounds/jonathan3.mp3";
         public static final String JONNY = "sounds/jonny.mp3";
         public static final String JONNY2 = "sounds/jonny2.mp3";
 
@@ -392,6 +395,7 @@ public class Assets {
                 TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
                 BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
                 HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, ORA2, ORA3, D4C, NANIDI, D1, D2, DIEGO, DIEGO2,
+                JONATHAN1, JONATHAN2, JONATHAN3,
                 JOSEPH, JOSEPH0, JOSEPH1, JOSEPH2, JOSEPH3, JOSEPH4, JOSEPH5, JOSEPH6, JOSEPH7, JOSEPH8,
                 JOSUKE0, JOSUKE1, JOSUKE2, JOSUKE3, JOSUKE4, JOSUKE5,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,

@@ -43,13 +43,13 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
-import com.watabou.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndCombo;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -356,7 +356,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				dmgMulti = 0;
 				break;
 			case SLAM:
-				Sword.jclass();
+				Sword.hclass();
 				dmgBonus = Math.round(target.drRoll() * count / 5f);
 				break;
 			case CRUSH:
@@ -459,6 +459,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 						}
 					});
 				} else {
+					Sword.jclass();
 					detach();
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 					ActionIndicator.clearAction(Combo.this);

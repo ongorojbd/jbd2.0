@@ -81,10 +81,14 @@ public class Greenbaby extends Mob {
     }
 
     @Override
-    public int damageRoll() {return Random.NormalIntRange(4, 6);}
+    public int damageRoll() {
+        return Random.NormalIntRange(4, 6);
+    }
 
     @Override
-    public int attackSkill(Char target) {return 35;}
+    public int attackSkill(Char target) {
+        return 35;
+    }
 
     @Override
     public int drRoll() {
@@ -111,28 +115,30 @@ public class Greenbaby extends Mob {
     }
 
     @Override
-    public void die( Object cause ) {
+    public void die(Object cause) {
 
-        super.die( cause );
+        super.die(cause);
 
         this.yell(Messages.get(this, "3"));
 
-        Dungeon.level.drop( new ReclaimTrap().identify(), pos ).sprite.drop( pos );
+        Dungeon.level.drop(new ReclaimTrap().identify(), pos).sprite.drop(pos);
 
     }
 
     public static void spawn(HallsLevel level) {
-        if (Dungeon.depth == 24 && !Dungeon.bossLevel()) {
 
-            Greenbaby centinel = new Greenbaby();
-            do {
-                centinel.pos = level.randomRespawnCell(centinel);
-            } while (centinel.pos == -1);
-            level.mobs.add(centinel);
+        if (Random.Int(2) == 0) {
+            if (Dungeon.depth == 24 && !Dungeon.bossLevel()) {
+
+                Greenbaby centinel = new Greenbaby();
+                do {
+                    centinel.pos = level.randomRespawnCell(centinel);
+                } while (centinel.pos == -1);
+                level.mobs.add(centinel);
+            }
         }
 
     }
-
 
 
 }
