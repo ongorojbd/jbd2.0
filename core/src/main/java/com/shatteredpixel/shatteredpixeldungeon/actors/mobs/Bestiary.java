@@ -22,12 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
-import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -314,12 +311,12 @@ public class Bestiary {
                 case 19:
                     if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
                     if (Random.Float() < 0.025f) rotation.add(Succubus.class);
-                    if (Random.Float() < 0.04f) rotation.add(Retonio.class);
+                    if (Random.Float() < 0.02f) rotation.add(Retonio.class);
                     return;
 
                 case 21:
                     if (Random.Float() < 0.029f) rotation.add(Mandom.class);
-                    if (Random.Float() < 0.04f) rotation.add(Retonio.class);
+                    if (Random.Float() < 0.02f) rotation.add(Retonio.class);
                     return;
 
                 case 23:
@@ -327,7 +324,7 @@ public class Bestiary {
                     return;
 
                 case 27:
-                    if (Random.Float() < 0.05f) rotation.add(Retonio.class);
+                    if (Random.Float() < 0.04f) rotation.add(Retonio.class);
                     return;
             }
         }
