@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.Glyph;
@@ -47,9 +48,10 @@ public class Affection extends Glyph {
 		if (Random.Float() < procChance) {
 
 			float powerMulti = Math.max(1f, procChance);
-
-			Buff.affect( attacker, Charm.class, Math.round(Charm.DURATION*powerMulti) ).object = defender.id();
-			attacker.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
+			if (!(attacker instanceof EbonyMimic)) {
+				Buff.affect(attacker, Charm.class, Math.round(Charm.DURATION * powerMulti)).object = defender.id();
+				attacker.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
+			}
 
 		}
 		
