@@ -873,7 +873,7 @@ public class WndSettings extends WndTabbed {
 						SPDSettings.WiFi(checked());
 					}
 				};
-
+				chkWifi.checked(SPDSettings.WiFi());
 				add(chkWifi);
 			}
 		}
@@ -1096,8 +1096,13 @@ public class WndSettings extends WndTabbed {
 
 			txtLangInfo = PixelScene.renderTextBlock(6);
 			String info = "_" + Messages.titleCase(currLang.nativeName()) + "_ - ";
+			if (currLang.status() == Languages.Status.O_COMPLETE) info += Messages.get(this, "completed");
+			else if (currLang.status() == Languages.Status.__UNREVIEW) info += Messages.get(this, "unreviewed");
+			else if (currLang.status() == Languages.Status.X_UNFINISH) info += Messages.get(this, "unfinished");
 			txtLangInfo.text(info);
 
+			if (currLang.status() == Languages.Status.__UNREVIEW) txtLangInfo.setHightlighting(true, CharSprite.WARNING);
+			else if (currLang.status() == Languages.Status.X_UNFINISH) txtLangInfo.setHightlighting(true, CharSprite.NEGATIVE);
 			add(txtLangInfo);
 
 			sep2 = new ColorBlock(1, 1, 0xFF000000);
@@ -1125,7 +1130,18 @@ public class WndSettings extends WndTabbed {
 						});
 					}
 				};
-
+				if (currLang == langs.get(i)){
+					btn.textColor(TITLE_COLOR);
+				} else {
+					switch (langs.get(i).status()) {
+						case X_UNFINISH:
+							btn.textColor(0x888888);
+							break;
+						case __UNREVIEW:
+							btn.textColor(0xBBBBBB);
+							break;
+					}
+				}
 				lanBtns[i] = btn;
 				add(btn);
 			}
