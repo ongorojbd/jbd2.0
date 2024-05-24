@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
@@ -70,6 +71,28 @@ public class v1_X_Changes {
         ChangeInfo changes = new ChangeInfo("v2.0k", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
+
+        changes = new ChangeInfo("", false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo("2.0k-1", false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), "밸런스 수정",
+                "위험한 물건에 대한 밸런스 수정이 있습니다.\n" +
+                        "\n" +
+                        "_- 개구리 가죽_ : 업그레이드 비용 증가\n" +
+                        "\n" +
+                        "_- 토오루의 인형_ : 보상 증가\n" +
+                        "_-_ 원더 오브 U의 능력치가 20% 감소했습니다.\n" +
+                        "_-_ 숨어있는 원더 오브 U를 처음 건드린 경우의 공격 피해는 유지됩니다.\n" +
+                        "_-_ 이제 기존 보상에 무작위 아이템을 추가로 획득할 수 있습니다.\n" +
+                        "\n" +
+                        "_- 초콜릿 디스코_ : 업그레이드 비용 감소\n" +
+                        "_- 밤의 지배자_ : 업그레이드 비용 감소\n" +
+                        "_- 헤이 야!_ : 업그레이드 비용 감소"));
 
         changes = new ChangeInfo("새로운 요소", false, null);
         changes.hardlight(CharSprite.POSITIVE);

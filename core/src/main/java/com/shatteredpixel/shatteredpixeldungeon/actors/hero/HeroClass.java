@@ -89,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
@@ -151,8 +152,8 @@ public enum HeroClass {
 		if(DeviceCompat.isDebug()){
 			new RingOfMight().identify().upgrade(999).collect();
 			new RingOfEnergy().identify().upgrade(999).collect();
-			new LloydsBeacon().identify().upgrade(10).collect();
-			new BattleAxe().identify().upgrade(999).collect();
+			new RingOfAccuracy().identify().upgrade(999).collect();
+			new WondrousResin().identify().upgrade(3).collect();
 			new PlateArmor().identify().upgrade(999).collect();
 			new Neotel().collect();
 			new TengusMask().collect();
@@ -164,7 +165,6 @@ public enum HeroClass {
 			new StoneOfDeepSleep().identify().quantity(100).collect();
 			new Fadeleaf.Seed().identify().quantity(100).collect();
 			new WandOfRegrowth().identify().upgrade(20).collect();
-			new ScrollOfPsionicBlast().identify().quantity(999).collect();
 		}
 
 		switch (this) {

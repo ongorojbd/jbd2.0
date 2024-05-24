@@ -1813,7 +1813,9 @@ public class Hero extends Char {
                     newMob = true;
                 }
 
-                if (!mindVisionEnemies.contains(m) && QuickSlotButton.autoAim(m) != -1) {
+                //only do a simple check for mind visioned enemies, better performance
+                if ((!mindVisionEnemies.contains(m) && QuickSlotButton.autoAim(m) != -1)
+                        || (mindVisionEnemies.contains(m) && new Ballistica( pos, m.pos, Ballistica.PROJECTILE ).collisionPos == m.pos)) {
                     if (target == null) {
                         target = m;
                     } else if (distance(target) > distance(m)) {

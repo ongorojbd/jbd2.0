@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,10 +174,10 @@ public class WndSettings extends WndTabbed {
 			protected void createChildren() {
 				super.createChildren();
 				switch(Messages.lang().status()){
-					case UNFINISHED:
+					case X_UNFINISH:
 						icon.hardlight(1.5f, 0, 0);
 						break;
-					case UNREVIEWED:
+					case __UNREVIEW:
 						icon.hardlight(1.5f, 0.75f, 0f);
 						break;
 				}
@@ -257,7 +257,7 @@ public class WndSettings extends WndTabbed {
 			// this is being phased out as the setting is useless on all but very old devices anyway
 			// and support is going to be dropped for 4.3- in the forseeable future
 			if (DeviceCompat.isAndroid() && PixelScene.maxScreenZoom >= 2
-				&& (SPDSettings.powerSaver() || !DeviceCompat.supportsFullScreen())) {
+					&& (SPDSettings.powerSaver() || !DeviceCompat.supportsFullScreen())) {
 				chkSaver = new CheckBox(Messages.get(this, "saver")) {
 					@Override
 					protected void onClick() {
@@ -830,7 +830,6 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep1;
 		CheckBox chkNews;
 		CheckBox chkUpdates;
-//		CheckBox chkBetas;
 		CheckBox chkWifi;
 
 		@Override
@@ -864,19 +863,6 @@ public class WndSettings extends WndTabbed {
 				};
 				chkUpdates.checked(SPDSettings.updates());
 				add(chkUpdates);
-
-//				if (Updates.supportsBetaChannel()){
-//					chkBetas = new CheckBox(Messages.get(this, "betas")) {
-//						@Override
-//						protected void onClick() {
-//							super.onClick();
-//							SPDSettings.updates(checked());
-//							Updates.clearUpdate();
-//						}
-//					};
-//					chkBetas.checked(SPDSettings.betas());
-//					add(chkBetas);
-//				}
 			}
 
 			if (!DeviceCompat.isDesktop()){
@@ -887,7 +873,7 @@ public class WndSettings extends WndTabbed {
 						SPDSettings.WiFi(checked());
 					}
 				};
-				chkWifi.checked(SPDSettings.WiFi());
+
 				add(chkWifi);
 			}
 		}
@@ -911,11 +897,6 @@ public class WndSettings extends WndTabbed {
 					pos = chkUpdates.bottom();
 				}
 			}
-
-//			if (chkBetas != null){
-//				chkBetas.setRect(0, pos + GAP, width, BTN_HEIGHT);
-//				pos = chkBetas.bottom();
-//			}
 
 			if (chkWifi != null){
 				chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
@@ -1115,13 +1096,8 @@ public class WndSettings extends WndTabbed {
 
 			txtLangInfo = PixelScene.renderTextBlock(6);
 			String info = "_" + Messages.titleCase(currLang.nativeName()) + "_ - ";
-			if (currLang == Languages.KOREAN) info += "이 언어는 기본 언어로, 개발자에 의해 작성됩니다.";
-			else if (currLang.status() == Languages.Status.UNREVIEWED) info += Messages.get(this, "unreviewed");
-			else if (currLang.status() == Languages.Status.UNFINISHED) info += Messages.get(this, "unfinished");
 			txtLangInfo.text(info);
 
-			if (currLang.status() == Languages.Status.UNREVIEWED) txtLangInfo.setHightlighting(true, CharSprite.WARNING);
-			else if (currLang.status() == Languages.Status.UNFINISHED) txtLangInfo.setHightlighting(true, CharSprite.NEGATIVE);
 			add(txtLangInfo);
 
 			sep2 = new ColorBlock(1, 1, 0xFF000000);
@@ -1149,18 +1125,7 @@ public class WndSettings extends WndTabbed {
 						});
 					}
 				};
-				if (currLang == langs.get(i)){
-					btn.textColor(TITLE_COLOR);
-				} else {
-					switch (langs.get(i).status()) {
-						case UNFINISHED:
-							btn.textColor(0x888888);
-							break;
-						case UNREVIEWED:
-							btn.textColor(0xBBBBBB);
-							break;
-					}
-				}
+
 				lanBtns[i] = btn;
 				add(btn);
 			}
@@ -1172,7 +1137,7 @@ public class WndSettings extends WndTabbed {
 			txtTranifex.text(Messages.get(this, "transifex"));
 			add(txtTranifex);
 
-			if (currLang != Languages.KOREAN) {
+			if (currLang != Languages.ENGLISH) {
 				String credText = Messages.titleCase(Messages.get(this, "credits"));
 				btnCredits = new RedButton(credText, credText.length() > 9 ? 6 : 9) {
 					@Override

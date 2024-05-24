@@ -41,7 +41,7 @@ public class GnollGeomancerSprite extends MobSprite {
 
 		updateAnims();
 
-		scale.set(1.3f);
+		scale.set(1.2f);
 	}
 
 	@Override
