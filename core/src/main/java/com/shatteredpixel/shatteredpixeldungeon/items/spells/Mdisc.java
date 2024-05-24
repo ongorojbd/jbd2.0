@@ -111,34 +111,31 @@ public class Mdisc extends Spell {
                 ) {
                     @Override
                     protected void onSelect(int index) {
-                        if (index == 0){
+                        if (index == 0) {
                             Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                             GLog.p(Messages.get(Mdisc.class, "8"));
                             Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
-                        }
-                        else if (index == 1){
+                        } else if (index == 1) {
                             Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                             GLog.p(Messages.get(Mdisc.class, "9"));
                             Music.INSTANCE.play(Assets.Music.PRISON_BOSS, true);
-                        }
-                        else if (index == 2){
+                        } else if (index == 2) {
                             Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                             GLog.p(Messages.get(Mdisc.class, "10"));
                             Music.INSTANCE.play(Assets.Music.CAVES_BOSS, true);
-                        }
-                        else if (index == 3){
+                        } else if (index == 3) {
                             Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                             GLog.p(Messages.get(Mdisc.class, "11"));
-                            Music.INSTANCE.play(Assets.Music.CITY_BOSS, true);                 }
-                        else if (index == 4){
+                            Music.INSTANCE.play(Assets.Music.CITY_BOSS, true);
+                        } else if (index == 4) {
                             Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                             GLog.p(Messages.get(Mdisc.class, "12"));
-                            Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);                 }
-                        else if (index == 5){
+                            Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
+                        } else if (index == 5) {
                             Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                             GLog.p(Messages.get(Mdisc.class, "13"));
-                            Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);                 }
-                        else  {
+                            Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
+                        } else {
                             Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                             GLog.p(Messages.get(Mdisc.class, "14"));
                             Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
@@ -150,9 +147,6 @@ public class Mdisc extends Spell {
 
 
         curUser.spendAndNext(Actor.TICK);
-
-
-
 
 
     }

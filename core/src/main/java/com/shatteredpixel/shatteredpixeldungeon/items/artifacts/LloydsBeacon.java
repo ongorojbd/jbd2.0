@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -111,7 +112,7 @@ public class LloydsBeacon extends Artifact {
 
 		if (action == AC_SET || action == AC_RETURN) {
 
-			if (Dungeon.bossLevel() || !Dungeon.interfloorTeleportAllowed()) {
+			if (Dungeon.bossLevel() || !Dungeon.interfloorTeleportAllowed() || Dungeon.branch != 0 || Dungeon.hero.buff(AscensionChallenge.class) != null) {
 				hero.spend( LloydsBeacon.TIME_TO_USE );
 				GLog.w( Messages.get(this, "preventing") );
 				return;

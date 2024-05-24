@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Madeinheaven;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -81,6 +82,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
@@ -148,17 +150,15 @@ public enum HeroClass {
 
 		if(DeviceCompat.isDebug()){
 			new RingOfMight().identify().upgrade(999).collect();
-			new RingOfArcana().identify().upgrade(999).collect();
-			new HandAxe().identify().upgrade(999).collect();
+			new RingOfEnergy().identify().upgrade(999).collect();
+			new LloydsBeacon().identify().upgrade(10).collect();
 			new BattleAxe().identify().upgrade(999).collect();
 			new PlateArmor().identify().upgrade(999).collect();
-			new MimicTooth().identify().upgrade(9999).collect();
-			new Madeinheaven().identify().collect();
 			new Neotel().collect();
 			new TengusMask().collect();
 			new Gmap().collect();
 			new NitoDismantleHammer().collect();
-			new ScrollOfEnchantment().identify().quantity(33).collect();
+			new ScrollOfMysticalEnergy().identify().quantity(33).collect();
 			new PotionOfHealing().identify().quantity(100).collect();
 			new PotionOfExperience().identify().quantity(100).collect();
 			new StoneOfDeepSleep().identify().quantity(100).collect();
