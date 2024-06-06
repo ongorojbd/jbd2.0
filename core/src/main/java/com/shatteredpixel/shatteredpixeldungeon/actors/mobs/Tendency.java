@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
@@ -67,7 +68,7 @@ import java.util.ArrayList;
 public class Tendency extends DirectableAlly {
 
     {
-        spriteClass = SpeedwagonSprite.class;
+        spriteClass = WillcSprite.class;
 
         HP = HT = 100;
         defenseSkill = 5;
@@ -137,59 +138,6 @@ public class Tendency extends DirectableAlly {
     @Override
     public int attackProc(Char enemy, int damage) {
 
-        if (Random.Int(25) == 0) {
-            SpellSprite.show(this, SpellSprite.MAP);
-            Sample.INSTANCE.play(Assets.Sounds.SPW5);
-
-            switch (Random.Int(8)) {
-                case 0:
-                    Item pick = new ScrollOfIdentify();
-                    yell(Messages.get(this, "find", pick.name()));
-                    Dungeon.level.drop(pick, this.pos).sprite.drop();
-                    break;
-                case 1:
-                    Item a = new PotionOfHealing();
-                    yell(Messages.get(this, "find", a.name()));
-                    Dungeon.level.drop(a, this.pos).sprite.drop();
-                    break;
-                case 2:
-                    Item b = new ScrollOfTransmutation();
-                    yell(Messages.get(this, "find", b.name()));
-                    Dungeon.level.drop(b, this.pos).sprite.drop();
-                    break;
-                case 3:
-                    Item c = new ScrollOfMetamorphosis();
-                    yell(Messages.get(this, "find", c.name()));
-                    Dungeon.level.drop(c, this.pos).sprite.drop();
-                    break;
-                case 4:
-                    Item d = new ScrollOfRemoveCurse();
-                    yell(Messages.get(this, "find", d.name()));
-                    Dungeon.level.drop(d, this.pos).sprite.drop();
-                    break;
-                case 5:
-                    Item e = new Blandfruit();
-                    yell(Messages.get(this, "find", e.name()));
-                    Dungeon.level.drop(e, this.pos).sprite.drop();
-                    break;
-                case 6:
-                    Item f = new PotionOfExperience();
-                    yell(Messages.get(this, "find", f.name()));
-                    Dungeon.level.drop(f, this.pos).sprite.drop();
-                    break;
-                case 7:
-                    Item h = new Newro();
-                    yell(Messages.get(this, "find", h.name()));
-                    Dungeon.level.drop(h, this.pos).sprite.drop();
-                    break;
-                case 8:
-                    Item g = new HealingDart();
-                    yell(Messages.get(this, "find", g.name()));
-                    Dungeon.level.drop(g, this.pos).sprite.drop();
-                    break;
-            }
-        }
-
         return damage;
     }
 
@@ -232,25 +180,6 @@ public class Tendency extends DirectableAlly {
         //partially simulates how the hero switches to idle animation
         if ((pos == target || oldPos == pos) && sprite.looping()){
             sprite.idle();
-        }
-
-        if(Statistics.duwang2 == 1) {
-            ArrayList<Integer> positions = new ArrayList<>();
-            for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-                int p = this.pos + PathFinder.NEIGHBOURS8[i];
-                positions.add(p);
-            }
-            for (int i : positions) {
-                CellEmitter.get(i).burst(BloodParticle.FACTORY, 9 );
-                Char ch = Actor.findChar(i);
-
-                if (ch != null && ch.isAlive()) {
-                    Buff.affect(ch, Vitam.class, 4f);
-                }
-            }
-            Camera.main.shake(3, 0.7f);
-            Sample.INSTANCE.play(Assets.Sounds.RAY);
-            Statistics.duwang2 = 0;
         }
 
         Dungeon.level.updateFieldOfView( this, fieldOfView );
