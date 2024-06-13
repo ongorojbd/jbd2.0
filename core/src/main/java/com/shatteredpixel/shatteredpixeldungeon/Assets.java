@@ -305,9 +305,6 @@ public class Assets {
 
         public static final String B1 = "sounds/b1.mp3";
         public static final String B2 = "sounds/b2.mp3";
-        public static final String ORA2 = "sounds/dora2.mp3";
-        public static final String ORA3 = "sounds/dora3.mp3";
-
         public static final String DIO1 = "sounds/dio1.mp3";
         public static final String DIO2 = "sounds/dio2.mp3";
         public static final String DIO3 = "sounds/dio3.mp3";
@@ -350,15 +347,12 @@ public class Assets {
         public static final String JONATHAN3 = "sounds/jonathan3.mp3";
         public static final String JONNY = "sounds/jonny.mp3";
         public static final String JONNY2 = "sounds/jonny2.mp3";
-
         public static final String JONNY3 = "sounds/jonny3.mp3";
-
         public static final String SO1 = "sounds/so1.mp3";
         public static final String SO2 = "sounds/so2.mp3";
         public static final String EVO1 = "sounds/evo1.mp3";
         public static final String EVO2 = "sounds/evo2.mp3";
         public static final String EVO3 = "sounds/evo3.mp3";
-
         public static final String JOSEPH0 = "sounds/joseph0.mp3";
         public static final String JOSEPH1 = "sounds/joseph1.mp3";
         public static final String JOSEPH2 = "sounds/joseph2.mp3";
@@ -368,19 +362,36 @@ public class Assets {
         public static final String JOSEPH6 = "sounds/joseph6.mp3";
         public static final String JOSEPH7 = "sounds/joseph7.mp3";
         public static final String JOSEPH8 = "sounds/joseph8.mp3";
+        public static final String CE1 = "sounds/ce1.mp3";
+        public static final String CE2 = "sounds/ce2.mp3";
+        public static final String CE3 = "sounds/ce3.mp3";
+        public static final String CE4 = "sounds/ce4.mp3";
+        public static final String CE5 = "sounds/ce5.mp3";
+        public static final String CE6 = "sounds/ce6.mp3";
         public static final String JOSUKE0 = "sounds/josuke0.mp3";
         public static final String JOSUKE1 = "sounds/josuke1.mp3";
         public static final String JOSUKE2 = "sounds/josuke2.mp3";
         public static final String JOSUKE3 = "sounds/josuke3.mp3";
         public static final String JOSUKE4 = "sounds/josuke4.mp3";
         public static final String JOSUKE5 = "sounds/josuke5.mp3";
+        public static final String KIRA1 = "sounds/kira1.mp3";
+        public static final String KIRA2 = "sounds/kira2.mp3";
+        public static final String KIRA3 = "sounds/kira3.mp3";
+        public static final String KIRA4 = "sounds/kira4.mp3";
+        public static final String KIRA5 = "sounds/kira5.mp3";
+        public static final String KIRA6 = "sounds/kira6.mp3";
         public static final String GIORNO1 = "sounds/giorno1.mp3";
         public static final String GIORNO2 = "sounds/giorno2.mp3";
         public static final String GIORNO3 = "sounds/giorno3.mp3";
         public static final String GIORNO4 = "sounds/giorno4.mp3";
         public static final String GIORNO5 = "sounds/giorno5.mp3";
         public static final String GIORNO6 = "sounds/giorno6.mp3";
-
+        public static final String MISTA1 = "sounds/mista1.mp3";
+        public static final String MISTA2 = "sounds/mista2.mp3";
+        public static final String MISTA3 = "sounds/mista3.mp3";
+        public static final String MISTA4 = "sounds/mista4.mp3";
+        public static final String MISTA5 = "sounds/mista5.mp3";
+        public static final String MISTA6 = "sounds/mista6.mp3";
 
         public static final String[] all = new String[]{
                 CLICK, BADGE, GOLD,
@@ -394,11 +405,14 @@ public class Assets {
                 CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
                 TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
                 BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
-                HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, ORA2, ORA3, D4C, NANIDI, D1, D2, DIEGO, DIEGO2,
+                HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2,
                 JONATHAN1, JONATHAN2, JONATHAN3,
                 JOSEPH, JOSEPH0, JOSEPH1, JOSEPH2, JOSEPH3, JOSEPH4, JOSEPH5, JOSEPH6, JOSEPH7, JOSEPH8,
+                CE1, CE2, CE3, CE4, CE5, CE6,
                 JOSUKE0, JOSUKE1, JOSUKE2, JOSUKE3, JOSUKE4, JOSUKE5,
+                KIRA1, KIRA2, KIRA3, KIRA4, KIRA5, KIRA6,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
+                MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA};
     }

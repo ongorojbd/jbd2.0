@@ -157,7 +157,26 @@ public class Sword extends MeleeWeapon {
 	public static void doraclass(){
 
 			if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
-				Sample.INSTANCE.play(Assets.Sounds.ORA2);
+				switch (Random.Int( 6 )) {
+					case 0:
+						Sample.INSTANCE.play( Assets.Sounds.KIRA1);
+						break;
+					case 1:
+						Sample.INSTANCE.play( Assets.Sounds.KIRA2);
+						break;
+					case 2:
+						Sample.INSTANCE.play( Assets.Sounds.KIRA3);
+						break;
+					case 3:
+						Sample.INSTANCE.play( Assets.Sounds.KIRA4);
+						break;
+					case 4:
+						Sample.INSTANCE.play( Assets.Sounds.KIRA5);
+						break;
+					case 5:
+						Sample.INSTANCE.play( Assets.Sounds.KIRA6);
+						break;
+				}
 			} else {
 				switch (Random.Int( 6 )) {
 					case 0:
@@ -185,7 +204,7 @@ public class Sword extends MeleeWeapon {
 	public static void gclass(){
 
 		if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
-			Sample.INSTANCE.play(Assets.Sounds.ORA3);
+
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.GUITAR);
 		}

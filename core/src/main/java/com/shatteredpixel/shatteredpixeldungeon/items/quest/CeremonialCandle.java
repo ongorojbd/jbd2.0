@@ -196,7 +196,7 @@ public class CeremonialCandle extends Item {
 				CellEmitter.get(ritualPos+i).burst(ElmoParticle.FACTORY, 10);
 			}
 			Sample.INSTANCE.play(Assets.Sounds.BURNING);
-			Sample.INSTANCE.play(Assets.Sounds.ORA3);
+			Sample.INSTANCE.play(Assets.Sounds.KIRA5);
 		}
 
 	}

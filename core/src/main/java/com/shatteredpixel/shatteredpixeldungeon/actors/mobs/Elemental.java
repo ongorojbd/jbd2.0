@@ -379,7 +379,7 @@ public abstract class Elemental extends Mob {
 				Sample.INSTANCE.play(Assets.Sounds.BURNING);
 			}
 
-			Sample.INSTANCE.play(Assets.Sounds.ORA2);
+			Sample.INSTANCE.play(Assets.Sounds.KIRA6);
 			Sample.INSTANCE.play(Assets.Sounds.BLAST);
 
 			targetingPos = -1;

@@ -64,6 +64,8 @@ public class v1_X_Changes {
                 "죠린의 전용 장비 DISC로, 특성을 통해 강화되는 다양한 능력을 시전할 수 있습니다."));
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CUDGEL), "스톤 프리의 주먹",
                 "죠린의 전용 1단계 무기로, 높은 정확도가 특징입니다."));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MASTERY), "도감 추가",
+                "도감에서 투척 무기, 씨앗, 명령 DISC, 속성, 상형문자, 적들의 정보를 확인할 수 있도록 추가할 예정입니다."));
     }
 
     public static void add_k_Changes(ArrayList<ChangeInfo> changeInfos) {
@@ -72,16 +74,26 @@ public class v1_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes = new ChangeInfo("", false, null);
+        changes = new ChangeInfo("2.0k-2", false, null);
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.PROVOKED_ANGER), "변경사항",
+                "밸런스 변경이 있습니다.\n" +
+                        "\n" +
+                        "_-_ _크레이지 D 능력 발현 - 고속 펀치_ :\n출혈량 증가, 출혈 면역인 적에게는 일반적인 피해를 주도록 변경\n" +
+                        "_-_ _크레이지 D 능력 발현 - 차지 어택_ :\n피해량 증가\n" +
+                        "_-_ _크레이지 D 능력 발현 - 치유 펀치_ :\n속성 효과 증폭량 증가\n\n" +
+                        "_-_ 더 패션 특성의 피해량이 증가했습니다.\n" +
+                        "_-_ 죠스케의 무기 충전량 최대치 증가 빈도가 4레벨에서 3레벨로 감소되었습니다.\n" +
+                        "_-_ 4부, 6부 만화책이 모두 죠죠 포인트를 소모하도록 변경되었습니다.\n" +
+                        "_-_ 시저 체펠리, 키라 요시카게, 귀도 미스타 스킨에 보이스가 추가되었습니다."));
 
         changes = new ChangeInfo("2.0k-1", false, null);
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), "밸런스 수정",
-                "위험한 물건에 대한 밸런스 수정이 있습니다.\n" +
+        changes.addButton(new ChangeButton(Icons.get(Icons.BUFFS), "밸런스 변경",
+                "위험한 물건에 대한 밸런스 변경이 있습니다.\n" +
                         "\n" +
                         "_- 개구리 가죽_ : 업그레이드 비용 증가\n" +
                         "\n" +

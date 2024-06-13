@@ -1473,8 +1473,7 @@ public class Hero extends Char {
             CursedWand.cursedEffect(null, this, enemy);
         }
 
-        if (hero.belongings.getItem(Jojo4.class) != null && wep instanceof MissileWeapon && Dungeon.gold > 19 && !(wep instanceof SpiritBow.SpiritArrow)) {
-
+        if (hero.belongings.getItem(Jojo4.class) != null && wep instanceof MissileWeapon && Dungeon.energy > 1 && !(wep instanceof SpiritBow.SpiritArrow)) {
 
             new ExplosiveTrap().set(enemy.pos).activate();
 
@@ -1485,14 +1484,14 @@ public class Hero extends Char {
             if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
 
             } else if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
-                Dungeon.gold -= 10;
+                Dungeon.energy -= 1;
             } else {
-                Dungeon.gold -= 20;
+                Dungeon.energy -= 2;
             }
 
         }
 
-        if (hero.belongings.getItem(Jojo5.class) != null && Dungeon.energy > 1) {
+        if (hero.belongings.getItem(Jojo5.class) != null && Dungeon.energy > 1 && !(wep instanceof MissileWeapon)) {
             Plant plant = (Plant) Reflection.newInstance(Random.element(harmfulPlants));
             plant.pos = enemy.pos;
             plant.activate(enemy.isAlive() ? enemy : null);
@@ -1512,18 +1511,17 @@ public class Hero extends Char {
             }
         }
 
-        if (hero.belongings.getItem(Jojo6.class) != null && wep instanceof MeleeWeapon) {
-
+        if (hero.belongings.getItem(Jojo6.class) != null && wep instanceof MeleeWeapon && Dungeon.energy > 0) {
 
             if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
 
             } else if (hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo5.class) != null || hero.belongings.getItem(Jojo4.class) != null && hero.belongings.getItem(Jojo6.class) != null || hero.belongings.getItem(Jojo5.class) != null && hero.belongings.getItem(Jojo6.class) != null) {
                 if (Random.Int(4) == 0) {
-                    Dungeon.hero.damage(1, this);
+                    Dungeon.energy -= 1;
                 }
             } else {
                 if (Random.Int(2) == 0) {
-                    Dungeon.hero.damage(1, this);
+                    Dungeon.energy -= 1;
                 }
             }
         }

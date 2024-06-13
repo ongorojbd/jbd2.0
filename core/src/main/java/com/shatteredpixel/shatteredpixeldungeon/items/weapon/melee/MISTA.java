@@ -117,6 +117,26 @@ public class MISTA extends MeleeWeapon {
 
             GameScene.flash(0x80FFFFFF);
             Camera.main.shake(2, 1.5f);
+            switch (Random.Int(6)) {
+                case 0:
+                    Sample.INSTANCE.play(Assets.Sounds.MISTA1);
+                    break;
+                case 1:
+                    Sample.INSTANCE.play(Assets.Sounds.MISTA2);
+                    break;
+                case 2:
+                    Sample.INSTANCE.play(Assets.Sounds.MISTA3);
+                    break;
+                case 3:
+                    Sample.INSTANCE.play(Assets.Sounds.MISTA4);
+                    break;
+                case 4:
+                    Sample.INSTANCE.play(Assets.Sounds.MISTA5);
+                    break;
+                case 5:
+                    Sample.INSTANCE.play(Assets.Sounds.MISTA6);
+                    break;
+            }
             Sample.INSTANCE.play(Assets.Sounds.SP, 1.1f, 1f);
             attacker.sprite.showStatus(CharSprite.POSITIVE, "[섹스 피스톨즈!]");
         }

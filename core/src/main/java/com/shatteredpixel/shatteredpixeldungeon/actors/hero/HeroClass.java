@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Gmap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Rmap;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
@@ -153,9 +154,9 @@ public enum HeroClass {
 			new RingOfMight().identify().upgrade(999).collect();
 			new RingOfEnergy().identify().upgrade(999).collect();
 			new RingOfAccuracy().identify().upgrade(999).collect();
-			new WondrousResin().identify().upgrade(3).collect();
 			new PlateArmor().identify().upgrade(999).collect();
 			new Neotel().collect();
+			new Jojo5().collect();
 			new TengusMask().collect();
 			new Gmap().collect();
 			new NitoDismantleHammer().collect();

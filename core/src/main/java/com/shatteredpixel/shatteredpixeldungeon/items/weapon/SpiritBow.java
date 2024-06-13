@@ -383,6 +383,28 @@ public class SpiritBow extends Weapon {
 
 			if (SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin5() == 1 && hero.belongings.armor() instanceof HuntressArmor) {
 				Sample.INSTANCE.play( Assets.Sounds.HIT_STAB, 1, Random.Float(0.87f, 1.15f) );
+				if (Random.Int(6) == 0) {
+					switch (Random.Int(6)) {
+						case 0:
+							Sample.INSTANCE.play(Assets.Sounds.MISTA1);
+							break;
+						case 1:
+							Sample.INSTANCE.play(Assets.Sounds.MISTA2);
+							break;
+						case 2:
+							Sample.INSTANCE.play(Assets.Sounds.MISTA3);
+							break;
+						case 3:
+							Sample.INSTANCE.play(Assets.Sounds.MISTA4);
+							break;
+						case 4:
+							Sample.INSTANCE.play(Assets.Sounds.MISTA5);
+							break;
+						case 5:
+							Sample.INSTANCE.play(Assets.Sounds.MISTA6);
+							break;
+					}
+				}
 			} else {
 				Sample.INSTANCE.play(Assets.Sounds.ATK_SPIRITBOW, 1, Random.Float(0.87f, 1.15f));
 
