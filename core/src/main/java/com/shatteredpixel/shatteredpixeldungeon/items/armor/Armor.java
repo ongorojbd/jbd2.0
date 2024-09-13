@@ -21,12 +21,16 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -393,6 +397,23 @@ public class Armor extends EquipableItem {
 		// instead of being part of true level
 		if (curseInfusionBonus) level += 1 + level/6;
 		return level;
+	}
+
+	@Override
+	public int buffedLvl() {
+		int lvl;
+		if (isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this)) {
+			lvl = super.buffedLvl();
+		} else {
+			lvl = level();
+		}
+
+		EnhancedArmor enhancedArmor = hero.buff(EnhancedArmor.class);
+		if (enhancedArmor != null && isEquipped(hero)) {
+			lvl += Statistics.spw3;
+		}
+
+		return lvl;
 	}
 	
 	@Override

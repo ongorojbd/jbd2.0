@@ -21,8 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
@@ -31,13 +36,23 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NewShopKeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -87,10 +102,36 @@ public class Zombie extends Mob {
         return super.drRoll() + Random.NormalIntRange(0, 1);
     }
 
+    public static void spwPrize(int pos){
+        Spw spw = new Spw();
+        Sample.INSTANCE.play(Assets.Sounds.ITEM);
+        if (spw.doPickUp( Dungeon.hero )) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new Spw.WndSpw(spw));
+                }
+            });
+        } else {
+            Dungeon.level.drop( spw.identify(), pos ).sprite.drop( pos );
+        }
+
+        Statistics.duwang = 2;
+    }
+
     @Override
     public void die( Object cause ) {
 
         super.die( cause );
+
+        if(Dungeon.level instanceof TendencyLevel) {
+            Statistics.duwang3++;
+
+            if (Statistics.duwang3 == Statistics.duwang2) {
+                spwPrize(pos);
+            }
+            if (Random.Int( 10 ) == 0) Dungeon.level.drop( new Gold().quantity(10), pos ).sprite.drop();
+        }
 
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );

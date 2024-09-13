@@ -4,7 +4,10 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpwSoldier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscD;
@@ -33,16 +36,15 @@ public class ThirdBomb extends Bomb {
 
         int targets = 0;
         for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-            if (Dungeon.level.heroFOV[mob.pos]) {
+            if (Dungeon.level.heroFOV[mob.pos] && !(mob instanceof Tendency) && !(mob instanceof GSoldier) && !(mob instanceof SpwSoldier)) {
                 targets ++;
                 mob.damage(Math.round(mob.HT/2f + mob.HP/2f), this);
-
             }
         }
+
         PotionOfHealing.cure(hero);
         PotionOfHealing.heal(hero);
         identify();
-
 
         if (!Dungeon.interfloorTeleportAllowed()) {
 

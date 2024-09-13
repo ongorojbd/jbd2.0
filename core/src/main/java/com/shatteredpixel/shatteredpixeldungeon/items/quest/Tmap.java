@@ -83,11 +83,7 @@ public class Tmap extends Item {
                                     }
                                 }
                             } else if (index == 3) {
-                                for (Char c : Actor.chars()) {
-                                    if (c instanceof Tendency) {
-                                        ((Tendency) c).a3();
-                                    }
-                                }
+
                             } else if (index == 4) {
                                 Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                                 GLog.p(Messages.get(Mdisc.class, "12"));

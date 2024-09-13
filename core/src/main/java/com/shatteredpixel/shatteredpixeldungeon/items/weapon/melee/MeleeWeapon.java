@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -36,11 +39,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -54,7 +62,10 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
 
@@ -325,7 +336,7 @@ public class MeleeWeapon extends Weapon {
 		}
 		return damage;
 	}
-	
+
 	@Override
 	public String info() {
 
@@ -382,10 +393,10 @@ public class MeleeWeapon extends Weapon {
 		if (Dungeon.hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
 			info += "\n\n" + abilityInfo();
 		}
-		
+
 		return info;
 	}
-	
+
 	public String statsInfo(){
 		return Messages.get(this, "stats_desc");
 	}
@@ -569,7 +580,9 @@ public class MeleeWeapon extends Weapon {
 		public void doAction() {
 			if (Dungeon.hero.subClass != HeroSubClass.CHAMPION){
 				return;
-			}
+			} else {
+					GameScene.selectCell(dasher);
+				}
 
 			if (Dungeon.hero.belongings.secondWep == null && Dungeon.hero.belongings.backpack.items.size() >= Dungeon.hero.belongings.backpack.capacity()){
 				GLog.w(Messages.get(MeleeWeapon.class, "swap_full"));
@@ -587,6 +600,68 @@ public class MeleeWeapon extends Weapon {
 			Item.updateQuickslot();
 			AttackIndicator.updateState();
 		}
+
+		public static CellSelector.Listener dasher = new CellSelector.Listener() {
+			@Override
+			public void onSelect( Integer target ) {
+				if (target == null || target == -1 || (!Dungeon.level.visited[target] && !Dungeon.level.mapped[target])){
+					return;
+				}
+
+				//chains cannot be used to go where it is impossible to walk to
+				PathFinder.buildDistanceMap(target, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+				if (PathFinder.distance[hero.pos] == Integer.MAX_VALUE){
+					GLog.w( Messages.get(MeleeWeapon.class, "dash_bad_position") );
+					return;
+				}
+
+				if (hero.rooted){
+					GLog.w( Messages.get(MeleeWeapon.class, "rooted") );
+					return;
+				}
+
+				int range = 2;
+
+				if (Dungeon.level.distance(hero.pos, target) > range){
+					GLog.w(Messages.get(MeleeWeapon.class, "dash_bad_position"));
+					return;
+				}
+
+				Ballistica dash = new Ballistica(hero.pos, target, Ballistica.PROJECTILE);
+
+				if (!dash.collisionPos.equals(target)
+						|| Actor.findChar(target) != null
+						|| (Dungeon.level.solid[target] && !Dungeon.level.passable[target])
+						|| Dungeon.level.map[target] == Terrain.CHASM){
+					GLog.w(Messages.get(MeleeWeapon.class, "dash_bad_position"));
+					return;
+				}
+
+				hero.busy();
+				Sample.INSTANCE.play(Assets.Sounds.MISS);
+				hero.sprite.emitter().start(Speck.factory(Speck.JET), 0.01f, Math.round(4 + 2*Dungeon.level.trueDistance(hero.pos, target)));
+				hero.sprite.jump(hero.pos, target, 0, 0.1f, new Callback() {
+					@Override
+					public void call() {
+						if (Dungeon.level.map[hero.pos] == Terrain.OPEN_DOOR) {
+							Door.leave( hero.pos );
+						}
+						hero.pos = target;
+						Dungeon.level.occupyCell(hero);
+						hero.next();
+					}
+				});
+
+				float chargeToUse = 1f;
+
+				Item.updateQuickslot();
+				AttackIndicator.updateState();
+			}
+			@Override
+			public String prompt() {
+				return Messages.get(SpiritBow.class, "prompt");
+			}
+		};
 	}
 
 }

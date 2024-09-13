@@ -21,57 +21,52 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShovelDigCoolDown6;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vitam;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Newro;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HealingDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class Tendency extends DirectableAlly {
 
     {
         spriteClass = WillcSprite.class;
 
-        HP = HT = 100;
-        defenseSkill = 5;
+        HP = HT = 30;
+        defenseSkill = (Dungeon.hero.lvl + 4);
         viewDistance = 7;
         alignment = Alignment.ALLY;
         intelligentAlly = true;
@@ -80,63 +75,46 @@ public class Tendency extends DirectableAlly {
 
     private int sph = 1;
 
+    public void updateTendencyHT(boolean boostHP) {
+        int curHT = HT;
+
+        HT = 30 + 5 * (hero.lvl - 1);
+
+        if (boostHP) {
+            HP += Math.max(HT - curHT, 0);
+        }
+
+        HP = Math.min(HP, HT);
+    }
+
     @Override
     public String description() {
         String desc = super.description();
 
-        desc += "\n" + Messages.get(this, "p1", this.HP,this.HT);
+        desc += "\n" + Messages.get(this, "p1", this.HP, this.HT);
 
         return desc;
     }
 
     @Override
     public void damage(int dmg, Object src) {
-        if (dmg >= 50){
+        if (dmg >= 50) {
             dmg = 50;
         }
 
         super.damage(dmg, src);
-
-        if (HP < 86 && sph == 1) {
-            Sample.INSTANCE.play(Assets.Sounds.SPW2);
-            yell(Messages.get(this, "h1"));
-            GLog.h(Messages.get(SpeedWagon.class, "t1", this.HP,this.HT));
-            sph++;
-        }
-        else if (HP < 66 && sph == 2) {
-            Sample.INSTANCE.play(Assets.Sounds.SPW2);
-            yell(Messages.get(this, "h2", this.HP,this.HT));
-            GLog.h(Messages.get(SpeedWagon.class, "t2", this.HP,this.HT));
-            sph++;
-        }
-        else if (HP < 46 && sph == 3) {
-            Sample.INSTANCE.play(Assets.Sounds.SPW2);
-            yell(Messages.get(this, "h3", this.HP,this.HT));
-            GLog.h(Messages.get(SpeedWagon.class, "t3", this.HP,this.HT));
-            sph++;
-        }
-        else if (HP < 26 && sph == 4) {
-            Sample.INSTANCE.play(Assets.Sounds.SPW2);
-            yell(Messages.get(this, "h4", this.HP,this.HT));
-            GLog.h(Messages.get(SpeedWagon.class, "t4", this.HP,this.HT));
-            sph++;
-        }
-        else if (HP < 11 && sph == 5) {
-            Sample.INSTANCE.play(Assets.Sounds.SPW2);
-            yell(Messages.get(this, "h5", this.HP,this.HT));
-            GLog.h(Messages.get(SpeedWagon.class, "t5", this.HP,this.HT));
-            sph++;
-        }
-
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 2);
+        return super.drRoll() + hero.drRoll();
     }
 
     @Override
     public int attackProc(Char enemy, int damage) {
+        damage = super.attackProc(enemy, damage);
+
+        if (this.buff(Light.class) != null) Buff.affect(enemy, Paralysis.class, 1f);
 
         return damage;
     }
@@ -144,33 +122,44 @@ public class Tendency extends DirectableAlly {
 
     @Override
     public void defendPos(int cell) {
-        Sample.INSTANCE.play(Assets.Sounds.SPW4);
-        yell(Messages.get(this, "g" + Random.IntRange(1, 5)));
+        Sample.INSTANCE.play(Assets.Sounds.CE3);
+        yell(Messages.get(this, "direct_defend"));
+
+        if (Statistics.spw9 > 2) {
+            if (Dungeon.level.passable[cell] && !(Dungeon.level.pit[cell])
+                    && Dungeon.level.openSpace[cell] && Actor.findChar(cell) == null
+                    && Dungeon.hero.buff(ShovelDigCoolDown6.class) == null) {
+                ScrollOfTeleportation.appear(this, cell);
+                super.defendPos(cell);
+                Buff.affect(Dungeon.hero, ShovelDigCoolDown6.class, 20f);
+            }
+        }
+
         super.defendPos(cell);
     }
 
     @Override
     public void followHero() {
-        Sample.INSTANCE.play(Assets.Sounds.SPW5);
-        yell(Messages.get(this, "f" + Random.IntRange(1, 5)));
+        Sample.INSTANCE.play(Assets.Sounds.TENDENCY2);
+        yell(Messages.get(this, "direct_attack"));
         super.followHero();
     }
 
     @Override
     public void targetChar(Char ch) {
-        Sample.INSTANCE.play(Assets.Sounds.SPW3);
-        yell(Messages.get(this, "d" + Random.IntRange(1, 5)));
+        Sample.INSTANCE.play(Assets.Sounds.CE4);
+        yell(Messages.get(this, "direct_follow"));
         super.targetChar(ch);
     }
 
     @Override
-    public int attackSkill( Char target ) {
-        return 11;
+    public int attackSkill(Char target) {
+        return Dungeon.hero.lvl + 9;
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 1, 3 );
+        return Random.NormalIntRange(1 + hero.damageRoll() / 2, 3 + hero.damageRoll() / 2);
     }
 
     @Override
@@ -178,25 +167,25 @@ public class Tendency extends DirectableAlly {
         int oldPos = pos;
         boolean result = super.act();
         //partially simulates how the hero switches to idle animation
-        if ((pos == target || oldPos == pos) && sprite.looping()){
+        if ((pos == target || oldPos == pos) && sprite.looping()) {
             sprite.idle();
         }
 
-        Dungeon.level.updateFieldOfView( this, fieldOfView );
-        GameScene.updateFog(pos, viewDistance+(int)Math.ceil(speed()));
+        Dungeon.level.updateFieldOfView(this, fieldOfView);
+        GameScene.updateFog(pos, viewDistance + (int) Math.ceil(speed()));
 
         return result;
     }
 
-    public void sayHeroKilled(){
-        yell( Messages.get( this, "z"));
-        Sample.INSTANCE.play(Assets.Sounds.SPW5);
+    public void sayHeroKilled() {
+        yell(Messages.get(this, "z"));
+        Sample.INSTANCE.play(Assets.Sounds.TENDENCY2);
         GLog.newLine();
     }
 
     public void a2() {
         for (int i : PathFinder.NEIGHBOURS8) {
-            int cell = this.pos+i;
+            int cell = this.pos + i;
             Char ch = Actor.findChar(cell);
             if (ch != null && ch.alignment == Char.Alignment.ENEMY) {
                 //trace a ballistica to our target (which will also extend past them
@@ -219,46 +208,115 @@ public class Tendency extends DirectableAlly {
     public void a3() {
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
             CellEmitter.get(this.pos + 1).burst(EnergyParticle.FACTORY, 5);
-            if (mob.pos == this.pos + 1){
+            if (mob.pos == this.pos + 1) {
                 mob.damage(5 * Dungeon.depth, this);
-                Buff.affect( mob, SoulMark.class, 5f );
+                Buff.affect(mob, SoulMark.class, 5f);
             }
         }
         for (Mob mob2 : Dungeon.level.mobs.toArray(new Mob[0])) {
             CellEmitter.get(this.pos - 1).burst(EnergyParticle.FACTORY, 5);
-            if (mob2.pos == this.pos - 1){
+            if (mob2.pos == this.pos - 1) {
                 mob2.damage(5 * Dungeon.depth, this);
-                Buff.affect( mob2, SoulMark.class, 5f );
+                Buff.affect(mob2, SoulMark.class, 5f);
             }
         }
         for (Mob mob3 : Dungeon.level.mobs.toArray(new Mob[0])) {
             CellEmitter.get(this.pos + 2).burst(EnergyParticle.FACTORY, 5);
-            if (mob3.pos == this.pos + 2){
+            if (mob3.pos == this.pos + 2) {
                 mob3.damage(5 * Dungeon.depth, this);
-                Buff.affect( mob3, SoulMark.class, 5f );
+                Buff.affect(mob3, SoulMark.class, 5f);
             }
         }
         for (Mob mob4 : Dungeon.level.mobs.toArray(new Mob[0])) {
             CellEmitter.get(this.pos - 2).burst(EnergyParticle.FACTORY, 5);
-            if (mob4.pos == this.pos - 2){
+            if (mob4.pos == this.pos - 2) {
                 mob4.damage(5 * Dungeon.depth, this);
-                Buff.affect( mob4, SoulMark.class, 5f );
+                Buff.affect(mob4, SoulMark.class, 5f);
             }
         }
     }
 
-    @Override
-    public void die( Object cause ) {
-        super.die( cause );
-        Sample.INSTANCE.play(Assets.Sounds.SPW5);
-        Dungeon.hero.damage(9999, this);
+    public static void summon() {
+        Tendency jojo = new Tendency();
+        jojo.state = jojo.WANDERING;
+        jojo.pos = Dungeon.hero.pos;
+        GameScene.add(jojo);
+        jojo.beckon(Dungeon.hero.pos);
+    }
 
-        if (!Dungeon.hero.isAlive()) {
-            Dungeon.fail(getClass());
-            GLog.n(Messages.get(Char.class, "kill", name()));
+    public void heal(double recoveryFactor) {
+        HP = (int) Math.min(this.HP + this.HT * recoveryFactor, this.HT);
+        sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
+    }
+
+    public boolean a0() {
+        int oldPos = pos;
+        int newPos = hero.pos;
+
+        PathFinder.buildDistanceMap(hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+        if (PathFinder.distance[pos] == Integer.MAX_VALUE) {
+            return true;
         }
+        yell(Messages.get(this, "a0"));
+        Sample.INSTANCE.play(Assets.Sounds.TENDENCY2);
 
-        yell( Messages.get(this, "death") );
-        GLog.h(Messages.get(SpeedWagon.class, "death2"));
+        pos = newPos;
+        hero.pos = oldPos;
+        ScrollOfTeleportation.appear(this, newPos);
+        ScrollOfTeleportation.appear(hero, oldPos);
+
+        Buff.affect(hero, AnkhInvulnerability.class, 1f);
+        Buff.affect(this, AnkhInvulnerability.class, 1f);
+
+        Dungeon.observe();
+        GameScene.updateFog();
+
+        return true;
+    }
+
+    public boolean barrier() {
+        yell(Messages.get(this, "a0"));
+        Sample.INSTANCE.play(Assets.Sounds.TENDENCY1);
+        new Flare(6, 32).color(0x99FFFF, true).show(hero.sprite, 2f);
+        new Flare(6, 32).color(0x99FFFF, true).show(this.sprite, 2f);
+        Buff.affect(this, Barrier.class).setShield(this.HP / 4);
+        Buff.affect(hero, Barrier.class).setShield(hero.HP / 4);
+        Buff.affect(hero, Bless.class, 15f);
+        Buff.affect(hero, ShovelDigCoolDown6.class, 40f);
+        return true;
+    }
+
+    public boolean cat() {
+        yell(Messages.get(this, "a0"));
+        Buff.affect(this, AnkhInvulnerability.class, 5f);
+        Buff.affect(this, StoneOfAggression.Aggression.class, 5f);
+        Buff.affect(hero, ShovelDigCoolDown6.class, 40f);
+        return true;
+    }
+
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        return super.isInvulnerable(effect) || buff(AnkhInvulnerability.class) != null;
+    }
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+    }
+
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+
+        Statistics.cizah = 1;
+
+        Sample.INSTANCE.play(Assets.Sounds.TENDENCY3);
+
+        yell(Messages.get(this, "death"));
     }
 }

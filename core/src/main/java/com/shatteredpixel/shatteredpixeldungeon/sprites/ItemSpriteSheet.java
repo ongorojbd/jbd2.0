@@ -584,6 +584,8 @@ public class ItemSpriteSheet {
     public static final int MIMIC_TOOTH = TRINKETS + 8;
     public static final int WONDROUS_RESIN = TRINKETS + 9;
     public static final int EYE_OF_NEWT = TRINKETS + 10;
+    public static final int TBOMB = TRINKETS + 17;
+    public static final int TBOMB2 = TRINKETS + 18;
 
     static {
         assignItemRect(RAT_SKULL, 13, 16);
@@ -597,6 +599,8 @@ public class ItemSpriteSheet {
         assignItemRect(MIMIC_TOOTH, 14, 14);
         assignItemRect(WONDROUS_RESIN, 16, 16);
         assignItemRect(EYE_OF_NEWT, 16, 16);
+        assignItemRect(TBOMB, 12, 11);
+        assignItemRect(TBOMB2, 15, 14);
     }
 
     private static final int SCROLLS = xy(1, 19);  //16 slots

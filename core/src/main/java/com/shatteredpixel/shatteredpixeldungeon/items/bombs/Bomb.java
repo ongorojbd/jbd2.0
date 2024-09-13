@@ -27,9 +27,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -120,9 +124,9 @@ public class Bomb extends Item {
 	@Override
 	protected void onThrow( int cell ) {
 		if (!Dungeon.level.pit[ cell ] && lightingFuse) {
-			if (Dungeon.hero.buff(Kawasiribuff.class) != null){
+			if (Dungeon.hero.buff(Kawasiribuff.class) != null || Statistics.spw6 > 0 && this instanceof Tbomb){
 				Actor.addDelayed(fuse = createFuse().ignite(this), 0);
-			}else{
+			}  else {
 				Actor.addDelayed(fuse = createFuse().ignite(this), 2);
 			}
 		}
@@ -195,6 +199,12 @@ public class Bomb extends Item {
 
 				int dmg = Char.combatRoll(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
 
+				if (this instanceof Tbomb){
+					dmg = Math.round(Char.combatRoll(6 + Statistics.wave / 5, 12 + Statistics.wave / 5));
+				}
+
+				if (Statistics.spw6 > 2) dmg *= 1.2f;
+
 				if (Dungeon.hero.buff(Kawasiribuff.class) != null){
 					dmg = dmg * 3/2;
 				}
@@ -208,9 +218,15 @@ public class Bomb extends Item {
 					dmg *= 0;
 				}
 
+				if (ch instanceof Hero && Statistics.spw6 >= 4){
+					dmg *= 0;
+				}
+
 				dmg -= ch.drRoll();
 
-				if (dmg > 0) {
+				if (Statistics.spw6 >= 2 && ch != hero) Buff.affect(ch, Hex.class, 3f);
+
+				if (dmg > 0 && Statistics.spw6 < 5) {
 					ch.damage(dmg, this);
 				}
 				

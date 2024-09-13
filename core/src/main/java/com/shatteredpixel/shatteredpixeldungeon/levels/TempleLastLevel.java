@@ -32,6 +32,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsolg;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcopter;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Btank;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombied;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
@@ -275,21 +278,21 @@ public class TempleLastLevel extends Level {
         return cell;
     }
 
-    public static class TempleBrute extends Bcopter {
+    public static class TempleBrute extends Zombie {
         {
             properties.add(Property.BOSS_MINION);
             state = HUNTING;
         }
     }
 
-    public static class TemplePurpleShaman extends Bcomsoldier {
+    public static class TemplePurpleShaman extends Zombied {
         {
             properties.add(Property.BOSS_MINION);
             state = HUNTING;
         }
     }
 
-    public static class TempleGuard extends Btank {
+    public static class TempleGuard extends Zombied {
         {
             properties.add(Property.BOSS_MINION);
             state = HUNTING;

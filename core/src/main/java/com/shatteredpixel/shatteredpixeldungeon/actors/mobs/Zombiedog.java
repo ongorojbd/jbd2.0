@@ -21,14 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombiedogSprite;
@@ -47,8 +53,11 @@ public class Zombiedog extends Mob {
 
         maxLvl = 5;
 
-        loot = Generator.Category.SEED;
-        lootChance = 0.25f;
+        if (!(Dungeon.level instanceof TendencyLevel)) {
+            loot = Generator.Category.SEED;
+            lootChance = 0.25f;
+        }
+
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);
     }
@@ -83,6 +92,14 @@ public class Zombiedog extends Mob {
     public void die( Object cause ) {
 
         super.die( cause );
+
+        if(Dungeon.level instanceof TendencyLevel) {
+            Statistics.duwang3++;
+
+            if (Statistics.duwang3 == Statistics.duwang2) {
+                spwPrize(pos);
+            }
+        }
 
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );

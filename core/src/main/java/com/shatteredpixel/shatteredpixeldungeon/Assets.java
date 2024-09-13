@@ -173,6 +173,8 @@ public class Assets {
         public static final String YUUKI = "music/yuuki.ogg";
 
         public static final String JONATHAN = "music/jonathan.ogg";
+        public static final String TENDENCY1 = "music/tendency1.ogg";
+        public static final String TENDENCY2 = "music/tendency2.ogg";
     }
 
     public static class Sounds {
@@ -273,7 +275,6 @@ public class Assets {
         public static final String PLATINUM = "sounds/platinum.mp3";
         public static final String ORA = "sounds/ora.mp3";
         public static final String DORA = "sounds/dora.mp3";
-        public static final String D4C = "sounds/d4c.mp3";
         public static final String NANIDI = "sounds/nanidi.mp3";
         public static final String D1 = "sounds/d1.mp3";
         public static final String D2 = "sounds/d2.mp3";
@@ -368,6 +369,9 @@ public class Assets {
         public static final String CE4 = "sounds/ce4.mp3";
         public static final String CE5 = "sounds/ce5.mp3";
         public static final String CE6 = "sounds/ce6.mp3";
+        public static final String TENDENCY1 = "sounds/tendency1.mp3";
+        public static final String TENDENCY2 = "sounds/tendency2.mp3";
+        public static final String TENDENCY3 = "sounds/tendency3.mp3";
         public static final String JOSUKE0 = "sounds/josuke0.mp3";
         public static final String JOSUKE1 = "sounds/josuke1.mp3";
         public static final String JOSUKE2 = "sounds/josuke2.mp3";
@@ -405,10 +409,10 @@ public class Assets {
                 CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
                 TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
                 BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
-                HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, D4C, NANIDI, D1, D2, DIEGO, DIEGO2,
+                HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, NANIDI, D1, D2, DIEGO, DIEGO2,
                 JONATHAN1, JONATHAN2, JONATHAN3,
                 JOSEPH, JOSEPH0, JOSEPH1, JOSEPH2, JOSEPH3, JOSEPH4, JOSEPH5, JOSEPH6, JOSEPH7, JOSEPH8,
-                CE1, CE2, CE3, CE4, CE5, CE6,
+                CE1, CE2, CE3, CE4, CE5, CE6, TENDENCY1, TENDENCY2, TENDENCY3,
                 JOSUKE0, JOSUKE1, JOSUKE2, JOSUKE3, JOSUKE4, JOSUKE5,
                 KIRA1, KIRA2, KIRA3, KIRA4, KIRA5, KIRA6,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
@@ -522,6 +526,7 @@ public class Assets {
         public static final String SOLDIER = "sprites/soldier.png";
         public static final String RESEARCHER = "sprites/researcher.png";
         public static final String TANK = "sprites/tank.png";
+        public static final String TANK2 = "sprites/tank2.png";
         public static final String SUPRESSION = "sprites/supression.png";
         public static final String MEDIC = "sprites/medic.png";
         public static final String REBEL = "sprites/rebel.png";
@@ -588,13 +593,25 @@ public class Assets {
         public static final String ZOMBIEB = "sprites/zombieb.png";
 
         public static final String SPEEDWAGON = "sprites/speedwagon.png";
+        public static final String SPEEDWAGON2 = "sprites/speedwagon2.png";
         public static final String DIOBRANDO = "sprites/diobrando.png";
-
         public static final String DIOBRANDO2 = "sprites/diobrando2.png";
 
         public static final String INA = "sprites/ina.png";
-
         public static final String GREEN_CAT_HEAD	= "sprites/green_cat_head.png";
         public static final String ROLLER	= "sprites/roller.png";
+        public static final String ZOMBIE2 = "sprites/zombie2.png";
+        public static final String TBOSS = "sprites/tboss.png";
+        public static final String SPWSOLDIER = "sprites/spwsoldier.png";
+        public static final String GSOLDIER = "sprites/gsoldier.png";
+        public static final String ZOMBIEBRUTE = "sprites/zombiebrute.png";
+        public static final String ZOMBIEBRUTE2 = "sprites/zombiebrute2.png";
+        public static final String ZOMBIEBRUTE3 = "sprites/zombiebrute3.png";
+        public static final String STURO = "sprites/sturo.png";
+        public static final String ZOMBIEG = "sprites/zombieg.png";
+
+        public static final String ZOMBIE3 = "sprites/zombie3.png";
+        public static final String VAMPIRE = "sprites/vampire.png";
+        public static final String LISA = "sprites/lisa.png";
     }
 }

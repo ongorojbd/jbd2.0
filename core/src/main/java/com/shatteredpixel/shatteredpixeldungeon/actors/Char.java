@@ -94,6 +94,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpwSoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
@@ -910,7 +911,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(Necromancer.SummoningBlockDamage.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Rebel.SummoningBlockDamage2.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Rebel.SummoningBlockDamage3.class);
-		NO_ARMOR_PHYSICAL_SOURCES.add(Bcopter.DarkBolt.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(SpwSoldier.DarkBolt.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Diobrando.Blast.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Diobrando2.DarkBolt.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Diobrando2.Blast.class);

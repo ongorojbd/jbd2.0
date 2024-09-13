@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.JotaroKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -92,6 +93,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 	static {
 		ANGULAR_SPEEDS.put(Dart.class,          0);
 		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
+		ANGULAR_SPEEDS.put(JotaroKnife.class, 0);
 		ANGULAR_SPEEDS.put(ThrowingSpike.class, 0);
 		ANGULAR_SPEEDS.put(FishingSpear.class,  0);
 		ANGULAR_SPEEDS.put(ThrowingSpear.class, 0);
@@ -172,6 +174,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 				|| item instanceof ZombiezSprite.ZombieShot
 				|| item instanceof TenguSprite.TenguShuriken){
 			speed *= 1.5f;
+		} else if (item instanceof GSoldierSprite.WillcShot || item instanceof SturoSprite.WillcShot){
+			speed *= 15f;
 		}
 		
 		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
