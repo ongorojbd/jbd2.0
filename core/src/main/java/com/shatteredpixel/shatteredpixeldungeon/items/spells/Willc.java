@@ -93,12 +93,13 @@ public class Willc extends Spell {
                 }
             }
 
-
             Willcmob elemental = Reflection.newInstance(summonClass);
             GameScene.add( elemental );
             elemental.HP = elemental.HT;
             ScrollOfTeleportation.appear( elemental, Random.element(spawnPoints) );
             curUser.spendAndNext(Actor.TICK);
+
+            Sample.INSTANCE.play(Assets.Sounds.CE3);
 
             detach(Dungeon.hero.belongings.backpack);
 

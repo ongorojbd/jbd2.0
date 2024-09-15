@@ -89,7 +89,7 @@ public class RunicBlade extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (hero.belongings.getItem(RingOfElements.class) != null) {
+		if (Dungeon.hero != null && hero.belongings.getItem(RingOfElements.class) != null) {
 			if (hero.belongings.getItem(RingOfElements.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( RunicBlade.class, "setbouns");}
 
@@ -153,6 +153,11 @@ public class RunicBlade extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_ability_desc", 300);
 		}
+	}
+
+	@Override
+	public String upgradeAbilityStat(int level) {
+		return "+" + (300+50*level) + "%";
 	}
 
 

@@ -124,11 +124,11 @@ public class ThrowingSpike extends MissileWeapon {
                 left--;
                 if (left <= 0) {
 
-                    if (hero.heroClass != HeroClass.DUELIST) {
+                    if (Dungeon.hero != null && hero.heroClass == HeroClass.DUELIST) {
                         if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
 
                         } else {
-                            if (Random.Int(4) == 0) {
+                            if (Random.Int(5) == 0) {
                                 Sample.INSTANCE.play(Assets.Sounds.JOSUKE0);
                             }
                         }

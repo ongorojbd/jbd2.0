@@ -21,19 +21,26 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ChallengeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
+
+import java.util.ArrayList;
 
 public class Wraith extends Mob {
 
@@ -72,7 +79,7 @@ public class Wraith extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( 1 + level/2, 2 + level );
+		return Random.NormalIntRange( 1 + level/2, 2 + level );
 	}
 	
 	@Override
@@ -103,7 +110,7 @@ public class Wraith extends Mob {
 	
 	public static void spawnAround( int pos, Class<? extends Wraith> wraithClass ) {
 		for (int n : PathFinder.NEIGHBOURS4) {
-			spawnAt( pos + n, wraithClass );
+			spawnAt( pos + n, wraithClass, false );
 		}
 	}
 
@@ -112,7 +119,30 @@ public class Wraith extends Mob {
 	}
 
 	public static Wraith spawnAt( int pos, Class<? extends Wraith> wraithClass ) {
-		if ((!Dungeon.level.solid[pos] || Dungeon.level.passable[pos]) && Actor.findChar( pos ) == null) {
+		return spawnAt( pos, wraithClass, true );
+	}
+
+	private static Wraith spawnAt( int pos, Class<? extends Wraith> wraithClass, boolean allowAdjacent ) {
+
+		//if the position itself is blocked, try to place in an adjacent cell if allowed
+		if (Dungeon.level.solid[pos] || Actor.findChar( pos ) != null){
+			ArrayList<Integer> candidates = new ArrayList<>();
+
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (!Dungeon.level.solid[pos+i] && Actor.findChar( pos+i ) == null){
+					candidates.add(pos+i);
+				}
+			}
+
+			if (allowAdjacent && !candidates.isEmpty()){
+				pos = Random.element(candidates);
+			} else {
+				pos = -1;
+			}
+
+		}
+
+		if (pos != -1) {
 
 			Wraith w;
 			//if no wraith type is specified, 1/100 chance for exotic, otherwise normal
@@ -137,6 +167,8 @@ public class Wraith extends Mob {
 
 			if (w instanceof TormentedSpirit){
 				w.sprite.emitter().burst(ChallengeParticle.FACTORY, 10);
+				GLog.w(Messages.get(TormentedSpirit.class, "notice"));
+				Sample.INSTANCE.play(Assets.Sounds.YOSHIHIRO);
 			} else {
 				w.sprite.emitter().burst(ShadowParticle.CURSE, 5);
 			}

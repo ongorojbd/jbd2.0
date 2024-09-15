@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscC;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -125,10 +126,17 @@ public class Act1 extends Mob {
     }
 
     @Override
+    protected boolean act() {
+        if (Dungeon.level.heroFOV[pos]){
+            Bestiary.setSeen(getClass());
+        }
+        return super.act();
+    }
+
+    @Override
     public void die( Object cause ) {
 
         super.die( cause );
-
 
         if (Random.Int( 2 ) == 0) {
             Sample.INSTANCE.play( Assets.Sounds.SHEEP );
@@ -139,7 +147,6 @@ public class Act1 extends Mob {
         GameScene.add( Act2 );
             Act2.beckon(Dungeon.hero.pos);
         }
-
     }
 
     @Override

@@ -44,7 +44,7 @@ public class ZombieBrute2 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 2, 10 );
+        return Random.NormalIntRange( 2, 10 );
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ZombieBrute2 extends Mob {
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Char.combatRoll(0, 5);
+        return super.drRoll() + Random.NormalIntRange(0, 5);
     }
 
     @Override

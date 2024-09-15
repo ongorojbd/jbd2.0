@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -197,10 +198,10 @@ public class Bomb extends Item {
 					continue;
 				}
 
-				int dmg = Char.combatRoll(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
+				int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
 
 				if (this instanceof Tbomb){
-					dmg = Math.round(Char.combatRoll(6 + Statistics.wave / 5, 12 + Statistics.wave / 5));
+					dmg = Math.round(Random.NormalIntRange(6 + Statistics.wave / 5, 12 + Statistics.wave / 5));
 				}
 
 				if (Statistics.spw6 > 2) dmg *= 1.2f;
@@ -340,6 +341,7 @@ public class Bomb extends Item {
 
 		protected void trigger(Heap heap){
 			heap.remove(bomb);
+			Catalog.countUse(bomb.getClass());
 			bomb.explode(heap.pos);
 			Actor.remove(this);
 		}
@@ -448,7 +450,13 @@ public class Bomb extends Item {
 					result = Reflection.newInstance(validIngredients.get(i.getClass()));
 				}
 			}
-			
+
+			if (result instanceof ArcaneBomb){
+				Catalog.countUse(GooBlob.class);
+			} else if (result instanceof ShrapnelBomb){
+				Catalog.countUse(MetalShard.class);
+			}
+
 			return result;
 		}
 		

@@ -85,7 +85,7 @@ public class ZombieThree extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll(1, 6);
+        return Random.NormalIntRange(1, 6);
     }
 
     @Override

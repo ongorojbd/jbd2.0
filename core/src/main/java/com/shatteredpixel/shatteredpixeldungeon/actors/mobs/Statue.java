@@ -90,14 +90,6 @@ public class Statue extends Mob {
 	}
 
 	@Override
-	protected boolean act() {
-		if (levelGenStatue && Dungeon.level.visited[pos]) {
-			Notes.add( Notes.Landmark.STATUE );
-		}
-		return super.act();
-	}
-
-	@Override
 	public int damageRoll() {
 		return weapon.damageRoll(this);
 	}
@@ -119,7 +111,7 @@ public class Statue extends Mob {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, Dungeon.depth + weapon.defenseFactor(this));
+		return super.drRoll() + Random.NormalIntRange(0, Dungeon.depth + weapon.defenseFactor(this));
 	}
 
 	@Override
@@ -174,9 +166,14 @@ public class Statue extends Mob {
 	}
 
 	@Override
+	public Notes.Landmark landmark() {
+		return levelGenStatue ? Notes.Landmark.STATUE : null;
+	}
+
+	@Override
 	public void destroy() {
-		if (levelGenStatue) {
-			Notes.remove( Notes.Landmark.STATUE );
+		if (landmark() != null) {
+			Notes.remove( landmark() );
 		}
 		super.destroy();
 	}
@@ -194,7 +191,11 @@ public class Statue extends Mob {
 
 	@Override
 	public String description() {
-		return Messages.get(this, "desc", weapon.name());
+		String desc = Messages.get(this, "desc");
+		if (weapon != null){
+			desc += "\n\n" + Messages.get(this, "desc_weapon", weapon.name());
+		}
+		return desc;
 	}
 
 	{

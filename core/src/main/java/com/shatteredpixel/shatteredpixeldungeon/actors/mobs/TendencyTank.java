@@ -61,7 +61,7 @@ public class TendencyTank extends Mob {
         }
     }
 
-    protected int rangedCooldown = Char.combatRoll(1, 2);
+    protected int rangedCooldown = Random.NormalIntRange(1, 2);
 
     @Override
     protected boolean canAttack(Char enemy) {
@@ -148,7 +148,7 @@ public class TendencyTank extends Mob {
     @Override
     public int damageRoll() {
         int waveDamage = wave / 5;
-        return Char.combatRoll(3 + waveDamage, 9 + waveDamage);
+        return Random.NormalIntRange(3 + waveDamage, 9 + waveDamage);
     }
 
     @Override

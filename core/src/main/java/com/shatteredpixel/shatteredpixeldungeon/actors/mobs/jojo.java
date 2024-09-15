@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfCha
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -106,6 +107,10 @@ public class jojo extends Mob {
     @Override
     protected boolean act() {
 
+        if (Dungeon.level.heroFOV[pos]){
+            Bestiary.setSeen(getClass());
+        }
+
         if (!seenBefore) {
             switch(Dungeon.hero.heroClass){
                 case WARRIOR:
@@ -125,6 +130,7 @@ public class jojo extends Mob {
             new Flare( 5, 32 ).color( 0x00FFFF, true ).show( this.sprite, 3f );
             Sample.INSTANCE.play( Assets.Sounds.YAREYARE, 3 );
         }
+
         seenBefore = true;
         return super.act();
     }

@@ -54,12 +54,8 @@ public class ChaosSword extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (Random.Int(3) == 0) {
 
-            CursedWand.cursedEffect(null, attacker, defender);
-        }
-
-        if (hero.belongings.getItem(AlchemistsToolkit.class) != null) {
+        if (Dungeon.hero != null && hero.belongings.getItem(AlchemistsToolkit.class) != null) {
             if (hero.belongings.getItem(AlchemistsToolkit.class).isEquipped(hero)) {
                 if (Random.Int(10) == 0) {
                     Buff.affect(hero, PotionOfCleansing.Cleanse.class, 5f);

@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -71,7 +72,7 @@ public class Tbomb2 extends Bomb {
 
         for (Char ch : affected){
 
-            int dmg = Math.round(Char.combatRoll(6 + Statistics.wave / 5, 12 + Statistics.wave / 5));
+            int dmg = Math.round(Random.NormalIntRange(6 + Statistics.wave / 5, 12 + Statistics.wave / 5));
             if (Statistics.spw6 > 5) dmg *= 1.5f;
             else if (Statistics.spw6 > 2) dmg *= 1.2f;
             if (ch.pos != cell){

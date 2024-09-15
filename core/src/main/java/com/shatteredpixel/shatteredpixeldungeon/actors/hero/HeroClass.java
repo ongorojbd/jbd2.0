@@ -43,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
-import com.shatteredpixel.shatteredpixeldungeon.items.Bandana;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
@@ -52,11 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb2;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -64,10 +59,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibili
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Tmap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Gmap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
@@ -76,22 +73,23 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.watabou.utils.DeviceCompat;
@@ -131,28 +129,23 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 
-		if(DeviceCompat.isDebug()){
-			new RingOfMight().identify().upgrade(999).collect();
-			new RingOfEnergy().identify().upgrade(999).collect();
-			new RingOfAccuracy().identify().upgrade(999).collect();
-			new ScrollOfEnchantment().identify().upgrade(999).collect();
-			new Neotel().collect();
-			new Tmap().collect();
-			new TengusMask().collect();
-			new NitoDismantleHammer().collect();
-			new ScrollOfMysticalEnergy().identify().quantity(33).collect();
-			new TimekeepersHourglass().identify().upgrade(6).collect();
-			new Tbomb().identify().collect();
-			new Tbomb2().identify().collect();
-			new PotionOfHealing().identify().quantity(100).collect();
-			new Spw().identify().quantity(100).collect();
-			new PotionOfExperience().identify().quantity(100).collect();
-			new StoneOfDeepSleep().identify().quantity(100).collect();
-			new Swiftthistle.Seed().identify().quantity(100).collect();
-			new WandOfDisintegration().identify().upgrade(20).collect();
-		}
-
-		Dungeon.gold = 100;
+			if (DeviceCompat.isDebug()) {
+				new RingOfMight().identify().upgrade(999).collect();
+				new RingOfEnergy().identify().upgrade(999).collect();
+				new RingOfAccuracy().identify().upgrade(999).collect();
+				new ScrollOfEnchantment().identify().upgrade(999).collect();
+				new ScrollOfUpgrade().identify().quantity(999).collect();
+				new ScrollOfIdentify().identify().quantity(999).collect();
+				new Neotel().collect();
+				new Bmap().identify().collect();
+				new TengusMask().collect();
+				new PotionOfHealing().identify().quantity(100).collect();
+				new ScrollOfTransmutation().identify().quantity(100).collect();
+				new PotionOfExperience().identify().quantity(100).collect();
+				new StoneOfDeepSleep().identify().quantity(100).collect();
+				new Swiftthistle.Seed().identify().quantity(100).collect();
+				new WandOfDisintegration().identify().upgrade(20).collect();
+			}
 
 		switch (this) {
 			case WARRIOR:
@@ -211,6 +204,7 @@ public enum HeroClass {
 
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
+			Catalog.setSeen(BrokenSeal.class); //as it's not added to the inventory
 		}
 
 		if (Dungeon.isChallenged(Challenges.GAMBLER)) {
@@ -431,7 +425,7 @@ public enum HeroClass {
 				} else return Assets.Splashes.DUELIST;
 		}
 	}
-	
+
 	public boolean isUnlocked(){
 		//always unlock on debug builds
 		if (DeviceCompat.isDebug()) return true;
@@ -449,7 +443,7 @@ public enum HeroClass {
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_DUELIST);
 		}
 	}
-	
+
 	public String unlockMsg() {
 		return shortDesc() + "\n\n" + Messages.get(HeroClass.class, name()+"_unlock");
 	}

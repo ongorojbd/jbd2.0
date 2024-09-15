@@ -41,7 +41,7 @@ public class PylonSprite extends MobSprite {
 
 		texture( Assets.Sprites.PYLON );
 
-		TextureFilm frames = new TextureFilm( texture, 11, 20 );
+		TextureFilm frames = new TextureFilm( texture, 11, 15 );
 
 		idle = new Animation( 1, false );
 		idle.frames( frames, 0 );

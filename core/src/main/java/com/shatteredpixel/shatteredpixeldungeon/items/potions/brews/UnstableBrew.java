@@ -89,8 +89,8 @@ public class UnstableBrew extends Brew {
 
 		Potion p = Reflection.newInstance(Random.chances(potionChances));
 
-		//reroll the potion once if it wasn't a good potion to drink
-		if (mustThrowPots.contains(p.getClass())){
+		//reroll the potion if it wasn't a good potion to drink
+		while (mustThrowPots.contains(p.getClass())){
 			p = Reflection.newInstance(Random.chances(potionChances));
 		}
 
@@ -106,8 +106,8 @@ public class UnstableBrew extends Brew {
 	public void shatter(int cell) {
 		Potion p = Reflection.newInstance(Random.chances(potionChances));
 
-		//reroll the potion once if it wasn't a good potion to throw
-		if (!mustThrowPots.contains(p.getClass()) && !canThrowPots.contains(p.getClass())){
+		//reroll the potion if it wasn't a good potion to throw
+		while (!mustThrowPots.contains(p.getClass()) && !canThrowPots.contains(p.getClass())){
 			p = Reflection.newInstance(Random.chances(potionChances));
 		}
 

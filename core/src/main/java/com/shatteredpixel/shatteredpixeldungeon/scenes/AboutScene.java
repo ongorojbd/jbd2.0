@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
@@ -34,23 +32,12 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
-import com.watabou.utils.Bundle;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class AboutScene extends PixelScene {
-
-	private static Pattern descPattern = Pattern.compile("(.*?)(\r\n|\n|\r)(\r\n|\n|\r)---", Pattern.DOTALL + Pattern.MULTILINE);
-	private static Pattern versionCodePattern = Pattern.compile("kakao version number: ([0-9]*)", Pattern.CASE_INSENSITIVE);
-
-	private static String kakao = "kakao : ";
-	private static String link = "링크";
 
 	@Override
 	public void create() {
@@ -77,18 +64,12 @@ public class AboutScene extends PixelScene {
 
 		//*** Shattered Pixel Dungeon Credits ***
 
-		String shpxLink = "https://www.youtube.com/watch?v=tLyRpGKWXRs";
-		//tracking codes, so that the website knows where this pageview came from
-		shpxLink += "?utm_source=shatteredpd";
-		shpxLink += "&utm_medium=about_page";
-		shpxLink += "&utm_campaign=ingame_link";
-
 		CreditsBlock shpx = new CreditsBlock(true, Window.TITLE_COLOR,
 				"죠죠의 기묘한 던전",
 				Icons.SHPX.get(),
 				"Developed by: _Ongoro_\nBased on SPD's open source",
 				" ",
-				shpxLink);
+				"https://www.youtube.com/watch?v=tLyRpGKWXRs");
 		if (landscape()){
 			shpx.setRect((w - fullWidth)/2f - 6, 10, 120, 0);
 		} else {
@@ -96,69 +77,19 @@ public class AboutScene extends PixelScene {
 		}
 		content.add(shpx);
 
-
-		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-		httpGet.setUrl("https://api.github.com/repos/orogno24/myJavaPRJ/releases");
-		httpGet.setHeader("Accept", "application/vnd.github.v3+json");
-
 		CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
-				"",
-				Icons.ALEKS.get(),
-				"",
-				"",
-				"");
+				"Link",
+				Icons.KRISTJAN.get(),
+				"kakao",
+				"url",
+				"https://open.kakao.com/o/gC7ZgGjd");
 		alex.setSize(colWidth/2f, 0);
 		if (landscape()){
 			alex.setPos(shpx.right(), shpx.top() + (shpx.height() - alex.height()*2)/2f);
 		} else {
 			alex.setPos(w/2f - colWidth/2f, shpx.bottom()+5);
 		}
-
-		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
-			@Override
-			public void handleHttpResponse(Net.HttpResponse httpResponse) {
-				try {
-
-					for (Bundle b : Bundle.read( httpResponse.getResultAsStream() ).getBundleArray()){
-						Matcher m = versionCodePattern.matcher(b.getString("body"));
-
-						if (m.find()){
-							int releaseVersion = Integer.parseInt(m.group(1));
-							if (releaseVersion > 2){
-
-								CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
-										"Link",
-										Icons.KRISTJAN.get(),
-										kakao,
-										"url",
-										"https://open.kakao.com/o/gC7ZgGjd");
-								alex.setSize(colWidth/2f, 0);
-								if (landscape()){
-									alex.setPos(shpx.right(), shpx.top() + (shpx.height() - alex.height()*2)/2f);
-								} else {
-									alex.setPos(w/2f - colWidth/2f, shpx.bottom()+5);
-								}
-								content.add(alex);
-							}
-						}
-					}
-
-				} catch (Exception e) {
-					Game.reportException( e );
-				}
-			}
-
-			@Override
-			public void failed(Throwable t) {
-
-			}
-
-			@Override
-			public void cancelled() {
-
-			}
-
-		});
+		content.add(alex);
 
 		CreditsBlock charlie = new CreditsBlock(false, Window.SHPX_COLOR,
 				"Pixel Design",
@@ -184,7 +115,7 @@ public class AboutScene extends PixelScene {
 		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
 				"To Be Countinued....",
 				Icons.WATA.get(),
-				"Next Update : 2.0L",
+				"Next Update : 3.0A",
 				"",
 				"");
 		if (landscape()){
@@ -215,7 +146,7 @@ public class AboutScene extends PixelScene {
 		final int GDX_COLOR = 0xE44D3C;
 		CreditsBlock gdx = new CreditsBlock(true,
 				GDX_COLOR,
-				null,
+				"",
 				Icons.LIBGDX.get(),
 				"Thank you for playing!",
 				"",
@@ -232,9 +163,9 @@ public class AboutScene extends PixelScene {
 		CreditsBlock arcnor = new CreditsBlock(false, GDX_COLOR,
 				"",
 				Icons.ARCNOR.get(),
-				" ",
-				" ",
-				" ");
+				"",
+				"",
+				"");
 		arcnor.setSize(colWidth/2f, 0);
 		if (landscape()){
 			arcnor.setPos(gdx.right(), gdx.top() + (gdx.height() - arcnor.height())/2f);
@@ -244,11 +175,11 @@ public class AboutScene extends PixelScene {
 		content.add(arcnor);
 
 		CreditsBlock purigro = new CreditsBlock(false, GDX_COLOR,
-				" ",
+				"",
 				Icons.PURIGRO.get(),
-				" ",
-				" ",
-				" ");
+				"",
+				"",
+				"");
 		purigro.setRect(arcnor.right()+2, arcnor.top(), colWidth/2f, 0);
 		content.add(purigro);
 
@@ -258,13 +189,11 @@ public class AboutScene extends PixelScene {
 				Window.TITLE_COLOR,
 				null,
 				null,
-				" ",
-				" ",
-				" ");
+				"",
+				"",
+				"");
 		transifex.setRect((Camera.main.width - colWidth)/2f, purigro.bottom() + 12, colWidth, 0);
 		content.add(transifex);
-
-		addLine(transifex.top() - 4, content);
 
 		//*** Freesound Credits ***
 
@@ -272,28 +201,7 @@ public class AboutScene extends PixelScene {
 				Window.TITLE_COLOR,
 				null,
 				null,
-				" " +
-
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"" +
-						"",
+				"",
 				"",
 				"");
 		freesound.setRect(transifex.left()-10, transifex.bottom() + 8, colWidth+20, 0);

@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
@@ -36,6 +37,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -73,26 +77,64 @@ public class Crossbow extends MeleeWeapon {
 	}
 
 	@Override
+	public String desc() {
+		String info = Messages.get(this, "desc");
+		if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(RingOfSharpshooting.class) != null) {
+			if (Dungeon.hero.belongings.getItem(RingOfSharpshooting.class).isEquipped(Dungeon.hero))
+				info += "\n\n" + Messages.get( Crossbow.class, "setbouns");}
+
+		return info;
+	}
+
+
+	@Override
+	public float accuracyFactor(Char owner, Char target) {
+		if (owner.buff(Crossbow.ChargedShot.class) != null){
+			Actor.add(new Actor() {
+				{ actPriority = VFX_PRIO; }
+				@Override
+				protected boolean act() {
+					if (owner instanceof Hero && !target.isAlive()){
+						onAbilityKill((Hero)owner, target);
+					}
+					Actor.remove(this);
+					return true;
+				}
+			});
+			return Float.POSITIVE_INFINITY;
+		} else {
+			return super.accuracyFactor(owner, target);
+		}
+	}
+
+	@Override
 	public int proc(Char attacker, Char defender, int damage) {
+		int dmg = super.proc(attacker, defender, damage);
 
 		if (Dungeon.hero.belongings.getItem(RingOfSharpshooting.class) != null) {
 			if (hero.belongings.getItem(RingOfSharpshooting.class).isEquipped(hero) && (Random.Int(20) == 0)) {
 				Buff.affect(defender, SoulMark.class, 3f);
 			}
 		}
-		return super.proc(attacker, defender, damage);
+
+		//stronger elastic effect
+		if (attacker.buff(ChargedShot.class) != null && !(curItem instanceof Dart)){
+			//trace a ballistica to our target (which will also extend past them
+			Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
+			//trim it to just be the part that goes past them
+			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
+			//knock them back along that ballistica
+			WandOfBlastWave.throwChar(defender,
+					trajectory,
+					3,
+					true,
+					true,
+					this);
+			attacker.buff(Crossbow.ChargedShot.class).detach();
+		}
+		return dmg;
 	}
 
-	@Override
-	public String desc() {
-		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(RingOfSharpshooting.class) != null) {
-			if (Dungeon.hero.belongings.getItem(RingOfSharpshooting.class).isEquipped(Dungeon.hero))
-				info += "\n\n" + Messages.get( Crossbow.class, "setbouns");}
-
-		return info;
-	}
-	
 	@Override
 	public int max(int lvl) {
 		return  4*(tier+1) +    //20 base, down from 25
@@ -118,11 +160,17 @@ public class Crossbow extends MeleeWeapon {
 	@Override
 	public String abilityInfo() {
 		if (levelKnown){
-			return Messages.get(this, "ability_desc", 3+buffedLvl());
+			return Messages.get(this, "ability_desc", 3+buffedLvl(), 3+buffedLvl());
 		} else {
-			return Messages.get(this, "typical_ability_desc", 3);
+			return Messages.get(this, "typical_ability_desc", 3, 3);
 		}
 	}
+
+	@Override
+	public String upgradeAbilityStat(int level) {
+		return Integer.toString(3 + level);
+	}
+
 
 	public static class ChargedShot extends Buff{
 

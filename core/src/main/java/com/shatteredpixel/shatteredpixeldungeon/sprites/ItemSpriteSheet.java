@@ -43,7 +43,7 @@ public class ItemSpriteSheet {
         film.add(item, x, y, x + width, y + height);
     }
 
-    private static final int PLACEHOLDERS = xy(1, 1);   //16 slots
+    private static final int PLACEHOLDERS   =                               xy(1, 1);   //18 slots
     //SOMETHING is the default item sprite at position 0. May show up ingame if there are bugs.
     public static final int SOMETHING = PLACEHOLDERS + 0;
     public static final int WEAPON_HOLDER = PLACEHOLDERS + 1;
@@ -61,6 +61,8 @@ public class ItemSpriteSheet {
     public static final int STONE_HOLDER = PLACEHOLDERS + 13;
     public static final int ELIXIR_HOLDER = PLACEHOLDERS + 14;
     public static final int SPELL_HOLDER = PLACEHOLDERS + 15;
+    public static final int MOB_HOLDER      = PLACEHOLDERS+16;
+    public static final int DOCUMENT_HOLDER = PLACEHOLDERS+17;
 
     static {
         assignItemRect(SOMETHING, 8, 13);
@@ -79,9 +81,11 @@ public class ItemSpriteSheet {
         assignItemRect(STONE_HOLDER, 10, 10);
         assignItemRect(ELIXIR_HOLDER, 12, 14);
         assignItemRect(SPELL_HOLDER, 8, 16);
+        assignItemRect(MOB_HOLDER,      12, 14);
+        assignItemRect(DOCUMENT_HOLDER, 10, 11);
     }
 
-    private static final int UNCOLLECTIBLE = xy(1, 2);   //16 slots
+    private static final int UNCOLLECTIBLE  =                               xy(3, 2);   //14 slots
     public static final int GOLD = UNCOLLECTIBLE + 0;
     public static final int ENERGY = UNCOLLECTIBLE + 1;
 
@@ -187,7 +191,7 @@ public class ItemSpriteSheet {
         assignItemRect(IRON_KEY, 8, 14);
         assignItemRect(GOLDEN_KEY, 8, 14);
         assignItemRect(CRYSTAL_KEY, 8, 14);
-        assignItemRect(SKELETON_KEY, 8, 14);
+        assignItemRect(SKELETON_KEY, 11, 14);
         assignItemRect(MASK, 13, 13);
         assignItemRect(CROWN, 13, 13);
         assignItemRect(AMULET, 16, 16);
@@ -248,7 +252,7 @@ public class ItemSpriteSheet {
         assignItemRect(GLOVES, 12, 16);
         assignItemRect(RAPIER, 13, 14);
         assignItemRect(DAGGER, 10, 13);
-        assignItemRect(MAGES_STAFF, 15, 14);
+        assignItemRect(MAGES_STAFF, 15, 16);
     }
 
     private static final int WEP_TIER2 = xy(9, 7);   //8 slots
@@ -584,6 +588,10 @@ public class ItemSpriteSheet {
     public static final int MIMIC_TOOTH = TRINKETS + 8;
     public static final int WONDROUS_RESIN = TRINKETS + 9;
     public static final int EYE_OF_NEWT = TRINKETS + 10;
+    public static final int SALT_CUBE       = TRINKETS+11;
+    public static final int BLOOD_VIAL      = TRINKETS+12;
+    public static final int OBLIVION_SHARD  = TRINKETS+13;
+    public static final int CHAOTIC_CENSER  = TRINKETS+14;
     public static final int TBOMB = TRINKETS + 17;
     public static final int TBOMB2 = TRINKETS + 18;
 
@@ -599,6 +607,10 @@ public class ItemSpriteSheet {
         assignItemRect(MIMIC_TOOTH, 14, 14);
         assignItemRect(WONDROUS_RESIN, 16, 16);
         assignItemRect(EYE_OF_NEWT, 16, 16);
+        assignItemRect(SALT_CUBE,       16, 15);
+        assignItemRect(BLOOD_VIAL,      14,  14);
+        assignItemRect(OBLIVION_SHARD,  15,  11);
+        assignItemRect(CHAOTIC_CENSER,  15, 15);
         assignItemRect(TBOMB, 12, 11);
         assignItemRect(TBOMB2, 15, 14);
     }

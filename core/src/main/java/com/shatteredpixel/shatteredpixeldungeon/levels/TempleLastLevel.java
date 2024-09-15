@@ -278,21 +278,21 @@ public class TempleLastLevel extends Level {
         return cell;
     }
 
-    public static class TempleBrute extends Zombie {
+    public static class TempleBrute extends Bcopter {
         {
             properties.add(Property.BOSS_MINION);
             state = HUNTING;
         }
     }
 
-    public static class TemplePurpleShaman extends Zombied {
+    public static class TemplePurpleShaman extends Bcomsoldier {
         {
             properties.add(Property.BOSS_MINION);
             state = HUNTING;
         }
     }
 
-    public static class TempleGuard extends Zombied {
+    public static class TempleGuard extends Btank {
         {
             properties.add(Property.BOSS_MINION);
             state = HUNTING;

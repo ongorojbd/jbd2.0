@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
@@ -67,7 +68,7 @@ public class ScrollHolder extends Bag {
 
 	@Override
 	public boolean canHold( Item item ) {
-		if (item instanceof Scroll || item instanceof Spell || item instanceof ArcaneResin){
+		if (item instanceof Scroll || item instanceof Spell || item instanceof ArcaneResin || item instanceof Stylus){
 
 			if ((item instanceof Kingt || item instanceof Kings || item instanceof Xray || item instanceof Kingc || item instanceof Kingw || item instanceof Kinga || item instanceof Kingm || item instanceof ChaosCatalyst
 					|| item instanceof ScrollOfExtract || item instanceof AdvancedEvolution || item instanceof Rocacaca || item instanceof Newro || item instanceof Neoro
@@ -79,7 +80,6 @@ public class ScrollHolder extends Bag {
 			} else {
 				return super.canHold(item);
 			}
-
 		} else {
 			return false;
 		}

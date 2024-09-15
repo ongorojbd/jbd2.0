@@ -54,7 +54,7 @@ public class ZombieG extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll(4, 8);
+        return Random.NormalIntRange(4, 8);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ZombieG extends Mob {
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Char.combatRoll(0, 6);
+        return super.drRoll() + Random.NormalIntRange(0, 6);
     }
 
     public void damage(int dmg, Object src) {

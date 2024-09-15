@@ -86,7 +86,7 @@ public class BattleAxe extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
+		if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
 			if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero))
 				info += "\n\n" + Messages.get(BattleAxe.class, "setbouns");}
 
@@ -97,6 +97,11 @@ public class BattleAxe extends MeleeWeapon {
 	public int max(int lvl) {
 		return  4*(tier+1) +    //20 base, down from 25
 				lvl*(tier+1);   //scaling unchanged
+	}
+
+	public String upgradeAbilityStat(int level){
+		int dmgBoost = 5 + Math.round(1.5f*level);
+		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
 
 }

@@ -96,7 +96,7 @@ public class Sai extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (hero.belongings.getItem(SandalsOfNature.class) != null) {
+		if (Dungeon.hero != null && hero.belongings.getItem(SandalsOfNature.class) != null) {
 			if (hero.belongings.getItem(SandalsOfNature.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( Sai.class, "setbouns");}
 
@@ -137,6 +137,10 @@ public class Sai extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_ability_desc", augment.damageFactor(dmgBoost));
 		}
+	}
+
+	public String upgradeAbilityStat(int level){
+		return "+" + augment.damageFactor(3 + Math.round(0.67f*level));
 	}
 
 	public static void comboStrikeAbility(Hero hero, Integer target, float multiPerHit, int boostPerHit, MeleeWeapon wep){

@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
@@ -65,13 +66,17 @@ public class Imp extends NPC {
     private boolean seenBefore = false;
 
     @Override
+    public Notes.Landmark landmark() {
+        return Notes.Landmark.IMP;
+    }
+
+    @Override
     protected boolean act() {
         if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
             die(null);
             return true;
         }
         if (!Quest.given && Dungeon.level.visited[pos]) {
-            Notes.add(Notes.Landmark.IMP);
             if (!seenBefore && Dungeon.level.heroFOV[pos]) {
                 yell(Messages.get(this, "hey", Messages.titleCase(Dungeon.hero.name())));
                 seenBefore = true;
@@ -130,10 +135,11 @@ public class Imp extends NPC {
             }
 
         } else {
-            tell(Quest.alternative ? Messages.get(this, "monks_1") : Messages.get(this, "golems_1"));
+            tell( Messages.get(this, "intro") + "\n\n" + (Quest.alternative ?
+                    Messages.get(this, "monks_1", Messages.titleCase(Dungeon.hero.name()))
+                    : Messages.get(this, "golems_1", Messages.titleCase(Dungeon.hero.name()))) );
             Quest.given = true;
             Quest.completed = false;
-            Notes.add(Notes.Landmark.IMP);
         }
 
         return true;
@@ -239,12 +245,15 @@ public class Imp extends NPC {
                                 level.heaps.get(npc.pos) != null ||
                                 level.traps.get(npc.pos) != null ||
                                 level.findMob(npc.pos) != null ||
-                                //The imp doesn't move, so he cannot obstruct a passageway
-                                !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
-                                !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
+                                //don't place the imp against solid terrain
+                                !level.passable[npc.pos + PathFinder.CIRCLE4[0]] || !level.passable[npc.pos + PathFinder.CIRCLE4[1]] ||
+                                !level.passable[npc.pos + PathFinder.CIRCLE4[2]] || !level.passable[npc.pos + PathFinder.CIRCLE4[3]]);
                 level.mobs.add(npc);
 
                 spawned = true;
+
+                //imp always spawns on an empty tile, for better visibility
+                level.map[ npc.pos ] = Terrain.EMPTY;
 
                 //always assigns monks on floor 17, golems on floor 19, and 50/50 between either on 18
                 switch (Dungeon.depth) {

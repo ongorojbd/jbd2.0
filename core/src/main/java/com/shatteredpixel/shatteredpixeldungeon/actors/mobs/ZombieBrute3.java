@@ -9,6 +9,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieBrute3Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Random;
 
 public class ZombieBrute3 extends Mob {
     private static final float TIME_TO_ZAP	= 1f;
@@ -28,7 +29,7 @@ public class ZombieBrute3 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Char.combatRoll( 2, 8 );
+        return Random.NormalIntRange( 2, 8 );
     }
 
     @Override
@@ -38,7 +39,7 @@ public class ZombieBrute3 extends Mob {
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Char.combatRoll(0, 3);
+        return super.drRoll() + Random.NormalIntRange(0, 3);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class ZombieBrute3 extends Mob {
 
         if (hit( this, enemy, true )) {
 
-            int dmg = Char.combatRoll(3, 10);
+            int dmg = Random.NormalIntRange(3, 10);
             enemy.damage( dmg, new AcidBolt());
             if (enemy.isAlive()) {
                 Buff.affect(enemy, Ooze.class).set(3f);

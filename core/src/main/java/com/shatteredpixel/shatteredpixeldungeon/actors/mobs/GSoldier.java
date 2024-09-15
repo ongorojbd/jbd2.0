@@ -127,9 +127,9 @@ public class GSoldier extends Mob {
         int waveDamage = wave / 5;
         if (spw10 > 1) waveDamage += 2;
         if (enemy != null && !Dungeon.level.adjacent(pos, enemy.pos)) {
-            return Char.combatRoll(1 + waveDamage, 5 + waveDamage);
+            return Random.NormalIntRange(1 + waveDamage, 5 + waveDamage);
         } else {
-            return Char.combatRoll(waveDamage, 1 + waveDamage);
+            return Random.NormalIntRange(waveDamage, 1 + waveDamage);
         }
     }
 

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -71,7 +72,7 @@ public class WarScythe extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (hero.belongings.getItem(RingOfEvasion.class) != null) {
+		if (Dungeon.hero != null && hero.belongings.getItem(RingOfEvasion.class) != null) {
 			if (hero.belongings.getItem(RingOfEvasion.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( WarScythe.class, "setbouns");}
 
@@ -102,6 +103,11 @@ public class WarScythe extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_ability_desc", bleedAmt);
 		}
+	}
+
+	@Override
+	public String upgradeAbilityStat(int level) {
+		return Integer.toString(augment.damageFactor(Math.round(30f + 4.5f*level)));
 	}
 
 }

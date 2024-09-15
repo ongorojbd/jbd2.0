@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
@@ -43,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
@@ -64,11 +66,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projec
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundlable;
@@ -125,14 +126,21 @@ abstract public class Weapon extends KindOfWeapon {
             damage = enchantment.proc(this, attacker, defender, damage);
         }
 
-        if (!levelKnown && attacker == Dungeon.hero) {
-            float uses = Math.min(availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this));
+        if (!levelKnown && attacker == hero) {
+            float uses = Math.min(availableUsesToID, Talent.itemIDSpeedFactor(hero, this));
             availableUsesToID -= uses;
             usesLeftToID -= uses;
             if (usesLeftToID <= 0) {
-                identify();
-                GLog.p(Messages.get(Weapon.class, "identify"));
-                Badges.validateItemLevelAquired(this);
+                if (ShardOfOblivion.passiveIDDisabled()) {
+                    if (usesLeftToID > -1) {
+                        GLog.p(Messages.get(ShardOfOblivion.class, "identify_ready"), name());
+                    }
+                    usesLeftToID = -1;
+                } else {
+                    identify();
+                    GLog.p(Messages.get(Weapon.class, "identify"));
+                    Badges.validateItemLevelAquired(this);
+                }
             }
         }
 
@@ -185,6 +193,30 @@ abstract public class Weapon extends KindOfWeapon {
         super.reset();
         usesLeftToID = USES_TO_ID;
         availableUsesToID = USES_TO_ID / 2f;
+    }
+
+    @Override
+    public boolean collect(Bag container) {
+        if (super.collect(container)) {
+            if (hero != null && hero.isAlive() && isIdentified() && enchantment != null) {
+                Catalog.setSeen(enchantment.getClass());
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Item identify(boolean byHero) {
+        if (enchantment != null && byHero && hero != null && hero.isAlive()) {
+            Catalog.setSeen(enchantment.getClass());
+        }
+        return super.identify(byHero);
+    }
+
+    public boolean readyToIdentify() {
+        return !isIdentified() && usesLeftToID <= 0;
     }
 
     @Override
@@ -261,11 +293,7 @@ abstract public class Weapon extends KindOfWeapon {
     }
 
     public int STRReq() {
-        int req = STRReq(level());
-        if (masteryPotionBonus) {
-            req -= 2;
-        }
-        return req;
+        return STRReq(level());
     }
 
     public abstract int STRReq(int lvl);
@@ -286,16 +314,19 @@ abstract public class Weapon extends KindOfWeapon {
 
     @Override
     public int buffedLvl() {
-        int lvl;
-        if (isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this)) {
-            lvl = super.buffedLvl();
-        } else {
-            lvl = level();
-        }
+        int lvl = 0;
 
-        EnhancedWeapon weaponEmpower = hero.buff(EnhancedWeapon.class);
-        if (weaponEmpower != null && isEquipped(hero)) {
-            lvl += Statistics.spw1;
+        if (hero != null) {
+            if (isEquipped(hero) || hero.belongings.contains(this)) {
+                lvl = super.buffedLvl();
+            } else {
+                lvl = level();
+            }
+
+            EnhancedWeapon weaponEmpower = hero.buff(EnhancedWeapon.class);
+            if (weaponEmpower != null && isEquipped(hero)) {
+                lvl += Statistics.spw1;
+            }
         }
 
         return lvl;
@@ -353,6 +384,10 @@ abstract public class Weapon extends KindOfWeapon {
         }
         level(n);
 
+        //we use a separate RNG here so that variance due to things like parchment scrap
+        //does not affect levelgen
+        Random.pushGenerator(Random.Long());
+
         //30% chance to be cursed
         //10% chance to be enchanted
         float effectRoll = Random.Float();
@@ -363,6 +398,8 @@ abstract public class Weapon extends KindOfWeapon {
             enchant();
         }
 
+        Random.popGenerator();
+
         return this;
     }
 
@@ -370,6 +407,10 @@ abstract public class Weapon extends KindOfWeapon {
         if (ench == null || !ench.curse()) curseInfusionBonus = false;
         enchantment = ench;
         updateQuickslot();
+        if (ench != null && isIdentified() && hero != null
+                && hero.isAlive() && hero.belongings.contains(this)) {
+            Catalog.setSeen(ench.getClass());
+        }
         return this;
     }
 
@@ -417,7 +458,7 @@ abstract public class Weapon extends KindOfWeapon {
                 10  //3.33% each
         };
 
-        private static final Class<?>[] curses = new Class<?>[]{
+        public static final Class<?>[] curses = new Class<?>[]{
                 Annoying.class, Displacing.class, Dazzling.class, Explosive.class,
                 Sacrificial.class, Wayward.class, Polarized.class, Friendly.class
         };

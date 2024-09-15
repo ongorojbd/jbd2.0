@@ -146,7 +146,7 @@ public class PINK extends MeleeWeapon {
     @Override
     public String desc() {
         String info = Messages.get(this, "desc");
-        if (Dungeon.hero.belongings.getItem(RingOfHaste.class) != null) {
+        if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(RingOfHaste.class) != null) {
             if (Dungeon.hero.belongings.getItem(RingOfHaste.class).isEquipped(Dungeon.hero))
                 info += "\n\n" + Messages.get( PINK.class, "setbouns");}
 

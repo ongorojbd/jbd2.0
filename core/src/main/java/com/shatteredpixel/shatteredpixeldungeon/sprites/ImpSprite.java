@@ -53,7 +53,6 @@ public class ImpSprite extends MobSprite {
 	@Override
 	public void link( Char ch ) {
 		super.link( ch );
-
 	}
 	
 	@Override

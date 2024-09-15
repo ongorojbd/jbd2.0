@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
@@ -125,9 +126,20 @@ public class Amblance extends Mob {
     @Override
     protected boolean act() {
 
+        if (Dungeon.level.heroFOV[pos]){
+            Bestiary.setSeen(getClass());
+        }
+
         if (!seenBefore) {
             this.yell(Messages.get(this, "notice"));
         }
+
+        for (Char c : Actor.chars()){
+            if (c instanceof Kawasiri){
+                this.beckon(c.pos);
+            }
+        }
+
         seenBefore = true;
         return super.act();
     }
@@ -142,7 +154,6 @@ public class Amblance extends Mob {
             this.die(null);
 
         }
-
 
         new ExplosiveTrap().set(target).activate();
 

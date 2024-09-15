@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer2;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscF;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -201,20 +202,6 @@ public class YogDzewa extends Mob {
 			}
 		}
 
-		if (phase == 4 && findFist() == null){
-			yell(Messages.get(this, "hope"));
-			summonCooldown = -15; //summon a burst of minions!
-			phase = 5;
-			BossHealthBar.bleed(true);
-
-			Game.runOnRenderThread(new Callback() {
-						@Override
-						public void call() {
-							Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
-						}
-					});
-		}
-
 		if (phase == 0){
 			spend(TICK);
 			return true;
@@ -252,9 +239,9 @@ public class YogDzewa extends Mob {
 
 					if (hit( this, ch, true )) {
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-							ch.damage(Char.combatRoll(30, 50), new Eye.DeathGaze());
+							ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
 						} else {
-							ch.damage(Char.combatRoll(20, 30), new Eye.DeathGaze());
+							ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
 						}
 						if (Dungeon.level.heroFOV[pos]) {
 							ch.sprite.flash();
@@ -380,6 +367,23 @@ public class YogDzewa extends Mob {
 		}
 
 		return true;
+	}
+
+	public void processFistDeath(){
+		//normally Yog has no logic when a fist dies specifically
+		//but the very last fist to die does trigger the final phase
+		if (phase == 4 && findFist() == null){
+			yell(Messages.get(this, "hope"));
+			summonCooldown = -15; //summon a burst of minions!
+			phase = 5;
+			BossHealthBar.bleed(true);
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -530,11 +534,13 @@ public class YogDzewa extends Mob {
 	@Override
 	public void die( Object cause ) {
 
+		Bestiary.skipCountingEncounters = true;
 		for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
 			if (mob instanceof Larva || mob instanceof YogRipper || mob instanceof YogEye || mob instanceof YogScorpio) {
 				mob.die( cause );
 			}
 		}
+		Bestiary.skipCountingEncounters = false;
 
 		Item pick = new NitoDismantleHammer2();
 		if (pick.doPickUp( Dungeon.hero )) {
@@ -721,12 +727,12 @@ public class YogDzewa extends Mob {
 
 		@Override
 		public int damageRoll() {
-			return Char.combatRoll( 15, 25 );
+			return Random.NormalIntRange( 15, 25 );
 		}
 
 		@Override
 		public int drRoll() {
-			return super.drRoll() + Char.combatRoll(0, 4);
+			return super.drRoll() + Random.NormalIntRange(0, 4);
 		}
 
 	}

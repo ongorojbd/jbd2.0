@@ -128,8 +128,6 @@ public class AJA extends MeleeWeapon {
             defender.damage(attacker.damageRoll(), attacker);
         }
 
-
-
             if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class) != null) {
                 if (Dungeon.hero.belongings.getItem(RingOfAccuracy.class).isEquipped(Dungeon.hero)) {
                     if (Random.Int(12 + buffedLvl()) > 10) {
@@ -150,7 +148,7 @@ public class AJA extends MeleeWeapon {
         else if (mode == 1) info = Messages.get(this, "desc_mode1");
         else info = Messages.get(this, "desc");
 
-        if (VectorSetBouns()) {
+        if (Dungeon.hero != null && VectorSetBouns()) {
             info += "\n\n" + Messages.get(AJA.class, "setbouns"); }
         return info;
     }

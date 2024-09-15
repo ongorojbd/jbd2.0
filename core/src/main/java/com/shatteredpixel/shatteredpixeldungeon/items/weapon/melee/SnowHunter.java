@@ -196,7 +196,7 @@ public class SnowHunter extends MeleeWeapon{
     @Override
     public String desc() {
         String info = Messages.get(this, "desc");
-        if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+        if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
             if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(Dungeon.hero))
                 info += "\n\n" + Messages.get( SnowHunter.class, "setbouns");}
 

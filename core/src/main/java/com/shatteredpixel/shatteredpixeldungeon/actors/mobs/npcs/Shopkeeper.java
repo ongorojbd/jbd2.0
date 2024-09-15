@@ -73,11 +73,12 @@ public class Shopkeeper extends NPC {
 	private int turnsSinceHarmed = -1;
 
 	@Override
-	protected boolean act() {
+	public Notes.Landmark landmark() {
+		return Notes.Landmark.SHOP;
+	}
 
-		if (Dungeon.level.visited[pos]){
-			Notes.add(Notes.Landmark.SHOP);
-		}
+	@Override
+	protected boolean act() {
 
 		if (turnsSinceHarmed >= 0){
 			turnsSinceHarmed ++;
@@ -168,7 +169,9 @@ public class Shopkeeper extends NPC {
 
 		destroy();
 
-		Notes.remove(Notes.Landmark.SHOP);
+		Notes.remove( landmark() );
+		GLog.newLine();
+		GLog.n(Messages.get(this, "flee"));
 
 		sprite.killAndErase();
 

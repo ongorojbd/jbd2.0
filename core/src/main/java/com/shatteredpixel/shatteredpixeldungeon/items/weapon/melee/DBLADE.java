@@ -92,7 +92,7 @@ public class DBLADE extends MeleeWeapon {
     @Override
     public String desc() {
         String info = Messages.get(this, "desc");
-        if (Dungeon.hero.belongings.getItem(RingOfFuror.class) != null) {
+        if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(RingOfFuror.class) != null) {
             if (Dungeon.hero.belongings.getItem(RingOfFuror.class).isEquipped(Dungeon.hero))
                 info += "\n\n" + Messages.get( DBLADE.class, "setbouns");}
 

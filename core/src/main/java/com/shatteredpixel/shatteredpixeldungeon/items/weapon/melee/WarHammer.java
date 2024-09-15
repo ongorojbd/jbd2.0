@@ -54,7 +54,7 @@ public class WarHammer extends MeleeWeapon {
 		if (owner instanceof Hero) {
 			Hero hero = (Hero) owner;
 			Char enemy = hero.enemy();
-			if (Dungeon.hero.belongings.weapon() instanceof WarHammer && (Random.Int(5) == 0)) {
+			if (Dungeon.hero.belongings.weapon() instanceof WarHammer && (Random.Int(10) == 0)) {
 				Dungeon.energy += 1;
 			}
 		}
@@ -78,7 +78,7 @@ public class WarHammer extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(RingOfHaste.class) != null) {
+		if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(RingOfHaste.class) != null) {
 			if (Dungeon.hero.belongings.getItem(RingOfHaste.class).isEquipped(Dungeon.hero))
 				info += "\n\n" + Messages.get( WarHammer.class, "setbouns");}
 
@@ -95,6 +95,11 @@ public class WarHammer extends MeleeWeapon {
 		//+(6+1.5*lvl) damage, roughly +40% base dmg, +45% scaling
 		int dmgBoost = augment.damageFactor(6 + Math.round(1.5f*buffedLvl()));
 		Mace.heavyBlowAbility(hero, target, 1, dmgBoost, this);
+	}
+
+	public String upgradeAbilityStat(int level){
+		int dmgBoost = 6 + Math.round(1.5f*level);
+		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
 
 	@Override

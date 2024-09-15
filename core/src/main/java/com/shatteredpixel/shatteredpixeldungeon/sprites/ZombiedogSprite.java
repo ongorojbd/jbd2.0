@@ -53,7 +53,6 @@ public class ZombiedogSprite extends MobSprite {
         die = new Animation( 20, false );
         die.frames( frames, 10, 11, 12, 13, 14, 15);
 
-        alpha(0.8f);
         play( idle );
     }
 

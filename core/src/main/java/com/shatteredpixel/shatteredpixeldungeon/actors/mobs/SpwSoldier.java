@@ -61,9 +61,9 @@ public class SpwSoldier extends Mob implements Callback {
     @Override
     public int damageRoll() {
         if (enemy != null && !Dungeon.level.adjacent(pos, enemy.pos)) {
-            return Char.combatRoll(1, 5);
+            return Random.NormalIntRange(1, 5);
         } else {
-            return Char.combatRoll(0, 1);
+            return Random.NormalIntRange(0, 1);
         }
     }
 

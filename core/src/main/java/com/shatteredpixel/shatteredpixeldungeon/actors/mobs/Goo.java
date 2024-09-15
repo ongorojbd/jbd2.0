@@ -83,9 +83,9 @@ public class Goo extends Mob {
 				Statistics.qualifiedForBossChallengeBadge = false;
 				Statistics.bossScores[0] -= 100;
 			}
-			return Char.combatRoll( min*3, max*3 );
+			return Random.NormalIntRange( min*3, max*3 );
 		} else {
-			return Char.combatRoll( min, max );
+			return Random.NormalIntRange( min, max );
 		}
 	}
 
@@ -104,7 +104,7 @@ public class Goo extends Mob {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 2);
+		return super.drRoll() + Random.NormalIntRange(0, 2);
 	}
 
 	@Override

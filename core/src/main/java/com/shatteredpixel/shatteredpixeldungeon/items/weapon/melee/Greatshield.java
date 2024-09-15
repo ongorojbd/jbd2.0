@@ -52,7 +52,16 @@ public class Greatshield extends MeleeWeapon {
 
 	@Override
 	public int defenseFactor( Char owner ) {
-		return 6+2*buffedLvl();             //6 extra defence, plus 2 per level
+		return DRMax();
+	}
+
+	public int DRMax(){
+		return DRMax(buffedLvl());
+	}
+
+	//6 extra defence, plus 2 per level
+	public int DRMax(int lvl){
+		return 6 + 2*lvl;
 	}
 
 	public String statsInfo(){
@@ -61,6 +70,11 @@ public class Greatshield extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_stats_desc", 6);
 		}
+	}
+
+	@Override
+	public String upgradeAbilityStat(int level) {
+		return Integer.toString(3 + level);
 	}
 
 	@Override
@@ -82,7 +96,7 @@ public class Greatshield extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+		if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
 			if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(Dungeon.hero))
 				info += "\n\n" + Messages.get( Greatshield.class, "setbouns");}
 

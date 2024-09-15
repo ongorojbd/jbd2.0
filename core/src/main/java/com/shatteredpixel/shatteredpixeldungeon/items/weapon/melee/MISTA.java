@@ -149,7 +149,7 @@ public class MISTA extends MeleeWeapon {
     @Override
     public String desc() {
         String info = Messages.get(this, "desc");
-        if (Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
+        if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(HornOfPlenty.class) != null) {
             if (Dungeon.hero.belongings.getItem(HornOfPlenty.class).isEquipped(Dungeon.hero))
                 info += "\n\n" + Messages.get(MISTA.class, "setbouns");
         }

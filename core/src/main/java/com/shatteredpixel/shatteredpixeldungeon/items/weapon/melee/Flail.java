@@ -80,7 +80,7 @@ public class Flail extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(RingOfForce.class) != null) {
+		if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(RingOfForce.class) != null) {
 			if (Dungeon.hero.belongings.getItem(RingOfForce.class).isEquipped(Dungeon.hero))
 				info += "\n\n" + Messages.get( Flail.class, "setbouns");}
 
@@ -166,6 +166,10 @@ public class Flail extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_ability_desc", augment.damageFactor(dmgBoost));
 		}
+	}
+
+	public String upgradeAbilityStat(int level){
+		return "+" + augment.damageFactor(8 + 2*level);
 	}
 
 	public static class SpinAbilityTracker extends FlavourBuff {

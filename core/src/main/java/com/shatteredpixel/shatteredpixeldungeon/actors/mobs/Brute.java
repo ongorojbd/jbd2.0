@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -40,132 +39,130 @@ import com.watabou.utils.Random;
 
 public class Brute extends Mob {
 
-	{
-		spriteClass = BruteSprite.class;
+    {
+        spriteClass = BruteSprite.class;
 
-		HP = HT = 40;
-		defenseSkill = 15;
+        HP = HT = 40;
+        defenseSkill = 15;
 
-		EXP = 8;
-		maxLvl = 16;
+        EXP = 8;
+        maxLvl = 16;
 
-		loot = Gold.class;
-		lootChance = 0.5f;
-	}
+        loot = Gold.class;
+        lootChance = 0.5f;
+    }
 
-	public Brute(){
-		super();
-		switch (Random.Int(2)){
-			case 0: default:
-				spriteClass = BruteSprite.Blue.class;
-				break;
-			case 1:
-				spriteClass = BruteSprite.Green.class;
-				break;
-		}
-	}
+    public Brute() {
+        super();
+        switch (Random.Int(2)) {
+            case 0:
+            default:
+                spriteClass = BruteSprite.Blue.class;
+                break;
+            case 1:
+                spriteClass = BruteSprite.Green.class;
+                break;
+        }
+    }
 
-	protected boolean hasRaged = false;
+    protected boolean hasRaged = false;
 
-	@Override
-	public int damageRoll() {
-		return buff(BruteRage.class) != null ?
-				Char.combatRoll( 15, 40 ) :
-				Char.combatRoll( 5, 25 );
-	}
+    @Override
+    public int damageRoll() {
+        return buff(BruteRage.class) != null ?
+                Random.NormalIntRange(15, 40) :
+                Random.NormalIntRange(5, 25);
+    }
 
-	@Override
-	public int attackSkill( Char target ) {
-		return 20;
-	}
+    @Override
+    public int attackSkill(Char target) {
+        return 20;
+    }
 
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 8);
-	}
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(0, 8);
+    }
 
-	@Override
-	public void die(Object cause) {
-		super.die(cause);
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
 
-		if (cause == Chasm.class){
-			hasRaged = true; //don't let enrage trigger for chasm deaths
-		}
-	}
+        if (cause == Chasm.class) {
+            hasRaged = true; //don't let enrage trigger for chasm deaths
+        }
+    }
 
-	@Override
-	public synchronized boolean isAlive() {
-		if (super.isAlive()){
-			return true;
-		} else {
-			if (!hasRaged){
-				triggerEnrage();
-			}
-			return !buffs(BruteRage.class).isEmpty();
-		}
-	}
+    @Override
+    public synchronized boolean isAlive() {
+        if (super.isAlive()) {
+            return true;
+        } else {
+            if (!hasRaged) {
+                triggerEnrage();
+            }
+            return !buffs(BruteRage.class).isEmpty();
+        }
+    }
 
-	protected void triggerEnrage(){
-		Buff.affect(this, BruteRage.class).setShield(HT/2 + 4);
-		sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(HT/2 + 4), FloatingText.SHIELDING );
-		if (Dungeon.level.heroFOV[pos]) {
-			SpellSprite.show( this, SpellSprite.BERSERK);
-		}
-		spend( TICK );
-		hasRaged = true;
-	}
+    protected void triggerEnrage() {
+        Buff.affect(this, BruteRage.class).setShield(HT / 2 + 4);
+        sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(HT / 2 + 4), FloatingText.SHIELDING);
+        if (Dungeon.level.heroFOV[pos]) {
+            SpellSprite.show(this, SpellSprite.BERSERK);
+        }
+        spend(TICK);
+        hasRaged = true;
+    }
 
-	private static final String HAS_RAGED = "has_raged";
+    private static final String HAS_RAGED = "has_raged";
 
-	@Override
-	public void storeInBundle(Bundle bundle) {
-		super.storeInBundle(bundle);
-		bundle.put(HAS_RAGED, hasRaged);
-	}
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(HAS_RAGED, hasRaged);
+    }
 
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		super.restoreFromBundle(bundle);
-		hasRaged = bundle.getBoolean(HAS_RAGED);
-	}
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        hasRaged = bundle.getBoolean(HAS_RAGED);
+    }
 
-	public static class BruteRage extends ShieldBuff {
+    public static class BruteRage extends ShieldBuff {
 
-		{
-			type = buffType.POSITIVE;
-		}
+        {
+            type = buffType.POSITIVE;
+        }
 
-		@Override
-		public boolean act() {
+        @Override
+        public boolean act() {
 
-			if (target.HP > 0){
-				detach();
-				return true;
-			}
+            if (target.HP > 0) {
+                detach();
+                return true;
+            }
 
-			absorbDamage( Math.round(4*AscensionChallenge.statModifier(target)));
+            absorbDamage(Math.round(4 * AscensionChallenge.statModifier(target)));
 
-			if (shielding() <= 0){
-				target.die(null);
-			}
+            if (shielding() <= 0) {
+                target.die(null);
+            }
 
-			spend( TICK );
+            spend(TICK);
 
-			return true;
-		}
+            return true;
+        }
 
-		@Override
-		public int icon () {
-			return BuffIndicator.FURY;
-		}
+        @Override
+        public int icon() {
+            return BuffIndicator.FURY;
+        }
 
-		@Override
-		public String desc () {
-			return Messages.get(this, "desc", shielding());
-		}
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", shielding());
+        }
 
-		{
-			immunities.add(Terror.class);
-		}
-	}
+    }
 }

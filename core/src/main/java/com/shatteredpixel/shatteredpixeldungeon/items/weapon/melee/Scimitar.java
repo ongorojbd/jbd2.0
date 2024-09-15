@@ -90,7 +90,7 @@ public class Scimitar extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (hero.belongings.getItem(RingOfArcana.class) != null) {
+		if (Dungeon.hero != null && hero.belongings.getItem(RingOfArcana.class) != null) {
 			if (hero.belongings.getItem(RingOfArcana.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( Scimitar.class, "setbouns");}
 
@@ -115,6 +115,11 @@ public class Scimitar extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_ability_desc", 4);
 		}
+	}
+
+	@Override
+	public String upgradeAbilityStat(int level) {
+		return Integer.toString(4+level);
 	}
 
 	public static class SwordDance extends FlavourBuff {

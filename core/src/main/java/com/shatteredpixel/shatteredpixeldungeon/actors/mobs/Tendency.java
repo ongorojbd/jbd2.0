@@ -29,16 +29,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AnkhInvulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShovelDigCoolDown6;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -265,8 +263,8 @@ public class Tendency extends DirectableAlly {
         ScrollOfTeleportation.appear(this, newPos);
         ScrollOfTeleportation.appear(hero, oldPos);
 
-        Buff.affect(hero, AnkhInvulnerability.class, 1f);
-        Buff.affect(this, AnkhInvulnerability.class, 1f);
+        Buff.affect(hero, Invulnerability.class, 1f);
+        Buff.affect(this, Invulnerability.class, 1f);
 
         Dungeon.observe();
         GameScene.updateFog();
@@ -288,7 +286,7 @@ public class Tendency extends DirectableAlly {
 
     public boolean cat() {
         yell(Messages.get(this, "a0"));
-        Buff.affect(this, AnkhInvulnerability.class, 5f);
+        Buff.affect(this, Invulnerability.class, 5f);
         Buff.affect(this, StoneOfAggression.Aggression.class, 5f);
         Buff.affect(hero, ShovelDigCoolDown6.class, 40f);
         return true;
@@ -296,7 +294,7 @@ public class Tendency extends DirectableAlly {
 
     @Override
     public boolean isInvulnerable(Class effect) {
-        return super.isInvulnerable(effect) || buff(AnkhInvulnerability.class) != null;
+        return super.isInvulnerable(effect) || buff(Invulnerability.class) != null;
     }
 
     @Override

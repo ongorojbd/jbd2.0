@@ -44,7 +44,6 @@ public class Madeinheaven extends Artifact {
 
         unique = true;
 
-        identify();
     }
 
     @Override
@@ -55,7 +54,6 @@ public class Madeinheaven extends Artifact {
     @Override
     public ArrayList<String> actions( Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
-
 
         return actions;
     }
@@ -81,6 +79,7 @@ public class Madeinheaven extends Artifact {
 
         @Override
         public boolean act(){
+            identify();
             Buff.prolong(hero, Triplespeed.class, 3);
             spend(TICK);
             return true;

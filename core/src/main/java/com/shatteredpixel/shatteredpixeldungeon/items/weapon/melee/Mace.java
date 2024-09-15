@@ -77,7 +77,7 @@ public class Mace extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (hero.belongings.getItem(RingOfHaste.class) != null) {
+		if (Dungeon.hero != null && hero.belongings.getItem(RingOfHaste.class) != null) {
 			if (hero.belongings.getItem(RingOfHaste.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( Mace.class, "setbouns");}
 
@@ -104,6 +104,11 @@ public class Mace extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
 		}
+	}
+
+	public String upgradeAbilityStat(int level){
+		int dmgBoost = 5 + Math.round(1.5f*level);
+		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
 
 	public static void heavyBlowAbility(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){

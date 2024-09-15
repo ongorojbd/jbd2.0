@@ -44,9 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SupplyRation;
-import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
-import com.shatteredpixel.shatteredpixeldungeon.items.journal.RegionLorePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
@@ -56,7 +54,6 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -65,9 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.CavesFissureEntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.CavesFissureExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
@@ -580,67 +575,6 @@ public abstract class RegularLevel extends Level {
 		//lore pages
 		//TODO a fair bit going on here, I might want to refactor/externalize this in the future
 
-		Random.pushGenerator( Random.Long() );
-			if (Document.ADVENTURERS_GUIDE.allPagesFound()){
-
-				int region = 1+(Dungeon.depth-1)/5;
-
-				Document regionDoc;
-				switch( region ){
-					default: regionDoc = null; break;
-					case 1: regionDoc = Document.SEWERS_GUARD; break;
-					case 2: regionDoc = Document.PRISON_WARDEN; break;
-					case 3: regionDoc = Document.CAVES_EXPLORER; break;
-					case 4: regionDoc = Document.CITY_WARLOCK; break;
-					case 5: regionDoc = Document.HALLS_KING; break;
-					case 6: regionDoc = Document.LABS_EOH; break;
-				}
-
-				if (regionDoc != null && !regionDoc.allPagesFound()) {
-
-					Dungeon.LimitedDrops limit = limitedDocs.get(regionDoc);
-
-					if (limit == null || !limit.dropped()) {
-
-						float totalPages = 0;
-						float pagesFound = 0;
-						String pageToDrop = null;
-						for (String page : regionDoc.pageNames()) {
-							totalPages++;
-							if (!regionDoc.isPageFound(page)) {
-								if (pageToDrop == null) {
-									pageToDrop = page;
-								}
-							} else {
-								pagesFound++;
-							}
-						}
-						float percentComplete = pagesFound / totalPages;
-
-						// initial value is the first floor in a region
-						int targetFloor = 5*(region-1) + 1;
-						targetFloor += Math.round(3*percentComplete);
-
-						//TODO maybe drop last page in boss floor with custom logic?
-						if (Dungeon.depth >= targetFloor){
-							DocumentPage page = RegionLorePage.pageForDoc(regionDoc);
-							page.page(pageToDrop);
-							int cell = randomDropCell();
-							if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-								map[cell] = Terrain.GRASS;
-								losBlocking[cell] = false;
-							}
-							drop(page, cell);
-							if (limit != null) limit.drop();
-						}
-
-					}
-
-				}
-
-			}
-		Random.popGenerator();
-
 		//ebony mimics >:)
 		Random.pushGenerator(Random.Long());
 			if (Random.Float() < MimicTooth.ebonyMimicChance()){
@@ -674,12 +608,7 @@ public abstract class RegularLevel extends Level {
 
 	private static HashMap<Document, Dungeon.LimitedDrops> limitedDocs = new HashMap<>();
 	static {
-		limitedDocs.put(Document.SEWERS_GUARD, Dungeon.LimitedDrops.LORE_SEWERS);
-		limitedDocs.put(Document.PRISON_WARDEN, Dungeon.LimitedDrops.LORE_PRISON);
-		limitedDocs.put(Document.CAVES_EXPLORER, Dungeon.LimitedDrops.LORE_CAVES);
-		limitedDocs.put(Document.CITY_WARLOCK, Dungeon.LimitedDrops.LORE_CITY);
-		limitedDocs.put(Document.HALLS_KING, Dungeon.LimitedDrops.LORE_HALLS);
-		limitedDocs.put(Document.LABS_EOH, Dungeon.LimitedDrops.LORE_LABS);
+
 	}
 	
 	public ArrayList<Room> rooms() {
@@ -838,29 +767,6 @@ public abstract class RegularLevel extends Level {
 				roomEntrance = r;
 			} else if (r.isExit()){
 				roomExit = r;
-			}
-		}
-
-		//This exists to fix an alpha bug =S, remove for release
-		if (roomEntrance instanceof CavesFissureEntranceRoom){
-			for (LevelTransition t : transitions){
-				if (t.type == LevelTransition.Type.REGULAR_EXIT && roomEntrance.inside(t.center())){
-					set(t.centerCell, Terrain.ENTRANCE, this);
-					t.type = LevelTransition.Type.REGULAR_ENTRANCE;
-					t.destDepth = Dungeon.depth-1;
-					t.destType =  LevelTransition.Type.REGULAR_EXIT;
-				}
-			}
-		}
-
-		if (roomExit instanceof CavesFissureExitRoom){
-			for (LevelTransition t : transitions){
-				if (t.type == LevelTransition.Type.REGULAR_ENTRANCE && roomExit.inside(t.center())){
-					set(t.centerCell, Terrain.EXIT, this);
-					t.type = LevelTransition.Type.REGULAR_EXIT;
-					t.destDepth = Dungeon.depth+1;
-					t.destType =  LevelTransition.Type.REGULAR_ENTRANCE;
-				}
 			}
 		}
 	}

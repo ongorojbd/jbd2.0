@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombiedogSprite;
@@ -67,7 +68,8 @@ public class Zombiedog extends Mob {
         damage = super.attackProc( enemy, damage );
 
         if (Random.Int( 2 ) == 0) {
-            CursedWand.cursedEffect(null, this, enemy);
+            Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET);
+            CursedWand.randomValidEffect(null, this, aim, false).effect(null, this, aim, false);
         }
 
         return damage;

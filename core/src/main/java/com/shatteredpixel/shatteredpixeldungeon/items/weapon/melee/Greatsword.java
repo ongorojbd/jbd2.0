@@ -25,6 +25,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
@@ -65,7 +66,7 @@ public class Greatsword extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (hero.belongings.getItem(RingOfTenacity.class) != null) {
+		if (Dungeon.hero != null && hero.belongings.getItem(RingOfTenacity.class) != null) {
 			if (hero.belongings.getItem(RingOfTenacity.class).isEquipped(hero))
 				info += "\n\n" + Messages.get( Greatsword.class, "setbouns");}
 
@@ -88,19 +89,24 @@ public class Greatsword extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		//+(5+lvl) damage, roughly +30% base dmg, +30% scaling
-		int dmgBoost = augment.damageFactor(5 + buffedLvl());
+		//+(7+lvl) damage, roughly +40% base dmg, +30% scaling
+		int dmgBoost = augment.damageFactor(7 + buffedLvl());
 		Sword.cleaveAbility(hero, target, 1, dmgBoost, this);
 	}
 
 	@Override
 	public String abilityInfo() {
-		int dmgBoost = levelKnown ? 5 + buffedLvl() : 5;
+		int dmgBoost = levelKnown ? 7 + buffedLvl() : 7;
 		if (levelKnown){
 			return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
 		} else {
 			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
 		}
+	}
+
+	public String upgradeAbilityStat(int level){
+		int dmgBoost = 7 + level;
+		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
 
 }

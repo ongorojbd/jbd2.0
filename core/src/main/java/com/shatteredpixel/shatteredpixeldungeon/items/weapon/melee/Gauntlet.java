@@ -74,7 +74,7 @@ public class Gauntlet extends MeleeWeapon {
 	@Override
 	public String desc() {
 		String info = Messages.get(this, "desc");
-		if (Dungeon.hero.belongings.getItem(RingOfFuror.class) != null) {
+		if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(RingOfFuror.class) != null) {
 			if (Dungeon.hero.belongings.getItem(RingOfFuror.class).isEquipped(Dungeon.hero))
 				info += "\n\n" + Messages.get( Gauntlet.class, "setbouns");}
 
@@ -101,6 +101,10 @@ public class Gauntlet extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_ability_desc", augment.damageFactor(dmgBoost));
 		}
+	}
+
+	public String upgradeAbilityStat(int level){
+		return "+" + augment.damageFactor(4 + Math.round(0.75f*level));
 	}
 
 }

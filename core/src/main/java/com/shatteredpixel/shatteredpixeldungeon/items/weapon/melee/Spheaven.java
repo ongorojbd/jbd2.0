@@ -38,7 +38,6 @@ public class Spheaven extends MeleeWeapon{
     {
         image = ItemSpriteSheet.SPWORLD;
         hitSound = Assets.Sounds.HIT;
-        identify();
         tier = 5;
         RCH = 3;    //extra reach
     }
@@ -81,6 +80,7 @@ public class Spheaven extends MeleeWeapon{
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         Sample.INSTANCE.play(Assets.Sounds.ORA);
+        identify();
         if (!swiching) {
             Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
             trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
@@ -206,7 +206,7 @@ public class Spheaven extends MeleeWeapon{
     @Override
     public String desc() {
         String info = Messages.get(this, "desc");
-        if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
+        if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(TimekeepersHourglass.class) != null) {
             if (Dungeon.hero.belongings.getItem(TimekeepersHourglass.class).isEquipped(Dungeon.hero))
                 info += "\n\n" + Messages.get( Spheaven.class, "setbouns");}
 

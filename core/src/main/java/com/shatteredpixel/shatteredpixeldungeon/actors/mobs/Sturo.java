@@ -77,7 +77,7 @@ public class Sturo extends Mob {
     @Override
     public int damageRoll() {
         int waveDamage = wave / 5;
-        return Char.combatRoll(waveDamage, 1 + waveDamage);
+        return Random.NormalIntRange(waveDamage, 1 + waveDamage);
     }
 
     @Override

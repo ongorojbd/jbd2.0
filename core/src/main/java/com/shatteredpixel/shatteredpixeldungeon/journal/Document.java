@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.journal;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -38,13 +39,7 @@ public enum Document {
 	ADVENTURERS_GUIDE(ItemSpriteSheet.GUIDE_PAGE, false),
 	ALCHEMY_GUIDE(ItemSpriteSheet.ALCH_PAGE, false),
 
-	INTROS(Icons.STAIRS, true),
-	SEWERS_GUARD(ItemSpriteSheet.SEWER_PAGE, true),
-	PRISON_WARDEN(ItemSpriteSheet.PRISON_PAGE, true),
-	CAVES_EXPLORER(ItemSpriteSheet.CAVES_PAGE, true),
-	CITY_WARLOCK(ItemSpriteSheet.CITY_PAGE, true),
-	HALLS_KING(ItemSpriteSheet.HALLS_PAGE, true),
-	LABS_EOH(ItemSpriteSheet.GUIDE_PAGE,   true);
+	INTROS(Icons.STAIRS, true);
 	
 	Document( int sprite, boolean lore ){
 		pageIcon = null;
@@ -67,6 +62,7 @@ public enum Document {
 		if (pagesStates.containsKey(page) && pagesStates.get(page) == NOT_FOUND){
 			pagesStates.put(page, FOUND);
 			Journal.saveNeeded = true;
+			Badges.validateCatalogBadges();
 			return true;
 		}
 		return false;
@@ -86,6 +82,19 @@ public enum Document {
 	}
 
 	public boolean deletePage( int pageIdx ) {
+		return deletePage( pagesStates.keySet().toArray(new String[0])[pageIdx] );
+	}
+
+	public boolean unreadPage( String page ){
+		if (pagesStates.containsKey(page) && pagesStates.get(page) == READ){
+			pagesStates.put(page, FOUND);
+			Journal.saveNeeded = true;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean unreadPage( int pageIdx ) {
 		return deletePage( pagesStates.keySet().toArray(new String[0])[pageIdx] );
 	}
 
@@ -119,6 +128,7 @@ public enum Document {
 		if (pagesStates.containsKey(page)){
 			pagesStates.put(page, READ);
 			Journal.saveNeeded = true;
+			Badges.validateCatalogBadges();
 			return true;
 		}
 		return false;
@@ -234,6 +244,8 @@ public enum Document {
 
 	public static final String GUIDE_SEARCHING      = "Searching";
 
+	public static final String KING_ATTRITION       = "attrition";
+
 	//pages and default states
 	static {
 		boolean debug = DeviceCompat.isDebug();
@@ -273,50 +285,6 @@ public enum Document {
 		INTROS.pagesStates.put("City",                          debug ? READ : NOT_FOUND);
 		INTROS.pagesStates.put("Halls",                         debug ? READ : NOT_FOUND);
 		INTROS.pagesStates.put("Labs",                          debug ? READ : NOT_FOUND);
-
-		SEWERS_GUARD.pagesStates.put("new_position",            debug ? READ : NOT_FOUND);
-		SEWERS_GUARD.pagesStates.put("dangerous",               debug ? READ : NOT_FOUND);
-		SEWERS_GUARD.pagesStates.put("crabs",                   debug ? READ : NOT_FOUND);
-		SEWERS_GUARD.pagesStates.put("guild",                   debug ? READ : NOT_FOUND);
-		SEWERS_GUARD.pagesStates.put("lost",                    debug ? READ : NOT_FOUND);
-		SEWERS_GUARD.pagesStates.put("not_worth",               debug ? READ : NOT_FOUND);
-
-		PRISON_WARDEN.pagesStates.put("journal",                debug ? READ : NOT_FOUND);
-		PRISON_WARDEN.pagesStates.put("recruits",               debug ? READ : NOT_FOUND);
-		PRISON_WARDEN.pagesStates.put("mines",                  debug ? READ : NOT_FOUND);
-		PRISON_WARDEN.pagesStates.put("rotberry",               debug ? READ : NOT_FOUND);
-		PRISON_WARDEN.pagesStates.put("no_support",             debug ? READ : NOT_FOUND);
-		PRISON_WARDEN.pagesStates.put("letter",                 debug ? READ : NOT_FOUND);
-
-		CAVES_EXPLORER.pagesStates.put("expedition",            debug ? READ : NOT_FOUND);
-		CAVES_EXPLORER.pagesStates.put("gold",                  debug ? READ : NOT_FOUND);
-		CAVES_EXPLORER.pagesStates.put("troll",                 debug ? READ : NOT_FOUND);
-		CAVES_EXPLORER.pagesStates.put("city",                  debug ? READ : NOT_FOUND);
-		CAVES_EXPLORER.pagesStates.put("alive",                 debug ? READ : NOT_FOUND);
-		CAVES_EXPLORER.pagesStates.put("report",                debug ? READ : NOT_FOUND);
-
-		CITY_WARLOCK.pagesStates.put("old_king",                debug ? READ : NOT_FOUND);
-		CITY_WARLOCK.pagesStates.put("resistance",              debug ? READ : NOT_FOUND);
-		CITY_WARLOCK.pagesStates.put("failure",                 debug ? READ : NOT_FOUND);
-		CITY_WARLOCK.pagesStates.put("more_powerful",           debug ? READ : NOT_FOUND);
-		CITY_WARLOCK.pagesStates.put("new_power",               debug ? READ : NOT_FOUND);
-		CITY_WARLOCK.pagesStates.put("seen_it",                 debug ? READ : NOT_FOUND);
-
-		HALLS_KING.pagesStates.put("Rejection",                 debug ? READ : NOT_FOUND);
-		HALLS_KING.pagesStates.put("amulet",                    debug ? READ : NOT_FOUND);
-		HALLS_KING.pagesStates.put("ritual",                    debug ? READ : NOT_FOUND);
-		HALLS_KING.pagesStates.put("new_king",                  debug ? READ : NOT_FOUND);
-		HALLS_KING.pagesStates.put("thing",                     debug ? READ : NOT_FOUND);
-		HALLS_KING.pagesStates.put("attrition",                 debug ? READ : NOT_FOUND);
-
-		LABS_EOH.pagesStates.put("1",                 debug ? READ : NOT_FOUND);
-		LABS_EOH.pagesStates.put("2",                    debug ? READ : NOT_FOUND);
-		LABS_EOH.pagesStates.put("3",                    debug ? READ : NOT_FOUND);
-		LABS_EOH.pagesStates.put("4",                  debug ? READ : NOT_FOUND);
-		LABS_EOH.pagesStates.put("5",                     debug ? READ : NOT_FOUND);
-		LABS_EOH.pagesStates.put("6",                 debug ? READ : NOT_FOUND);
-
-
 
 	}
 	
