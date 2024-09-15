@@ -56,7 +56,7 @@ import java.util.ArrayList;
 
 public class KSG extends MeleeWeapon {
 
-    public static final String AC_SHOOT		= "SHOOT";
+    public static final String AC_SHOOT = "SHOOT";
     public static final String AC_RELOAD = "RELOAD";
 
     public int max_round;
@@ -125,18 +125,15 @@ public class KSG extends MeleeWeapon {
     }
 
 
-
-
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        if (isEquipped( hero )) {
+        if (isEquipped(hero)) {
             actions.add(AC_SHOOT);
             actions.add(AC_RELOAD);
         }
         return actions;
     }
-
 
 
     @Override
@@ -146,7 +143,7 @@ public class KSG extends MeleeWeapon {
 
         if (action.equals(AC_SHOOT)) {
 
-          {
+            {
                 if (round <= 0) {
                     reload_time = 1f;
                     reload();
@@ -161,7 +158,7 @@ public class KSG extends MeleeWeapon {
         }
         if (action.equals(AC_RELOAD)) {
             max_round = (magazine) ? 2 : 1;
-            if (round == max_round){
+            if (round == max_round) {
                 GLog.w(Messages.get(this, "already_loaded"));
             } else {
                 reload();
@@ -183,7 +180,9 @@ public class KSG extends MeleeWeapon {
     }
 
 
-    public int getRound() { return this.round; }
+    public int getRound() {
+        return this.round;
+    }
 
     @Override
     public String status() {
@@ -220,7 +219,7 @@ public class KSG extends MeleeWeapon {
     }
 
     public int Bulletmax(int lvl) {
-        return (tier + 2)   +
+        return (tier + 2) +
                 lvl * 3 +
                 RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
     }
@@ -232,26 +231,28 @@ public class KSG extends MeleeWeapon {
         reload_time = 1f;
         String info = desc();
 
-        if (levelKnown) {
-            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-            if (STRReq() > Dungeon.hero.STR()) {
-                info += " " + Messages.get(Weapon.class, "too_heavy");
-            } else if (Dungeon.hero.STR() > STRReq()){
-                info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+        if (Dungeon.hero != null) {
+            if (levelKnown) {
+                info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
+                if (STRReq() > Dungeon.hero.STR()) {
+                    info += " " + Messages.get(Weapon.class, "too_heavy");
+                } else if (Dungeon.hero.STR() > STRReq()) {
+                    info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+                }
+                info += "\n\n" + Messages.get(KSG.class, "stats_known",
+                        Bulletmin(KSG.this.buffedLvl()),
+                        Bulletmax(KSG.this.buffedLvl()),
+                        round, max_round, new DecimalFormat("#.##").format(reload_time));
+            } else {
+                info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
+                if (STRReq(0) > Dungeon.hero.STR()) {
+                    info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
+                }
+                info += "\n\n" + Messages.get(KSG.class, "stats_unknown",
+                        Bulletmin(0),
+                        Bulletmax(0),
+                        round, max_round, new DecimalFormat("#.##").format(reload_time));
             }
-            info += "\n\n" + Messages.get(KSG.class, "stats_known",
-                    Bulletmin(KSG.this.buffedLvl()),
-                    Bulletmax(KSG.this.buffedLvl()),
-                    round, max_round, new DecimalFormat("#.##").format(reload_time));
-        } else {
-            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-            if (STRReq(0) > Dungeon.hero.STR()) {
-                info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
-            }
-            info += "\n\n" + Messages.get(KSG.class, "stats_unknown",
-                    Bulletmin(0),
-                    Bulletmax(0),
-                    round, max_round, new DecimalFormat("#.##").format(reload_time));
         }
 
         String statsInfo = statsInfo();
@@ -267,16 +268,16 @@ public class KSG extends MeleeWeapon {
             case NONE:
         }
 
-        if (enchantment != null && (cursedKnown || !enchantment.curse())){
+        if (enchantment != null && (cursedKnown || !enchantment.curse())) {
             info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
             info += " " + Messages.get(enchantment, "desc");
         }
 
-        if (cursed && isEquipped( Dungeon.hero )) {
+        if (cursed && isEquipped(Dungeon.hero)) {
             info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
         } else if (cursedKnown && cursed) {
             info += "\n\n" + Messages.get(Weapon.class, "cursed");
-        } else if (!isIdentified() && cursedKnown){
+        } else if (!isIdentified() && cursedKnown) {
             info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
         }
 
@@ -295,9 +296,9 @@ public class KSG extends MeleeWeapon {
         int damage = augment.damageFactor(super.damageRoll(owner));
 
         if (owner instanceof Hero) {
-            int exStr = ((Hero)owner).STR() - STRReq();
+            int exStr = ((Hero) owner).STR() - STRReq();
             if (exStr > 0) {
-                damage += Random.IntRange( 0, exStr );
+                damage += Random.IntRange(0, exStr);
             }
         }
 
@@ -308,18 +309,19 @@ public class KSG extends MeleeWeapon {
     protected float baseDelay(Char owner) {
         float delay = augment.delayFactor(this.DLY);
         if (owner instanceof Hero) {
-            int encumbrance = STRReq() - ((Hero)owner).STR();
-            if (encumbrance > 0){
-                delay *= Math.pow( 1.2, encumbrance );
+            int encumbrance = STRReq() - ((Hero) owner).STR();
+            if (encumbrance > 0) {
+                delay *= Math.pow(1.2, encumbrance);
             }
         }
 
         return delay;
     }
 
-    public KSG.Bullet knockBullet(){
+    public KSG.Bullet knockBullet() {
         return new KSG.Bullet();
     }
+
     public class Bullet extends MissileWeapon {
 
         {
@@ -329,13 +331,13 @@ public class KSG extends MeleeWeapon {
         }
 
         @Override
-        public int buffedLvl(){
+        public int buffedLvl() {
             return KSG.this.buffedLvl();
         }
 
         @Override
         public int damageRoll(Char owner) {
-            Hero hero = (Hero)owner;
+            Hero hero = (Hero) owner;
             Char enemy = hero.enemy();
             int bulletdamage = Random.NormalIntRange(Bulletmin(KSG.this.buffedLvl()),
                     Bulletmax(KSG.this.buffedLvl()));
@@ -372,7 +374,7 @@ public class KSG extends MeleeWeapon {
 
         @Override
         public float delayFactor(Char user) {
-      {
+            {
                 return KSG.this.delayFactor(user);
             }
         }
@@ -384,7 +386,7 @@ public class KSG extends MeleeWeapon {
 
         @Override
         protected void onThrow(int cell) {
-            for (int i=1; i<=5; i++) {                                                           //i<=n에서 n이 반복하는 횟수, 즉 발사 횟수
+            for (int i = 1; i <= 5; i++) {                                                           //i<=n에서 n이 반복하는 횟수, 즉 발사 횟수
                 Char enemy = Actor.findChar(cell);
                 if (enemy == null || enemy == curUser) {
                     parent = null;
@@ -395,20 +397,20 @@ public class KSG extends MeleeWeapon {
                         CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
                         CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
                     }
-                    if (Random.Int(20) == 0){
+                    if (Random.Int(20) == 0) {
                         Buff.affect(enemy, Cripple.class, 2f);
                     }
                 }
             }
-             {
-                 round --;
+            {
+                round--;
             }
-            for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob.paralysed <= 0
                         && Dungeon.level.distance(curUser.pos, mob.pos) <= 4
                         && mob.state != mob.HUNTING
                         && !silencer) {
-                    mob.beckon( curUser.pos );
+                    mob.beckon(curUser.pos);
                 }
             }
             updateQuickslot();
@@ -417,7 +419,7 @@ public class KSG extends MeleeWeapon {
 
         @Override
         public void throwSound() {
-            Sample.INSTANCE.play( Assets.Sounds.HIT_SHOTGUN );
+            Sample.INSTANCE.play(Assets.Sounds.HIT_SHOTGUN);
         }
 
         @Override
@@ -428,7 +430,7 @@ public class KSG extends MeleeWeapon {
 
     private CellSelector.Listener shooter = new CellSelector.Listener() {
         @Override
-        public void onSelect( Integer target ) {
+        public void onSelect(Integer target) {
             if (target != null) {
                 if (target == curUser.pos) {
                     reload();
@@ -437,16 +439,17 @@ public class KSG extends MeleeWeapon {
                 }
             }
         }
+
         @Override
         public String prompt() {
             return Messages.get(SpiritBow.class, "prompt");
         }
     };
 
-    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{BossdiscC.class};
+            inputs = new Class[]{BossdiscC.class};
             inQuantity = new int[]{1};
 
             cost = 0;

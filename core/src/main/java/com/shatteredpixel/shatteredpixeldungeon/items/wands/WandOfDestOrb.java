@@ -64,13 +64,13 @@ public class WandOfDestOrb extends Wand {
     @Override
     public void onZap(Ballistica beam) {
         new SoftTrap().set(curUser.pos).activate();
-        if (this.level()>3){
+        if (this.level() > 3) {
             new SoftTrap().set(curUser.pos).activate();
         }
-        if (this.level()>6){
+        if (this.level() > 6) {
             new SoftTrap().set(curUser.pos).activate();
         }
-        if (this.level()>15){
+        if (this.level() > 15) {
             new SoftTrap().set(curUser.pos).activate();
         }
     }
@@ -78,7 +78,7 @@ public class WandOfDestOrb extends Wand {
     @Override
     public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
         //cripples enemy
-        Buff.prolong( defender, Cripple.class, Math.round((1+staff.buffedLvl())*procChanceMultiplier(attacker)));
+        Buff.prolong(defender, Cripple.class, Math.round((1 + staff.buffedLvl()) * procChanceMultiplier(attacker)));
     }
 
     @Override
@@ -90,21 +90,23 @@ public class WandOfDestOrb extends Wand {
 
     @Override
     public void staffFx(MagesStaff.StaffParticle particle) {
-        particle.color( 0x00FFFF );
+        particle.color(0x00FFFF);
         particle.am = 0.6f;
         particle.setLifespan(1f);
-        particle.speed.polar( Random.Float(PointF.PI2), 2f );
-        particle.setSize( 1f, 2f);
+        particle.speed.polar(Random.Float(PointF.PI2), 2f);
+        particle.setSize(1f, 2f);
         particle.radiateXY(0.5f);
     }
 
     @Override
     public String statsDesc() {
-        int selfDMG = Math.round(Dungeon.hero.HT*0.05f);
-        if (levelKnown)
-            return Messages.get(this, "stats_desc", selfDMG, selfDMG + 3*buffedLvl(), 5+buffedLvl(), 3+buffedLvl()/2, 6+ buffedLvl());
-        else
-            return Messages.get(this, "stats_desc", selfDMG, selfDMG, 5, 3, 6);
+        if (Dungeon.hero != null) {
+        int selfDMG = Math.round(Dungeon.hero.HT * 0.05f);
+            if (levelKnown)
+                return Messages.get(this, "stats_desc", selfDMG, selfDMG + 3 * buffedLvl(), 5 + buffedLvl(), 3 + buffedLvl() / 2, 6 + buffedLvl());
+            else
+                return Messages.get(this, "stats_desc", selfDMG, selfDMG, 5, 3, 6);
+        } else return Messages.get(this, "desc2");
     }
 
     private static final String FREECHARGE = "freecharge";
@@ -112,19 +114,19 @@ public class WandOfDestOrb extends Wand {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        freeCharge = bundle.getBoolean( FREECHARGE );
+        freeCharge = bundle.getBoolean(FREECHARGE);
     }
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
-        bundle.put( FREECHARGE, freeCharge );
+        bundle.put(FREECHARGE, freeCharge);
     }
 
-    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{BossdiscD.class, WandOfTransfusion.class};
+            inputs = new Class[]{BossdiscD.class, WandOfTransfusion.class};
             inQuantity = new int[]{1, 1};
 
             cost = 0;

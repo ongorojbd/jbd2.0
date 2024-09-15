@@ -100,7 +100,7 @@ public class LSWORD extends MeleeWeapon {
     @Override
     public String desc() {
         String info = Messages.get(this, "desc");
-        if (hero.belongings.getItem(RingOfWealth.class) != null) {
+        if (Dungeon.hero != null && hero.belongings.getItem(RingOfWealth.class) != null) {
             if (hero.belongings.getItem(RingOfWealth.class).isEquipped(hero))
                 info += "\n\n" + Messages.get( LSWORD.class, "setbouns");}
 

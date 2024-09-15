@@ -1736,42 +1736,42 @@ public class Hero extends Char {
             }
         }
 
-        if (damage > 0) {
-
-            if (buff(Anvil.class) == null)
-                Buff.affect(this, Anvil.class).set(3);
-
-            else {
-                Anvil anvil = buff(Anvil.class);
-                if (anvil != null && anvil.getDrBoost() == 7)
-
-                if (anvil != null && anvil.getDrBoost() >= 8) {
-
-                    GameScene.add( Blob.seed( hero.pos, 30, SmokeScreen.class ) );
-
-                    ArrayList<Integer> respawnPoints = new ArrayList<>();
-
-                    for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-                        int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-                        if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
-                            respawnPoints.add(p);
-                        }
-                    }
-
-                    int index = Random.index(respawnPoints);
-
-                    MirrorImage mob = new MirrorImage();
-                    mob.duplicate(hero);
-                    GameScene.add(mob);
-                    ScrollOfTeleportation.appear(mob, respawnPoints.get(index));
-
-                    respawnPoints.remove(index);
-
-                    Buff.detach(this, Anvil.class);
-                } else
-                    Buff.affect(this, Anvil.class).hit();
-            }
-        }
+//        if (damage > 0) {
+//
+//            if (buff(Anvil.class) == null)
+//                Buff.affect(this, Anvil.class).set(3);
+//
+//            else {
+//                Anvil anvil = buff(Anvil.class);
+//                if (anvil != null && anvil.getDrBoost() == 7)
+//
+//                if (anvil != null && anvil.getDrBoost() >= 8) {
+//
+//                    GameScene.add( Blob.seed( hero.pos, 30, SmokeScreen.class ) );
+//
+//                    ArrayList<Integer> respawnPoints = new ArrayList<>();
+//
+//                    for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+//                        int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+//                        if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
+//                            respawnPoints.add(p);
+//                        }
+//                    }
+//
+//                    int index = Random.index(respawnPoints);
+//
+//                    MirrorImage mob = new MirrorImage();
+//                    mob.duplicate(hero);
+//                    GameScene.add(mob);
+//                    ScrollOfTeleportation.appear(mob, respawnPoints.get(index));
+//
+//                    respawnPoints.remove(index);
+//
+//                    Buff.detach(this, Anvil.class);
+//                } else
+//                    Buff.affect(this, Anvil.class).hit();
+//            }
+//        }
 
         if (buff(D4C.class) != null) {
 

@@ -20,6 +20,7 @@
  */
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
+
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -56,12 +57,13 @@ import com.watabou.utils.Random;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 
 public class HeavyMachinegun extends MeleeWeapon {
 
-    public static final String AC_SHOOT		= "SHOOT";
+    public static final String AC_SHOOT = "SHOOT";
     public static final String AC_RELOAD = "RELOAD";
 
     public int max_round;
@@ -130,18 +132,15 @@ public class HeavyMachinegun extends MeleeWeapon {
     }
 
 
-
-
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        if (isEquipped( hero )) {
+        if (isEquipped(hero)) {
             actions.add(AC_SHOOT);
             actions.add(AC_RELOAD);
         }
         return actions;
     }
-
 
 
     @Override
@@ -151,7 +150,7 @@ public class HeavyMachinegun extends MeleeWeapon {
 
         if (action.equals(AC_SHOOT)) {
 
-       {
+            {
                 if (round <= 0) {
                     reload_time = 3f;
                     reload();
@@ -167,7 +166,7 @@ public class HeavyMachinegun extends MeleeWeapon {
         if (action.equals(AC_RELOAD)) {
             max_round = (magazine) ? 18 : 15;
 
-            if (round == max_round){
+            if (round == max_round) {
                 GLog.w(Messages.get(this, "already_loaded"));
             } else {
                 reload();
@@ -191,7 +190,9 @@ public class HeavyMachinegun extends MeleeWeapon {
     }
 
 
-    public int getRound() { return this.round; }
+    public int getRound() {
+        return this.round;
+    }
 
     @Override
     public String status() {
@@ -230,8 +231,8 @@ public class HeavyMachinegun extends MeleeWeapon {
     }
 
     public int Bulletmax(int lvl) {
-        return 2 * (tier)   +
-                lvl * (tier-2) +
+        return 2 * (tier) +
+                lvl * (tier - 2) +
                 RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
     }
 
@@ -242,27 +243,28 @@ public class HeavyMachinegun extends MeleeWeapon {
 
         reload_time = 2f;
         String info = desc();
-
-        if (levelKnown) {
-            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-            if (STRReq() > Dungeon.hero.STR()) {
-                info += " " + Messages.get(Weapon.class, "too_heavy");
-            } else if (Dungeon.hero.STR() > STRReq()){
-                info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+        if (Dungeon.hero != null) {
+            if (levelKnown) {
+                info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
+                if (STRReq() > Dungeon.hero.STR()) {
+                    info += " " + Messages.get(Weapon.class, "too_heavy");
+                } else if (Dungeon.hero.STR() > STRReq()) {
+                    info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+                }
+                info += "\n\n" + Messages.get(HeavyMachinegun.class, "stats_known",
+                        Bulletmin(HeavyMachinegun.this.buffedLvl()),
+                        Bulletmax(HeavyMachinegun.this.buffedLvl()),
+                        round, max_round, new DecimalFormat("#.##").format(reload_time));
+            } else {
+                info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
+                if (STRReq(0) > Dungeon.hero.STR()) {
+                    info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
+                }
+                info += "\n\n" + Messages.get(HeavyMachinegun.class, "stats_unknown",
+                        Bulletmin(0),
+                        Bulletmax(0),
+                        round, max_round, new DecimalFormat("#.##").format(reload_time));
             }
-            info += "\n\n" + Messages.get(HeavyMachinegun.class, "stats_known",
-                    Bulletmin(HeavyMachinegun.this.buffedLvl()),
-                    Bulletmax(HeavyMachinegun.this.buffedLvl()),
-                    round, max_round, new DecimalFormat("#.##").format(reload_time));
-        } else {
-            info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-            if (STRReq(0) > Dungeon.hero.STR()) {
-                info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
-            }
-            info += "\n\n" + Messages.get(HeavyMachinegun.class, "stats_unknown",
-                    Bulletmin(0),
-                    Bulletmax(0),
-                    round, max_round, new DecimalFormat("#.##").format(reload_time));
         }
 
         String statsInfo = statsInfo();
@@ -278,19 +280,18 @@ public class HeavyMachinegun extends MeleeWeapon {
             case NONE:
         }
 
-        if (enchantment != null && (cursedKnown || !enchantment.curse())){
+        if (enchantment != null && (cursedKnown || !enchantment.curse())) {
             info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
             info += " " + Messages.get(enchantment, "desc");
         }
 
-        if (cursed && isEquipped( Dungeon.hero )) {
+        if (cursed && isEquipped(Dungeon.hero)) {
             info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
         } else if (cursedKnown && cursed) {
             info += "\n\n" + Messages.get(Weapon.class, "cursed");
-        } else if (!isIdentified() && cursedKnown){
+        } else if (!isIdentified() && cursedKnown) {
             info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
         }
-
 
 
         return info;
@@ -308,9 +309,9 @@ public class HeavyMachinegun extends MeleeWeapon {
         int damage = augment.damageFactor(super.damageRoll(owner));
 
         if (owner instanceof Hero) {
-            int exStr = ((Hero)owner).STR() - STRReq();
+            int exStr = ((Hero) owner).STR() - STRReq();
             if (exStr > 0) {
-                damage += Random.IntRange( 0, exStr );
+                damage += Random.IntRange(0, exStr);
             }
         }
 
@@ -321,18 +322,19 @@ public class HeavyMachinegun extends MeleeWeapon {
     protected float baseDelay(Char owner) {
         float delay = augment.delayFactor(this.DLY);
         if (owner instanceof Hero) {
-            int encumbrance = STRReq() - ((Hero)owner).STR();
-            if (encumbrance > 0){
-                delay *= Math.pow( 1.2, encumbrance );
+            int encumbrance = STRReq() - ((Hero) owner).STR();
+            if (encumbrance > 0) {
+                delay *= Math.pow(1.2, encumbrance);
             }
         }
 
         return delay;
     }
 
-    public HeavyMachinegun.Bullet knockBullet(){
+    public HeavyMachinegun.Bullet knockBullet() {
         return new HeavyMachinegun.Bullet();
     }
+
     public class Bullet extends MissileWeapon {
 
         {
@@ -343,13 +345,13 @@ public class HeavyMachinegun extends MeleeWeapon {
         }
 
         @Override
-        public int buffedLvl(){
+        public int buffedLvl() {
             return HeavyMachinegun.this.buffedLvl();
         }
 
         @Override
         public int damageRoll(Char owner) {
-            Hero hero = (Hero)owner;
+            Hero hero = (Hero) owner;
             Char enemy = hero.enemy();
             int bulletdamage = Random.NormalIntRange(Bulletmin(HeavyMachinegun.this.buffedLvl()),
                     Bulletmax(HeavyMachinegun.this.buffedLvl()));
@@ -377,14 +379,14 @@ public class HeavyMachinegun extends MeleeWeapon {
                     && bow != null
                     && bow.enchantment != null) {
                 return bow.enchantment.proc(this, attacker, defender, damage);
-            }  else {
+            } else {
                 return HeavyMachinegun.this.proc(attacker, defender, damage);
             }
         }
 
         @Override
         public float delayFactor(Char user) {
-         {
+            {
                 return HeavyMachinegun.this.delayFactor(user);
             }
         }
@@ -396,9 +398,9 @@ public class HeavyMachinegun extends MeleeWeapon {
         }
 
         @Override
-        protected void onThrow( int cell ) {
-     {
-                for (int i=1; i<=3; i++) {                                                           //i<=n에서 n이 반복하는 횟수, 즉 발사 횟수
+        protected void onThrow(int cell) {
+            {
+                for (int i = 1; i <= 3; i++) {                                                           //i<=n에서 n이 반복하는 횟수, 즉 발사 횟수
                     if (round <= 0) {
                         break;
                     }
@@ -414,19 +416,19 @@ public class HeavyMachinegun extends MeleeWeapon {
                         }
                     }
 
-             {
-                      {
-                            round --;
+                    {
+                        {
+                            round--;
                         }
                     }
                 }
             }
-            for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob.paralysed <= 0
                         && Dungeon.level.distance(curUser.pos, mob.pos) <= 4
                         && mob.state != mob.HUNTING
                         && !silencer) {
-                    mob.beckon( curUser.pos );
+                    mob.beckon(curUser.pos);
                 }
             }
             updateQuickslot();
@@ -435,7 +437,7 @@ public class HeavyMachinegun extends MeleeWeapon {
 
         @Override
         public void throwSound() {
-            Sample.INSTANCE.play( Assets.Sounds.HEI);
+            Sample.INSTANCE.play(Assets.Sounds.HEI);
         }
 
         @Override
@@ -446,7 +448,7 @@ public class HeavyMachinegun extends MeleeWeapon {
 
     private CellSelector.Listener shooter = new CellSelector.Listener() {
         @Override
-        public void onSelect( Integer target ) {
+        public void onSelect(Integer target) {
             if (target != null) {
                 if (target == curUser.pos) {
                     reload();
@@ -455,6 +457,7 @@ public class HeavyMachinegun extends MeleeWeapon {
                 }
             }
         }
+
         @Override
         public String prompt() {
             return Messages.get(SpiritBow.class, "prompt");
@@ -462,10 +465,10 @@ public class HeavyMachinegun extends MeleeWeapon {
     };
 
 
-    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{BossdiscC.class};
+            inputs = new Class[]{BossdiscC.class};
             inQuantity = new int[]{1};
 
             cost = 0;

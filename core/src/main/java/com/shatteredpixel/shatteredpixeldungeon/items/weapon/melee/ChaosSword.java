@@ -55,7 +55,7 @@ public class ChaosSword extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
 
-        if (Dungeon.hero != null && hero.belongings.getItem(AlchemistsToolkit.class) != null) {
+        if (hero.belongings.getItem(AlchemistsToolkit.class) != null) {
             if (hero.belongings.getItem(AlchemistsToolkit.class).isEquipped(hero)) {
                 if (Random.Int(10) == 0) {
                     Buff.affect(hero, PotionOfCleansing.Cleanse.class, 5f);
@@ -75,7 +75,7 @@ public class ChaosSword extends MeleeWeapon {
     @Override
     public String desc() {
         String info = Messages.get(this, "desc");
-        if (Dungeon.hero.belongings.getItem(AlchemistsToolkit.class) != null) {
+        if (Dungeon.hero != null && Dungeon.hero.belongings.getItem(AlchemistsToolkit.class) != null) {
             if (Dungeon.hero.belongings.getItem(AlchemistsToolkit.class).isEquipped(Dungeon.hero))
                 info += "\n\n" + Messages.get( ChaosSword.class, "setbouns");}
 

@@ -503,6 +503,8 @@ public class Assets {
         public static final String ROT_HEART = "sprites/rot_heart.png";
         public static final String GUARD = "sprites/guard.png";
         public static final String WARDS = "sprites/wards.png";
+        public static final String WARDS2 = "sprites/wards2.png";
+        public static final String WARDS4 = "sprites/wards4.png";
         public static final String GUARDIAN = "sprites/guardian.png";
         public static final String SLIME = "sprites/slime.png";
         public static final String SNAKE = "sprites/snake.png";

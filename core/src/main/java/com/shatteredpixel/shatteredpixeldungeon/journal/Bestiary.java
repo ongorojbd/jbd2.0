@@ -43,6 +43,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Speedwagon2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary4;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weather;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
@@ -195,7 +197,7 @@ public enum Bestiary {
 
         ALLY.addEntities(MirrorImage.class, PrismaticImage.class,
                 DriedRose.GhostHero.class, Willamob.class, Willcmob.class, Willgmob.class,
-                WandOfWarding.Ward.class, WandOfWarding.Ward.WardSentry.class, WandOfLivingEarth.EarthGuardian.class,
+                TuskBestiary2.class, WandOfWarding.Ward.class, TuskBestiary4.class, WandOfWarding.Ward.WardSentry.class, WandOfLivingEarth.EarthGuardian.class,
                 ShadowClone.ShadowAlly.class, SmokeBomb.NinjaLog.class, SpiritHawk.HawkAlly.class, Act1.class, Act2.class, Act3.class, SpeedWagon.class, jojo.class);
 
         TRAP.addEntities(WornDartTrap.class, CreamTrap.class, PoisonDartTrap.class, DisintegrationTrap.class, GatewayTrap.class,

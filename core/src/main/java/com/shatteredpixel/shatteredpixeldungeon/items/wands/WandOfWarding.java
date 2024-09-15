@@ -33,6 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary4;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -230,6 +232,16 @@ public class WandOfWarding extends Wand {
 
 			viewDistance = 4;
 			state = WANDERING;
+		}
+
+		@Override
+		protected boolean act() {
+			if (Dungeon.level.heroFOV[pos]){
+				Bestiary.setSeen(TuskBestiary2.class);
+				Bestiary.setSeen(TuskBestiary4.class);
+			}
+
+			return super.act();
 		}
 
 		@Override

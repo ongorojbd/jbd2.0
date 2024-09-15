@@ -38,7 +38,6 @@ public enum Document {
 	
 	ADVENTURERS_GUIDE(ItemSpriteSheet.GUIDE_PAGE, false),
 	ALCHEMY_GUIDE(ItemSpriteSheet.ALCH_PAGE, false),
-
 	INTROS(Icons.STAIRS, true);
 	
 	Document( int sprite, boolean lore ){
@@ -213,7 +212,7 @@ public enum Document {
 	public boolean isLoreDoc(){
 		return loreDocument;
 	}
-	
+
 	public String title(){
 		return Messages.get( this, name() + ".title");
 	}
@@ -241,10 +240,8 @@ public enum Document {
 	public static final String GUIDE_FOOD           = "Food";
 	public static final String GUIDE_ALCHEMY        = "Alchemy";
 	public static final String GUIDE_DIEING         = "Dieing";
-
 	public static final String GUIDE_SEARCHING      = "Searching";
 
-	public static final String KING_ATTRITION       = "attrition";
 
 	//pages and default states
 	static {

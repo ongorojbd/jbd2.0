@@ -261,7 +261,7 @@ public enum Catalog {
 		GLYPHS.addItems(Armor.Glyph.curses);
 
 		WANDS.addItems(Generator.Category.WAND.classes);
-		WANDS.addItems(WandOfTransfusion.class);
+		WANDS.addItems(WandOfDestOrb.class);
 
 		RINGS.addItems(Generator.Category.RING.classes);
 
@@ -275,7 +275,7 @@ public enum Catalog {
 
 		MISC_EQUIPMENT.addItems(BrokenSeal.class, SpiritBow.class, Waterskin.class, VelvetPouch.class,
 				PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, NitoDismantleHammer.class, NitoDismantleHammer2.class,
-				Cen.class, Amulet.class, WandOfDestOrb.class, Bcomdisc.class, PortableCover.class, PortableCover4.class);
+				Cen.class, Amulet.class, Bcomdisc.class, PortableCover.class, PortableCover4.class);
 
 		SPECIAL_WEAPONS.addItems(ChaosSword.class, FlameKatana.class, KSG.class, HeavyMachinegun.class,
 				LSWORD.class, DBLADE.class, MISTA.class, PINK.class, AJA.class, SnowHunter.class, Spheaven.class);
