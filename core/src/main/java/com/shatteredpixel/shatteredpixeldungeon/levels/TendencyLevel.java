@@ -69,7 +69,7 @@ public class TendencyLevel extends Level {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_SEWERS;
+        return Assets.Environment.TILES_TENDENCY;
     }
 
     @Override

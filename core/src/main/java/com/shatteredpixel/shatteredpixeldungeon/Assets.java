@@ -50,6 +50,7 @@ public class Assets {
         public static final String TILES_SHIP = "environment/tiles_ship.png";
 
         public static final String TILES_KEICHO = "environment/tiles_keicho.png";
+        public static final String TILES_TENDENCY = "environment/tiles_tendency.png";
 
         public static final String WATER_SEWERS = "environment/water0.png";
         public static final String WATER_PRISON = "environment/water1.png";

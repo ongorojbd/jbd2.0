@@ -146,9 +146,9 @@ public class Com extends NPC {
                         Messages.get(Com.class, "0", SPDSettings.getSid()),
                         Messages.get(Com.class, "1"),
                         Messages.get(Com.class, "2"),
-                        Messages.get(Com.class, "3"),
-                        Messages.get(Com.class, "4"),
-                        Messages.get(Com.class, "5")
+                        Messages.get(Com.class, "3")
+//                        Messages.get(Com.class, "4"),
+//                        Messages.get(Com.class, "5")
                 ){
                     @Override
                     protected void onSelect(int index) {

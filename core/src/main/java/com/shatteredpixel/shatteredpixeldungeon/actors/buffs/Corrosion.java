@@ -81,7 +81,7 @@ public class Corrosion extends Buff implements Hero.Doom {
 	
 	@Override
 	public void tintIcon(Image icon) {
-		icon.hardlight(1f, 0.5f, 0f);
+		icon.hardlight(0.6f, 0.2f, 0.6f);
 	}
 
 	@Override

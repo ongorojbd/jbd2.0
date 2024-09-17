@@ -21,8 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -31,13 +34,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournalItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Reflection;
 
@@ -343,6 +350,44 @@ public class CustomNoteButton extends IconButton {
 				if (positive && !text.isEmpty()){
 					Notes.add(note);
 					note.editText(text, "");
+					refreshScene(null);
+				}
+			}
+		});
+	}
+
+	public static void addPassword(String promptTitle, String prompttext){
+
+//		addPassword(Messages.get(CustomNoteButton.class, "new_text"),
+//				Messages.get(CustomNoteButton.class, "new_text_title"));
+
+		GameScene.show(new WndTextInput(promptTitle,
+				prompttext,
+				"",
+				50,
+				false,
+				Messages.get(CustomNoteWindow.class, "confirm"),
+				Messages.get(CustomNoteWindow.class, "cancel")){
+			@Override
+			public void onSelect(boolean positive, String text) {
+				if (positive && !text.isEmpty()){
+
+					if (text.equals("1234")){
+						InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+						InterlevelScene.returnDepth = 4;
+						InterlevelScene.returnBranch = 1;
+						InterlevelScene.returnPos = -2;
+						Game.switchScene( InterlevelScene.class );
+
+						add(new WndStory(Messages.get(this, "dio_title") + "\n\n" + Messages.get(this, "dio_window")).setDelays(0.4f, 0.4f));
+						Tendency tendency = new Tendency();
+						tendency.state = tendency.WANDERING;
+						tendency.pos = Dungeon.hero.pos;
+						GameScene.add(tendency);
+						tendency.beckon(Dungeon.hero.pos);
+						Statistics.duwang3 = 3;
+					}
+
 					refreshScene(null);
 				}
 			}

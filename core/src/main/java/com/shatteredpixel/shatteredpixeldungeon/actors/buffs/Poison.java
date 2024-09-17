@@ -72,7 +72,7 @@ public class Poison extends Buff implements Hero.Doom {
 	
 	@Override
 	public void tintIcon(Image icon) {
-		icon.hardlight(0.6f, 0.2f, 0.6f);
+		icon.hardlight(0.2f, 0.5f, 0.2f);
 	}
 
 	public String iconTextDisplay(){

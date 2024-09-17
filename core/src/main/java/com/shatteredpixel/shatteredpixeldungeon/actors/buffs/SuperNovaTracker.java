@@ -69,7 +69,7 @@ public class SuperNovaTracker extends Buff {
 		if (halo == null){
 			halo = new NovaVFX();
 			halo.point(p.x, p.y);
-			halo.hardlight(1, 1, 0f);
+			halo.hardlight(1, 0.5f, 0f);
 			GameScene.effect(halo);
 		}
 
@@ -119,7 +119,7 @@ public class SuperNovaTracker extends Buff {
 		} else {
 			for (int i = 0; i < Dungeon.level.length(); i++){
 				if (fieldOfView[i]){
-					target.sprite.parent.add(new TargetedCell(i, 0xFF0000));
+					target.sprite.parent.add(new TargetedCell(i, 0xFF00FF));
 				}
 			}
 		}
@@ -142,7 +142,7 @@ public class SuperNovaTracker extends Buff {
 				&& (halo == null || halo.parent == null)){
 			halo = new NovaVFX();
 			PointF p = DungeonTilemap.raisedTileCenterToWorld(pos);
-			halo.hardlight(1, 1, 0f);
+			halo.hardlight(1, 0.5f, 0f);
 			halo.radius(5 + 2*(10-turnsLeft));
 			halo.alpha(1.25f - 0.075f*turnsLeft);
 			halo.point(p.x, p.y);

@@ -142,7 +142,7 @@ public class WndEnergizeItem extends WndInfoItem {
 			hero.spend(-hero.cooldown());
 			new EnergyCrystal(item.energyVal()).doPickUp(hero);
 			item.identify();
-			GLog.h("You energized: " + item.name());
+			GLog.h(item.name() + "을(를) 죠죠 포인트로 전환했다.");
 
 		}
 	}

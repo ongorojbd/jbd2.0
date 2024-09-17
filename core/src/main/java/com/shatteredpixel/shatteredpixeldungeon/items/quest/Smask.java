@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class Smask extends Item {
     public static final String AC_LIGHT	= "LIGHT";
-    public static final String AC_BOSS	= "BOSS";
+//    public static final String AC_BOSS	= "BOSS";
 
     {
         image = ItemSpriteSheet.SMASK;
@@ -33,7 +33,7 @@ public class Smask extends Item {
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
         actions.add( AC_LIGHT );
-        actions.add( AC_BOSS );
+//        actions.add( AC_BOSS );
         return actions;
     }
 
@@ -48,17 +48,17 @@ public class Smask extends Item {
             Game.switchScene( SurfaceScene.class );
         }
 
-        if (action.equals( AC_BOSS )) {
-            SPDSettings.addBrando(1);
-            Statistics.diokilled = true;
-            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth +1));
-            InterlevelScene.returnBranch = 0;
-            InterlevelScene.returnPos = -2;
-            Game.switchScene(InterlevelScene.class);
-            detach( curUser.belongings.backpack );
-            updateQuickslot();
-        }
+//        if (action.equals( AC_BOSS )) {
+//            SPDSettings.addBrando(1);
+//            Statistics.diokilled = true;
+//            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+//            InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth +1));
+//            InterlevelScene.returnBranch = 0;
+//            InterlevelScene.returnPos = -2;
+//            Game.switchScene(InterlevelScene.class);
+//            detach( curUser.belongings.backpack );
+//            updateQuickslot();
+//        }
     }
 
     @Override
