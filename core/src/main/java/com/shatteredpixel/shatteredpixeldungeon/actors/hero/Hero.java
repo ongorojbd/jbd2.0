@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
@@ -192,6 +193,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -465,7 +467,11 @@ public class Hero extends Char {
 
     @Override
     public String name() {
-        return className();
+        if (buff(HeroDisguise.class) != null) {
+            return buff(HeroDisguise.class).getDisguise().title();
+        } else {
+            return className();
+        }
     }
 
     @Override
@@ -2014,6 +2020,12 @@ public class Hero extends Char {
                         }
                     }
                     if (found) break;
+                }
+
+                //Clear blobs that only exist for landmarks.
+                // Might want to make this a properly if it's used more
+                if (found && b instanceof WeakFloorRoom.WellID){
+                    b.fullyClear();
                 }
             }
         }
