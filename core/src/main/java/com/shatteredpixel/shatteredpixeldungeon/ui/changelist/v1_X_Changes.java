@@ -122,6 +122,8 @@ public class v1_X_Changes {
                         "_-_ 어두운 던전 지형에서 더 이상 불꽃의 탐지기가 스폰되지 않습니다."));
         changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLSTER), "탐험 기록 개편",
                 "이제 탐험 기록에 사용자가 원하는 내용으로 메모를 할 수 있는 기능이 추가되었습니다."));
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), "변경사항",
+                "_-_ 시드 검색 기능에 오류가 발생하여 시드 검색/시드 분석 기능을 임시로 이용할 수 없습니다."));
 
         changes = new ChangeInfo("상향", false, null);
         changes.hardlight(Window.TITLE_COLOR);
