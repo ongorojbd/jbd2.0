@@ -318,7 +318,7 @@ public enum Catalog {
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
 				LiquidMetal.class, ArcaneResin.class,
-				SealShard.class, BrokenStaff.class, CloakScrap.class, BowFragment.class, Danny.class, Ram2.class, Drago.class, Highway.class, Araki.class);
+				SealShard.class, BrokenStaff.class, CloakScrap.class, BrokenHilt.class, BowFragment.class, Danny.class, Ram2.class, Drago.class, Highway.class, Araki.class);
 
 	}
 
