@@ -189,7 +189,7 @@ public enum Bestiary {
 
         QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class,
                 Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,
-                CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGuard.class, GnollSapper.class, GnollGeomancer.class,
+                CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGeomancer.class, GnollSapper.class, GnollGuard.class,
                 Civil.class, Bmore.class, Diego.class, Pucci12.class, Diego21.class, Diego12.class,
                 TempleLastLevel.TempleBrute.class, TempleLastLevel.TempleGuard.class, Keichomob.class);
 
