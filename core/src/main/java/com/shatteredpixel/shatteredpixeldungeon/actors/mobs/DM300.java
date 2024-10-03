@@ -568,6 +568,9 @@ public class DM300 extends Mob {
 		supercharged = false;
 		((DM300Sprite)sprite).updateChargeState(false);
 
+		//adjust turns since last ability to prevent DM immediately using an ability when charge ends
+		turnsSinceLastAbility = Math.max(turnsSinceLastAbility, MIN_COOLDOWN-3);
+
 		if (pylonsActivated < totalPylonsToActivate()){
 			GLog.n(Messages.get(this, "charge_lost"));
 		} else {

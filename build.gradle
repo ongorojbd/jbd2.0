@@ -7,9 +7,8 @@ buildscript {
         }
     }
     dependencies {
-        //gradle version packaged with AGP 8.5 causes crashes on Android 4.4-
-        //this won't be needed once the bundled version is 8.7.2+
-        classpath 'com.android.tools:r8:8.7.4-dev'
+        //this won't be needed once the bundled R8 version is 8.7.11+ (should happen with AGP 8.6)
+        classpath 'com.android.tools:r8:8.7.11'
         classpath 'com.android.tools.build:gradle:8.6.0'
     }
 }
@@ -20,7 +19,7 @@ allprojects {
         appName = '죠죠의 기묘한 던전'
         appPackageName = 'com.shatteredpixel.shatteredpixeldungeon7'
 
-        appVersionCode = 838
+        appVersionCode = 839
         appVersionName = '2.0L'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8

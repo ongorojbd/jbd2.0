@@ -105,7 +105,6 @@ public class MagicalInfusion extends InventorySpell {
 		Badges.validateItemLevelAquired(item);
 
 		Catalog.countUse(item.getClass());
-		Catalog.countUse(getClass());
 
 		Statistics.upgradesUsed++;
 
