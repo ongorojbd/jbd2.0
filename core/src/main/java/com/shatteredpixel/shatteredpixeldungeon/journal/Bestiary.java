@@ -185,7 +185,7 @@ public enum Bestiary {
                 Acidic.class, Greenbaby.class, Teq.class,
                 TormentedSpirit.class, PhantomPiranha.class, CrystalMimic.class, ArmoredStatue.class, Boytwo.class, Stower.class, Mandom.class);
 
-        CASTLE.addEntities(Zombie.class, Zombiedog.class, Zombied.class, Zombiez.class, Zombiep.Zombiep1.class, Zombiep.Zombiep2.class, Zombiep.Zombiep3.class, Zombiep.Zombiep4.class, Zombiet.class, Zombiebr.class, Diobrando.class, Diobrando2.class);
+        CASTLE.addEntities(Zombie.class, Zombiedog.class, Zombied.class, Zombiez.class, Zombiep.Zombiep1.class, Zombiep.Zombiep2.class, Zombiep.Zombiep3.class, Zombiep.Zombiep4.class, Zombiet.class, Zombiebr.class, Diobrando.class);
 
         QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class,
                 Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,

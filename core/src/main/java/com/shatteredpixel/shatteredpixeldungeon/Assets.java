@@ -589,6 +589,7 @@ public class Assets {
         public static final String FF = "sprites/ff.png";
         public static final String EMPORIO = "sprites/emporio.png";
         public static final String ANNASUI = "sprites/annasui.png";
+        public static final String CREAM = "sprites/cream.png";
 
         public static final String ZOMBIE = "sprites/zombie.png";
         public static final String ZOMBIEDOG = "sprites/zombiedog.png";

@@ -134,6 +134,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Newro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ogroc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
@@ -310,7 +311,7 @@ public enum Catalog {
 				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, Recycle.class,
 				ReclaimTrap.class, SummonElemental.class, BeaconOfReturning.class);
 
-		JOJOLION.addItems(Rocacaca.class, Newro.class, Neoro.class, Xray.class, Kingt.class, Kings.class, Kingc.class, StoneOfAdvanceguard.class, Kingm.class, Kinga.class, Kingw.class);
+		JOJOLION.addItems(Ogroc.class, Newro.class, Neoro.class, Xray.class, Kingt.class, Kings.class, Kingc.class, StoneOfAdvanceguard.class, Kingm.class, Kinga.class, Kingw.class);
 
 		MISC_CONSUMABLES.addItems( Gold.class, EnergyCrystal.class, Dewdrop.class,
 				IronKey.class, GoldenKey.class, CrystalKey.class, SkeletonKey.class,

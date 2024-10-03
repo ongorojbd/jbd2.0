@@ -55,7 +55,7 @@ public class v1_X_Changes {
 
     public static void add_Coming_Soon(ArrayList<ChangeInfo> changeInfos) {
 
-        ChangeInfo changes = new ChangeInfo("Coming Soon", true, "");
+        ChangeInfo changes = new ChangeInfo("Next Update", true, "");
         changes.hardlight(0xCCCCCC);
         changeInfos.add(changes);
 
@@ -88,7 +88,7 @@ public class v1_X_Changes {
                         "_낡은 워크맨_은 미확인 장비를 착용했을 때 적에게서 얻는 전리품의 양을 늘려줍니다.\n\n" +
                         "_쇼트 키 No. 2_는 자신과 적에게 해로운 가스를 근처에 무작위로 퍼뜨립니다.\n\n" +
                         "또한 위험한 물건을 선택할 때 처음 세 가지 중 아무것도 원하지 않는 경우 네 번째 '무작위' 옵션이 추가되었습니다."));
-        changes.addButton( new ChangeButton(Icons.DISPLAY_LAND.get(), "지역 스플래시 아트",
+        changes.addButton(new ChangeButton(Icons.DISPLAY_LAND.get(), "지역 스플래시 아트",
                 "_게임 로딩 화면에 새로운 스플래시 아트가 추가되었습니다!_\n" +
                         "\n" +
                         "이제 계층별로 고유한 화면이 출력됩니다."));
@@ -97,14 +97,14 @@ public class v1_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_TIWAZ), "인터페이스 개선",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_TIWAZ), "인터페이스 개선",
                 "_강화의 DISC_를 사용 시 나타나는 미리보기 창이 추가되었으며, 아이템의 능력치가 어떻게 변경되는지 요약합니다.\n" +
                         "\n" +
                         "메인 메뉴 _배지 화면_이 모험 일지와 가이드북, 잠금 해제된 배지를 포함하는 새로운 화면으로 대체되었습니다.\n" +
                         "\n" +
                         "이제 첫 승리 후 게임에서 작은 축하 메시지가 표시되고 게임에서 승리하면 무엇이 잠금 해제되는지에 대한 명확성이 개선되었습니다."));
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_MAGIC_MISSILE), "저주받은 사격 DISC 효과 확장",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_MAGIC_MISSILE), "저주받은 사격 DISC 효과 확장",
                 "저주받은 사격 DISC 효과가 대폭 확장되었습니다! 이제 16개의 새로운 효과가 추가되어 총 효과 수가 32개로 늘어났습니다. 여기에는 거품 발사와 같은 간단한 일반 효과와 대규모 폭발과 같은 매우 희귀한 효과가 추가됩니다!\n" +
                         "\n" +
                         "몇 가지 기존 효과도 변경되었습니다:\n" +
@@ -112,7 +112,7 @@ public class v1_X_Changes {
                         "_-_ 충격 & 재충전 효과가 이제 대상에게 더 많은 피해를 입힙니다.\n" +
                         "_-_ 층간 순간이동 효과가 이제 플레이어를 최대 10층 위로 보내는 것으로 제한됩니다"));
 
-        changes.addButton( new ChangeButton(Icons.BACKPACK_LRG.get(), "재고 관리 개선",
+        changes.addButton(new ChangeButton(Icons.BACKPACK_LRG.get(), "재고 관리 개선",
                 "재고 관리를 조금 더 쉽게 하기 위한 여러 가지 작은 변경이 있습니다:\n" +
                         "\n" +
                         "_-_ 이제 물약 보관대에 가죽 주머니를 보관할 수 있고, 디스크 보관함에 소프트&웨트의 방울을 보관할 수 있습니다.\n" +
@@ -120,7 +120,7 @@ public class v1_X_Changes {
                         "_-_ 다크 블루 문, 행드맨, 옐로 템퍼런스, 스트렝스, 휠 오브 포춘에게서 중복된 장비가 떨어질 확률이 감소합니다.\n" +
                         "_-_ 관찰의 명령 DISC는 이제 첫 번째 추측이 틀렸더라도 항상 2번씩 사용할 수 있습니다.\n" +
                         "_-_ 어두운 던전 지형에서 더 이상 불꽃의 탐지기가 스폰되지 않습니다."));
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLSTER), "탐험 기록 개편",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HOLSTER), "탐험 기록 개편",
                 "이제 탐험 기록에 사용자가 원하는 내용으로 메모를 할 수 있는 기능이 추가되었습니다."));
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), "변경사항",
                 "_-_ 시드 검색 기능에 오류가 발생하여 시드 검색/시드 분석 기능을 임시로 이용할 수 없습니다."));
@@ -129,7 +129,7 @@ public class v1_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.CLOVER), "위험한 물건 상향",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CLOVER), "위험한 물건 상향",
                 "성능이 떨어지는 일부 위험한 물건들이 상향되었습니다:\n" +
                         "\n" +
                         "_- 헤이 야!_: 강화 비용이 올랐지만, 이제 플레이어가 주는 피해만 영향을 미치며 적의 공격에는 적용되지 않게 되어 위험한 상황에 빠지지 않도록 변경되었습니다.\n" +
@@ -137,7 +137,7 @@ public class v1_X_Changes {
                         "_- 타로 카드_: 이제 저주받은 사격 DISC의 효과는 항상 중립적이거나 긍정적인 효과가 발동됩니다.\n" +
                         "_- 토오루의 인형_: 이제 모든 상자로 위장한 적들의 전리품을 증가시킵니다."));
 
-        changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 1), "죠스케 상향",
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 1), "죠스케 상향",
                 "죠스케는 2.0K 패치 이후로 훨씬 더 나은 성능을 발휘하고 있지만 이번 업데이트에서 일부 약한 무기 능력과 특성을 추가로 상향합니다:\n" +
                         "\n" +
                         "무기 능력:\n" +
@@ -152,8 +152,8 @@ public class v1_X_Changes {
                         "_- 최종 결전_ 특성의 정확도 보너스가 2x/4x/8x에서 2x/5x/무한대로 증가했습니다.\n" +
                         "_- 약점 발견 - 초월_ 특성이 방어력 저하 뿐만 아니라 공격력 저하도 부여합니다."));
 
-        changes.addButton( new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 4), "수복의 스탠드사 상향",
-                        "_-_ 하트 히트 어택을 제외한 모든 능력의 쿨타임이 완전히 제거되었습니다.\n" +
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.DUELIST, 4), "수복의 스탠드사 상향",
+                "_-_ 하트 히트 어택을 제외한 모든 능력의 쿨타임이 완전히 제거되었습니다.\n" +
                         "_- 하트 히트 어택_의 피해량이 50% 증가합니다.\n" +
                         "_- 스타일리쉬 가드_는 이제 스탠드 공격에도 적용되며, 지속 시간은 무한합니다.\n" +
                         "_- 스타일리쉬 무브_의 범위가 33% 증가합니다.\n" +
@@ -162,7 +162,7 @@ public class v1_X_Changes {
                         "_- 황금의 정신_ 특성의 에너지 획득량이 40%/80%/120%에서 50%/75%/100%로 변경됩니다.\n" +
                         "_- 결정된 승리_ 특성이 더 사용하기 쉽게 완화되었으며 충전 비용을 50% 대신 1만큼 줄입니다."));
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.BREW_UNSTABLE), "기타 상향",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BREW_UNSTABLE), "기타 상향",
                 "_- 속임수_ 특성은 이제 항상 성공하고, 실패 시 디스크 에너지를 제공하지 않으며, +1일 때 1회 사용, +2일 때 레벨당 1회 사용으로 제한됩니다.\n" +
                         "_- 비밀 간파_ 특성의 발동 확률이 +1일 때 75%, +2일 때 100%로 증가합니다(기존 60%, 90%).\n" +
                         "_- 흔들림 없는 용기_ 특성은 이제 레벨당 방어력을 0-2에서 1-2로 증가시킵니다.\n" +
@@ -171,20 +171,43 @@ public class v1_X_Changes {
                         "_- 변형된 용액_은 이제 이제 던지거나 마실 때 적절한 무작위 물약 효과를 보장합니다.\n" +
                         "_- 변형된 DISC_는 이제 주변 적에 따라 적절한 무작위 기억 DISC 효과를 보장합니다.\n"));
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB), "폭탄 변경",
+                "이제 폭탄으로 장비가 파괴되지 않는 대신 다음 변경사항이 적용되었습니다:\n" +
+                        "\n" +
+                        "먼저 _탐지의 명령 DISC_는 해제의 명령 DISC를 대체하는 새로운 아이템입니다. 탐지의 명령 DISC는 장비에 사용되어 저주 여부와 속성, 상형문자 강화 여부를 식별할 수 있습니다.",
+                "두 번째로, 폭탄 상향이 있습니다:\n" +
+                        "_- 오렌지 폭탄_의 최대 데미지가 +50% 증가합니다. (평균 데미지 33% 증가)\n" +
+                        "_- 폭탄_은 더 이상 캐릭터에게 직접 던져도 튀지 않습니다\n" +
+                        "_- 폭탄_은 캐릭터가 바로 위에 있지 않을 때 더 이상 피해 감소를 갖지 않습니다\n" +
+                        "_- 폭발 유발 효과_(예: 폭발성 함정, 폭발성 저주)는 모두 피해 및 감소 변경의 혜택을 받습니다.\n" +
+                        "_- 개조 폭탄_ 모두 피해 및 감소 변경의 혜택을 받으며, 3x3에서 5x5 범위의 폭발 피해를 줍니다.\n" +
+                        "_- 섬광의 오렌지 폭탄_ 대신 이제 연막 폭탄이 추가되어 피해를 주는 것 외에도 5x5 범위에 안개를 퍼뜨릴 수 있습니다.\n" +
+                        "_- 전격 폭탄_의 효과가 이제 5x5 범위 내에서 +25% 전기 피해를 주고 10턴 동안 기절시킵니다.\n" +
+                        "_- 생명 폭탄_의 범위가 5x5에서 7x7로, 이제 항상 2개에서 3개 이상의 식물을 생성합니다."));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHAOTIC_CENSER), "위험한 물건 변경",
+                "_- 쇼트 키 No. 2_의 가스 생성 범위가 1-3타일에서 최대 2-5타일로 증가했습니다.\n" +
+                        "_- 쇼트 키 No. 2_의 가스 생성량이 감소합니다.\n" +
+                        "_- 쇼트 키 No. 2_가 적 근처에 가스를 분출할 확률이 증가합니다.\n" +
+                        "\n" +
+                        "_- 체리 장식_의 체력 재생 저하량이 20/33/43/50%에서 16/27/34/40%로 변경되었습니다.\n" +
+                        "\n" +
+                        "_- 공격의 명령 DISC_는 이제 보스에게 사용하면 1/2의 피해량을 입힙니다.\n" +
+                        "_- 공격의 명령 DISC_의 지속 시간이 일반 적에게 사용한 경우 5턴에서 20턴으로 증가합니다.\n" +
+                        "\n" +
+                        "_- 개구리 가죽_의 강화 비용이 15/20/25에서 20/25/30으로 증가합니다.\n" +
+                        "이제 위험한 물건을 죠죠 포인트로 전환할 수 있습니다."));
+
         changes = new ChangeInfo("하향", false, null);
         changes.hardlight(CharSprite.NEGATIVE);
         changeInfos.add(changes);
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.BOMB), "폭탄 식별",
-                "이전에는 강화되지 않은 장비만 파괴했지만, 이제 폭발로 인해 장비가 파괴되지 않습니다."));
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.MOSSY_CLUMP), "개구리 가죽과 잔디 계층",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MOSSY_CLUMP), "개구리 가죽과 잔디 계층",
                 "잔디가 가득한 계층에서 개구리가 나오는 확률이 절반으로 감소합니다.\n" +
                         "\n" +
-                        "즉, 평균적으로 일반 계층보다 잔디 계층에서 나오는 개구리의 양이 4배에서 2배로 감소했습니다.\n" +
-                        "\n" +
-                        "개구리 가죽의 강화 비용이 감소합니다."));
+                        "즉, 평균적으로 일반 계층보다 잔디 계층에서 나오는 개구리의 양이 4배에서 2배로 감소했습니다."));
 
-        changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.WHIP), "기타 아이템 하향",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WHIP), "기타 아이템 하향",
                 "_- 미스타의 권총_의 무기 능력인 혈액 커터의 피해량이 +20%에서 0%로 감소했습니다.\n" +
                         "\n" +
                         "_- 신속의 석가면의_ 레벨 당 보너스 속도가 20%에서 17.5%로 감소했습니다.\n" +
