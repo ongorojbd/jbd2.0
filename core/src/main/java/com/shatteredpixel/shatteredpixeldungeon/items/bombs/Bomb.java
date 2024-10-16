@@ -271,14 +271,14 @@ public class Bomb extends Item {
 
     @Override
     public String desc() {
-        int depth = Dungeon.depth == -1 ? 1 : Dungeon.depth;
-        String desc = Messages.get(this, "desc", 4 + depth, 12 + 3 * depth);
-        if (fuse == null)
+        int depth = Dungeon.hero == null ? 1 : Dungeon.scalingDepth();
+        String desc = Messages.get(this, "desc", 4+depth, 12+3*depth);
+        if (fuse == null) {
             return desc + "\n\n" + Messages.get(this, "desc_fuse");
-        else
+        } else {
             return desc + "\n\n" + Messages.get(this, "desc_burning");
+        }
     }
-
     private static final String FUSE = "fuse";
 
     @Override
