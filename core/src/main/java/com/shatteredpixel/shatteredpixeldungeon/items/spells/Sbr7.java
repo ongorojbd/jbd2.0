@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Amblance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bmore;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Cream;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fugomob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
@@ -73,13 +74,17 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FdolTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
@@ -152,7 +157,17 @@ public class Sbr7 extends Spell {
 
             if (!spawnPoints.isEmpty()){
 
-                GLog.n(Messages.get(Pucci12.class, "4"));
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new PucciSprite()},
+                        new String[]{"퍼니 발렌타인"},
+                        new String[]{
+                                Messages.get(Pucci12.class, "4")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE
+                        }
+                );
+
                 Pucci12 elemental = new Pucci12();
                 GameScene.add( elemental );
                 ScrollOfTeleportation.appear( elemental, throne);

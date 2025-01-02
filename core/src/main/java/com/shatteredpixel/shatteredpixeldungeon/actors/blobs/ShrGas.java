@@ -60,7 +60,7 @@ public class ShrGas extends Blob implements Hero.Doom {
     public void use( BlobEmitter emitter ) {
         super.use( emitter );
 
-        emitter.pour( FlameParticle.FACTORY, 0.03f );
+        emitter.pour( Speck.factory( Speck.INFERNO, true ), 0.4f );
     }
 
     @Override

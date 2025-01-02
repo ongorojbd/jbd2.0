@@ -26,41 +26,43 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
+import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MobSpawner extends Actor {
-	{
-		actPriority = BUFF_PRIO; //as if it were a buff.
-	}
+    {
+        actPriority = BUFF_PRIO; //as if it were a buff.
+    }
 
-	@Override
-	protected boolean act() {
+    @Override
+    protected boolean act() {
 
-		if (Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
+        if (Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
 
-			if (Dungeon.level.spawnMob(12)){
-				spend(Dungeon.level.respawnCooldown());
-			} else {
-				//try again in 1 turn
-				spend(TICK);
-			}
+            if (Dungeon.level.spawnMob(12)) {
+                spend(Dungeon.level.respawnCooldown());
+            } else {
+                //try again in 1 turn
+                spend(TICK);
+            }
 
-		} else {
-			spend(Dungeon.level.respawnCooldown());
-		}
+        } else {
+            spend(Dungeon.level.respawnCooldown());
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public void resetCooldown(){
-		spend(-cooldown());
-		spend(Dungeon.level.respawnCooldown());
-	}
+    public void resetCooldown() {
+        spend(-cooldown());
+        spend(Dungeon.level.respawnCooldown());
+    }
 
-	public static ArrayList<Class<? extends Mob>> getMobRotation(int depth ){
+    public static ArrayList<Class<? extends Mob>> getMobRotation(int depth) {
         ArrayList<Class<? extends Mob>> mobs = standardMobRotation(depth);
         addRareMobs(depth, mobs);
         swapMobAlts(mobs);
@@ -80,23 +82,22 @@ public class MobSpawner extends Actor {
                     return new ArrayList<>(Arrays.asList(
                             Zombie.class, Zombie.class, Zombie.class,
                             Zombiedog.class));
+                } else {
+                    return new ArrayList<>(Arrays.asList(
+                            Rat.class, Rat.class, Rat.class,
+                            Snake.class));
                 }
-                return new ArrayList<>(Arrays.asList(
-                        Rat.class, Rat.class, Rat.class,
-                        Snake.class));
-
             case 2:
                 //2x rat, 1x snake, 2x gnoll
                 if (Dungeon.diolevel) {
                     return new ArrayList<>(Arrays.asList(Zombie.class, Zombie.class,
                             Zombiedog.class,
                             Zombied.class, Zombied.class));
+                } else {
+                    return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
+                            Snake.class,
+                            Gnoll.class, Gnoll.class));
                 }
-
-                return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
-                        Snake.class,
-                        Gnoll.class, Gnoll.class));
-
             case 3:
                 //1x rat, 1x snake, 3x gnoll, 1x swarm, 1x crab
                 if (Dungeon.diolevel) {
@@ -105,13 +106,17 @@ public class MobSpawner extends Actor {
                             Zombied.class, Zombied.class, Zombied.class,
                             Zombiez.class,
                             Zombiep.random()));
+                } else if (Statistics.spw6 > 0) {
+                    return new ArrayList<>(Arrays.asList(Manhatan.class, Manhatan.class,
+                            Manhatan.class,
+                            Manhatan.class, Manhatan.class));
+                } else {
+                    return new ArrayList<>(Arrays.asList(Rat.class,
+                            Snake.class,
+                            Gnoll.class, Gnoll.class, Gnoll.class,
+                            Swarm.class,
+                            Crab.class));
                 }
-                return new ArrayList<>(Arrays.asList(Rat.class,
-                        Snake.class,
-                        Gnoll.class, Gnoll.class, Gnoll.class,
-                        Swarm.class,
-                        Crab.class));
-
             case 4:
             case 5:
                 //1x gnoll, 1x swarm, 2x crab, 2x slime
@@ -120,14 +125,18 @@ public class MobSpawner extends Actor {
                             Zombiez.class,
                             Zombiep.random(), Zombiep.random(),
                             Zombiet.class, Zombiet.class));
+                } else if (Statistics.spw6 > 0) {
+                    return new ArrayList<>(Arrays.asList(Manhatan.class, Manhatan.class,
+                            Manhatan.class,
+                            Manhatan.class, Manhatan.class));
+                } else {
+                    return new ArrayList<>(Arrays.asList(Gnoll.class,
+                            Swarm.class,
+                            Crab.class, Crab.class,
+                            Slime.class, Slime.class));
                 }
 
-                return new ArrayList<>(Arrays.asList(Gnoll.class,
-                        Swarm.class,
-                        Crab.class, Crab.class,
-                        Slime.class, Slime.class));
-
-            // Prison
+                // Prison
             case 6:
                 //3x skeleton, 1x thief, 1x swarm
                 return new ArrayList<>(Arrays.asList(Bcom.class, Bcom.class, Bcom.class,
@@ -359,9 +368,9 @@ public class MobSpawner extends Actor {
     }
 
     //switches out regular mobs for their alt versions when appropriate
-	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation) {
-		float altChance = 1 / 50f * RatSkull.exoticChanceMultiplier();
-		for (int i = 0; i < rotation.size(); i++) {
+    private static void swapMobAlts(ArrayList<Class<? extends Mob>> rotation) {
+        float altChance = 1 / 50f * RatSkull.exoticChanceMultiplier();
+        for (int i = 0; i < rotation.size(); i++) {
             if (Random.Float() < altChance) {
                 Class<? extends Mob> cl = rotation.get(i);
                 if (cl == Rat.class) {
@@ -370,7 +379,7 @@ public class MobSpawner extends Actor {
                     cl = CausticSlime.class;
                 } else if (cl == Thief.class) {
                     cl = Bandit.class;
-				} else if (cl == Necromancer.class) {
+                } else if (cl == Necromancer.class) {
                     cl = SpectralNecromancer.class;
                 } else if (cl == Brute.class) {
                     cl = ArmoredBrute.class;

@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Fugomob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kakyoin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Val;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Willamob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -73,13 +74,17 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FdolTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CivilSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RebelSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
@@ -122,7 +127,16 @@ public class Map1 extends Spell {
             GameScene.flash(0x990000);
             Music.INSTANCE.play(Assets.Music.CIV, true);
             GLog.p(Messages.get(Civil.class, "3"));
-            GLog.n( Messages.get(Civil.class, "1") );
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new CivilSprite()},
+                    new String[]{"시빌 워"},
+                    new String[]{
+                            Messages.get(Civil.class, "1")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
             for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
                 int p = hero.pos + PathFinder.NEIGHBOURS8[i];
                 if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {

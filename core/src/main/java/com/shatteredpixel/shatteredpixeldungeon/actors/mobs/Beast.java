@@ -24,45 +24,39 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Wgas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Pucci4Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-import com.watabou.utils.Callback;
+
 import java.util.ArrayList;
 
 public class Beast extends Mob {
@@ -126,12 +120,31 @@ public class Beast extends Mob {
             GameScene.flash( 0xFFCCFF );
             new Fadeleaf().activate(this);
             state = HUNTING;
-            yell(Messages.get(this, "q"));
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new Pucci4Sprite()},
+                    new String[]{"엔리코 푸치"},
+                    new String[]{
+                            Messages.get(Beast.class, "q")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
         }
         else if (Phase==1 && HP < 151) {
             Phase = 2;
-            GLog.p(Messages.get(this, "e"));
-            yell(Messages.get(this, "2"));
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new EmporioSprite(), new Pucci4Sprite()},
+                    new String[]{"엠포리오 아르니뇨", "엔리코 푸치"},
+                    new String[]{
+                            Messages.get(Beast.class, "n6"),
+                            Messages.get(Beast.class, "n7")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE,
+                            WndDialogueWithPic.IDLE
+                    }
+            );
             Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
         }
     }
@@ -285,8 +298,19 @@ public class Beast extends Mob {
         SPDSettings.addSpecialcoin(4);
 
         Camera.main.shake( 3, 1f );
-        GLog.p(Messages.get(this, "r"));
-        yell(Messages.get(this, "defeated"));
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new Pucci4Sprite(), new EmporioSprite()},
+                new String[]{"엔리코 푸치", "엠포리오 아르니뇨"},
+                new String[]{
+                        Messages.get(Beast.class, "n8"),
+                        Messages.get(Beast.class, "n9")
+                },
+                new byte[]{
+                        WndDialogueWithPic.DIE,
+                        WndDialogueWithPic.IDLE
+                }
+        );
+
         Statistics.duwang = 34;
     }
 

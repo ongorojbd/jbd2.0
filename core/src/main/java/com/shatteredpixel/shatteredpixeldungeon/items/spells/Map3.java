@@ -73,13 +73,18 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FdolTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BmoreSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
@@ -127,23 +132,44 @@ public class Map3 extends Spell {
 
             switch(Dungeon.hero.heroClass){
                 case WARRIOR:
-                    GLog.n(Messages.get(Diego.class, "1"));
-                    break;
                 case ROGUE:
-                    GLog.n(Messages.get(Diego.class, "1"));
-                    break;
                 case MAGE:
-                    GLog.n(Messages.get(Diego.class, "1"));
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiegoSprite()},
+                            new String[]{"디에고 브란도"},
+                            new String[]{
+                                    Messages.get(Diego.class, "1")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
                 case HUNTRESS:
-                    GLog.n(Messages.get(Diego.class, "6"));
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiegoSprite()},
+                            new String[]{"디에고 브란도"},
+                            new String[]{
+                                    Messages.get(Diego.class, "6")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
                 case DUELIST:
-                    GLog.n(Messages.get(Diego.class, "12"));
-                    GLog.p(Messages.get(Val.class, "9"));
-                    Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
-                    GameScene.flash(0xFF0000);
-                    Camera.main.shake(9, 0.5f);
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiegoSprite(), new JosukeDialogSprite()},
+                            new String[]{"디에고 브란도", "죠스케"},
+                            new String[]{
+                                    Messages.get(Diego.class, "12"),
+                                    Messages.get(Val.class, "9")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
                     break;
             }

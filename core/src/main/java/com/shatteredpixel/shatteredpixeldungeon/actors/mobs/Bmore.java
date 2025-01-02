@@ -110,7 +110,6 @@ public class Bmore extends Mob {
     int sCooldown = 5;
     private static final String SCOOLDOWN = "scooldown";
 
-    private boolean seenBefore = false;
     private boolean threatened = false;
 
     @Override
@@ -138,12 +137,6 @@ public class Bmore extends Mob {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
         }
-
-        if (!seenBefore) {
-            yell( Messages.get(this, "1") );
-        }
-
-        seenBefore = true;
     }
 
     @Override

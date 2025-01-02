@@ -45,11 +45,8 @@ public class RatKingSprite extends MobSprite {
 			default:
 				c = 0;
 				break;
-			case APRIL_FOOLS:
-				c = 8;
-				break;
 			case WINTER_HOLIDAYS:
-				c = 16;
+				c = 8;
 				break;
 		}
 

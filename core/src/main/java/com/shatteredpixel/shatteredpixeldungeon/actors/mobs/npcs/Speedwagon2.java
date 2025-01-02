@@ -28,29 +28,17 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class Speedwagon2 extends NPC {
 

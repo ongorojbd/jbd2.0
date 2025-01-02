@@ -19,15 +19,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Stower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Vitaminc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Whsnake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Whsnake2;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Sample;
 
 public class Maga extends Spell {
@@ -51,6 +58,19 @@ public class Maga extends Spell {
                 Dungeon.level.mobs.remove(mob);
             }
         }
+
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new TankSprite(), new DvdolSprite()},
+                new String[]{"죠죠찬", "아톨"},
+                new String[]{
+                        Messages.get(Maga.class, "n1"),
+                        Messages.get(Maga.class, "n2")
+                },
+                new byte[]{
+                        WndDialogueWithPic.IDLE,
+                        WndDialogueWithPic.IDLE
+                }
+        );
 
         identify();
         GLog.p( Messages.get(this, "w") );

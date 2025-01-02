@@ -49,9 +49,15 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KousakuSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -101,10 +107,20 @@ public class Kawasiri extends Mob {
 
         GameScene.bossSlain();
 
-        yell(Messages.get(this, "phase4"));
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new KousakuSprite(), new ShopkeeperSprite()},
+                new String[]{"카와지리 코사쿠", "스기모토 레이미"},
+                new String[]{
+                        Messages.get(Kawasiri.class, "phase4"),
+                        Messages.get(Kawasiri.class, "phase5")
+                },
+                new byte[]{
+                        WndDialogueWithPic.IDLE,
+                        WndDialogueWithPic.IDLE
+                }
+        );
 
         Buff.affect(hero, Kawasiribuff.class);
-
 
         if (Random.Int(10) == 0) {
             GameScene.flash(0xFFFF00);
@@ -115,18 +131,11 @@ public class Kawasiri extends Mob {
         }
         Music.INSTANCE.end();
 
-
         for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
             if (mob instanceof DestOrb || mob instanceof Amblance) {
                 mob.die(cause);
             }
         }
-
-        Reimi Reimi = new Reimi();
-        Reimi.state = Reimi.PASSIVE;
-        Reimi.pos = this.pos;
-        GameScene.add(Reimi);
-        Reimi.beckon(Dungeon.hero.pos);
     }
 
     @Override
@@ -189,21 +198,46 @@ public class Kawasiri extends Mob {
             }
             switch (Dungeon.hero.heroClass) {
                 case WARRIOR:
-                    this.yell(Messages.get(this, "phase5"));
+                case MAGE:
+                case HUNTRESS:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new KousakuSprite(), new KousakuSprite()},
+                            new String[]{"카와지리 코사쿠", "카와지리 코사쿠"},
+                            new String[]{
+                                    Messages.get(Kawasiri.class, "n1"),
+                                    Messages.get(Kawasiri.class, "n2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
                 case ROGUE:
-                    this.yell(Messages.get(this, "jotaro"));
-                    break;
-                case MAGE:
-                    GLog.p(Messages.get(Val.class, "7"));
-                    this.yell(Messages.get(this, "joseph"));
-                    break;
-                case HUNTRESS:
-                    this.yell(Messages.get(this, "phase5"));
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new KousakuSprite()},
+                            new String[]{"카와지리 코사쿠"},
+                            new String[]{
+                                    Messages.get(Kawasiri.class, "jotaro")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
                 case DUELIST:
-                    this.yell(Messages.get(this, "josuke"));
-                    GLog.p(Messages.get(this, "josuke2"));
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new KousakuSprite(), new ResearcherSprite()},
+                            new String[]{"카와지리 코사쿠", "죠스케"},
+                            new String[]{
+                                    Messages.get(Kawasiri.class, "josuke"),
+                                    Messages.get(Kawasiri.class, "josuke2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
             }
 
@@ -234,7 +268,16 @@ public class Kawasiri extends Mob {
             Buff.affect(Dungeon.hero, Weakness.class, 11f);
 
             yell(Messages.get(this, "phase3"));
-            yell(Messages.get(this, "bom"));
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new KousakuSprite()},
+                    new String[]{"카와지리 코사쿠"},
+                    new String[]{
+                            Messages.get(Kawasiri.class, "bom")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
         }
 
         if (Phase == 6 && HP < 52) {

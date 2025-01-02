@@ -70,8 +70,8 @@ public class JournalScene extends PixelScene {
 		new TerrainFeaturesTilemap(new SparseArray<>(), new SparseArray<>());
 
 		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.THEME_1, Assets.Music.THEME_1},
-				new float[]{1, 1},
+				new String[]{Assets.Music.DRAGON},
+				new float[]{1},
 				false);
 
 		uiCamera.visible = false;

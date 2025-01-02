@@ -54,9 +54,18 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiobrandoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -106,39 +115,76 @@ public class Diobrando extends Mob {
         super.notice();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
-            switch(Dungeon.hero.heroClass){
+
+            switch(hero.heroClass){
                 case WARRIOR:
-                    this.yell(Messages.get(this, "1"));
-                    GLog.p(Messages.get(this, "10"));
-                    Sample.INSTANCE.play(Assets.Sounds.DIO1);
-                    Statistics.duwang3 = 5;
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiobrandoSprite(), new SupressionSprite()},
+                            new String[]{"디오 브란도", "죠나단"},
+                            new String[]{
+                                    Messages.get(this, "1"),
+                                    Messages.get(this, "10")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
                 case MAGE:
-                    this.yell(Messages.get(this, "12"));
-                    Sample.INSTANCE.play(Assets.Sounds.DIO1);
-                    Statistics.duwang3 = 5;
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiobrandoSprite()},
+                            new String[]{"디오 브란도"},
+                            new String[]{
+                                    Messages.get(this, "12"),
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
                 case ROGUE:
-                    this.yell(Messages.get(this, "13"));
-                    Sample.INSTANCE.play(Assets.Sounds.DIO1);
-                    Statistics.duwang3 = 5;
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiobrandoSprite()},
+                            new String[]{"디오 브란도"},
+                            new String[]{
+                                    Messages.get(this, "13")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
                 case DUELIST:
-                    this.yell(Messages.get(this, "14"));
-                    GLog.p(Messages.get(Val.class, "9"));
-                    Sample.INSTANCE.play(Assets.Sounds.DIO1);
-                    Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
-                    GameScene.flash(0xFF0000);
-                    Camera.main.shake(9, 0.5f);
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiobrandoSprite(), new JosukeDialogSprite()},
+                            new String[]{"디오 브란도", "죠스케"},
+                            new String[]{
+                                    Messages.get(this, "14"),
+                                    Messages.get(Val.class, "9"),
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
-                    Statistics.duwang3 = 5;
                     break;
                 case HUNTRESS:
-                    this.yell(Messages.get(this, "15"));
-                    Sample.INSTANCE.play(Assets.Sounds.DIO1);
-                    Statistics.duwang3 = 5;
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiobrandoSprite()},
+                            new String[]{"디오 브란도"},
+                            new String[]{
+                                    Messages.get(this, "15")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                     break;
             }
+
+            Statistics.duwang3 = 5;
 
         }
     }
@@ -156,7 +202,6 @@ public class Diobrando extends Mob {
 
         BossHealthBar.assignBoss(this);
         int preHP = HP;
-        int dmgTaken = preHP - HP;
 
         super.damage(dmg, src);
 
@@ -549,8 +594,18 @@ public class Diobrando extends Mob {
 
         Dungeon.level.drop( new Smask(), itemPlace ).sprite.drop( itemPlace );
 
-        yell( Messages.get(this, "6") );
-        GLog.n(Messages.get(this, "t6"));
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new DiobrandoSprite(), new SpeedwagonSprite()},
+                new String[]{"디오 브란도", "스피드왜건"},
+                new String[]{
+                        Messages.get(this, "6"),
+                        Messages.get(this, "t6"),
+                },
+                new byte[]{
+                        WndDialogueWithPic.IDLE,
+                        WndDialogueWithPic.IDLE
+                }
+        );
 
         Sample.INSTANCE.play(Assets.Sounds.NANI);
         Sample.INSTANCE.play(Assets.Sounds.SPW5);

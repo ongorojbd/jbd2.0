@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -50,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
@@ -295,11 +293,11 @@ public class Goo extends Mob {
 
 	@Override
 	public void die( Object cause ) {
-		
+
 		super.die( cause );
-		
+
 		Dungeon.level.unseal();
-		
+
 		GameScene.bossSlain();
 		Dungeon.level.drop( new SkeletonKey( Dungeon.depth ), pos ).sprite.drop();
 
@@ -339,29 +337,6 @@ public class Goo extends Mob {
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
 			Dungeon.level.seal();
-			switch(hero.heroClass){
-				case WARRIOR:
-					this.yell(Messages.get(this, "notice"));
-					break;
-				case ROGUE:
-					this.yell(Messages.get(this, "notice2"));
-					break;
-				case MAGE:
-					GLog.p(Messages.get(Val.class, "1"));
-					this.yell(Messages.get(this, "notice3"));
-					break;
-				case HUNTRESS:
-					this.yell(Messages.get(this, "notice4"));
-					break;
-				case DUELIST:
-					this.yell(Messages.get(this, "notice5"));
-					GLog.p(Messages.get(Val.class, "9"));
-					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
-					GameScene.flash(0xFF0000);
-					Camera.main.shake(9, 0.5f);
-					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
-					break;
-			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){
 					((DriedRose.GhostHero) ch).sayBoss();

@@ -87,12 +87,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 	private int stunStates = 0;
 	
-	protected Animation idle;
-	protected Animation run;
-	protected Animation attack;
+	public Animation idle;
+	public Animation run;
+	public Animation attack;
 	protected Animation operate;
 	protected Animation zap;
-	protected Animation die;
+	public Animation die;
 	
 	protected Callback animCallback;
 	

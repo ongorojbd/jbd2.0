@@ -117,7 +117,7 @@ public class Dio2bossLevel extends Level {
     private static final short C = Terrain.STATUE_SP;
 
     private static final short G = Terrain.STATUE;
-    private static final short L = Terrain.LOCKED_DOOR;
+    private static final short L = Terrain.LOCKED_EXIT;
     private static final short i = Terrain.EMPTY_SP;
 
     private static final short P = Terrain.CHASM;

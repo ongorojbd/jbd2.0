@@ -54,7 +54,7 @@ public class MagicMissile extends Emitter {
 	private float sx;
 	private float sy;
 	private float time;
-
+	//p.color( ColorMath.random( 0x80DEF7, 0x0099FF) ); 죠린 컬러
 	//missile types
 	public static final int MAGIC_MISSILE   = 0;
 	public static final int FROST           = 1;

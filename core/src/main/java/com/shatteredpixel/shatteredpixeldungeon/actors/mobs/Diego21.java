@@ -38,9 +38,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr7;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -108,7 +111,16 @@ public class Diego21 extends Mob {
         }
 
         GLog.h(Messages.get(Diego12.class, "6"));
-        yell( Messages.get(this, "4") );
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new DiegonSprite()},
+                new String[]{"디에고 브란도"},
+                new String[]{
+                        Messages.get(Diego21.class, "4")
+                },
+                new byte[]{
+                        WndDialogueWithPic.DIE
+                }
+        );
 
     }
 

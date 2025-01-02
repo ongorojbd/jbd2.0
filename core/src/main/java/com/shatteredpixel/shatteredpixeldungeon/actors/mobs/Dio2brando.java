@@ -53,10 +53,14 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiobrandoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -117,10 +121,21 @@ public class Dio2brando extends Mob {
                     mob.state = mob.HUNTING;
                     Dungeon.level.occupyCell(mob);
                 }
-                GLog.n(Messages.get(this, "13"));
-                GLog.newLine();
-                yell(Messages.get(this, "t"));
+
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new DiegoSprite(), new DiobrandoSprite()},
+                        new String[]{"디에고 브란도", "디오 브란도"},
+                        new String[]{
+                                Messages.get(Dio2brando.class, "13"),
+                                Messages.get(Dio2brando.class, "t")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE
+                        }
+                );
             }
+
             Sample.INSTANCE.play(Assets.Sounds.DIO1);
         }
     }

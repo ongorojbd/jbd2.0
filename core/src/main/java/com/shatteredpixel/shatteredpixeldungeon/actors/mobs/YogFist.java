@@ -61,8 +61,11 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FistSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -569,7 +572,16 @@ public abstract class YogFist extends Mob {
 					Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
 					Sample.INSTANCE.play(Assets.Sounds.BLAST);
 					GameScene.flash(0x80FFFFFF);
-					GLog.n( Messages.get( this, "teleport" ));
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new DioDialogSprite()},
+							new String[]{"DIO"},
+							new String[]{
+									Messages.get(YogDzewa.class, "roller")
+							},
+							new byte[]{
+									WndDialogueWithPic.RUN
+							}
+					);
 				} else {
 
 				}
@@ -665,7 +677,16 @@ public abstract class YogFist extends Mob {
 					Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
 					Sample.INSTANCE.play(Assets.Sounds.BLAST);
 					GameScene.flash(0x80FFFFFF);
-					GLog.n( Messages.get( this, "teleport" ));
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new DioDialogSprite()},
+							new String[]{"DIO"},
+							new String[]{
+									Messages.get(YogDzewa.class, "roller")
+							},
+							new byte[]{
+									WndDialogueWithPic.RUN
+							}
+					);
 				} else {
 
 				}

@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -1366,7 +1367,8 @@ public abstract class Mob extends Char {
                 level.mobs.remove(mob);
                 heldAllies.add(mob);
             } else if (mob.alignment == Alignment.ALLY && mob.intelligentAlly
-                    && Dungeon.level instanceof DioLevel) {
+                    && Dungeon.level instanceof DioLevel || mob.alignment == Alignment.ALLY && mob.intelligentAlly
+                    && Dungeon.level instanceof JolyneLevel) {
                 level.mobs.remove(mob);
                 heldAllies.add(mob);
             }

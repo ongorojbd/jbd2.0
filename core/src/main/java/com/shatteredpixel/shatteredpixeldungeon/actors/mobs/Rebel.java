@@ -52,9 +52,18 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DioDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RebelSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SoldierSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -89,6 +98,7 @@ public class Rebel extends Mob {
 		immunities.add(Blindness.class );
 		immunities.add(MagicalSleep.class );
 	}
+
 	int cleanCooldown = 9999;
 	int summonCooldown = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 9999 : 9999;
 	private int charge = 0; // 2이 될경우 강화 사격
@@ -253,34 +263,40 @@ public class Rebel extends Mob {
 		super.notice();
 		if (!BossHealthBar.isAssigned()) {
 			BossHealthBar.assignBoss(this);
-			switch(Dungeon.hero.heroClass){
+			switch (Dungeon.hero.heroClass) {
 				case WARRIOR:
-					this.yell(Messages.get(this, "notice"));
-					Sample.INSTANCE.play(Assets.Sounds.OH2);
+				case MAGE:
+				case DUELIST:
+				case HUNTRESS:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new RebelSprite()},
+							new String[]{"천국 DIO"},
+							new String[]{
+									Messages.get(Rebel.class, "n1")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE
+							}
+					);
 					break;
 				case ROGUE:
-					this.yell(Messages.get(this, "notice2"));
-					Sample.INSTANCE.play(Assets.Sounds.OH2);
-					break;
-				case MAGE:
-					GLog.p(Messages.get(Val.class, "6"));
-					this.yell(Messages.get(this, "notice3"));
-					Sample.INSTANCE.play(Assets.Sounds.OH2);
-					break;
-				case HUNTRESS:
-					this.yell(Messages.get(this, "notice4"));
-					Sample.INSTANCE.play(Assets.Sounds.OH2);
-					break;
-				case DUELIST:
-					this.yell(Messages.get(this, "notice5"));
-					GLog.p(Messages.get(Val.class, "9"));
-					Sample.INSTANCE.play(Assets.Sounds.OH2);
-					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
-					GameScene.flash(0xFF0000);
-					Camera.main.shake(9, 0.5f);
-					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new RebelSprite(), new TankSprite()},
+							new String[]{"천국 DIO", "죠타로"},
+							new String[]{
+									Messages.get(Rebel.class, "n2"),
+									Messages.get(Rebel.class, "n3")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
 					break;
 			}
+
+			Sample.INSTANCE.play(Assets.Sounds.OH2);
+
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){
 					((DriedRose.GhostHero) ch).sayBoss();
@@ -449,7 +465,18 @@ public class Rebel extends Mob {
 			GameScene.flash(0x8B00FF);
 			Buff.prolong(this, Bless.class, Bless.DURATION*1_000_000);
 
-			GLog.n(Messages.get(Rebel.class, "val"));
+			WndDialogueWithPic.dialogue(
+					new CharSprite[]{new PucciSprite(), new RebelSprite()},
+					new String[]{"퍼니 발렌타인", "천국 DIO"},
+					new String[]{
+							Messages.get(Rebel.class, "n5"),
+							Messages.get(Rebel.class, "n6")
+					},
+					new byte[]{
+							WndDialogueWithPic.IDLE,
+							WndDialogueWithPic.IDLE
+					}
+			);
 
 			Pucci Pucci = new Pucci();
 			Pucci.state = Pucci.WANDERING;
@@ -468,7 +495,16 @@ public class Rebel extends Mob {
 			immunities.add(Doom.class );
 			immunities.add(Grim.class );
 
-			yell(Messages.get(this, "telling_2"));
+			WndDialogueWithPic.dialogue(
+					new CharSprite[]{new RebelSprite()},
+					new String[]{"천국 DIO"},
+					new String[]{
+							Messages.get(Rebel.class, "n4")
+					},
+					new byte[]{
+							WndDialogueWithPic.IDLE
+					}
+			);
 
 			Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
 
@@ -498,6 +534,17 @@ public class Rebel extends Mob {
 			jojo.pos = hero.pos;
 			GameScene.add( jojo );
 			jojo.beckon(Dungeon.hero.pos);
+
+			WndDialogueWithPic.dialogue(
+					new CharSprite[]{new JojoSprite()},
+					new String[]{"죠린"},
+					new String[]{
+							Messages.get(Rebel.class, "n7")
+					},
+					new byte[]{
+							WndDialogueWithPic.IDLE
+					}
+			);
 
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 			sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
@@ -587,7 +634,16 @@ public class Rebel extends Mob {
 			GLog.p(Messages.get(Kawasiri.class, "rare"));
 		}
 
-		yell( Messages.get(this, "defeated") );
+		WndDialogueWithPic.dialogue(
+				new CharSprite[]{new RebelSprite()},
+				new String[]{"천국 DIO"},
+				new String[]{
+						Messages.get(Rebel.class, "n8")
+				},
+				new byte[]{
+						WndDialogueWithPic.DIE
+				}
+		);
 
 		Sample.INSTANCE.play( Assets.Sounds.NANI );
 

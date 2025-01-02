@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Fireball;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.AvailableUpdateData;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -53,8 +52,6 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
 
-import java.util.Date;
-
 public class TitleScene extends PixelScene {
 	
 	@Override
@@ -63,8 +60,8 @@ public class TitleScene extends PixelScene {
 		super.create();
 
 		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.THEME_1, Assets.Music.THEME_1},
-				new float[]{1, 1},
+				new String[]{Assets.Music.DRAGON},
+				new float[]{1},
 				false);
 
 		uiCamera.visible = false;

@@ -72,6 +72,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FdolTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BmoreSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CivilSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -79,6 +82,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
@@ -121,19 +125,29 @@ public class Map2 extends Spell {
             GameScene.flash(0x990000);
             Music.INSTANCE.play(Assets.Music.CIV, true);
             GLog.p(Messages.get(Civil.class, "3"));
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new BmoreSprite()},
+                    new String[]{"블랙모어"},
+                    new String[]{
+                            Messages.get(Bmore.class, "1")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
 
             for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
                 int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-                if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
-                    spawnPoints.add( p );
+                if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
+                    spawnPoints.add(p);
                 }
             }
 
-            if (!spawnPoints.isEmpty()){
+            if (!spawnPoints.isEmpty()) {
 
                 Bmore elemental = new Bmore();
-                GameScene.add( elemental );
-                ScrollOfTeleportation.appear( elemental, Random.element(spawnPoints) );
+                GameScene.add(elemental);
+                ScrollOfTeleportation.appear(elemental, Random.element(spawnPoints));
                 curUser.spendAndNext(Actor.TICK);
 
                 detach(Dungeon.hero.belongings.backpack);
@@ -144,17 +158,16 @@ public class Map2 extends Spell {
 
             updateQuickslot();
 
-            Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT),12);
-        }else
-        {
+            Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT), 12);
+        } else {
             GLog.h(Messages.get(Civil.class, "42"));
-            SpellSprite.show( curUser, SpellSprite.MAP );
+            SpellSprite.show(curUser, SpellSprite.MAP);
             Sample.INSTANCE.play(Assets.Sounds.READ);
         }
 
 
         hero.sprite.operate(hero.pos);
-        hero.spendAndNext( 1f );
+        hero.spendAndNext(1f);
     }
 
     @Override

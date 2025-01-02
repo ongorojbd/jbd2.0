@@ -54,21 +54,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WoundsofWar;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ThirdBomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscB;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -76,16 +68,19 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HighdioSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SoldierSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.YogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -103,14 +98,12 @@ import java.util.HashSet;
 public class Tengu extends Mob {
 	
 	{
-
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
 			spriteClass = DoppioSprite.class;
 		} else {
 			spriteClass = TenguSprite.class;
 		}
 
-		
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 250 : 200;
 		EXP = 20;
 		defenseSkill = 15;
@@ -203,7 +196,16 @@ public class Tengu extends Mob {
 		//phase 1 of the fight is over
 		if (state == PrisonBossLevel.State.FIGHT_START && HP <= HT/2){
 			HP = (HT/2);
-			yell(Messages.get(this, "interesting"));
+			WndDialogueWithPic.dialogue(
+					new CharSprite[]{new TenguSprite()},
+					new String[]{"디아볼로"},
+					new String[]{
+							Messages.get(Tengu.class, "interesting")
+					},
+					new byte[]{
+							WndDialogueWithPic.IDLE
+					}
+			);
 			((PrisonBossLevel)Dungeon.level).progress();
 			BossHealthBar.bleed(true);
 
@@ -377,24 +379,67 @@ public class Tengu extends Mob {
 				Sample.INSTANCE.play(Assets.Sounds.DIAVOLO3);
 				switch(Dungeon.hero.heroClass){
 					case WARRIOR:
-						this.yell(Messages.get(this, "notice_gotcha"));
-						break;
 					case ROGUE:
-						this.yell(Messages.get(this, "notice_gotcha2"));
+						WndDialogueWithPic.dialogue(
+								new CharSprite[]{new DoppioDialogSprite(), new TenguSprite()},
+								new String[]{"도피오", "디아볼로"},
+								new String[]{
+										Messages.get(Tengu.class, "notice1"),
+										Messages.get(Tengu.class, "notice2")
+								},
+								new byte[]{
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE
+								}
+						);
 						break;
 					case MAGE:
-						GLog.p(Messages.get(Val.class, "2"));
-						this.yell(Messages.get(this, "notice_gotcha3"));
+						WndDialogueWithPic.dialogue(
+								new CharSprite[]{new TrapperSprite(), new DoppioDialogSprite(), new TenguSprite()},
+								new String[]{"죠셉", "도피오", "디아볼로"},
+								new String[]{
+										Messages.get(Val.class, "v3"),
+										Messages.get(Val.class, "v4"),
+										Messages.get(Val.class, "v5"),
+								},
+								new byte[]{
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE
+								}
+						);
 						break;
 					case HUNTRESS:
-						this.yell(Messages.get(this, "notice_gotcha4"));
+						WndDialogueWithPic.dialogue(
+								new CharSprite[]{new DoppioDialogSprite(), new TenguSprite(), new SoldierSprite()},
+								new String[]{"도피오", "디아볼로", "죠르노"},
+								new String[]{
+										Messages.get(Tengu.class, "notice_gotcha3"),
+										Messages.get(Tengu.class, "notice_gotcha4"),
+										Messages.get(Tengu.class, "notice_gotcha6"),
+								},
+								new byte[]{
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE
+								}
+						);
 						break;
 					case DUELIST:
-						this.yell(Messages.get(this, "notice_gotcha5"));
-						GLog.p(Messages.get(Val.class, "9"));
-						Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
-						GameScene.flash(0xFF0000);
-						Camera.main.shake(9, 0.5f);
+						WndDialogueWithPic.dialogue(
+								new CharSprite[]{new DoppioDialogSprite(), new TenguSprite(), new JosukeDialogSprite()},
+								new String[]{"도피오", "디아볼로", "죠스케"},
+								new String[]{
+										Messages.get(Tengu.class, "notice3"),
+										Messages.get(Tengu.class, "notice_gotcha5"),
+										Messages.get(Val.class, "9"),
+								},
+								new byte[]{
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE
+								}
+						);
 						Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 						break;
 				}

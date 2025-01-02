@@ -42,8 +42,8 @@ public class Assets {
         public static final String TILES_CAVES = "environment/tiles_caves.png";
         public static final String TILES_CITY = "environment/tiles_city.png";
         public static final String TILES_HALLS = "environment/tiles_halls.png";
-        public static final String TILES_CAVES_CRYSTAL  = "environment/tiles_caves_crystal.png";
-        public static final String TILES_CAVES_GNOLL    = "environment/tiles_caves_gnoll.png";
+        public static final String TILES_CAVES_CRYSTAL = "environment/tiles_caves_crystal.png";
+        public static final String TILES_CAVES_GNOLL = "environment/tiles_caves_gnoll.png";
         public static final String TILES_LABS = "environment/tiles_labs.png";
         public static final String TILES_EMPO = "environment/tiles_empo.png";
         public static final String TILES_DIO = "environment/tiles_dio.png";
@@ -398,6 +398,21 @@ public class Assets {
         public static final String MISTA5 = "sounds/mista5.mp3";
         public static final String MISTA6 = "sounds/mista6.mp3";
 
+        public static final String JSL1 = "sounds/jsl1.mp3";
+        public static final String JSL2 = "sounds/jsl2.mp3";
+        public static final String JSL3 = "sounds/jsl3.mp3";
+        public static final String JSL4 = "sounds/jsl4.mp3";
+        public static final String JSF1 = "sounds/jsf1.mp3";
+        public static final String JSF2 = "sounds/jsf2.mp3";
+        public static final String JSF3 = "sounds/jsf3.mp3";
+        public static final String JSF4 = "sounds/jsf4.mp3";
+        public static final String JSF5 = "sounds/jsf5.mp3";
+        public static final String JT1 = "sounds/jt1.mp3";
+        public static final String JT2 = "sounds/jt2.mp3";
+        public static final String JT3 = "sounds/jt3.mp3";
+        public static final String JT4 = "sounds/jt4.mp3";
+        public static final String JT5 = "sounds/jt5.mp3";
+
         public static final String[] all = new String[]{
                 CLICK, BADGE, GOLD,
 
@@ -419,7 +434,9 @@ public class Assets {
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
                 MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
-                SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA};
+                SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA,
+                JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5
+        };
     }
 
     public static class Splashes {
@@ -430,12 +447,12 @@ public class Assets {
         public static final String DUELIST = "splashes/duelist.jpg";
         public static final String BRANDO = "splashes/brando.jpg";
 
-        public static final String SEWERS   = "splashes/sewers.jpg";
-        public static final String PRISON   = "splashes/prison.jpg";
-        public static final String CAVES    = "splashes/caves.jpg";
-        public static final String CITY     = "splashes/city.jpg";
-        public static final String HALLS    = "splashes/halls.jpg";
-        public static final String LABS    = "splashes/labs.jpg";
+        public static final String SEWERS = "splashes/sewers.jpg";
+        public static final String PRISON = "splashes/prison.jpg";
+        public static final String CAVES = "splashes/caves.jpg";
+        public static final String CITY = "splashes/city.jpg";
+        public static final String HALLS = "splashes/halls.jpg";
+        public static final String LABS = "splashes/labs.jpg";
     }
 
     public static class Sprites {
@@ -490,6 +507,7 @@ public class Assets {
         public static final String STATUE = "sprites/statue.png";
         public static final String SUCCUBUS = "sprites/succubus.png";
         public static final String SCORPIO = "sprites/scorpio.png";
+        public static final String SCORPIO2 = "sprites/scorpio2.png";
         public static final String FISTS = "sprites/yog_fists.png";
         public static final String YOG = "sprites/yog.png";
         public static final String LARVA = "sprites/larva.png";
@@ -521,18 +539,18 @@ public class Assets {
         public static final String DM201 = "sprites/dm201.png";
         public static final String LOTUS = "sprites/lotus.png";
 
-        public static final String NINJA_LOG        = "sprites/ninja_log.png";
-        public static final String SPIRIT_HAWK      = "sprites/spirit_hawk.png";
-        public static final String RED_SENTRY       = "sprites/red_sentry.png";
-        public static final String CRYSTAL_WISP     = "sprites/crystal_wisp.png";
+        public static final String NINJA_LOG = "sprites/ninja_log.png";
+        public static final String SPIRIT_HAWK = "sprites/spirit_hawk.png";
+        public static final String RED_SENTRY = "sprites/red_sentry.png";
+        public static final String CRYSTAL_WISP = "sprites/crystal_wisp.png";
         public static final String CRYSTAL_GUARDIAN = "sprites/crystal_guardian.png";
-        public static final String CRYSTAL_SPIRE    = "sprites/crystal_spire.png";
-        public static final String GNOLL_GUARD      = "sprites/gnoll_guard.png";
-        public static final String GNOLL_SAPPER     = "sprites/gnoll_sapper.png";
-        public static final String GNOLL_GEOMANCER  = "sprites/gnoll_geomancer.png";
-        public static final String FUNGAL_SPINNER   = "sprites/fungal_spinner.png";
-        public static final String FUNGAL_SENTRY    = "sprites/fungal_sentry.png";
-        public static final String FUNGAL_CORE      = "sprites/fungal_core.png";
+        public static final String CRYSTAL_SPIRE = "sprites/crystal_spire.png";
+        public static final String GNOLL_GUARD = "sprites/gnoll_guard.png";
+        public static final String GNOLL_SAPPER = "sprites/gnoll_sapper.png";
+        public static final String GNOLL_GEOMANCER = "sprites/gnoll_geomancer.png";
+        public static final String FUNGAL_SPINNER = "sprites/fungal_spinner.png";
+        public static final String FUNGAL_SENTRY = "sprites/fungal_sentry.png";
+        public static final String FUNGAL_CORE = "sprites/fungal_core.png";
         public static final String SOLDIER = "sprites/soldier.png";
         public static final String RESEARCHER = "sprites/researcher.png";
         public static final String TANK = "sprites/tank.png";
@@ -609,8 +627,8 @@ public class Assets {
         public static final String DIOBRANDO2 = "sprites/diobrando2.png";
 
         public static final String INA = "sprites/ina.png";
-        public static final String GREEN_CAT_HEAD	= "sprites/green_cat_head.png";
-        public static final String ROLLER	= "sprites/roller.png";
+        public static final String GREEN_CAT_HEAD = "sprites/green_cat_head.png";
+        public static final String ROLLER = "sprites/roller.png";
         public static final String ZOMBIE2 = "sprites/zombie2.png";
         public static final String TBOSS = "sprites/tboss.png";
         public static final String SPWSOLDIER = "sprites/spwsoldier.png";
@@ -624,5 +642,8 @@ public class Assets {
         public static final String ZOMBIE3 = "sprites/zombie3.png";
         public static final String VAMPIRE = "sprites/vampire.png";
         public static final String LISA = "sprites/lisa.png";
+        public static final String DOPPIODIALOG = "sprites/doppiodialog.png";
+        public static final String JOSUKEDIALOG = "sprites/josukedialog.png";
+        public static final String DIODIALOG = "sprites/diodialog.png";
     }
 }

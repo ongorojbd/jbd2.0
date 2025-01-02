@@ -206,6 +206,45 @@ public class Sword extends MeleeWeapon {
 			}
 	}
 
+	public static void jolyneslclass(){
+
+			switch (Random.Int( 4 )) {
+				case 0:
+					Sample.INSTANCE.play( Assets.Sounds.JSL1);
+					break;
+				case 1:
+					Sample.INSTANCE.play( Assets.Sounds.JSL2);
+					break;
+				case 2:
+					Sample.INSTANCE.play( Assets.Sounds.JSL3);
+					break;
+				case 3:
+					Sample.INSTANCE.play( Assets.Sounds.JSL4);
+					break;
+			}
+	}
+
+	public static void stonefreeclass(){
+
+		switch (Random.Int( 5 )) {
+			case 0:
+				Sample.INSTANCE.play( Assets.Sounds.JSF1);
+				break;
+			case 1:
+				Sample.INSTANCE.play( Assets.Sounds.JSF2);
+				break;
+			case 2:
+				Sample.INSTANCE.play( Assets.Sounds.JSF3);
+				break;
+			case 3:
+				Sample.INSTANCE.play( Assets.Sounds.JSF4);
+				break;
+			case 4:
+				Sample.INSTANCE.play( Assets.Sounds.JSF5);
+				break;
+		}
+	}
+
 	public static void gclass(){
 
 		if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {

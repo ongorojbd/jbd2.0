@@ -66,8 +66,16 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite2;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KiraSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
@@ -366,24 +374,61 @@ public class DM300 extends Mob {
 			Sample.INSTANCE.play( Assets.Sounds.SHEER );
 			switch(Dungeon.hero.heroClass){
 				case WARRIOR:
-					GLog.n(Messages.get(this, "notice"));
-					break;
-				case ROGUE:
-					GLog.n(Messages.get(this, "notice2"));
+				case HUNTRESS:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new KiraSprite(), new KiraSprite()},
+							new String[]{"키라 요시카게", "키라 요시카게"},
+							new String[]{
+									Messages.get(DM300.class, "n1"),
+									Messages.get(DM300.class, "n2")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
 					break;
 				case MAGE:
-					GLog.p(Messages.get(Val.class, "3"));
-					GLog.n(Messages.get(this, "notice3"));
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new TrapperSprite(), new KiraSprite()},
+							new String[]{"죠셉", "키라 요시카게"},
+							new String[]{
+									Messages.get(Val.class, "v6"),
+									Messages.get(Val.class, "v7")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
 					break;
-				case HUNTRESS:
-					GLog.n(Messages.get(this, "notice4"));
+				case ROGUE:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new KiraSprite(), new TankSprite()},
+							new String[]{"키라 요시카게", "죠타로"},
+							new String[]{
+									Messages.get(DM300.class, "notice2"),
+									Messages.get(DM300.class, "notice3")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
 					break;
 				case DUELIST:
-					GLog.n(Messages.get(this, "notice5"));
-					GLog.p(Messages.get(Val.class, "9"));
-					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
-					GameScene.flash(0xFF0000);
-					Camera.main.shake(9, 0.5f);
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new KiraSprite(), new JosukeDialogSprite()},
+							new String[]{"키라 요시카게", "죠스케"},
+							new String[]{
+									Messages.get(DM300.class, "notice5"),
+									Messages.get(Val.class, "9"),
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
 					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
 			}
@@ -617,18 +662,12 @@ public class DM300 extends Mob {
 
 			switch(Dungeon.hero.heroClass){
 				case WARRIOR:
-					Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
+                case ROGUE:
+                case MAGE:
+                case HUNTRESS:
+                    Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
 					break;
-				case ROGUE:
-					Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
-					break;
-				case MAGE:
-					Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
-					break;
-				case HUNTRESS:
-					Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
-					break;
-				case DUELIST:
+                case DUELIST:
 					Dungeon.level.drop( new ThirdBomb().identify(), pos ).sprite.drop( pos );
 					break;
 			}

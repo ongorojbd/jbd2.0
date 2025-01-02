@@ -25,12 +25,16 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Val;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
@@ -43,7 +47,17 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.GooBossRo
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBossEntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBossExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
@@ -188,6 +202,90 @@ public class SewerBossLevel extends SewerLevel {
 			super.seal();
 
 			Statistics.qualifiedForBossChallengeBadge = true;
+
+			switch(hero.heroClass){
+				case WARRIOR:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new DvdolSprite(), new GhostSprite(), new GooSprite(), new SupressionSprite()},
+							new String[]{"무함마드 압둘", "무함마드 압둘", "크림", "죠나단"},
+							new String[]{
+									Messages.get(Goo.class, "n1"),
+									Messages.get(Goo.class, "n2"),
+									Messages.get(Goo.class, "n3"),
+									Messages.get(Goo.class, "n32")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.DIE,
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
+					break;
+				case HUNTRESS:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new DvdolSprite(), new GhostSprite(), new GooSprite()},
+							new String[]{"무함마드 압둘", "무함마드 압둘", "크림"},
+							new String[]{
+									Messages.get(Goo.class, "n1"),
+									Messages.get(Goo.class, "n2"),
+									Messages.get(Goo.class, "n3")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.DIE,
+									WndDialogueWithPic.IDLE
+							}
+					);
+					break;
+				case ROGUE:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new DvdolSprite(), new GhostSprite(), new GooSprite(), new TankSprite()},
+							new String[]{"무함마드 압둘", "무함마드 압둘", "크림", "죠타로"},
+							new String[]{
+									Messages.get(Goo.class, "n1"),
+									Messages.get(Goo.class, "n2"),
+									Messages.get(Goo.class, "n4"),
+									Messages.get(Goo.class, "n5")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.DIE,
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
+					break;
+				case MAGE:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new TrapperSprite(), new GooSprite()},
+							new String[]{"죠셉", "크림"},
+							new String[]{
+									Messages.get(Val.class, "v1"),
+									Messages.get(Val.class, "v2"),
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
+					break;
+				case DUELIST:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new GooSprite(), new JosukeDialogSprite()},
+							new String[]{"크림", "죠스케"},
+							new String[]{
+									Messages.get(Goo.class, "notice5"),
+									Messages.get(Val.class, "9"),
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
+					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
+					break;
+			}
 
 			set( entrance(), Terrain.WATER );
 			GameScene.updateMap( entrance() );

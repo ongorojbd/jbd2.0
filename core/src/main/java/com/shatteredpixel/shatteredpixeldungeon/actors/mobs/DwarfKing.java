@@ -63,10 +63,16 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KingSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KiraSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
@@ -210,7 +216,16 @@ public class DwarfKing extends Mob {
 					if (summonsMade == 0) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 						Sample.INSTANCE.play(Assets.Sounds.ENYA2);
-						yell(Messages.get(this, "wave_1"));
+						WndDialogueWithPic.dialogue(
+								new CharSprite[]{new KingSprite()},
+								new String[]{"엔야 할멈"},
+								new String[]{
+										Messages.get(DwarfKing.class, "wave_1")
+								},
+								new byte[]{
+										WndDialogueWithPic.IDLE
+								}
+						);
 					}
 					summonSubject(3, DKGhoul.class);
 					summonSubject(3, DKGhoul.class);
@@ -261,7 +276,16 @@ public class DwarfKing extends Mob {
 					if (summonsMade == 0) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 						Sample.INSTANCE.play(Assets.Sounds.ENYA2);
-						yell(Messages.get(this, "wave_1"));
+						WndDialogueWithPic.dialogue(
+								new CharSprite[]{new KingSprite()},
+								new String[]{"엔야 할멈"},
+								new String[]{
+										Messages.get(DwarfKing.class, "wave_1")
+								},
+								new byte[]{
+										WndDialogueWithPic.IDLE
+								}
+						);
 					}
 					summonSubject(3, DKGhoul.class);
 					spend(3 * TICK);
@@ -439,33 +463,64 @@ public class DwarfKing extends Mob {
 			BossHealthBar.assignBoss(this);
 			switch(Dungeon.hero.heroClass){
 				case WARRIOR:
-					this.yell(Messages.get(this, "notice"));
+				case HUNTRESS:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new KingSprite()},
+							new String[]{"엔야 할멈"},
+							new String[]{
+									Messages.get(DwarfKing.class, "n1")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE
+							}
+					);
 					Sample.INSTANCE.play( Assets.Sounds.ENYA);
 					break;
 				case ROGUE:
-					this.yell(Messages.get(this, "notice2"));
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new KingSprite()},
+							new String[]{"엔야 할멈"},
+							new String[]{
+									Messages.get(DwarfKing.class, "notice2")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE
+							}
+					);
 					Sample.INSTANCE.play( Assets.Sounds.ENYA);
 					break;
 				case MAGE:
-					GLog.p(Messages.get(Val.class, "4"));
-					this.yell(Messages.get(this, "notice3"));
-					Sample.INSTANCE.play( Assets.Sounds.ENYA);
-					break;
-				case HUNTRESS:
-					this.yell(Messages.get(this, "notice4"));
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new TrapperSprite(), new KingSprite()},
+							new String[]{"죠셉", "엔야 할멈"},
+							new String[]{
+									Messages.get(Val.class, "v8"),
+									Messages.get(Val.class, "v9")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
 					Sample.INSTANCE.play( Assets.Sounds.ENYA);
 					break;
 				case DUELIST:
-					this.yell(Messages.get(this, "notice5"));
-					GLog.p(Messages.get(Val.class, "9"));
-					Sample.INSTANCE.play(Assets.Sounds.HEALTH_CRITICAL);
-					Sample.INSTANCE.play( Assets.Sounds.ENYA);
-					GameScene.flash(0xFF0000);
-					Camera.main.shake(9, 0.5f);
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new KingSprite(), new JosukeDialogSprite()},
+							new String[]{"엔야 할멈", "죠스케"},
+							new String[]{
+									Messages.get(DwarfKing.class, "notice5"),
+									Messages.get(Val.class, "9"),
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
 					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
-
 			}
+
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){
 					((DriedRose.GhostHero) ch).sayBoss();

@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMag
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -47,13 +48,12 @@ public class Neotel extends Item {
 
         super.execute(hero, action);
         if (action.equals(AC_TELEPORT)) {
-            GLog.h(Messages.get(Neotel.class, "s"),SPDSettings.getSkin(),SPDSettings.getSkin2(),SPDSettings.getSkin3(),SPDSettings.getSkin4(),SPDSettings.getSkin5() );
+            GLog.h(Messages.get(Neotel.class, "s"), SPDSettings.getSkin(), SPDSettings.getSkin2(), SPDSettings.getSkin3(), SPDSettings.getSkin4(), SPDSettings.getSkin5());
 
             Buff.affect(hero, MindVision.class, 99f);
             Buff.affect(hero, MagicalSight.class, 99f);
             Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);
-            Buff.affect(hero, PotionOfCleansing.Cleanse.class, 99f);
 
 //            Buff.affect(hero, AscensionChallenge.class);
 
@@ -66,7 +66,7 @@ public class Neotel extends Item {
             boolean[] mapped = Dungeon.level.mapped;
             boolean[] discoverable = Dungeon.level.discoverable;
 
-            for (int i=0; i < length; i++) {
+            for (int i = 0; i < length; i++) {
 
                 int terr = map[i];
 
@@ -75,11 +75,11 @@ public class Neotel extends Item {
                     mapped[i] = true;
                     if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
 
-                        Dungeon.level.discover( i );
+                        Dungeon.level.discover(i);
 
                         if (Dungeon.level.heroFOV[i]) {
-                            GameScene.discoverTile( i, terr );
-                            discover( i );
+                            GameScene.discoverTile(i, terr);
+                            discover(i);
                         }
                     }
                 }
@@ -91,14 +91,14 @@ public class Neotel extends Item {
             InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
             InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -2;
-            Game.switchScene( InterlevelScene.class );
+            Game.switchScene(InterlevelScene.class);
         }
         int length = Dungeon.level.length();
         int[] map = Dungeon.level.map;
         boolean[] mapped = Dungeon.level.mapped;
         boolean[] discoverable = Dungeon.level.discoverable;
 
-        for (int i=0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
 
             int terr = map[i];
 
@@ -107,11 +107,11 @@ public class Neotel extends Item {
                 mapped[i] = true;
                 if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
 
-                    Dungeon.level.discover( i );
+                    Dungeon.level.discover(i);
 
                     if (Dungeon.level.heroFOV[i]) {
-                        GameScene.discoverTile( i, terr );
-                        discover( i );
+                        GameScene.discoverTile(i, terr);
+                        discover(i);
                     }
                 }
             }
@@ -128,7 +128,6 @@ public class Neotel extends Item {
     public boolean isUpgradable() {
         return false;
     }
-
 
 
 }

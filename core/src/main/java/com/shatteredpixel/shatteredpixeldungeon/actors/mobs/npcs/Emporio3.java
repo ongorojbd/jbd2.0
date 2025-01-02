@@ -73,7 +73,7 @@ public class Emporio3 extends NPC {
     }
 
     @Override
-    public void beckon (int cell) {
+    public void beckon(int cell) {
         //do nothing
     }
 
@@ -88,21 +88,21 @@ public class Emporio3 extends NPC {
     }
 
     @Override
-    public boolean add( Buff buff ) {
+    public boolean add(Buff buff) {
         return false;
     }
 
     @Override
     public boolean interact(Char c) {
 
-        sprite.turnTo( pos, c.pos );
+        sprite.turnTo(pos, c.pos);
 
-        if (c != Dungeon.hero){
+        if (c != Dungeon.hero) {
             return true;
         }
 
-        if(Statistics.duwang == 34){
-            GLog.p(Messages.get(Emporio.class, "w"));
+        if (Statistics.duwang == 34) {
+
         } else {
             GLog.p(Messages.get(Emporio.class, "q"));
         }
@@ -112,16 +112,13 @@ public class Emporio3 extends NPC {
     }
 
     @Override
-    public int defenseSkill( Char enemy ) {
+    public int defenseSkill(Char enemy) {
         return INFINITE_EVASION;
     }
 
-
-
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src) {
     }
-
 
     @Override
     public boolean reset() {

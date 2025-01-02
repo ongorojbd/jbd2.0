@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel2;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -263,7 +264,7 @@ public class AscensionChallenge extends Buff {
 					}
 				}
 
-				if(Dungeon.level instanceof HumanVillageBossLevel || Dungeon.level instanceof Emp2Level){
+				if (Dungeon.level instanceof HumanVillageBossLevel || Dungeon.level instanceof HumanVillageBossLevel2 || Dungeon.level instanceof Emp2Level){
 
 				} else Dungeon.level.spawnMob(12);
 

@@ -73,6 +73,7 @@ public class WO extends Mob {
 
     //they can only use their chains once
     private boolean chainsUsed = false;
+
     {
         spriteClass = MudaSprite.class;
 
@@ -81,18 +82,18 @@ public class WO extends Mob {
         defenseSkill = 25;
         EXP = 0;
         maxLvl = 30;
-        viewDistance = 55;
+        viewDistance = 16;
 
         HUNTING = new WO.Hunting();
 
         properties.add(Property.BOSS);
-        immunities.add(Dominion.class );
+        immunities.add(Dominion.class);
         immunities.add(Terror.class);
-        immunities.add(Dread.class );
-        immunities.add(Amok.class );
-        immunities.add(Blindness.class );
-        immunities.add(Sleep.class );
-        immunities.add(MagicalSleep.class );
+        immunities.add(Dread.class);
+        immunities.add(Amok.class);
+        immunities.add(Blindness.class);
+        immunities.add(Sleep.class);
+        immunities.add(MagicalSleep.class);
     }
 
     private int spell = 0; // 1 def, 2 knokback, 3 atk
@@ -101,34 +102,33 @@ public class WO extends Mob {
     @Override
     protected boolean act() {
         if (cooldown <= 0) {
-            spell = Random.Int(1,4);
+            spell = Random.Int(1, 4);
             switch (spell) {
                 case 1:
-                    CellEmitter.get( this.pos ).burst( RainbowParticle.BURST, 99 );
+                    CellEmitter.get(this.pos).burst(RainbowParticle.BURST, 99);
                     sprite.showStatus(CharSprite.WARNING, Messages.get(this, "W1"));
                     Buff.affect(this, Haste.class, 3f);
                     Buff.affect(this, MagicImmune.class, 3f);
-                    this.beckon( Dungeon.hero.pos );
+                    this.beckon(Dungeon.hero.pos);
                     break;
                 case 2:
-                    CellEmitter.get( this.pos ).burst( FlameParticle.FACTORY, 99 );
+                    CellEmitter.get(this.pos).burst(FlameParticle.FACTORY, 99);
                     sprite.showStatus(CharSprite.WARNING, Messages.get(this, "W2"));
                     Buff.affect(this, Invisibility.class, 3f);
                     Buff.affect(this, FireImbue.class).set(3f);
-                    this.beckon( Dungeon.hero.pos );
+                    this.beckon(Dungeon.hero.pos);
                     break;
                 case 3:
-                    CellEmitter.get( this.pos ).burst( MagicMissile.MagicParticle.FACTORY, 99 );
+                    CellEmitter.get(this.pos).burst(MagicMissile.MagicParticle.FACTORY, 99);
                     sprite.showStatus(CharSprite.WARNING, Messages.get(this, "W3"));
                     Buff.affect(this, Bless.class, 3f);
                     Buff.affect(this, FrostImbue.class, 3f);
-                    this.beckon( Dungeon.hero.pos );
+                    this.beckon(Dungeon.hero.pos);
                     break;
             }
-            cooldown = Random.Int(4,8);
+            cooldown = Random.Int(4, 8);
             return super.act();
-        }
-        else cooldown -= 1;
+        } else cooldown -= 1;
 
         return super.act();
     }
@@ -154,7 +154,7 @@ public class WO extends Mob {
         return dr;
     }
 
-    private boolean chain(int target){
+    private boolean chain(int target) {
 
 
         Ballistica chain = new Ballistica(pos, target, Ballistica.PROJECTILE);
@@ -165,14 +165,14 @@ public class WO extends Mob {
             return false;
         else {
             int newPos = -1;
-            for (int i : chain.subPath(1, chain.dist)){
-                if (!Dungeon.level.solid[i] && Actor.findChar(i) == null){
+            for (int i : chain.subPath(1, chain.dist)) {
+                if (!Dungeon.level.solid[i] && Actor.findChar(i) == null) {
                     newPos = i;
                     break;
                 }
             }
 
-            if (newPos == -1){
+            if (newPos == -1) {
                 return false;
             } else {
                 final int newPosFinal = newPos;
@@ -204,7 +204,7 @@ public class WO extends Mob {
         return true;
     }
 
-    private void pullEnemy( Char enemy, int pullPos ){
+    private void pullEnemy(Char enemy, int pullPos) {
         enemy.pos = pullPos;
         enemy.sprite.place(pullPos);
         Dungeon.level.occupyCell(enemy);
@@ -218,7 +218,7 @@ public class WO extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
-        if (dmg >= 200){
+        if (dmg >= 200) {
             //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
             // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
             dmg = 200;
@@ -245,30 +245,28 @@ public class WO extends Mob {
         chainsUsed = bundle.getBoolean(CHAINSUSED);
     }
 
-    private class Hunting extends Mob.Hunting{
+    private class Hunting extends Mob.Hunting {
         @Override
-        public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+        public boolean act(boolean enemyInFOV, boolean justAlerted) {
             enemySeen = enemyInFOV;
 
 
             if (cooldown <= 0) {
-            chainsUsed = false;
-            cooldown = Random.Int(13,29);
+                chainsUsed = false;
+                cooldown = Random.Int(13, 29);
             }
-
-
 
             if (!chainsUsed
                     && enemyInFOV
-                    && !isCharmedBy( enemy )
-                    && !canAttack( enemy )
-                    && Dungeon.level.distance( pos, enemy.pos ) < 12
+                    && !isCharmedBy(enemy)
+                    && !canAttack(enemy)
+                    && Dungeon.level.distance(pos, enemy.pos) < 12
 
 
-                    && chain(enemy.pos)){
+                    && chain(enemy.pos)) {
                 return !(sprite.visible || enemy.sprite.visible);
             } else {
-                return super.act( enemyInFOV, justAlerted );
+                return super.act(enemyInFOV, justAlerted);
             }
 
         }
