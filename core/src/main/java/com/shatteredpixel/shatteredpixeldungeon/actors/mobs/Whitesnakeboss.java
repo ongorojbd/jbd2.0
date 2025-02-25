@@ -83,95 +83,29 @@ public class Whitesnakeboss extends Mob {
     {
         spriteClass = WhsnakeSprite.class;
 
-        HP = HT = 100;
+        HP = HT = 30;
 
         defenseSkill = 8;
         EXP = 0;
         maxLvl = -9;
 
-        properties.add(Property.BOSS);
         properties.add(Property.DEMONIC);
-        properties.add(Property.IMMOVABLE);
-    }
-
-    public int Phase = 0;
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(PHASE, Phase);
     }
 
     @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        Phase = bundle.getInt(PHASE);
-    }
-
-    private static final String PHASE = "Phase";
-
-    @Override
-    public void notice() {
-        super.notice();
-        if (!BossHealthBar.isAssigned()) {
-            BossHealthBar.assignBoss(this);
-        }
-    }
-
-    @Override
-    public void damage(int dmg, Object src) {
-
-        if (dmg >= 25) {
-            dmg = 25;
-        }
-
-        super.damage(dmg, src);
-
-        if (Phase == 0 && HP < 80) {
-            Phase = 1;
-            HP = 80;
-
-            GameScene.flash(0x99FFFF);
-            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-            Buff.affect(Dungeon.hero, Blindness.class, 5f);
-            Buff.affect(hero, Ooze.class).set(5f);
-            Buff.affect(Dungeon.hero, Silence.class, 5f);
-
-            yell(Messages.get(this, "3"));
-        }
-    }
-
-
-    @Override
-    public void die(Object cause) {
-
-        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof Manhatan || mob instanceof Manhatan2) {
-                mob.die( cause );
-            }
-        }
-
-        Buff.affect(Dungeon.hero, Blindness.class, 30f);
-        Buff.affect(Dungeon.hero, Silence.class, 30f);
-        Buff.affect(Dungeon.hero, Roots.class, 30f);
-
-        GameScene.bossSlain();
-        Music.INSTANCE.end();
-
-        Statistics.spw6 = 5;
-
-        super.die(cause);
-
+    public int damageRoll() {
+        return Random.NormalIntRange(1, 4);
     }
 
     @Override
     public int attackSkill(Char target) {
-        return 15;
+        return 10;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0, 2);
+        return super.drRoll() + Random.NormalIntRange(0, 2);
     }
+
 
 }

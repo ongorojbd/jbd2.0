@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer2;
@@ -108,6 +109,12 @@ public class So1 extends NPC {
         if (c != Dungeon.hero) {
             return true;
         }
+
+//        if (hero.heroClass == HeroClass.CLERIC) { 죠린 업뎃
+//            this.yell(Messages.get(this, "02"));
+//        } else {
+//            this.yell(Messages.get(this, "0"));
+//        }
 
         this.yell(Messages.get(this, "0"));
 

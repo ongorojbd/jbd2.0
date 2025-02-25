@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -40,6 +41,8 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBossText;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -57,6 +60,27 @@ public class Jolyne3 extends DirectableAlly {
     }
 
     private int timer = 3;
+
+    @Override
+    public void defendPos(int cell) {
+        Sample.INSTANCE.play(Assets.Sounds.B2);
+        yell(Messages.get(this, "d"));
+        super.defendPos(cell);
+    }
+
+    @Override
+    public void followHero() {
+        Sample.INSTANCE.play(Assets.Sounds.JT5);
+        yell(Messages.get(this, "f"));
+        super.followHero();
+    }
+
+    @Override
+    public void targetChar(Char ch) {
+        Sample.INSTANCE.play(Assets.Sounds.JSF1);
+        yell(Messages.get(this, "t"));
+        super.targetChar(ch);
+    }
 
     @Override
     public String description() {
@@ -122,7 +146,7 @@ public class Jolyne3 extends DirectableAlly {
                 WndDialogueWithPic.dialogue(
                         new CharSprite[]{new JosukeDialogSprite(), new JosukeDialogSprite(), new WhsnakeSprite(), new WhsnakeSprite(), new JojoSprite(),
                         new JosukeDialogSprite(), new JojoSprite(), new JojoSprite(), new JosukeDialogSprite(), new JojoSprite(), new JosukeDialogSprite(), new JojoSprite()},
-                        new String[]{"죠타로", "죠타로", "화이트 스네이크", "화이트 스네이크", "죠린", "죠타로", "죠린", "죠린", "죠타로", "죠린", "죠타로", "죠린"},
+                        new String[]{"죠타로", "죠타로", "???", "화이트 스네이크", "죠린", "죠타로", "죠린", "죠린", "죠타로", "죠린", "죠타로", "죠린"},
                         new String[]{
                                 Messages.get(jojo.class, "e1"),
                                 Messages.get(jojo.class, "e2"),
@@ -153,6 +177,8 @@ public class Jolyne3 extends DirectableAlly {
                         }
                 );
             } else if (timer == 1) {
+                Music.INSTANCE.play(Assets.Music.DRAGON, true);
+
                 Statistics.spw6 = 6;
 
                 Game.runOnRenderThread(new Callback() {

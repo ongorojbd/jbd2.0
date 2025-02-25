@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Scorpio2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhsnakeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Game;
@@ -249,12 +250,13 @@ public class JolyneBossLevel extends Level {
         GameScene.add(boss2);
         boss2.beckon(hero.pos);
 
-        Buff.affect(hero, Swiftthistle.TimeBubble.class).fiveTurns();
+        Buff.affect(hero, Swiftthistle.TimeBubble.class).jotaroTurns();
 
         WndDialogueWithPic.dialogue(
-                new CharSprite[]{new JosukeDialogSprite(), new JosukeDialogSprite(), new WhsnakeSprite(), new JosukeDialogSprite(), new JosukeDialogSprite(),new JosukeDialogSprite(),new JosukeDialogSprite(),},
-                new String[]{"죠타로", "죠타로", "화이트 스네이크", "죠타로", "죠타로", "죠타로", "죠타로"},
+                new CharSprite[]{new Scorpio2Sprite(), new JosukeDialogSprite(), new JosukeDialogSprite(), new WhsnakeSprite(), new JosukeDialogSprite(), new JosukeDialogSprite(),new JosukeDialogSprite(),new JosukeDialogSprite(),},
+                new String[]{"존갈리 A", "죠타로", "죠타로", "???", "죠타로", "죠타로", "죠타로", "죠타로"},
                 new String[]{
+                        Messages.get(jojo.class, "b12"),
                         Messages.get(jojo.class, "b6"),
                         Messages.get(jojo.class, "b62"),
                         Messages.get(jojo.class, "b7"),
@@ -264,6 +266,7 @@ public class JolyneBossLevel extends Level {
                         Messages.get(jojo.class, "b11"),
                 },
                 new byte[]{
+                        WndDialogueWithPic.IDLE,
                         WndDialogueWithPic.RUN,
                         WndDialogueWithPic.RUN,
                         WndDialogueWithPic.IDLE,

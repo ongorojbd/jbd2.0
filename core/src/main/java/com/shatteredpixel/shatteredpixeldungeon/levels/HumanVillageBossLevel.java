@@ -66,7 +66,7 @@ public class HumanVillageBossLevel extends Level {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_PRISON;
+        return Assets.Environment.TILES_TENDENCY;
     }
 
     @Override

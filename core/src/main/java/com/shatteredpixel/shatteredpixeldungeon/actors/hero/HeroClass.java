@@ -99,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
@@ -147,6 +148,8 @@ public enum HeroClass {
 				new RingOfMight().identify().upgrade(999).collect();
 				new RingOfEnergy().identify().upgrade(999).collect();
 				new RingOfAccuracy().identify().upgrade(999).collect();
+				new Shortsword().identify().upgrade(999).collect();
+				new ScrollOfUpgrade().identify().collect();
 				new Neotel().collect();
 				new Maga().collect();
 				new Castleintro().identify().collect();

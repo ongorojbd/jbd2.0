@@ -70,7 +70,7 @@ public class Weather extends NPC {
 
     @Override
     protected boolean act() {
-        if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+        if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
             die(null);
             return true;
         }
@@ -78,7 +78,7 @@ public class Weather extends NPC {
     }
 
     @Override
-    public void beckon (int cell) {
+    public void beckon(int cell) {
         //do nothing
     }
 
@@ -93,7 +93,7 @@ public class Weather extends NPC {
     }
 
     @Override
-    public boolean add( Buff buff ) {
+    public boolean add(Buff buff) {
         return false;
     }
 
@@ -101,12 +101,11 @@ public class Weather extends NPC {
     public boolean interact(Char c) {
         Sample.INSTANCE.play(Assets.Sounds.B1);
 
-        sprite.turnTo( pos, c.pos );
+        sprite.turnTo(pos, c.pos);
 
-        if (c != Dungeon.hero){
+        if (c != Dungeon.hero) {
             return true;
         }
-
 
 
         Game.runOnRenderThread(new Callback() {
@@ -119,84 +118,102 @@ public class Weather extends NPC {
                         Messages.get(Emporio.class, "0"),
                         Messages.get(Emporio.class, "1"),
                         Messages.get(Emporio.class, "2")
-                ){
+                ) {
                     @Override
                     protected void onSelect(int index) {
-                        if (index == 0){
+                        if (index == 0) {
 
-                            switch(hero.heroClass){
+                            switch (hero.heroClass) {
                                 case WARRIOR:
                                     if (SPDSettings.getSkin() == 1) {
                                         SPDSettings.addSkin(1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin() == 2) GLog.p(Messages.get(Annasui.class, "we"));
+                                    } else if (SPDSettings.getSkin() == 2)
+                                        GLog.p(Messages.get(Annasui.class, "we"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                                 case MAGE:
                                     if (SPDSettings.getSkin2() == 1) {
                                         SPDSettings.addSkin2(1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin2() == 2) GLog.p(Messages.get(Annasui.class, "we"));
+                                    } else if (SPDSettings.getSkin2() == 2)
+                                        GLog.p(Messages.get(Annasui.class, "we"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                                 case ROGUE:
                                     if (SPDSettings.getSkin3() == 1) {
                                         SPDSettings.addSkin3(1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin3() == 2) GLog.p(Messages.get(Annasui.class, "we"));
+                                    } else if (SPDSettings.getSkin3() == 2)
+                                        GLog.p(Messages.get(Annasui.class, "we"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                                 case DUELIST:
                                     if (SPDSettings.getSkin4() == 1) {
                                         SPDSettings.addSkin4(1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin4() == 2) GLog.p(Messages.get(Annasui.class, "we"));
+                                    } else if (SPDSettings.getSkin4() == 2)
+                                        GLog.p(Messages.get(Annasui.class, "we"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                                 case HUNTRESS:
                                     if (SPDSettings.getSkin5() == 1) {
                                         SPDSettings.addSkin5(1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin5() == 2) GLog.p(Messages.get(Annasui.class, "we"));
+                                    } else if (SPDSettings.getSkin5() == 2)
+                                        GLog.p(Messages.get(Annasui.class, "we"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
+                                //죠린 업뎃
+//                                case CLERIC:
+//                                    if (SPDSettings.getSkin6() == 1) {
+//                                        SPDSettings.addSkin6(1);
+//                                        Emporio.retu();
+//                                    } else if (SPDSettings.getSkin6() == 2) GLog.p(Messages.get(Annasui.class, "we"));
+//                                    else GLog.p(Messages.get(Annasui.class, "x"));
+//                                    break;
                             }
 
                         } else if (index == 1) {
-                            switch(hero.heroClass){
+                            switch (hero.heroClass) {
                                 case WARRIOR:
                                     if (SPDSettings.getSkin() == 2) {
                                         SPDSettings.addSkin(-1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin() == 1) GLog.p(Messages.get(Annasui.class, "al"));
+                                    } else if (SPDSettings.getSkin() == 1)
+                                        GLog.p(Messages.get(Annasui.class, "al"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                                 case MAGE:
                                     if (SPDSettings.getSkin2() == 2) {
                                         SPDSettings.addSkin2(-1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin2() == 1) GLog.p(Messages.get(Annasui.class, "al"));
+                                    } else if (SPDSettings.getSkin2() == 1)
+                                        GLog.p(Messages.get(Annasui.class, "al"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                                 case ROGUE:
                                     if (SPDSettings.getSkin3() == 2) {
                                         SPDSettings.addSkin3(-1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin3() == 1) GLog.p(Messages.get(Annasui.class, "al"));
+                                    } else if (SPDSettings.getSkin3() == 1)
+                                        GLog.p(Messages.get(Annasui.class, "al"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                                 case DUELIST:
                                     if (SPDSettings.getSkin4() == 2) {
                                         SPDSettings.addSkin4(-1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin4() == 1) GLog.p(Messages.get(Annasui.class, "al"));
+                                    } else if (SPDSettings.getSkin4() == 1)
+                                        GLog.p(Messages.get(Annasui.class, "al"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                                 case HUNTRESS:
                                     if (SPDSettings.getSkin5() == 2) {
                                         SPDSettings.addSkin5(-1);
                                         Emporio.retu();
-                                    } else if (SPDSettings.getSkin5() == 1) GLog.p(Messages.get(Annasui.class, "al"));
+                                    } else if (SPDSettings.getSkin5() == 1)
+                                        GLog.p(Messages.get(Annasui.class, "al"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
                             }
@@ -207,17 +224,16 @@ public class Weather extends NPC {
         });
 
 
-
         return true;
     }
 
     @Override
-    public int defenseSkill( Char enemy ) {
+    public int defenseSkill(Char enemy) {
         return INFINITE_EVASION;
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src) {
     }
 
     @Override

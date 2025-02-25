@@ -102,6 +102,10 @@ public class Swiftthistle extends Plant {
 			left = 7f;
 		}
 
+		public void jotaroTurns() {
+			left = 1f;
+		}
+
 		public void fiveTurns() {
 			left = 5f;
 		}

@@ -72,6 +72,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jolynemap;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
@@ -514,21 +516,24 @@ public class GameScene extends PixelScene {
                     );
                 }
                 if (Dungeon.level instanceof JolyneLevel && Dungeon.depth == 3) {
-                    Buff.affect(Dungeon.hero, TendencyBuff.class);
+//                    Buff.affect(Dungeon.hero, TendencyBuff.class);
+                    Jolynemap map = new Jolynemap();
+                    map.collect();
+                    Dungeon.quickslot.setSlot(3, map);
                     WndDialogueWithPic.dialogue(
-                            new CharSprite[]{new ScorpioSprite(), new JojoSprite(), new JosukeDialogSprite(), new JojoSprite()},
-                            new String[]{"맨해튼 트랜스퍼", "죠린", "죠타로", "죠린"},
+                            new CharSprite[]{new JojoSprite(), new JosukeDialogSprite(), new JosukeDialogSprite(), new JosukeDialogSprite()},
+                            new String[]{"죠린", "죠타로", "죠타로", "죠타로"},
                             new String[]{
-                                    Messages.get(jojo.class, "n5"),
-                                    Messages.get(jojo.class, "n6"),
-                                    Messages.get(jojo.class, "n7"),
-                                    Messages.get(jojo.class, "n8")
+                                    Messages.get(jojo.class, "n9"),
+                                    Messages.get(jojo.class, "n10"),
+                                    Messages.get(jojo.class, "n11"),
+                                    Messages.get(jojo.class, "n12")
                             },
                             new byte[]{
                                     WndDialogueWithPic.IDLE,
-                                    WndDialogueWithPic.IDLE,
                                     WndDialogueWithPic.RUN,
-                                    WndDialogueWithPic.IDLE
+                                    WndDialogueWithPic.RUN,
+                                    WndDialogueWithPic.RUN
                             }
                     );
 
@@ -538,7 +543,8 @@ public class GameScene extends PixelScene {
                     GameScene.add(jojo);
                     jojo.beckon(Dungeon.hero.pos);
 
-                    Sample.INSTANCE.play(Assets.Sounds.HIT_STAB);
+                    GLog.h(Messages.get(Jolynemap.class, "n"));
+
                 }
                 if (Dungeon.level instanceof TempleLastLevel) {
                     add(new WndStory(Messages.get(this, "temple") + "\n\n" + Messages.get(this, "temple2")).setDelays(0.4f, 0.4f));
@@ -574,27 +580,28 @@ public class GameScene extends PixelScene {
                     Statistics.diocount = 1;
 
                 } else if (Dungeon.level instanceof JolyneLevel && Dungeon.depth == 4 && Statistics.spw6 == 1) {
+                    Sample.INSTANCE.play(Assets.Sounds.HIT_STAB);
                     WndDialogueWithPic.dialogue(
-                            new CharSprite[]{new JojoSprite(), new JosukeDialogSprite(), new JosukeDialogSprite(), new JosukeDialogSprite()},
-                            new String[]{"죠린", "죠타로", "죠타로", "죠타로"},
+                            new CharSprite[]{new ScorpioSprite(), new JojoSprite(), new JosukeDialogSprite(), new JojoSprite()},
+                            new String[]{"맨해튼 트랜스퍼", "죠린", "죠타로", "죠린"},
                             new String[]{
-                                    Messages.get(jojo.class, "n9"),
-                                    Messages.get(jojo.class, "n10"),
-                                    Messages.get(jojo.class, "n11"),
-                                    Messages.get(jojo.class, "n12")
+                                    Messages.get(jojo.class, "n5"),
+                                    Messages.get(jojo.class, "n6"),
+                                    Messages.get(jojo.class, "n7"),
+                                    Messages.get(jojo.class, "n8")
                             },
                             new byte[]{
                                     WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
                                     WndDialogueWithPic.RUN,
-                                    WndDialogueWithPic.RUN,
-                                    WndDialogueWithPic.RUN
+                                    WndDialogueWithPic.IDLE
                             }
                     );
                     Statistics.spw6++;
                 } else if (Dungeon.level instanceof JolyneBossLevel && Statistics.spw6 == 2) {
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new WhsnakeSprite(), new JosukeDialogSprite(), new EmporioSprite(), new EmporioSprite(), new JojoSprite()},
-                            new String[]{"화이트 스네이크", "죠타로", "수수께끼의 꼬마", "수수께끼의 꼬마", "죠린"},
+                            new String[]{"???", "죠타로", "수수께끼의 꼬마", "수수께끼의 꼬마", "죠린"},
                             new String[]{
                                     Messages.get(jojo.class, "b1"),
                                     Messages.get(jojo.class, "b2"),
@@ -616,7 +623,13 @@ public class GameScene extends PixelScene {
                 } else if (Dungeon.level instanceof DiobossLevel && Dungeon.depth == 5) {
                     Sample.INSTANCE.play(Assets.Sounds.SPW3);
                     GLog.n(Messages.get(SpeedWagon.class, "floor20"));
-                } else if (Dungeon.level instanceof SewerLevel && Dungeon.depth == 1 && Dungeon.hero.heroClass == HeroClass.ROGUE && !isUnlocked(Badges.Badge.BOSS_CHALLENGE_5)) { // 죠린 해금 뱃지로 바꿔야함
+                } else if (Dungeon.level instanceof SewerLevel && Dungeon.depth == 1 && Dungeon.hero.heroClass == HeroClass.ROGUE
+                        && isUnlocked(Badges.Badge.UNLOCK_MAGE)
+                        && isUnlocked(Badges.Badge.UNLOCK_ROGUE)
+                        && isUnlocked(Badges.Badge.UNLOCK_DUELIST)
+                        // && !isUnlocked(Badges.Badge.UNLOCK_CLERIC)
+                        && !isUnlocked(Badges.Badge.BOSS_CHALLENGE_5)
+                ) { // 죠린 해금 뱃지로 바꿔야함
                     GameScene.show(
                             new WndOptions(new JojoSprite(),
                                     Messages.get(Jolyne.class, "n1"),
@@ -801,6 +814,20 @@ public class GameScene extends PixelScene {
                                     }
                             );
                             break;
+//                        case CLERIC:
+//                            WndDialogueWithPic.dialogue(
+//                                    new CharSprite[]{new Pucci4Sprite(), new JojoSprite()},
+//                                    new String[]{"엔리코 푸치", "죠린"},
+//                                    new String[]{
+//                                            Messages.get(Beast.class, "n10"),
+//                                            Messages.get(Beast.class, "n11"),
+//                                    },
+//                                    new byte[]{
+//                                            WndDialogueWithPic.IDLE,
+//                                            WndDialogueWithPic.IDLE
+//                                    }
+//                            );
+//                            break;
                     }
                     Sample.INSTANCE.play(Assets.Sounds.A1);
                 } else {

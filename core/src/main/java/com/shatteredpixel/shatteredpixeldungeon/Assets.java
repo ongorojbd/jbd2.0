@@ -508,6 +508,7 @@ public class Assets {
         public static final String SUCCUBUS = "sprites/succubus.png";
         public static final String SCORPIO = "sprites/scorpio.png";
         public static final String SCORPIO2 = "sprites/scorpio2.png";
+        public static final String SCORPIO3 = "sprites/scorpio3.png";
         public static final String FISTS = "sprites/yog_fists.png";
         public static final String YOG = "sprites/yog.png";
         public static final String LARVA = "sprites/larva.png";
@@ -607,6 +608,7 @@ public class Assets {
         public static final String FF = "sprites/ff.png";
         public static final String EMPORIO = "sprites/emporio.png";
         public static final String ANNASUI = "sprites/annasui.png";
+        public static final String JOTARO= "sprites/jotaro.png";
         public static final String CREAM = "sprites/cream.png";
 
         public static final String ZOMBIE = "sprites/zombie.png";

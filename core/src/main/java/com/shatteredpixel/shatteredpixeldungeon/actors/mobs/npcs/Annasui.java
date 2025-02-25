@@ -67,23 +67,24 @@ public class Annasui extends NPC {
 
     @Override
     protected boolean act() {
-        if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+        if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
             die(null);
             return true;
         }
 
-        if (SPDSettings.getSkin() == 0 || SPDSettings.getSkin2() == 0 || SPDSettings.getSkin3() == 0 || SPDSettings.getSkin4() == 0 || SPDSettings.getSkin5() == 0 ) {
-            if(SPDSettings.getBrando() >= 3 && !seenBefore){
-            Sample.INSTANCE.play(Assets.Sounds.ANNA);
-            this.yell(Messages.get(this, "notice"));
-            seenBefore = true;
-        }}
+        if (SPDSettings.getSkin() == 0 || SPDSettings.getSkin2() == 0 || SPDSettings.getSkin3() == 0 || SPDSettings.getSkin4() == 0 || SPDSettings.getSkin5() == 0) {
+            if (SPDSettings.getBrando() >= 3 && !seenBefore) {
+                Sample.INSTANCE.play(Assets.Sounds.ANNA);
+                this.yell(Messages.get(this, "notice"));
+                seenBefore = true;
+            }
+        }
 
         return super.act();
     }
 
     @Override
-    public void beckon (int cell) {
+    public void beckon(int cell) {
         //do nothing
     }
 
@@ -98,7 +99,7 @@ public class Annasui extends NPC {
     }
 
     @Override
-    public boolean add( Buff buff ) {
+    public boolean add(Buff buff) {
         return false;
     }
 
@@ -106,9 +107,9 @@ public class Annasui extends NPC {
     public boolean interact(Char c) {
         Sample.INSTANCE.play(Assets.Sounds.ANNA);
 
-        sprite.turnTo( pos, c.pos );
+        sprite.turnTo(pos, c.pos);
 
-        if (c != Dungeon.hero){
+        if (c != Dungeon.hero) {
             return true;
         }
 
@@ -126,27 +127,28 @@ public class Annasui extends NPC {
                             Messages.get(Annasui.class, "2"),
                             Messages.get(Annasui.class, "3"),
                             Messages.get(Annasui.class, "4"),
-                            Messages.get(Annasui.class, "5")
-                    ){
+                            Messages.get(Annasui.class, "5"),
+                            Messages.get(Annasui.class, "6i")
+                    ) {
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0) {
                                 if (SPDSettings.getSkin() == 0) {
-                                if (SPDSettings.getBrando() >= 3){
-                                    SPDSettings.addSkin(1);
-                                    SPDSettings.addBrando(-3);
-                                    Emporio.retu();
-                                    GLog.p(Messages.get(Annasui.class, "g"));
-                                    Sample.INSTANCE.play(Assets.Sounds.BADGE);
+                                    if (SPDSettings.getBrando() >= 3) {
+                                        SPDSettings.addSkin(1);
+                                        SPDSettings.addBrando(-3);
+                                        Emporio.retu();
+                                        GLog.p(Messages.get(Annasui.class, "g"));
+                                        Sample.INSTANCE.play(Assets.Sounds.BADGE);
+                                    } else {
+                                        GLog.p(Messages.get(Annasui.class, "nc"));
+                                    }
                                 } else {
-                                    GLog.p(Messages.get(Annasui.class, "nc"));
-                                }} else {
                                     GLog.p(Messages.get(Annasui.class, "r"));
                                 }
-                            }
-                            else if (index == 1) {
+                            } else if (index == 1) {
                                 if (SPDSettings.getSkin2() == 0) {
-                                    if (SPDSettings.getBrando() >= 3){
+                                    if (SPDSettings.getBrando() >= 3) {
                                         SPDSettings.addSkin2(1);
                                         SPDSettings.addBrando(-3);
                                         Emporio.retu();
@@ -154,13 +156,13 @@ public class Annasui extends NPC {
                                         Sample.INSTANCE.play(Assets.Sounds.BADGE);
                                     } else {
                                         GLog.p(Messages.get(Annasui.class, "nc"));
-                                    }} else {
+                                    }
+                                } else {
                                     GLog.p(Messages.get(Annasui.class, "r"));
                                 }
-                            }
-                            else if(index == 2){
+                            } else if (index == 2) {
                                 if (SPDSettings.getSkin3() == 0) {
-                                    if (SPDSettings.getBrando() >= 3){
+                                    if (SPDSettings.getBrando() >= 3) {
                                         SPDSettings.addSkin3(1);
                                         SPDSettings.addBrando(-3);
                                         Emporio.retu();
@@ -168,13 +170,13 @@ public class Annasui extends NPC {
                                         Sample.INSTANCE.play(Assets.Sounds.BADGE);
                                     } else {
                                         GLog.p(Messages.get(Annasui.class, "nc"));
-                                    }} else {
+                                    }
+                                } else {
                                     GLog.p(Messages.get(Annasui.class, "r"));
                                 }
-                            }
-                            else if(index == 3){
+                            } else if (index == 3) {
                                 if (SPDSettings.getSkin4() == 0) {
-                                    if (SPDSettings.getBrando() >= 3){
+                                    if (SPDSettings.getBrando() >= 3) {
                                         SPDSettings.addSkin4(1);
                                         SPDSettings.addBrando(-3);
                                         Emporio.retu();
@@ -182,13 +184,13 @@ public class Annasui extends NPC {
                                         Sample.INSTANCE.play(Assets.Sounds.BADGE);
                                     } else {
                                         GLog.p(Messages.get(Annasui.class, "nc"));
-                                    }} else {
+                                    }
+                                } else {
                                     GLog.p(Messages.get(Annasui.class, "r"));
                                 }
-                            }
-                            else {
+                            } else if (index == 4) {
                                 if (SPDSettings.getSkin5() == 0) {
-                                    if (SPDSettings.getBrando() >= 3){
+                                    if (SPDSettings.getBrando() >= 3) {
                                         SPDSettings.addSkin5(1);
                                         SPDSettings.addBrando(-3);
                                         Emporio.retu();
@@ -196,7 +198,22 @@ public class Annasui extends NPC {
                                         Sample.INSTANCE.play(Assets.Sounds.BADGE);
                                     } else {
                                         GLog.p(Messages.get(Annasui.class, "nc"));
-                                    }} else {
+                                    }
+                                } else {
+                                    GLog.p(Messages.get(Annasui.class, "r"));
+                                }
+                            } else {
+                                if (SPDSettings.getSkin6() == 0) {
+                                    if (SPDSettings.getBrando() >= 3) {
+                                        SPDSettings.addSkin6(1);
+                                        SPDSettings.addBrando(-3);
+                                        Emporio.retu();
+                                        GLog.p(Messages.get(Annasui.class, "g"));
+                                        Sample.INSTANCE.play(Assets.Sounds.BADGE);
+                                    } else {
+                                        GLog.p(Messages.get(Annasui.class, "nc"));
+                                    }
+                                } else {
                                     GLog.p(Messages.get(Annasui.class, "r"));
                                 }
                             }
@@ -210,12 +227,12 @@ public class Annasui extends NPC {
     }
 
     @Override
-    public int defenseSkill( Char enemy ) {
+    public int defenseSkill(Char enemy) {
         return INFINITE_EVASION;
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
+    public void damage(int dmg, Object src) {
     }
 
 

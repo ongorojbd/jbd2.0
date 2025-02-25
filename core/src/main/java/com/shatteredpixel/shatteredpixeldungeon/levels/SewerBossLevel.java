@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
@@ -285,6 +286,24 @@ public class SewerBossLevel extends SewerLevel {
 					);
 					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
+//				case CLERIC:
+//					WndDialogueWithPic.dialogue(
+//							new CharSprite[]{new DvdolSprite(), new GhostSprite(), new GooSprite(), new JojoSprite()},
+//							new String[]{"무함마드 압둘", "무함마드 압둘", "크림", "죠린"},
+//							new String[]{
+//									Messages.get(Goo.class, "n1"),
+//									Messages.get(Goo.class, "n2"),
+//									Messages.get(Goo.class, "n3"),
+//									Messages.get(Goo.class, "n6")
+//							},
+//							new byte[]{
+//									WndDialogueWithPic.IDLE,
+//									WndDialogueWithPic.DIE,
+//									WndDialogueWithPic.IDLE,
+//									WndDialogueWithPic.IDLE
+//							}
+//					);
+//					break;
 			}
 
 			set( entrance(), Terrain.WATER );

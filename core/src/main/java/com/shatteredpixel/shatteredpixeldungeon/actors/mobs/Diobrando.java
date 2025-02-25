@@ -117,6 +117,18 @@ public class Diobrando extends Mob {
             BossHealthBar.assignBoss(this);
 
             switch(hero.heroClass){
+//                case CLERIC:
+//                    WndDialogueWithPic.dialogue(
+//                            new CharSprite[]{new DiobrandoSprite()},
+//                            new String[]{"디오 브란도"},
+//                            new String[]{
+//                                    Messages.get(this, "16"),
+//                            },
+//                            new byte[]{
+//                                    WndDialogueWithPic.IDLE
+//                            }
+//                    );
+//                    break;
                 case WARRIOR:
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new DiobrandoSprite(), new SupressionSprite()},

@@ -33,22 +33,32 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CreamTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlashingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlockTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.MachineTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.OozeTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RockfallTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ShockingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TeleportationTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -73,7 +83,7 @@ public class JolyneLevel extends RegularLevel {
 
     public void playLevelMusic() {
         Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.HALLS_1},
+                new String[]{Assets.Music.PRISON_TENSE},
                 new float[]{1},
                 false);
     }
@@ -110,21 +120,24 @@ public class JolyneLevel extends RegularLevel {
         return Assets.Environment.WATER_SEWERS;
     }
 
-
     @Override
     protected Class<?>[] trapClasses() {
-        return new Class[]{
-                FrostTrap.class, StormTrap.class, CorrosionTrap.class, BlazingTrap.class, DisintegrationTrap.class,
-                RockfallTrap.class, FlashingTrap.class, WeakeningTrap.class, MachineTrap.class,
-                DisarmingTrap.class, SummoningTrap.class, WarpingTrap.class, CursingTrap.class, PitfallTrap.class, GatewayTrap.class, GeyserTrap.class};
+        return Dungeon.depth == 1 ?
+                new Class<?>[]{WornDartTrap.class} :
+                new Class<?>[]{
+                        ChillingTrap.class, ShockingTrap.class, ToxicTrap.class, WornDartTrap.class,
+                        AlarmTrap.class, OozeTrap.class,
+                        ConfusionTrap.class, FlockTrap.class, SummoningTrap.class, TeleportationTrap.class, GatewayTrap.class};
     }
 
     @Override
     protected float[] trapChances() {
-        return new float[]{
-                4, 4, 4, 4, 4,
-                2, 2, 2, 2,
-                1, 1, 1, 1, 1, 1, 1};
+        return Dungeon.depth == 1 ?
+                new float[]{1} :
+                new float[]{
+                        4, 4, 4, 4,
+                        2, 2,
+                        1, 1, 1, 1, 1};
     }
 
     @Override

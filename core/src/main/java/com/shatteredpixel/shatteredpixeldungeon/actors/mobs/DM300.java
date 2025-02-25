@@ -67,7 +67,11 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ElementalSprite2;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KiraSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
@@ -373,6 +377,20 @@ public class DM300 extends Mob {
 			turnsSinceLastAbility = 0;
 			Sample.INSTANCE.play( Assets.Sounds.SHEER );
 			switch(Dungeon.hero.heroClass){
+//				case CLERIC:
+//					WndDialogueWithPic.dialogue(
+//							new CharSprite[]{new KiraSprite(), new JojoSprite()},
+//							new String[]{"키라 요시카게", "죠린"},
+//							new String[]{
+//									Messages.get(DM300.class, "n6"),
+//									Messages.get(DM300.class, "n7")
+//							},
+//							new byte[]{
+//									WndDialogueWithPic.IDLE,
+//									WndDialogueWithPic.IDLE
+//							}
+//					);
+//					break;
 				case WARRIOR:
 				case HUNTRESS:
 					WndDialogueWithPic.dialogue(
