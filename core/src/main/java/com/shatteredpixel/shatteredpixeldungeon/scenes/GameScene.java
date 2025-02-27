@@ -498,6 +498,7 @@ public class GameScene extends PixelScene {
                     Dungeon.level.seal();
                 }
                 if (Dungeon.level instanceof HumanVillageBossLevel2) {
+
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new JojoSprite(), new JosukeDialogSprite(), new JojoSprite(), new JosukeDialogSprite()},
                             new String[]{"죠린", "죠타로", "죠린", "죠타로"},
@@ -542,8 +543,8 @@ public class GameScene extends PixelScene {
                     jojo.pos = Dungeon.hero.pos;
                     GameScene.add(jojo);
                     jojo.beckon(Dungeon.hero.pos);
-
-                    GLog.h(Messages.get(Jolynemap.class, "n"));
+                    GLog.newLine();
+                    GLog.p(Messages.get(Jolynemap.class, "n"));
 
                 }
                 if (Dungeon.level instanceof TempleLastLevel) {
@@ -641,6 +642,7 @@ public class GameScene extends PixelScene {
                                 protected void onSelect(int index) {
                                     if (index == 0) {
                                         Statistics.spw6++;
+                                        Statistics.spw8++;
                                         InterlevelScene.mode = InterlevelScene.Mode.RETURN;
                                         InterlevelScene.returnDepth = 2;
                                         InterlevelScene.returnBranch = 0;

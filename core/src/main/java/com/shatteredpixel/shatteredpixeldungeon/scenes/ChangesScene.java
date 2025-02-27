@@ -70,7 +70,7 @@ public class ChangesScene extends PixelScene {
 		super.create();
 
 		Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.DRAGON},
+				new String[]{Assets.Music.THEME_1},
 				new float[]{1},
 				false);
 

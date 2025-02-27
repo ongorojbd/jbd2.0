@@ -198,7 +198,7 @@ public enum Bestiary {
         ALLY.addEntities(MirrorImage.class, PrismaticImage.class,
                 DriedRose.GhostHero.class, Willamob.class, Willcmob.class, Willgmob.class,
                 TuskBestiary2.class, WandOfWarding.Ward.class, TuskBestiary4.class, WandOfWarding.Ward.WardSentry.class, WandOfLivingEarth.EarthGuardian.class,
-                ShadowClone.ShadowAlly.class, SmokeBomb.NinjaLog.class, SpiritHawk.HawkAlly.class, Act1.class, Act2.class, Act3.class, SpeedWagon.class, jojo.class);
+                ShadowClone.ShadowAlly.class, SmokeBomb.NinjaLog.class, SpiritHawk.HawkAlly.class, Act1.class, Act2.class, Act3.class, SpeedWagon.class, jojo.class, Jotaro.class);
 
         TRAP.addEntities(WornDartTrap.class, CreamTrap.class, PoisonDartTrap.class, DisintegrationTrap.class, GatewayTrap.class,
                 ChillingTrap.class, BurningTrap.class, ShockingTrap.class, AlarmTrap.class, GrippingTrap.class, TeleportationTrap.class, OozeTrap.class,

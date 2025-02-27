@@ -453,6 +453,7 @@ public class Assets {
         public static final String CITY = "splashes/city.jpg";
         public static final String HALLS = "splashes/halls.jpg";
         public static final String LABS = "splashes/labs.jpg";
+        public static final String SO = "splashes/so.jpg";
     }
 
     public static class Sprites {

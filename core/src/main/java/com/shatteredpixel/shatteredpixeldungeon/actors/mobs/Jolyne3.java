@@ -106,12 +106,20 @@ public class Jolyne3 extends DirectableAlly {
 
     @Override
     public int attackSkill(Char target) {
-        return 11;
+        if (enemy instanceof Piranha || enemy instanceof Mimic) {
+            return 30;
+        } else {
+            return 11;
+        }
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(2, 4);
+        if (enemy instanceof Piranha || enemy instanceof Mimic) {
+            return Random.NormalIntRange(30, 30);
+        } else {
+            return Random.NormalIntRange(4, 6);
+        }
     }
 
     private void tell( String text ) {
@@ -218,6 +226,8 @@ public class Jolyne3 extends DirectableAlly {
             Dungeon.fail(getClass());
             GLog.n(Messages.get(Char.class, "kill", name()));
         }
+
+        GLog.h(Messages.get(Jolyne3.class, "death2"));
 
     }
 }

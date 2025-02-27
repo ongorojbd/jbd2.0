@@ -29,92 +29,120 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AmblanceSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 
 import java.util.ArrayList;
 
 public class TengusMask extends Item {
-	
-	private static final String AC_WEAR	= "WEAR";
-	
-	{
-		stackable = false;
-		image = ItemSpriteSheet.MASK;
 
-		defaultAction = AC_WEAR;
+    private static final String AC_WEAR = "WEAR";
 
-		unique = true;
-	}
-	
-	@Override
-	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		actions.add( AC_WEAR );
-		return actions;
-	}
-	
-	@Override
-	public void execute( Hero hero, String action ) {
+    {
+        stackable = false;
+        image = ItemSpriteSheet.MASK;
 
-		super.execute( hero, action );
+        defaultAction = AC_WEAR;
 
-		if (action.equals( AC_WEAR )) {
-			
-			curUser = hero;
+        unique = true;
+    }
 
-			GameScene.show( new WndChooseSubclass( this, hero ) );
-			
-		}
-	}
-	
-	@Override
-	public boolean doPickUp(Hero hero, int pos) {
-		Badges.validateMastery();
-		return super.doPickUp( hero, pos );
-	}
-	
-	@Override
-	public boolean isUpgradable() {
-		return false;
-	}
-	
-	@Override
-	public boolean isIdentified() {
-		return true;
-	}
-	
-	public void choose( HeroSubClass way ) {
-		
-		detach( curUser.belongings.backpack );
-		Catalog.countUse( getClass() );
-		
-		curUser.spend( Actor.TICK );
-		curUser.busy();
-		
-		curUser.subClass = way;
-		Talent.initSubclassTalents(curUser);
+    @Override
+    public ArrayList<String> actions(Hero hero) {
+        ArrayList<String> actions = super.actions(hero);
+        actions.add(AC_WEAR);
+        return actions;
+    }
 
-		if (way == HeroSubClass.ASSASSIN && curUser.invisible > 0){
-			Buff.affect(curUser, Preparation.class);
-		}
+    @Override
+    public void execute(Hero hero, String action) {
 
+        super.execute(hero, action);
 
-		
-		curUser.sprite.operate( curUser.pos );
-		Sample.INSTANCE.play( Assets.Sounds.MASTERY );
-		
-		Emitter e = curUser.sprite.centerEmitter();
-		e.pos(e.x-2, e.y-6, 4, 4);
-		e.start(Speck.factory(Speck.MASK), 0.05f, 20);
-		GLog.p( Messages.get(this, "used"));
-		
-	}
+        if (action.equals(AC_WEAR)) {
+
+            curUser = hero;
+
+            GameScene.show(new WndChooseSubclass(this, hero));
+
+        }
+    }
+
+    @Override
+    public boolean doPickUp(Hero hero, int pos) {
+        Badges.validateMastery();
+        return super.doPickUp(hero, pos);
+    }
+
+    @Override
+    public boolean isUpgradable() {
+        return false;
+    }
+
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
+
+    public void choose(HeroSubClass way) {
+
+        detach(curUser.belongings.backpack);
+        Catalog.countUse(getClass());
+
+        curUser.spend(Actor.TICK);
+        curUser.busy();
+
+        curUser.subClass = way;
+        Talent.initSubclassTalents(curUser);
+
+        if (way == HeroSubClass.ASSASSIN && curUser.invisible > 0) {
+            Buff.affect(curUser, Preparation.class);
+        }
+
+        // 죠린 업뎃
+        if (way == HeroSubClass.BERSERKER) {
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new JojoSprite()},
+                    new String[]{"죠린"},
+                    new String[]{
+                            Messages.get(Jolyne3.class, "s1")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
+        } else if (way == HeroSubClass.GLADIATOR) {
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new JojoSprite()},
+                    new String[]{"죠린"},
+                    new String[]{
+                            Messages.get(Jolyne3.class, "s2")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
+        }
+
+        curUser.sprite.operate(curUser.pos);
+        Sample.INSTANCE.play(Assets.Sounds.MASTERY);
+
+        Emitter e = curUser.sprite.centerEmitter();
+        e.pos(e.x - 2, e.y - 6, 4, 4);
+        e.start(Speck.factory(Speck.MASK), 0.05f, 20);
+        GLog.p(Messages.get(this, "used"));
+
+    }
 }

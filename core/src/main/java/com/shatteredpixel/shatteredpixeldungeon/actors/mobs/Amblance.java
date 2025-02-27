@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AmblanceSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GolemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
@@ -83,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -131,7 +133,16 @@ public class Amblance extends Mob {
         }
 
         if (!seenBefore) {
-            this.yell(Messages.get(this, "notice"));
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new AmblanceSprite()},
+                    new String[]{"앰뷸런스"},
+                    new String[]{
+                            Messages.get(this, "notice")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
         }
 
         for (Char c : Actor.chars()){

@@ -40,6 +40,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -265,6 +267,8 @@ public class InterlevelScene extends PixelScene {
         } else {
             if (Dungeon.level instanceof DioLevel || Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel || Dungeon.level instanceof DiobossLevel || Dungeon.level instanceof ShipbossLevel) {
                 background = new Image(Assets.Splashes.BRANDO);
+            } else if (Statistics.spw8 == 1) {
+                background = new Image(Assets.Splashes.SO);
             } else {
                 background = new Image(loadingAsset);
             }
