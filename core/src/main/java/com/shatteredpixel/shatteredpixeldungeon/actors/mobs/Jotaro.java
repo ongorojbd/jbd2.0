@@ -109,8 +109,8 @@ public class Jotaro extends Mob {
 
     public boolean jo() {
 
-        Buff.affect(hero, Invulnerability.class, 6f);
-        Buff.affect(this, Invulnerability.class, 6f);
+        Buff.affect(hero, Invulnerability.class, 4f);
+        Buff.affect(this, Invulnerability.class, 4f);
 
         return true;
     }

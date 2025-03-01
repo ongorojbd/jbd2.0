@@ -412,6 +412,8 @@ public class Assets {
         public static final String JT3 = "sounds/jt3.mp3";
         public static final String JT4 = "sounds/jt4.mp3";
         public static final String JT5 = "sounds/jt5.mp3";
+        public static final String JT6 = "sounds/jt6.mp3";
+        public static final String JT7 = "sounds/jt7.mp3";
 
         public static final String[] all = new String[]{
                 CLICK, BADGE, GOLD,
@@ -435,7 +437,7 @@ public class Assets {
                 MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA,
-                JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5
+                JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5, JT6, JT7
         };
     }
 
@@ -445,6 +447,7 @@ public class Assets {
         public static final String ROGUE = "splashes/rogue.jpg";
         public static final String HUNTRESS = "splashes/huntress.jpg";
         public static final String DUELIST = "splashes/duelist.jpg";
+        public static final String CLERIC = "splashes/cleric.jpg";
         public static final String BRANDO = "splashes/brando.jpg";
 
         public static final String SEWERS = "splashes/sewers.jpg";
@@ -470,6 +473,8 @@ public class Assets {
         public static final String HUNTRESS2 = "sprites/huntress2.png";
         public static final String DUELIST = "sprites/duelist.png";
         public static final String DUELIST2 = "sprites/duelist2.png";
+        public static final String CLERIC = "sprites/cleric.png";
+        public static final String CLERIC2 = "sprites/cleric2.png";
         public static final String AVATARS = "sprites/avatars.png";
         public static final String PET = "sprites/pet.png";
         public static final String AMULET = "sprites/amulet.png";

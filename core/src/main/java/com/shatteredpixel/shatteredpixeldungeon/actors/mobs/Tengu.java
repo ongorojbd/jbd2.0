@@ -71,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SoldierSprite;
@@ -391,22 +392,22 @@ public class Tengu extends Mob {
 								}
 						);
 						break;
-//					case CLERIC:
-//						WndDialogueWithPic.dialogue(
-//								new CharSprite[]{new DoppioDialogSprite(), new TenguSprite(), new JojoSprite()},
-//								new String[]{"도피오", "디아볼로", "죠린"},
-//								new String[]{
-//										Messages.get(Tengu.class, "notice1"),
-//										Messages.get(Tengu.class, "notice2"),
-//										Messages.get(Tengu.class, "notice4")
-//								},
-//								new byte[]{
-//										WndDialogueWithPic.IDLE,
-//										WndDialogueWithPic.IDLE,
-//										WndDialogueWithPic.IDLE
-//								}
-//						);
-//						break;
+					case CLERIC:
+						WndDialogueWithPic.dialogue(
+								new CharSprite[]{new DoppioDialogSprite(), new TenguSprite(), new JojoSprite()},
+								new String[]{"도피오", "디아볼로", "죠린"},
+								new String[]{
+										Messages.get(Tengu.class, "notice1"),
+										Messages.get(Tengu.class, "notice2"),
+										Messages.get(Tengu.class, "notice4")
+								},
+								new byte[]{
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE,
+										WndDialogueWithPic.IDLE
+								}
+						);
+						break;
 					case MAGE:
 						WndDialogueWithPic.dialogue(
 								new CharSprite[]{new TrapperSprite(), new DoppioDialogSprite(), new TenguSprite()},
@@ -518,6 +519,9 @@ public class Tengu extends Mob {
 				if (canUseAbility()){
 					return useAbility();
 				}
+
+				recentlyAttackedBy.clear();
+				target = enemy.pos;
 
 				return doAttack( enemy );
 

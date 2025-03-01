@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.SparseArray;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class Statistics {
 
@@ -35,6 +37,8 @@ public class Statistics {
     public static int piranhasKilled;
     public static int yorihimes;
     public static int ankhsUsed;
+    //tracks every item type 'seen' this run (i.e. would be added to catalogs)
+    public static HashSet<Class> itemTypesDiscovered = new HashSet<>();
 
     //These are used for score calculation
     // some are built incrementally, most are assigned when full score is calculated
@@ -110,6 +114,7 @@ public class Statistics {
         piranhasKilled = 0;
         yorihimes = 0;
         ankhsUsed = 0;
+        itemTypesDiscovered.clear();
 
         progressScore = 0;
         heldItemValue = 0;
@@ -222,7 +227,7 @@ public class Statistics {
     private static final String UPGRADES = "upgradesUsed";
     private static final String SNEAKS = "sneakAttacks";
     private static final String THROWN = "thrownAssists";
-
+    private static final String ITEM_TYPES_DISCOVERED = "item_types_discovered";
     private static final String SPAWNERS = "spawnersAlive";
 
     private static final String DURATION = "duration";
@@ -247,6 +252,7 @@ public class Statistics {
         bundle.put(PIRANHAS, piranhasKilled);
         bundle.put(YORIHIMES, yorihimes);
         bundle.put(ANKHS, ankhsUsed);
+        bundle.put(ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]));
 
         bundle.put(TIMERESET, timeReset);
         bundle.put(NEOROCA, neoroca);
@@ -319,6 +325,11 @@ public class Statistics {
         piranhasKilled = bundle.getInt(PIRANHAS);
         yorihimes = bundle.getInt(YORIHIMES);
         ankhsUsed = bundle.getInt(ANKHS);
+        if (bundle.contains( ITEM_TYPES_DISCOVERED )) {
+            itemTypesDiscovered = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_DISCOVERED)));
+        } else {
+            itemTypesDiscovered.clear();
+        }
 
         timeReset = bundle.getInt(TIMERESET);
         neoroca = bundle.getInt(NEOROCA);

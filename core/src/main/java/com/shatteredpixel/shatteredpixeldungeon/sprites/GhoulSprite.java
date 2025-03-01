@@ -77,9 +77,9 @@ public abstract class GhoulSprite extends MobSprite {
         protected int texOffset() { return 28; }
     }
 
-    public void crumple() {
+    public void crumple(){
         hideEmo();
-        remove(State.PARALYSED);
+        processStateRemoval(State.PARALYSED);
         play(crumple);
     }
 

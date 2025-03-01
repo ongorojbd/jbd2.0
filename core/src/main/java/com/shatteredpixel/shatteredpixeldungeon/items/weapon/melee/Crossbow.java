@@ -126,7 +126,7 @@ public class Crossbow extends MeleeWeapon {
 			//knock them back along that ballistica
 			WandOfBlastWave.throwChar(defender,
 					trajectory,
-					3,
+					4,
 					true,
 					true,
 					this);

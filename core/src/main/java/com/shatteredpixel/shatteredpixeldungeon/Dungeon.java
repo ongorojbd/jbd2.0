@@ -47,6 +47,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -243,6 +246,7 @@ public class Dungeon {
     public static boolean dailyReplay;
     public static String customSeedText = "";
     public static long seed;
+    public static long lastPlayed;
 
     //we initialize the seed separately so that things like interlevelscene can access it early
     public static void initSeed() {
@@ -717,6 +721,7 @@ public class Dungeon {
     private static final String CUSTOM_SEED = "custom_seed";
     private static final String DAILY = "daily";
     private static final String DAILY_REPLAY = "daily_replay";
+    private static final String LAST_PLAYED = "last_played";
     private static final String CHALLENGES = "challenges";
     private static final String MOBS_TO_CHAMPION = "mobs_to_champion";
     private static final String HERO = "hero";
@@ -749,6 +754,7 @@ public class Dungeon {
             bundle.put(CUSTOM_SEED, customSeedText);
             bundle.put(DAILY, daily);
             bundle.put(DAILY_REPLAY, dailyReplay);
+            bundle.put(LAST_PLAYED, lastPlayed = Game.realTime);
             bundle.put(CHALLENGES, challenges);
             bundle.put(MOBS_TO_CHAMPION, mobsToChampion);
             bundle.put(HERO, hero);
@@ -1017,6 +1023,7 @@ public class Dungeon {
         info.customSeed = bundle.getString(CUSTOM_SEED);
         info.daily = bundle.getBoolean(DAILY);
         info.dailyReplay = bundle.getBoolean(DAILY_REPLAY);
+        info.lastPlayed = bundle.getLong(LAST_PLAYED);
 
         Hero.preview(info, bundle.getBundle(HERO));
         Statistics.preview(info, bundle);
@@ -1092,7 +1099,7 @@ public class Dungeon {
 
         GameScene.updateFog(l, t, width, height);
 
-        if (hero.buff(MindVision.class) != null) {
+        if (hero.buff(MindVision.class) != null || hero.buff(DivineSense.DivineSenseTracker.class) != null) {
             for (Mob m : level.mobs.toArray(new Mob[0])) {
                 if (m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL && ((Mimic) m).stealthy()) {
                     continue;
@@ -1142,9 +1149,10 @@ public class Dungeon {
         for (Char ch : Actor.chars()) {
             if (ch instanceof WandOfWarding.Ward
                     || ch instanceof WandOfRegrowth.Lotus
+                    || ch instanceof SpiritHawk.HawkAlly
                     || ch instanceof SpeedWagon
                     || ch instanceof Tendency
-                    || ch instanceof SpiritHawk.HawkAlly) {
+                    || ch.buff(PowerOfMany.PowerBuff.class) != null) {
                 x = ch.pos % level.width();
                 y = ch.pos / level.width();
 
@@ -1240,7 +1248,14 @@ public class Dungeon {
         }
         //chars affected by terror have a shorter lookahead and can't approach the fear source
         boolean canApproachFromPos = ch.buff(Terror.class) == null && ch.buff(Dread.class) == null;
-        return PathFinder.getStepBack(ch.pos, from, canApproachFromPos ? 8 : 4, passable, canApproachFromPos);
+        int step = PathFinder.getStepBack(ch.pos, from, canApproachFromPos ? 8 : 4, passable, canApproachFromPos);
+
+        //only consider chars impassable if our retreat step runs into them
+        while (step != -1 && Actor.findChar(step) != null && chars) {
+            passable[step] = false;
+            step = PathFinder.getStepBack(ch.pos, from, canApproachFromPos ? 8 : 4, passable, canApproachFromPos);
+        }
+        return step;
     }
 
 }

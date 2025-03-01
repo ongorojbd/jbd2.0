@@ -183,7 +183,7 @@ public class Kawasiri extends Mob {
             HP = 148;
 
             Viscosity.DeferedDamage deferred = Buff.affect(this, Viscosity.DeferedDamage.class);
-            deferred.prolong(dmg);
+            deferred.extend(dmg);
         }
         if (Phase == 3 && HP < 147) {
             Phase = 4;
@@ -200,6 +200,7 @@ public class Kawasiri extends Mob {
                 case WARRIOR:
                 case MAGE:
                 case HUNTRESS:
+                case CLERIC:
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new KousakuSprite(), new KousakuSprite()},
                             new String[]{"카와지리 코사쿠", "카와지리 코사쿠"},

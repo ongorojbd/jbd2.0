@@ -94,18 +94,12 @@ public class Whitesnakeboss extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(1, 4);
+        return Random.NormalIntRange(1, 3);
     }
 
     @Override
     public int attackSkill(Char target) {
         return 10;
     }
-
-    @Override
-    public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 2);
-    }
-
 
 }

@@ -32,8 +32,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReachIncrease;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
@@ -66,6 +71,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projec
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -120,22 +126,65 @@ abstract public class Weapon extends KindOfWeapon {
     public boolean masteryPotionBonus = false;
 
     @Override
-    public int proc(Char attacker, Char defender, int damage) {
+    public int proc( Char attacker, Char defender, int damage ) {
 
-        if (enchantment != null && attacker.buff(MagicImmune.class) == null) {
-            damage = enchantment.proc(this, attacker, defender, damage);
+        boolean becameAlly = false;
+        boolean wasAlly = defender.alignment == Char.Alignment.ALLY;
+        if (attacker.buff(MagicImmune.class) == null) {
+            Enchantment trinityEnchant = null;
+            if (Dungeon.hero.buff(BodyForm.BodyFormBuff.class) != null && this instanceof MeleeWeapon){
+                trinityEnchant = Dungeon.hero.buff(BodyForm.BodyFormBuff.class).enchant();
+                if (enchantment != null && trinityEnchant != null && trinityEnchant.getClass() == enchantment.getClass()){
+                    trinityEnchant = null;
+                }
+            }
+
+            if (attacker instanceof Hero && isEquipped((Hero) attacker)
+                    && attacker.buff(HolyWeapon.HolyWepBuff.class) != null){
+                if (enchantment != null &&
+                        (((Hero) attacker).subClass == HeroSubClass.PALADIN || hasCurseEnchant())){
+                    damage = enchantment.proc(this, attacker, defender, damage);
+                    if (defender.alignment == Char.Alignment.ALLY && !wasAlly){
+                        becameAlly = true;
+                    }
+                }
+                if (defender.isAlive() && !becameAlly && trinityEnchant != null){
+                    damage = trinityEnchant.proc(this, attacker, defender, damage);
+                }
+                if (defender.isAlive() && !becameAlly) {
+                    int dmg = ((Hero) attacker).subClass == HeroSubClass.PALADIN ? 6 : 2;
+                    defender.damage(Math.round(dmg * Enchantment.genericProcChanceMultiplier(attacker)), HolyWeapon.INSTANCE);
+                }
+
+            } else {
+                if (enchantment != null) {
+                    damage = enchantment.proc(this, attacker, defender, damage);
+                    if (defender.alignment == Char.Alignment.ALLY && !wasAlly) {
+                        becameAlly = true;
+                    }
+                }
+
+                if (defender.isAlive() && !becameAlly && trinityEnchant != null){
+                    damage = trinityEnchant.proc(this, attacker, defender, damage);
+                }
+            }
+
+            if (attacker instanceof Hero && isEquipped((Hero) attacker) &&
+                    attacker.buff(Smite.SmiteTracker.class) != null && !becameAlly){
+                defender.damage(Smite.bonusDmg((Hero) attacker, defender), Smite.INSTANCE);
+            }
         }
 
-        if (!levelKnown && attacker == hero) {
-            float uses = Math.min(availableUsesToID, Talent.itemIDSpeedFactor(hero, this));
+        if (!levelKnown && attacker == Dungeon.hero) {
+            float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
             availableUsesToID -= uses;
             usesLeftToID -= uses;
             if (usesLeftToID <= 0) {
-                if (ShardOfOblivion.passiveIDDisabled()) {
-                    if (usesLeftToID > -1) {
+                if (ShardOfOblivion.passiveIDDisabled()){
+                    if (usesLeftToID > -1){
                         GLog.p(Messages.get(ShardOfOblivion.class, "identify_ready"), name());
                     }
-                    usesLeftToID = -1;
+                    setIDReady();
                 } else {
                     identify();
                     GLog.p(Messages.get(Weapon.class, "identify"));
@@ -200,6 +249,8 @@ abstract public class Weapon extends KindOfWeapon {
         if (super.collect(container)) {
             if (hero != null && hero.isAlive() && isIdentified() && enchantment != null) {
                 Catalog.setSeen(enchantment.getClass());
+
+                Statistics.itemTypesDiscovered.add(enchantment.getClass());
             }
             return true;
         } else {
@@ -211,8 +262,14 @@ abstract public class Weapon extends KindOfWeapon {
     public Item identify(boolean byHero) {
         if (enchantment != null && byHero && hero != null && hero.isAlive()) {
             Catalog.setSeen(enchantment.getClass());
+
+            Statistics.itemTypesDiscovered.add(enchantment.getClass());
         }
         return super.identify(byHero);
+    }
+
+    public void setIDReady(){
+        usesLeftToID = -1;
     }
 
     public boolean readyToIdentify() {
@@ -284,6 +341,9 @@ abstract public class Weapon extends KindOfWeapon {
             if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)) {
                 return reach;
             }
+        }
+        if (owner instanceof Hero && owner.buff(AscendedForm.AscendBuff.class) != null){
+            reach += 2;
         }
         if (hasEnchant(Projecting.class, owner)) {
             return reach + Math.round(enchantment.procChanceMultiplier(owner));
@@ -367,7 +427,13 @@ abstract public class Weapon extends KindOfWeapon {
 
     @Override
     public String name() {
-        return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.name(super.name()) : super.name();
+        if (isEquipped(Dungeon.hero) && !hasCurseEnchant() && Dungeon.hero.buff(HolyWeapon.HolyWepBuff.class) != null
+                && (Dungeon.hero.subClass != HeroSubClass.PALADIN || enchantment == null)){
+            return Messages.get(HolyWeapon.class, "ench_name", super.name());
+        } else {
+            return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.name(super.name()) : super.name();
+
+        }
     }
 
     @Override
@@ -410,6 +476,8 @@ abstract public class Weapon extends KindOfWeapon {
         if (ench != null && isIdentified() && hero != null
                 && hero.isAlive() && hero.belongings.contains(this)) {
             Catalog.setSeen(ench.getClass());
+
+            Statistics.itemTypesDiscovered.add(ench.getClass());
         }
         return this;
     }
@@ -423,7 +491,23 @@ abstract public class Weapon extends KindOfWeapon {
     }
 
     public boolean hasEnchant(Class<? extends Enchantment> type, Char owner) {
-        return enchantment != null && enchantment.getClass() == type && owner.buff(MagicImmune.class) == null;
+        if (enchantment == null){
+            return false;
+        } else if (owner.buff(MagicImmune.class) != null) {
+            return false;
+        } else if (!enchantment.curse()
+                && owner instanceof Hero
+                && isEquipped((Hero) owner)
+                && owner.buff(HolyWeapon.HolyWepBuff.class) != null
+                && ((Hero) owner).subClass != HeroSubClass.PALADIN) {
+            return false;
+        } else if (owner.buff(BodyForm.BodyFormBuff.class) != null
+                && owner.buff(BodyForm.BodyFormBuff.class).enchant() != null
+                && owner.buff(BodyForm.BodyFormBuff.class).enchant().getClass().equals(type)){
+            return true;
+        } else {
+            return enchantment.getClass() == type;
+        }
     }
 
     //these are not used to process specific enchant effects, so magic immune doesn't affect them
@@ -435,9 +519,16 @@ abstract public class Weapon extends KindOfWeapon {
         return enchantment != null && enchantment.curse();
     }
 
+    private static ItemSprite.Glowing HOLY = new ItemSprite.Glowing( 0x80DEF7 );
+
     @Override
     public ItemSprite.Glowing glowing() {
-        return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.glowing() : null;
+        if (isEquipped(Dungeon.hero) && !hasCurseEnchant() && Dungeon.hero.buff(HolyWeapon.HolyWepBuff.class) != null
+                && (Dungeon.hero.subClass != HeroSubClass.PALADIN || enchantment == null)){
+            return HOLY;
+        } else {
+            return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.glowing() : null;
+        }
     }
 
     public static abstract class Enchantment implements Bundlable {

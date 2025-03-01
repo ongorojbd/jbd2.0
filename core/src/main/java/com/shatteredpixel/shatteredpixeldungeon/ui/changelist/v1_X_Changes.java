@@ -46,62 +46,10 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
-        add_Coming_Soon(changeInfos);
-        add_jolyne_Changes(changeInfos);
         add_l_Changes(changeInfos);
         add_k_Changes(changeInfos);
         add_j_Changes(changeInfos);
     }
-
-    public static void add_Coming_Soon(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("Next Update", true, "");
-        changes.hardlight(0xCCCCCC);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 캐릭터",
-                "3.0 업데이트에서는 6번째 플레이어블 캐릭터로 쿠죠 죠린이 추가될 예정입니다!"));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOLYNE), "스톤 프리의 장비 DISC",
-                "죠린의 전용 장비 DISC로, 특성을 통해 강화되는 다양한 능력을 시전할 수 있습니다."));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CUDGEL), "스톤 프리의 주먹",
-                "죠린의 전용 1단계 무기로, 높은 정확도가 특징입니다."));
-    }
-    private static void add_jolyne_Changes(ArrayList<ChangeInfo> changeInfos) {
-        ChangeInfo changes = new ChangeInfo("v3.0", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo("새로운 요소", false, null);
-        changes.hardlight(CharSprite.POSITIVE);
-        changeInfos.add(changes);
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.RESEARCHER, 0, 15, 12, 15), "신규 캐릭터",
-                "도감 시스템인 모험 일지가 추가되었습니다!\n\n" +
-                        "모험 일지에는 모든 아이템과 모든 캐릭터, 적, 식물, 함정 등 _거의 500개의 항목_을 기록할 수 있습니다.\n\n" +
-                        "당신만의 도감을 완성해 보세요!"));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOLYNE), "스톤 프리의 장비 DISC",
-                "모험 일지와 관련된 신규 뱃지 8종이 추가되었습니다!"));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CUDGEL), "스톤 프리의 주먹",
-                "신규 위험한 물건 4종류가 추가되어 이제 위험한 물건이 총 15종류가 되었습니다!\n\n" +
-                        "_체리 장식_은 음식이 포만감을 유지하는 기간을 늘려주지만, HP 재생을 감소시킵니다.\n\n" +
-                        "_THE 허슬_은 치유량을 증가시키지만 치유 속도를 감소시킵니다.\n\n" +
-                        "_낡은 워크맨_은 미확인 장비를 착용했을 때 적에게서 얻는 전리품의 양을 늘려줍니다.\n\n" +
-                        "_쇼트 키 No. 2_는 자신과 적에게 해로운 가스를 근처에 무작위로 퍼뜨립니다.\n\n" +
-                        "또한 위험한 물건을 선택할 때 처음 세 가지 중 아무것도 원하지 않는 경우 네 번째 '무작위' 옵션이 추가되었습니다."));
-
-        changes = new ChangeInfo("변경", false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo("상향", false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo("하향", false, null);
-        changes.hardlight(CharSprite.NEGATIVE);
-        changeInfos.add(changes);
-
-    }
-
 
     private static void add_l_Changes(ArrayList<ChangeInfo> changeInfos) {
         ChangeInfo changes = new ChangeInfo("v2.0l", true, "");

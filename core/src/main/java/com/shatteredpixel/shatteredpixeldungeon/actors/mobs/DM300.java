@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.WallOfLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -377,20 +378,20 @@ public class DM300 extends Mob {
 			turnsSinceLastAbility = 0;
 			Sample.INSTANCE.play( Assets.Sounds.SHEER );
 			switch(Dungeon.hero.heroClass){
-//				case CLERIC:
-//					WndDialogueWithPic.dialogue(
-//							new CharSprite[]{new KiraSprite(), new JojoSprite()},
-//							new String[]{"키라 요시카게", "죠린"},
-//							new String[]{
-//									Messages.get(DM300.class, "n6"),
-//									Messages.get(DM300.class, "n7")
-//							},
-//							new byte[]{
-//									WndDialogueWithPic.IDLE,
-//									WndDialogueWithPic.IDLE
-//							}
-//					);
-//					break;
+				case CLERIC:
+					WndDialogueWithPic.dialogue(
+							new CharSprite[]{new KiraSprite(), new JojoSprite()},
+							new String[]{"키라 요시카게", "죠린"},
+							new String[]{
+									Messages.get(DM300.class, "n6"),
+									Messages.get(DM300.class, "n7")
+							},
+							new byte[]{
+									WndDialogueWithPic.IDLE,
+									WndDialogueWithPic.IDLE
+							}
+					);
+					break;
 				case WARRIOR:
 				case HUNTRESS:
 					WndDialogueWithPic.dialogue(
@@ -750,6 +751,9 @@ public class DM300 extends Mob {
 						}
 						Level.set(pos+i, Terrain.EMPTY_DECO);
 						GameScene.updateMap(pos+i);
+					}
+					if (Dungeon.level.blobs.get(WallOfLight.LightWall.class) != null){
+						Dungeon.level.blobs.get(WallOfLight.LightWall.class).clear(pos+i);
 					}
 				}
 				Dungeon.level.cleanWalls();

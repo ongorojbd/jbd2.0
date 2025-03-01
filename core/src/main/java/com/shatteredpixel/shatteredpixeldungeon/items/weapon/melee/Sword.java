@@ -77,7 +77,7 @@ public class Sword extends MeleeWeapon {
 		if (hero.belongings.getItem(UnstableSpellbook.class) != null) {
 			if (hero.belongings.getItem(UnstableSpellbook.class).isEquipped(hero) && (Random.Int(10) == 0)) {
 				{
-					Buff.affect(attacker, ArtifactRecharge.class).prolong( 3 ).ignoreHornOfPlenty = false;
+					Buff.affect(attacker, ArtifactRecharge.class).set( 3 ).ignoreHornOfPlenty = false;
 				}
 			}
 		}

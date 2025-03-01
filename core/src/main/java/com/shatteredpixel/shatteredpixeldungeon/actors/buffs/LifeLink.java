@@ -21,8 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
@@ -31,11 +36,27 @@ public class LifeLink extends FlavourBuff {
 
 	public int object = 0;
 
-	private static final String OBJECT    = "object";
+	private static final String OBJECT = "object";
 
 	{
 		type = buffType.POSITIVE;
 		announced = true;
+	}
+
+	public String name() {
+		if (target instanceof DwarfKing || target instanceof Ghoul) {
+			return Messages.get(this, "name");
+		} else {
+			return Messages.get(this, "name2");
+		}
+	}
+
+	public String desc(){
+		if (target instanceof DwarfKing || target instanceof Ghoul) {
+			return Messages.get(this, "desc", dispTurns());
+		} else {
+			return Messages.get(this, "desc2", dispTurns());
+		}
 	}
 
 	@Override
@@ -71,6 +92,12 @@ public class LifeLink extends FlavourBuff {
 	@Override
 	public void tintIcon(Image icon) {
 		icon.hardlight(1, 0, 1);
+	}
+
+	@Override
+	public float iconFadePercent() {
+		int duration = 4 + 2*Dungeon.hero.pointsInTalent(Talent.LIFE_LINK);
+		return Math.max(0, (duration - visualcooldown()) / duration);
 	}
 
 }

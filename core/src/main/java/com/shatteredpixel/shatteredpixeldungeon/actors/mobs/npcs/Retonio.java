@@ -146,7 +146,7 @@ public class Retonio extends NPC {
                                 GLog.p(Messages.get(Retonio.class, "8"));
 
                                 Buff.affect(hero, Recharging.class, 15f);
-                                Buff.affect(hero, ArtifactRecharge.class).prolong( 15 ).ignoreHornOfPlenty = false;
+                                Buff.affect(hero, ArtifactRecharge.class).set( 15 ).ignoreHornOfPlenty = false;
 
                                 destroy();
                                 sprite.killAndErase();

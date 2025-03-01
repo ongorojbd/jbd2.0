@@ -164,14 +164,14 @@ public class Weather extends NPC {
                                         GLog.p(Messages.get(Annasui.class, "we"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
-                                //죠린 업뎃
-//                                case CLERIC:
-//                                    if (SPDSettings.getSkin6() == 1) {
-//                                        SPDSettings.addSkin6(1);
-//                                        Emporio.retu();
-//                                    } else if (SPDSettings.getSkin6() == 2) GLog.p(Messages.get(Annasui.class, "we"));
-//                                    else GLog.p(Messages.get(Annasui.class, "x"));
-//                                    break;
+                                case CLERIC:
+                                    if (SPDSettings.getSkin6() == 1) {
+                                        SPDSettings.addSkin6(1);
+                                        Emporio.retu();
+                                    } else if (SPDSettings.getSkin6() == 2)
+                                        GLog.p(Messages.get(Annasui.class, "we"));
+                                    else GLog.p(Messages.get(Annasui.class, "x"));
+                                    break;
                             }
 
                         } else if (index == 1) {
@@ -213,6 +213,14 @@ public class Weather extends NPC {
                                         SPDSettings.addSkin5(-1);
                                         Emporio.retu();
                                     } else if (SPDSettings.getSkin5() == 1)
+                                        GLog.p(Messages.get(Annasui.class, "al"));
+                                    else GLog.p(Messages.get(Annasui.class, "x"));
+                                    break;
+                                case CLERIC:
+                                    if (SPDSettings.getSkin6() == 2) {
+                                        SPDSettings.addSkin6(-1);
+                                        Emporio.retu();
+                                    } else if (SPDSettings.getSkin6() == 1)
                                         GLog.p(Messages.get(Annasui.class, "al"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;

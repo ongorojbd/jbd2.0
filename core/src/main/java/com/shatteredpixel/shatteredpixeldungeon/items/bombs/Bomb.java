@@ -153,7 +153,8 @@ public class Bomb extends Item {
 
         if (explodesDestructively()) {
 
-            ArrayList<Char> affected = new ArrayList<>();
+            ArrayList<Integer> affectedCells = new ArrayList<>();
+            ArrayList<Char> affectedChars = new ArrayList<>();
 
             if (Dungeon.level.heroFOV[cell]) {
                 CellEmitter.center(cell).burst(BlastParticle.FACTORY, 30);
@@ -166,30 +167,35 @@ public class Bomb extends Item {
             PathFinder.buildDistanceMap(cell, explodable, explosionRange());
             for (int i = 0; i < PathFinder.distance.length; i++) {
                 if (PathFinder.distance[i] != Integer.MAX_VALUE) {
-                    if (Dungeon.level.heroFOV[i]) {
-                        CellEmitter.get(i).burst(SmokeParticle.FACTORY, 4);
-                    }
 
-                    if (Dungeon.level.flamable[i]) {
-                        Dungeon.level.destroy(i);
-                        GameScene.updateMap(i);
-                        terrainAffected = true;
-                    }
-
-                    //destroys items / triggers bombs caught in the blast.
-                    Heap heap = Dungeon.level.heaps.get(i);
-                    if (heap != null) {
-                        heap.explode();
-                    }
+                    affectedCells.add(i);
 
                     Char ch = Actor.findChar(i);
                     if (ch != null) {
-                        affected.add(ch);
+                        affectedChars.add(ch);
                     }
                 }
             }
 
-            for (Char ch : affected) {
+            for (int i : affectedCells){
+                if (Dungeon.level.heroFOV[i]) {
+                    CellEmitter.get(i).burst(SmokeParticle.FACTORY, 4);
+                }
+
+                if (Dungeon.level.flamable[i]) {
+                    Dungeon.level.destroy(i);
+                    GameScene.updateMap(i);
+                    terrainAffected = true;
+                }
+
+                //destroys items / triggers bombs caught in the blast.
+                Heap heap = Dungeon.level.heaps.get(i);
+                if (heap != null) {
+                    heap.explode();
+                }
+            }
+
+            for (Char ch : affectedChars) {
 
                 //if they have already been killed by another bomb
                 if (!ch.isAlive()) {

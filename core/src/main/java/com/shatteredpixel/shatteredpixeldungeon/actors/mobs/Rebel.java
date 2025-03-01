@@ -272,7 +272,7 @@ public class Rebel extends Mob {
                 case MAGE:
                 case DUELIST:
                 case HUNTRESS:
-//				case CLERIC:
+				case CLERIC:
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new RebelSprite()},
                             new String[]{"천국 DIO"},
@@ -532,8 +532,7 @@ public class Rebel extends Mob {
             immunities.add(Doom.class);
             immunities.add(Grim.class);
 
-            // 죠린 업뎃
-            if (hero.heroClass == HeroClass.WARRIOR) {
+            if (hero.heroClass == HeroClass.CLERIC) {
                 GameScene.flash(0xFFFFFF);
                 Bestiary.setSeen(Jotaro.class);
 				Jotaro jojo = new Jotaro();

@@ -28,6 +28,17 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw7;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw9;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HallowedGround;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -758,10 +769,10 @@ public class Hero extends Char {
         return dmg;
     }
 
-    //damage rolls that come from the hero can have their RNG influenced
+    //damage rolls that come from the hero can have their RNG influenced by clover
     public static int heroDamageIntRange(int min, int max ){
-        if (Random.Float() < ThirteenLeafClover.combatDistributionInverseChance()){
-            return ThirteenLeafClover.invCombatRoll(min, max);
+        if (Random.Float() < ThirteenLeafClover.alterHeroDamageChance()){
+            return ThirteenLeafClover.alterDamageRoll(min, max);
         } else {
             return Random.NormalIntRange(min, max);
         }
@@ -824,6 +835,15 @@ public class Hero extends Char {
 
         if (wep != null) {
             return wep.canReach(this, enemy.pos);
+        } else if (buff(AscendedForm.AscendBuff.class) != null) {
+            boolean[] passable = BArray.not(Dungeon.level.solid, null);
+            for (Char ch : Actor.chars()) {
+                if (ch != this) passable[ch.pos] = false;
+            }
+
+            PathFinder.buildDistanceMap(enemy.pos, passable, 3);
+
+            return PathFinder.distance[pos] <= 3;
         } else {
             return false;
         }
@@ -1538,7 +1558,24 @@ public class Hero extends Char {
 
         damage = Talent.onAttackProc(this, enemy, damage);
 
-        if (wep != null) damage = wep.proc( this, enemy, damage );
+        if (wep != null) {
+            damage = wep.proc( this, enemy, damage );
+        } else {
+            boolean wasEnemy = enemy.alignment == Alignment.ENEMY;
+            if (buff(BodyForm.BodyFormBuff.class) != null
+                    && buff(BodyForm.BodyFormBuff.class).enchant() != null){
+                damage = buff(BodyForm.BodyFormBuff.class).enchant().proc(new WornShortsword(), this, enemy, damage);
+            }
+            if (!wasEnemy || enemy.alignment == Alignment.ENEMY) {
+                if (buff(HolyWeapon.HolyWepBuff.class) != null) {
+                    int dmg = subClass == HeroSubClass.PALADIN ? 6 : 2;
+                    enemy.damage(Math.round(dmg * Weapon.Enchantment.genericProcChanceMultiplier(this)), HolyWeapon.INSTANCE);
+                }
+                if (buff(Smite.SmiteTracker.class) != null) {
+                    enemy.damage(Smite.bonusDmg(this, enemy), Smite.INSTANCE);
+                }
+            }
+        }
 
         if (buff(Might.class) != null) {
             damage *= 2f;
@@ -1708,8 +1745,14 @@ public class Hero extends Char {
                         @Override
                         protected boolean act() {
                             if (enemy.isAlive()) {
-                                int bonusTurns = hasTalent(Talent.SHARED_UPGRADES) ? wep.buffedLvl() : 0;
-                                Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + bonusTurns).set(enemy.id(), bonusTurns);
+                                if (hasTalent(Talent.SHARED_UPGRADES)){
+                                    int bonusTurns = wep.buffedLvl();
+                                    // bonus dmg is 2.5% x talent lvl x weapon level x weapon tier
+                                    float bonusDmg = wep.buffedLvl() * ((MissileWeapon) wep).tier * pointsInTalent(Talent.SHARED_UPGRADES) * 0.025f;
+                                    Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + bonusTurns).set(enemy.id(), bonusDmg);
+                                } else {
+                                    Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION).set(enemy.id(), 0);
+                                }
                             }
                             Actor.remove(this);
                             return true;
@@ -1732,7 +1775,16 @@ public class Hero extends Char {
         }
 
         if (belongings.armor() != null) {
-            damage = belongings.armor().proc(enemy, this, damage);
+            damage = belongings.armor().proc( enemy, this, damage );
+        } else {
+            if (buff(BodyForm.BodyFormBuff.class) != null
+                    && buff(BodyForm.BodyFormBuff.class).glyph() != null){
+                damage = buff(BodyForm.BodyFormBuff.class).glyph().proc(new ClothArmor(), enemy, this, damage);
+            }
+            if (buff(HolyWard.HolyArmBuff.class) != null){
+                int blocking = subClass == HeroSubClass.PALADIN ? 3 : 1;
+                damage -= Math.round(blocking * Armor.Glyph.genericProcChanceMultiplier(enemy));
+            }
         }
 
         //팬텀블러드 효과
@@ -1854,13 +1906,26 @@ public class Hero extends Char {
             GLog.h(Messages.get(Civil.class, "23"));
         }
         if (Dungeon.hero.buff(Holy3.class) != null && (Random.Int(10) == 0)) {
-            Buff.affect(hero, ArtifactRecharge.class).prolong(3).ignoreHornOfPlenty = false;
+            Buff.affect(hero, ArtifactRecharge.class).set(3).ignoreHornOfPlenty = false;
             SpellSprite.show(hero, SpellSprite.PURITY);
             GLog.h(Messages.get(Civil.class, "24"));
         }
 
 
         return super.defenseProc(enemy, damage);
+    }
+
+    @Override
+    public int glyphLevel(Class<? extends Armor.Glyph> cls) {
+        if (belongings.armor() != null && belongings.armor().hasGlyph(cls, this)){
+            return Math.max(super.glyphLevel(cls), belongings.armor.buffedLvl());
+        } else if (buff(BodyForm.BodyFormBuff.class) != null
+                && buff(BodyForm.BodyFormBuff.class).glyph() != null
+                && buff(BodyForm.BodyFormBuff.class).glyph().getClass() == cls){
+            return belongings.armor() != null ? belongings.armor.buffedLvl() : 0;
+        } else {
+            return super.glyphLevel(cls);
+        }
     }
 
     @Override
@@ -1905,13 +1970,6 @@ public class Hero extends Char {
         }
 
         dmg = (int) Math.ceil(dmg * RingOfTenacity.damageMultiplier(this));
-
-        //TODO improve this when I have proper damage source logic
-        if (belongings.armor() != null && belongings.armor().hasGlyph(AntiMagic.class, this)
-                && AntiMagic.RESISTS.contains(src.getClass())) {
-            dmg -= AntiMagic.drRoll(this, belongings.armor().buffedLvl());
-            dmg = Math.max(dmg, 0);
-        }
 
         if (buff(Talent.WarriorFoodImmunity.class) != null) {
             if (pointsInTalent(Talent.IRON_STOMACH) == 1) dmg = Math.round(dmg * 0.25f);
@@ -2290,6 +2348,12 @@ public class Hero extends Char {
                     buff(ElementalStrike.ElementalStrikeFurrowCounter.class).detach();
                 }
             }
+            if (buff(HallowedGround.HallowedFurrowTracker.class) != null){
+                buff(HallowedGround.HallowedFurrowTracker.class).countDown(percent*5f);
+                if (buff(HallowedGround.HallowedFurrowTracker.class).count() <= 0){
+                    buff(HallowedGround.HallowedFurrowTracker.class).detach();
+                }
+            }
         }
 
         boolean levelUp = false;
@@ -2398,17 +2462,6 @@ public class Hero extends Char {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public float stealth() {
-        float stealth = super.stealth();
-
-        if (belongings.armor() != null) {
-            stealth = belongings.armor().stealthFactor(this, stealth);
-        }
-
-        return stealth;
     }
 
     @Override
@@ -2718,22 +2771,6 @@ public class Hero extends Char {
         }
     }
 
-    @Override
-    public boolean isImmune(Class effect) {
-        if (effect == Burning.class
-                && belongings.armor() != null
-                && belongings.armor().hasGlyph(Brimstone.class, this)) {
-            return true;
-        }
-        //스네이크 머플러
-        if (effect == Paralysis.class
-                && belongings.weapon() != null
-                && belongings.weapon() instanceof WarScythe) {
-            return true;
-        }
-        return super.isImmune(effect);
-    }
-
     public boolean search(boolean intentional) {
 
         if (!isAlive()) return false;
@@ -2903,6 +2940,8 @@ public class Hero extends Char {
                 ((EquipableItem) i).activate(this);
             } else if (i instanceof CloakOfShadows && i.keptThroughLostInventory() && hasTalent(Talent.LIGHT_CLOAK)) {
                 ((CloakOfShadows) i).activate(this);
+            } else if (i instanceof HolyTome  && i.keptThroughLostInventory() && hasTalent(Talent.LIGHT_READING)) {
+                ((HolyTome) i).activate(this);
             } else if (i instanceof Wand && i.keptThroughLostInventory()) {
                 if (holster != null && holster.contains(i)) {
                     ((Wand) i).charge(this, MagicalHolster.HOLSTER_SCALE_FACTOR);

@@ -80,21 +80,20 @@ public class Greenbaby extends Mob {
     public void notice() {
         super.notice();
 
-        // 죠린 업뎃
-//        if (hero.heroClass == HeroClass.CLERIC) {
-//            WndDialogueWithPic.dialogue(
-//                    new CharSprite[]{new NmoonSprite()},
-//                    new String[]{"C-MOON"},
-//                    new String[]{
-//                            Messages.get(Greenbaby.class, "2")
-//                    },
-//                    new byte[]{
-//                            WndDialogueWithPic.IDLE
-//                    }
-//            );
-//        } else {
-//            this.yell(Messages.get(this, "1"));
-//        }
+        if (hero.heroClass == HeroClass.CLERIC) {
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new NmoonSprite()},
+                    new String[]{"C-MOON"},
+                    new String[]{
+                            Messages.get(Greenbaby.class, "2")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
+        } else {
+            this.yell(Messages.get(this, "1"));
+        }
 
         seenBefore = true;
     }

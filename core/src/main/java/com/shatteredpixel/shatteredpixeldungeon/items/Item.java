@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -238,7 +239,10 @@ public class Item implements Bundlable {
                     if (hero != null && hero.isAlive()) {
                         Badges.validateItemLevelAquired(this);
                         Talent.onItemCollected(hero, item);
-                        if (isIdentified()) Catalog.setSeen(getClass());
+                        if (isIdentified()) {
+                            Catalog.setSeen(getClass());
+                            Statistics.itemTypesDiscovered.add(getClass());
+                        }
                     }
                     if (TippedDart.lostDarts > 0) {
                         Dart d = new Dart();
@@ -268,7 +272,10 @@ public class Item implements Bundlable {
         if (hero != null && hero.isAlive()) {
             Badges.validateItemLevelAquired(this);
             Talent.onItemCollected(hero, this);
-            if (isIdentified()) Catalog.setSeen(getClass());
+            if (isIdentified()){
+                Catalog.setSeen(getClass());
+                Statistics.itemTypesDiscovered.add(getClass());
+            }
         }
 
         items.add(this);
@@ -466,7 +473,7 @@ public class Item implements Bundlable {
 
         if (byHero && hero != null && hero.isAlive()) {
             Catalog.setSeen(getClass());
-            if (!isIdentified()) Talent.onItemIdentified(hero, this);
+            Statistics.itemTypesDiscovered.add(getClass());
         }
 
         levelKnown = true;
@@ -712,6 +719,10 @@ public class Item implements Bundlable {
 
     protected static Hero curUser = null;
     protected static Item curItem = null;
+    public void setCurrent( Hero hero ){
+        curUser = hero;
+        curItem = this;
+    }
     protected static CellSelector.Listener thrower = new CellSelector.Listener() {
         @Override
         public void onSelect(Integer target) {

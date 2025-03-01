@@ -46,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_7_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_8_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v0_9_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v1_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v2_X_Changes;
+import com.shatteredpixel.shatteredpixeldungeon.ui.changelist.v3_X_Changes;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
@@ -139,21 +141,27 @@ public class ChangesScene extends PixelScene {
 		
 		switch (changesSelected){
 			case 0: default:
-				v1_X_Changes.addAllChanges(changeInfos);
+				v3_X_Changes.addAllChanges(changeInfos);
 				break;
 			case 1:
-				v0_9_X_Changes.addAllChanges(changeInfos);
+				v2_X_Changes.addAllChanges(changeInfos);
 				break;
 			case 2:
-				v0_8_X_Changes.addAllChanges(changeInfos);
+				v1_X_Changes.addAllChanges(changeInfos);
 				break;
 			case 3:
-				v0_7_X_Changes.addAllChanges(changeInfos);
+				v0_9_X_Changes.addAllChanges(changeInfos);
 				break;
 			case 4:
-				v0_6_X_Changes.addAllChanges(changeInfos);
+				v0_8_X_Changes.addAllChanges(changeInfos);
 				break;
 			case 5:
+				v0_7_X_Changes.addAllChanges(changeInfos);
+				break;
+			case 6:
+				v0_6_X_Changes.addAllChanges(changeInfos);
+				break;
+			case 7:
 				v0_5_X_Changes.addAllChanges(changeInfos);
 				v0_4_X_Changes.addAllChanges(changeInfos);
 				v0_3_X_Changes.addAllChanges(changeInfos);
@@ -214,7 +222,7 @@ public class ChangesScene extends PixelScene {
 				panel.innerHeight() + 2);
 		list.scrollTo(0, 0);
 
-		StyledButton btn1_1 = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "2.0"){
+		StyledButton btn3_X = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "3.0"){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -224,9 +232,23 @@ public class ChangesScene extends PixelScene {
 				}
 			}
 		};
-		if (changesSelected != 0) btn1_1.textColor( 0xBBBBBB );
-		btn1_1.setRect(list.left()-4f, list.bottom(), 22, changesSelected == 0 ? 19 : 15);
-		addToBack(btn1_1);
+		if (changesSelected != 0) btn3_X.textColor( 0xBBBBBB );
+		btn3_X.setRect(list.left()-4f, list.bottom(), 19, changesSelected == 0 ? 19 : 15);
+		addToBack(btn3_X);
+
+		StyledButton btn1_X = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "2.0", 8){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				if (changesSelected != 1) {
+					changesSelected = 1;
+					ShatteredPixelDungeon.seamlessResetScene();
+				}
+			}
+		};
+		if (changesSelected != 2) btn1_X.textColor( 0xBBBBBB );
+		btn1_X.setRect(btn3_X.right()-2, list.bottom(), 19, changesSelected == 2 ? 19 : 15);
+		addToBack(btn1_X);
 
 		Archs archs = new Archs();
 		archs.setSize( Camera.main.width, Camera.main.height );

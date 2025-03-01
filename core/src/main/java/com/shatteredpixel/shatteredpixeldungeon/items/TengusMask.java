@@ -111,8 +111,7 @@ public class TengusMask extends Item {
             Buff.affect(curUser, Preparation.class);
         }
 
-        // 죠린 업뎃
-        if (way == HeroSubClass.BERSERKER) {
+        if (way == HeroSubClass.PRIEST) {
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new JojoSprite()},
                     new String[]{"죠린"},
@@ -123,7 +122,7 @@ public class TengusMask extends Item {
                             WndDialogueWithPic.IDLE
                     }
             );
-        } else if (way == HeroSubClass.GLADIATOR) {
+        } else if (way == HeroSubClass.PALADIN) {
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new JojoSprite()},
                     new String[]{"죠린"},

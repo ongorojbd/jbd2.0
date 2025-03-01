@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HighdioSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LarvaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SoldierSprite;
@@ -602,20 +603,6 @@ public class YogDzewa extends Mob {
         }
 
         switch (Dungeon.hero.heroClass) {
-//            case CLERIC:
-//                WndDialogueWithPic.dialogue(
-//                        new CharSprite[]{new YogSprite(), new JojoSprite()},
-//                        new String[]{"DIO", "죠린"},
-//                        new String[]{
-//                                Messages.get(YogDzewa.class, "n11"),
-//                                Messages.get(YogDzewa.class, "n12")
-//                        },
-//                        new byte[]{
-//                                WndDialogueWithPic.IDLE,
-//                                WndDialogueWithPic.IDLE
-//                        }
-//                );
-//                break;
             case WARRIOR:
                 WndDialogueWithPic.dialogue(
                         new CharSprite[]{new YogSprite(), new SupressionSprite()},
@@ -686,20 +673,20 @@ public class YogDzewa extends Mob {
                         }
                 );
                 break;
-//			case CLERIC:
-//				WndDialogueWithPic.dialogue(
-//						new CharSprite[]{new DioDialogSprite(), new JojoSprite()},
-//						new String[]{"DIO", "죠린"},
-//						new String[]{
-//								Messages.get(YogDzewa.class, "defeated"),
-//								Messages.get(YogDzewa.class, "d6")
-//						},
-//						new byte[]{
-//								WndDialogueWithPic.DIE,
-//								WndDialogueWithPic.IDLE
-//						}
-//				);
-//				break;
+			case CLERIC:
+				WndDialogueWithPic.dialogue(
+						new CharSprite[]{new YogSprite(), new JojoSprite()},
+						new String[]{"DIO", "죠린"},
+						new String[]{
+								Messages.get(YogDzewa.class, "defeated"),
+								Messages.get(YogDzewa.class, "d6")
+						},
+						new byte[]{
+								WndDialogueWithPic.DIE,
+								WndDialogueWithPic.IDLE
+						}
+				);
+				break;
         }
 
         Sample.INSTANCE.play(Assets.Sounds.NANI);
@@ -777,6 +764,20 @@ public class YogDzewa extends Mob {
                             new String[]{
                                     Messages.get(YogDzewa.class, "n9"),
                                     Messages.get(YogDzewa.class, "n10")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case CLERIC:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DioDialogSprite(), new JojoSprite()},
+                            new String[]{"DIO", "죠린"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "n11"),
+                                    Messages.get(YogDzewa.class, "n12")
                             },
                             new byte[]{
                                     WndDialogueWithPic.IDLE,

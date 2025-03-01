@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -106,7 +107,7 @@ public class Jolyne3 extends DirectableAlly {
 
     @Override
     public int attackSkill(Char target) {
-        if (enemy instanceof Piranha || enemy instanceof Mimic) {
+        if (enemy instanceof Piranha || enemy instanceof Mimic || enemy instanceof Wraith) {
             return 30;
         } else {
             return 11;
@@ -185,7 +186,7 @@ public class Jolyne3 extends DirectableAlly {
                         }
                 );
             } else if (timer == 1) {
-                Music.INSTANCE.play(Assets.Music.DRAGON, true);
+                Music.INSTANCE.play(Assets.Music.THEME_1, true);
 
                 Statistics.spw6 = 6;
 
@@ -202,7 +203,7 @@ public class Jolyne3 extends DirectableAlly {
                 });
 
 //                tell( Messages.get(jojo.class, "jolyne") );
-//                Badges.validateClericUnlock();  죠린 해금
+                Badges.validateClericUnlock();
             }
 
             timer--;

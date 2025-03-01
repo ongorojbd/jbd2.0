@@ -21,20 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.watabou.glwrap.Blending;
-import com.watabou.glwrap.Texture;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.ColorMath;
-import com.watabou.utils.Random;
-import com.watabou.utils.RectF;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.TextureFilm;
 
-public class Fireball extends Component {
+public class Fireball extends MovieClip {
+
+    public Fireball() {
+
+    }
+
+    public Fireball(boolean second) {
 
 
+    }
 }

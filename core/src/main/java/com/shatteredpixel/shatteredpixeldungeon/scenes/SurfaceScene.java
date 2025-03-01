@@ -298,11 +298,6 @@ public class SurfaceScene extends PixelScene {
         gameOver.setPos(frame.x + FRAME_MARGIN_X * 2, frame.y + frame.height + 4);
         add(gameOver);
 
-        Badges.validateHappyEnd();
-        Dungeon.win( Amulet.class );
-        Dungeon.deleteGame( GamesInProgress.curSlot, true );
-        Badges.saveGlobal();
-
         fadeIn();
     }
 
@@ -453,6 +448,8 @@ public class SurfaceScene extends PixelScene {
 
         public Avatar(HeroClass cl) {
             super(Assets.Sprites.AVATARS);
+
+            //TODO CLERIC victory sprite
             frame(new TextureFilm(texture, WIDTH, HEIGHT).get(cl.ordinal()));
         }
     }

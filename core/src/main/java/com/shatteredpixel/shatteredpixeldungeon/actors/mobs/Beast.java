@@ -135,7 +135,7 @@ public class Beast extends Mob {
             Phase = 2;
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new EmporioSprite(), new Pucci4Sprite()},
-                    new String[]{"엠포리오 아르니뇨", "엔리코 푸치"},
+                    new String[]{"엠포리오", "엔리코 푸치"},
                     new String[]{
                             Messages.get(Beast.class, "n6"),
                             Messages.get(Beast.class, "n7")
@@ -300,7 +300,7 @@ public class Beast extends Mob {
         Camera.main.shake( 3, 1f );
         WndDialogueWithPic.dialogue(
                 new CharSprite[]{new Pucci4Sprite(), new EmporioSprite()},
-                new String[]{"엔리코 푸치", "엠포리오 아르니뇨"},
+                new String[]{"엔리코 푸치", "엠포리오"},
                 new String[]{
                         Messages.get(Beast.class, "n8"),
                         Messages.get(Beast.class, "n9")

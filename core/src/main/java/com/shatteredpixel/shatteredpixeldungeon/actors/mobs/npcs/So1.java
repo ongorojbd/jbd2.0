@@ -110,13 +110,12 @@ public class So1 extends NPC {
             return true;
         }
 
-//        if (hero.heroClass == HeroClass.CLERIC) { 죠린 업뎃
-//            this.yell(Messages.get(this, "02"));
-//        } else {
-//            this.yell(Messages.get(this, "0"));
-//        }
+        if (hero.heroClass == HeroClass.CLERIC) {
+            this.yell(Messages.get(this, "02"));
+        } else {
+            this.yell(Messages.get(this, "0"));
+        }
 
-        this.yell(Messages.get(this, "0"));
 
         return true;
     }

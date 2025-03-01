@@ -175,6 +175,7 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.Tweener;
+import com.watabou.utils.Callback;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
@@ -628,9 +629,9 @@ public class GameScene extends PixelScene {
                         && isUnlocked(Badges.Badge.UNLOCK_MAGE)
                         && isUnlocked(Badges.Badge.UNLOCK_ROGUE)
                         && isUnlocked(Badges.Badge.UNLOCK_DUELIST)
-                        // && !isUnlocked(Badges.Badge.UNLOCK_CLERIC)
-                        && !isUnlocked(Badges.Badge.BOSS_CHALLENGE_5)
-                ) { // 죠린 해금 뱃지로 바꿔야함
+                        && isUnlocked(Badges.Badge.UNLOCK_HUNTRESS)
+                        && !isUnlocked(Badges.Badge.UNLOCK_CLERIC)
+                ) {
                     GameScene.show(
                             new WndOptions(new JojoSprite(),
                                     Messages.get(Jolyne.class, "n1"),
@@ -816,20 +817,20 @@ public class GameScene extends PixelScene {
                                     }
                             );
                             break;
-//                        case CLERIC:
-//                            WndDialogueWithPic.dialogue(
-//                                    new CharSprite[]{new Pucci4Sprite(), new JojoSprite()},
-//                                    new String[]{"엔리코 푸치", "죠린"},
-//                                    new String[]{
-//                                            Messages.get(Beast.class, "n10"),
-//                                            Messages.get(Beast.class, "n11"),
-//                                    },
-//                                    new byte[]{
-//                                            WndDialogueWithPic.IDLE,
-//                                            WndDialogueWithPic.IDLE
-//                                    }
-//                            );
-//                            break;
+                        case CLERIC:
+                            WndDialogueWithPic.dialogue(
+                                    new CharSprite[]{new Pucci4Sprite(), new JojoSprite()},
+                                    new String[]{"엔리코 푸치", "죠린"},
+                                    new String[]{
+                                            Messages.get(Beast.class, "n10"),
+                                            Messages.get(Beast.class, "n11"),
+                                    },
+                                    new byte[]{
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE
+                                    }
+                            );
+                            break;
                     }
                     Sample.INSTANCE.play(Assets.Sounds.A1);
                 } else {
@@ -1689,12 +1690,18 @@ public class GameScene extends PixelScene {
 
     public static void flash(int color, boolean lightmode) {
         if (scene != null) {
-            //greater than 0 to account for negative values (which have the first bit set to 1)
-            if (color > 0 && color < 0x01000000) {
-                scene.fadeIn(0xFF000000 | color, lightmode);
-            } else {
-                scene.fadeIn(color, lightmode);
-            }
+            //don't want to do this on the actor thread
+            ShatteredPixelDungeon.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    //greater than 0 to account for negative values (which have the first bit set to 1)
+                    if (color > 0 && color < 0x01000000) {
+                        scene.fadeIn(0xFF000000 | color, lightmode);
+                    } else {
+                        scene.fadeIn(color, lightmode);
+                    }
+                }
+            });
         }
     }
 

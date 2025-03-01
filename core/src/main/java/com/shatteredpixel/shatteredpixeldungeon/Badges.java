@@ -67,6 +67,7 @@ public class Badges {
         MASTERY_ROGUE,
         MASTERY_HUNTRESS,
         MASTERY_DUELIST,
+        MASTERY_CLERIC,
         FOUND_RATMOGRIFY,
 
         //bronze
@@ -74,7 +75,7 @@ public class Badges {
         UNLOCK_ROGUE(2),
         UNLOCK_HUNTRESS(3),
         UNLOCK_DUELIST(4),
-        //UNLOCK_CLERIC             ( 5 ),
+        UNLOCK_CLERIC(5),
         MONSTERS_SLAIN_1(6),
         MONSTERS_SLAIN_2(7),
         GOLD_COLLECTED_1(8),
@@ -125,6 +126,7 @@ public class Badges {
         BOSS_SLAIN_1_ROGUE,
         BOSS_SLAIN_1_HUNTRESS,
         BOSS_SLAIN_1_DUELIST,
+        BOSS_SLAIN_1_CLERIC,
         BOSS_SLAIN_1_ALL_CLASSES(54, BadgeType.GLOBAL),
         RESEARCHER_2(55, BadgeType.JOURNAL),
         GAMES_PLAYED_2(56, BadgeType.GLOBAL),
@@ -175,6 +177,7 @@ public class Badges {
         VICTORY_ROGUE,
         VICTORY_HUNTRESS,
         VICTORY_DUELIST,
+        VICTORY_CLERIC,
         VICTORY_ALL_CLASSES(101, BadgeType.GLOBAL),
         DEATH_FROM_ALL(102, BadgeType.GLOBAL),
         BOSS_SLAIN_3_GLADIATOR,
@@ -187,6 +190,8 @@ public class Badges {
         BOSS_SLAIN_3_WARDEN,
         BOSS_SLAIN_3_CHAMPION,
         BOSS_SLAIN_3_MONK,
+        BOSS_SLAIN_3_PRIEST,
+        BOSS_SLAIN_3_PALADIN,
         BOSS_SLAIN_3_ALL_SUBCLASSES(103, BadgeType.GLOBAL),
         BOSS_CHALLENGE_3(104),
         BOSS_CHALLENGE_4(105),
@@ -209,6 +214,7 @@ public class Badges {
         YORIHIMES_DUELIST,
         YORIHIMES_ROGUE,
         YORIHIMES_HUNTRESS,
+        YORIHIMES_CLERIC,
         YORIHIMES_ALL_CLASSES(28),
         MIH(26),
         OVERHEAVEN(27),
@@ -866,6 +872,7 @@ public class Badges {
         firstBossClassBadges.put(HeroClass.ROGUE, Badge.BOSS_SLAIN_1_ROGUE);
         firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
         firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
+        firstBossClassBadges.put(HeroClass.CLERIC, Badge.BOSS_SLAIN_1_CLERIC);
     }
 
     private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -876,6 +883,7 @@ public class Badges {
         victoryClassBadges.put(HeroClass.ROGUE, Badge.VICTORY_ROGUE);
         victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
         victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
+        victoryClassBadges.put(HeroClass.CLERIC, Badge.VICTORY_CLERIC);
     }
 
     private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -891,6 +899,8 @@ public class Badges {
         thirdBossSubclassBadges.put(HeroSubClass.WARDEN, Badge.BOSS_SLAIN_3_WARDEN);
         thirdBossSubclassBadges.put(HeroSubClass.CHAMPION, Badge.BOSS_SLAIN_3_CHAMPION);
         thirdBossSubclassBadges.put(HeroSubClass.MONK, Badge.BOSS_SLAIN_3_MONK);
+        thirdBossSubclassBadges.put(HeroSubClass.PRIEST, Badge.BOSS_SLAIN_3_PRIEST);
+        thirdBossSubclassBadges.put(HeroSubClass.PALADIN, Badge.BOSS_SLAIN_3_PALADIN);
     }
 
     private static LinkedHashMap<HeroClass, Badge> dioClassBadges = new LinkedHashMap<>();
@@ -901,6 +911,7 @@ public class Badges {
         dioClassBadges.put(HeroClass.ROGUE, Badge.YORIHIMES_ROGUE);
         dioClassBadges.put(HeroClass.DUELIST, Badge.YORIHIMES_DUELIST);
         dioClassBadges.put(HeroClass.HUNTRESS, Badge.YORIHIMES_HUNTRESS);
+        dioClassBadges.put(HeroClass.HUNTRESS, Badge.YORIHIMES_CLERIC);
     }
 
     private static LinkedHashMap<HeroClass, Badge> dioClassBadges2 = new LinkedHashMap<>();
@@ -1031,6 +1042,9 @@ public class Badges {
             case DUELIST:
                 badge = Badge.MASTERY_DUELIST;
                 break;
+            case CLERIC:
+                badge = Badge.MASTERY_CLERIC;
+                break;
         }
 
         unlock(badge);
@@ -1081,6 +1095,12 @@ public class Badges {
         }
     }
 
+    public static void validateClericUnlock(){
+        if (!isUnlocked(Badge.UNLOCK_CLERIC)){
+            displayBadge( Badge.UNLOCK_CLERIC );
+        }
+    }
+
     public static void validateMasteryCombo(int n) {
         if (!local.contains(Badge.MASTERY_COMBO) && n == 10) {
             Badge badge = Badge.MASTERY_COMBO;
@@ -1118,6 +1138,8 @@ public class Badges {
             Badge badge = Badge.NO_MONSTERS_SLAIN;
             local.add(badge);
             displayBadge(badge);
+
+            Statistics.completedWithNoKilling = false;
         }
     }
 

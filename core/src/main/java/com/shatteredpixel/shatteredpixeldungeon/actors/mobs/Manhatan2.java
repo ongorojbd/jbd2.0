@@ -87,17 +87,12 @@ public class Manhatan2 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(1, 4);
+        return Random.NormalIntRange(1, 3);
     }
 
     @Override
     public int attackSkill(Char target) {
         return 10;
-    }
-
-    @Override
-    public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 2);
     }
 
     @Override
@@ -125,7 +120,7 @@ public class Manhatan2 extends Mob {
 
         Buff.affect(Dungeon.hero, Blindness.class, 30f);
         Buff.affect(Dungeon.hero, Silence.class, 30f);
-        Buff.affect(Dungeon.hero, Roots.class, 30f);
+//        Buff.affect(Dungeon.hero, Roots.class, 30f);
 
         GameScene.bossSlain();
         Music.INSTANCE.end();

@@ -60,8 +60,8 @@ public class WandmakerSprite extends MobSprite {
 	@Override
 	public void die() {
 		super.die();
-		
-		remove(State.SHIELDED);
+
+		processStateRemoval(State.SHIELDED);
 
 		if (visible) {
 			Sample.INSTANCE.play( Assets.Sounds.BURNING );
