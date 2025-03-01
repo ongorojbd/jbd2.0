@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
@@ -1151,6 +1152,7 @@ public class Dungeon {
                     || ch instanceof WandOfRegrowth.Lotus
                     || ch instanceof SpiritHawk.HawkAlly
                     || ch instanceof SpeedWagon
+                    || ch instanceof Jolyne3
                     || ch instanceof Tendency
                     || ch.buff(PowerOfMany.PowerBuff.class) != null) {
                 x = ch.pos % level.width();

@@ -226,6 +226,7 @@ public class Badges {
         BRANDOKILL_DUELIST,
         BRANDOKILL_ROGUE,
         BRANDOKILL_HUNTRESS,
+        BRANDOKILL_CLERIC,
         BRANDOKILL_ALL_CLASSES(29),
         ;
 
@@ -911,7 +912,7 @@ public class Badges {
         dioClassBadges.put(HeroClass.ROGUE, Badge.YORIHIMES_ROGUE);
         dioClassBadges.put(HeroClass.DUELIST, Badge.YORIHIMES_DUELIST);
         dioClassBadges.put(HeroClass.HUNTRESS, Badge.YORIHIMES_HUNTRESS);
-        dioClassBadges.put(HeroClass.HUNTRESS, Badge.YORIHIMES_CLERIC);
+        dioClassBadges.put(HeroClass.CLERIC, Badge.YORIHIMES_CLERIC);
     }
 
     private static LinkedHashMap<HeroClass, Badge> dioClassBadges2 = new LinkedHashMap<>();
@@ -922,6 +923,7 @@ public class Badges {
         dioClassBadges2.put(HeroClass.ROGUE, Badge.BRANDOKILL_ROGUE);
         dioClassBadges2.put(HeroClass.DUELIST, Badge.BRANDOKILL_DUELIST);
         dioClassBadges2.put(HeroClass.HUNTRESS, Badge.BRANDOKILL_HUNTRESS);
+        dioClassBadges2.put(HeroClass.CLERIC, Badge.BRANDOKILL_CLERIC);
     }
 
     public static void validateBossSlain() {

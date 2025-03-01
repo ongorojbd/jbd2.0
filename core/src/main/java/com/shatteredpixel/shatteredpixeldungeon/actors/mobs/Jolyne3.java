@@ -107,7 +107,7 @@ public class Jolyne3 extends DirectableAlly {
 
     @Override
     public int attackSkill(Char target) {
-        if (enemy instanceof Piranha || enemy instanceof Mimic || enemy instanceof Wraith) {
+        if (enemy instanceof Piranha || enemy instanceof Mimic || enemy instanceof Wraith || enemy instanceof Thief) {
             return 30;
         } else {
             return 11;
@@ -116,8 +116,8 @@ public class Jolyne3 extends DirectableAlly {
 
     @Override
     public int damageRoll() {
-        if (enemy instanceof Piranha || enemy instanceof Mimic) {
-            return Random.NormalIntRange(30, 30);
+        if (enemy instanceof Piranha || enemy instanceof Mimic || enemy instanceof Thief) {
+            return Random.NormalIntRange(10, 12);
         } else {
             return Random.NormalIntRange(4, 6);
         }

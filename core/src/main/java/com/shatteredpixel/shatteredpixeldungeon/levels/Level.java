@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.S
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
@@ -1445,6 +1446,7 @@ public abstract class Level implements Bundlable {
 				if (m instanceof WandOfWarding.Ward
 						|| m instanceof WandOfRegrowth.Lotus
 						|| m instanceof SpeedWagon
+						|| m instanceof Jolyne3
 						|| m instanceof Tendency
 						|| m instanceof SpiritHawk.HawkAlly
 						|| m.buff(PowerOfMany.PowerBuff.class) != null){

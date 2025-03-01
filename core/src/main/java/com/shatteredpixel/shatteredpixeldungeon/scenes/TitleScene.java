@@ -173,22 +173,26 @@ public class TitleScene extends PixelScene {
 		};
 		btnAbout.icon(Icons.get(Icons.SHPX));
 		add(btnAbout);
-		
+
 		final int BTN_HEIGHT = 20;
 		int GAP = (int)(h - topRegion - (landscape() ? 3 : 4)*BTN_HEIGHT)/3;
 		GAP /= landscape() ? 3 : 5;
 		GAP = Math.max(GAP, 2);
 
+		float buttonAreaWidth = landscape() ? PixelScene.MIN_WIDTH_L-6 : PixelScene.MIN_WIDTH_P-2;
+		float btnAreaLeft = (Camera.main.width - buttonAreaWidth) / 2f;
 		if (landscape()) {
-			btnPlay.setRect(title.x-50, topRegion+GAP +GAP, ((title.width()+100)/2)-1, BTN_HEIGHT);
+			btnPlay.setRect(btnAreaLeft, topRegion + GAP, (buttonAreaWidth / 2) - 1, BTN_HEIGHT);
 			align(btnPlay);
-			//btnSupport.setRect(btnPlay.right()+2, btnPlay.top(), btnPlay.width(), BTN_HEIGHT);
-			btnRankings.setRect(btnPlay.left(), btnPlay.bottom() +GAP , btnPlay.width(), BTN_HEIGHT);
-			btnBadges.setRect(btnPlay.right()+2,  btnPlay.top(),  btnPlay.width(), BTN_HEIGHT);
-			//btnNews.setRect(btnRankings.right()+2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
-			btnChanges.setRect(btnPlay.right()+2, btnBadges.bottom() +GAP, btnPlay.width(), BTN_HEIGHT);
-			btnSettings.setRect(btnRankings.left(), btnRankings.bottom() +GAP, btnPlay.width(), BTN_HEIGHT);
-			btnAbout.setRect(btnPlay.right()+2, btnChanges.bottom()+GAP, btnBadges.width(), BTN_HEIGHT);
+
+			btnBadges.setRect(btnPlay.right() + 2, btnPlay.top(), btnPlay.width(), BTN_HEIGHT);
+
+			btnRankings.setRect(btnPlay.left(), btnPlay.bottom() + GAP, btnPlay.width(), BTN_HEIGHT);
+			btnChanges.setRect(btnRankings.right() + 2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
+
+			btnSettings.setRect(btnPlay.left(), btnRankings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
+			btnAbout.setRect(btnSettings.right() + 2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
+
 		} else {
 			btnPlay.setRect(title.x, topRegion+GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
@@ -200,6 +204,7 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnBadges.left(), btnChanges.bottom() +GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.right()+2, btnChanges.bottom()+GAP,(btnPlay.width()/2)-1, BTN_HEIGHT);
 		}
+
 
 		BitmapText version = new BitmapText( "v" + Game.version, pixelFont);
 		version.measure();
@@ -312,17 +317,4 @@ public class TitleScene extends PixelScene {
 		}
 	}
 
-	private static class SupportButton extends StyledButton{
-
-		public SupportButton( Chrome.Type type, String label ){
-			super(type, label);
-			icon(Icons.get(Icons.GOLD));
-			textColor(Window.WHITE);
-		}
-
-		@Override
-		protected void onClick() {
-			ShatteredPixelDungeon.switchNoFade(SupporterScene.class);
-		}
-	}
 }
