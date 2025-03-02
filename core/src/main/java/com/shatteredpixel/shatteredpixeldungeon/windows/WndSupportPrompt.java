@@ -47,9 +47,8 @@ public class WndSupportPrompt extends Window {
 
 		String message = Messages.get(WndSupportPrompt.class, "intro");
 		message += "\n\n" + Messages.get(SupporterScene.class, "patreon_msg");
-		if (Messages.lang() != Languages.ENGLISH) {
-			message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
-		}
+		message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
+
 		message += "\n- Ongoro";
 
 		RenderedTextBlock text = PixelScene.renderTextBlock( 6 );

@@ -85,7 +85,7 @@ public class NewsScene extends PixelScene {
 		float top = 18;
 
 		displayingNoArticles = !News.articlesAvailable();
-		if (displayingNoArticles || Messages.lang() != Languages.ENGLISH) {
+		if (displayingNoArticles) {
 
 			Component newsInfo = new NewsInfo();
 			newsInfo.setRect(left, 20, fullWidth, 0);
@@ -181,9 +181,9 @@ public class NewsScene extends PixelScene {
 			
 			String message = "";
 
-			if (Messages.lang() != Languages.ENGLISH){
-				message += Messages.get(this, "english_warn");
-			}
+
+			message += Messages.get(this, "english_warn");
+
 			
 			if (!News.articlesAvailable()){
 				if (SPDSettings.news()) {

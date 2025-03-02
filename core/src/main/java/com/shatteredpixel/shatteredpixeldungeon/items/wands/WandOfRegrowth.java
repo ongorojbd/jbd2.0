@@ -86,6 +86,15 @@ public class WandOfRegrowth extends Wand {
 	@Override
 	public void onZap(Ballistica bolt) {
 
+		if (cone == null) {
+			// cone이 null이면 초기화
+			int maxDist = 2 + 2*chargesPerCast();
+			cone = new ConeAOE(bolt,
+					maxDist,
+					20 + 10*chargesPerCast(),
+					Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
+		}
+
 		ArrayList<Integer> cells = new ArrayList<>(cone.cells);
 
 		float furrowedChance = 0;

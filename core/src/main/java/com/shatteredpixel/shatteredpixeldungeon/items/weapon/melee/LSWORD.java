@@ -49,28 +49,30 @@ public class LSWORD extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
 
-            if (hero.HP == 7 || hero.HP == 77){
-                damage *= 7.77f;
-            }
+        if (Dungeon.hero != null && (Dungeon.hero.HP == 7 || Dungeon.hero.HP == 77)){
+            damage *= 7.77f;
+        }
 
         if (Random.Int( 7 ) == 0) {
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
-                    int dmg = hero.damageRoll();
-                    dmg *= 1.3f;
-                    CellEmitter.get( mob.pos ).burst( Speck.factory( Speck.STAR), 3 );
-                    attacker.sprite.showStatus(CharSprite.NEUTRAL, "[오버드라이브!]");
-                    mob.damage(dmg, this);
+            if (Dungeon.hero != null) {
+                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                    if (Dungeon.level.adjacent(mob.pos, Dungeon.hero.pos) && mob.alignment != Char.Alignment.ALLY) {
+                        int dmg = Dungeon.hero.damageRoll();
+                        dmg *= 1.3f;
+                        CellEmitter.get( mob.pos ).burst( Speck.factory( Speck.STAR), 3 );
+                        attacker.sprite.showStatus(CharSprite.NEUTRAL, "[오버드라이브!]");
+                        mob.damage(dmg, this);
+                    }
                 }
-            }
 
-            CellEmitter.get( curUser.pos ).burst( Speck.factory( Speck.STAR ), 10 );
-            Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
+                CellEmitter.get( curUser.pos ).burst( Speck.factory( Speck.STAR ), 10 );
+                Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
 
-            if (hero.belongings.getItem(RingOfWealth.class) != null) {
-                if (hero.belongings.getItem(RingOfWealth.class).isEquipped(hero)) {
-                    {
-                        Buff.affect(hero, Barrier.class).setShield(7);
+                if (Dungeon.hero.belongings.getItem(RingOfWealth.class) != null) {
+                    if (Dungeon.hero.belongings.getItem(RingOfWealth.class).isEquipped(Dungeon.hero)) {
+                        {
+                            Buff.affect(Dungeon.hero, Barrier.class).setShield(7);
+                        }
                     }
                 }
             }

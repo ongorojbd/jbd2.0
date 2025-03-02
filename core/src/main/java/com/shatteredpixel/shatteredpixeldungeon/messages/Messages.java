@@ -84,26 +84,39 @@ public class Messages {
 		//seeing as missing keys are part of our process, this is faster than throwing an exception
 		I18NBundle.setExceptionOnMissingKey(false);
 
-		//store language and locale info for various string logic
-		Messages.lang = lang;
-		Locale bundleLocal;
-		if (lang == Languages.ENGLISH){
-			locale = Locale.ENGLISH;
-			bundleLocal = Locale.ROOT; //english is source, uses root locale for fetching bundle
-		} else {
-			locale = new Locale(lang.code());
-			bundleLocal = locale;
-		}
+		//강제로 한국어 설정
+		Messages.lang = Languages.KOREAN;
+		locale = new Locale(Languages.KOREAN.code());
+		Locale bundleLocal = locale;
 		formatters.clear();
 
-		//strictly match the language code when fetching bundles however
+		//로그 추가 - 디버깅 용도
+		System.out.println("Setting up language: KOREAN");
+
+		//Strict locale matching 대신 좀 더 유연한 방식 사용
 		bundles = new ArrayList<>();
-		for (String file : prop_files) {
-			bundles.add(I18NBundle.createBundle(Gdx.files.internal(file), bundleLocal));
+		try {
+			for (String file : prop_files) {
+				try {
+					System.out.println("Trying to load: " + file);
+					bundles.add(I18NBundle.createBundle(Gdx.files.internal(file), bundleLocal));
+					System.out.println("Successfully loaded: " + file);
+				} catch (Exception e) {
+					System.err.println("Failed to load bundle: " + file + ", error: " + e.getMessage());
+					//실패시 영어 리소스라도 추가 시도
+					try {
+						bundles.add(I18NBundle.createBundle(Gdx.files.internal(file), Locale.ROOT));
+						System.out.println("Loaded fallback English bundle for: " + file);
+					} catch (Exception e2) {
+						System.err.println("Failed to load even English bundle: " + file);
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Fatal error in bundle loading: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
-
-
 
 	/**
 	 * Resource grabbing methods
@@ -190,7 +203,7 @@ public class Messages {
 
 	public static String titleCase( String str ){
 		//English capitalizes every word except for a few exceptions
-		if (lang == Languages.ENGLISH){
+		if (lang != Languages.KOREAN){
 			String result = "";
 			//split by any unicode space character
 			for (String word : str.split("(?<=\\p{Zs})")){

@@ -183,8 +183,8 @@ public class CursedWand {
 				return randomValidUncommonEffect(origin, user, bolt, positiveOnly);
 			case 2:
 				return randomValidRareEffect(origin, user, bolt, positiveOnly);
-			case 3:
-				return randomValidVeryRareEffect(origin, user, bolt, positiveOnly);
+//			case 3:
+//				return randomValidVeryRareEffect(origin, user, bolt, positiveOnly);
 		}
 	}
 
@@ -1098,7 +1098,7 @@ public class CursedWand {
 			//appears to crash the game (actually just closes it)
 			try {
 				Dungeon.saveAll();
-				if(Messages.lang() != Languages.ENGLISH){
+				if(Messages.lang() == Languages.KOREAN){
 					//Don't bother doing this joke to none-english speakers, I doubt it would translate.
 					//we still consider the effect valid here though as it's cosmetic anyway
 					return false;

@@ -403,15 +403,17 @@ public class Armor extends EquipableItem {
 	@Override
 	public int buffedLvl() {
 		int lvl;
-		if (isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this)) {
+		if (Dungeon.hero != null && (isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this))) {
 			lvl = super.buffedLvl();
 		} else {
 			lvl = level();
 		}
 
-		EnhancedArmor enhancedArmor = hero.buff(EnhancedArmor.class);
-		if (enhancedArmor != null && isEquipped(hero)) {
-			lvl += Statistics.spw3;
+		if (Dungeon.hero != null) {
+			EnhancedArmor enhancedArmor = Dungeon.hero.buff(EnhancedArmor.class);
+			if (enhancedArmor != null && isEquipped(Dungeon.hero)) {
+				lvl += Statistics.spw3;
+			}
 		}
 
 		return lvl;

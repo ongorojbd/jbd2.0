@@ -1346,7 +1346,7 @@ public abstract class Char extends Actor {
 		if (glyphLevel(Brimstone.class) >= 0){
 			immunes.add(Burning.class);
 		}
-		if (hero != null && hero.belongings.weapon() != null && hero.belongings.weapon() instanceof WarScythe) {
+		if (this == hero && hero.belongings.weapon() != null && hero.belongings.weapon() instanceof WarScythe) {
 			immunes.add(Paralysis.class);
 		}
 		

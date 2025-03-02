@@ -122,9 +122,8 @@ public class SupporterScene extends PixelScene {
 
 			String message = Messages.get(SupporterScene.class, "intro");
 			message += "\n\n" + Messages.get(SupporterScene.class, "patreon_msg");
-			if (Messages.lang() != Languages.ENGLISH) {
-				message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
-			}
+			message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
+
 			message += "\n\n- Ongoro";
 
 			text = PixelScene.renderTextBlock(message, 6);

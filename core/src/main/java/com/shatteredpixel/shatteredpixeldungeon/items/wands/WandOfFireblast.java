@@ -80,6 +80,14 @@ public class WandOfFireblast extends DamageWand {
 	@Override
 	public void onZap(Ballistica bolt) {
 
+		if (cone == null) {
+			int maxDist = 3 + 2*chargesPerCast();
+			cone = new ConeAOE(bolt,
+					maxDist,
+					30 + 20*chargesPerCast(),
+					Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
+		}
+
 		ArrayList<Char> affectedChars = new ArrayList<>();
 		ArrayList<Integer> adjacentCells = new ArrayList<>();
 		for( int cell : cone.cells ){

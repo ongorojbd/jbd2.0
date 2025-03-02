@@ -60,7 +60,6 @@ public class Fugomob2 extends Mob {
         HUNTING = new Mob.Hunting();
         immunities.add(CorrosiveGas.class);
         immunities.add(Vertigo.class);
-        properties.add(Property.IMMOVABLE);
         //only applicable when the bee is charmed with elixir of honeyed healing
         intelligentAlly = true;
 

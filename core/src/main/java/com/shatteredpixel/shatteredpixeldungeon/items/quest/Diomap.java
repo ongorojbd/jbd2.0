@@ -54,9 +54,7 @@ public class Diomap extends Item {
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals(AC_LIGHT)) {
-
             GameScene.selectCell(thrower);
-
         }
     }
 
@@ -67,6 +65,7 @@ public class Diomap extends Item {
         public void onSelect( Integer target ) {
             SpeedWagon ally = getwagon();
             if (target == null) return;
+            else if (ally == null) return;
 
             SpellSprite.show( curUser, SpellSprite.MAP );
             hero.sprite.operate(hero.pos);

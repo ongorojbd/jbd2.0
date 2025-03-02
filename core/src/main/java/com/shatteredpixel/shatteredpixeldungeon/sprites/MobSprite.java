@@ -61,24 +61,34 @@ public class MobSprite extends CharSprite {
 		angularSpeed = Random.Int( 2 ) == 0 ? -720 : 720;
 		am = 1;
 
+		if (emo != null) {
+			emo.killAndErase();
+			emo = null;
+		}
+
 		hideEmo();
 
 		if (health != null){
 			health.killAndErase();
 		}
-		
-		parent.add( new ScaleTweener( this, new PointF( 0, 0 ), FALL_TIME ) {
-			@Override
-			protected void onComplete() {
-				MobSprite.this.killAndErase();
-				parent.erase( this );
-			}
-			@Override
-			protected void updateValues( float progress ) {
-				super.updateValues( progress );
-				y += 12 * Game.elapsed;
-				am = 1 - progress;
-			}
-		} );
+
+		if (parent != null) {
+			parent.add( new ScaleTweener( this, new PointF( 0, 0 ), FALL_TIME ) {
+				@Override
+				protected void onComplete() {
+					MobSprite.this.killAndErase();
+					parent.erase( this );
+				}
+				@Override
+				protected void updateValues( float progress ) {
+					super.updateValues( progress );
+					y += 12 * Game.elapsed;
+					am = 1 - progress;
+				}
+			});
+		} else {
+			// parent가 null인 경우 즉시 제거
+			killAndErase();
+		}
 	}
 }
