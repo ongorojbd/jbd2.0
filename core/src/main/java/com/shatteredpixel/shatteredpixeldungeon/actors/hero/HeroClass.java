@@ -157,6 +157,27 @@ public enum HeroClass {
 
         new ScrollOfIdentify().identify();
 
+        if (DeviceCompat.isDebug()) {
+            new RingOfMight().identify().upgrade(999).collect();
+            new RingOfEnergy().identify().upgrade(999).collect();
+            new RingOfAccuracy().identify().upgrade(999).collect();
+            new Shortsword().identify().upgrade(999).collect();
+            new LeatherArmor().identify().collect();
+            new MailArmor().identify().collect();
+            new ScrollOfMirrorImage().identify().collect();
+            new Neotel().collect();
+            new Maga().collect();
+            new Castleintro().identify().collect();
+            new TengusMask().collect();
+            new KingsCrown().collect();
+            new PotionOfHealing().identify().quantity(100).collect();
+            new PotionOfExperience().identify().quantity(100).collect();
+            new StoneOfDeepSleep().identify().quantity(100).collect();
+            new Swiftthistle.Seed().identify().quantity(100).collect();
+            new Earthroot.Seed().identify().quantity(100).collect();
+            new WandOfDisintegration().identify().upgrade(20).collect();
+        }
+
         switch (this) {
             case WARRIOR:
                 initWarrior(hero);
