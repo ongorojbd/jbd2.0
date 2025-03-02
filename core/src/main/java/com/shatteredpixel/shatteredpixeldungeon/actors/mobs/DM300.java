@@ -684,6 +684,7 @@ public class DM300 extends Mob {
                 case ROGUE:
                 case MAGE:
                 case HUNTRESS:
+				case CLERIC:
                     Dungeon.level.drop( new BossdiscC().identify(), pos ).sprite.drop( pos );
 					break;
                 case DUELIST:

@@ -1074,12 +1074,6 @@ public class Badges {
         }
     }
 
-    //	public static void validateClericUnlock(){
-//		if (Statistics.spw6 == 6 && !isUnlocked(Badge.UNLOCK_CLERIC)){
-//			displayBadge( Badge.UNLOCK_CLERIC );
-//		}
-//	}
-
     public static void validateDuelistUnlock() {
         if (!isUnlocked(Badge.UNLOCK_DUELIST) && Dungeon.hero != null
                 && Dungeon.hero.belongings.weapon instanceof MeleeWeapon
