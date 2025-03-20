@@ -88,6 +88,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
@@ -349,6 +350,8 @@ public class Dungeon {
                     if (SPDSettings.getDio() >= 1) {
                         diolevel = true;
                         level = new DioLevel();
+                    } else if (SPDSettings.customSeed().contains("jojo")) {
+                        level = new TendencyLevel();
                     } else {
                         level = new SewerLevel();
                     }

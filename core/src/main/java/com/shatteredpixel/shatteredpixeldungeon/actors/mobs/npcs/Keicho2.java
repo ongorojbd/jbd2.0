@@ -14,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Val;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieThree;
@@ -25,9 +26,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Tmap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TbossSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBossText;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -218,18 +225,18 @@ public class Keicho2 extends NPC {
 
                 if (wave == 20) {
                     Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
-                    Game.runOnRenderThread(new Callback() {
-                        @Override
-                        public void call() {
-                            GameScene.show(new WndBossText(new Tboss(), msg1Final) {
-                                @Override
-                                public void hide() {
-                                    super.hide();
-                                    GameScene.show(new WndBossText(new Tboss(), msg2Final));
-                                }
-                            });
-                        }
-                    });
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new TbossSprite(), new TbossSprite()},
+                            new String[]{"스트레이초", "스트레이초"},
+                            new String[]{
+                                    Messages.get(Tboss.class, "t1"),
+                                    Messages.get(Tboss.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                 }
 
                 wave++;

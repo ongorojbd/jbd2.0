@@ -110,7 +110,7 @@ public class SeedFindScene extends PixelScene {
                     list.setRect( 0, 0, w, h );
                     list.scrollTo(0, 0);
 
-                    SPDSettings.addSid(-1);
+                    SPDSettings.addBrando(-1);
 
                 } else {
                     SPDSettings.customSeed("");

@@ -55,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.TbossSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -139,24 +140,6 @@ public class Tboss extends Mob {
         super.notice();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
-            switch(Dungeon.hero.heroClass){
-                case WARRIOR:
-                    this.yell(Messages.get(this, "1"));
-                    break;
-                case MAGE:
-                    this.yell(Messages.get(this, "12"));
-                    break;
-                case ROGUE:
-                    this.yell(Messages.get(this, "13"));
-                    break;
-                case DUELIST:
-                    this.yell(Messages.get(this, "14"));
-                    break;
-                case HUNTRESS:
-                    this.yell(Messages.get(this, "15"));
-                    break;
-            }
-
         }
     }
 
@@ -493,7 +476,16 @@ public class Tboss extends Mob {
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
         }
 
-        yell( Messages.get(this, "6") );
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new TbossSprite()},
+                new String[]{"스트레이초"},
+                new String[]{
+                        Messages.get(Tboss.class, "6")
+                },
+                new byte[]{
+                        WndDialogueWithPic.IDLE
+                }
+        );
 
         GameScene.bossSlain();
 

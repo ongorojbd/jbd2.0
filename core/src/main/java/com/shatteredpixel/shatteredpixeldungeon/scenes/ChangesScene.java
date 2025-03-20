@@ -146,28 +146,6 @@ public class ChangesScene extends PixelScene {
 			case 1:
 				v2_X_Changes.addAllChanges(changeInfos);
 				break;
-			case 2:
-				v1_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 3:
-				v0_9_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 4:
-				v0_8_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 5:
-				v0_7_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 6:
-				v0_6_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 7:
-				v0_5_X_Changes.addAllChanges(changeInfos);
-				v0_4_X_Changes.addAllChanges(changeInfos);
-				v0_3_X_Changes.addAllChanges(changeInfos);
-				v0_2_X_Changes.addAllChanges(changeInfos);
-				v0_1_X_Changes.addAllChanges(changeInfos);
-				break;
 		}
 
 		ScrollPane list = new ScrollPane( new Component() ){
@@ -236,7 +214,7 @@ public class ChangesScene extends PixelScene {
 		btn3_X.setRect(list.left()-4f, list.bottom(), 19, changesSelected == 0 ? 19 : 15);
 		addToBack(btn3_X);
 
-		StyledButton btn1_X = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "2.0", 8){
+		StyledButton btn2_X = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "2.0", 8){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -246,9 +224,9 @@ public class ChangesScene extends PixelScene {
 				}
 			}
 		};
-		if (changesSelected != 2) btn1_X.textColor( 0xBBBBBB );
-		btn1_X.setRect(btn3_X.right()-2, list.bottom(), 19, changesSelected == 2 ? 19 : 15);
-		addToBack(btn1_X);
+		if (changesSelected != 1) btn2_X.textColor( 0xBBBBBB );
+		btn2_X.setRect(btn3_X.right()-2, list.bottom(), 19, changesSelected == 1 ? 19 : 15);
+		addToBack(btn2_X);
 
 		Archs archs = new Archs();
 		archs.setSize( Camera.main.width, Camera.main.height );

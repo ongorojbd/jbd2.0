@@ -184,22 +184,16 @@ public class TitleScene extends PixelScene {
 		if (landscape()) {
 			btnPlay.setRect(btnAreaLeft, topRegion + GAP, (buttonAreaWidth / 2) - 1, BTN_HEIGHT);
 			align(btnPlay);
-
 			btnBadges.setRect(btnPlay.right() + 2, btnPlay.top(), btnPlay.width(), BTN_HEIGHT);
-
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom() + GAP, btnPlay.width(), BTN_HEIGHT);
 			btnChanges.setRect(btnRankings.right() + 2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
-
 			btnSettings.setRect(btnPlay.left(), btnRankings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.right() + 2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
-
 		} else {
-			btnPlay.setRect(title.x, topRegion+GAP, title.width(), BTN_HEIGHT);
+			btnPlay.setRect(btnAreaLeft, topRegion+GAP, buttonAreaWidth, BTN_HEIGHT);
 			align(btnPlay);
-			//btnSupport.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
 			btnBadges.setRect(btnRankings.left(), btnRankings.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
-			//btnNews.setRect(btnRankings.left(), btnRankings.bottom()+ GAP, btnRankings.width(), BTN_HEIGHT);
 			btnChanges.setRect(btnRankings.left(), btnBadges.bottom() + GAP, btnBadges.width(), BTN_HEIGHT);
 			btnSettings.setRect(btnBadges.left(), btnChanges.bottom() +GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.right()+2, btnChanges.bottom()+GAP,(btnPlay.width()/2)-1, BTN_HEIGHT);
