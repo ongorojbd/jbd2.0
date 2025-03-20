@@ -94,6 +94,9 @@ public class v3_X_Changes {
 				"이제 게임 진행 화면에서 최대 6개의 진행 중인 게임이 표시되고 정렬 옵션이 추가되었습니다."));
 		changes.addButton(new ChangeButton(new BuffIcon(BuffIndicator.LOCKED_FLOOR, true), "보스 컷씬 추가",
 				"이제 각 보스에 전용 컷씬이 추가됩니다."));
+		changes.addButton(new ChangeButton(new Image(Assets.Sprites.COM, 0, 0, 15, 13), "시드 검색 / 시드 분석",
+				"이제 엠포리오의 방에 있는 컴퓨터를 통해 다시 시드 검색 및 시드 분석을 할 수 있습니다.\n\n" +
+				"시드 검색 및 시드 분석이 스킨 교환권을 소모하는 방식으로 변경되었습니다."));
 
 		changes = new ChangeInfo("상향", false, null);
 		changes.hardlight(Window.TITLE_COLOR);

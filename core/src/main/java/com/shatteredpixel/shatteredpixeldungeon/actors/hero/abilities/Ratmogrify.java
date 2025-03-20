@@ -215,6 +215,7 @@ public class Ratmogrify extends ArmorAbility {
 
 		public void setup(Mob original) {
 			this.original = original;
+			original.clearTime();
 
 			HP = original.HP;
 			HT = original.HT;
@@ -249,7 +250,6 @@ public class Ratmogrify extends ArmorAbility {
 			if (timeLeft <= 0){
 				Mob original = getOriginal();
 				this.original = null;
-				original.clearTime();
 				GameScene.add(original);
 
 				EXP = 0;
