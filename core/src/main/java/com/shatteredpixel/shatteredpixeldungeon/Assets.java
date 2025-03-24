@@ -645,6 +645,7 @@ public class Assets {
         public static final String ZOMBIEBRUTE2 = "sprites/zombiebrute2.png";
         public static final String ZOMBIEBRUTE3 = "sprites/zombiebrute3.png";
         public static final String STURO = "sprites/sturo.png";
+        public static final String HORSE = "sprites/horse.png";
         public static final String ZOMBIEG = "sprites/zombieg.png";
 
         public static final String ZOMBIE3 = "sprites/zombie3.png";

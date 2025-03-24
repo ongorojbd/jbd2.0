@@ -21,22 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
 
-public class ShovelDigCoolDown6 extends FlavourBuff {
+public class ShovelDigCoolDown7 extends FlavourBuff {
 
     {
         type = buffType.NEUTRAL;
         announced = false;
     }
 
-    public static final float DURATION	= 29f;
+    public static final float DURATION	= 199f;
 
     @Override
     public int icon() {
@@ -45,16 +41,12 @@ public class ShovelDigCoolDown6 extends FlavourBuff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0xFFCC00);
+        icon.hardlight(0.0f, 0.3f, 0.0f);
     }
 
     @Override
     public float iconFadePercent() {
         return Math.max(0, (DURATION - visualcooldown()) / DURATION);
-    }
-
-    public float showcooldown() {
-        return visualcooldown();
     }
 
     @Override
@@ -65,11 +57,5 @@ public class ShovelDigCoolDown6 extends FlavourBuff {
     @Override
     public String desc() {
         return Messages.get(this, "desc", dispTurns(visualcooldown()));
-    }
-
-    @Override
-    public void detach() {
-        GLog.p((Messages.get(Tendency.class, "bandana")));
-        super.detach();
     }
 }

@@ -81,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewLastLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.PhantomLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -344,7 +345,7 @@ public class Dungeon {
                     } else if (SPDSettings.customSeed().contains("jojo")) {
                         level = new TendencyLevel();
                     } else {
-                        level = new SewerLevel();
+                        level = new PhantomLevel();
                     }
                     break;
                 case 2:

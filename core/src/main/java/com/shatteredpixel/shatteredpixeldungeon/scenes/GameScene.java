@@ -54,7 +54,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.jojo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne;
@@ -93,6 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.PhantomLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
@@ -113,7 +116,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Pucci4Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ScorpioSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhsnakeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WillaSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombietSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
@@ -665,12 +671,34 @@ public class GameScene extends PixelScene {
                     Sample.INSTANCE.play(Assets.Sounds.SPW5);
                     GLog.n(Messages.get(Diobrando.class, "t7"));
                     add(new WndStory(Messages.get(this, "ship_title") + "\n\n" + Messages.get(this, "ship_window")).setDelays(0.4f, 0.4f));
+                } else if (Dungeon.level instanceof PhantomLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
+                    //add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
+                    Statistics.duwang3 = 3;
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new ZombietSprite(), new ZombietSprite(), new SpeedwagonSprite(), new WillaSprite()},
+                            new String[]{"타커스", "타커스", "스피드왜건", "윌 A. 체펠리"},
+                            new String[]{
+                                    Messages.get(Zombiet.class, "n1"),
+                                    Messages.get(Zombiet.class, "n2"),
+                                    Messages.get(Zombiet.class, "n3"),
+                                    Messages.get(Zombiet.class, "n4")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+
+
                 } else if (Dungeon.level instanceof TendencyLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     Dungeon.challenges = 0;
                     SPDSettings.challenges(0);
                     SPDSettings.customSeed("");
-                    add(new WndStory(Messages.get(this, "dio_title") + "\n\n" + Messages.get(this, "dio_window")).setDelays(0.4f, 0.4f));
+                    add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
                     Tendency tendency = new Tendency();
                     tendency.state = tendency.WANDERING;
                     tendency.pos = Dungeon.hero.pos;
@@ -680,6 +708,7 @@ public class GameScene extends PixelScene {
 //                    SPDSettings.addDio(-1);
 //                    Statistics.diocount = 1;
                 }
+
                 if (Dungeon.level instanceof MiningLevel) {
                     switch (Blacksmith.Quest.Type()) {
                         case 1:

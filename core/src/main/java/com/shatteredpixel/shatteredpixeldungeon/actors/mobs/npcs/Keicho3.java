@@ -14,12 +14,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Val;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieFour;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieThree;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieTwo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiedog;
 import com.shatteredpixel.shatteredpixeldungeon.items.Bandana;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
@@ -27,11 +26,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Tmap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TbossSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombietSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBossText;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
@@ -44,8 +41,9 @@ import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
-public class Keicho2 extends NPC {
+public class Keicho3 extends NPC {
 
     {
         spriteClass = VampireSprite.class;
@@ -105,9 +103,6 @@ public class Keicho2 extends NPC {
     }
 
     public static float spawnCooldown = 6;
-
-    final String msg1Final = Messages.get(Tboss.class, "t1");
-    final String msg2Final = Messages.get(Tboss.class, "t2");
 
     @Override
     protected boolean act() {
@@ -173,20 +168,7 @@ public class Keicho2 extends NPC {
                 pickOrDropItem(a);
             }
 
-            mobsToSpawn = 3;  // 여기에 mobsToSpawn 값을 설정
-            if (wave == 2) mobsToSpawn = 2; // 조건문에 적힌 웨이브로 넘어가기 위해 잡아야할 몹의 수
-            if (wave == 4) mobsToSpawn = 4;
-            if (wave == 7) mobsToSpawn = 6;
-            if (wave == 8) mobsToSpawn = 2;
-            if (wave == 9) mobsToSpawn = 5;
-            if (wave == 11) mobsToSpawn = 4;
-            if (wave == 13) mobsToSpawn = 4;
-            if (wave == 14) mobsToSpawn = 4;
-            if (wave == 15) mobsToSpawn = 8;
-            if (wave == 16) mobsToSpawn = 4;
-            if (wave == 17) mobsToSpawn = 4;
-            if (wave == 18) mobsToSpawn = 5;
-            if (wave == 20) mobsToSpawn = 8;
+            mobsToSpawn = 1;
 
             if (spawnCooldown <= 0) {
 
@@ -197,27 +179,13 @@ public class Keicho2 extends NPC {
                     spawnCooldown = -12;
                 }
 
-                int[] spawnPositions = {8 + 15 * 31, 22 + 15 * 31, 15 + 22 * 31, 10 + 20 * 31, 18 + 18 * 31, 12 + 17 * 31, 20 + 19 * 31, 14 + 16 * 31};
-                int thisWaveMobSpawn = 3;
-                if (wave == 1) thisWaveMobSpawn = 2; // 이번에 소환할 몹의 수
-                if (wave == 3) thisWaveMobSpawn = 4;
-                if (wave == 6) thisWaveMobSpawn = 6;
-                if (wave == 7) thisWaveMobSpawn = 2;
-                if (wave == 8) thisWaveMobSpawn = 5;
-                if (wave == 10) thisWaveMobSpawn = 4;
-                if (wave == 12) thisWaveMobSpawn = 4;
-                if (wave == 13) thisWaveMobSpawn = 4;
-                if (wave == 14) thisWaveMobSpawn = 8;
-                if (wave == 15) thisWaveMobSpawn = 4;
-                if (wave == 16) thisWaveMobSpawn = 4;
-                if (wave == 17) thisWaveMobSpawn = 5;
-                if (wave == 19) thisWaveMobSpawn = 8;
+                int thisWaveMobSpawn = 1;
                 Statistics.duwang2 = thisWaveMobSpawn;
                 GLog.h(Messages.get(Keicho.class, "t1", wave, thisWaveMobSpawn));
                 ArrayList<Class<? extends Mob>> spawnClasses = getSpawnForWave(wave);
                 for (int i = 0; i < thisWaveMobSpawn; i++) {
                     Mob spawn = Reflection.newInstance(spawnClasses.remove(0));
-                    spawn.pos = spawnPositions[i];
+                    spawn.pos = 15 + 9 * 31;
                     spawn.state = spawn.HUNTING;
                     GameScene.add(spawn);
                     level.occupyCell(spawn);
@@ -226,8 +194,8 @@ public class Keicho2 extends NPC {
                 if (wave == 20) {
                     Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
                     WndDialogueWithPic.dialogue(
-                            new CharSprite[]{new TbossSprite(), new TbossSprite()},
-                            new String[]{"스트레이초", "스트레이초"},
+                            new CharSprite[]{new ZombietSprite(), new ZombietSprite()},
+                            new String[]{"타커스", "타커스"},
                             new String[]{
                                     Messages.get(Tboss.class, "t1"),
                                     Messages.get(Tboss.class, "t2")
@@ -251,47 +219,8 @@ public class Keicho2 extends NPC {
     private ArrayList<Class<? extends Mob>> getSpawnForWave(int wave) {
 
         switch (wave) {
-            case 1:
             default:
-                return new ArrayList<>(Arrays.asList(ZombieTwo.class, ZombieTwo.class));
-            case 2:
-                return new ArrayList<>(Arrays.asList(ZombieTwo.class, ZombieTwo.class, ZombieTwo.class));
-            case 3:
-                return new ArrayList<>(Arrays.asList(ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class));
-            case 4:
-                return new ArrayList<>(Arrays.asList(ZombieThree.class, ZombieTwo.class, ZombieTwo.class));
-            case 5:
-                return new ArrayList<>(Arrays.asList(ZombieThree.class, ZombieThree.class, ZombieTwo.class));
-            case 6:
-                return new ArrayList<>(Arrays.asList(ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class));
-            case 7:
-                return new ArrayList<>(Arrays.asList(ZombieBrute.class, ZombieTwo.class));
-            case 8:
-                return new ArrayList<>(Arrays.asList(ZombieThree.class, ZombieThree.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class));
-            case 9:
-                return new ArrayList<>(Arrays.asList(ZombieBrute.class, ZombieTwo.class, ZombieTwo.class));
-            case 10:
-                return new ArrayList<>(Arrays.asList(ZombieBrute.class, ZombieThree.class, ZombieTwo.class, ZombieTwo.class));
-            case 11:
-                return new ArrayList<>(Arrays.asList(ZombieBrute.class, ZombieBrute2.class, ZombieTwo.class));
-            case 12:
-                return new ArrayList<>(Arrays.asList(ZombieBrute2.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class));
-            case 13:
-                return new ArrayList<>(Arrays.asList(ZombieBrute2.class, ZombieBrute2.class, ZombieTwo.class, ZombieTwo.class));
-            case 14:
-                return new ArrayList<>(Arrays.asList(ZombieBrute.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieBrute.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class));
-            case 15:
-                return new ArrayList<>(Arrays.asList(ZombieBrute2.class, ZombieBrute2.class, ZombieBrute.class, ZombieTwo.class));
-            case 16:
-                return new ArrayList<>(Arrays.asList(ZombieBrute2.class, ZombieBrute.class, ZombieTwo.class, ZombieTwo.class));
-            case 17:
-                return new ArrayList<>(Arrays.asList(ZombieBrute2.class, ZombieBrute2.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class));
-            case 18:
-                return new ArrayList<>(Arrays.asList(ZombieBrute.class, ZombieBrute.class, ZombieBrute.class));
-            case 19:
-                return new ArrayList<>(Arrays.asList(ZombieBrute.class, ZombieBrute2.class, ZombieBrute2.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieTwo.class));
-            case 20:
-                return new ArrayList<>(Arrays.asList(Tboss.class, ZombieTwo.class, ZombieTwo.class));
+                return new ArrayList<>(Collections.singletonList(ZombieFour.class));
         }
 
     }

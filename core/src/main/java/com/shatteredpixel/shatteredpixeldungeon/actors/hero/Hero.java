@@ -28,6 +28,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw7;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw9;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
@@ -1793,6 +1794,10 @@ public class Hero extends Char {
                 Buff.affect(enemy, Frost.class, 2f);
                 hero.sprite.showStatus(HeroSprite.POSITIVE, Messages.get(Sword.class, "4"));
             }
+        }
+
+        if (buff(HorseRiding.class) != null) {
+            buff(HorseRiding.class).onDamage(damage);
         }
 
 //        if (damage > 0) {

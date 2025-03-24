@@ -27,27 +27,16 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho2;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NewShopKeeper;
-import com.shatteredpixel.shatteredpixeldungeon.items.Bcomdisc;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho3;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class TendencyLevel extends Level {
+public class PhantomLevel extends Level {
 
     {
         color1 = 0x48763c;
@@ -57,7 +46,7 @@ public class TendencyLevel extends Level {
     @Override
     public void playLevelMusic() {
         Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.TENDENCY1},
+                new String[]{Assets.Music.YUUKI},
                 new float[]{1},
                 false);
     }
@@ -69,7 +58,7 @@ public class TendencyLevel extends Level {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_TENDENCY;
+        return Assets.Environment.TILES_DIO;
     }
 
     @Override
@@ -83,13 +72,9 @@ public class TendencyLevel extends Level {
 
         transitions.add(new LevelTransition(this, 15 + WIDTH*15, LevelTransition.Type.BRANCH_ENTRANCE, Dungeon.depth, 0, LevelTransition.Type.BRANCH_EXIT));
 
-        Keicho2 npc = new Keicho2();
+        Keicho3 npc = new Keicho3();
 		npc.pos = 15 * width() + 2;
 		mobs.add( npc );
-
-        NewShopKeeper newShopKeeper = new NewShopKeeper();
-        newShopKeeper.pos = 15 * width() + 28;
-        mobs.add( newShopKeeper );
 
         buildLevel();
         return true;
@@ -123,8 +108,8 @@ public class TendencyLevel extends Level {
             W, W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W, W, W,
             W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W, W,
             W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W,
-            W, W, W, W, h, e, e, e, W, W, e, e, e, e, e, e, e, e, e, e, W, W, e, e, e, h, h, W, W, W, W,
-            W, W, W, W, h, e, e, e, W, e, e, e, e, e, e, e, e, e, e, e, e, W, e, e, e, e, h, W, W, W, W,
+            W, W, W, W, h, e, e, e, e, W, W, e, e, e, e, e, e, e, e, e, W, W, e, e, e, h, h, W, W, W, W,
+            W, W, W, W, h, e, e, e, e, W, e, e, e, e, e, e, e, e, e, e, e, W, e, e, e, e, h, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, W, W, W, W,
             W, W, W, W, S, e, e, e, e, e, e, e, e, h, e, e, e, h, e, e, e, e, e, e, e, e, S, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, h, e, h, h, h, e, h, e, e, e, e, e, e, e, h, W, W, W, W,
@@ -134,8 +119,8 @@ public class TendencyLevel extends Level {
             W, W, W, W, h, e, e, e, e, e, e, e, h, e, h, h, h, e, h, e, e, e, e, e, e, e, h, W, W, W, W,
             W, W, W, W, S, e, e, e, e, e, e, e, e, h, e, e, e, h, e, e, e, e, e, e, e, e, S, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, W, W, W, W,
-            W, W, W, W, h, e, e, e, W, e, e, e, e, e, e, e, e, e, e, e, e, W, e, e, e, e, h, W, W, W, W,
-            W, W, W, W, h, h, e, e, W, W, e, e, e, e, e, e, e, e, e, e, W, W, e, e, e, h, h, W, W, W, W,
+            W, W, W, W, h, e, e, e, e, W, e, e, e, e, e, e, e, e, e, e, e, W, e, e, e, e, h, W, W, W, W,
+            W, W, W, W, h, h, e, e, e, W, W, e, e, e, e, e, e, e, e, e, W, W, e, e, e, h, h, W, W, W, W,
             W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W,
             W, W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W, W,
             W, W, W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W, W, W,
