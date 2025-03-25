@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieFour;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieThree;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieTwo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Bandana;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
@@ -191,7 +192,7 @@ public class Keicho3 extends NPC {
                     level.occupyCell(spawn);
                 }
 
-                if (wave == 20) {
+                if (wave == 10) {
                     Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new ZombietSprite(), new ZombietSprite()},
@@ -221,6 +222,8 @@ public class Keicho3 extends NPC {
         switch (wave) {
             default:
                 return new ArrayList<>(Collections.singletonList(ZombieFour.class));
+            case 10:
+                return new ArrayList<>(Collections.singletonList(Zombiet.class));
         }
 
     }

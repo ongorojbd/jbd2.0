@@ -64,24 +64,6 @@ public class AnnihilationGear extends Item {
         return 10 + Dungeon.hero.lvl + buffedLvl();}
 
     @Override
-    public String info() {
-        if (Dungeon.hero.subClass != HeroSubClass.PALADIN) return  desc();
-        String aug;
-        switch (WeaponAug()) {
-            case NONE: default:
-                aug = Messages.get(this, "desc_augment_none");
-                break;
-            case DAMAGE:
-                aug = Messages.get(this, "desc_augment_damage");
-                break;
-            case SPEED:
-                aug = Messages.get(this, "desc_augment_speed");
-                break;
-        }
-        return desc() + "\n\n" + aug;
-    }
-
-    @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
         actions.add(AC_ACTIVE);

@@ -93,6 +93,7 @@ public class ZombieFour extends Mob {
 
         super.die( cause );
 
+        Statistics.duwang3++;
         spw4++;
 
         if (Dungeon.level.heroFOV[pos]) {
