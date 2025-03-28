@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShovelDigCoolDown7;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -40,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
@@ -55,9 +55,7 @@ public class Sleepcmoon extends Item {
     public static final String AC_LIGHT = "LIGHT";
 
     {
-        image = ItemSpriteSheet.WAND_BLAST_WAVE;
-
-        icon = ItemSpriteSheet.Icons.POTION_DIVINE;
+        image = ItemSpriteSheet.CM;
 
         unique = true;
 
@@ -72,42 +70,39 @@ public class Sleepcmoon extends Item {
     }
 
     @Override
-    public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x00CC00, 1f);
-    }
-
-    @Override
     public void execute(final Hero hero, String action) {
         super.execute(hero, action);
 
         Sleepcmoon pick = Dungeon.hero.belongings.getItem(Sleepcmoon.class);
         if (action.equals(AC_LIGHT)) {
             if (Dungeon.depth > 20) {
-                int lvl = this.level();
-                Sample.INSTANCE.play(Assets.Sounds.HAHAH);
-                GLog.n(Messages.get(this, "rev"));
-                GameScene.flash(0xFFFF00);
-                Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
-                Camera.main.shake(31, 3f);
-                Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
-
-                Madeinheaven n = new Madeinheaven();
-
-                pick.detach(Dungeon.hero.belongings.backpack);
-
-                n.levelKnown = levelKnown;
-                n.cursedKnown = cursedKnown;
-                n.cursed = cursed;
-
-                n.level(lvl);
-
-                if (n.doPickUp(Dungeon.hero)) {
-                    GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", n.name())));
+                if (hero.buff(ShovelDigCoolDown7.class) != null) {
+                    GLog.w(Messages.get(this, "not_ready"));
                 } else {
-                    Dungeon.level.drop(n, Dungeon.hero.pos).sprite.drop();
+                    int lvl = this.level();
+                    Sample.INSTANCE.play(Assets.Sounds.HAHAH);
+                    GLog.n(Messages.get(this, "rev"));
+                    GameScene.flash(0xFFFF00);
+                    Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+                    Camera.main.shake(31, 3f);
+                    Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
+
+                    Madeinheaven n = new Madeinheaven();
+
+                    pick.detach(Dungeon.hero.belongings.backpack);
+
+                    n.levelKnown = levelKnown;
+                    n.cursedKnown = cursedKnown;
+                    n.cursed = cursed;
+
+                    n.level(lvl);
+
+                    if (n.doPickUp(Dungeon.hero)) {
+                        GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", n.name())));
+                    } else {
+                        Dungeon.level.drop(n, Dungeon.hero.pos).sprite.drop();
+                    }
                 }
-
-
                 Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT), 12);
             } else {
 
@@ -208,6 +203,19 @@ public class Sleepcmoon extends Item {
                     Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
                 }
             }
+        }
+    }
+
+    public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
+
+        {
+            inputs =  new Class[]{Greenbaby.class, Awakensnake.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 30;
+
+            output = Sleepcmoon.class;
+            outQuantity = 1;
         }
     }
 

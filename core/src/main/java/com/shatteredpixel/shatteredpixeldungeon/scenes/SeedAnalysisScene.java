@@ -87,7 +87,7 @@ public class SeedAnalysisScene extends PixelScene {
                     txt.setRect((Camera.main.width - colWidth)/2f, 12, colWidth, 0);
                     content.add(txt);
                     content.setSize( fullWidth, txt.bottom()+10 );
-                    SPDSettings.addBrando(-1);
+                    SPDSettings.addSpecialcoin(-1);
                 } else {
                     SPDSettings.customSeed("");
                     ShatteredPixelDungeon.switchNoFade( GameScene.class );

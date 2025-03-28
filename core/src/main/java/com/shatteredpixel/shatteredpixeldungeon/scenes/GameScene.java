@@ -504,6 +504,10 @@ public class GameScene extends PixelScene {
                     );
                     Dungeon.level.seal();
                 }
+                if (Dungeon.level instanceof PhantomLevel) {
+                    add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
+                    Statistics.duwang3 = 3;
+                }
                 if (Dungeon.level instanceof HumanVillageBossLevel2) {
 
                     WndDialogueWithPic.dialogue(
@@ -671,29 +675,7 @@ public class GameScene extends PixelScene {
                     Sample.INSTANCE.play(Assets.Sounds.SPW5);
                     GLog.n(Messages.get(Diobrando.class, "t7"));
                     add(new WndStory(Messages.get(this, "ship_title") + "\n\n" + Messages.get(this, "ship_window")).setDelays(0.4f, 0.4f));
-                } else if (Dungeon.level instanceof PhantomLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
-                    //add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
-                    Statistics.duwang3 = 3;
-
-                    WndDialogueWithPic.dialogue(
-                            new CharSprite[]{new ZombietSprite(), new ZombietSprite(), new SpeedwagonSprite(), new WillaSprite()},
-                            new String[]{"타커스", "타커스", "스피드왜건", "윌 A. 체펠리"},
-                            new String[]{
-                                    Messages.get(Zombiet.class, "n1"),
-                                    Messages.get(Zombiet.class, "n2"),
-                                    Messages.get(Zombiet.class, "n3"),
-                                    Messages.get(Zombiet.class, "n4")
-                            },
-                            new byte[]{
-                                    WndDialogueWithPic.IDLE,
-                                    WndDialogueWithPic.IDLE,
-                                    WndDialogueWithPic.IDLE,
-                                    WndDialogueWithPic.IDLE
-                            }
-                    );
-
-
-                } else if (Dungeon.level instanceof TendencyLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
+                }  else if (Dungeon.level instanceof TendencyLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     Dungeon.challenges = 0;
                     SPDSettings.challenges(0);

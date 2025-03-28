@@ -66,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RebelSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
@@ -96,7 +97,7 @@ public class Dioprize extends Spell {
 
     @Override
     protected void onCast(Hero hero) {
-        GameScene.show(new WndOptions(new RebelSprite(),
+        GameScene.show(new WndOptions(new PucciSprite(),
                 Messages.get(Dioprize.class, "00"),
                 Messages.get(Dioprize.class, "0"),
                 Messages.get(Dioprize.class, "1"),

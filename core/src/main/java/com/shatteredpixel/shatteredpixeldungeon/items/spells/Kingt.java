@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
@@ -147,7 +148,7 @@ public class Kingt extends Spell {
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", h5.name()) ));
                 break;
             case 15:
-                Item h6 = new Sleepcmoon3();
+                Item h6 = new Sleepcmoon();
                 Dungeon.level.drop(h6, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", h6.name()) ));
                 break;

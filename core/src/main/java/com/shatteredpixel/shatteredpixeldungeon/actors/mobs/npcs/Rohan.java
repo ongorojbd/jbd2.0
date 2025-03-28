@@ -25,8 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -34,8 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.PolpoSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ResearcherSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RohanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -53,13 +49,19 @@ public class Rohan extends NPC {
         properties.add(Property.IMMOVABLE);
     }
 
-    private boolean seenBefore = false;
-
     @Override
     protected boolean act() {
         if (Dungeon.hero.buff(AscensionChallenge.class) != null) {
             die(null);
             return true;
+        }
+        if (Statistics.duwang == 1) {
+            yell(Messages.get(Rohan.class, "bi"));
+            Sample.INSTANCE.play(Assets.Sounds.RO5);
+            Statistics.duwang = 0;
+            destroy();
+            sprite.killAndErase();
+            die(null);
         }
         return super.act();
     }
@@ -136,14 +138,13 @@ public class Rohan extends NPC {
                                         GameScene.show(new WndOptions(
                                                 sprite(),
                                                 Messages.titleCase(name()),
-                                                Messages.get(Rohan.class, "4"),
+                                                Messages.get(Rohan.class, "4", Dungeon.gold),
                                                 Messages.get(Rohan.class, "5"),
                                                 Messages.get(Rohan.class, "6"),
                                                 Messages.get(Rohan.class, "7"),
                                                 Messages.get(Rohan.class, "8"),
                                                 Messages.get(Rohan.class, "9")
                                         ) {
-                                            @SuppressWarnings("SuspiciousIndentation")
                                             @Override
                                             protected void onSelect(int index) {
                                                 if (index == 0) {
@@ -153,7 +154,7 @@ public class Rohan extends NPC {
                                                         switch (Random.Int(2)) {
                                                             case 0:
                                                                 Dungeon.gold += 50;
-                                                                GLog.p(Messages.get(Rohan.class, "w"));
+                                                                GLog.p(Messages.get(Rohan.class, "w", 50));
                                                                 yell(Messages.get(Rohan.class, "lose"));
                                                                 Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                 break;
@@ -175,7 +176,7 @@ public class Rohan extends NPC {
                                                         switch (Random.Int(2)) {
                                                             case 0:
                                                                 Dungeon.gold += 100;
-                                                                GLog.p(Messages.get(Rohan.class, "w"));
+                                                                GLog.p(Messages.get(Rohan.class, "w", 100));
                                                                 yell(Messages.get(Rohan.class, "lose"));
                                                                 Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                 break;
@@ -196,7 +197,7 @@ public class Rohan extends NPC {
                                                         switch (Random.Int(2)) {
                                                             case 0:
                                                                 Dungeon.gold += 250;
-                                                                GLog.p(Messages.get(Rohan.class, "w"));
+                                                                GLog.p(Messages.get(Rohan.class, "w", 250));
                                                                 yell(Messages.get(Rohan.class, "lose"));
                                                                 Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                 break;
@@ -217,7 +218,7 @@ public class Rohan extends NPC {
                                                         switch (Random.Int(2)) {
                                                             case 0:
                                                                 Dungeon.gold += 500;
-                                                                GLog.p(Messages.get(Rohan.class, "w"));
+                                                                GLog.p(Messages.get(Rohan.class, "w", 500));
                                                                 yell(Messages.get(Rohan.class, "lose"));
                                                                 Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                 break;
@@ -239,7 +240,7 @@ public class Rohan extends NPC {
                                                         switch (Random.Int(2)) {
                                                             case 0:
                                                                 Dungeon.gold += 1000;
-                                                                GLog.p(Messages.get(Rohan.class, "w"));
+                                                                GLog.p(Messages.get(Rohan.class, "w", 1000));
                                                                 yell(Messages.get(Rohan.class, "lose"));
                                                                 Sample.INSTANCE.play(Assets.Sounds.RO4);
                                                                 break;
@@ -287,12 +288,13 @@ public class Rohan extends NPC {
                                 level.heaps.get(npc.pos) != null ||
                                 level.traps.get(npc.pos) != null ||
                                 level.findMob(npc.pos) != null ||
-                                //The imp doesn't move, so he cannot obstruct a passageway
                                 !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
                                 !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
                 level.mobs.add(npc);
 
-                Level.set(npc.pos, Terrain.EMPTY_DECO, level);
+                if (npc.pos != Terrain.EMPTY_DECO) {
+                    Level.set(npc.pos, Terrain.EMPTY, level);
+                }
             }
         }
     }

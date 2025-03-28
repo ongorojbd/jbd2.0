@@ -626,6 +626,7 @@ public class Assets {
         public static final String ZOMBIEP = "sprites/zombiep.png";
 
         public static final String ZOMBIET = "sprites/zombiet.png";
+        public static final String ZOMBIET2 = "sprites/zombiet2.png";
 
         public static final String ZOMBIEB = "sprites/zombieb.png";
 
@@ -645,6 +646,8 @@ public class Assets {
         public static final String ZOMBIEBRUTE2 = "sprites/zombiebrute2.png";
         public static final String ZOMBIEBRUTE3 = "sprites/zombiebrute3.png";
         public static final String STURO = "sprites/sturo.png";
+        public static final String WILLSON = "sprites/willson.png";
+        public static final String WILLSONMOB = "sprites/willsonmob.png";
         public static final String HORSE = "sprites/horse.png";
         public static final String ZOMBIEG = "sprites/zombieg.png";
 

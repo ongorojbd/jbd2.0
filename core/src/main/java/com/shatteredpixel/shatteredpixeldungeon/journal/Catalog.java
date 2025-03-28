@@ -115,6 +115,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo7;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenHilt;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenStaff;
@@ -277,7 +278,7 @@ public enum Catalog {
 
 		MISC_EQUIPMENT.addItems(BrokenSeal.class, SpiritBow.class, Waterskin.class, VelvetPouch.class,
 				PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, NitoDismantleHammer.class, NitoDismantleHammer2.class,
-				Cen.class, Amulet.class, Bcomdisc.class, PortableCover.class, PortableCover4.class);
+				Cen.class, Amulet.class, Bcomdisc.class, Sleepcmoon.class, PortableCover.class, PortableCover4.class);
 
 		SPECIAL_WEAPONS.addItems(ChaosSword.class, FlameKatana.class, KSG.class, HeavyMachinegun.class,
 				LSWORD.class, DBLADE.class, MISTA.class, PINK.class, AJA.class, SnowHunter.class, Spheaven.class);

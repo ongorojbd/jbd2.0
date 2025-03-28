@@ -890,6 +890,7 @@ public class ItemSpriteSheet {
     public static final int TUSK = BAGS + 11;
     public static final int SPOH = BAGS + 12;
     public static final int BCOM = BAGS + 13;
+    public static final int CM = BAGS + 14;
 
     static {
         assignItemRect(WATERSKIN, 14, 15);
@@ -906,6 +907,7 @@ public class ItemSpriteSheet {
         assignItemRect(TUSK, 14, 14);
         assignItemRect(SPOH, 14, 14);
         assignItemRect(BCOM, 14, 14);
+        assignItemRect(CM, 14, 14);
     }
 
     private static final int DOCUMENTS = xy(1, 32);  //16 slots

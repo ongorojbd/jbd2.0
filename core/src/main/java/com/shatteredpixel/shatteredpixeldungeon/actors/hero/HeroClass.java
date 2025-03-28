@@ -27,8 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
@@ -223,7 +221,6 @@ public enum HeroClass {
         ThrowingStone stones = new ThrowingStone();
         stones.quantity(3).collect();
         Dungeon.quickslot.setSlot(0, stones);
-        Buff.affect(hero, HorseRiding.class).set();
 
         if (hero.belongings.armor != null) {
             hero.belongings.armor.affixSeal(new BrokenSeal());

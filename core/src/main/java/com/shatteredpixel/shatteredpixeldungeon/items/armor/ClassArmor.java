@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Willabuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity;
@@ -336,6 +338,11 @@ abstract public class ClassArmor extends Armor {
 		public boolean act() {
 			if (Regeneration.regenOn()) {
 				float chargeGain = 100 / 500f; //500 turns to full charge
+
+				if (Dungeon.hero.buff(Willabuff.class) != null) {
+					chargeGain *= 1.3F;
+				}
+
 				chargeGain *= RingOfEnergy.armorChargeMultiplier(target);
 				charge += chargeGain;
 				updateQuickslot();

@@ -36,7 +36,7 @@ public class Rmap extends Item {
         if (action.equals(AC_LIGHT)) {
 
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = Math.max(0, (Dungeon.depth));
+            InterlevelScene.returnDepth = 22;
             InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -2;
             Game.switchScene(InterlevelScene.class);

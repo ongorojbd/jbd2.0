@@ -237,7 +237,7 @@ public class Dio2Level extends RegularLevel {
                 @Override
                 public void call() {
                     GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.MAP0),
-                            Messages.titleCase(Messages.get(Gmap.class, "name")),
+                            Messages.titleCase(Messages.get(Bmap.class, "name")),
                             Messages.get(Bmap.class, "1"),
                             Messages.get(Bmap.class, "yes"),
                             Messages.get(Bmap.class, "no")){
@@ -245,9 +245,9 @@ public class Dio2Level extends RegularLevel {
                         protected void onSelect(int index) {
                             if (index == 0){
                                 InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                                InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth -1));
+                                InterlevelScene.returnDepth = 22;
                                 InterlevelScene.returnBranch = 0;
-                                InterlevelScene.returnPos = -2;
+                                InterlevelScene.returnPos = -1;
                                 Game.switchScene(InterlevelScene.class);
                             }
                         }

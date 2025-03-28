@@ -26,60 +26,35 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.watabou.noosa.TextureFilm;
 
-public abstract class VampireSprite extends MobSprite {
+public class Zombiet2Sprite extends MobSprite {
 
+    private int cellToAttack;
 
-    public VampireSprite() {
+    public Zombiet2Sprite() {
         super();
 
-        texture( Assets.Sprites.VAMPIRE );
+        texture( Assets.Sprites.ZOMBIET2 );
 
-        TextureFilm frames = new TextureFilm( texture, 12, 16 );
-
-        int c = texOffset();
+        TextureFilm frames = new TextureFilm( texture, 14, 16 );
 
         idle = new Animation( 1, true );
-        idle.frames( frames, 0 + c, 0 + c, 0 + c, 1 + c, 0 + c, 0 + c, 1 + c, 1 + c );
+        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
         run = new Animation( 15, true );
-        run.frames( frames, 2 + c, 3 + c, 4 + c, 5 + c, 6 + c, 7 + c );
+        run.frames( frames, 2, 3, 4, 5, 6, 7 );
 
         attack = new Animation( 15, false );
-        attack.frames( frames, 8 + c, 9 + c, 10 + c, 0 + c );
+        attack.frames( frames, 8, 9, 10, 0 );
 
         zap = attack.clone();
 
         die = new Animation( 20, false );
-        die.frames( frames, 11 + c, 12 + c, 13 + c, 14 + c, 15 + c, 16 + c );
+        die.frames( frames, 11, 12, 13, 14, 15, 16);
+
+        scale.set(1.2f);
 
         play( idle );
     }
-
-    protected abstract int texOffset();
-
-    public static class Blue extends VampireSprite {
-        @Override
-        protected int texOffset() {
-            return 0;
-        }
-    }
-
-    public static class Green extends VampireSprite {
-        @Override
-        protected int texOffset() {
-            return 17;
-        }
-    }
-
-    public static class Red extends VampireSprite {
-        @Override
-        protected int texOffset() { return 34; }
-    }
-    public static class Yellow extends VampireSprite {
-        @Override
-        protected int texOffset() { return 51; }
-    }
-
 
     @Override
     public void play( Animation anim ) {

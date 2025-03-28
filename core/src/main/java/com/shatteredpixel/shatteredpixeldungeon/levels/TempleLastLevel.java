@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BcomTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -237,7 +238,11 @@ public class TempleLastLevel extends Level {
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0){
-                                TempleLastLevel.super.activateTransition(hero, transition);
+                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                InterlevelScene.returnDepth = 22;
+                                InterlevelScene.returnBranch = 0;
+                                InterlevelScene.returnPos = -1;
+                                Game.switchScene(InterlevelScene.class);
                             }
                         }
                     } );

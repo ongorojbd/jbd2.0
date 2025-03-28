@@ -49,6 +49,7 @@ public class v3_X_Changes {
 
 	public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
 		add_Coming_Soon(changeInfos);
+		add_a_Changes(changeInfos);
 		add_jolyne_Changes(changeInfos);
 	}
 
@@ -61,9 +62,29 @@ public class v3_X_Changes {
 		changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "죠나단 리워크",
 				"죠나단의 능력 리워크를 통해 플레이 경험을 개선할 예정입니다."));
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TRINKET_CATA), "신규 위험한 물건",
-				"죠나단 리워크와 함께 신규 위험한 물건과 신규 희귀 적도 추가됩니다."));
+				"죠나단 리워크와 함께 신규 위험한 물건과 신규 희귀 적도 추가될 예정입니다."));
 	}
+	private static void add_a_Changes(ArrayList<ChangeInfo> changeInfos) {
+		ChangeInfo changes = new ChangeInfo("v3.0a", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		changeInfos.add(changes);
 
+		changes = new ChangeInfo("새로운 요소", false, null);
+		changes.hardlight(CharSprite.POSITIVE);
+		changeInfos.add(changes);
+		changes.addButton(new ChangeButton(new Image(Assets.Sprites.WILLSON, 0, 0, 23, 14), "신규 npc",
+				"이제 오시리스신의 지도가 아닌 카이로 시내에 있는 상원의원을 통해서 미니 던전에 입장할 수 있습니다."));
+		changes.addButton(new ChangeButton(new Image(Assets.Sprites.VAMPIRE, 0, 0, 12, 16), "미니 던전 추가",
+				"신규 미니 던전인 _쌍두룡의 방_이 추가되었습니다!"));
+		changes = new ChangeInfo("변경", false, null);
+		changes.hardlight(CharSprite.WARNING);
+		changeInfos.add(changes);
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CM), "편의성 개선",
+				"메이드 인 헤븐의 장비 DISC의 전 단계인, C-MOON(각성)의 DISC의 능력이 추가되었습니다.\n\n" +
+						"이제 로한과 도박을 할 때 보유 골드와 획득 골드가 출력됩니다.\n\n" +
+						"시드 검색 및 시드 분석이 클리어 포인트를 소모하는 방식으로 변경되었습니다."));
+	}
 	private static void add_jolyne_Changes(ArrayList<ChangeInfo> changeInfos) {
 		ChangeInfo changes = new ChangeInfo("v3.0", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
@@ -94,9 +115,6 @@ public class v3_X_Changes {
 				"이제 게임 진행 화면에서 최대 6개의 진행 중인 게임이 표시되고 정렬 옵션이 추가되었습니다."));
 		changes.addButton(new ChangeButton(new BuffIcon(BuffIndicator.LOCKED_FLOOR, true), "보스 컷씬 추가",
 				"이제 각 보스에 전용 컷씬이 추가됩니다."));
-		changes.addButton(new ChangeButton(new Image(Assets.Sprites.COM, 0, 0, 15, 13), "시드 검색 / 시드 분석",
-				"이제 엠포리오의 방에 있는 컴퓨터를 통해 다시 시드 검색 및 시드 분석을 할 수 있습니다.\n\n" +
-				"시드 검색 및 시드 분석이 스킨 교환권을 소모하는 방식으로 변경되었습니다."));
 
 		changes = new ChangeInfo("상향", false, null);
 		changes.hardlight(Window.TITLE_COLOR);

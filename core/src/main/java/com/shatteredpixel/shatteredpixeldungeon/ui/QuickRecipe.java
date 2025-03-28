@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotio
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
@@ -80,7 +81,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sleepcmoon3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
@@ -399,7 +399,7 @@ public class QuickRecipe extends Component {
 				result.add(null);
 				result.add(new QuickRecipe(new Whitesnake.Recipe()));
 				result.add(null);
-				result.add(new QuickRecipe(new Sleepcmoon3.Recipe()));
+				result.add(new QuickRecipe(new Sleepcmoon.Recipe()));
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe(new LSWORD.Recipe()));

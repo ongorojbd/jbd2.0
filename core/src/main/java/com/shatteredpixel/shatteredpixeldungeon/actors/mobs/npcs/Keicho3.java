@@ -14,12 +14,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieFour;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieThree;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieTwo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombietBoss;
 import com.shatteredpixel.shatteredpixeldungeon.items.Bandana;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
@@ -29,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TbossSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Zombiet2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombietSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBossText;
@@ -38,6 +42,7 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -52,6 +57,23 @@ public class Keicho3 extends NPC {
         properties.add(Property.IMMOVABLE);
     }
 
+    public Keicho3(){
+        super();
+        switch (Random.Int(4)){
+            case 0: default:
+                spriteClass = VampireSprite.Blue.class;
+                break;
+            case 1:
+                spriteClass = VampireSprite.Green.class;
+                break;
+            case 2:
+                spriteClass = VampireSprite.Red.class;
+                break;
+            case 3:
+                spriteClass = VampireSprite.Yellow.class;
+                break;
+        }
+    }
     boolean mine = true;
 
     private final String MINE = "mine";
@@ -118,55 +140,8 @@ public class Keicho3 extends NPC {
 
         if (hero != null) {
 
-
             if (Statistics.duwang3 >= mobsToSpawn) {
                 spawnCooldown--;
-            }
-
-            yell(String.valueOf(spawnCooldown));
-
-            if (wave == 21 && spawnCooldown == 4) {
-                Sample.INSTANCE.play(Assets.Sounds.TENDENCY2);
-                Game.runOnRenderThread(new Callback() {
-                    @Override
-                    public void call() {
-                        GameScene.show(new WndBossText(new Tendency(), Messages.get(Tendency.class, "t1")) {
-                            @Override
-                            public void hide() {
-                                super.hide();
-                                Item a = new Tmap();
-                                pickOrDropItem(a);
-                                Item b = new Bandana();
-                                b.identify();
-                                pickOrDropItem(b);
-                                Tendency tendency = new Tendency();
-                                tendency.pos = hero.pos;
-                                GameScene.add( tendency );
-                                tendency.beckon(Dungeon.hero.pos);
-                                GLog.n(Messages.get(Tendency.class, "t2"));
-                                Dungeon.quickslot.clearSlot(4);
-                                Dungeon.quickslot.clearSlot(5);
-                                Dungeon.quickslot.setSlot(4, a);
-                                Dungeon.quickslot.setSlot(5, b);
-                            }
-                        });
-                    }
-                });
-            }
-
-            if (Statistics.duwang == 2 && spawnCooldown == 9 && wave >= 3 && (wave & 1) == 1) {
-                for (Char c : Actor.chars()) {
-                    if (c instanceof NewShopKeeper) {
-                        c.interact(hero);
-                    }
-                }
-                Statistics.duwang = 0;
-            }
-
-            if (Statistics.spw6 > 0 && spawnCooldown == 6) {
-                Item a = new Tbomb();
-                a.identify();
-                pickOrDropItem(a);
             }
 
             mobsToSpawn = 1;
@@ -182,7 +157,7 @@ public class Keicho3 extends NPC {
 
                 int thisWaveMobSpawn = 1;
                 Statistics.duwang2 = thisWaveMobSpawn;
-                GLog.h(Messages.get(Keicho.class, "t1", wave, thisWaveMobSpawn));
+                GLog.h(Messages.get(Keicho.class, "t1", wave));
                 ArrayList<Class<? extends Mob>> spawnClasses = getSpawnForWave(wave);
                 for (int i = 0; i < thisWaveMobSpawn; i++) {
                     Mob spawn = Reflection.newInstance(spawnClasses.remove(0));
@@ -195,11 +170,11 @@ public class Keicho3 extends NPC {
                 if (wave == 10) {
                     Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
                     WndDialogueWithPic.dialogue(
-                            new CharSprite[]{new ZombietSprite(), new ZombietSprite()},
+                            new CharSprite[]{new Zombiet2Sprite(), new Zombiet2Sprite()},
                             new String[]{"타커스", "타커스"},
                             new String[]{
-                                    Messages.get(Tboss.class, "t1"),
-                                    Messages.get(Tboss.class, "t2")
+                                    Messages.get(ZombietBoss.class, "n1"),
+                                    Messages.get(ZombietBoss.class, "n2")
                             },
                             new byte[]{
                                     WndDialogueWithPic.IDLE,
@@ -223,7 +198,7 @@ public class Keicho3 extends NPC {
             default:
                 return new ArrayList<>(Collections.singletonList(ZombieFour.class));
             case 10:
-                return new ArrayList<>(Collections.singletonList(Zombiet.class));
+                return new ArrayList<>(Collections.singletonList(ZombietBoss.class));
         }
 
     }

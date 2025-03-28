@@ -342,10 +342,8 @@ public class Dungeon {
                     if (SPDSettings.getDio() >= 1) {
                         diolevel = true;
                         level = new DioLevel();
-                    } else if (SPDSettings.customSeed().contains("jojo")) {
-                        level = new TendencyLevel();
                     } else {
-                        level = new PhantomLevel();
+                        level = new SewerLevel();
                     }
                     break;
                 case 2:
@@ -460,6 +458,9 @@ public class Dungeon {
                     break;
                 case 17:
                     level = new TempleLastLevel();
+                    break;
+                case 21:
+                    level = new PhantomLevel();
                     break;
                 case 22:
                     level = new Dio2Level();

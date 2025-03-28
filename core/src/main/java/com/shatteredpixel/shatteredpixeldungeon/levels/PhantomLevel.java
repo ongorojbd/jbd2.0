@@ -28,9 +28,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho3;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NewShopKeeper;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NewShopKeeper2;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -76,6 +87,10 @@ public class PhantomLevel extends Level {
 		npc.pos = 15 * width() + 2;
 		mobs.add( npc );
 
+        NewShopKeeper2 NewShopKeeper2 = new NewShopKeeper2();
+        NewShopKeeper2.pos = 15 * width() + 28;
+        mobs.add( NewShopKeeper2 );
+
         buildLevel();
         return true;
     }
@@ -87,7 +102,7 @@ public class PhantomLevel extends Level {
     private static final short s = Terrain.EMPTY;
     private static final short S = Terrain.STATUE_SP;
     private static final short L = Terrain.LOCKED_EXIT;
-    private static final short E = Terrain.ENTRANCE;
+    private static final short E = Terrain.ENTRANCE_SP;
     private static final short T = Terrain.TRAP;
     private static final short p = Terrain.PEDESTAL;
     private static final short D = Terrain.DOOR;
@@ -114,7 +129,7 @@ public class PhantomLevel extends Level {
             W, W, W, W, S, e, e, e, e, e, e, e, e, h, e, e, e, h, e, e, e, e, e, e, e, e, S, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, h, e, h, h, h, e, h, e, e, e, e, e, e, e, h, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, e, h, h, h, h, h, e, e, e, e, e, e, e, e, h, W, W, W, W,
-            W, W, s, W, h, e, e, e, e, e, e, e, e, h, h, h, h, h, e, e, e, e, e, e, e, e, h, W, s, W, W,
+            W, W, s, W, h, e, e, e, e, e, e, e, e, h, h, E, h, h, e, e, e, e, e, e, e, e, h, W, s, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, e, h, h, h, h, h, e, e, e, e, e, e, e, e, h, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, h, e, h, h, h, e, h, e, e, e, e, e, e, e, h, W, W, W, W,
             W, W, W, W, S, e, e, e, e, e, e, e, e, h, e, e, e, h, e, e, e, e, e, e, e, e, S, W, W, W, W,
@@ -162,7 +177,34 @@ public class PhantomLevel extends Level {
     }
 
     public boolean activateTransition(Hero hero, LevelTransition transition) {
-        return false;
+        if (transition.type == LevelTransition.Type.BRANCH_ENTRANCE) {
+
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.MAP0),
+                            Messages.titleCase(Messages.get(Bmap.class, "name")),
+                            Messages.get(Bmap.class, "1"),
+                            Messages.get(Bmap.class, "yes"),
+                            Messages.get(Bmap.class, "no")){
+                        @Override
+                        protected void onSelect(int index) {
+                            if (index == 0){
+                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                InterlevelScene.returnDepth = 22;
+                                InterlevelScene.returnBranch = 0;
+                                InterlevelScene.returnPos = -1;
+                                Game.switchScene(InterlevelScene.class);
+                            }
+                        }
+                    } );
+                }
+            });
+            return false;
+
+        } else {
+            return super.activateTransition(hero, transition);
+        }
     }
 
     @Override

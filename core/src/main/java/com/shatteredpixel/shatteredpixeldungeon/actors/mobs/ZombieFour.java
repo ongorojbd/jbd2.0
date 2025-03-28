@@ -21,42 +21,25 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw4;
-import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho2;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
-import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.Zombie2Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class ZombieFour extends Mob {
@@ -64,42 +47,84 @@ public class ZombieFour extends Mob {
     {
         spriteClass = VampireSprite.class;
 
-        HP = HT = 4 + 20 * spw4;
-        defenseSkill = 2;
+        HP = HT = 60 + 30 * spw4;
+        defenseSkill = 25;
+        viewDistance = Light.DISTANCE;
 
-        maxLvl = 5;
+        EXP = 12;
+        maxLvl = 25;
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);
+    }
 
+    public ZombieFour() {
+        super();
+        switch (Random.Int(4)) {
+            case 0:
+            default:
+                spriteClass = VampireSprite.Blue.class;
+                break;
+            case 1:
+                spriteClass = VampireSprite.Green.class;
+                break;
+            case 2:
+                spriteClass = VampireSprite.Red.class;
+                break;
+            case 3:
+                spriteClass = VampireSprite.Yellow.class;
+                break;
+        }
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 1, 4 );
+        int minDamage = (int) (25 + spw4 * 1.7);
+        int maxDamage = (int) (30 + spw4 * 2);
+
+        return Random.NormalIntRange(minDamage, maxDamage);
     }
 
     @Override
-    public int attackSkill( Char target ) {
-        return 8;
+    public int attackSkill(Char target) {
+        return 40;
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 1);
+        return super.drRoll() + Random.NormalIntRange(0, 10);
     }
 
     @Override
-    public void die( Object cause ) {
+    protected boolean act() {
+        if (!BossHealthBar.isAssigned()) {
+            BossHealthBar.assignBoss(this);
+        }
+        return super.act();
+    }
 
-        super.die( cause );
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
 
         Statistics.duwang3++;
         spw4++;
 
+        Item prize = Random.oneOf(
+                new Kingt().quantity(1),
+                new StoneOfAdvanceguard().quantity(1),
+                new Kings().quantity(1),
+                new Kingm().quantity(1),
+                new Kingw().quantity(1),
+                new Willa().quantity(1),
+                new PotionOfShielding().quantity(2),
+                new Kingc().quantity(1)
+        );
+
+        Dungeon.level.drop(prize, pos).sprite.drop(pos);
+
         if (Dungeon.level.heroFOV[pos]) {
-            Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );
+            Sample.INSTANCE.play(Assets.Sounds.BONES, Random.Float(1.2f, 0.9f));
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
         }
-
     }
 }

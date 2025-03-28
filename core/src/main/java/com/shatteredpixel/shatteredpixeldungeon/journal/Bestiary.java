@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary4;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weather;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Willson;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
@@ -169,7 +170,7 @@ public enum Bestiary {
                 Bcom.class, Bcomg.class, Skeleton.class, Thief.class, DM100.class, Guard.class, Necromancer.class,
                 Bat.class, Brute.class, Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class, Spinner.class, DM200.class,
                 Ghoul.class, Elemental.FireElemental.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class, Warlock.class, Monk.class, Golem.class,
-                RipperDemon.class, DemonSpawner.class, Succubus.class, Eye.class, Scorpio.class, Supression.class, Medic.class, Tank.class, Researcher.class, Soldier.class);
+                RipperDemon.class, DemonSpawner.class, Succubus.class, Eye.class, Scorpio.class, Willsonmob.class, Supression.class, Medic.class, Tank.class, Researcher.class, Soldier.class);
 
         BOSSES.addEntities(Goo.class,
                 Tengu.class,
@@ -191,10 +192,10 @@ public enum Bestiary {
         QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class, Manhatan2.class,
                 Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,
                 CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGeomancer.class, GnollSapper.class, GnollGuard.class,
-                Civil.class, Bmore.class, Diego.class, Pucci12.class, Diego21.class, Diego12.class,
+                Civil.class, Bmore.class, Diego.class, Pucci12.class, Diego21.class, Diego12.class, ZombieFour.class, ZombietBoss.class,
                 TempleLastLevel.TempleBrute.class, TempleLastLevel.TempleGuard.class, Keichomob.class);
 
-        NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Sheep.class, Bee.class, Amblance.class, Heavyw.class, Rohan.class, Yukako.class, Retonio.class, Yasu.class, Fugo.class, Weather.class, Bdth.class, Annasui.class, So1.class);
+        NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Willson.class, Sheep.class, Bee.class, Amblance.class, Heavyw.class, Rohan.class, Yukako.class, Retonio.class, Yasu.class, Fugo.class, Weather.class, Bdth.class, Annasui.class, So1.class);
 
         ALLY.addEntities(MirrorImage.class, PrismaticImage.class,
                 DriedRose.GhostHero.class, Willamob.class, Willcmob.class, Willgmob.class,

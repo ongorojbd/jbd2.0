@@ -54,7 +54,7 @@ public class Neotel extends Item {
             Buff.affect(hero, MagicalSight.class, 99f);
             Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);
-
+            SPDSettings.addSpecialcoin(4);
 //            Buff.affect(hero, AscensionChallenge.class);
 
             hero.HP = Math.min(hero.HP + 150, hero.HT);

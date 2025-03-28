@@ -143,7 +143,7 @@ public class Com extends NPC {
                 GameScene.show(new WndOptions(
                         sprite(),
                         Messages.titleCase(name()),
-                        Messages.get(Com.class, "0", SPDSettings.getBrando()),
+                        Messages.get(Com.class, "0", SPDSettings.getSpecialcoin()),
                         Messages.get(Com.class, "1"),
                         Messages.get(Com.class, "2"),
                         Messages.get(Com.class, "3"),
@@ -159,13 +159,13 @@ public class Com extends NPC {
                         } else if (index == 2) {
                             tell(Messages.get(Com.class, "w", SPDSettings.getDio()));
                         } else if (index == 3) {
-                            if (SPDSettings.getBrando() >= 1) {
+                            if (SPDSettings.getSpecialcoin() >= 1) {
                                 ShatteredPixelDungeon.switchScene(SeedFindScene.class);
                             }  else {
                                 GLog.p(Messages.get(Annasui.class, "sid"));
                             }
                         } else {
-                            if (SPDSettings.getBrando() >= 1) {
+                            if (SPDSettings.getSpecialcoin() >= 1) {
                                 ShatteredPixelDungeon.switchScene( SeedAnalysisScene.class );
                             }  else {
                                 GLog.p(Messages.get(Annasui.class, "sid"));
