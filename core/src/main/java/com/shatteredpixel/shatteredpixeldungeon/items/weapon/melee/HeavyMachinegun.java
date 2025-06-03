@@ -437,7 +437,11 @@ public class HeavyMachinegun extends MeleeWeapon {
 
         @Override
         public void throwSound() {
-            Sample.INSTANCE.play(Assets.Sounds.HEI);
+            if (round == max_round) {
+                Sample.INSTANCE.play(Assets.Sounds.HEI);
+            } else {
+                Sample.INSTANCE.play(Assets.Sounds.BLAST, 0.8f, 1.2f);
+            }
         }
 
         @Override

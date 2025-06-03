@@ -46,7 +46,7 @@ public class AnnihilationGear extends Item {
     public static final String AC_ACTIVE	= "active";
 
     {
-        image = ItemSpriteSheet.JOJO7;
+        image = ItemSpriteSheet.PICKAXE;
 
         defaultAction = AC_ACTIVE;
         unique = true;

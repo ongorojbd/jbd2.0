@@ -27,6 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
@@ -46,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
-import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.AnnihilationGear;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -58,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WoundsofWar;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -84,7 +85,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -94,6 +97,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
@@ -112,7 +116,8 @@ public enum HeroClass {
     ROGUE(HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER),
     DUELIST(HeroSubClass.CHAMPION, HeroSubClass.MONK),
     HUNTRESS(HeroSubClass.SNIPER, HeroSubClass.WARDEN),
-    CLERIC(HeroSubClass.PRIEST, HeroSubClass.PALADIN);
+    CLERIC(HeroSubClass.PRIEST, HeroSubClass.PALADIN),
+    JOHNNY(HeroSubClass.PRIEST, HeroSubClass.PALADIN);
 
     private HeroSubClass[] subClasses;
 
@@ -145,12 +150,11 @@ public enum HeroClass {
             new RingOfEnergy().identify().upgrade(999).collect();
             new RingOfAccuracy().identify().upgrade(999).collect();
             new Shortsword().identify().upgrade(999).collect();
-            new AnnihilationGear().identify().collect();
             new WandOfBlastWave().identify().collect();
             new PotionOfParalyticGas().identify().quantity(100).collect();
             new Neotel().collect();
-            new Sleepcmoon().identify().collect();
-            new Castleintro().identify().collect();
+            new WarHammer().identify().collect();
+            new WandOfCorruption().identify().collect();
             new TengusMask().collect();
             new KingsCrown().collect();
             new PotionOfHealing().identify().quantity(100).collect();
@@ -185,6 +189,10 @@ public enum HeroClass {
             case CLERIC:
                 initCleric(hero);
                 break;
+
+            case JOHNNY:
+                initJohnny(hero);
+                break;
         }
 
         if (SPDSettings.quickslotWaterskin()) {
@@ -211,6 +219,8 @@ public enum HeroClass {
             case DUELIST:
                 return Badges.Badge.MASTERY_DUELIST;
             case CLERIC:
+                return Badges.Badge.MASTERY_CLERIC;
+            case JOHNNY:
                 return Badges.Badge.MASTERY_CLERIC;
         }
         return null;
@@ -383,6 +393,34 @@ public enum HeroClass {
         new ScrollOfRemoveCurse().identify();
     }
 
+    private static void initJohnny(Hero hero) {
+
+        (hero.belongings.weapon = new Cudgel()).identify();
+        hero.belongings.weapon.activate(hero);
+
+        if (Dungeon.isChallenged(Challenges.GAMBLER)) {
+            new Drago().quantity(5).collect();
+        }
+
+        Buff.affect(hero, HorseRiding.class).set();
+
+        AnnihilationGear annihilationGear = new AnnihilationGear();
+        annihilationGear.identify().collect();
+        Dungeon.quickslot.setSlot(0, annihilationGear);
+
+        if (SPDSettings.getDio() >= 1) {
+            NitoDismantleHammer hamm = new NitoDismantleHammer();
+            Diomap map = new Diomap();
+            hamm.collect();
+            map.collect();
+            Dungeon.quickslot.setSlot(2, hamm);
+            Dungeon.quickslot.setSlot(3, map);
+        }
+
+        new PotionOfPurity().identify();
+        new ScrollOfRemoveCurse().identify();
+    }
+
     public String title() {
         return Messages.get(HeroClass.class, name());
     }
@@ -416,6 +454,8 @@ public enum HeroClass {
                 return new ArmorAbility[]{new Feint(), new Challenge(), new ElementalStrike()};
             case CLERIC:
                 return new ArmorAbility[]{new AscendedForm(), new Trinity(), new PowerOfMany()};
+            case JOHNNY:
+                return new ArmorAbility[]{new AscendedForm(), new Trinity(), new PowerOfMany()};
         }
     }
 
@@ -446,6 +486,10 @@ public enum HeroClass {
                 if (SPDSettings.getSkin6() == 1) {
                     return Assets.Sprites.CLERIC2;
                 } else return Assets.Sprites.CLERIC;
+            case JOHNNY:
+                if (SPDSettings.getSkin6() == 1) {
+                    return Assets.Sprites.CLERIC2;
+                } else return Assets.Sprites.WARRIOR2;
         }
     }
 
@@ -486,6 +530,11 @@ public enum HeroClass {
                 if (SPDSettings.getDio() >= 1) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.CLERIC;
+            case JOHNNY:
+
+                if (SPDSettings.getDio() >= 1) {
+                    return Assets.Splashes.BRANDO;
+                } else return Assets.Splashes.WARRIOR;
         }
     }
 
@@ -506,6 +555,8 @@ public enum HeroClass {
             case DUELIST:
                 return Badges.isUnlocked(Badges.Badge.UNLOCK_DUELIST);
             case CLERIC:
+                return Badges.isUnlocked(Badges.Badge.UNLOCK_CLERIC);
+            case JOHNNY:
                 return Badges.isUnlocked(Badges.Badge.UNLOCK_CLERIC);
         }
     }

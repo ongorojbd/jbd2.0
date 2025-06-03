@@ -153,23 +153,6 @@ public class Imp extends NPC {
     }
 
     public void flee() {
-
-        if (Badges.isUnlocked(Badges.Badge.VICTORY)) {
-
-            if (Random.Int(2) == 0) {
-                switch (Random.Int(2)) {
-                    case 0:
-                        Item a = new Bmap();
-                        Dungeon.level.drop(a, this.pos).sprite.drop();
-                        break;
-                    case 1:
-                        Item b = new Gmap();
-                        Dungeon.level.drop(b, this.pos).sprite.drop();
-                        break;
-                }
-            }
-        }
-
         yell(Messages.get(this, "cya", Messages.titleCase(Dungeon.hero.name())));
         Sample.INSTANCE.play(Assets.Sounds.DARBY);
         destroy();

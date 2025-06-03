@@ -79,13 +79,13 @@ public class SeedFinder {
                 if (((i instanceof Armor && ((Armor) i).hasGoodGlyph()) ||
                         (i instanceof Weapon && ((Weapon) i).hasGoodEnchant()) ||
                         (i instanceof Ring) || (i instanceof Wand)) && i.cursed)
-                    builder.append("- 저주받은 ").append(i.title().toLowerCase());
+                    builder.append("- 저주받은 ").append(i.title());
 
                 else
-                    builder.append("- ").append(i.title().toLowerCase());
+                    builder.append("- ").append(i.title());
 
                 if (h.type != Type.HEAP)
-                    builder.append(" (").append(h.title().toLowerCase()).append(")");
+                    builder.append(" (").append(h.title()).append(")");
 
                 builder.append("\n");
             }
@@ -241,7 +241,7 @@ public class SeedFinder {
 
             if(Ghost.Quest.armor != null){
                 for (int j = 0; j < itemList.size(); j++) {
-                    if (Ghost.Quest.armor.identify().title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ",""))) {
+                    if (Ghost.Quest.armor.identify().title().toUpperCase().replaceAll(" ","").contains(itemList.get(j).toUpperCase().replaceAll(" ",""))) {
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
@@ -251,23 +251,23 @@ public class SeedFinder {
             }
             if(Wandmaker.Quest.wand1 != null){
                 for (int j = 0; j < itemList.size(); j++) {
-                    if (Wandmaker.Quest.wand1.identify().title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ","")) || Wandmaker.Quest.wand2.identify().title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ",""))) {
+                    if (Wandmaker.Quest.wand1.identify().title().toUpperCase().replaceAll(" ","").contains(itemList.get(j).toUpperCase().replaceAll(" ","")) || Wandmaker.Quest.wand2.identify().title().toUpperCase().replaceAll(" ","").contains(itemList.get(j).toUpperCase().replaceAll(" ",""))) {
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
                         }
                     }
-                    if(Wandmaker.Quest.type == 1 && "서바이버".contains(itemList.get(j).replaceAll(" ",""))){
+                    if(Wandmaker.Quest.type == 1 && "서바이버".toUpperCase().contains(itemList.get(j).toUpperCase().replaceAll(" ",""))){
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
                         }
-                    }else if(Wandmaker.Quest.type == 2 && "킬러 퀸의 DISC".contains(itemList.get(j).replaceAll(" ",""))){
+                    }else if(Wandmaker.Quest.type == 2 && "킬러 퀸의 DISC".toUpperCase().contains(itemList.get(j).toUpperCase().replaceAll(" ",""))){
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
                         }
-                    }else if(Wandmaker.Quest.type == 3 && "스트레이 캣의 씨앗".contains(itemList.get(j).replaceAll(" ",""))){
+                    }else if(Wandmaker.Quest.type == 3 && "스트레이 캣의 씨앗".toUpperCase().contains(itemList.get(j).toUpperCase().replaceAll(" ",""))){
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
@@ -277,7 +277,7 @@ public class SeedFinder {
             }
             if(Imp.Quest.reward != null){
                 for (int j = 0; j < itemList.size(); j++) {
-                    if (Imp.Quest.reward.identify().title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ",""))) {
+                    if (Imp.Quest.reward.identify().title().toUpperCase().replaceAll(" ","").contains(itemList.get(j).toUpperCase().replaceAll(" ",""))) {
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
@@ -291,7 +291,7 @@ public class SeedFinder {
                     item.identify();
 
                     for (int j = 0; j < itemList.size(); j++) {
-                        if (item.title().toLowerCase().replaceAll(" ","").contains(itemList.get(j).replaceAll(" ",""))) {
+                        if (item.title().toUpperCase().replaceAll(" ","").contains(itemList.get(j).toUpperCase().replaceAll(" ",""))) {
                             if (itemsFound[j] == false) {
                                 itemsFound[j] = true;
                                 break;
@@ -338,12 +338,14 @@ public class SeedFinder {
                 String wantingItem = itemList.get(j);
                 boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
                 if(precise){
-                    wantingItem = wantingItem.replaceAll("\"","");
+                    wantingItem = wantingItem.replaceAll("\"","").toUpperCase();
                 }else{
-                    wantingItem = wantingItem.replaceAll(" ", "");
+                    wantingItem = wantingItem.replaceAll(" ", "").toUpperCase();
                 }
-                if (!precise && trinkets.get(k).item.title().replaceAll(" ","").contains(wantingItem) ||
-                        precise && trinkets.get(k).item.title().equals(wantingItem)) {
+
+                String trinketTitle = trinkets.get(k).item.title().toUpperCase();
+                if (!precise && trinketTitle.replaceAll(" ","").contains(wantingItem) ||
+                        precise && trinketTitle.equals(wantingItem)) {
                     if (!itemsFound[j]) {
                         itemsFound[j] = true;
                         break;
@@ -363,11 +365,14 @@ public class SeedFinder {
                     String wantingItem = itemList.get(j);
                     boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
                     if(precise){
-                        wantingItem = wantingItem.replaceAll("\"","");
+                        wantingItem = wantingItem.replaceAll("\"","").toUpperCase();
                     }else{
-                        wantingItem = wantingItem.replaceAll(" ", "");
+                        wantingItem = wantingItem.replaceAll(" ", "").toUpperCase();
                     }
-                    if (!precise&&Ghost.Quest.armor.identify().title().toLowerCase().replaceAll(" ","").contains(wantingItem) || precise&& Ghost.Quest.armor.identify().title().toLowerCase().equals(wantingItem)) {
+
+                    String armorTitle = Ghost.Quest.armor.identify().title().toUpperCase();
+                    if (!precise && armorTitle.replaceAll(" ","").contains(wantingItem) ||
+                            precise && armorTitle.equals(wantingItem)) {
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
@@ -378,11 +383,11 @@ public class SeedFinder {
             if(Wandmaker.Quest.wand1 != null){
                 for (int j = 0; j < itemList.size(); j++) {
                     String wantingItem = itemList.get(j);
-                    String wand1 = Wandmaker.Quest.wand1.identify().title().toLowerCase();
-                    String wand2 = Wandmaker.Quest.wand2.identify().title().toLowerCase();
+                    String wand1 = Wandmaker.Quest.wand1.identify().title().toUpperCase();
+                    String wand2 = Wandmaker.Quest.wand2.identify().title().toUpperCase();
                     boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
                     if(precise){
-                        wantingItem = wantingItem.replaceAll("\"","");
+                        wantingItem = wantingItem.replaceAll("\"","").toUpperCase();
                         if (wand1.equals(wantingItem) || wand2.equals(wantingItem)) {
                             if (itemsFound[j] == false) {
                                 itemsFound[j] = true;
@@ -390,7 +395,7 @@ public class SeedFinder {
                             }
                         }
                     }else{
-                        wantingItem = wantingItem.replaceAll(" ", "");
+                        wantingItem = wantingItem.replaceAll(" ", "").toUpperCase();
                         wand1 = wand1.replaceAll(" ","");
                         wand2 = wand2.replaceAll(" ","");
                         if (wand1.contains(wantingItem) || wand2.contains(wantingItem)) {
@@ -400,17 +405,19 @@ public class SeedFinder {
                             }
                         }
                     }
-                    if(Wandmaker.Quest.type == 1 && "서바이버".contains(wantingItem.replaceAll(" ",""))){
+
+                    String lowerWantingItem = wantingItem.toUpperCase().replaceAll(" ","");
+                    if(Wandmaker.Quest.type == 1 && "서바이버".toUpperCase().contains(lowerWantingItem)){
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
                         }
-                    }else if(Wandmaker.Quest.type == 2 && "킬러 퀸의 DISC".contains(wantingItem.replaceAll(" ",""))){
+                    }else if(Wandmaker.Quest.type == 2 && "킬러 퀸의 DISC".toUpperCase().contains(lowerWantingItem)){
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
                         }
-                    }else if(Wandmaker.Quest.type == 3 && "스트레이 캣의 씨앗".contains(wantingItem.replaceAll(" ",""))){
+                    }else if(Wandmaker.Quest.type == 3 && "스트레이 캣의 씨앗".toUpperCase().contains(lowerWantingItem)){
                         if (itemsFound[j] == false) {
                             itemsFound[j] = true;
                             break;
@@ -422,13 +429,22 @@ public class SeedFinder {
                 for (int j = 0; j < itemList.size(); j++) {
                     String wantingItem = itemList.get(j);
                     boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
-                    String ring = Imp.Quest.reward.identify().title().toLowerCase();
-                    if (!precise&&ring.replaceAll(" ","").contains(wantingItem.replaceAll(" ",""))
-                            ||
-                            precise&& ring.equals(wantingItem)) {
-                        if (itemsFound[j] == false) {
-                            itemsFound[j] = true;
-                            break;
+                    String ring = Imp.Quest.reward.identify().title().toUpperCase();
+                    if(precise){
+                        wantingItem = wantingItem.replaceAll("\"","").toUpperCase();
+                        if (ring.equals(wantingItem)) {
+                            if (itemsFound[j] == false) {
+                                itemsFound[j] = true;
+                                break;
+                            }
+                        }
+                    }else{
+                        wantingItem = wantingItem.replaceAll(" ", "").toUpperCase();
+                        if (ring.replaceAll(" ","").contains(wantingItem)) {
+                            if (itemsFound[j] == false) {
+                                itemsFound[j] = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -437,16 +453,26 @@ public class SeedFinder {
             for (Heap h : heaps) {
                 for (Item item : h.items) {
                     item.identify();
-                    String itemName = item.title().toLowerCase();
+                    String itemName = item.title().toUpperCase();
 
                     for (int j = 0; j < itemList.size(); j++) {
                         String wantingItem = itemList.get(j);
                         boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
-                        if (!precise&&itemName.replaceAll(" ","").contains(wantingItem.replaceAll(" ",""))
-                                || precise&& itemName.equals(wantingItem.replaceAll("\"", ""))) {
-                            if (itemsFound[j] == false) {
-                                itemsFound[j] = true;
-                                break;
+                        if(precise){
+                            wantingItem = wantingItem.replaceAll("\"", "").toUpperCase();
+                            if (itemName.equals(wantingItem)) {
+                                if (itemsFound[j] == false) {
+                                    itemsFound[j] = true;
+                                    break;
+                                }
+                            }
+                        }else{
+                            wantingItem = wantingItem.replaceAll(" ", "").toUpperCase();
+                            if (itemName.replaceAll(" ","").contains(wantingItem)) {
+                                if (itemsFound[j] == false) {
+                                    itemsFound[j] = true;
+                                    break;
+                                }
                             }
                         }
                     }
