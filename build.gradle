@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.1'
+        classpath 'com.android.tools.build:gradle:8.9.1'
     }
 }
 
@@ -17,12 +17,12 @@ allprojects {
         appName = '죠죠의 기묘한 던전'
         appPackageName = 'com.shatteredpixel.shatteredpixeldungeon7'
 
-        appVersionCode = 867
-        appVersionName = '3.0a'
+        appVersionCode = 868
+        appVersionName = '3.0b'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
-        appAndroidCompileSDK = 34
+        appAndroidCompileSDK = 35
         appAndroidMinSDK = 14
         appAndroidTargetSDK = 34
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.ViewConfiguration;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
@@ -44,15 +48,16 @@ import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
+import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
 public class AndroidLauncher extends AndroidApplication {
-
+	
 	public static AndroidApplication instance;
-
+	
 	private static AndroidPlatformSupport support;
-
+	
 	@SuppressLint("SetTextI18n")
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -85,6 +90,7 @@ public class AndroidLauncher extends AndroidApplication {
 				Game.versionCode = 0;
 			}
 
+			Gdx.app = this;
 			if (UpdateImpl.supportsUpdates()) {
 				Updates.service = UpdateImpl.getUpdateService();
 			}
@@ -104,13 +110,25 @@ public class AndroidLauncher extends AndroidApplication {
 			instance = this;
 		}
 
+		//Shattered still overrides the back gesture behaviour, but we need to do it in a new way
+		// (API added in Android 13, functionality enforced in Android 16)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new OnBackInvokedCallback() {
+				@Override
+				public void onBackInvoked() {
+					KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true));
+					KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false));
+				}
+			});
+		}
+
 		//set desired orientation (if it exists) before initializing the app.
 		if (SPDSettings.landscape() != null) {
 			instance.setRequestedOrientation( SPDSettings.landscape() ?
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT );
 		}
-
+		
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.depth = 0;
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
@@ -122,19 +140,19 @@ public class AndroidLauncher extends AndroidApplication {
 
 		//we manage this ourselves
 		config.useImmersiveMode = false;
-
+		
 		config.useCompass = false;
 		config.useAccelerometer = false;
-
+		
 		if (support == null) support = new AndroidPlatformSupport();
 		else                 support.reloadGenerators();
-
+		
 		support.updateSystemUI();
 
 		Button.longClick = ViewConfiguration.getLongPressTimeout()/1000f;
-
+		
 		initialize(new ShatteredPixelDungeon(support), config);
-
+		
 	}
 
 	@Override
@@ -165,7 +183,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onWindowFocusChanged(hasFocus);
 		support.updateSystemUI();
 	}
-
+	
 	@Override
 	public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
 		super.onMultiWindowModeChanged(isInMultiWindowMode);
