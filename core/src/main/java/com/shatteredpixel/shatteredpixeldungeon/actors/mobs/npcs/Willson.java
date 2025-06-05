@@ -185,7 +185,7 @@ public class Willson extends NPC {
     }
 
     public static void spawn(HallsLevel level) {
-        if (Dungeon.depth == 22 && !Dungeon.bossLevel()) {
+        if (Dungeon.depth == 22 && !Dungeon.bossLevel() && Badges.isUnlocked(Badges.Badge.VICTORY)) {
 
             Willson npc = new Willson();
             do {

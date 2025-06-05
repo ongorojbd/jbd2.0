@@ -48,6 +48,13 @@ public class ChaosSword extends MeleeWeapon {
     }
 
     @Override
+    public boolean doEquip(Hero hero) {
+        identify();
+        super.doEquip(hero);
+        return true;
+    }
+
+    @Override
     public ItemSprite.Glowing glowing() {
         return new ItemSprite.Glowing(0x000000, 1f);
     }

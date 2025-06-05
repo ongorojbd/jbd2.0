@@ -179,7 +179,7 @@ public class EntranceRoom extends StandardRoom {
 
 		chances[21] = new float[]{0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 4,3,2,1};
 		chances[31] = chances[30] = chances[29] = chances[28] = chances[27] = chances[26] = chances[25] = chances[24] = chances[23] = chances[22] = chances[21];
-		
+
 	}
 
 	public static StandardRoom createEntrance(){

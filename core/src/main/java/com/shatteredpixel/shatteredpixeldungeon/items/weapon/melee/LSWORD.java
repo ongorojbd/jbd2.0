@@ -41,6 +41,13 @@ public class LSWORD extends MeleeWeapon {
     }
 
     @Override
+    public boolean doEquip(Hero hero) {
+        identify();
+        super.doEquip(hero);
+        return true;
+    }
+
+    @Override
     public int max(int lvl) {
         return  4*(tier) + 2 +  //18durable_projectiles + 4
                 lvl*(tier); }

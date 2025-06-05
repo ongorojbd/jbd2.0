@@ -73,8 +73,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -747,7 +751,25 @@ public enum Talent {
             if (!toGive.collect()) {
                 Dungeon.level.drop(toGive, hero.pos).sprite.drop();
             }
-            toGive = new Gloves().identify();
+
+            switch (Random.Int(5)) {
+                case 0:
+                    toGive = new WornShortsword().identify();
+                    break;
+                case 1:
+                    toGive = new Dagger().identify();
+                    break;
+                case 2:
+                    toGive = new Rapier().identify();
+                    break;
+                case 3:
+                    toGive = new Gloves().identify();
+                    break;
+                case 4:
+                    toGive = new Cudgel().identify();
+                    break;
+            }
+
             if (!toGive.collect()) {
                 Dungeon.level.drop(toGive, hero.pos).sprite.drop();
             }

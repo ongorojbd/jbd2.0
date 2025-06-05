@@ -51,8 +51,12 @@ public class AJA extends MeleeWeapon {
         DLY = 1f;
     }
 
-
-    // 0, 1, 2
+    @Override
+    public boolean doEquip(Hero hero) {
+        identify();
+        super.doEquip(hero);
+        return true;
+    }
 
     @Override
     public int max(int lvl) {

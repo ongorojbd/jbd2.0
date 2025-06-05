@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CreamTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlockTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GatewayTrap;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.OozeTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ShockingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
@@ -206,7 +207,31 @@ public class SewerLevel extends RegularLevel {
         return visuals;
     }
 
-    public static void addSewerVisuals(Level level, Group group) {
+	@Override
+	public void buildFlagMaps() {
+		super.buildFlagMaps();
+		for (int i=0; i < length(); i++) {
+			if (map[i] == Terrain.REGION_DECO || map[i] == Terrain.REGION_DECO_ALT){
+				flamable[i] = true;
+			}
+		}
+	}
+
+	@Override
+	public void destroy(int pos) {
+		//if we're burning  sewers barrels
+		int terr = map[pos];
+		if (terr == Terrain.REGION_DECO){
+			set(pos, Terrain.WATER);
+			Splash.at(pos, 0xFF507B5D, 10);
+		} else if (terr == Terrain.REGION_DECO_ALT){
+			set(pos, Terrain.EMPTY_SP);
+			Splash.at(pos, 0xFF507B5D, 10);
+		}
+		super.destroy(pos);
+	}
+
+	public static void addSewerVisuals(Level level, Group group ) {
         for (int i = 0; i < level.length(); i++) {
             if (level.map[i] == Terrain.WALL_DECO) {
                 group.add(new Sink(i));
@@ -219,6 +244,9 @@ public class SewerLevel extends RegularLevel {
         switch (tile) {
             case Terrain.WATER:
                 return Messages.get(SewerLevel.class, "water_name");
+			case Terrain.REGION_DECO:
+			case Terrain.REGION_DECO_ALT:
+				return Messages.get(SewerLevel.class, "region_deco_name");
             default:
                 return super.tileName(tile);
         }
@@ -231,6 +259,9 @@ public class SewerLevel extends RegularLevel {
                 return Messages.get(SewerLevel.class, "empty_deco_desc");
             case Terrain.BOOKSHELF:
                 return Messages.get(SewerLevel.class, "bookshelf_desc");
+			case Terrain.REGION_DECO:
+			case Terrain.REGION_DECO_ALT:
+				return Messages.get(SewerLevel.class, "region_deco_desc");
             default:
                 return super.tileDesc(tile);
         }

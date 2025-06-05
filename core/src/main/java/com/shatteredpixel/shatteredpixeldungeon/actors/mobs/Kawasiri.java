@@ -80,6 +80,7 @@ public class Kawasiri extends Mob {
         immunities.add(Vertigo.class);
         properties.add(Property.INORGANIC);
         properties.add(Property.BOSS);
+        properties.add(Property.IMMOVABLE);
         immunities.add(ShrGas.class);
         immunities.add(Grim.class);
         immunities.add(Dread.class);

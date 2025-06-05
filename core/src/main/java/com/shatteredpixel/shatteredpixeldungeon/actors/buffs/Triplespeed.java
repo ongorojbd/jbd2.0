@@ -36,7 +36,7 @@ public class Triplespeed extends FlavourBuff {
 
     @Override
     public void fx(boolean on) {
-        if (on) target.sprite.aura( 0x00FFFF );
+        if (on) target.sprite.aura( 0x00FFFF, 4 );
         else target.sprite.clearAura();
     }
 

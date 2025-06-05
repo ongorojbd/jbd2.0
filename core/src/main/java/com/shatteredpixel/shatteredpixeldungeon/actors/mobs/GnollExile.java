@@ -22,15 +22,23 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollExileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -71,6 +79,17 @@ public class GnollExile extends Gnoll {
 	}
 
 	@Override
+	public int attackProc( Char enemy, int damage ) {
+		damage = super.attackProc( enemy, damage );
+
+		CellEmitter.get(hero.pos).burst(Speck.factory(Speck.ROCK), 10);
+		Sample.INSTANCE.play(Assets.Sounds.BLAST);
+
+		return damage;
+	}
+
+
+	@Override
 	protected boolean canAttack( Char enemy ) {
 		if (Dungeon.level.adjacent( pos, enemy.pos )){
 			return true;
@@ -98,7 +117,7 @@ public class GnollExile extends Gnoll {
 	public void rollToDropLoot() {
 		super.rollToDropLoot();
 
-		if (Dungeon.hero.lvl > maxLvl + 2) return;
+		if (hero.lvl > maxLvl + 2) return;
 
 		//drops 2 or 3 random items
 		ArrayList<Item> items = new ArrayList<>();
@@ -153,7 +172,7 @@ public class GnollExile extends Gnoll {
 				}
 			}
 
-			if (fieldOfView[Dungeon.hero.pos] && Dungeon.level.heroFOV[pos]){
+			if (fieldOfView[hero.pos] && Dungeon.level.heroFOV[pos]){
 				if (seenNotifyCooldown <= 0){
 					GLog.p(Messages.get(GnollExile.class, "seen_passive"));
 				}

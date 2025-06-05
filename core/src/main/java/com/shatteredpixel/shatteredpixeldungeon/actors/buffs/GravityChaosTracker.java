@@ -48,7 +48,7 @@ public class GravityChaosTracker extends Buff {
 
 	@Override
 	public int icon() {
-		return BuffIndicator.VERTIGO;
+		return BuffIndicator.AMOK;
 	}
 
 	@Override

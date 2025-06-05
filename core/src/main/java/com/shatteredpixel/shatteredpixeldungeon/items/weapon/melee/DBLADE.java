@@ -42,6 +42,13 @@ public class DBLADE extends MeleeWeapon {
         DLY = 0.8f;//1.25x speed
     }
 
+    @Override
+    public boolean doEquip(Hero hero) {
+        identify();
+        super.doEquip(hero);
+        return true;
+    }
+
     private boolean doubleattack = true;
 
 

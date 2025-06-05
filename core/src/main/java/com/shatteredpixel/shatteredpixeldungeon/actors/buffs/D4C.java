@@ -40,7 +40,7 @@ public class D4C extends Buff {
 
     @Override
     public void fx(boolean on) {
-        if (on) target.sprite.aura( 0xFF9900 );
+        if (on) target.sprite.aura( 0xFF9900, 4 );
         else target.sprite.clearAura();
     }
 

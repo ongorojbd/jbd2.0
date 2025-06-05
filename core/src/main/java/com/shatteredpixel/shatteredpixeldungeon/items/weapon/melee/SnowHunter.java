@@ -36,6 +36,13 @@ public class SnowHunter extends MeleeWeapon{
         RCH = 3;    //extra reach
     }
 
+    @Override
+    public boolean doEquip(Hero hero) {
+        identify();
+        super.doEquip(hero);
+        return true;
+    }
+
     private boolean swiching = false;
 
     @Override

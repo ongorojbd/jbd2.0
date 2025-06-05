@@ -596,6 +596,7 @@ public class ItemSpriteSheet {
     public static final int BLOOD_VIAL = TRINKETS + 12;
     public static final int OBLIVION_SHARD = TRINKETS + 13;
     public static final int CHAOTIC_CENSER = TRINKETS + 14;
+    public static final int FERRET_TUFT = TRINKETS+15;
     public static final int TBOMB = TRINKETS + 17;
     public static final int TBOMB2 = TRINKETS + 18;
 
@@ -615,6 +616,7 @@ public class ItemSpriteSheet {
         assignItemRect(BLOOD_VIAL, 14, 14);
         assignItemRect(OBLIVION_SHARD, 15, 11);
         assignItemRect(CHAOTIC_CENSER, 15, 15);
+        assignItemRect(FERRET_TUFT, 11, 16);
         assignItemRect(TBOMB, 12, 11);
         assignItemRect(TBOMB2, 15, 14);
     }

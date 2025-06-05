@@ -143,6 +143,8 @@ public class KSG extends MeleeWeapon {
 
         if (action.equals(AC_SHOOT)) {
 
+            identify();
+
             {
                 if (round <= 0) {
                     reload_time = 1f;

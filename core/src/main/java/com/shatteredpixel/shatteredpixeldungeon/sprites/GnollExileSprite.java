@@ -29,25 +29,25 @@ public class GnollExileSprite extends MobSprite {
 	public GnollExileSprite() {
 		super();
 
-		texture( Assets.Sprites.GNOLL );
+		texture( Assets.Sprites.GNOLL_EXILE );
 
-		TextureFilm frames = new TextureFilm( texture, 12, 15 );
-
-		int c = 21;
+		TextureFilm frames = new TextureFilm( texture, 29, 22 );
 
 		idle = new Animation( 2, true );
-		idle.frames( frames, 0+c, 0+c, 0+c, 1+c, 0+c, 0+c, 1+c, 1+c );
+		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
-		run = new Animation( 12, true );
-		run.frames( frames, 4+c, 5+c, 6+c, 7+c );
+		run = new Animation( 9, true );
+		run.frames( frames, 0, 2, 0, 0, 3);
 
 		attack = new Animation( 12, false );
-		attack.frames( frames, 2+c, 3+c, 0+c );
+		attack.frames( frames, 4, 5, 6, 0 );
 
 		die = new Animation( 12, false );
-		die.frames( frames, 8+c, 9+c, 10+c );
+		die.frames( frames, 7, 8, 9, 10, 11 );
 
 		play( idle );
+
+		scale.set(0.6f);
 	}
 
 }

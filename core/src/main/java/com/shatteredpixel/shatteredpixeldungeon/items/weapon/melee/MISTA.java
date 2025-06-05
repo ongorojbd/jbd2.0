@@ -71,6 +71,13 @@ public class MISTA extends MeleeWeapon {
         RCH = 3;    //lots of extra reach
     }
 
+    @Override
+    public boolean doEquip(Hero hero) {
+        identify();
+        super.doEquip(hero);
+        return true;
+    }
+
     private int HealCount = 0;
 
     @Override

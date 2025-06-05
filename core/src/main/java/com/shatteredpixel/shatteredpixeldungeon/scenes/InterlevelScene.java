@@ -40,8 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -346,7 +345,7 @@ public class InterlevelScene extends PixelScene {
                 add(storyBG);
                 add(storyMessage);
 
-                btnContinue = new StyledButton(Chrome.Type.TOAST_TR, Messages.get(InterlevelScene.class, "continue"), 9){
+                btnContinue = new StyledButton(Chrome.Type.TOAST_TR, Messages.get(InterlevelScene.class, "continue"), 9) {
                     @Override
                     protected void onClick() {
                         phase = Phase.FADE_OUT;
@@ -657,8 +656,8 @@ public class InterlevelScene extends PixelScene {
                     //the randomization is effectively -2 to +2
                     // we don't use the generator stack as levelgen may be occurring
                     // and we don't want to accidentally use a seeded generator
-                    (Camera.main.width - loadingText.width() - 4) + 4*(Random.Float(false)-0.5f),
-                    (Camera.main.height - loadingText.height() - 6) + 4*(Random.Float(false)-0.5f)
+                    (Camera.main.width - loadingText.width() - 4) + 4 * (Random.Float(false) - 0.5f),
+                    (Camera.main.height - loadingText.height() - 6) + 4 * (Random.Float(false) - 0.5f)
             );
             align(loadingText);
         }
@@ -845,6 +844,7 @@ public class InterlevelScene extends PixelScene {
             Dungeon.hero.resurrect();
             level.drop(new LostBackpack(), invPos);
         }
+        Notes.add(Notes.Landmark.LOST_PACK);
 
         Dungeon.switchLevel(level, Dungeon.hero.pos);
     }

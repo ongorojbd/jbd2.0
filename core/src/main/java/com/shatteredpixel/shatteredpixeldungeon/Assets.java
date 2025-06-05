@@ -555,6 +555,8 @@ public class Assets {
         public static final String GNOLL_GUARD = "sprites/gnoll_guard.png";
         public static final String GNOLL_SAPPER = "sprites/gnoll_sapper.png";
         public static final String GNOLL_GEOMANCER = "sprites/gnoll_geomancer.png";
+        public static final String GNOLL_EXILE = "sprites/gnoll_exile.png";
+        public static final String HERMIT = "sprites/hermit.png";
         public static final String FUNGAL_SPINNER = "sprites/fungal_spinner.png";
         public static final String FUNGAL_SENTRY = "sprites/fungal_sentry.png";
         public static final String FUNGAL_CORE = "sprites/fungal_core.png";

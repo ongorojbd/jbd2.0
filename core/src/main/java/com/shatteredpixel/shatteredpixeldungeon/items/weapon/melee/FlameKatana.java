@@ -25,6 +25,13 @@ public class FlameKatana extends MeleeWeapon {
         tier = 2;
     }
 
+    @Override
+    public boolean doEquip(Hero hero) {
+        identify();
+        super.doEquip(hero);
+        return true;
+    }
+
     private int killpoint = 0;
 
     @Override
