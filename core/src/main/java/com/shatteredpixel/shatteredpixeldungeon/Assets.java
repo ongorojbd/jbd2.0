@@ -342,11 +342,15 @@ public class Assets {
         public static final String WOU2 = "sounds/wou2.mp3";
         public static final String K1 = "sounds/k1.mp3";
         public static final String K2 = "sounds/k2.mp3";
-
         public static final String K3 = "sounds/k3.mp3";
         public static final String JONATHAN1 = "sounds/jonathan1.mp3";
         public static final String JONATHAN2 = "sounds/jonathan2.mp3";
         public static final String JONATHAN3 = "sounds/jonathan3.mp3";
+        public static final String JONATHAN4 = "sounds/jonathan4.mp3";
+        public static final String JONATHAN5 = "sounds/jonathan5.mp3";
+        public static final String JONATHAN6 = "sounds/jonathan6.mp3";
+        public static final String JONATHAN7 = "sounds/jonathan7.mp3";
+        public static final String JONATHAN8 = "sounds/jonathan8.mp3";
         public static final String JONNY = "sounds/jonny.mp3";
         public static final String JONNY2 = "sounds/jonny2.mp3";
         public static final String JONNY3 = "sounds/jonny3.mp3";
@@ -428,7 +432,7 @@ public class Assets {
                 TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
                 BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
                 HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, NANIDI, D1, D2, DIEGO, DIEGO2,
-                JONATHAN1, JONATHAN2, JONATHAN3,
+                JONATHAN1, JONATHAN2, JONATHAN3, JONATHAN4, JONATHAN5, JONATHAN6, JONATHAN7, JONATHAN8,
                 JOSEPH, JOSEPH0, JOSEPH1, JOSEPH2, JOSEPH3, JOSEPH4, JOSEPH5, JOSEPH6, JOSEPH7, JOSEPH8,
                 CE1, CE2, CE3, CE4, CE5, CE6, TENDENCY1, TENDENCY2, TENDENCY3,
                 JOSUKE0, JOSUKE1, JOSUKE2, JOSUKE3, JOSUKE4, JOSUKE5,

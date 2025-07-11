@@ -73,6 +73,8 @@ public class Sleepcmoon extends Item {
     public void execute(final Hero hero, String action) {
         super.execute(hero, action);
 
+        identify();
+
         Sleepcmoon pick = Dungeon.hero.belongings.getItem(Sleepcmoon.class);
         if (action.equals(AC_LIGHT)) {
             if (Dungeon.depth > 20) {

@@ -116,8 +116,7 @@ public enum HeroClass {
     ROGUE(HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER),
     DUELIST(HeroSubClass.CHAMPION, HeroSubClass.MONK),
     HUNTRESS(HeroSubClass.SNIPER, HeroSubClass.WARDEN),
-    CLERIC(HeroSubClass.PRIEST, HeroSubClass.PALADIN),
-    JOHNNY(HeroSubClass.PRIEST, HeroSubClass.PALADIN);
+    CLERIC(HeroSubClass.PRIEST, HeroSubClass.PALADIN);
 
     private HeroSubClass[] subClasses;
 
@@ -189,10 +188,6 @@ public enum HeroClass {
             case CLERIC:
                 initCleric(hero);
                 break;
-
-            case JOHNNY:
-                initJohnny(hero);
-                break;
         }
 
         if (SPDSettings.quickslotWaterskin()) {
@@ -219,8 +214,6 @@ public enum HeroClass {
             case DUELIST:
                 return Badges.Badge.MASTERY_DUELIST;
             case CLERIC:
-                return Badges.Badge.MASTERY_CLERIC;
-            case JOHNNY:
                 return Badges.Badge.MASTERY_CLERIC;
         }
         return null;
@@ -454,8 +447,6 @@ public enum HeroClass {
                 return new ArmorAbility[]{new Feint(), new Challenge(), new ElementalStrike()};
             case CLERIC:
                 return new ArmorAbility[]{new AscendedForm(), new Trinity(), new PowerOfMany()};
-            case JOHNNY:
-                return new ArmorAbility[]{new AscendedForm(), new Trinity(), new PowerOfMany()};
         }
     }
 
@@ -486,10 +477,6 @@ public enum HeroClass {
                 if (SPDSettings.getSkin6() == 1) {
                     return Assets.Sprites.CLERIC2;
                 } else return Assets.Sprites.CLERIC;
-            case JOHNNY:
-                if (SPDSettings.getSkin6() == 1) {
-                    return Assets.Sprites.CLERIC2;
-                } else return Assets.Sprites.WARRIOR2;
         }
     }
 
@@ -530,11 +517,6 @@ public enum HeroClass {
                 if (SPDSettings.getDio() >= 1) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.CLERIC;
-            case JOHNNY:
-
-                if (SPDSettings.getDio() >= 1) {
-                    return Assets.Splashes.BRANDO;
-                } else return Assets.Splashes.WARRIOR;
         }
     }
 
@@ -555,8 +537,6 @@ public enum HeroClass {
             case DUELIST:
                 return Badges.isUnlocked(Badges.Badge.UNLOCK_DUELIST);
             case CLERIC:
-                return Badges.isUnlocked(Badges.Badge.UNLOCK_CLERIC);
-            case JOHNNY:
                 return Badges.isUnlocked(Badges.Badge.UNLOCK_CLERIC);
         }
     }

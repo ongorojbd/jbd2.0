@@ -59,6 +59,10 @@ public class Challenges {
 			EOH, STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS, CHAMPION_ENEMIES, GAMBLER
 	};
 
+	public static double secondsPerTurn() {
+		return 2;
+	}
+
 	public static int activeChallenges(){
 		int chCount = 0;
 		for (int ch : Challenges.MASKS){

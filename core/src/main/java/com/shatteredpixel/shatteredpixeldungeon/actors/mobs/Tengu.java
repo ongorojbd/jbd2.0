@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
@@ -97,11 +96,7 @@ import java.util.HashSet;
 public class Tengu extends Mob {
 
 	{
-		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-			spriteClass = DoppioSprite.class;
-		} else {
-			spriteClass = TenguSprite.class;
-		}
+		spriteClass = TenguSprite.class;
 
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 250 : 200;
 		EXP = 20;
@@ -343,7 +338,6 @@ public class Tengu extends Mob {
 				if (level.heroFOV[newPos]) CellEmitter.get( newPos ).burst( Speck.factory( Speck.WOOL ), 6 );
 
 				Sample.INSTANCE.play( Assets.Sounds.DIAVOLO1 );
-
 				GameScene.flash( 0xCC3366 );
 
 			}
@@ -360,9 +354,9 @@ public class Tengu extends Mob {
 			move( newPos );
 
 			if (level.heroFOV[newPos]) CellEmitter.get( newPos ).burst( Speck.factory( Speck.WOOL ), 6 );
+
 			Sample.INSTANCE.play( Assets.Sounds.DIAVOLO1 );
 			GameScene.flash( 0xCC3366 );
-
 		}
 
 	}
@@ -469,6 +463,7 @@ public class Tengu extends Mob {
 		}
 	}
 
+
 	{
 		immunities.add( Roots.class );
 		immunities.add( Blindness.class );
@@ -519,7 +514,6 @@ public class Tengu extends Mob {
 
 				recentlyAttackedBy.clear();
 				target = enemy.pos;
-
 				return doAttack( enemy );
 
 			} else {
@@ -536,7 +530,6 @@ public class Tengu extends Mob {
 						recursing = false;
 						return result;
 					}
-					target = enemy.pos;
 				}
 
 				//attempt to use an ability, even if enemy can't be decided
@@ -627,6 +620,8 @@ public class Tengu extends Mob {
 			} else {
 				abilityToUse = Random.Int(3);
 			}
+
+			//all abilities always target the hero, even if something else is taking Tengu's normal attacks
 
 			//If we roll the same ability as last time, 9/10 chance to reroll
 			if (abilityToUse != lastAbility || Random.Int(10) == 0){

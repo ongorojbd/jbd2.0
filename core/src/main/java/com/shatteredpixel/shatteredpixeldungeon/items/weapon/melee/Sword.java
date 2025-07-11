@@ -206,6 +206,27 @@ public class Sword extends MeleeWeapon {
 			}
 	}
 
+	public static void jonathanclass(){
+
+		switch (Random.Int( 5 )) {
+			case 0:
+				Sample.INSTANCE.play( Assets.Sounds.JONATHAN4);
+				break;
+			case 1:
+				Sample.INSTANCE.play( Assets.Sounds.JONATHAN5);
+				break;
+			case 2:
+				Sample.INSTANCE.play( Assets.Sounds.JONATHAN6);
+				break;
+			case 3:
+				Sample.INSTANCE.play( Assets.Sounds.JONATHAN7);
+				break;
+			case 4:
+				Sample.INSTANCE.play( Assets.Sounds.JONATHAN8);
+				break;
+		}
+	}
+
 	public static void jolyneslclass(){
 
 			switch (Random.Int( 4 )) {
@@ -244,16 +265,6 @@ public class Sword extends MeleeWeapon {
 				break;
 		}
 	}
-
-	public static void gclass(){
-
-		if (SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin4() == 1 && hero.belongings.armor() instanceof DuelistArmor) {
-
-		} else {
-			Sample.INSTANCE.play(Assets.Sounds.GUITAR);
-		}
-	}
-
 
 	public static void cleaveAbility(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){
 		if (target == null) {
