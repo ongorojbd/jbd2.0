@@ -52,8 +52,6 @@ public class WarHammer extends MeleeWeapon {
 	@Override
 	public int damageRoll(Char owner) {
 		if (owner instanceof Hero) {
-			Hero hero = (Hero) owner;
-			Char enemy = hero.enemy();
 			if (Dungeon.hero.belongings.weapon() instanceof WarHammer && (Random.Int(10) == 0)) {
 				Dungeon.energy += 1;
 			}

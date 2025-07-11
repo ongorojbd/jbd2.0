@@ -47,8 +47,6 @@ public class KeichoSprite extends MobSprite {
         die = new Animation( 12, false );
         die.frames( frames, 3, 4, 5, 6, 7);
 
-        scale.set(0.4f);
-
         play( idle );
     }
 

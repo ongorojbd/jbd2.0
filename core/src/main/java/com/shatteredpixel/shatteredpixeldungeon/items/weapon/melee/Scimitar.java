@@ -65,7 +65,7 @@ public class Scimitar extends MeleeWeapon {
 	public int damageRoll(Char owner) {
 		if (owner instanceof Hero) {
 			Hero hero = (Hero) owner;
-			Char enemy = hero.enemy();
+			Char enemy = hero.attackTarget();
 			if (Dungeon.hero.belongings.weapon() instanceof Scimitar && (Random.Int(33) == 0)) {
 
 				if (hero.belongings.getItem(RingOfArcana.class) != null) {

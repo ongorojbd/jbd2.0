@@ -65,7 +65,6 @@ public class Spheaven extends MeleeWeapon{
     public int damageRoll(Char owner) {
         if (owner instanceof Hero) {
             Hero hero = (Hero) owner;
-            Char enemy = hero.enemy();
             if (Dungeon.hero.belongings.weapon() instanceof Spheaven && (Random.Int(10) == 0)) {
                 Buff.prolong(owner, Haste.class, 3f);
                 Buff.prolong(owner, Bless.class, 3f);

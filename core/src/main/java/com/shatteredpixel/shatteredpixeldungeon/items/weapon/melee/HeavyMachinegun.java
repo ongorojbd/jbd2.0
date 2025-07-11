@@ -354,7 +354,6 @@ public class HeavyMachinegun extends MeleeWeapon {
         @Override
         public int damageRoll(Char owner) {
             Hero hero = (Hero) owner;
-            Char enemy = hero.enemy();
             int bulletdamage = Random.NormalIntRange(Bulletmin(HeavyMachinegun.this.buffedLvl()),
                     Bulletmax(HeavyMachinegun.this.buffedLvl()));
 

@@ -340,7 +340,6 @@ public class KSG extends MeleeWeapon {
         @Override
         public int damageRoll(Char owner) {
             Hero hero = (Hero) owner;
-            Char enemy = hero.enemy();
             int bulletdamage = Random.NormalIntRange(Bulletmin(KSG.this.buffedLvl()),
                     Bulletmax(KSG.this.buffedLvl()));
 

@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willg;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ScrollHolder extends Bag {
@@ -94,6 +95,7 @@ public class ScrollHolder extends Bag {
 		super.onDetach();
 		for (Item item : items) {
 			if (item instanceof BeaconOfReturning) {
+				Notes.remove(Notes.Landmark.BEACON_LOCATION, ((BeaconOfReturning) item).returnDepth);
 				((BeaconOfReturning) item).returnDepth = -1;
 			}
 		}

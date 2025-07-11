@@ -89,6 +89,7 @@ public class Diego extends Mob {
         immunities.add( ParalyticGas.class );
 
         properties.add(Property.BOSS);
+        properties.add(Property.IMMOVABLE);
     }
 
     private int charge = 0; // 2이 될경우 강화 사격
