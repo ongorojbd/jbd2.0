@@ -33,7 +33,7 @@ public class KeichoSprite extends MobSprite {
 
         texture( Assets.Sprites.KEICHO );
 
-        TextureFilm frames = new TextureFilm( texture, 40, 39 );
+        TextureFilm frames = new TextureFilm( texture, 11, 16 );
 
         idle = new Animation( 2, true );
         idle.frames( frames, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
@@ -45,7 +45,7 @@ public class KeichoSprite extends MobSprite {
         prep.frames( frames, 2, 2, 2, 2);
 
         die = new Animation( 12, false );
-        die.frames( frames, 3);
+        die.frames( frames, 3, 4, 5, 6, 7);
 
         scale.set(0.4f);
 
