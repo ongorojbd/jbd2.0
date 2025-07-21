@@ -33,11 +33,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscC;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
@@ -139,6 +141,11 @@ public class Act1 extends Mob {
         super.die( cause );
 
         if (Random.Int( 2 ) == 0) {
+
+            if (alignment == Alignment.ENEMY) {
+                GLog.p(Messages.get(Act1.class, "ally"));
+            }
+
             Sample.INSTANCE.play( Assets.Sounds.SHEEP );
             new Flare( 5, 32 ).color( 0xFFFF00, true ).show( this.sprite, 2f );
             Act2 Act2 = new Act2();

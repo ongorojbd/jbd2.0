@@ -71,6 +71,7 @@ public class SPDSettings extends GameSettings {
 	public static final String BRANDO = "brando";
 
 	public static final String JOJO = "jojo";
+	public static final String TENDENCY = "tendency";
 	public static final String SID = "sid";
 
 	// 특수 재화 관련
@@ -98,6 +99,9 @@ public class SPDSettings extends GameSettings {
 
 	public static void addJojo(int value) { put(JOJO, getInt(JOJO, 0) + value); }
 	public static int getJojo() { return getInt(JOJO, 0); }
+
+	public static void addTendency(int value) { put(TENDENCY, getInt(TENDENCY, 0) + value); }
+	public static int getTendency() { return getInt(TENDENCY, 0); }
 
 	public static void addSid(int value) { put(SID, getInt(SID, 0) + value); }
 	public static int getSid() { return getInt(SID, 0); }

@@ -62,7 +62,7 @@ public class ZombieTwo extends Mob {
     {
         spriteClass = Zombie2Sprite.class;
 
-        HP = HT = 4;
+        HP = HT = 8;
         defenseSkill = 2;
 
         maxLvl = 5;
@@ -117,14 +117,6 @@ public class ZombieTwo extends Mob {
     public void die( Object cause ) {
 
         super.die( cause );
-
-        if(Dungeon.level instanceof TendencyLevel) {
-            Statistics.duwang3++;
-
-            if (Statistics.duwang3 == Statistics.duwang2) {
-                spwPrize(pos);
-            }
-        }
 
         if (Random.Int( 10 ) == 0) Dungeon.level.drop( new Gold().quantity(10), pos ).sprite.drop();
 

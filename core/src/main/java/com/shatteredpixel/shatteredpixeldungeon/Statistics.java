@@ -90,6 +90,8 @@ public class Statistics {
     public static int cizah;
     public static int diocount;
     public static int zombiecount;
+    public static int polpocount;
+
     public static int wave;
 
     public static int manga;
@@ -102,6 +104,7 @@ public class Statistics {
     public static boolean amuletObtained = false;
     public static boolean gameWon = false;
     public static boolean ascended = false;
+    public static boolean polpoQuest = false;
     public static boolean diokilled = false;
 
     public static void reset() {
@@ -161,6 +164,7 @@ public class Statistics {
         cizah= 0;
         diocount = 0;
         zombiecount = 0;
+        polpocount = 0;
         wave = 1;
         manga = 0;
 
@@ -174,6 +178,7 @@ public class Statistics {
         gameWon = false;
         ascended = false;
         diokilled = false;
+        polpoQuest = false;
 
     }
 
@@ -212,6 +217,7 @@ public class Statistics {
     private static final String CIZAH = "cizah";
     private static final String DIOCOUNT = "diocount";
     private static final String ZOMBIECOUNT = "zombiecount";
+    private static final String POLPOCOUNT = "polpocount";
     private static final String WAVE = "wave";
     private static final String MANGA = "manga";
     private static final String PROG_SCORE = "prog_score";
@@ -244,6 +250,7 @@ public class Statistics {
     private static final String WON = "won";
     private static final String ASCENDED = "ascended";
     private static final String DIOKILLED = "diokilled";
+    private static final String POLPOQUEST = "polpoQuest";
 
     public static void storeInBundle(Bundle bundle) {
         bundle.put(GOLD, goldCollected);
@@ -282,6 +289,7 @@ public class Statistics {
         bundle.put(CIZAH, cizah);
         bundle.put(DIOCOUNT, diocount);
         bundle.put(ZOMBIECOUNT, zombiecount);
+        bundle.put(POLPOCOUNT, polpocount);
         bundle.put(WAVE, wave);
         bundle.put(MANGA, manga);
         bundle.put(PROG_SCORE, progressScore);
@@ -317,6 +325,7 @@ public class Statistics {
         bundle.put(WON, gameWon);
         bundle.put(ASCENDED, ascended);
         bundle.put(DIOKILLED, diokilled);
+        bundle.put(POLPOQUEST, polpoQuest);
     }
 
     public static void restoreFromBundle(Bundle bundle) {
@@ -360,6 +369,7 @@ public class Statistics {
         cizah = bundle.getInt(CIZAH);
         diocount = bundle.getInt(DIOCOUNT);
         zombiecount = bundle.getInt(ZOMBIECOUNT);
+        polpocount = bundle.getInt(POLPOCOUNT);
         wave = bundle.getInt(WAVE);
         manga = bundle.getInt(MANGA);
         progressScore = bundle.getInt(PROG_SCORE);
@@ -404,6 +414,7 @@ public class Statistics {
         gameWon = bundle.getBoolean(WON);
         ascended = bundle.getBoolean(ASCENDED);
         diokilled = bundle.getBoolean(DIOKILLED);
+        polpoQuest = bundle.getBoolean(POLPOQUEST);
     }
 
     public static void preview(GamesInProgress.Info info, Bundle bundle) {

@@ -64,7 +64,7 @@ public class ZombieThree extends Mob {
     {
         spriteClass = Zombie3Sprite.class;
 
-        HP = HT = 10;
+        HP = HT = 12;
         defenseSkill = 4;
 
         EXP = 2;

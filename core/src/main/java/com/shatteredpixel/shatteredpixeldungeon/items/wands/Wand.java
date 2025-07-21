@@ -27,12 +27,15 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -436,6 +439,14 @@ public abstract class Wand extends Item {
             if (buff != null && buff.level() > lvl) {
                 return buff.level();
             }
+
+            if (Dungeon.hero != null) {
+                EnhancedWand enhancedWand = Dungeon.hero.buff(EnhancedWand.class);
+                if (enhancedWand != null) {
+                    lvl += Statistics.spw2;
+                }
+            }
+
         }
         return lvl;
     }

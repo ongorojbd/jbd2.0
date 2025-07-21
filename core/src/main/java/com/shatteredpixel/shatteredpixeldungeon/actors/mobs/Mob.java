@@ -22,12 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw15;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -43,7 +44,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
@@ -68,10 +68,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -81,12 +83,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.FlameKatana;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
@@ -95,13 +95,13 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -144,7 +144,7 @@ public abstract class Mob extends Char {
     protected static final float TIME_TO_WAKE_UP = 1f;
 
     protected boolean firstAdded = true;
-
+    
     protected void onAdd() {
         if (firstAdded) {
             //modify health for ascension challenge if applicable, only on first add
@@ -920,20 +920,6 @@ public abstract class Mob extends Char {
 
             if (cause == hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment) {
 
-                if (cause instanceof MeleeWeapon && spw15 > 0) {
-                    int damage = hero.damageRoll();
-                    WandOfBlastWave.BlastWave.blast(this.pos);
-                    PathFinder.buildDistanceMap(this.pos, BArray.not(Dungeon.level.solid, null), 1);
-                    for (Char ch : Actor.chars()) {
-                        if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
-                                && PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
-                            ch.damage(damage, enemy);
-                            ch.sprite.bloodBurstA(this.sprite.center(), damage);
-                            ch.sprite.flash();
-                        }
-                    }
-                }
-
                 if (hero.hasTalent(Talent.LETHAL_MOMENTUM)
                         && Random.Float() < 0.34f + 0.33f * hero.pointsInTalent(Talent.LETHAL_MOMENTUM)) {
                     Buff.affect(hero, Talent.LethalMomentumTracker.class, 0f);
@@ -950,6 +936,24 @@ public abstract class Mob extends Char {
                 hero.HP = Math.min(hero.HP + 2, hero.HT);
             }
 
+        }
+
+        if (alignment == Alignment.ENEMY && SPDSettings.getTendency() > 0){ // 전투조류
+            // 현재 죽는 몹을 제외하고 다른 적 몹이 살아있는지 확인
+            boolean mobsAlive = false;
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob != this && mob.isAlive() && mob.alignment == Alignment.ENEMY){
+                    mobsAlive = true;
+                    break;
+                }
+            }
+            if (!mobsAlive && Dungeon.level.entrance == 0 && !Dungeon.level.combatRewardDropped){
+                Dungeon.level.combatRewardDropped = true;
+                spwPrize(pos);
+                Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
+                Dungeon.level.drop(new Gold().quantity(100), pos).sprite.drop();
+                Dungeon.level.unseal();
+            }
         }
 
         if (hero.isAlive() && !Dungeon.level.heroFOV[pos]) {

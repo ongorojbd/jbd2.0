@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
@@ -58,6 +59,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
@@ -336,7 +339,13 @@ public class Dungeon {
         Actor.clear();
 
         Level level;
-        if (branch == 0) {
+
+        if (SPDSettings.getTendency() > 0) { // 전투조류
+
+            if (Dungeon.depth % 8 == 0) level = new ArenaBossLevel();
+            else level = new ArenaLevel();
+
+        } else if (branch == 0) {
             switch (depth) {
                 case 1:
                     if (SPDSettings.getDio() >= 1) {
@@ -569,6 +578,7 @@ public class Dungeon {
                 || Dungeon.level instanceof Emp2Level
                 || Dungeon.level instanceof DioLevel
                 || Dungeon.level instanceof Dio2Level
+                || Dungeon.level instanceof ArenaBossLevel
                 || (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)) {
             return false;
         }

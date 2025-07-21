@@ -21,10 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -72,7 +76,10 @@ public class WndTradeItem extends WndInfoItem {
 
 		if (item.quantity() == 1) {
 
-			RedButton btnSell = new RedButton( Messages.get(this, "sell", item.value()) ) {
+			int price = item.value();
+			if (SPDSettings.getTendency() > 0) price = 10; // 전투조류
+
+			RedButton btnSell = new RedButton( Messages.get(this, "sell", price) ) {
 				@Override
 				protected void onClick() {
 					sell( item, finalShop);
@@ -88,6 +95,7 @@ public class WndTradeItem extends WndInfoItem {
 		} else {
 
 			int priceAll= item.value();
+			if (SPDSettings.getTendency() > 0) priceAll = 10; // 전투조류
 			RedButton btnSell1 = new RedButton( Messages.get(this, "sell_1", priceAll / item.quantity()) ) {
 				@Override
 				protected void onClick() {

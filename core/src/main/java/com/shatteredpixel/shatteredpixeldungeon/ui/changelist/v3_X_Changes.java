@@ -50,6 +50,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_2_Changes(changeInfos);
         add_v3_1_Changes(changeInfos);
         add_a_Changes(changeInfos);
         add_jolyne_Changes(changeInfos);
@@ -75,7 +76,68 @@ public class v3_X_Changes {
                 "스틸 볼 런 애니화 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
 
     }
+    public static void add_v3_2_Changes(ArrayList<ChangeInfo> changeInfos) {
 
+        ChangeInfo changes = new ChangeInfo("v3.0b", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEAL), "죠나단 미니 리워크",
+                "죠나단의 파문의 보호막 능력이 소규모 개편되었습니다!\n" +
+                        "\n" +
+                        "파문의 보호막은 이제 죠나단의 체력이 50% 이하일 때 재사용 대기시간과 함께 발동됩니다. 신규 플레이어들에게는 여전히 사용하기 쉬우면서도 더욱 임팩트 있고 상호작용적으로 느껴질 것입니다.",
+
+                "파문의 보호막의 상세 변경사항은 다음과 같습니다:\n" +
+                        "- 파문의 보호막은 더 이상 수동적으로 쌓이지 않으며, 이제 죠나단이 체력 50% 이하로 피해를 받기 직전에 즉시 발동됩니다.\n" +
+                        "- 최대 보호막은 이제 브로치 등급에 기반하며, 5-13까지 상승합니다.(파문의 호흡 특성으로 최대 15).\n" +
+                        "- 이 보호막은 감소하지 않지만, 전투 후 잠시 후에 사라집니다.\n" +
+                        "- 이 보호막은 150턴의 재사용 대기시간을 가지며, 사용하지 않은 보호막은 재사용 대기시간의 최대 50%를 돌려줍니다.\n" +
+                        "- 파문의 보호막은 은 이제 저주받지 않은 것으로 알려진 브로치에 부여할 수 있습니다.\n" +
+                        "- 파문의 보호막을 교체할 때, 죠나단은 이제 파문의 보호막을 교체할지 묻는 안내를 받습니다.",
+
+                "다양한 죠나단의 특성들이 조정되었습니다:\n" +
+                        "- 더 패션 특성은 이제 어떤 보호막이 깨져도 발동되며, +2/+3에서 +3/+5 추가 피해를 부여합니다.\n" +
+                        "- 파문의 호흡 특성은 변경되지 않았으며, 여전히 1 또는 2 최대 보호막을 부여합니다.\n" +
+                        "- 파문의 양극 특성은 이제 파문의 보호막을 최대 50%/75%를 충전하는 대신 최대 HP의 6.5%/10%와 일반 보호막을 부여합니다.\n" +
+                        "- 파문의 회복력 특성은 이제 파문의 보호막을 재충전하는 대신 파문의 보호막의 재사용 대기시간을 감소시킵니다.\n" +
+                        "- 각성의 파문전사는 콤보가 있는 한 파문의 보호막의 보호막을 유지합니다.\n" +
+                        "- 용기의 파문전사의 파문 에너지는 이제 자체적인 별도 보호막으로, 파문의 보호막의 최대 보호막과는 별도로 증가합니다."));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.POLPO, 0, 0, 19, 22), "신규 npc",
+                "이제 오시리스신의 지도가 아닌 카이로 시내에 있는 상원의원을 통해서 미니 던전에 입장할 수 있습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO1), "만화책 변경사항",
+                "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(CharSprite.NEGATIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "죠린 너프",
+                "몇 가지 죠린 능력의 일부가 조정되었습니다:\n" +
+                        "\n" +
+                        "- 빈틈 노리기 특성의 피해가 +4/+6에서 +3/+5로 감소\n" +
+                        "- 징벌방의 식사법의 충전량 획득이 +1/+1.5에서 +0.67/+1로 감소\n" +
+                        "- 잠행이 더 이상 즉시 시전되지 않습니다\n" +
+                        "- 실 결계의 범위가 이제 30으로 제한됩니다\n" +
+                        "- \"실\"을 뻗으면!의 충전 비용이 1에서 2로 증가\n" +
+                        "- 엄폐의 충전 비용이 1에서 2로 증가했지만, 지속시간이 +50%로 증가"));
+
+    }
     public static void add_v3_1_Changes(ArrayList<ChangeInfo> changeInfos) {
 
         ChangeInfo changes = new ChangeInfo("v3.0b", true, "");

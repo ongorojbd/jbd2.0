@@ -48,40 +48,20 @@ public class Spw8 extends Item {
         }
     }
 
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw8.class, "desc1"),
-                Messages.get(Spw8.class, "desc2"),
-                Messages.get(Spw8.class, "desc3"),
-                Messages.get(Spw8.class, "desc4"),
-                Messages.get(Spw8.class, "desc5"),
-                Messages.get(Spw8.class, "desc6"),
-                Messages.get(Spw8.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw8, descriptions.length - 1);
-        return descriptions[index];
-    }
-
     public static void Spw8Ability() {
 
-        double recoveryFactor = 0.25;
-
-        recoveryFactor += Statistics.spw8 * 0.05;
-
-        hero.HP = (int) Math.min(hero.HP + hero.HT * recoveryFactor, hero.HT);
+        hero.HP = hero.HT;
 
         hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
+
         for (Char c : Actor.chars()) {
-            if (c instanceof Tendency) {
-                ((Tendency) c).heal(recoveryFactor);
+            if (c.alignment == Char.Alignment.ALLY) {
+                c.HP = c.HT;
             }
         }
+
         GLog.p(Messages.get(Spw.class, "heal"));
         Sample.INSTANCE.play(Assets.Sounds.FF);
-        if(Statistics.spw8 < 7) Statistics.spw8++;
 
     }
 

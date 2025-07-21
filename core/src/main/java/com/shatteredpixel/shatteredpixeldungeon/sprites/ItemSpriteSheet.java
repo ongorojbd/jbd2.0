@@ -378,7 +378,7 @@ public class ItemSpriteSheet {
         assignItemRect(SHURIKEN, 11, 12);
         assignItemRect(THROWING_CLUB, 10, 10);
 
-        assignItemRect(THROWING_SPEAR, 11, 11);
+        assignItemRect(THROWING_SPEAR, 10, 10);
         assignItemRect(BOLAS, 15, 13);
         assignItemRect(KUNAI, 15, 15);
 
@@ -387,7 +387,7 @@ public class ItemSpriteSheet {
         assignItemRect(BOOMERANG, 14, 14);
 
         assignItemRect(TRIDENT, 13, 9);
-        assignItemRect(THROWING_HAMMER, 11, 11);
+        assignItemRect(THROWING_HAMMER, 10, 10);
         assignItemRect(FORCE_CUBE, 11, 12);
     }
 
@@ -597,8 +597,9 @@ public class ItemSpriteSheet {
     public static final int OBLIVION_SHARD = TRINKETS + 13;
     public static final int CHAOTIC_CENSER = TRINKETS + 14;
     public static final int FERRET_TUFT = TRINKETS+15;
-    public static final int TBOMB = TRINKETS + 17;
-    public static final int TBOMB2 = TRINKETS + 18;
+    public static final int TBOMB = TRINKETS + 16;
+    public static final int TBOMB2 = TRINKETS + 17;
+    public static final int UV = TRINKETS + 18;
 
     static {
         assignItemRect(RAT_SKULL, 13, 16);
@@ -619,6 +620,7 @@ public class ItemSpriteSheet {
         assignItemRect(FERRET_TUFT, 11, 16);
         assignItemRect(TBOMB, 12, 11);
         assignItemRect(TBOMB2, 15, 14);
+        assignItemRect(UV, 15, 16);
     }
 
     private static final int SCROLLS = xy(1, 19);  //16 slots

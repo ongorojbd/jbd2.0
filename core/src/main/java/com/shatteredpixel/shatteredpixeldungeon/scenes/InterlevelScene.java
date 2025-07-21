@@ -36,11 +36,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.ShadowBox;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -257,7 +258,7 @@ public class InterlevelScene extends PixelScene {
         }
         Random.popGenerator();
 
-        if (DeviceCompat.isDebug()) {
+        if (DeviceCompat.isDebug()){
             fadeTime = 0f;
         }
 
@@ -266,6 +267,8 @@ public class InterlevelScene extends PixelScene {
         } else {
             if (Dungeon.level instanceof DioLevel || Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel || Dungeon.level instanceof DiobossLevel || Dungeon.level instanceof ShipbossLevel) {
                 background = new Image(Assets.Splashes.BRANDO);
+            } else if (SPDSettings.getTendency() > 0) { // 전투조류
+                background = new Image(Assets.Splashes.TENDENCY);
             } else if (Statistics.spw8 == 1) {
                 background = new Image(Assets.Splashes.SO);
             } else {
@@ -274,7 +277,11 @@ public class InterlevelScene extends PixelScene {
         }
 
         if (neoLevel) {
-            background = new Image(Assets.Splashes.SEWERS);
+            if (SPDSettings.getTendency() > 0) { // 전투조류
+                background = new Image(Assets.Splashes.TENDENCY);
+            } else {
+                background = new Image(Assets.Splashes.SEWERS);
+            }
             neoLevel = false;
         }
 
@@ -335,7 +342,13 @@ public class InterlevelScene extends PixelScene {
 
         if (mode == Mode.DESCEND && lastRegion <= 6 && !DeviceCompat.isDebug() && SPDSettings.getDio() == 0) {
             if (Dungeon.hero == null || (loadingDepth > Statistics.deepestFloor && loadingDepth % 5 == 1)) {
-                storyMessage = PixelScene.renderTextBlock(Document.INTROS.pageBody(region), 6);
+                String messageText;
+                if (SPDSettings.getTendency() > 0) {
+                    messageText = Messages.get(InterlevelScene.class, "tendency_message");
+                } else {
+                    messageText = Document.INTROS.pageBody(region);
+                }
+                storyMessage = PixelScene.renderTextBlock(messageText, 6);
                 storyMessage.maxWidth(PixelScene.landscape() ? 180 : 125);
                 storyMessage.setPos((Camera.main.width - storyMessage.width()) / 2f, (Camera.main.height - storyMessage.height()) / 2f);
 
@@ -687,11 +700,11 @@ public class InterlevelScene extends PixelScene {
             //When debugging, we may start a game at a later depth to quickly test something
             // if this happens, the games quickly generates all prior levels on branch 0 first,
             // which ensures levelgen consistency with a regular game that was played to that depth.
-            if (DeviceCompat.isDebug()) {
+            if (DeviceCompat.isDebug()){
                 int trueDepth = Dungeon.depth;
                 int trueBranch = Dungeon.branch;
-                for (int i = 1; i < trueDepth + (trueBranch == 0 ? 0 : 1); i++) {
-                    if (!Dungeon.levelHasBeenGenerated(i, 0)) {
+                for (int i = 1; i < trueDepth + (trueBranch == 0 ? 0 : 1); i++){
+                    if (!Dungeon.levelHasBeenGenerated(i, 0)){
                         Dungeon.depth = i;
                         Dungeon.branch = 0;
                         Dungeon.level = Dungeon.newLevel();

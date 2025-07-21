@@ -183,8 +183,8 @@ public class CursedWand {
 				return randomValidUncommonEffect(origin, user, bolt, positiveOnly);
 			case 2:
 				return randomValidRareEffect(origin, user, bolt, positiveOnly);
-//			case 3:
-//				return randomValidVeryRareEffect(origin, user, bolt, positiveOnly);
+			case 3:
+				return randomValidVeryRareEffect(origin, user, bolt, positiveOnly);
 		}
 	}
 

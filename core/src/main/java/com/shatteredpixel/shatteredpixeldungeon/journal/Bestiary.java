@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Polpo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
@@ -174,7 +175,7 @@ public enum Bestiary {
 
         BOSSES.addEntities(Goo.class,
                 Tengu.class,
-                Pylon.class, DM300.class, Kawasiri.class,
+                DM300.class, Pylon.class, Kawasiri.class,
                 DwarfKing.class,
                 YogDzewa.Larva.class, YogFist.BrightFist.class, YogDzewa.class, Beast.class, SWAT.class, WO.class, Rebel.class);
 
@@ -195,12 +196,12 @@ public enum Bestiary {
                 Civil.class, Bmore.class, Diego.class, Pucci12.class, Diego21.class, Diego12.class, ZombieFour.class, ZombietBoss.class,
                 TempleLastLevel.TempleBrute.class, TempleLastLevel.TempleGuard.class, Keichomob.class);
 
-        NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Willson.class, Sheep.class, Bee.class, Amblance.class, Heavyw.class, Rohan.class, Yukako.class, Retonio.class, Yasu.class, Fugo.class, Weather.class, Bdth.class, Annasui.class, So1.class);
+        NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Willson.class, Sheep.class, Bee.class, Amblance.class, Heavyw.class, Rohan.class, Yukako.class, Retonio.class, Yasu.class, Weather.class, Bdth.class, Annasui.class, So1.class, Polpo.class);
 
         ALLY.addEntities(MirrorImage.class, PrismaticImage.class,
                 DriedRose.GhostHero.class, Willamob.class, Willcmob.class, Willgmob.class,
                 TuskBestiary2.class, WandOfWarding.Ward.class, TuskBestiary4.class, WandOfWarding.Ward.WardSentry.class, WandOfLivingEarth.EarthGuardian.class,
-                ShadowClone.ShadowAlly.class, SmokeBomb.NinjaLog.class, SpiritHawk.HawkAlly.class, PowerOfMany.LightAlly.class, Act1.class, Act2.class, Act3.class, SpeedWagon.class, jojo.class, Jotaro.class);
+                ShadowClone.ShadowAlly.class, SmokeBomb.NinjaLog.class, SpiritHawk.HawkAlly.class, PowerOfMany.LightAlly.class, P1mob.class, P2mob.class, P3mob.class, P4mob.class, P5mob.class, Act1.class, Act2.class, Act3.class, SpeedWagon.class, jojo.class, Jotaro.class);
 
         TRAP.addEntities(WornDartTrap.class, CreamTrap.class, PoisonDartTrap.class, DisintegrationTrap.class, GatewayTrap.class,
                 ChillingTrap.class, BurningTrap.class, ShockingTrap.class, AlarmTrap.class, GrippingTrap.class, TeleportationTrap.class, OozeTrap.class,

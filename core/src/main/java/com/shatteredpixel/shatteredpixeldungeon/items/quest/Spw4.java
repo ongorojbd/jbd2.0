@@ -48,23 +48,6 @@ public class Spw4 extends Item {
         }
     }
 
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw4.class, "desc1"),
-                Messages.get(Spw4.class, "desc2"),
-                Messages.get(Spw4.class, "desc3"),
-                Messages.get(Spw4.class, "desc4"),
-                Messages.get(Spw4.class, "desc5"),
-                Messages.get(Spw4.class, "desc6"),
-                Messages.get(Spw4.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw4, descriptions.length - 1);
-        return descriptions[index];
-    }
-
     public static void Spw4Ability() {
         RingOfSharpshooting ringOfSharpshooting = Dungeon.hero.belongings.getItem(RingOfSharpshooting.class);
         ringOfSharpshooting.upgrade();

@@ -50,8 +50,7 @@ public class Neotel extends Item {
         if (action.equals(AC_TELEPORT)) {
             GLog.h(Messages.get(Neotel.class, "s"), SPDSettings.getSkin(), SPDSettings.getSkin2(), SPDSettings.getSkin3(), SPDSettings.getSkin4(), SPDSettings.getSkin5());
 
-            Buff.affect(hero, MindVision.class, 99f);
-            Buff.affect(hero, MagicalSight.class, 99f);
+
             Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);
             SPDSettings.addSpecialcoin(4);

@@ -22,7 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Act1;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
@@ -75,6 +77,24 @@ public class SecretLarderRoom extends SecretRoom {
 		}
 		
 		entrance().set(Door.Type.HIDDEN);
+
+		Act1 act1 = new Act1();
+		act1.state = act1.SLEEPING;
+		act1.alignment = Char.Alignment.ENEMY;
+		act1.HP = act1.HT;
+		act1.pos = findEmptyPosition(level);
+		level.mobs.add(act1);
+	}
+
+	private int findEmptyPosition(Level level) {
+		int pos;
+		do {
+			pos = level.pointToCell(random());
+		} while (
+				level.plants.get(pos) != null ||
+						level.findMob(pos) != null
+		);
+		return pos;
 	}
 	
 	

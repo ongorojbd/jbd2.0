@@ -51,6 +51,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.He
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.items.AnnihilationGear;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
@@ -73,7 +75,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
@@ -84,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -151,9 +157,10 @@ public enum HeroClass {
             new Shortsword().identify().upgrade(999).collect();
             new WandOfBlastWave().identify().collect();
             new PotionOfParalyticGas().identify().quantity(100).collect();
+            new Honeypot().identify().quantity(100).collect();
             new Neotel().collect();
-            new WarHammer().identify().collect();
-            new WandOfCorruption().identify().collect();
+            new Spw().identify().collect();
+            new UV().identify().quantity(100).collect();
             new TengusMask().collect();
             new KingsCrown().collect();
             new PotionOfHealing().identify().quantity(100).collect();
@@ -162,6 +169,10 @@ public enum HeroClass {
             new Swiftthistle.Seed().identify().quantity(100).collect();
             new Earthroot.Seed().identify().quantity(100).collect();
             new WandOfDisintegration().identify().upgrade(20).collect();
+        }
+
+        if (SPDSettings.getTendency() > 0) { // 전투조류
+            Dungeon.gold = 100;
         }
 
         switch (this) {

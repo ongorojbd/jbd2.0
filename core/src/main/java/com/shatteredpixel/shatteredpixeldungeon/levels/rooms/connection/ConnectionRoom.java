@@ -21,8 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
@@ -79,6 +84,7 @@ public abstract class ConnectionRoom extends Room {
 	}
 
 	public static ConnectionRoom createRoom(){
-		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
+		if (SPDSettings.getTendency() > 0) return Reflection.newInstance(TunnelRoom.class); // 전투조류
+		else return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
 	}
 }

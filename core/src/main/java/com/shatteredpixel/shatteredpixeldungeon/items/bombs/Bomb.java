@@ -379,6 +379,27 @@ public class Bomb extends Item {
         }
     }
 
+    public static class DoubleTBomb extends Bomb {
+
+        {
+            image = ItemSpriteSheet.TBOMB2;
+            stackable = false;
+        }
+
+        @Override
+        public boolean doPickUp(Hero hero, int pos) {
+            Tbomb tbomb = new Tbomb();
+            tbomb.quantity(2);
+            if (tbomb.doPickUp(hero, pos)) {
+                //isaaaaac.... (don't bother doing this when not in english)
+                if (SPDSettings.language() != Languages.KOREAN)
+                    hero.sprite.showStatus(CharSprite.NEUTRAL, "1+1 free!");
+                return true;
+            }
+            return false;
+        }
+    }
+
     public static class EnhanceBomb extends Recipe {
 
         public static final LinkedHashMap<Class<? extends Item>, Class<? extends Bomb>> validIngredients = new LinkedHashMap<>();

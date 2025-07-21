@@ -28,8 +28,6 @@ public class Jojo1 extends Item {
 
     {
         image = ItemSpriteSheet.JOJO1;
-
-        unique = true;
     }
 
     @Override
@@ -40,5 +38,10 @@ public class Jojo1 extends Item {
     @Override
     public boolean isIdentified() {
         return true;
+    }
+
+    @Override
+    public int value() {
+        return 1000 * quantity;
     }
 }

@@ -61,6 +61,8 @@ public class SpectralNecromancerSprite extends MobSprite {
 
 		attack = zap.clone();
 
+		scale.set(0.90f);
+
 		idle();
 	}
 

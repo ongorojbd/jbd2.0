@@ -44,6 +44,7 @@ public class HermitCrab extends Crab {
         HP = HT = 25; //+67% HP
         baseSpeed = 1f; //-50% speed
 
+        loot = null;
         //3x more likely to drop meat, and drops a guaranteed armor
         lootChance = 0.5f;
 

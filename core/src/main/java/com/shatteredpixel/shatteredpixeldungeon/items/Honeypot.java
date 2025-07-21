@@ -25,6 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PolpoBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -121,7 +125,11 @@ public class Honeypot extends Item {
 			bee.setPotInfo( pos, owner );
 			bee.HP = bee.HT;
 			bee.pos = newPos;
-			
+			if (Dungeon.hero.buff(PolpoBuff.class) != null) {
+				bee.alignment = Char.Alignment.ALLY;
+				Buff.affect(bee, Adrenaline.class, 30f);
+				Buff.affect(bee, Bless.class, 30f);
+			}
 			GameScene.add( bee );
 			if (newPos != pos) Actor.add( new Pushing( bee, pos, newPos ) );
 

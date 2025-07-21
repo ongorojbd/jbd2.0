@@ -22,30 +22,27 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceBlow;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -86,10 +83,7 @@ public class Tboss extends Mob {
 
     public int  Phase = 0;
     private float leapCooldown = 8;
-    private int blastcooldown = 3;
-
-    private int spw = 0;
-
+    private int blastcooldown = 2;
     private int barriercooldown = 9;
 
     private int zcooldown = 99999;
@@ -140,6 +134,19 @@ public class Tboss extends Mob {
         super.notice();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
+
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new TbossSprite(), new TbossSprite()},
+                    new String[]{"스트레이초", "스트레이초"},
+                    new String[]{
+                            Messages.get(Tboss.class, "t1"),
+                            Messages.get(Tboss.class, "t2")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE,
+                            WndDialogueWithPic.IDLE
+                    }
+            );
         }
     }
 
@@ -284,10 +291,9 @@ public class Tboss extends Mob {
             if(blastcooldown < 3){
                 blastcooldown += 4;
             }
-
-            GLog.w(Messages.get(this, "i"));
-            Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-            SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
+            sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+            Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
+            Buff.affect(this, Adrenaline.class, 2f);
             Dungeon.hero.interrupt();
         }
 
@@ -466,11 +472,6 @@ public class Tboss extends Mob {
 
         super.die( cause );
 
-        Statistics.duwang3++;
-        if (Statistics.duwang3 == Statistics.duwang2) {
-            spwPrize(pos);
-        }
-
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
@@ -490,6 +491,8 @@ public class Tboss extends Mob {
         GameScene.bossSlain();
 
         Music.INSTANCE.play(Assets.Music.TENDENCY1, true);
+
+        Dungeon.level.unseal();
 
     }
 

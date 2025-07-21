@@ -58,6 +58,8 @@ public class NecromancerSprite extends MobSprite {
 		die.frames( film, 9, 10, 11, 12 );
 		
 		attack = zap.clone();
+
+		scale.set(0.90f);
 		
 		idle();
 	}

@@ -21,9 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
@@ -82,6 +86,10 @@ public class MobSpawner extends Actor {
                     return new ArrayList<>(Arrays.asList(
                             Zombie.class, Zombie.class, Zombie.class,
                             Zombiedog.class));
+                } else if (SPDSettings.getTendency() > 0) {
+                    return new ArrayList<>(Arrays.asList(
+                            ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
+                            ZombieTwo.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(
                             Rat.class, Rat.class, Rat.class,
@@ -93,6 +101,10 @@ public class MobSpawner extends Actor {
                     return new ArrayList<>(Arrays.asList(Zombie.class, Zombie.class,
                             Zombiedog.class,
                             Zombied.class, Zombied.class));
+                } else if (SPDSettings.getTendency() > 0) {
+                    return new ArrayList<>(Arrays.asList(
+                            ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieThree.class,
+                            ZombieThree.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
                             Snake.class,
@@ -110,6 +122,10 @@ public class MobSpawner extends Actor {
                     return new ArrayList<>(Arrays.asList(Manhatan.class, Manhatan.class,
                             Manhatan.class,
                             Manhatan.class, Manhatan.class));
+                } else if (SPDSettings.getTendency() > 0) {
+                    return new ArrayList<>(Arrays.asList(
+                            ZombieTwo.class, ZombieTwo.class, Zombie.class, ZombieThree.class,
+                            ZombieThree.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(Rat.class,
                             Snake.class,

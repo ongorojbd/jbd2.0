@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscG;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DestOrbTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
@@ -53,10 +54,13 @@ import com.watabou.utils.Random;
 
 public class Fugomob2 extends Mob {
 
+    private int level = Dungeon.depth;
+
     {
         spriteClass = Fugo2Sprite.class;
+        HP = HT = (1 + level) * 6;
+        EXP = 0;
 
-        HP = HT =  120;
         HUNTING = new Mob.Hunting();
         immunities.add(CorrosiveGas.class);
         immunities.add(Vertigo.class);
@@ -66,67 +70,79 @@ public class Fugomob2 extends Mob {
     }
 
     @Override
-    public int attackSkill( Char target ) {
-        return 28;
+    public int attackSkill(Char target) {
+        if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+            return INFINITE_ACCURACY;
+        } else {
+            return 8 + level;
+        }
     }
 
     int summonCooldown = 1;
+    private static final String LEVEL = "level";
     private static final String SUMMON_COOLDOWN = "summoncooldown";
     private boolean threatened = false;
 
     @Override
-    public void storeInBundle( Bundle bundle ) {
+    public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
+        bundle.put(LEVEL, level);
         bundle.put(SUMMON_COOLDOWN, summonCooldown);
     }
 
-
     @Override
-    public void restoreFromBundle( Bundle bundle ) {
-        super.restoreFromBundle( bundle );
-        summonCooldown = bundle.getInt( SUMMON_COOLDOWN );
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        level = bundle.getInt(LEVEL);
+        summonCooldown = bundle.getInt(SUMMON_COOLDOWN);
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 25, 30 );
+        if (alignment == Alignment.NEUTRAL) {
+            return Random.NormalIntRange(2 + 2 * level, 2 + 2 * level);
+        } else {
+            return Random.NormalIntRange(1 + level, 2 + 2 * level);
+        }
+    }
+
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(0, 1 + level / 2);
     }
 
     @Override
     protected boolean act() {
-        summonCooldown--;
-        //in case DM-201 hasn't been able to act yet
+        if (Dungeon.level.heroFOV[pos]) {
+            Bestiary.setSeen(getClass());
+        }
+
+        if (summonCooldown > 0) {
+            summonCooldown--;
+        }
+
         if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()){
             fieldOfView = new boolean[Dungeon.level.length()];
             Dungeon.level.updateFieldOfView( this, fieldOfView );
         }
 
-        if (summonCooldown <= 0) {
-            threatened = true;
-            summonCooldown = (11);
-        }
-
         if (paralysed <= 0 && state == HUNTING && enemy != null && enemySeen
-                && threatened && !Dungeon.level.adjacent(pos, enemy.pos) && fieldOfView[enemy.pos]){
+                && !Dungeon.level.adjacent(pos, enemy.pos)
+                && fieldOfView[enemy.pos]
+                && summonCooldown <= 0) {
+
             enemySeen = enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
+
             if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
-                sprite.zap( enemy.pos );
+                sprite.zap(enemy.pos);
                 return false;
             } else {
                 zap();
                 return true;
             }
         }
-        return super.act();
-    }
 
-    @Override
-    public void damage(int dmg, Object src) {
-        if ((src instanceof Char && !Dungeon.level.adjacent(pos, ((Char)src).pos))
-                || enemy == null || !Dungeon.level.adjacent(pos, enemy.pos)){
-            threatened = true;
-        }
-        super.damage(dmg, src);
+        return super.act();
     }
 
     public void onZapComplete(){
@@ -149,29 +165,22 @@ public class Fugomob2 extends Mob {
     }
 
 
-    private void zap( ){
-        threatened = false;
+    private void zap() {
         spend(TICK);
-        sprite.showStatus(CharSprite.POSITIVE, Messages.get(Fugomob.class, "4"));
-        GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(1+Dungeon.depth/4));
-        for (int i : PathFinder.NEIGHBOURS8){
-            if (!Dungeon.level.solid[enemy.pos+i]) {
+        summonCooldown = 11;
+        sprite.showStatus(CharSprite.POSITIVE, "[퍼플 헤이즈!]");
+        GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(1 + Dungeon.depth / 4));
+        for (int i : PathFinder.NEIGHBOURS8) {
+            if (!Dungeon.level.solid[enemy.pos + i]) {
                 GameScene.add(Blob.seed(enemy.pos + i, 5, CorrosiveGas.class));
             }
         }
-
     }
 
     @Override
     public void die( Object cause ) {
-
-
         yell(Messages.get(Fugomob2.class, "0"));
-
         super.die( cause );
-
         Dungeon.level.drop( new PotionOfCorrosiveGas().identify(), pos ).sprite.drop( pos );
-
-        }
-
     }
+}

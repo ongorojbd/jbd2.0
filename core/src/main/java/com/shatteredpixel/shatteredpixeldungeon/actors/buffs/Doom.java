@@ -21,24 +21,61 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Polpo;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.PolpoItem;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.RemainsItem;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 
 public class Doom extends Buff {
-	
-	{
-		type = buffType.NEGATIVE;
-		announced = true;
-	}
-	
-	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add( CharSprite.State.DARKENED );
-		else if (target.invisible == 0) target.sprite.remove( CharSprite.State.DARKENED );
-	}
-	
-	@Override
-	public int icon() {
-		return BuffIndicator.CORRUPT;
-	}
+
+    {
+        type = buffType.NEGATIVE;
+        announced = true;
+    }
+
+    @Override
+    public void fx(boolean on) {
+        if (on) target.sprite.add(CharSprite.State.DARKENED);
+        else if (target.invisible == 0) target.sprite.remove(CharSprite.State.DARKENED);
+    }
+
+    @Override
+    public int icon() {
+        return BuffIndicator.CORRUPT;
+    }
+
+    @Override
+    public boolean act() {
+        spend(TICK);
+
+        if (target instanceof Hero && Statistics.polpoQuest) {
+            if (Statistics.deepestFloor == Statistics.polpocount && Dungeon.hero.belongings.getItem(PolpoItem.class) != null) {
+
+                Buff.affect(hero, PolpoBuff.class);
+                Buff.detach(hero, Doom.class);
+
+                new Flare(6, 32).color(0xFF6600, true).show(hero.sprite, 3f);
+                Sample.INSTANCE.play(Assets.Sounds.BADGE);
+                GLog.p(Messages.get(Polpo.class, "clear"));
+
+                PolpoItem item = Dungeon.hero.belongings.getItem(PolpoItem.class);
+                item.detach(hero.belongings.backpack);
+
+                target.sprite.remove(CharSprite.State.DARKENED);
+            }
+        }
+        return true;
+    }
 }

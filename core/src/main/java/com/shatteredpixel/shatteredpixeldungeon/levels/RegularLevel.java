@@ -21,15 +21,19 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
@@ -63,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
+
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom;
@@ -201,7 +206,7 @@ public abstract class RegularLevel extends Level {
 	protected float[] trapChances() {
 		return new float[]{1};
 	}
-	
+
 	@Override
 	public int mobLimit() {
 		if (Dungeon.depth <= 1){
@@ -228,6 +233,16 @@ public abstract class RegularLevel extends Level {
 					stdRooms.add(room);
 				}
 			}
+		}
+
+		if (SPDSettings.getTendency() > 0) { // 전투조류
+			int arenaMobs = Math.round(4 + Dungeon.depth % 8 + Random.Int(4));
+
+			if (feeling == Feeling.LARGE) {
+				arenaMobs = (int)Math.ceil(arenaMobs * 2f);
+			}
+
+			mobsToSpawn = (int)(arenaMobs / 1.5f);
 		}
 
 		if (Dungeon.depth == 22 && Dungeon.branch == 1){

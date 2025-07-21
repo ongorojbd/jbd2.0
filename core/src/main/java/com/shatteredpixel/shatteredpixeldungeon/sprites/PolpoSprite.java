@@ -50,7 +50,7 @@ public class PolpoSprite extends MobSprite {
         TextureFilm frames = new TextureFilm( texture, 19, 22 );
 
         idle = new Animation( 1, true );
-        idle.frames( frames, 0);
+        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
         die = new Animation( 10, false );
         die.frames( frames, 0, 2, 3, 4);
@@ -60,7 +60,6 @@ public class PolpoSprite extends MobSprite {
 
     @Override
     public void die() {
-        Splash.at( center(), blood(), 100 );
         killAndErase();
     }
 }

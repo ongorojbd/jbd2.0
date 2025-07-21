@@ -21,8 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.tiles;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastShopLevel;
@@ -72,7 +76,7 @@ public class TerrainFeaturesTilemap extends DungeonTilemap {
 
 		if (Dungeon.depth == 21 && Dungeon.level instanceof LastShopLevel) stage--;
 
-		if (Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel) stage = 0;
+		if (Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel || SPDSettings.getTendency() > 0) stage = 0; // 전투조류
 		stage = Math.min(stage, 4);
 
 		if (tile == Terrain.HIGH_GRASS){

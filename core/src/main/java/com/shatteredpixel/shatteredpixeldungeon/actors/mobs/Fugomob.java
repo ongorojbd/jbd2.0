@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -82,15 +83,19 @@ public class Fugomob extends Mob {
 
     @Override
     protected boolean act() {
-        summonCooldown--;
 
-        if (summonCooldown <= 0) {
-            threatened = true;
-            summonCooldown = (11);
+        if (Dungeon.level.heroFOV[pos]) {
+            Bestiary.setSeen(P5mob.class);
+        }
+
+        if (summonCooldown > 0) {
+            summonCooldown--;
         }
 
         if (paralysed <= 0 && state == HUNTING && enemy != null && enemySeen
-                && threatened && !Dungeon.level.adjacent(pos, enemy.pos) && fieldOfView[enemy.pos]) {
+                && !Dungeon.level.adjacent(pos, enemy.pos)
+                && fieldOfView[enemy.pos]
+                && summonCooldown <= 0) {
             enemySeen = enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
             if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
                 sprite.zap(enemy.pos);
@@ -100,6 +105,7 @@ public class Fugomob extends Mob {
                 return true;
             }
         }
+
         return super.act();
     }
 
@@ -132,16 +138,15 @@ public class Fugomob extends Mob {
     }
 
     private void zap() {
-        threatened = false;
         spend(TICK);
-        sprite.showStatus(CharSprite.POSITIVE, Messages.get(Fugomob.class, "4"));
+        summonCooldown = 5;
+        this.sprite.showStatus(CharSprite.POSITIVE, "[퍼플 헤이즈!]");
         GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(1 + Dungeon.depth / 4));
         for (int i : PathFinder.NEIGHBOURS8) {
             if (!Dungeon.level.solid[enemy.pos + i]) {
                 GameScene.add(Blob.seed(enemy.pos + i, 5, CorrosiveGas.class));
             }
         }
-
     }
 
     @Override

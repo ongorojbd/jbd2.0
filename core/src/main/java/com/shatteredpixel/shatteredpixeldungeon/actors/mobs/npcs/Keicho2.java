@@ -14,23 +14,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Val;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieThree;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieTwo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiedog;
-import com.shatteredpixel.shatteredpixeldungeon.items.Bandana;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Tmap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TbossSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBossText;
@@ -140,9 +134,6 @@ public class Keicho2 extends NPC {
                                 super.hide();
                                 Item a = new Tmap();
                                 pickOrDropItem(a);
-                                Item b = new Bandana();
-                                b.identify();
-                                pickOrDropItem(b);
                                 Tendency tendency = new Tendency();
                                 tendency.pos = hero.pos;
                                 GameScene.add( tendency );
@@ -151,7 +142,6 @@ public class Keicho2 extends NPC {
                                 Dungeon.quickslot.clearSlot(4);
                                 Dungeon.quickslot.clearSlot(5);
                                 Dungeon.quickslot.setSlot(4, a);
-                                Dungeon.quickslot.setSlot(5, b);
                             }
                         });
                     }

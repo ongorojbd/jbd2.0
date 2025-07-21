@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -38,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -177,28 +179,28 @@ public class Spw extends Item {
 
                 switch (randomItem) {
                     case 0:
-                        newItem = new Spw1();
+                        newItem = new Spw2();
                         break;
                     case 1:
                         newItem = new Spw2();
                         break;
                     case 2:
-                        newItem = new Spw9();
+                        newItem = new Spw2();
                         break;
                     case 3:
-                        newItem = new Spw9();
+                        newItem = new Spw2();
                         break;
                     case 4:
-                        newItem = new Spw9();
+                        newItem = new Spw2();
                         break;
                     case 5:
-                        newItem = new Spw9();
+                        newItem = new Spw2();
                         break;
                     case 6:
-                        newItem = new Spw9();
+                        newItem = new Spw2();
                         break;
                     case 7:
-                        newItem = new Spw9();
+                        newItem = new Spw2();
                         break;
                     case 8:
                         newItem = new Spw9();
@@ -302,16 +304,9 @@ public class Spw extends Item {
                             } else if (spw1 >= 1) spw1++;
                         } else if (item instanceof Spw2) {
                             if (spw2 == 0) {
-                                Item a = new WandOfLightning();
-                                a.identify();
-                                pickOrDropItem(a);
+                                Buff.affect(hero, EnhancedWand.class);
                                 spw2++;
-                            } else if (spw2 >= 1 && Dungeon.hero.belongings.getItem(WandOfLightning.class) != null) {
-                                Spw2.Spw2Ability();
-                            } else {
-                                GLog.i(Messages.get(Spw.class, "spw2"));
-                                return;
-                            }
+                            } else if (spw2 >= 1) spw2++;
                         } else if (item instanceof Spw3) {
                             if (spw3 == 0) {
                                 Buff.affect(hero, EnhancedArmor.class);
@@ -330,17 +325,9 @@ public class Spw extends Item {
                                 return;
                             }
                         } else if (item instanceof Spw5) {
-                            if (spw5 == 0) {
-                                Item a = new RingOfHaste();
-                                a.identify();
-                                pickOrDropItem(a);
-                                spw5++;
-                            } else if (spw5 >= 1 && Dungeon.hero.belongings.getItem(RingOfHaste.class) != null) {
-                                Spw5.Spw5Ability();
-                            } else {
-                                GLog.i(Messages.get(Spw.class, "spw5"));
-                                return;
-                            }
+                            Item scrollOfEnchantment = new ScrollOfEnchantment();
+                            scrollOfEnchantment.identify();
+                            pickOrDropItem(scrollOfEnchantment);
                         } else if (item instanceof Spw6) {
                             pickOrDropItem(new Tbomb().quantity(3));
                             spw6++;

@@ -845,6 +845,26 @@ public class HeroSelectScene extends PixelScene {
             add(challengeButton);
             buttons.add(challengeButton);
 
+            StyledButton dioButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "tendency_mode"), 6) {
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    if (SPDSettings.getTendency() == 0) {
+                        SPDSettings.addTendency(1);
+                        icon.hardlight(1f, 0.5f, 0.5f);
+                    } else {
+                        SPDSettings.addTendency(-1);
+                        icon.resetColor();
+                    }
+                    updateOptionsColor();
+                }
+            };
+            dioButton.leftJustify = true;
+            dioButton.icon(Icons.get(Icons.NEWS));
+            if (SPDSettings.getTendency() > 0) dioButton.icon().hardlight(1f, 0.5f, 0.5f);
+            add(dioButton);
+            buttons.add(dioButton);
+
             for (int i = 1; i < buttons.size(); i++) {
                 ColorBlock spc = new ColorBlock(1, 1, 0xFF000000);
                 add(spc);

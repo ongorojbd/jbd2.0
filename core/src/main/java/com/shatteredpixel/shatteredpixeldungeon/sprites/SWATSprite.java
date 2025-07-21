@@ -37,8 +37,6 @@ import com.watabou.utils.Random;
 
 public class SWATSprite extends MobSprite {
 
-	private int cellToAttack;
-
 	public SWATSprite() {
 		super();
 		

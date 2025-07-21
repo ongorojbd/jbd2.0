@@ -51,6 +51,7 @@ public class Assets {
 
         public static final String TILES_KEICHO = "environment/tiles_keicho.png";
         public static final String TILES_TENDENCY = "environment/tiles_tendency.png";
+        public static final String TILES_TENDENCY2 = "environment/tiles_tendency2.png";
 
         public static final String WATER_SEWERS = "environment/water0.png";
         public static final String WATER_PRISON = "environment/water1.png";
@@ -61,6 +62,7 @@ public class Assets {
 
         public static final String WEAK_FLOOR = "environment/custom_tiles/weak_floor.png";
         public static final String SEWER_BOSS = "environment/custom_tiles/sewer_boss.png";
+        public static final String SEWER_BOSS2= "environment/custom_tiles/sewer_boss2.png";
         public static final String PRISON_QUEST = "environment/custom_tiles/prison_quest.png";
         public static final String PRISON_EXIT = "environment/custom_tiles/prison_exit.png";
         public static final String CAVES_QUEST = "environment/custom_tiles/caves_quest.png";
@@ -418,6 +420,7 @@ public class Assets {
         public static final String JT5 = "sounds/jt5.mp3";
         public static final String JT6 = "sounds/jt6.mp3";
         public static final String JT7 = "sounds/jt7.mp3";
+        public static final String POL = "sounds/polpo.mp3";
 
         public static final String[] all = new String[]{
                 CLICK, BADGE, GOLD,
@@ -440,7 +443,7 @@ public class Assets {
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
                 MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
-                SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA,
+                SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA, POL,
                 JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5, JT6, JT7
         };
     }
@@ -461,6 +464,7 @@ public class Assets {
         public static final String HALLS = "splashes/halls.jpg";
         public static final String LABS = "splashes/labs.jpg";
         public static final String SO = "splashes/so.jpg";
+        public static final String TENDENCY = "splashes/tendency.jpg";
     }
 
     public static class Sprites {
@@ -663,5 +667,6 @@ public class Assets {
         public static final String DOPPIODIALOG = "sprites/doppiodialog.png";
         public static final String JOSUKEDIALOG = "sprites/josukedialog.png";
         public static final String DIODIALOG = "sprites/diodialog.png";
+        public static final String PASSIONE = "sprites/passione.png";
     }
 }

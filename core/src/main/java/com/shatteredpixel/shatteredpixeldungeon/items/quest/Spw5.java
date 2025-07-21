@@ -24,7 +24,7 @@ public class Spw5 extends Item {
     {
         image = ItemSpriteSheet.SUPPLY_RATION;
 
-        icon = ItemSpriteSheet.Icons.POTION_HASTE;
+        icon = ItemSpriteSheet.Icons.SCROLL_ENCHANT;
 
         stackable = true;
         levelKnown = true;
@@ -47,30 +47,6 @@ public class Spw5 extends Item {
         if (action.equals( AC_LIGHT )) {
 
         }
-    }
-
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw5.class, "desc1"),
-                Messages.get(Spw5.class, "desc2"),
-                Messages.get(Spw5.class, "desc3"),
-                Messages.get(Spw5.class, "desc4"),
-                Messages.get(Spw5.class, "desc5"),
-                Messages.get(Spw5.class, "desc6"),
-                Messages.get(Spw5.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw5, descriptions.length - 1);
-        return descriptions[index];
-    }
-
-    public static void Spw5Ability() {
-        RingOfHaste ringOfHaste = Dungeon.hero.belongings.getItem(RingOfHaste.class);
-        ringOfHaste.upgrade();
-        Statistics.spw5++;
-        Sample.INSTANCE.play(Assets.Sounds.TALE);
     }
 
     @Override

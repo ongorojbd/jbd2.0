@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -37,6 +38,16 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.InventoryScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -216,6 +227,31 @@ public class Shopkeeper extends NPC {
 
 	//shopkeepers are greedy!
 	public static int sellPrice(Item item){
+		if (SPDSettings.getTendency() > 0) { // 전투조류
+			// 아이템별로 다른 가격 설정
+			if (item instanceof Potion) {
+				return 40; // 포션은 더 싸게
+			} else if (item instanceof InventoryScroll) {
+				return 35; // 스크롤은 더 싸게
+			} else if (item instanceof ScrollOfMagicMapping) {
+				return 35; // 스크롤은 더 싸게
+			} else if (item instanceof Runestone) {
+				return 20; // 룬석은 더 싸게
+			}  else if (item instanceof SmallRation) {
+				return 30; // 식량은 가장 싸게
+			} else if (item instanceof TippedDart) {
+				return 15; // 다트는 중간 가격
+			} else if (item instanceof Tbomb || item instanceof Bomb.DoubleTBomb) {
+				return 20; // 폭탄은 중간 가격
+			} else if (item instanceof Alchemize) {
+				return 15; // 연금술은 싸게
+			} else if (item instanceof Highway) {
+				return 5; // 고속도로는 싸게
+			} else {
+				return 75; // 기본 가격
+			}
+		}
+
 		return item.value() * 5 * (Dungeon.depth / 5 + 1);
 	}
 

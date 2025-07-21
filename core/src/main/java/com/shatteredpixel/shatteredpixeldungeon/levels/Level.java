@@ -21,9 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -177,8 +180,11 @@ public abstract class Level implements Bundlable {
 	public ArrayList<LevelTransition> transitions;
 
 	//when a boss level has become locked.
-	public boolean locked = false;
+		public boolean locked = false;
 	
+	// 전투조류 보상이 이미 드롭되었는지 확인하는 플래그
+	public boolean combatRewardDropped = false;
+
 	public HashSet<Mob> mobs;
 	public SparseArray<Heap> heaps;
 	public HashMap<Class<? extends Blob>,Blob> blobs;
@@ -216,12 +222,12 @@ public abstract class Level implements Bundlable {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
 
-		if (!Dungeon.bossLevel() && Dungeon.level instanceof Dio2Level) {
+		if (!Dungeon.bossLevel() && Dungeon.level instanceof Dio2Level && SPDSettings.getTendency() == 0) { // 전투조류
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
 		}
 
 		//TODO maybe just make this part of RegularLevel?
-		if (!Dungeon.bossLevel() && Dungeon.branch == 0) {
+		if (!Dungeon.bossLevel() && Dungeon.branch == 0 && SPDSettings.getTendency() == 0) { // 전투조류
 
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
 
@@ -256,7 +262,7 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new TrinketCatalyst());
 			}
 			
-			if (Dungeon.depth > 1) {
+			if (Dungeon.depth > 1 && SPDSettings.getTendency() == 0) { // 전투조류
 				//50% chance of getting a level feeling
 				//~7.15% chance for each feeling
 				switch (Random.Int( 14 )) {
@@ -349,6 +355,9 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public void reset() {
+		
+		// 전투조류 보상 플래그 리셋
+		combatRewardDropped = false;
 		
 		for (Mob mob : mobs.toArray( new Mob[0] )) {
 			if (!mob.reset()) {
@@ -588,26 +597,26 @@ public abstract class Level implements Bundlable {
 	public static void beforeTransition(){
 
 		//time freeze effects need to resolve their pressed cells before transitioning
-		TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+		TimekeepersHourglass.timeFreeze timeFreeze = hero.buff(TimekeepersHourglass.timeFreeze.class);
 		if (timeFreeze != null) timeFreeze.disarmPresses();
-		Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+		Swiftthistle.TimeBubble timeBubble = hero.buff(Swiftthistle.TimeBubble.class);
 		if (timeBubble != null) timeBubble.disarmPresses();
 
 		//iron stomach and challenge arena do not persist between floors
-		Talent.WarriorFoodImmunity foodImmune = Dungeon.hero.buff(Talent.WarriorFoodImmunity.class);
+		Talent.WarriorFoodImmunity foodImmune = hero.buff(Talent.WarriorFoodImmunity.class);
 		if (foodImmune != null) foodImmune.detach();
-		ScrollOfChallenge.ChallengeArena arena = Dungeon.hero.buff(ScrollOfChallenge.ChallengeArena.class);
+		ScrollOfChallenge.ChallengeArena arena = hero.buff(ScrollOfChallenge.ChallengeArena.class);
 		if (arena != null) arena.detach();
 		Char ally = Stasis.getStasisAlly();
 		if (Char.hasProp(ally, Char.Property.IMMOVABLE)){
-			Dungeon.hero.buff(Stasis.StasisBuff.class).act();
+			hero.buff(Stasis.StasisBuff.class).act();
 			GLog.w(Messages.get(Stasis.StasisBuff.class, "left_behind"));
 		}
 		//spend the hero's partial turns,  so the hero cannot take partial turns between floors
-		Dungeon.hero.spendToWhole();
+		hero.spendToWhole();
 		for (Actor a : Actor.all()){
 			//also adjust any other actors that are now ahead of the hero due to this
-			if (a.cooldown() < Dungeon.hero.cooldown()){
+			if (a.cooldown() < hero.cooldown()){
 				a.spendToWhole();
 			}
 		}
@@ -616,15 +625,15 @@ public abstract class Level implements Bundlable {
 	public void seal(){
 		if (!locked) {
 			locked = true;
-			Buff.affect(Dungeon.hero, LockedFloor.class);
+			Buff.affect(hero, LockedFloor.class);
 		}
 	}
 
 	public void unseal(){
 		if (locked) {
 			locked = false;
-			if (Dungeon.hero.buff(LockedFloor.class) != null){
-				Dungeon.hero.buff(LockedFloor.class).detach();
+			if (hero.buff(LockedFloor.class) != null){
+				hero.buff(LockedFloor.class).detach();
 			}
 		}
 	}
@@ -646,7 +655,7 @@ public abstract class Level implements Bundlable {
 				items.addAll(b.getStuckItems());
 			}
 		}
-		for (HeavyBoomerang.CircleBack b : Dungeon.hero.buffs(HeavyBoomerang.CircleBack.class)){
+		for (HeavyBoomerang.CircleBack b : hero.buffs(HeavyBoomerang.CircleBack.class)){
 			if (b.activeDepth() == Dungeon.depth) items.add(b.cancel());
 		}
 		return items;
@@ -739,7 +748,7 @@ public abstract class Level implements Bundlable {
 	}
 
 	public boolean spawnMob(int disLimit){
-		PathFinder.buildDistanceMap(Dungeon.hero.pos, BArray.or(passable, avoid, null));
+		PathFinder.buildDistanceMap(hero.pos, BArray.or(passable, avoid, null));
 
 		Mob mob = createMob();
 		if (mob.state != mob.PASSIVE) {
@@ -751,7 +760,7 @@ public abstract class Level implements Bundlable {
 			tries--;
 		} while ((mob.pos == -1 || PathFinder.distance[mob.pos] < disLimit) && tries > 0);
 
-		if (Dungeon.hero.isAlive() && mob.pos != -1 && PathFinder.distance[mob.pos] >= disLimit) {
+		if (hero.isAlive() && mob.pos != -1 && PathFinder.distance[mob.pos] >= disLimit) {
 			GameScene.add( mob );
 			if (!mob.buffs(ChampionEnemy.class).isEmpty()){
 				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
@@ -1141,7 +1150,7 @@ public abstract class Level implements Bundlable {
 			}
 
 			if ( (map[ch.pos] == Terrain.GRASS || map[ch.pos] == Terrain.EMBERS)
-					&& ch == Dungeon.hero && Dungeon.hero.hasTalent(Talent.REJUVENATING_STEPS)
+					&& ch == hero && hero.hasTalent(Talent.REJUVENATING_STEPS)
 					&& ch.buff(Talent.RejuvenatingStepsCooldown.class) == null){
 
 				if (!Regeneration.regenOn()){
@@ -1150,14 +1159,14 @@ public abstract class Level implements Bundlable {
 					set(ch.pos, Terrain.FURROWED_GRASS);
 				} else {
 					set(ch.pos, Terrain.HIGH_GRASS);
-					Buff.count(ch, Talent.RejuvenatingStepsFurrow.class, 3 - Dungeon.hero.pointsInTalent(Talent.REJUVENATING_STEPS));
+					Buff.count(ch, Talent.RejuvenatingStepsFurrow.class, 3 - hero.pointsInTalent(Talent.REJUVENATING_STEPS));
 				}
 				GameScene.updateMap(ch.pos);
-				Buff.affect(ch, Talent.RejuvenatingStepsCooldown.class, 15f - 5f*Dungeon.hero.pointsInTalent(Talent.REJUVENATING_STEPS));
+				Buff.affect(ch, Talent.RejuvenatingStepsCooldown.class, 15f - 5f* hero.pointsInTalent(Talent.REJUVENATING_STEPS));
 			}
 			
 			if (pit[ch.pos]){
-				if (ch == Dungeon.hero) {
+				if (ch == hero) {
 					Chasm.heroFall(ch.pos);
 				} else if (ch instanceof Mob) {
 					Chasm.mobFall( (Mob)ch );
@@ -1217,10 +1226,10 @@ public abstract class Level implements Bundlable {
 		}
 
 		TimekeepersHourglass.timeFreeze timeFreeze =
-				Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+				hero.buff(TimekeepersHourglass.timeFreeze.class);
 
 		Swiftthistle.TimeBubble bubble =
-				Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+				hero.buff(Swiftthistle.TimeBubble.class);
 
 		if (trap != null) {
 			if (bubble != null){
@@ -1234,8 +1243,8 @@ public abstract class Level implements Bundlable {
 				timeFreeze.setDelayedPress(cell);
 				
 			} else {
-				if (Dungeon.hero.pos == cell) {
-					Dungeon.hero.interrupt();
+				if (hero.pos == cell) {
+					hero.interrupt();
 				}
 				trap.trigger();
 
@@ -1330,7 +1339,7 @@ public abstract class Level implements Bundlable {
 		
 		int sense = 1;
 		//Currently only the hero can get mind vision
-		if (c.isAlive() && c == Dungeon.hero) {
+		if (c.isAlive() && c == hero) {
 			for (Buff b : c.buffs( MindVision.class )) {
 				sense = Math.max( ((MindVision)b).distance, sense );
 			}
@@ -1363,8 +1372,8 @@ public abstract class Level implements Bundlable {
 			}
 		}
 
-		if (c instanceof SpiritHawk.HawkAlly && Dungeon.hero.pointsInTalent(Talent.EAGLE_EYE) >= 3){
-			int range = 1+(Dungeon.hero.pointsInTalent(Talent.EAGLE_EYE)-2);
+		if (c instanceof SpiritHawk.HawkAlly && hero.pointsInTalent(Talent.EAGLE_EYE) >= 3){
+			int range = 1+(hero.pointsInTalent(Talent.EAGLE_EYE)-2);
 			for (Mob mob : mobs) {
 				int p = mob.pos;
 				if (!fieldOfView[p] && distance(c.pos, p) <= range) {
@@ -1376,7 +1385,7 @@ public abstract class Level implements Bundlable {
 		}
 
 		//Currently only the hero can get mind vision or awareness
-		if (c.isAlive() && c == Dungeon.hero) {
+		if (c.isAlive() && c == hero) {
 
 			if (heroMindFov == null || heroMindFov.length != length()){
 				heroMindFov = new boolean[length];
@@ -1384,7 +1393,7 @@ public abstract class Level implements Bundlable {
 				BArray.setFalse(heroMindFov);
 			}
 
-			Dungeon.hero.mindVisionEnemies.clear();
+			hero.mindVisionEnemies.clear();
 			if (c.buff( MindVision.class ) != null) {
 				for (Mob mob : mobs) {
 					if (mob instanceof Mimic && mob.alignment == Char.Alignment.NEUTRAL&& ((Mimic) mob).stealthy()){
@@ -1474,7 +1483,7 @@ public abstract class Level implements Bundlable {
 			//set mind vision chars
 			for (Mob mob : mobs) {
 				if (heroMindFov[mob.pos] && !fieldOfView[mob.pos]){
-					Dungeon.hero.mindVisionEnemies.add(mob);
+					hero.mindVisionEnemies.add(mob);
 				}
 			}
 
@@ -1482,7 +1491,7 @@ public abstract class Level implements Bundlable {
 
 		}
 
-		if (c == Dungeon.hero) {
+		if (c == hero) {
 			for (Heap heap : heaps.valueList())
 				if (!heap.seen && fieldOfView[heap.pos])
 					heap.seen = true;

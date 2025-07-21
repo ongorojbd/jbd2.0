@@ -49,23 +49,6 @@ public class Spw9 extends Item {
     }
 
     @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw9.class, "desc1"),
-                Messages.get(Spw9.class, "desc2"),
-                Messages.get(Spw9.class, "desc3"),
-                Messages.get(Spw9.class, "desc4"),
-                Messages.get(Spw9.class, "desc5"),
-                Messages.get(Spw9.class, "desc6"),
-                Messages.get(Spw9.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw9, descriptions.length - 1);
-        return descriptions[index];
-    }
-
-    @Override
     public boolean isUpgradable() {
         return true;
     }
