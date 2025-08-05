@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -198,7 +199,7 @@ public abstract class StandardRoom extends Room {
 	
 	
 	public static StandardRoom createRoom(){
-		if (SPDSettings.getTendency() > 0) return Reflection.newInstance(EmptyRoom.class); // 전투조류
+		if (tendencylevel) return Reflection.newInstance(EmptyRoom.class); // 전투조류
 		else return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
 	}
 	

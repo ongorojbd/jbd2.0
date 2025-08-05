@@ -26,15 +26,12 @@ public class Spw12 extends Item {
     public static final String AC_LIGHT	= "LIGHT";
 
     {
-        image = ItemSpriteSheet.SUPPLY_RATION;
-
-        icon = ItemSpriteSheet.Icons.RING_WEALTH;
+        image = ItemSpriteSheet.GOLD;
 
         stackable = true;
         levelKnown = true;
 
         defaultAction = AC_LIGHT;
-        upgrade(Statistics.spw12);
         unique = true;
     }
 
@@ -53,34 +50,10 @@ public class Spw12 extends Item {
         }
     }
 
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw12.class, "desc1"),
-                Messages.get(Spw12.class, "desc2"),
-                Messages.get(Spw12.class, "desc3"),
-                Messages.get(Spw12.class, "desc4"),
-                Messages.get(Spw12.class, "desc5"),
-                Messages.get(Spw12.class, "desc6"),
-                Messages.get(Spw12.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw12, descriptions.length - 1);
-        return descriptions[index];
-    }
-
     public static void Spw12Ability() {
-        int value = 50;
 
-        if (Statistics.spw12 > 0 && Statistics.spw12 < 5) value = value + 5 * Statistics.spw12;
-        if (Statistics.spw12 == 5)  value = 75;
-        if (Statistics.spw12 == 6)  value = 85;
-        if (Statistics.spw12 == 7)  value = 100;
+        new Gold().quantity(150).doPickUp( Dungeon.hero );
 
-        new Gold().quantity(value).doPickUp( Dungeon.hero );
-
-        if(Statistics.spw12 < 7) Statistics.spw12++;
     }
 
     @Override

@@ -14,16 +14,14 @@ public class Spw1 extends Item {
     public static final String AC_LIGHT	= "LIGHT";
 
     {
-        image = ItemSpriteSheet.SUPPLY_RATION;
+        image = ItemSpriteSheet.WORN_SHORTSWORD;
 
         stackable = true;
         levelKnown = true;
 
         defaultAction = AC_LIGHT;
-
-        unique = true;
         upgrade(Statistics.spw1);
-        icon = ItemSpriteSheet.Icons.RING_FORCE;
+        unique = true;
 
     }
 
@@ -40,23 +38,6 @@ public class Spw1 extends Item {
         if (action.equals( AC_LIGHT )) {
 
         }
-    }
-
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw1.class, "desc1"),
-                Messages.get(Spw1.class, "desc2"),
-                Messages.get(Spw1.class, "desc3"),
-                Messages.get(Spw1.class, "desc4"),
-                Messages.get(Spw1.class, "desc5"),
-                Messages.get(Spw1.class, "desc6"),
-                Messages.get(Spw1.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw1, descriptions.length - 1);
-        return descriptions[index];
     }
 
     @Override

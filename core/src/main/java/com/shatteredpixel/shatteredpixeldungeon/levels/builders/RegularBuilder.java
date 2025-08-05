@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.Connecti
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.MazeConnectionRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TendencyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.watabou.utils.Random;
 
@@ -101,6 +102,8 @@ public abstract class RegularBuilder extends Builder {
 			} else if (r.isExit()) {
 				exit = r;
 			} else if (r instanceof ShopRoom && r.maxConnections(Room.ALL) == 1){
+				shop = r;
+			} else if (r instanceof TendencyShopRoom && r.maxConnections(Room.ALL) == 1){
 				shop = r;
 			} else if (r.maxConnections(Room.ALL) > 1){
 				multiConnections.add(r);

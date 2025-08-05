@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -80,7 +81,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfCha
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
@@ -683,7 +686,10 @@ public class CursedWand {
 		CursedEffect effect;
 		do {
 			effect = Random.element(RARE_EFFECTS);
-		} while (!effect.valid(origin, user, bolt, positiveOnly));
+		} while (!effect.valid(origin, user, bolt, positiveOnly) || 
+				// 특정 조건에서는 제외할 효과들 (전투조류)
+				((Dungeon.level instanceof DioLevel || Dungeon.tendencylevel) &&
+				(effect instanceof SheepPolymorph || effect instanceof InterFloorTeleport || effect instanceof Petrify)));
 		return effect;
 	}
 
@@ -1019,7 +1025,10 @@ public class CursedWand {
 		CursedEffect effect;
 		do {
 			effect = Random.element(VERY_RARE_EFFECTS);
-		} while (!effect.valid(origin, user, bolt, positiveOnly));
+		} while (!effect.valid(origin, user, bolt, positiveOnly) || 
+				// 특정 조건에서는 제외할 효과들(전투조류)
+				((Dungeon.level instanceof DioLevel || Dungeon.tendencylevel) &&
+				(effect instanceof SinkHole)));
 		return effect;
 	}
 

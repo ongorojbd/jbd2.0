@@ -39,6 +39,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombiedSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 
 public class Zombied extends Mob {
 

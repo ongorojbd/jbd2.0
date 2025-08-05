@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -235,7 +236,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
-		if (SPDSettings.getTendency() > 0) { // 전투조류
+		if (tendencylevel) { // 전투조류
 			int arenaMobs = Math.round(4 + Dungeon.depth % 8 + Random.Int(4));
 
 			if (feeling == Feeling.LARGE) {

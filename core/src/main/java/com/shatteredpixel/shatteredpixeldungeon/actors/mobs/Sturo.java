@@ -36,15 +36,16 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class Sturo extends Mob {
+    private int level = Dungeon.depth / 2;
 
     {
         spriteClass = SturoSprite.class;
 
-        HP = HT = Dungeon.hero.HT;
+        HP = HT = (2 + level) * 15;
         defenseSkill = 0;
         EXP = 0;
-        maxLvl = -9;
-        viewDistance = 10;
+
+        viewDistance = 6;
         alignment = Alignment.ALLY;
         intelligentAlly = true;
     }
@@ -71,29 +72,25 @@ public class Sturo extends Mob {
 
     @Override
     public int attackSkill(Char target) {
-        return Dungeon.hero.lvl + 12;
+        if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+            return INFINITE_ACCURACY;
+        } else {
+            return (int) (8 + level * 1.5);
+        }
     }
 
     @Override
     public int damageRoll() {
-        int waveDamage = wave / 5;
-        return Random.NormalIntRange(waveDamage, 1 + waveDamage);
+        if (alignment == Alignment.NEUTRAL) {
+            return Random.NormalIntRange(2 + 2 * level, 2 + 2 * level);
+        } else {
+            return Random.NormalIntRange(1 + level, 2 + 2 * level);
+        }
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + hero.drRoll();
-    }
-
-    @Override
-    public void damage(int dmg, Object src) {
-
-        if (dmg >= 15) {
-            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
-            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
-            dmg = 15;
-        }
-        super.damage(dmg, src);
+        return super.drRoll() + Random.NormalIntRange(0, 1 + level / 2);
     }
 
     @Override
@@ -102,6 +99,10 @@ public class Sturo extends Mob {
         Sample.INSTANCE.play(Assets.Sounds.HIT_STAB, 1f, 0.8f);
         CellEmitter.get(enemy.pos).burst(SmokeParticle.FACTORY, 2);
         CellEmitter.center(enemy.pos).burst(BlastParticle.FACTORY, 2);
+
+        if (enemy instanceof Mob) {
+            ((Mob) enemy).aggro(this);
+        }
 
         if (charge >= 12) {
             Sample.INSTANCE.play(Assets.Sounds.HEI);

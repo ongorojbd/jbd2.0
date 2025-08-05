@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShovelDigCoolDown;
@@ -66,9 +67,11 @@ public class PortableCover2 extends Item {
                 hero.sprite.operate(hero.pos);
                 curUser.spendAndNext(1f);
 
-
                 Sample.INSTANCE.play( Assets.Sounds.EVOKE);
-                Buff.affect(hero, ShovelDigCoolDown.class, 20f);
+
+                int cooldown = 140 - 20 * Statistics.spw23;
+
+                Buff.affect(hero, ShovelDigCoolDown.class, cooldown);
             }}
     }
 

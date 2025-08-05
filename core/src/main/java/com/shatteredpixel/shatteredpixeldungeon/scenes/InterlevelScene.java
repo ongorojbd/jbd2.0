@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -37,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
@@ -93,6 +96,7 @@ public class InterlevelScene extends PixelScene {
     public static int returnBranch;
     public static int returnPos;
     public boolean diocheck = false;
+    public boolean tendencycheck = false;
     public boolean neoLevel = false;
 
     public static boolean fallIntoPit;
@@ -267,22 +271,13 @@ public class InterlevelScene extends PixelScene {
         } else {
             if (Dungeon.level instanceof DioLevel || Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel || Dungeon.level instanceof DiobossLevel || Dungeon.level instanceof ShipbossLevel) {
                 background = new Image(Assets.Splashes.BRANDO);
-            } else if (SPDSettings.getTendency() > 0) { // 전투조류
+            } else if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) {
                 background = new Image(Assets.Splashes.TENDENCY);
             } else if (Statistics.spw8 == 1) {
                 background = new Image(Assets.Splashes.SO);
             } else {
                 background = new Image(loadingAsset);
             }
-        }
-
-        if (neoLevel) {
-            if (SPDSettings.getTendency() > 0) { // 전투조류
-                background = new Image(Assets.Splashes.TENDENCY);
-            } else {
-                background = new Image(Assets.Splashes.SEWERS);
-            }
-            neoLevel = false;
         }
 
         background.scale.set(Camera.main.height / background.height);
@@ -340,10 +335,10 @@ public class InterlevelScene extends PixelScene {
         align(loadingText);
         add(loadingText);
 
-        if (mode == Mode.DESCEND && lastRegion <= 6 && !DeviceCompat.isDebug() && SPDSettings.getDio() == 0) {
+        if (mode == Mode.DESCEND && lastRegion <= 6 && !DeviceCompat.isDebug() && SPDSettings.getDio() == 0 && !tendencylevel) {
             if (Dungeon.hero == null || (loadingDepth > Statistics.deepestFloor && loadingDepth % 5 == 1)) {
                 String messageText;
-                if (SPDSettings.getTendency() > 0) {
+                if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) { // 전투조류
                     messageText = Messages.get(InterlevelScene.class, "tendency_message");
                 } else {
                     messageText = Document.INTROS.pageBody(region);
@@ -792,8 +787,9 @@ public class InterlevelScene extends PixelScene {
     }
 
     private void checkLevel() throws IOException {
-        if (Dungeon.loadLevel(GamesInProgress.curSlot) instanceof DioLevel) diocheck = true;
-        else diocheck = false;
+        diocheck = Dungeon.loadLevel(GamesInProgress.curSlot) instanceof DioLevel;
+
+        tendencycheck = Dungeon.loadLevel(GamesInProgress.curSlot) instanceof ArenaLevel;
     }
 
     private void restore() throws IOException {

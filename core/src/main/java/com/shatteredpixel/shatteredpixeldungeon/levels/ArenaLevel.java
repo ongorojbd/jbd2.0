@@ -26,19 +26,24 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.ArenaPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBossExitRoom2;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TendencyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
@@ -58,9 +63,13 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -74,7 +83,7 @@ public class ArenaLevel extends RegularLevel {
 
     public void playLevelMusic(){
         Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.CIV},
+                new String[]{Assets.Music.TENDENCY1},
                 new float[]{1},
                 false);
     }
@@ -169,7 +178,9 @@ public class ArenaLevel extends RegularLevel {
     protected ArrayList<Room> initRooms() {
         ArrayList<Room> initRooms = new ArrayList<>();
         initRooms.add ( roomEntrance = new com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom());
-        initRooms.add( new ShopRoom());
+
+        if (Dungeon.depth % 2 == 0) initRooms.add( new TendencyShopRoom());
+
         initRooms.add( roomExit = new SewerBossExitRoom2());
 
         for (int i = 0; i < 2 + Dungeon.depth * 2 / 8; i++) {
@@ -299,6 +310,35 @@ public class ArenaLevel extends RegularLevel {
                 return Messages.get(CityLevel.class, "bookshelf_desc");
             default:
                 return super.tileDesc( tile );
+        }
+    }
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+
+        if (transition.type == LevelTransition.Type.SURFACE){
+            if (hero.belongings.getItem( Amulet.class ) == null) {
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show( new WndMessage( Messages.get(hero, "tendency") ) );
+                    }
+                });
+                return false;
+            } else {
+
+                return true;
+            }
+        } else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show( new WndMessage( Messages.get(hero, "tendency2") ) );
+                }
+            });
+            return false;
+        } else {
+            return super.activateTransition(hero, transition);
         }
     }
 

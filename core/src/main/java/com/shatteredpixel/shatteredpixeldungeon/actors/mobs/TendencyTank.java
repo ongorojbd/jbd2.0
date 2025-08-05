@@ -1,16 +1,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.wave;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -27,15 +27,16 @@ import java.util.ArrayList;
 
 public class TendencyTank extends Mob {
 
+    private int level = Dungeon.depth / 2;
+
     {
         spriteClass = TendencyTankSprite.class;
 
-        HP = HT = Dungeon.hero.HT;
+        HP = HT = (2 + level) * 15;
         defenseSkill = 0;
-        baseSpeed = 0.5f;
         EXP = 0;
-        maxLvl = -9;
-        viewDistance = 10;
+
+        viewDistance = 6;
         alignment = Alignment.ALLY;
         intelligentAlly = true;
     }
@@ -61,7 +62,7 @@ public class TendencyTank extends Mob {
         }
     }
 
-    protected int rangedCooldown = Random.NormalIntRange(1, 2);
+    protected int rangedCooldown = 3;
 
     @Override
     protected boolean canAttack(Char enemy) {
@@ -123,13 +124,17 @@ public class TendencyTank extends Mob {
 
             for (int i : PathFinder.NEIGHBOURS9) {
                 if (!Dungeon.level.solid[targetingPos + i]) {
-                    sprite.parent.add(new Beam.HealthRay(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(targetingPos + i)));
+                    sprite.parent.add(new Beam.SPWRay(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(targetingPos + i)));
                     CellEmitter.center(targetingPos + i).burst(SmokeParticle.FACTORY, 4);
                     Char target = Actor.findChar(targetingPos + i);
                     if (target != null && target.alignment != alignment) {
-                        int waveDamage = wave / 5;
-                        int dmg = Random.NormalIntRange(enemy.HT / 2 + waveDamage + 10, enemy.HT / 2 + waveDamage + 16);
-                        target.damage(dmg, new DarkBolt());
+                        int dmgboss = Random.NormalIntRange(enemy.HT / 6, enemy.HT / 5);
+                        int dmg = Random.NormalIntRange(enemy.HT / 2, enemy.HT);
+
+                        if (target.properties().contains(Char.Property.BOSS)) target.damage(dmgboss, new DarkBolt());
+                        else target.damage(dmg, new DarkBolt());
+                        Buff.affect(target, Paralysis.class, 2f);
+                        Buff.affect(target, Burning.class).reignite(enemy, 2f);
                     }
                 }
             }
@@ -137,18 +142,30 @@ public class TendencyTank extends Mob {
         }
 
         targetingPos = -1;
-        rangedCooldown = 6;
+        rangedCooldown = 20;
     }
 
     @Override
     public int attackSkill(Char target) {
-        return Dungeon.hero.lvl + 12;
+        if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+            return INFINITE_ACCURACY;
+        } else {
+            return (int) (8 + level * 1.5);
+        }
     }
 
     @Override
     public int damageRoll() {
-        int waveDamage = wave / 5;
-        return Random.NormalIntRange(3 + waveDamage, 9 + waveDamage);
+        if (alignment == Alignment.NEUTRAL) {
+            return Random.NormalIntRange(2 + 2 * level, 2 + 2 * level);
+        } else {
+            return Random.NormalIntRange(level, 2 * level);
+        }
+    }
+
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(2, 2 + level / 2);
     }
 
     @Override

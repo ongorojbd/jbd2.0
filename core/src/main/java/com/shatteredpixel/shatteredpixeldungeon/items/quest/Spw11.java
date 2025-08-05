@@ -17,11 +17,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TendencyTank;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Willamob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpwSoldierSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SturoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBossText;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -30,7 +35,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class Spw11 extends Item {
-    public static final String AC_LIGHT	= "LIGHT";
+    public static final String AC_LIGHT = "LIGHT";
 
     {
         image = ItemSpriteSheet.SUPPLY_RATION;
@@ -48,96 +53,59 @@ public class Spw11 extends Item {
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
-        actions.add( AC_LIGHT );
+        actions.add(AC_LIGHT);
         return actions;
     }
 
     @Override
     public void execute(Hero hero, String action) {
-        super.execute( hero, action );
-        if (action.equals( AC_LIGHT )) {
-
+        super.execute(hero, action);
+        if (action.equals(AC_LIGHT)) {
+            Spw11Ability();
+            detach(Dungeon.hero.belongings.backpack);
         }
     }
 
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw11.class, "desc1"),
-                Messages.get(Spw11.class, "desc2"),
-                Messages.get(Spw11.class, "desc3"),
-                Messages.get(Spw11.class, "desc4"),
-                Messages.get(Spw11.class, "desc5"),
-                Messages.get(Spw11.class, "desc6"),
-                Messages.get(Spw11.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw11, descriptions.length - 1);
-        return descriptions[index];
-    }
-
     public static void Spw11Ability() {
+
+        Statistics.spw11++;
 
         ArrayList<Integer> spawnPoints = new ArrayList<>();
 
         for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
             int p = hero.pos + PathFinder.NEIGHBOURS8[i];
-            if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
-                spawnPoints.add( p );
+            if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
+                spawnPoints.add(p);
             }
         }
 
-        if (!spawnPoints.isEmpty()){
-
-            if (Statistics.spw11 == 7) {
-                if (Statistics.neoroca == 0) {
-                    Game.runOnRenderThread(new Callback() {
-                        @Override
-                        public void call() {
-                            GameScene.show(new WndBossText(new SpwSoldier(), Messages.get(SpwSoldier.class, "t1")) {
-                                @Override
-                                public void hide() {
-                                    super.hide();
-                                }
-                            });
+        if (!spawnPoints.isEmpty()) {
+            if (Statistics.spw11 % 3 == 0) {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new SpwSoldierSprite()},
+                        new String[]{"특별과학 전투대"},
+                        new String[]{
+                                Messages.get(SpwSoldier.class, "t1")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE
                         }
-                    });
+                );
 
-                    TendencyTank tendencyTank = new TendencyTank();
-                    tendencyTank.state = tendencyTank.HUNTING;
-                    GameScene.add(tendencyTank);
-                    ScrollOfTeleportation.appear(tendencyTank, Random.element(spawnPoints));
-                    Statistics.neoroca = 1;
-                } else {
-                    SpwSoldier spwSoldier = new SpwSoldier();
-                    if (Statistics.spw11 > 2) Buff.affect(spwSoldier, Barrier.class).setShield(5);
-                    spwSoldier.state = spwSoldier.HUNTING;
-                    GameScene.add( spwSoldier );
-                    ScrollOfTeleportation.appear( spwSoldier, Random.element(spawnPoints) );
-                    GLog.n(Messages.get(SpwSoldier.class, "t2"));
-                }
-            } else {
-                Game.runOnRenderThread(new Callback() {
-                    @Override
-                    public void call() {
-                        GameScene.show(new WndBossText(new SpwSoldier(), Messages.get(SpwSoldier.class, "t1")) {
-                            @Override
-                            public void hide() {
-                                super.hide();
-                            }
-                        });
-                    }
-                });
-
+                TendencyTank tendencyTank = new TendencyTank();
+                tendencyTank.state = tendencyTank.HUNTING;
+                GameScene.add(tendencyTank);
+                ScrollOfTeleportation.appear(tendencyTank, Random.element(spawnPoints));
+                Bestiary.setSeen(TendencyTank.class);
+            } else  {
                 SpwSoldier spwSoldier = new SpwSoldier();
-                if (Statistics.spw11 > 2) Buff.affect(spwSoldier, Barrier.class).setShield(5);
                 spwSoldier.state = spwSoldier.HUNTING;
-                GameScene.add( spwSoldier );
-                ScrollOfTeleportation.appear( spwSoldier, Random.element(spawnPoints) );
+                GameScene.add(spwSoldier);
+                ScrollOfTeleportation.appear(spwSoldier, Random.element(spawnPoints));
                 GLog.n(Messages.get(SpwSoldier.class, "t2"));
-                Statistics.neoroca = 1;
+                Bestiary.setSeen(SpwSoldier.class);
             }
+
         } else {
             GLog.w(Messages.get(SpiritHawk.class, "no_space"));
         }

@@ -101,28 +101,17 @@ public class ShopRoom extends SpecialRoom {
 
 	@Override
 	public int minWidth() {
-		if (SPDSettings.getTendency() > 0) {
-			// Tendency 모드에서는 더 작은 크기 사용
-			return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded() * 0.5)));
-		}
 		return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded())));
 	}
 
 	@Override
 	public int minHeight() {
-		if (SPDSettings.getTendency() > 0) {
-			// Tendency 모드에서는 더 작은 크기 사용
-			return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded() * 0.5)));
-		}
 		return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded())));
 	}
 
-
     public int spacesNeeded() {
         if (itemsToSpawn == null) {
-            if (SPDSettings.getTendency() > 0) { // 전투조류
-                itemsToSpawn = generateItemsGauntlet();
-            } else itemsToSpawn = generateItems();
+         itemsToSpawn = generateItems();
         }
         //sandbags spawn based on current level of an hourglass the player may be holding
         // so, to avoid rare cases of min sizes differing based on that, we ignore all sandbags
@@ -168,11 +157,7 @@ public class ShopRoom extends SpecialRoom {
     protected void placeItems(Level level) {
 
         if (itemsToSpawn == null) {
-			if (SPDSettings.getTendency() > 0) { // 전투조류
-				itemsToSpawn = generateItemsGauntlet();
-			} else {
 				itemsToSpawn = generateItems();
-			}
         }
 
         Point entryInset = new Point(entrance());

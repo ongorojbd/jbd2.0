@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieBrute2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieBruteSprite;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -72,14 +73,9 @@ public class ZombieBrute2 extends Mob {
 
         super.die(cause);
 
-        Statistics.duwang3++;
-
-        if (Statistics.duwang3 == Statistics.duwang2) {
-            spwPrize(pos);
+        if (Random.Int( 3 ) == 0) {
+            Dungeon.level.drop( new Gold().quantity(Random.IntRange(45, 55)), pos ).sprite.drop();
         }
-        if (Statistics.wave == 13) Dungeon.level.drop(new PotionOfStrength().identify(), pos).sprite.drop();
-
-        if (Random.Int( 8 ) == 0) Dungeon.level.drop( new Gold().quantity(10), pos ).sprite.drop();
 
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play(Assets.Sounds.BONES, Random.Float(1.2f, 0.9f));

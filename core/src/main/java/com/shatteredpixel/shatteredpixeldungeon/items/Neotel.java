@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -49,7 +50,8 @@ public class Neotel extends Item {
         super.execute(hero, action);
         if (action.equals(AC_TELEPORT)) {
             GLog.h(Messages.get(Neotel.class, "s"), SPDSettings.getSkin(), SPDSettings.getSkin2(), SPDSettings.getSkin3(), SPDSettings.getSkin4(), SPDSettings.getSkin5());
-
+            Buff.affect(hero, MagicalSight.class, 50f);
+            Buff.affect(hero, MindVision.class, 50f);
 
             Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);

@@ -222,12 +222,12 @@ public abstract class Level implements Bundlable {
 
 		Random.pushGenerator( Dungeon.seedCurDepth() );
 
-		if (!Dungeon.bossLevel() && Dungeon.level instanceof Dio2Level && SPDSettings.getTendency() == 0) { // 전투조류
+		if (!Dungeon.bossLevel() && Dungeon.level instanceof Dio2Level && !(Dungeon.tendencylevel)) { // 전투조류
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
 		}
 
 		//TODO maybe just make this part of RegularLevel?
-		if (!Dungeon.bossLevel() && Dungeon.branch == 0 && SPDSettings.getTendency() == 0) { // 전투조류
+		if (!Dungeon.bossLevel() && Dungeon.branch == 0 && !(Dungeon.tendencylevel)) { // 전투조류
 
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
 
@@ -262,7 +262,7 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new TrinketCatalyst());
 			}
 			
-			if (Dungeon.depth > 1 && SPDSettings.getTendency() == 0) { // 전투조류
+			if (Dungeon.depth > 1 && !(Dungeon.tendencylevel)) { // 전투조류
 				//50% chance of getting a level feeling
 				//~7.15% chance for each feeling
 				switch (Random.Int( 14 )) {

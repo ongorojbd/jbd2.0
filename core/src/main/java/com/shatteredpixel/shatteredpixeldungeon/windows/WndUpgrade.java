@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw9.Spw9Upgrader;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -410,6 +411,9 @@ public class WndUpgrade extends Window {
 				} else if (upgrader instanceof MagicalInfusion){
 					((MagicalInfusion) upgrader).useAnimation();
 					upgraded = ((MagicalInfusion) upgrader).upgradeItem(toUpgrade);
+				} else if (upgrader instanceof Spw9Upgrader){
+					((Spw9Upgrader) upgrader).useAnimation();
+					upgraded = ((Spw9Upgrader) upgrader).upgradeItem(toUpgrade);
 				}
 
 				if (!force) upgrader.detach(Dungeon.hero.belongings.backpack);
@@ -434,6 +438,8 @@ public class WndUpgrade extends Window {
 					((ScrollOfUpgrade) upgrader).reShowSelector(force);
 				} else if (upgrader instanceof MagicalInfusion){
 					((MagicalInfusion)upgrader).reShowSelector();
+				} else if (upgrader instanceof Spw9Upgrader){
+					((Spw9Upgrader)upgrader).reShowSelector();
 				}
 			}
 
@@ -467,6 +473,8 @@ public class WndUpgrade extends Window {
 			((ScrollOfUpgrade) upgrader).reShowSelector(force);
 		} else if (upgrader instanceof MagicalInfusion){
 			((MagicalInfusion)upgrader).reShowSelector();
+		} else if (upgrader instanceof Spw9Upgrader){
+			((Spw9Upgrader)upgrader).reShowSelector();
 		}
 	}
 

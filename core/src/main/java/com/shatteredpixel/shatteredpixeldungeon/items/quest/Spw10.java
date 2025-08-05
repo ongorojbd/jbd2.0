@@ -15,15 +15,23 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Sturo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TendencyTank;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.jojo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary4;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.LisaSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SturoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBossText;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
@@ -44,7 +52,6 @@ public class Spw10 extends Item {
         levelKnown = true;
 
         defaultAction = AC_LIGHT;
-        upgrade(Statistics.spw10);
         unique = true;
     }
 
@@ -59,28 +66,14 @@ public class Spw10 extends Item {
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals(AC_LIGHT)) {
-
+            Spw10Ability();
+            detach(Dungeon.hero.belongings.backpack);
         }
     }
 
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw10.class, "desc1"),
-                Messages.get(Spw10.class, "desc2"),
-                Messages.get(Spw10.class, "desc3"),
-                Messages.get(Spw10.class, "desc4"),
-                Messages.get(Spw10.class, "desc5"),
-                Messages.get(Spw10.class, "desc6"),
-                Messages.get(Spw10.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw10, descriptions.length - 1);
-        return descriptions[index];
-    }
-
     public static void Spw10Ability() {
+
+        Statistics.spw10++;
 
         ArrayList<Integer> spawnPoints = new ArrayList<>();
 
@@ -92,38 +85,31 @@ public class Spw10 extends Item {
         }
 
         if (!spawnPoints.isEmpty()) {
-
-            if (Statistics.spw10 == 7) {
-                if (Statistics.neoroca == 0) {
-                    Game.runOnRenderThread(new Callback() {
-                        @Override
-                        public void call() {
-                            GameScene.show(new WndBossText(new Sturo(), Messages.get(Sturo.class, "t1")) {
-                                @Override
-                                public void hide() {
-                                    super.hide();
-                                }
-                            });
+            if (Statistics.spw10 % 3 == 0) {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new SturoSprite(), new SturoSprite()},
+                        new String[]{"슈트로하임", "슈트로하임"},
+                        new String[]{
+                                Messages.get(Sturo.class, "t1"),
+                                Messages.get(Sturo.class, "t2")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE
                         }
-                    });
+                );
 
-                    Sturo sturo = new Sturo();
-                    sturo.state = sturo.HUNTING;
-                    GameScene.add(sturo);
-                    ScrollOfTeleportation.appear(sturo, Random.element(spawnPoints));
-                    Statistics.neoroca = 1;
-                } else {
-                    GSoldier gSoldier = new GSoldier();
-                    gSoldier.state = gSoldier.HUNTING;
-                    GameScene.add(gSoldier);
-                    ScrollOfTeleportation.appear(gSoldier, Random.element(spawnPoints));
-                }
+                Sturo sturo = new Sturo();
+                sturo.state = sturo.HUNTING;
+                GameScene.add(sturo);
+                ScrollOfTeleportation.appear(sturo, Random.element(spawnPoints));
+                Bestiary.setSeen(Sturo.class);
             } else {
                 GSoldier gSoldier = new GSoldier();
                 gSoldier.state = gSoldier.HUNTING;
                 GameScene.add(gSoldier);
                 ScrollOfTeleportation.appear(gSoldier, Random.element(spawnPoints));
-                Statistics.neoroca = 1;
+                Bestiary.setSeen(GSoldier.class);
             }
         } else {
             GLog.w(Messages.get(SpiritHawk.class, "no_space"));

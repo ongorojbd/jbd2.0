@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieBruteSprite;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -23,7 +24,7 @@ public class ZombieBrute extends Mob {
 
         HP = HT = 16;
         defenseSkill = 5;
-        baseSpeed = 1.5f;
+        baseSpeed = 1.3f;
 
         EXP = 4;
         maxLvl = 9;
@@ -36,7 +37,7 @@ public class ZombieBrute extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(1 + attackpower, 5 + attackpower);
+        return Random.NormalIntRange(1 + attackpower, 4 + attackpower);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class ZombieBrute extends Mob {
 
     @Override
     public boolean act() {
-        if (buff(rage.class) == null) {
+        if (this.HP < this.HT && buff(rage.class) == null) {
             Buff.affect(this, rage.class);
         } else if (buff(rage.class) != null) {
             if (HP <= 16 && HP > 1) damage(1, this);
@@ -72,15 +73,10 @@ public class ZombieBrute extends Mob {
         super.die(cause);
 
         Buff.detach(this, rage.class);
-        Statistics.duwang3++;
 
-        if (Statistics.wave == 7) Dungeon.level.drop(new PotionOfStrength().identify(), pos).sprite.drop();
-
-        if (Statistics.duwang3 == Statistics.duwang2) {
-            spwPrize(pos);
+        if (Random.Int( 3 ) == 0) {
+            Dungeon.level.drop( new Gold().quantity(Random.IntRange(45, 55)), pos ).sprite.drop();
         }
-
-        if (Random.Int( 8 ) == 0) Dungeon.level.drop( new Gold().quantity(10), pos ).sprite.drop();
 
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play(Assets.Sounds.BONES, Random.Float(1.2f, 0.9f));

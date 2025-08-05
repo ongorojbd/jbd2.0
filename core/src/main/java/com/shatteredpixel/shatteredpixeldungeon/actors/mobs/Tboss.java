@@ -31,24 +31,27 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BloodDrain;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.IceBlow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TbossSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -81,10 +84,10 @@ public class Tboss extends Mob {
     }
     private ArrayList<Integer> targetedCells = new ArrayList<>();
 
-    public int  Phase = 0;
+    private int  Phase = 0;
     private float leapCooldown = 8;
-    private int blastcooldown = 2;
-    private int barriercooldown = 9;
+    private int blastcooldown = 1;
+    private int bloodDrainCooldown = 0; // 흡혈 능력 쿨다운
 
     private int zcooldown = 99999;
     private int charge = 0; // 2이 될경우 강화 사격
@@ -135,77 +138,83 @@ public class Tboss extends Mob {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
 
-            WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new TbossSprite(), new TbossSprite()},
-                    new String[]{"스트레이초", "스트레이초"},
-                    new String[]{
-                            Messages.get(Tboss.class, "t1"),
-                            Messages.get(Tboss.class, "t2")
-                    },
-                    new byte[]{
-                            WndDialogueWithPic.IDLE,
-                            WndDialogueWithPic.IDLE
-                    }
-            );
+            if (Dungeon.hero.heroClass == HeroClass.MAGE) {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new TbossSprite(), new TrapperSprite(), new TrapperSprite()},
+                        new String[]{"스트레이초", "죠셉", "죠셉"},
+                        new String[]{
+                                Messages.get(Tboss.class, "t3"),
+                                Messages.get(Tboss.class, "t4"),
+                                Messages.get(Tboss.class, "t5")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE
+                        }
+                );
+            }
+            else {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new TbossSprite(), new TbossSprite()},
+                        new String[]{"스트레이초", "스트레이초"},
+                        new String[]{
+                                Messages.get(Tboss.class, "t1"),
+                                Messages.get(Tboss.class, "t2")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE
+                        }
+                );
+            }
         }
-    }
-
-    @Override
-    protected boolean getCloser(int target) {
-
-        target = Dungeon.hero.pos;
-
-        return super.getCloser( target );
     }
 
     @Override
     public void damage(int dmg, Object src) {
 
         BossHealthBar.assignBoss(this);
-        int preHP = HP;
-        int dmgTaken = preHP - HP;
 
         super.damage(dmg, src);
 
-        if (Phase==0 && HP < 90) {
+        if (Phase==0 && HP < 100) {
             Phase = 1;
             immunities.add(Grim.class );
             GameScene.flash( 0xFF0000 );
             new Flare( 5, 32 ).color( 0xFF0000, true ).show( this.sprite, 2f );
-            summonRats(2);
             yell(Messages.get(this, "t"));
-            zcooldown = 26;
-        }
-
-        if (Phase==1 && HP < 31) {
-            Phase = 2;
-            GameScene.flash( 0xFFCC00 );
-            GLog.n(Messages.get(this, "j"));
-            GLog.p(Messages.get(this, "t5"));
+            // 페이즈 1에서 흡혈 능력 활성화
+            zcooldown = 2; // 흡혈 능력 쿨다운 단축
         }
     }
 
 
     private boolean UseAbility() {
 
-        if (barriercooldown <= 0) {
+        if (zcooldown == 1)  {
 
-            barriercooldown = 14;
-            return true;
+            if(blastcooldown < 3){
+                blastcooldown += 4;
+            }
+
+            GLog.w(Messages.get(this, "i"));
+            Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+            SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
+            Dungeon.hero.interrupt();
         }
 
+        // 흡혈 능력 (기본 패턴으로 강화)
         if (zcooldown <= 0) {
-            yell( Messages.get(this, "zomb") );
-            CellEmitter.get( this.pos ).burst( MagicMissile.MagicParticle.FACTORY, 12 );
-            summonRats(Random.Int(2, 3));
-            zcooldown = 30;
-
+            Buff.affect(this, BloodDrain.class, 2f);
+            Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+            CellEmitter.center(this.pos).burst(BloodParticle.BURST, 20);
+            zcooldown = 12;
             return true;
         }
 
         if (FireBlast()){
             sprite.showStatus(CharSprite.WARNING, Messages.get(Tboss.class, "u"));
-
             return true;
         }
 
@@ -215,9 +224,22 @@ public class Tboss extends Mob {
 
     @Override
     public int attackProc(Char enemy, int damage) {
-
         damage = super.attackProc(enemy, damage);
+        
+        // BloodDrain 버프가 있을 때만 흡혈 가능
+        if (this.buff(BloodDrain.class) != null) {
+            int drain = 20;
 
+            HP = Math.min(HT, HP + drain);
+            
+            // 흡혈 효과
+            CellEmitter.center(this.pos).burst(BloodParticle.BURST, 8);
+            sprite.showStatus(CharSprite.POSITIVE, "+" + drain);
+            
+            // 버프 제거 (한 번 사용하면 사라짐)
+            Buff.detach(this, BloodDrain.class);
+        }
+        
         return damage;
     }
 
@@ -241,9 +263,9 @@ public class Tboss extends Mob {
     private static final String SKILLCD   = "charge";
     private static final String PHASE   = "Phase";
     private static final String TARGETED_CELLS = "targeted_cells";
-
-    private static final String BARRIER_CD  = "barriercooldown";
     private static final String Z_CD  = "zcooldown";
+
+    private static final String BLOOD_DRAIN_CD = "blooddraincooldown";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -254,8 +276,8 @@ public class Tboss extends Mob {
         bundle.put(LEAP_CD, leapCooldown);
         bundle.put( SKILLCD, charge );
         bundle.put( PHASE, Phase );
-        bundle.put( BARRIER_CD, barriercooldown );
         bundle.put( Z_CD, zcooldown );
+        bundle.put( BLOOD_DRAIN_CD, bloodDrainCooldown );
 
         int[] bundleArr = new int[targetedCells.size()];
         for (int i = 0; i < targetedCells.size(); i++){
@@ -273,8 +295,8 @@ public class Tboss extends Mob {
         leapCooldown = bundle.getFloat(LEAP_CD);
         charge = bundle.getInt(SKILLCD);
         Phase = bundle.getInt(PHASE);
-        barriercooldown = bundle.getInt(BARRIER_CD);
         zcooldown = bundle.getInt(Z_CD);
+        bloodDrainCooldown = bundle.getInt(BLOOD_DRAIN_CD);
 
         for (int i : bundle.getIntArray(TARGETED_CELLS)){
             targetedCells.add(i);
@@ -286,17 +308,6 @@ public class Tboss extends Mob {
     @Override
     protected boolean act() {
 
-        if (barriercooldown == 1)  {
-
-            if(blastcooldown < 3){
-                blastcooldown += 4;
-            }
-            sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-            Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
-            Buff.affect(this, Adrenaline.class, 2f);
-            Dungeon.hero.interrupt();
-        }
-
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
         }
@@ -306,9 +317,8 @@ public class Tboss extends Mob {
         }
 
         if (blastcooldown > 0) blastcooldown--;
-        if (barriercooldown > 0) barriercooldown--;
         if (zcooldown > 0) zcooldown--;
-
+        if (bloodDrainCooldown > 0) bloodDrainCooldown--;
 
         AiState lastState = state;
         boolean result = super.act();
@@ -488,9 +498,12 @@ public class Tboss extends Mob {
                 }
         );
 
+        Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
+        Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
+
         GameScene.bossSlain();
 
-        Music.INSTANCE.play(Assets.Music.TENDENCY1, true);
+        Music.INSTANCE.end();
 
         Dungeon.level.unseal();
 
@@ -498,11 +511,7 @@ public class Tboss extends Mob {
 
     @Override
     public int damageRoll() {
-        int ice = 1;
-        if (this.buff(IceBlow.class) != null) ice = 3;
-        return enemy == Dungeon.hero || enemy instanceof Willa2 ?
-                Random.NormalIntRange( 2 * ice, 12 * ice) :
-                Random.NormalIntRange( 2, 5 );
+        return Random.NormalIntRange( 2, 12 );
     }
 
     @Override
@@ -561,7 +570,6 @@ public class Tboss extends Mob {
 
         targetedCells.clear();
 
-
         if (blastcooldown <= 0){
 
             int beams = 2;
@@ -611,40 +619,5 @@ public class Tboss extends Mob {
     }
 
 
-
-
-    public void summonRats(int amount) {
-
-
-        while (amount > 0) {
-
-            ArrayList<Integer> respawnPoints = new ArrayList<>();
-
-            for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-                int p = this.pos + PathFinder.NEIGHBOURS8[i];
-                if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
-                    respawnPoints.add(p);
-                }
-                int index = Random.index(respawnPoints);
-            }
-
-            if (respawnPoints.size() > 0) {
-                Mob mob;
-
-                    mob = new ZombieTwoTboss();
-
-                mob.pos = Random.element(respawnPoints);
-                GameScene.add(mob, 1);
-                mob.state = mob.HUNTING;
-                Dungeon.level.occupyCell(mob);
-            }
-
-
-            amount--;
-        }
-
-
-    }
-
-
 }
+

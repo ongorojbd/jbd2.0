@@ -176,8 +176,8 @@ public class Assets {
         public static final String YUUKI = "music/yuuki.ogg";
 
         public static final String JONATHAN = "music/jonathan.ogg";
-        public static final String TENDENCY1 = "music/tendency1.ogg";
-        public static final String TENDENCY2 = "music/tendency2.ogg";
+        public static final String TENDENCY1 = "music/tendency_1.ogg";
+        public static final String TENDENCY2 = "music/tendency_2.ogg";
     }
 
     public static class Sounds {
@@ -504,6 +504,9 @@ public class Assets {
         public static final String SO2 = "sprites/so2.png";
         public static final String CRAB = "sprites/crab.png";
         public static final String GOO = "sprites/goo.png";
+        public static final String ABOMINATION = "sprites/abomination.png";
+        public static final String VSPRITE = "sprites/vsprite.png";
+        public static final String VTESTSPRITE = "sprites/vtestsprite.png";
         public static final String SWARM = "sprites/swarm.png";
         public static final String SKELETON = "sprites/skeleton.png";
         public static final String SHAMAN = "sprites/shaman.png";
@@ -639,6 +642,9 @@ public class Assets {
         public static final String ZOMBIET2 = "sprites/zombiet2.png";
 
         public static final String ZOMBIEB = "sprites/zombieb.png";
+        public static final String ZOMBIESOL = "sprites/zombiesoldier.png";
+        public static final String NEWSANTANA = "sprites/newsantana.png";
+        public static final String NIKU = "sprites/niku.png";
 
         public static final String SPEEDWAGON = "sprites/speedwagon.png";
         public static final String SPEEDWAGON2 = "sprites/speedwagon2.png";

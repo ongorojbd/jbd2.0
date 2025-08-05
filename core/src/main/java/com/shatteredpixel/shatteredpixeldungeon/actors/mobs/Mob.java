@@ -22,13 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
@@ -76,9 +77,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourg
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
@@ -91,6 +94,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -938,7 +942,7 @@ public abstract class Mob extends Char {
 
         }
 
-        if (alignment == Alignment.ENEMY && SPDSettings.getTendency() > 0){ // 전투조류
+        if (alignment == Alignment.ENEMY && tendencylevel && Dungeon.level instanceof ArenaLevel){ // 전투조류
             // 현재 죽는 몹을 제외하고 다른 적 몹이 살아있는지 확인
             boolean mobsAlive = false;
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -951,8 +955,20 @@ public abstract class Mob extends Char {
                 Dungeon.level.combatRewardDropped = true;
                 spwPrize(pos);
                 Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
-                Dungeon.level.drop(new Gold().quantity(100), pos).sprite.drop();
                 Dungeon.level.unseal();
+
+                Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1f, 2f);
+
+                if (Statistics.spw24 > 0) {
+                    // spw24 값에 따라 확률 계산 (10% + spw24 * 10%, 최대 100%)
+                    int capped = Math.min(10, Statistics.spw24);
+                    int chance = 10 + (capped * 10);
+                    if (Random.Int(100) < chance) {
+                        Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
+                        new Flare(5, 32).color(0xFFFF00, true).show(hero.sprite, 2f);
+                    }
+                }
+
             }
         }
 

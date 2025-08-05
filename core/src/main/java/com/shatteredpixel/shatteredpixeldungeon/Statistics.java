@@ -87,6 +87,21 @@ public class Statistics {
     public static int spw13;
     public static int spw14;
     public static int spw15;
+    public static int spw16;
+    public static int spw17;
+    public static int spw18;
+    public static int spw19;
+    public static int spw20;
+    public static int spw21;
+    public static int spw22;
+    public static int spw23;
+    public static int spw24;
+    public static int spw25;
+    public static int spw26;
+    public static int spw27;
+    public static int spw28;
+    public static int spw29;
+    public static int spw30;
     public static int cizah;
     public static int diocount;
     public static int zombiecount;
@@ -106,6 +121,7 @@ public class Statistics {
     public static boolean ascended = false;
     public static boolean polpoQuest = false;
     public static boolean diokilled = false;
+    public static boolean tendencyMode = false;
 
     public static void reset() {
 
@@ -159,8 +175,23 @@ public class Statistics {
         spw11 = 0;
         spw12 = 0;
         spw13 = 0;
-        spw14= 0;
-        spw15= 0;
+        spw14 = 0;
+        spw15 = 0;
+        spw16 = 0;
+        spw17 = 0;
+        spw18 = 0;
+        spw19 = 0;
+        spw20 = 0;
+        spw21 = 0;
+        spw22 = 0;
+        spw23 = 0;
+        spw24 = 0;
+        spw25 = 0;
+        spw26 = 0;
+        spw27 = 0;
+        spw28 = 0;
+        spw29 = 0;
+        spw30 = 0;
         cizah= 0;
         diocount = 0;
         zombiecount = 0;
@@ -179,6 +210,7 @@ public class Statistics {
         ascended = false;
         diokilled = false;
         polpoQuest = false;
+        tendencyMode = false;
 
     }
 
@@ -214,6 +246,21 @@ public class Statistics {
     private static final String SPW13 = "spw13";
     private static final String SPW14 = "spw14";
     private static final String SPW15 = "spw15";
+    private static final String SPW16 = "spw16";
+    private static final String SPW17 = "spw17";
+    private static final String SPW18 = "spw18";
+    private static final String SPW19 = "spw19";
+    private static final String SPW20 = "spw20";
+    private static final String SPW21 = "spw21";
+    private static final String SPW22 = "spw22";
+    private static final String SPW23 = "spw23";
+    private static final String SPW24 = "spw24";
+    private static final String SPW25 = "spw25";
+    private static final String SPW26 = "spw26";
+    private static final String SPW27 = "spw27";
+    private static final String SPW28 = "spw28";
+    private static final String SPW29 = "spw29";
+    private static final String SPW30 = "spw30";
     private static final String CIZAH = "cizah";
     private static final String DIOCOUNT = "diocount";
     private static final String ZOMBIECOUNT = "zombiecount";
@@ -251,6 +298,7 @@ public class Statistics {
     private static final String ASCENDED = "ascended";
     private static final String DIOKILLED = "diokilled";
     private static final String POLPOQUEST = "polpoQuest";
+    private static final String TENDENCY_MODE = "tendencyMode";
 
     public static void storeInBundle(Bundle bundle) {
         bundle.put(GOLD, goldCollected);
@@ -286,6 +334,21 @@ public class Statistics {
         bundle.put(SPW13, spw13);
         bundle.put(SPW14, spw14);
         bundle.put(SPW15, spw15);
+        bundle.put(SPW16, spw16);
+        bundle.put(SPW17, spw17);
+        bundle.put(SPW18, spw18);
+        bundle.put(SPW19, spw19);
+        bundle.put(SPW20, spw20);
+        bundle.put(SPW21, spw21);
+        bundle.put(SPW22, spw22);
+        bundle.put(SPW23, spw23);
+        bundle.put(SPW24, spw24);
+        bundle.put(SPW25, spw25);
+        bundle.put(SPW26, spw26);
+        bundle.put(SPW27, spw27);
+        bundle.put(SPW28, spw28);
+        bundle.put(SPW29, spw29);
+        bundle.put(SPW30, spw30);
         bundle.put(CIZAH, cizah);
         bundle.put(DIOCOUNT, diocount);
         bundle.put(ZOMBIECOUNT, zombiecount);
@@ -326,6 +389,7 @@ public class Statistics {
         bundle.put(ASCENDED, ascended);
         bundle.put(DIOKILLED, diokilled);
         bundle.put(POLPOQUEST, polpoQuest);
+        bundle.put(TENDENCY_MODE, tendencyMode);
     }
 
     public static void restoreFromBundle(Bundle bundle) {
@@ -366,6 +430,21 @@ public class Statistics {
         spw13 = bundle.getInt(SPW13);
         spw14 = bundle.getInt(SPW14);
         spw15 = bundle.getInt(SPW15);
+        spw16 = bundle.getInt(SPW16);
+        spw17 = bundle.getInt(SPW17);
+        spw18 = bundle.getInt(SPW18);
+        spw19 = bundle.getInt(SPW19);
+        spw20 = bundle.getInt(SPW20);
+        spw21 = bundle.getInt(SPW21);
+        spw22 = bundle.getInt(SPW22);
+        spw23 = bundle.getInt(SPW23);
+        spw24 = bundle.getInt(SPW24);
+        spw25 = bundle.getInt(SPW25);
+        spw26 = bundle.getInt(SPW26);
+        spw27 = bundle.getInt(SPW27);
+        spw28 = bundle.getInt(SPW28);
+        spw29 = bundle.getInt(SPW29);
+        spw30 = bundle.getInt(SPW30);
         cizah = bundle.getInt(CIZAH);
         diocount = bundle.getInt(DIOCOUNT);
         zombiecount = bundle.getInt(ZOMBIECOUNT);
@@ -415,6 +494,7 @@ public class Statistics {
         ascended = bundle.getBoolean(ASCENDED);
         diokilled = bundle.getBoolean(DIOKILLED);
         polpoQuest = bundle.getBoolean(POLPOQUEST);
+        tendencyMode = bundle.getBoolean(TENDENCY_MODE);
     }
 
     public static void preview(GamesInProgress.Info info, Bundle bundle) {

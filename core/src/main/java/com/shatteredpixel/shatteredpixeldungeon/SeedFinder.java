@@ -584,7 +584,7 @@ public class SeedFinder {
             addTextItems("[ 기억 DISC ]", scrolls, builder);
             addTextItems("[ 물약 ]", potions, builder);
             addTextItems("[ 장비 ]", equipment, builder);
-            addTextItems("[ 석가면 ]", rings, builder);
+            addTextItems("[ 돌가면 ]", rings, builder);
             addTextItems("[ 장비 DISC ]", artifacts, builder);
             addTextItems("[ 사격 DISC ]", wands, builder);
             addTextItems("[ 상점 ]", forSales, builder);

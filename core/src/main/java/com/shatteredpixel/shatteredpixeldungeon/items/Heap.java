@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TendencyShopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -369,7 +370,8 @@ public class Heap implements Bundlable {
 			case FOR_SALE:
 				Item i = peek();
 				if (size() == 1) {
-					return Messages.get(this, "for_sale", Shopkeeper.sellPrice(i), i.title());
+					if (Dungeon.tendencylevel) return Messages.get(this, "for_sale", TendencyShopkeeper.sellPrice(i), i.title());
+					else return Messages.get(this, "for_sale", Shopkeeper.sellPrice(i), i.title());
 				} else {
 					return i.title();
 				}

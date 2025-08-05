@@ -22,9 +22,7 @@ public class Spw6 extends Item {
     public static final String AC_LIGHT	= "LIGHT";
 
     {
-        image = ItemSpriteSheet.SUPPLY_RATION;
-
-        icon = ItemSpriteSheet.Icons.SCROLL_RETRIB;
+        image = ItemSpriteSheet.TBOMB2;
 
         stackable = true;
         levelKnown = true;
@@ -47,29 +45,6 @@ public class Spw6 extends Item {
         if (action.equals( AC_LIGHT )) {
 
         }
-    }
-
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw6.class, "desc1"),
-                Messages.get(Spw6.class, "desc2"),
-                Messages.get(Spw6.class, "desc3"),
-                Messages.get(Spw6.class, "desc4"),
-                Messages.get(Spw6.class, "desc5"),
-                Messages.get(Spw6.class, "desc6"),
-                Messages.get(Spw6.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw6, descriptions.length - 1);
-        return descriptions[index];
-    }
-
-    public static void Spw6Ability() {
-
-        Statistics.spw6++;
-        Sample.INSTANCE.play(Assets.Sounds.TALE);
     }
 
     @Override

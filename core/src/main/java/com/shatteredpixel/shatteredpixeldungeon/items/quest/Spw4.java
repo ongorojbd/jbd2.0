@@ -21,7 +21,7 @@ public class Spw4 extends Item {
     public static final String AC_LIGHT	= "LIGHT";
 
     {
-        image = ItemSpriteSheet.SUPPLY_RATION;
+        image = ItemSpriteSheet.RING_AGATE;
 
         icon = ItemSpriteSheet.Icons.RING_SHARPSHOOT;
 

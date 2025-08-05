@@ -77,7 +77,6 @@ public class WndTradeItem extends WndInfoItem {
 		if (item.quantity() == 1) {
 
 			int price = item.value();
-			if (SPDSettings.getTendency() > 0) price = 10; // 전투조류
 
 			RedButton btnSell = new RedButton( Messages.get(this, "sell", price) ) {
 				@Override
@@ -95,7 +94,6 @@ public class WndTradeItem extends WndInfoItem {
 		} else {
 
 			int priceAll= item.value();
-			if (SPDSettings.getTendency() > 0) priceAll = 10; // 전투조류
 			RedButton btnSell1 = new RedButton( Messages.get(this, "sell_1", priceAll / item.quantity()) ) {
 				@Override
 				protected void onClick() {

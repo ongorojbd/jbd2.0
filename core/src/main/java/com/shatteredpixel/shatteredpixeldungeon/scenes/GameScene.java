@@ -49,9 +49,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.jojo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne;
@@ -66,11 +68,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.TendencyItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jolynemap;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr8;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -102,15 +106,22 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM201Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.LisaSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NewSantantaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Pucci4Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SantanaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ScorpioSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhsnakeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
@@ -563,7 +574,52 @@ public class GameScene extends PixelScene {
                 break;
             case DESCEND:
             case FALL:
-                if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
+                if (Dungeon.tendencylevel && Dungeon.depth == 1) {
+
+                    Dungeon.challenges = 0;
+                    SPDSettings.challenges(0);
+                    SPDSettings.customSeed("");
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new WillcSprite(), new LisaSprite()},
+                            new String[]{"시저 체펠리", "리사리사"},
+                            new String[]{
+                                    Messages.get(jojo.class, "t1"),
+                                    Messages.get(jojo.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+
+                    Item pick = new TendencyItem();
+                    if (pick.doPickUp( Dungeon.hero )) {
+                        GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
+                    } else {
+                        Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+                    }
+
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 10) {
+
+                Dungeon.challenges = 0;
+                SPDSettings.challenges(0);
+                SPDSettings.customSeed("");
+
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new NewSantantaSprite(), new NewSantantaSprite()},
+                        new String[]{"???", "???"},
+                        new String[]{
+                                Messages.get(Santana.class, "t1"),
+                                Messages.get(Santana.class, "t2")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE
+                        }
+                );
+
+            } else if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     Dungeon.challenges = 0;
                     SPDSettings.challenges(0);
@@ -666,7 +722,7 @@ public class GameScene extends PixelScene {
                     Sample.INSTANCE.play(Assets.Sounds.SPW5);
                     GLog.n(Messages.get(Diobrando.class, "t7"));
                     add(new WndStory(Messages.get(this, "ship_title") + "\n\n" + Messages.get(this, "ship_window")).setDelays(0.4f, 0.4f));
-                }  else if (Dungeon.level instanceof TendencyLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
+                } else if (Dungeon.level instanceof TendencyLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     Dungeon.challenges = 0;
                     SPDSettings.challenges(0);

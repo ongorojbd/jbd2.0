@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -84,7 +85,7 @@ public abstract class ConnectionRoom extends Room {
 	}
 
 	public static ConnectionRoom createRoom(){
-		if (SPDSettings.getTendency() > 0) return Reflection.newInstance(TunnelRoom.class); // 전투조류
+		if (tendencylevel) return Reflection.newInstance(TunnelRoom.class); // 전투조류
 		else return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
 	}
 }

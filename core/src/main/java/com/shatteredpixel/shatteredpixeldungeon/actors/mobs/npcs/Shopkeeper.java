@@ -227,31 +227,6 @@ public class Shopkeeper extends NPC {
 
 	//shopkeepers are greedy!
 	public static int sellPrice(Item item){
-		if (SPDSettings.getTendency() > 0) { // 전투조류
-			// 아이템별로 다른 가격 설정
-			if (item instanceof Potion) {
-				return 40; // 포션은 더 싸게
-			} else if (item instanceof InventoryScroll) {
-				return 35; // 스크롤은 더 싸게
-			} else if (item instanceof ScrollOfMagicMapping) {
-				return 35; // 스크롤은 더 싸게
-			} else if (item instanceof Runestone) {
-				return 20; // 룬석은 더 싸게
-			}  else if (item instanceof SmallRation) {
-				return 30; // 식량은 가장 싸게
-			} else if (item instanceof TippedDart) {
-				return 15; // 다트는 중간 가격
-			} else if (item instanceof Tbomb || item instanceof Bomb.DoubleTBomb) {
-				return 20; // 폭탄은 중간 가격
-			} else if (item instanceof Alchemize) {
-				return 15; // 연금술은 싸게
-			} else if (item instanceof Highway) {
-				return 5; // 고속도로는 싸게
-			} else {
-				return 75; // 기본 가격
-			}
-		}
-
 		return item.value() * 5 * (Dungeon.depth / 5 + 1);
 	}
 

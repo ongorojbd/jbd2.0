@@ -78,7 +78,15 @@ public class Beam extends Image {
 			super(s, e, Effects.Type.HEALTH_RAY, 0.75f);
 		}
 	}
-	
+
+	public static class SPWRay extends Beam {
+		public SPWRay(PointF s, PointF e) {
+			super(s, e, Effects.Type.HEALTH_RAY, 0.75f);
+			tint(0.90f, 0.78f, 1.0f, 1); // 연보라색
+		}
+	}
+
+
 	@Override
 	public void update() {
 		super.update();

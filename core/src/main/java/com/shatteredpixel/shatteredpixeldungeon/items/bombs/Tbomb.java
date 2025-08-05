@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.audio.Sample;
@@ -55,39 +56,61 @@ public class Tbomb extends Bomb {
     public void explode(int cell) {
         super.explode(cell);
 
-        if (Statistics.spw6 > 4) {
-            ArrayList<Char> affected = new ArrayList<>();
+        ArrayList<Char> affected = new ArrayList<>();
 
-            PathFinder.buildDistanceMap(cell, BArray.not(Dungeon.level.solid, null), 2);
+        PathFinder.buildDistanceMap(cell, BArray.not(Dungeon.level.solid, null), 1);
 
-            for (int i = 0; i < PathFinder.distance.length; i++) {
-                if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-                    CellEmitter.get(i).burst(SmokeParticle.FACTORY, 4);
-                    CellEmitter.center(i).burst(BlastParticle.FACTORY, 20);
-                    Char ch = Actor.findChar(i);
-                    if (ch != null) {
-                        affected.add(ch);
-                    }
+        // 범위 내의 모든 캐릭터를 찾아서 affected 리스트에 추가
+        for (int i = 0; i < PathFinder.distance.length; i++) {
+            if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+                Char ch = Actor.findChar(i);
+                if (ch != null) {
+                    affected.add(ch);
                 }
             }
-            for (Char ch : affected) {
+        }
 
-                int dmg = Math.round(Random.NormalIntRange(6 + Statistics.wave / 5, 12 + Statistics.wave / 5));
-                if (Statistics.spw6 > 5) dmg *= 1.5f;
-                else if (Statistics.spw6 > 2) dmg *= 1.2f;
-                if (ch.pos != cell){
-                    dmg = Math.round(dmg*0.67f);
-                }
-                if (ch instanceof Hero && Statistics.spw6 >= 4){
-                    dmg *= 0;
-                }
-                dmg -= ch.drRoll();
+        for (Char ch : affected) {
+            int base = Random.NormalIntRange(6, 12);
+            // spw6가 0인 경우도 대비 (1.5^0 = 1)
+            float dmg = base * (float) Math.pow(1.5, Math.max(0, Statistics.spw6));
+            
+            // 깊이에 비례한 추가 데미지
+            int depthBonus = Dungeon.depth / 4;
+            dmg += depthBonus;
 
-                if (ch instanceof Hero) dmg = 0;
-
-                ch.damage(dmg, this);
-
+            if (ch.pos != cell) {
+                dmg *= 0.67f;
             }
+
+            dmg -= ch.drRoll();
+
+            ch.damage(Math.round(dmg), this);
+        }
+    }
+
+
+    @Override
+    public String desc() {
+        int baseMin = 8;
+        int baseMax = 16;
+        int spw6Level = Math.max(0, Statistics.spw6);
+        
+        // spw6 레벨에 따른 피해량 계산
+        int minDamage = Math.round(baseMin * (float) Math.pow(1.5, spw6Level));
+        int maxDamage = Math.round(baseMax * (float) Math.pow(1.5, spw6Level));
+        
+        // 깊이에 따른 추가 데미지
+        int depthBonus = Dungeon.depth / 2;
+        minDamage += depthBonus;
+        maxDamage += depthBonus;
+        
+        String desc = Messages.get(this, "desc", minDamage, maxDamage);
+        
+        if (fuse == null) {
+            return desc + "\n\n" + Messages.get(this, "desc_fuse");
+        } else {
+            return desc + "\n\n" + Messages.get(this, "desc_burning");
         }
     }
 

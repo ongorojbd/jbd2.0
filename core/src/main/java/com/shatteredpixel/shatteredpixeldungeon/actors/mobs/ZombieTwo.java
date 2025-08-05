@@ -118,7 +118,9 @@ public class ZombieTwo extends Mob {
 
         super.die( cause );
 
-        if (Random.Int( 10 ) == 0) Dungeon.level.drop( new Gold().quantity(10), pos ).sprite.drop();
+        if (Random.Int( 3 ) == 0) {
+            Dungeon.level.drop( new Gold().quantity(Random.IntRange(45, 55)), pos ).sprite.drop();
+        }
 
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
@@ -29,14 +30,21 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
@@ -48,6 +56,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -60,14 +69,14 @@ public class ArenaBossLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        if (locked){
-            Music.INSTANCE.play(Assets.Music.YUUKI, true);
+        if (locked) {
+            Music.INSTANCE.play(Assets.Music.TENDENCY2, true);
             //if top door isn't unlocked
-        } else if (map[exit()] != Terrain.EXIT){
+        } else if (map[exit()] != Terrain.EXIT) {
             Music.INSTANCE.end();
         } else {
             Music.INSTANCE.playTracks(
-                    new String[]{Assets.Music.CIV},
+                    new String[]{Assets.Music.TENDENCY2},
                     new float[]{1},
                     false);
         }
@@ -93,7 +102,7 @@ public class ArenaBossLevel extends Level {
         setSize(WIDTH, HEIGHT);
 
         // 위층으로 가는 일반적인 연결 추가
-        transitions.add(new LevelTransition(this, 15 + WIDTH*15, LevelTransition.Type.REGULAR_ENTRANCE));
+        transitions.add(new LevelTransition(this, 15 + WIDTH * 15, LevelTransition.Type.REGULAR_ENTRANCE));
 
         buildLevel();
         return true;
@@ -156,8 +165,8 @@ public class ArenaBossLevel extends Level {
             W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W
     };
 
-    private void buildLevel(){
-        int pos = 0 + 0*width();
+    private void buildLevel() {
+        int pos = 0 + 0 * width();
         short[] levelTiles = level;
         ArrayList<Integer> spawnerPos = new ArrayList<>();
 
@@ -186,7 +195,7 @@ public class ArenaBossLevel extends Level {
     }
 
     @Override
-    public int randomRespawnCell( Char ch ) {
+    public int randomRespawnCell(Char ch) {
         int cell;
         do {
             cell = entrance() + PathFinder.NEIGHBOURS8[Random.Int(8)];
@@ -244,25 +253,48 @@ public class ArenaBossLevel extends Level {
     @Override
     public void seal() {
         super.seal();
-        
+
         bossSpawned = true;
-        
+
         int entrance = entrance();
         set(entrance, Terrain.EMPTY_SP);
         GameScene.updateMap(entrance);
 
         Dungeon.observe();
 
-        Tboss boss = new Tboss();
-        boss.pos = 15 + WIDTH*10;
-        boss.state = boss.WANDERING;
-        GameScene.add(boss);
-        boss.beckon(Dungeon.hero.pos);
+        if (Dungeon.depth == 9) {
+            Tboss boss = new Tboss();
+            boss.pos = 15 + WIDTH * 10;
+            boss.state = boss.WANDERING;
+            GameScene.add(boss);
+            boss.beckon(Dungeon.hero.pos);
 
-        if (heroFOV[boss.pos]) {
-            boss.notice();
-            boss.sprite.alpha( 0 );
-            boss.sprite.parent.add( new AlphaTweener( boss.sprite, 1, 0.1f ) );
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha(0);
+                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+            }
+        } else if (Dungeon.depth == 18) {
+            int[] spawnPositions = {22 + 15 * 31, 15 + 22 * 31, 10 + 20 * 31, 18 + 18 * 31, 12 + 17 * 31, 20 + 19 * 31};
+
+            for (int i = 0; i < 6; i++) {
+                Mob spawn = new GSoldier2();
+                spawn.pos = spawnPositions[i];
+                spawn.state = spawn.HUNTING;
+                GameScene.add(spawn);
+            }
+
+            Santana boss = new Santana();
+            boss.pos = 15 + WIDTH * 10;
+            boss.state = boss.WANDERING;
+            GameScene.add(boss);
+            boss.beckon(Dungeon.hero.pos);
+
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha(0);
+                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+            }
         }
 
         GameScene.updateMap(bottomDoor);
@@ -271,7 +303,7 @@ public class ArenaBossLevel extends Level {
         Game.runOnRenderThread(new Callback() {
             @Override
             public void call() {
-                Music.INSTANCE.play(Assets.Music.YUUKI, true);
+                Music.INSTANCE.play(Assets.Music.TENDENCY2, true);
             }
         });
 
@@ -288,7 +320,7 @@ public class ArenaBossLevel extends Level {
             if (map[i] == Terrain.LOCKED_EXIT) {
                 set(i, Terrain.UNLOCKED_EXIT);
                 GameScene.updateMap(i);
-                
+
                 // LevelTransition 추가
                 LevelTransition exit = new LevelTransition(this, i, LevelTransition.Type.REGULAR_EXIT);
                 transitions.add(exit);
@@ -305,31 +337,47 @@ public class ArenaBossLevel extends Level {
         return visuals;
     }
 
-    public static void addArenaVisuals(Level level, Group group){
-        for (int i=0; i < level.length(); i++) {
+    public static void addArenaVisuals(Level level, Group group) {
+        for (int i = 0; i < level.length(); i++) {
             if (level.map[i] == Terrain.EMPTY_DECO) {
-                group.add( new Torch( i ) );
+                group.add(new Torch(i));
             }
         }
     }
-    
-    public static class Torch extends Emitter {
-        
-        private int pos;
-        
-        public Torch( int pos ) {
-            super();
-            
-            this.pos = pos;
-            
-            PointF p = DungeonTilemap.tileCenterToWorld( pos );
-            pos( p.x - 1, p.y + 2, 2, 0 );
-            
-            pour( FlameParticle.FACTORY, 0.15f );
-            
-            add( new Halo( 12, 0xFFFFCC, 0.4f ).point( p.x, p.y + 1 ) );
+
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+
+        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndMessage(Messages.get(hero, "tendency2")));
+                }
+            });
+            return false;
+        } else {
+            return super.activateTransition(hero, transition);
         }
-        
+    }
+
+    public static class Torch extends Emitter {
+
+        private int pos;
+
+        public Torch(int pos) {
+            super();
+
+            this.pos = pos;
+
+            PointF p = DungeonTilemap.tileCenterToWorld(pos);
+            pos(p.x - 1, p.y + 2, 2, 0);
+
+            pour(FlameParticle.FACTORY, 0.15f);
+
+            add(new Halo(12, 0xFFFFCC, 0.4f).point(p.x, p.y + 1));
+        }
+
         @Override
         public void update() {
             if (visible = (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {

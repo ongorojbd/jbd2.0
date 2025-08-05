@@ -21,17 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
-import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -76,6 +72,11 @@ public class MobSpawner extends Actor {
 
     //returns a rotation of standard mobs, unshuffled.
     private static ArrayList<Class<? extends Mob>> standardMobRotation(int depth) {
+        // Tendency 모드일 때 모든 층에서 좀비 계열 몹들만 스폰
+        if (tendencylevel) {
+            return getZombieRotation(depth);
+        }
+
         switch (depth) {
 
             // Sewers
@@ -86,10 +87,6 @@ public class MobSpawner extends Actor {
                     return new ArrayList<>(Arrays.asList(
                             Zombie.class, Zombie.class, Zombie.class,
                             Zombiedog.class));
-                } else if (SPDSettings.getTendency() > 0) {
-                    return new ArrayList<>(Arrays.asList(
-                            ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
-                            ZombieTwo.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(
                             Rat.class, Rat.class, Rat.class,
@@ -101,10 +98,6 @@ public class MobSpawner extends Actor {
                     return new ArrayList<>(Arrays.asList(Zombie.class, Zombie.class,
                             Zombiedog.class,
                             Zombied.class, Zombied.class));
-                } else if (SPDSettings.getTendency() > 0) {
-                    return new ArrayList<>(Arrays.asList(
-                            ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieThree.class,
-                            ZombieThree.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
                             Snake.class,
@@ -122,10 +115,6 @@ public class MobSpawner extends Actor {
                     return new ArrayList<>(Arrays.asList(Manhatan.class, Manhatan.class,
                             Manhatan.class,
                             Manhatan.class, Manhatan.class));
-                } else if (SPDSettings.getTendency() > 0) {
-                    return new ArrayList<>(Arrays.asList(
-                            ZombieTwo.class, ZombieTwo.class, Zombie.class, ZombieThree.class,
-                            ZombieThree.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(Rat.class,
                             Snake.class,
@@ -321,9 +310,146 @@ public class MobSpawner extends Actor {
 
     }
 
+    /**
+     * Tendency 모드일 때 사용할 좀비 계열 몹들의 로테이션을 반환
+     */
+    private static ArrayList<Class<? extends Mob>> getZombieRotation(int depth) {
+        switch (depth) {
+            // Sewers (1-5층)
+            case 1:
+            default:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieTwo.class));
+            case 2:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,ZombieThree.class,
+                        ZombieThree.class));
+            case 3:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieTwo.class, ZombieTwo.class, Zombie.class, ZombieThree.class,
+                        ZombieBrute.class));
+            case 4:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie.class, ZombieThree.class, ZombieThree.class, ZombieBrute.class,
+                        ZombieBrute.class));
+            case 5:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie.class, ZombieThree.class, ZombieThree.class, ZombieBrute.class,
+                        ZombieBrute2.class));
+            case 6:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie.class, ZombieThree.class, ZombieBrute.class, ZombieBrute2.class,
+                        ZombieBrute2.class));
+            case 7:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieThree.class, ZombieBrute.class, ZombieBrute.class, ZombieBrute2.class,
+                        ZombieBrute2.class));
+            case 8:
+            case 9:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieBrute.class, ZombieBrute.class,
+                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
+                        ZombieThree.class, ZombieThree.class));
+            case 10:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieSoldier.class, ZombieSoldier.class, ZombieSoldier.class,
+                        ZombieSoldier.class, ZombieSoldier.class, ZombieSoldier.class,
+                        ZombieSoldier.class, ZombieSoldier.class));
+            case 11:
+                return new ArrayList<>(Arrays.asList(
+                        Niku.class, Niku.class, Niku.class,
+                        Niku.class, Niku.class, Niku.class,
+                        Niku.class, Niku.class));
+
+            // Caves (11-15층)
+            case 12:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieSoldier.class, ZombieSoldier.class, Niku.class,
+                        Niku.class, Niku.class));
+            case 13:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieSoldier.class, ZombieSoldier.class,
+                        Niku.class, Niku.class, Niku.class,
+                        Abomination.class));
+            case 14:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieSoldier.class, ZombieSoldier.class,
+                        Niku.class, Niku.class, Abomination.class,
+                        Abomination.class));
+            case 15:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieSoldier.class, ZombieSoldier.class,
+                        Niku.class, Abomination.class, Abomination.class,
+                        Abomination.class));
+            case 16:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieSoldier.class, ZombieSoldier.class,
+                        Niku.class, Abomination.class, Abomination.class,
+                        VampireTest.class));
+            case 17:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieBrute.class, ZombieBrute.class, ZombieBrute.class,
+                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
+                        ZombieThree.class));
+            case 18:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieBrute.class, ZombieBrute.class, ZombieBrute.class,
+                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
+                        ZombieThree.class, ZombieThree.class));
+            case 19:
+            case 20:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieBrute.class, ZombieBrute.class, ZombieBrute.class,
+                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
+                        ZombieThree.class, ZombieThree.class, ZombieThree.class));
+
+            // Halls (21-25층)
+            case 21:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie2.class, Zombie2.class, Zombie2.class,
+                        Zombiedog2.class, Zombied2.class));
+            case 22:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie2.class, Zombie2.class, Zombie2.class,
+                        Zombiedog2.class, Zombied2.class, Zombied2.class));
+            case 23:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie2.class, Zombie2.class, Zombie2.class,
+                        Zombiedog2.class, Zombied2.class, Zombied2.class,
+                        Zombiez2.class));
+            case 24:
+            case 25:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie2.class, Zombie2.class, Zombie2.class,
+                        Zombiedog2.class, Zombied2.class, Zombied2.class,
+                        Zombiez2.class, Zombie2p.random(), Zombiet2.class));
+
+            // Labs (26-31층) - 좀비 계열이 없으므로 기본 몹들 사용
+            case 26:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie2.class, Zombie2.class, Zombie2.class,
+                        Zombiedog2.class));
+            case 27:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie2.class, Zombie2.class, Zombie2.class,
+                        Zombiedog2.class, Zombied2.class));
+            case 28:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie2.class, Zombie2.class, Zombie2.class,
+                        Zombiedog2.class, Zombied2.class, Zombied2.class));
+            case 29:
+            case 30:
+            case 31:
+                return new ArrayList<>(Arrays.asList(
+                        Zombie2.class, Zombie2.class, Zombie2.class,
+                        Zombiedog2.class, Zombied2.class, Zombied2.class,
+                        Zombiez2.class, Zombie2p.random()));
+        }
+    }
+
     //has a chance to add a rarely spawned mobs to the rotation
     public static void addRareMobs(int depth, ArrayList<Class<? extends Mob>> rotation) {
-        if (Statistics.diocount == 0) {
+        if (Statistics.diocount == 0 && !(tendencylevel)) {
             switch (depth) {
 
                 // Sewers

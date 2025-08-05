@@ -231,6 +231,7 @@ public class Dungeon {
     public static int mboss19;
 
     public static boolean diolevel;
+    public static boolean tendencylevel;
 
     public static HashSet<Integer> chapters;
 
@@ -302,6 +303,7 @@ public class Dungeon {
         mboss14 = 1;
         mboss19 = 1;
         diolevel = false;
+        tendencylevel = false; // 항상 false로 초기화
 
         gold = 0;
         energy = 0;
@@ -340,9 +342,9 @@ public class Dungeon {
 
         Level level;
 
-        if (SPDSettings.getTendency() > 0) { // 전투조류
+        if (tendencylevel) { // 전투조류
 
-            if (Dungeon.depth % 8 == 0) level = new ArenaBossLevel();
+            if (Dungeon.depth % 9 == 0) level = new ArenaBossLevel();
             else level = new ArenaLevel();
 
         } else if (branch == 0) {
@@ -351,6 +353,9 @@ public class Dungeon {
                     if (SPDSettings.getDio() >= 1) {
                         diolevel = true;
                         level = new DioLevel();
+                    } else if (SPDSettings.getTendency() > 0) { // 전투조류 시작
+                        tendencylevel = true;
+                        level = new ArenaLevel();
                     } else {
                         level = new SewerLevel();
                     }
@@ -743,6 +748,7 @@ public class Dungeon {
     private static final String MBOSS19 = "mboss19";
 
     private static final String DIOLEVEL = "diolevel";
+    private static final String TENDENCYLEVEL = "tendencylevel";
     private static final String DROPPED = "dropped%d";
     private static final String PORTED = "ported%d";
     private static final String LEVEL = "level";
@@ -772,6 +778,7 @@ public class Dungeon {
             bundle.put(MBOSS14, mboss14);
             bundle.put(MBOSS19, mboss19);
             bundle.put(DIOLEVEL, diolevel);
+            bundle.put(TENDENCYLEVEL, tendencylevel);
 
             bundle.put(GOLD, gold);
             bundle.put(ENERGY, energy);
@@ -859,7 +866,7 @@ public class Dungeon {
 
         Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(save));
 
-        initialVersion = bundle.getInt( INIT_VER );
+        initialVersion = bundle.getInt(INIT_VER);
 
         version = bundle.getInt(VERSION);
 
@@ -916,21 +923,21 @@ public class Dungeon {
             SecretRoom.restoreRoomsFromBundle(bundle);
 
             generatedLevels.clear();
-            for (int i : bundle.getIntArray(GENERATED_LEVELS)){
+            for (int i : bundle.getIntArray(GENERATED_LEVELS)) {
                 generatedLevels.add(i);
             }
 
             droppedItems = new SparseArray<>();
-            for (int i=1; i <= 26; i++) {
+            for (int i = 1; i <= 26; i++) {
 
                 //dropped items
                 ArrayList<Item> items = new ArrayList<>();
-                if (bundle.contains(Messages.format( DROPPED, i )))
-                    for (Bundlable b : bundle.getCollection( Messages.format( DROPPED, i ) ) ) {
-                        items.add( (Item)b );
+                if (bundle.contains(Messages.format(DROPPED, i)))
+                    for (Bundlable b : bundle.getCollection(Messages.format(DROPPED, i))) {
+                        items.add((Item) b);
                     }
                 if (!items.isEmpty()) {
-                    droppedItems.put( i, items );
+                    droppedItems.put(i, items);
                 }
 
             }
@@ -959,6 +966,7 @@ public class Dungeon {
         mboss14 = bundle.getInt(MBOSS14);
         mboss19 = bundle.getInt(MBOSS19);
         diolevel = bundle.getBoolean(DIOLEVEL);
+        tendencylevel = bundle.getBoolean(TENDENCYLEVEL);
 
         Statistics.restoreFromBundle(bundle);
         Generator.restoreFromBundle(bundle);

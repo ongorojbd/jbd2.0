@@ -3,6 +3,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Act3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Cmoon;
@@ -55,6 +59,9 @@ public class UV extends Item {
                 if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                     if (!mob.properties().contains(Char.Property.BOSS) && !mob.properties().contains(Char.Property.MINIBOSS) && mob.properties().contains(Char.Property.UNDEAD)) {
                         mob.die(this);
+                    } else if (mob.properties().contains(Char.Property.BOSS)) {
+                        Buff.affect(mob, Paralysis.class, 10f);
+                        mob.damage(mob.HT / 10, this);
                     }
                 }
             }

@@ -38,23 +38,21 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GSoldierSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class GSoldier extends Mob {
+    private int level = Dungeon.depth / 2;
 
     {
         spriteClass = GSoldierSprite.class;
-
-        HP = HT = 3;
-        defenseSkill = 0;
+        HP = HT = (2 + level) * 10;
         EXP = 0;
-        maxLvl = -9;
+
         viewDistance = 5;
-        if (spw10 > 4) viewDistance = 9;
-        else if (spw10 > 0) viewDistance = 7;
         alignment = Alignment.ALLY;
         intelligentAlly = true;
     }
@@ -84,12 +82,11 @@ public class GSoldier extends Mob {
 
     @Override
     public float attackDelay() {
-        if (spw10 > 6) return super.attackDelay() * 1.5f;
-        else return super.attackDelay() * 2f;
+        return super.attackDelay() * 1.5f;
     }
 
     protected boolean doAttack(Char enemy) {
-        if (Dungeon.level.adjacent(pos, enemy.pos) || blastcooldown > 0 || spw10 < 4) {
+        if (Dungeon.level.adjacent(pos, enemy.pos) || blastcooldown > 0) {
 
             return super.doAttack(enemy);
 
@@ -114,39 +111,30 @@ public class GSoldier extends Mob {
         Tbomb tbomb = new Tbomb();
         tbomb.explode(enemy.pos);
         Invisibility.dispel(this);
-        blastcooldown = 30;
+        blastcooldown = 80;
     }
 
     @Override
     public int attackSkill(Char target) {
-        return hero.lvl + 12;
+        if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+            return INFINITE_ACCURACY;
+        } else {
+            return 8 + level;
+        }
     }
 
     @Override
     public int damageRoll() {
-        int waveDamage = wave / 5;
-        if (spw10 > 1) waveDamage += 2;
-        if (enemy != null && !Dungeon.level.adjacent(pos, enemy.pos)) {
-            return Random.NormalIntRange(1 + waveDamage, 5 + waveDamage);
+        if (alignment == Alignment.NEUTRAL) {
+            return Random.NormalIntRange(2 + 2 * level, 2 + 2 * level);
         } else {
-            return Random.NormalIntRange(waveDamage, 1 + waveDamage);
+            return Random.NormalIntRange(1 + level, 2 + 2 * level);
         }
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 2);
-    }
-
-    @Override
-    public void damage(int dmg, Object src) {
-
-        if (dmg >= 1) {
-            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
-            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
-            dmg = 1;
-        }
-        super.damage(dmg, src);
+        return super.drRoll() + Random.NormalIntRange(0, 1 + level / 2);
     }
 
     @Override
@@ -160,21 +148,19 @@ public class GSoldier extends Mob {
             ((Mob) enemy).aggro(this);
         }
 
-        if (spw10 > 5) {
-            if (Random.Int(4) == 0) {
-                Buff.affect(enemy, Vulnerable.class, 2f);
-            }
-        }
-
-        if (spw10 > 2) {
-            if (Random.Int(3) == 0) {
+        if (Random.Int(6) == 0) {
                 Ballistica trajectory = new Ballistica(this.pos, enemy.pos, Ballistica.STOP_TARGET);
                 trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
                 WandOfBlastWave.throwChar(enemy, trajectory, 1, false, true, getClass());
-            }
         }
 
         return damage;
+    }
+
+    @Override
+    public void die(Object cause) {
+        this.yell(Messages.get(this, "die"));
+        super.die(cause);
     }
 
     @Override

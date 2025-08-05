@@ -63,7 +63,7 @@ public class TendencyTankSprite extends MobSprite {
     public void zap( int cell ) {
         super.zap( cell );
         ((TendencyTank)ch).onZapComplete();
-        parent.add( new Beam.HealthRay(center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
+        parent.add( new Beam.SPWRay(center(), DungeonTilemap.raisedTileCenterToWorld(cell)));
     }
 
     @Override

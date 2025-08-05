@@ -325,6 +325,10 @@ abstract public class Weapon extends KindOfWeapon {
     public int reachFactor(Char owner) {
         int reach = RCH;
 
+        if (Statistics.spw22 > 0 && owner instanceof Hero) {
+            reach += Statistics.spw22;
+        }
+
         if (Dungeon.energy > 0) {
             if (hero.belongings.getItem(Jojo6.class) != null && owner instanceof Hero) {
                 reach += 1;

@@ -1,0 +1,497 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2025 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
+
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TendencyShopkeeper;
+import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ram2;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw10;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw11;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class TendencyShopRoom extends SpecialRoom {
+
+    protected ArrayList<Item> itemsToSpawn;
+
+    @Override
+    public int minWidth() {
+        return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded())));
+    }
+
+    @Override
+    public int minHeight() {
+        return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded())));
+    }
+
+    public int spacesNeeded() {
+        if (itemsToSpawn == null) {
+            itemsToSpawn = generateItemsGauntlet();
+        }
+        //sandbags spawn based on current level of an hourglass the player may be holding
+        // so, to avoid rare cases of min sizes differing based on that, we ignore all sandbags
+        // and then add 4 items in all cases, which is max number of sandbags that can be in the shop
+        int spacesNeeded = itemsToSpawn.size();
+        for (Item i : itemsToSpawn) {
+            if (i instanceof TimekeepersHourglass.sandBag) {
+                spacesNeeded--;
+            }
+        }
+        // spacesNeeded += 4;
+
+        //we also add 1 more space, for the shopkeeper
+        spacesNeeded++;
+        return spacesNeeded;
+    }
+
+    public void paint(Level level) {
+
+        Painter.fill(level, this, Terrain.WALL);
+        Painter.fill(level, this, 1, Terrain.EMPTY_SP);
+
+        placeShopkeeper(level);
+
+        placeItems(level);
+
+        for (Door door : connected.values()) {
+            door.set(Door.Type.REGULAR);
+        }
+
+    }
+
+    protected void placeShopkeeper(Level level) {
+
+        int pos = level.pointToCell(center());
+
+        Mob shopkeeper = new TendencyShopkeeper();
+        shopkeeper.pos = pos;
+        level.mobs.add(shopkeeper);
+
+    }
+
+    protected void placeItems(Level level) {
+
+        if (itemsToSpawn == null) {
+            itemsToSpawn = generateItemsGauntlet();
+        }
+
+        Point entryInset = new Point(entrance());
+        if (entryInset.y == top) {
+            entryInset.y++;
+        } else if (entryInset.y == bottom) {
+            entryInset.y--;
+        } else if (entryInset.x == left) {
+            entryInset.x++;
+        } else {
+            entryInset.x--;
+        }
+
+        Point curItemPlace = entryInset.clone();
+
+        int inset = 1;
+
+        for (Item item : itemsToSpawn.toArray(new Item[0])) {
+
+            //place items in a clockwise pattern
+            if (curItemPlace.x == left + inset && curItemPlace.y != top + inset) {
+                curItemPlace.y--;
+            } else if (curItemPlace.y == top + inset && curItemPlace.x != right - inset) {
+                curItemPlace.x++;
+            } else if (curItemPlace.x == right - inset && curItemPlace.y != bottom - inset) {
+                curItemPlace.y++;
+            } else {
+                curItemPlace.x--;
+            }
+
+            //once we get to the inset from the entrance again, move another cell inward and loop
+            if (curItemPlace.equals(entryInset)) {
+
+                if (entryInset.y == top + inset) {
+                    entryInset.y++;
+                } else if (entryInset.y == bottom - inset) {
+                    entryInset.y--;
+                }
+                if (entryInset.x == left + inset) {
+                    entryInset.x++;
+                } else if (entryInset.x == right - inset) {
+                    entryInset.x--;
+                }
+                inset++;
+
+                if (inset > (Math.min(width(), height()) - 3) / 2) {
+                    break; //out of space!
+                }
+
+                curItemPlace = entryInset.clone();
+
+                //make sure to step forward again
+                if (curItemPlace.x == left + inset && curItemPlace.y != top + inset) {
+                    curItemPlace.y--;
+                } else if (curItemPlace.y == top + inset && curItemPlace.x != right - inset) {
+                    curItemPlace.x++;
+                } else if (curItemPlace.x == right - inset && curItemPlace.y != bottom - inset) {
+                    curItemPlace.y++;
+                } else {
+                    curItemPlace.x--;
+                }
+            }
+
+            int cell = level.pointToCell(curItemPlace);
+            //prevents high grass from being trampled, potentially dropping dew/seeds onto shop items
+            if (level.map[cell] == Terrain.HIGH_GRASS) {
+                Level.set(cell, Terrain.GRASS, level);
+                GameScene.updateMap(cell);
+            }
+            level.drop(item, cell).type = Heap.Type.FOR_SALE;
+            itemsToSpawn.remove(item);
+        }
+
+        //we didn't have enough space to place everything neatly, so now just fill in anything left
+        if (!itemsToSpawn.isEmpty()) {
+            for (Point p : getPoints()) {
+                int cell = level.pointToCell(p);
+                if ((level.map[cell] == Terrain.EMPTY_SP || level.map[cell] == Terrain.EMPTY)
+                        && level.heaps.get(cell) == null && level.findMob(cell) == null) {
+                    level.drop(itemsToSpawn.remove(0), level.pointToCell(p)).type = Heap.Type.FOR_SALE;
+                }
+                if (itemsToSpawn.isEmpty()) {
+                    break;
+                }
+            }
+        }
+
+        if (!itemsToSpawn.isEmpty()) {
+            ShatteredPixelDungeon.reportException(new RuntimeException("failed to place all items in a shop!"));
+        }
+
+    }
+
+    protected static ArrayList<Item> generateItemsGauntlet() {
+        ArrayList<Item> itemsToSpawn = new ArrayList<>();
+
+        // 기본 소모품 (항상 포함)
+        itemsToSpawn.add(Generator.random(Generator.Category.POTION).identify());
+        itemsToSpawn.add(Generator.random(Generator.Category.SCROLL).identify());
+        itemsToSpawn.add(Generator.random(Generator.Category.STONE));
+
+        // 음식
+        switch (Random.Int(6)) {
+            case 0:
+                itemsToSpawn.add(new Ram2());
+                break;
+            case 1:
+                itemsToSpawn.add(new FrozenCarpaccio());
+                break;
+            case 2:
+                itemsToSpawn.add(new Food());
+                break;
+            case 3:
+                itemsToSpawn.add(new Pasty());
+                break;
+            case 4:
+                itemsToSpawn.add(new MeatPie());
+                break;
+            case 5:
+                itemsToSpawn.add(new PhantomMeat());
+                break;
+        }
+        
+        // 추가 소모품 (랜덤)
+        if (Random.Int(2) == 0) {
+            switch (Random.Int(2)) {
+                case 0:
+                    itemsToSpawn.add(new StoneOfAugmentation());
+                    break;
+                case 1:
+                    itemsToSpawn.add(new Highway());
+            }
+        }
+
+        switch (Random.Int(4)) {
+            case 0:
+                Item t2;
+                t2 = Generator.randomUsingDefaults(Generator.Category.WEP_T2);
+                t2.identify();
+                itemsToSpawn.add(t2);
+                break;
+            case 1:
+                Item t3;
+                t3 = Generator.randomUsingDefaults(Generator.Category.WEP_T3);
+                t3.identify();
+                itemsToSpawn.add(t3);
+                break;
+            case 2:
+                Item t4;
+                t4 = Generator.randomUsingDefaults(Generator.Category.WEP_T4);
+                t4.identify();
+                itemsToSpawn.add(t4);
+                break;
+            case 3:
+                Item t5;
+                t5 = Generator.randomUsingDefaults(Generator.Category.WEP_T5);
+                t5.identify();
+                itemsToSpawn.add(t5);
+                break;
+        }
+
+        if (Random.Int(3) == 0) {
+            switch (Random.Int(2)) {
+                case 0:
+                    itemsToSpawn.add(new Spw10());
+                    break;
+                case 1:
+                    itemsToSpawn.add(new Spw11());
+                    break;
+            }
+        }
+
+        if (Random.Int(3) == 0) {
+            itemsToSpawn.add(new PotionOfExperience().identify());
+        }
+
+        if (Random.Int(3) == 0) {
+            itemsToSpawn.add(new Bomb.DoubleTBomb());
+        }
+
+        // 다트 (항상 포함)
+        itemsToSpawn.add(TippedDart.randomTipped(2));
+
+        // 깊이별 특별 아이템
+        if (Dungeon.depth % 2 == 0) itemsToSpawn.add(new PotionOfHealing().identify());
+        if (Dungeon.depth % 2 == 0) itemsToSpawn.add(Generator.randomMissile());
+        if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new ScrollOfUpgrade().identify());
+        if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new ScrollOfRemoveCurse().identify());
+        if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new PotionOfStrength().identify());
+
+        // 희귀 아이템 (하나만 선택)
+        Item rare;
+        switch (Random.Int(5)) {
+            case 0:
+                rare = Generator.randomUsingDefaults(Generator.Category.WAND);
+                break;
+            case 1:
+                rare = Generator.randomUsingDefaults(Generator.Category.ARTIFACT);
+                break;
+            case 2:
+                rare = Generator.randomArmor();
+                break;
+            case 3:
+                rare = Generator.random(Generator.Category.RING);
+                break;
+            default:
+                rare = new Dewdrop();
+        }
+
+        switch (Random.Int(8)) {
+            case 0:
+                itemsToSpawn.add(new Kingt());
+                break;
+            case 1:
+                itemsToSpawn.add(new StoneOfAdvanceguard());
+                break;
+            case 3:
+                itemsToSpawn.add(new Kinga());
+                break;
+            case 4:
+                itemsToSpawn.add(new Kings());
+                break;
+            case 5:
+                itemsToSpawn.add(new Kingm());
+                break;
+            case 6:
+                itemsToSpawn.add(new Kingw());
+                break;
+            case 7:
+                itemsToSpawn.add(new Kingc());
+                break;
+        }
+
+        if (Random.Int(8) == 0) {
+            itemsToSpawn.add(new UV());
+        }
+
+        if (Random.Int(10) == 0) {
+            itemsToSpawn.add(new Spw());
+        }
+
+        if (Random.Int(12) == 0) {
+            itemsToSpawn.add(new AdvancedEvolution());
+        }
+
+        rare.identify();
+        itemsToSpawn.add(rare);
+        
+        // 폭탄 (항상 포함)
+        itemsToSpawn.add(new Bomb.DoubleTBomb());
+        
+        // 직업별 특화 아이템 (50% 확률)
+        if (Random.Int(2) == 0) {
+            Item additionalRare;
+            switch (hero.heroClass) {
+                case WARRIOR:
+                case ROGUE:
+                    additionalRare = Generator.randomWeapon();
+                    break;
+                case MAGE:
+                    additionalRare = Generator.random(Generator.Category.WAND);
+                    break;
+                case HUNTRESS:
+                    additionalRare = Generator.randomMissile();
+                    break;
+                default:
+                    additionalRare = new Dewdrop();
+            }
+            additionalRare.identify();
+            itemsToSpawn.add(additionalRare);
+        }
+
+        // 가방 (특정 깊이에서만)
+        if (Dungeon.depth % 10 == 0) {
+            Bag bag = ChooseBag(hero.belongings);
+            if (bag != null) {
+                itemsToSpawn.add(bag);
+            }
+        }
+
+        // TimekeepersHourglass 관련 아이템
+        TimekeepersHourglass hourglass = hero.belongings.getItem(TimekeepersHourglass.class);
+        if (hourglass != null && hourglass.isIdentified() && !hourglass.cursed) {
+            int bags = 0;
+            switch (Dungeon.depth) {
+                case 8:
+                    bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.20f);
+                    break;
+                case 16:
+                    bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.25f);
+                    break;
+                case 24:
+                    bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.50f);
+                    break;
+                case 32:
+                    bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.80f);
+                    break;
+            }
+
+            for (int k = 1; k <= bags; k++) {
+                itemsToSpawn.add(new TimekeepersHourglass.sandBag());
+                hourglass.sandBags++;
+            }
+        }
+
+        Random.pushGenerator(Random.Long());
+        Random.shuffle(itemsToSpawn);
+        Random.popGenerator();
+
+        return itemsToSpawn;
+    }
+
+    protected static Bag ChooseBag(Belongings pack) {
+
+        //generate a hashmap of all valid bags.
+        HashMap<Bag, Integer> bags = new HashMap<>();
+        if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) bags.put(new VelvetPouch(), 1);
+        if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) bags.put(new ScrollHolder(), 0);
+        if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) bags.put(new PotionBandolier(), 0);
+        if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped()) bags.put(new MagicalHolster(), 0);
+
+        if (bags.isEmpty()) return null;
+
+        //count up items in the main bag
+        for (Item item : pack.backpack.items) {
+            for (Bag bag : bags.keySet()) {
+                if (bag.canHold(item)) {
+                    bags.put(bag, bags.get(bag) + 1);
+                }
+            }
+        }
+
+        //find which bag will result in most inventory savings, drop that.
+        Bag bestBag = null;
+        for (Bag bag : bags.keySet()) {
+            if (bestBag == null) {
+                bestBag = bag;
+            } else if (bags.get(bag) > bags.get(bestBag)) {
+                bestBag = bag;
+            }
+        }
+
+        if (bestBag instanceof VelvetPouch) {
+            Dungeon.LimitedDrops.VELVET_POUCH.drop();
+        } else if (bestBag instanceof ScrollHolder) {
+            Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
+        } else if (bestBag instanceof PotionBandolier) {
+            Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
+        } else if (bestBag instanceof MagicalHolster) {
+            Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
+        }
+
+        return bestBag;
+
+    }
+
+}

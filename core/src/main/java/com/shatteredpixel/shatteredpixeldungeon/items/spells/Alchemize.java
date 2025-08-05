@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndEnergizeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoItem;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTendencyTradeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
@@ -168,7 +169,9 @@ public class Alchemize extends Spell {
 					RedButton btnSell1 = new RedButton(Messages.get(this, "sell_1", priceAll / item.quantity())) {
 						@Override
 						protected void onClick() {
-							WndTradeItem.sellOne(item);
+							if (Dungeon.tendencylevel) WndTendencyTradeItem.sellOne(item);
+							else WndTradeItem.sellOne(item);
+
 							hide();
 							consumeAlchemize();
 						}
@@ -179,7 +182,9 @@ public class Alchemize extends Spell {
 					RedButton btnSellAll = new RedButton(Messages.get(this, "sell_all", priceAll)) {
 						@Override
 						protected void onClick() {
-							WndTradeItem.sell(item);
+							if (Dungeon.tendencylevel) WndTendencyTradeItem.sell(item);
+							else WndTradeItem.sell(item);
+
 							hide();
 							consumeAlchemize();
 						}

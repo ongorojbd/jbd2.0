@@ -12,9 +12,7 @@ public class Spw3 extends Item {
     public static final String AC_LIGHT	= "LIGHT";
 
     {
-        image = ItemSpriteSheet.SUPPLY_RATION;
-
-        icon = ItemSpriteSheet.Icons.POTION_SHIELDING;
+        image = ItemSpriteSheet.ARMOR_CLOTH;
 
         stackable = true;
         levelKnown = true;
@@ -37,27 +35,6 @@ public class Spw3 extends Item {
         if (action.equals( AC_LIGHT )) {
 
         }
-    }
-
-    @Override
-    public String desc() {
-        String[] descriptions = {
-                Messages.get(this, "desc"),
-                Messages.get(Spw3.class, "desc1"),
-                Messages.get(Spw3.class, "desc2"),
-                Messages.get(Spw3.class, "desc3"),
-                Messages.get(Spw3.class, "desc4"),
-                Messages.get(Spw3.class, "desc5"),
-                Messages.get(Spw3.class, "desc6"),
-                Messages.get(Spw3.class, "desc7")
-        };
-
-        int index = Math.min(Statistics.spw3, descriptions.length - 1);
-        return descriptions[index];
-    }
-
-    public static void Spw3Ability() {
-
     }
 
     @Override

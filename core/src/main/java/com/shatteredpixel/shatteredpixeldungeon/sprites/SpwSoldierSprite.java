@@ -64,9 +64,9 @@ public class SpwSoldierSprite extends MobSprite {
         play(zap);
         turnTo( ch.pos , pos );
         if (Actor.findChar(pos) != null){
-            parent.add(new Beam.HealthRay(center(), Actor.findChar(pos).sprite.center()));
+            parent.add(new Beam.SPWRay(center(), Actor.findChar(pos).sprite.center()));
         } else {
-            parent.add(new Beam.HealthRay(center(), DungeonTilemap.raisedTileCenterToWorld(pos)));
+            parent.add(new Beam.SPWRay(center(), DungeonTilemap.raisedTileCenterToWorld(pos)));
         }
         ((SpwSoldier)ch).onZapComplete();
     }

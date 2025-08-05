@@ -6,6 +6,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -21,15 +23,12 @@ public class Spw8 extends Item {
     public static final String AC_LIGHT	= "LIGHT";
 
     {
-        image = ItemSpriteSheet.SUPPLY_RATION;
-
-        icon = ItemSpriteSheet.Icons.POTION_HEALING;
+        image = ItemSpriteSheet.EXOTIC_CRIMSON;
 
         stackable = true;
         levelKnown = true;
 
         defaultAction = AC_LIGHT;
-        upgrade(Statistics.spw8);
         unique = true;
     }
 
@@ -53,6 +52,8 @@ public class Spw8 extends Item {
         hero.HP = hero.HT;
 
         hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
+
+        Buff.affect(hero, Barrier.class).setShield((int) (2.0f * hero.HT));
 
         for (Char c : Actor.chars()) {
             if (c.alignment == Char.Alignment.ALLY) {

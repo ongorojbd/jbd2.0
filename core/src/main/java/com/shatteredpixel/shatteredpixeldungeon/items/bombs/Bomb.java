@@ -127,7 +127,7 @@ public class Bomb extends Item {
     @Override
     protected void onThrow(int cell) {
         if (!Dungeon.level.pit[cell] && lightingFuse) {
-            if (Dungeon.hero.buff(Kawasiribuff.class) != null || Statistics.spw6 > 0 && this instanceof Tbomb) {
+            if (Dungeon.hero.buff(Kawasiribuff.class) != null) {
                 Actor.addDelayed(fuse = createFuse().ignite(this), 0);
             } else {
                 Actor.addDelayed(fuse = createFuse().ignite(this), 2);
@@ -204,12 +204,6 @@ public class Bomb extends Item {
 
                 int dmg = Random.NormalIntRange(4 + Dungeon.scalingDepth(), 12 + 3 * Dungeon.scalingDepth());
 
-                if (this instanceof Tbomb) {
-                    dmg = Math.round(Random.NormalIntRange(6 + Statistics.wave / 5, 12 + Statistics.wave / 5));
-                }
-
-                if (Statistics.spw6 > 2) dmg *= 1.2f;
-
                 if (Dungeon.hero.buff(Kawasiribuff.class) != null) {
                     dmg = dmg * 3 / 2;
                 }
@@ -218,17 +212,7 @@ public class Bomb extends Item {
                     dmg *= 0;
                 }
 
-                if (ch instanceof Hero && Statistics.spw6 >= 4) {
-                    dmg *= 0;
-                }
-
                 dmg -= ch.drRoll();
-
-                if (Statistics.spw6 >= 2 && ch != hero) Buff.affect(ch, Hex.class, 3f);
-
-                if (dmg > 0 && Statistics.spw6 < 5) {
-                    ch.damage(dmg, this);
-                }
 
                 if (ch == Dungeon.hero && !ch.isAlive()) {
                     if (this instanceof ConjuredBomb) {

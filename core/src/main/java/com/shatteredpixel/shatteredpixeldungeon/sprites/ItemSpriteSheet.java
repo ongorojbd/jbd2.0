@@ -600,6 +600,7 @@ public class ItemSpriteSheet {
     public static final int TBOMB = TRINKETS + 16;
     public static final int TBOMB2 = TRINKETS + 17;
     public static final int UV = TRINKETS + 18;
+    public static final int TENS = TRINKETS + 19;
 
     static {
         assignItemRect(RAT_SKULL, 13, 16);
@@ -621,6 +622,7 @@ public class ItemSpriteSheet {
         assignItemRect(TBOMB, 12, 11);
         assignItemRect(TBOMB2, 15, 14);
         assignItemRect(UV, 15, 16);
+        assignItemRect(TENS, 11, 14);
     }
 
     private static final int SCROLLS = xy(1, 19);  //16 slots

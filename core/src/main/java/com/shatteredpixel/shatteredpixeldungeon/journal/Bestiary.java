@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Speedwagon2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TendencyShopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary4;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
@@ -126,6 +127,7 @@ public enum Bestiary {
     UNIVERSAL,
     RARE,
     CASTLE,
+    TENDENCY,
     QUEST,
     NEUTRAL,
     ALLY,
@@ -189,6 +191,8 @@ public enum Bestiary {
                 TormentedSpirit.class, PhantomPiranha.class, CrystalMimic.class, ArmoredStatue.class, Boytwo.class, Stower.class, Mandom.class);
 
         CASTLE.addEntities(Zombie.class, Zombiedog.class, Zombied.class, Zombiez.class, Zombiep.Zombiep1.class, Zombiep.Zombiep2.class, Zombiep.Zombiep3.class, Zombiep.Zombiep4.class, Zombiet.class, Zombiebr.class, Diobrando.class);
+
+        TENDENCY.addEntities(ZombieTwo.class, ZombieThree.class, ZombieBrute.class, ZombieBrute2.class, Tboss.class, ZombieSoldier.class, Niku.class, Abomination.class, VampireTest.class, Santana.class, TendencyShopkeeper.class, GSoldier.class, SpwSoldier.class, Sturo.class, TendencyTank.class);
 
         QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class, Manhatan2.class,
                 Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,

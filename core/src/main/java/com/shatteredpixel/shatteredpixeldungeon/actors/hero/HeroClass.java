@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
@@ -50,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.items.AnnihilationGear;
+import com.shatteredpixel.shatteredpixeldungeon.items.Bandana;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
@@ -57,6 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
+import com.shatteredpixel.shatteredpixeldungeon.items.TendencyItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -72,12 +76,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Castleintro;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw10;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw11;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -154,25 +161,15 @@ public enum HeroClass {
             new RingOfMight().identify().upgrade(999).collect();
             new RingOfEnergy().identify().upgrade(999).collect();
             new RingOfAccuracy().identify().upgrade(999).collect();
-            new Shortsword().identify().upgrade(999).collect();
-            new WandOfBlastWave().identify().collect();
-            new PotionOfParalyticGas().identify().quantity(100).collect();
-            new Honeypot().identify().quantity(100).collect();
             new Neotel().collect();
-            new Spw().identify().collect();
+            new Spw().identify().quantity(100).collect();
+            new CurseInfusion().identify().quantity(100).collect();
             new UV().identify().quantity(100).collect();
+            new WandOfDisintegration().identify().upgrade(999).collect();
+            new Spw11().identify().quantity(100).collect();
+            new PotionOfHealing().identify().quantity(100).collect();
             new TengusMask().collect();
             new KingsCrown().collect();
-            new PotionOfHealing().identify().quantity(100).collect();
-            new PotionOfExperience().identify().quantity(100).collect();
-            new StoneOfDeepSleep().identify().quantity(100).collect();
-            new Swiftthistle.Seed().identify().quantity(100).collect();
-            new Earthroot.Seed().identify().quantity(100).collect();
-            new WandOfDisintegration().identify().upgrade(20).collect();
-        }
-
-        if (SPDSettings.getTendency() > 0) { // 전투조류
-            Dungeon.gold = 100;
         }
 
         switch (this) {

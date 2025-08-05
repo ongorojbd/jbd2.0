@@ -43,16 +43,14 @@ import com.watabou.utils.Random;
 
 public class SpwSoldier extends Mob implements Callback {
 
+    private int level = Dungeon.depth / 2;
+
     {
         spriteClass = SpwSoldierSprite.class;
-
-        HP = HT = 3;
-        defenseSkill = 0;
+        HP = HT = (2 + level) * 10;
         EXP = 0;
-        maxLvl = -9;
+
         viewDistance = 5;
-        if (spw11 > 4) viewDistance = 9;
-        else if (spw11 > 0) viewDistance = 7;
         alignment = Alignment.ALLY;
         intelligentAlly = true;
     }
@@ -60,34 +58,26 @@ public class SpwSoldier extends Mob implements Callback {
 
     @Override
     public int damageRoll() {
-        if (enemy != null && !Dungeon.level.adjacent(pos, enemy.pos)) {
-            return Random.NormalIntRange(1, 5);
+        if (alignment == Alignment.NEUTRAL) {
+            return Random.NormalIntRange(2 + 2 * level, 2 + 2 * level);
         } else {
-            return Random.NormalIntRange(0, 1);
+            return Random.NormalIntRange(1 + level, 2 + 2 * level);
         }
     }
 
     @Override
     public int attackSkill(Char target) {
-        return INFINITE_ACCURACY;
+        if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+            return INFINITE_ACCURACY;
+        } else {
+            return 8 + level;
+        }
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 2);
+        return super.drRoll() + Random.NormalIntRange(0, 1 + level / 2);
     }
-
-    @Override
-    public void damage(int dmg, Object src) {
-
-        if (dmg >= 1) {
-            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
-            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
-            dmg = 1;
-        }
-        super.damage(dmg, src);
-    }
-
 
     @Override
     public int attackProc(Char enemy, int damage) {
@@ -128,15 +118,13 @@ public class SpwSoldier extends Mob implements Callback {
 
     protected void zap() {
 
-        if (spw11 > 6) spend(2f);
-        else spend(3f);
+        spend(2f);
 
         Invisibility.dispel(this);
         Char enemy = this.enemy;
         if (hit(this, enemy, true)) {
 
-            int waveDamage = wave / 5;
-            int dmg = Random.NormalIntRange(3 + waveDamage, 5 + waveDamage);
+            int dmg = Random.NormalIntRange(2 + 2 * level, 2 + 2 * level);
 
             CellEmitter.center(enemy.pos).burst(BlastParticle.FACTORY, 15);
             CellEmitter.center(enemy.pos).burst(SmokeParticle.FACTORY, 4);
@@ -147,28 +135,13 @@ public class SpwSoldier extends Mob implements Callback {
                 ((Mob) enemy).aggro(this);
             }
 
-            if (spw11 > 5) {
-                if (Random.Int(4) == 0) {
+
+            if (Random.Int(6) == 0) {
                     Buff.affect(enemy, Paralysis.class, 1f);
-                }
             }
 
-            if (spw11 > 1) {
-                if (Random.Int(4) == 0) {
+            if (Random.Int(4) == 0) {
                     Buff.affect(enemy, Burning.class).reignite(enemy, 2f);
-                }
-            }
-
-            if (!enemy.isAlive() && spw11 > 3) {
-
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if (mob.alignment == Alignment.ALLY && Dungeon.level.distance(this.pos, mob.pos) <= 3) {
-                        Buff.affect(mob, Barrier.class).setShield(3);
-                    }
-                }
-
-                if (Dungeon.level.distance(this.pos, hero.pos) <= 3)
-                    Buff.affect(hero, Barrier.class).setShield(3);
             }
 
         } else {
