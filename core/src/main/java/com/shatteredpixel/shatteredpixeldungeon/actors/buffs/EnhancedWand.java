@@ -47,7 +47,7 @@ public class EnhancedWand extends Buff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0, 1, 0);
+        icon.hardlight(1, 0.5f, 0.8f); // 핑크색 (사격 DISC 강화)
     }
 
     @Override

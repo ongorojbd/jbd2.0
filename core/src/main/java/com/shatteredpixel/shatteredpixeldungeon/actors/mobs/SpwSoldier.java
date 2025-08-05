@@ -43,7 +43,7 @@ import com.watabou.utils.Random;
 
 public class SpwSoldier extends Mob implements Callback {
 
-    private int level = Dungeon.depth / 2;
+    private int level = Dungeon.depth / 3;
 
     {
         spriteClass = SpwSoldierSprite.class;

@@ -45,7 +45,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class GSoldier extends Mob {
-    private int level = Dungeon.depth / 2;
+    private int level = Dungeon.depth / 3;
 
     {
         spriteClass = GSoldierSprite.class;

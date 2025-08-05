@@ -155,6 +155,12 @@ public class HeroSelectScene extends PixelScene {
 
                 Dungeon.hero = null;
                 Dungeon.daily = Dungeon.dailyReplay = false;
+                
+                // 텐덴시 모드가 활성화된 경우 시드를 초기화
+                if (SPDSettings.getTendency() > 0) {
+                    SPDSettings.customSeed("");
+                }
+                
                 Dungeon.initSeed();
                 ActionIndicator.clearAction();
                 InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
@@ -427,7 +433,10 @@ public class HeroSelectScene extends PixelScene {
     }
 
     private void updateOptionsColor() {
-        if (!SPDSettings.customSeed().isEmpty()) {
+        // 텐덴시 모드가 활성화된 경우 시드 색상을 적용하지 않음
+        if (SPDSettings.getTendency() > 0) {
+            btnOptions.icon().hardlight(1f, 0.5f, 0.5f); // 텐덴시 모드 색상
+        } else if (!SPDSettings.customSeed().isEmpty()) {
             btnOptions.icon().hardlight(1f, 1.5f, 0.67f);
         } else if (SPDSettings.challenges() != 0) {
             btnOptions.icon().hardlight(2f, 1.33f, 0.5f);
@@ -848,6 +857,14 @@ public class HeroSelectScene extends PixelScene {
             StyledButton dioButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "tendency_mode"), 6) {
                 @Override
                 protected void onClick() {
+                    if (!Badges.isUnlocked(Badges.Badge.VICTORY)) {
+                        ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
+                                Icons.get(Icons.NEWS),
+                                Messages.get(HeroSelectScene.class, "tendency_mode"),
+                                Messages.get(HeroSelectScene.class, "tendency_nowin"))
+                        );
+                        return;
+                    }
                     super.onClick();
                     if (SPDSettings.getTendency() == 0) {
                         SPDSettings.addTendency(1);

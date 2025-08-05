@@ -49,7 +49,7 @@ public class EnhancedWeapon extends Buff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0, 1, 0);
+        icon.hardlight(1, 0.5f, 0); // 주황색 (물리 공격 강화)
     }
 
     @Override

@@ -274,7 +274,7 @@ public class VampireTest extends Mob {
                         spend(GameMath.gate(TICK, enemy.cooldown(), 3*TICK));
                         if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos]){
 
-                            sprite.parent.addToBack(new TargetedCell(leapPos, 0xFF0000));
+                            sprite.parent.addToBack(new TargetedCell(leapPos, 0xFF00FF));
                             Dungeon.hero.interrupt();
                         }
                         return true;

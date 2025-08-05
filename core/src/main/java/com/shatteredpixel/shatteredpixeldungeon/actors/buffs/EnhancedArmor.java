@@ -47,7 +47,7 @@ public class EnhancedArmor extends Buff {
 
     @Override
     public void tintIcon(Image icon) {
-        icon.hardlight(0, 1, 0);
+        icon.hardlight(0.5f, 0.8f, 1); // 하늘색 (브로치 강화)
     }
 
     @Override

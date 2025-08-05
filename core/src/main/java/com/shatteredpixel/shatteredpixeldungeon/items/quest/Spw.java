@@ -390,12 +390,66 @@ public class Spw extends Item {
          */
         private Item createItemByType(int itemType) {
             switch (itemType) {
+                case ITEM_TYPE_SPW1:
+                    return new Spw1();
+                case ITEM_TYPE_SPW2:
+                    return new Spw2();
+                case ITEM_TYPE_SPW3:
+                    return new Spw3();
+                case ITEM_TYPE_SPW4:
+                    return new Spw4();
+                case ITEM_TYPE_SPW5:
+                    return new Spw5();
                 case ITEM_TYPE_SPW6:
                     return new Spw6();
                 case ITEM_TYPE_SPW7:
                     return new Spw7();
                 case ITEM_TYPE_SPW8:
                     return new Spw8();
+                case ITEM_TYPE_SPW9:
+                    return new Spw9();
+                case ITEM_TYPE_SPW10:
+                    return new Spw10();
+                case ITEM_TYPE_SPW11:
+                    return new Spw11();
+                case ITEM_TYPE_SPW12:
+                    return new Spw12();
+                case ITEM_TYPE_SPW13:
+                    return new Spw13();
+                case ITEM_TYPE_SPW14:
+                    return new Spw14();
+                case ITEM_TYPE_SPW15:
+                    return new Spw15();
+                case ITEM_TYPE_SPW16:
+                    return new Spw16();
+                case ITEM_TYPE_SPW17:
+                    return new Spw17();
+                case ITEM_TYPE_SPW18:
+                    return new Spw18();
+                case ITEM_TYPE_SPW19:
+                    return new Spw19();
+                case ITEM_TYPE_SPW20:
+                    return new Spw20();
+                case ITEM_TYPE_SPW21:
+                    return new Spw21();
+                case ITEM_TYPE_SPW22:
+                    return new Spw22();
+                case ITEM_TYPE_SPW23:
+                    return new Spw23();
+                case ITEM_TYPE_SPW24:
+                    return new Spw24();
+                case ITEM_TYPE_SPW25:
+                    return new Spw25();
+                case ITEM_TYPE_SPW26:
+                    return new Spw26();
+                case ITEM_TYPE_SPW27:
+                    return new Spw27();
+                case ITEM_TYPE_SPW28:
+                    return new Spw28();
+                case ITEM_TYPE_SPW29:
+                    return new Spw29();
+                case ITEM_TYPE_SPW30:
+                    return new Spw30();
                 default:
                     return null;
             }
