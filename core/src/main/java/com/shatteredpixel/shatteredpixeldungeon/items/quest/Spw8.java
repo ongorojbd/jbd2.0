@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw.pickOrDropItem;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -12,6 +13,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -53,8 +56,6 @@ public class Spw8 extends Item {
 
         hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
 
-        Buff.affect(hero, Barrier.class).setShield((int) (2.0f * hero.HT));
-
         for (Char c : Actor.chars()) {
             if (c.alignment == Char.Alignment.ALLY) {
                 c.HP = c.HT;
@@ -63,6 +64,10 @@ public class Spw8 extends Item {
 
         GLog.p(Messages.get(Spw.class, "heal"));
         Sample.INSTANCE.play(Assets.Sounds.FF);
+
+        Item potionOfHealing = new PotionOfHealing();
+        potionOfHealing.identify();
+        pickOrDropItem(potionOfHealing);
 
     }
 

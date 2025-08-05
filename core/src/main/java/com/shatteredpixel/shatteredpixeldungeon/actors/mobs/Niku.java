@@ -44,7 +44,7 @@ public class Niku extends Mob {
         HP = HT = 25;
         defenseSkill = 9;
 
-        EXP = 5;
+        EXP = 7;
         maxLvl = 10;
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);

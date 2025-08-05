@@ -39,6 +39,8 @@ public class TendencyTank extends Mob {
         viewDistance = 6;
         alignment = Alignment.ALLY;
         intelligentAlly = true;
+
+        properties.add(Property.INORGANIC);
     }
 
     private int targetingPos = -1;

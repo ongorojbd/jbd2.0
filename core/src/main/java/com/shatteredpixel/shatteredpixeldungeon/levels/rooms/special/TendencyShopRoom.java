@@ -33,7 +33,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ram2;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WoundsofWar;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
@@ -55,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
@@ -64,6 +69,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -260,7 +272,7 @@ public class TendencyShopRoom extends SpecialRoom {
                 itemsToSpawn.add(new PhantomMeat());
                 break;
         }
-        
+
         // 추가 소모품 (랜덤)
         if (Random.Int(2) == 0) {
             switch (Random.Int(2)) {
@@ -335,7 +347,47 @@ public class TendencyShopRoom extends SpecialRoom {
                 rare = Generator.randomUsingDefaults(Generator.Category.WAND);
                 break;
             case 1:
-                rare = Generator.randomUsingDefaults(Generator.Category.ARTIFACT);
+                switch (Random.Int(12)) {
+                    case 0:
+                        rare = new EtherealChains();
+                        break;
+                    case 1:
+                        rare = new ChaliceOfBlood();
+                        break;
+                    case 2:
+                        rare = new WoundsofWar();
+                        break;
+                    case 3:
+                        rare = new CurseInfusion();
+                        break;
+                    case 4:
+                        rare = new SandalsOfNature();
+                        break;
+                    case 5:
+                        rare = new PetrifiedSeed().upgrade(3);
+                        break;
+                    case 6:
+                        rare = new ThirteenLeafClover().upgrade(3);
+                        break;
+                    case 7:
+                        rare = new WondrousResin().upgrade(3);
+                        break;
+                    case 8:
+                        rare = new EyeOfNewt().upgrade(3);
+                        break;
+                    case 9:
+                        rare = new VialOfBlood().upgrade(3);
+                        break;
+                    case 10:
+                        rare = new ChaoticCenser().upgrade(3);
+                        break;
+                    case 11:
+                        rare = new FerretTuft().upgrade(3);
+                        break;
+                    default:
+                        rare = new Dewdrop();
+                        break;
+                }
                 break;
             case 2:
                 rare = Generator.randomArmor();
@@ -385,10 +437,10 @@ public class TendencyShopRoom extends SpecialRoom {
 
         rare.identify();
         itemsToSpawn.add(rare);
-        
+
         // 폭탄 (항상 포함)
         itemsToSpawn.add(new Bomb.DoubleTBomb());
-        
+
         // 직업별 특화 아이템 (50% 확률)
         if (Random.Int(2) == 0) {
             Item additionalRare;

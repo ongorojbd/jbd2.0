@@ -48,6 +48,8 @@ public class Sturo extends Mob {
         viewDistance = 6;
         alignment = Alignment.ALLY;
         intelligentAlly = true;
+
+        properties.add(Property.INORGANIC);
     }
 
     private int charge = 0;

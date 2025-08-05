@@ -65,10 +65,9 @@ public class Santana extends Mob {
         spriteClass = NewSantantaSprite.class;
 
         HP = HT = 300;
+        EXP = 20;
+        defenseSkill = 12;
 
-        defenseSkill = 8;
-        EXP = 0;
-        maxLvl = -9;
         HUNTING = new Santana.Hunting();
 
         properties.add(Property.BOSS);
@@ -222,7 +221,7 @@ public class Santana extends Mob {
 
                     Char target = Actor.findChar(targetPos);
                     if (target != null && target.alignment != alignment) {
-                        int damage = Random.NormalIntRange(15, 25);
+                        int damage = Random.NormalIntRange(15, 20);
                         target.damage(damage, this);
                         if (!target.isAlive() && target == Dungeon.hero) {
                             Dungeon.fail(getClass());
@@ -249,12 +248,12 @@ public class Santana extends Mob {
                     
                     Char target = Actor.findChar(targetPos);
                     if (target != null && target.alignment != alignment) {
-                        int damage = Random.NormalIntRange(20, 30);
+                        int damage = Random.NormalIntRange(15, 20);
                         target.damage(damage, this);
                         if (!target.isAlive() && target == Dungeon.hero) {
                             Dungeon.fail(getClass());
                         }
-                        Buff.affect(target, Bleeding.class).set(0.6f * damage);
+                        Buff.affect(target, Bleeding.class).set(0.5f * damage);
                         target.sprite.flash();
                     }
                 }
@@ -301,7 +300,7 @@ public class Santana extends Mob {
         damage = super.attackProc(enemy, damage);
         
         // 기본 공격에도 출혈 효과 추가
-        if (Random.Int(3) == 0) {
+        if (Random.Int(4) == 0) {
             Buff.affect(enemy, Bleeding.class).set(0.25f * damage);
         }
         

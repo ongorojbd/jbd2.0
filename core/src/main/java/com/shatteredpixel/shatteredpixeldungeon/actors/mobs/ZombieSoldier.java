@@ -42,7 +42,7 @@ public class ZombieSoldier extends Mob {
         HP = HT = 25;
         defenseSkill = 9;
 
-        EXP = 5;
+        EXP = 6;
         maxLvl = 10;
 
         properties.add(Property.UNDEAD);

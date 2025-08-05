@@ -53,7 +53,7 @@ public class Abomination extends Mob {
         HP = HT = 36;
         defenseSkill = 10;
 
-        EXP = 7;
+        EXP = 10;
         maxLvl = 14;
 
         properties.add(Property.UNDEAD);
@@ -87,6 +87,11 @@ public class Abomination extends Mob {
     private boolean canUseAbility() {
         if (abilityCooldown > 0) {
             abilityCooldown--;
+            return false;
+        }
+        
+        // 자고 있을 때는 능력 사용하지 않음
+        if (state == SLEEPING) {
             return false;
         }
         

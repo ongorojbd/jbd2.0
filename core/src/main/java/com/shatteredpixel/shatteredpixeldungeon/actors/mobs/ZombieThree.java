@@ -67,7 +67,7 @@ public class ZombieThree extends Mob {
         HP = HT = 12;
         defenseSkill = 4;
 
-        EXP = 2;
+        EXP = 3;
         maxLvl = 8;
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);

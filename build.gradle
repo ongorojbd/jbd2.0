@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.9.1'
+        classpath 'com.android.tools.build:gradle:8.11.1'
     }
 }
 
@@ -14,18 +14,20 @@ allprojects {
         appName = '죠죠의 기묘한 던전'
         appPackageName = 'com.shatteredpixel.shatteredpixeldungeon7'
 
-        appVersionCode = 872
-        appVersionName = '3.0b'
+        appVersionCode = 873
+        appVersionName = '3.0c'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
-        appAndroidCompileSDK = 35
-        appAndroidMinSDK = 14
-        appAndroidTargetSDK = 34
+        appAndroidCompileSDK = 35   //Android 15
+        appAndroidMinSDK = 14       //Android 4.0
+        //significant layout management changes required for API 35+ as edge-to-edge is forced on
+        //will do this at the same time as dropping support for Android 4.4- (later in 2025)
+        appAndroidTargetSDK = 34    //Android 14
 
         gdxVersion = '1.12.1'
-        gdxControllersVersion = '2.2.4-SNAPSHOT'
-        robovmVersion = '2.3.21'
+        gdxControllersVersion = '2.2.4'
+        robovmVersion = '2.3.23'
     }
     version = appVersionName
 

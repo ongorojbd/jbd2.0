@@ -72,11 +72,10 @@ public class Tboss extends Mob {
     {
         spriteClass = TbossSprite.class;
 
-        HP = HT = 200;
+        HP = HT = 150;
 
+        EXP = 20;
         defenseSkill = 8;
-        EXP = 0;
-        maxLvl = -9;
         HUNTING = new Tboss.Hunting();
 
         properties.add(Property.BOSS);

@@ -322,7 +322,7 @@ public class MobSpawner extends Actor {
                         ZombieTwo.class));
             case 2:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,ZombieThree.class,
+                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieThree.class,
                         ZombieThree.class));
             case 3:
                 return new ArrayList<>(Arrays.asList(
@@ -342,30 +342,24 @@ public class MobSpawner extends Actor {
                         ZombieBrute2.class));
             case 7:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieThree.class, ZombieBrute.class, ZombieBrute.class, ZombieBrute2.class,
-                        ZombieBrute2.class));
+                        ZombieThree.class, ZombieThree.class,  ZombieBrute.class, ZombieBrute.class,
+                        ZombieBrute2.class, ZombieBrute2.class));
             case 8:
             case 9:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieBrute.class, ZombieBrute.class,
-                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
-                        ZombieThree.class, ZombieThree.class));
+                        Zombie.class, ZombieBrute.class, ZombieBrute.class, ZombieBrute2.class,
+                        ZombieBrute2.class));
             case 10:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieSoldier.class, ZombieSoldier.class, ZombieSoldier.class,
-                        ZombieSoldier.class, ZombieSoldier.class, ZombieSoldier.class,
-                        ZombieSoldier.class, ZombieSoldier.class));
+                        ZombieSoldier.class));
             case 11:
                 return new ArrayList<>(Arrays.asList(
-                        Niku.class, Niku.class, Niku.class,
-                        Niku.class, Niku.class, Niku.class,
-                        Niku.class, Niku.class));
+                        Niku.class));
 
             // Caves (11-15층)
             case 12:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieSoldier.class, ZombieSoldier.class, Niku.class,
-                        Niku.class, Niku.class));
+                        ZombieSoldier.class, Niku.class));
             case 13:
                 return new ArrayList<>(Arrays.asList(
                         ZombieSoldier.class, ZombieSoldier.class,
@@ -379,23 +373,23 @@ public class MobSpawner extends Actor {
             case 15:
                 return new ArrayList<>(Arrays.asList(
                         ZombieSoldier.class, ZombieSoldier.class,
-                        Niku.class, Abomination.class, Abomination.class,
-                        Abomination.class));
+                        Niku.class, Niku.class, Abomination.class,
+                        VampireTest.class));
             case 16:
                 return new ArrayList<>(Arrays.asList(
                         ZombieSoldier.class, ZombieSoldier.class,
-                        Niku.class, Abomination.class, Abomination.class,
+                        Niku.class, VampireTest.class, Abomination.class,
                         VampireTest.class));
             case 17:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieBrute.class, ZombieBrute.class, ZombieBrute.class,
-                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
-                        ZombieThree.class));
+                        ZombieSoldier.class, VampireTest.class,
+                        Niku.class, VampireTest.class, Abomination.class,
+                        VampireTest.class));
             case 18:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieBrute.class, ZombieBrute.class, ZombieBrute.class,
-                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
-                        ZombieThree.class, ZombieThree.class));
+                        ZombieSoldier.class, VampireTest.class,
+                        Niku.class, VampireTest.class, VampireTest.class,
+                        VampireTest.class));
             case 19:
             case 20:
                 return new ArrayList<>(Arrays.asList(

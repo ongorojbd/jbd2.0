@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -301,6 +302,9 @@ public class TendencyShopkeeper extends NPC {
                             Item returned = buybackItems.remove(index - 1);
                             Dungeon.gold -= returned.value();
                             Statistics.goldCollected -= returned.value();
+                            if (returned instanceof MissileWeapon && returned.isUpgradable()){
+                                Buff.affect(Dungeon.hero, MissileWeapon.UpgradedSetTracker.class).levelThresholds.put(((MissileWeapon) returned).setID, returned.level());
+                            }
                             if (!returned.doPickUp(Dungeon.hero)) {
                                 Dungeon.level.drop(returned, Dungeon.hero.pos);
                             }

@@ -260,6 +260,10 @@ public class InterlevelScene extends PixelScene {
                 }
                 break;
         }
+
+        if (tendencylevel) {
+            loadingCenter = 400;
+        }
         Random.popGenerator();
 
         if (DeviceCompat.isDebug()){

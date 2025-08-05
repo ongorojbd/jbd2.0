@@ -33,7 +33,7 @@ public class ZombieBrute2 extends Mob {
         spriteClass = ZombieBrute2Sprite.class;
 
         HP = HT = 20;
-        defenseSkill = 9;
+        defenseSkill = 6;
 
         EXP = 5;
         maxLvl = 10;
@@ -45,7 +45,7 @@ public class ZombieBrute2 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 2, 10 );
+        return Random.NormalIntRange( 2, 8 );
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ZombieBrute2 extends Mob {
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 5);
+        return super.drRoll() + Random.NormalIntRange(0, 4);
     }
 
     @Override
@@ -84,7 +84,6 @@ public class ZombieBrute2 extends Mob {
 
     }
 
-    private static final String SKILLCD   = "charge";
     private static final String AMOK   = "amok";
 
     @Override

@@ -75,6 +75,10 @@ public class Statue extends Mob {
 		weapon.enchant( Enchantment.random() );
 	}
 
+	public Weapon weapon(){
+		return weapon;
+	}
+
 	private static final String WEAPON	= "weapon";
 
 	@Override
