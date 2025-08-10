@@ -144,4 +144,9 @@ public class WoundsofWar extends Artifact {
             outQuantity = 1;
         }
     }
+
+    @Override
+    public int value() {
+        return 50 * quantity;
+    }
 }

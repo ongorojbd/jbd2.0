@@ -82,4 +82,9 @@ public class PetrifiedSeed extends Trinket {
 				return 0.8f;
 		}
 	}
+
+	@Override
+	public int value() {
+		return 50 * quantity;
+	}
 }

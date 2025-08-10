@@ -576,10 +576,6 @@ public class GameScene extends PixelScene {
             case FALL:
                 if (Dungeon.tendencylevel && Dungeon.depth == 1) {
 
-                    Dungeon.challenges = 0;
-                    SPDSettings.challenges(0);
-                    SPDSettings.customSeed("");
-
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new WillcSprite(), new LisaSprite()},
                             new String[]{"시저 체펠리", "리사리사"},
@@ -600,11 +596,9 @@ public class GameScene extends PixelScene {
                         Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
                     }
 
-                } else if (Dungeon.tendencylevel && Dungeon.depth == 10) {
+                    Statistics.spw12++;
 
-                Dungeon.challenges = 0;
-                SPDSettings.challenges(0);
-                SPDSettings.customSeed("");
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 10) {
 
                 WndDialogueWithPic.dialogue(
                         new CharSprite[]{new NewSantantaSprite(), new NewSantantaSprite()},
@@ -724,9 +718,6 @@ public class GameScene extends PixelScene {
                     add(new WndStory(Messages.get(this, "ship_title") + "\n\n" + Messages.get(this, "ship_window")).setDelays(0.4f, 0.4f));
                 } else if (Dungeon.level instanceof TendencyLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
-                    Dungeon.challenges = 0;
-                    SPDSettings.challenges(0);
-                    SPDSettings.customSeed("");
                     add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
                     Tendency tendency = new Tendency();
                     tendency.state = tendency.WANDERING;

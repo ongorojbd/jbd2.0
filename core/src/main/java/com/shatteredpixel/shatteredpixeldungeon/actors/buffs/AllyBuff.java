@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -29,8 +31,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
+
+import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
 
 //generic class for buffs which convert an enemy into an ally
 // There is a decent amount of logic that ties into this, which is why it has its own abstract class
@@ -78,6 +88,31 @@ public abstract class AllyBuff extends Buff {
 
 			if (hero.subClass == HeroSubClass.MONK){
 				Buff.affect(hero, MonkEnergy.class).gainEnergy(enemy);
+			}
+
+			// If in arena/tendency mode, trigger clear-reward/key when no enemies remain after conversion
+			if (Dungeon.tendencylevel && Dungeon.level instanceof ArenaLevel) {
+				boolean mobsAlive = false;
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+					if (mob.isAlive() && mob.alignment == Char.Alignment.ENEMY) {
+						mobsAlive = true;
+						break;
+					}
+				}
+				if (!mobsAlive && Dungeon.level.entrance == 0 && !Dungeon.level.combatRewardDropped) {
+					Dungeon.level.combatRewardDropped = true;
+					spwPrize(enemy.pos);
+					Dungeon.level.drop(new SkeletonKey(Dungeon.depth), enemy.pos).sprite.drop();
+					Dungeon.level.unseal();
+					Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1f, 2f);
+                    if (Statistics.spw24 > 0) {
+                        int chance = Math.min(100, 10 + (Statistics.spw24 * 15));
+                        if (Random.Int(100) < chance) {
+							Dungeon.level.drop(new Spw().identify(), enemy.pos).sprite.drop(enemy.pos);
+							new Flare(5, 32).color(0xFFFF00, true).show(Dungeon.hero.sprite, 2f);
+						}
+					}
+				}
 			}
 		}
 	}

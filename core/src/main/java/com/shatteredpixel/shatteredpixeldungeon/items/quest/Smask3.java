@@ -45,6 +45,7 @@ public class Smask3 extends Item {
             Dungeon.win( Amulet.class );
             Dungeon.deleteGame( GamesInProgress.curSlot, true );
             Game.switchScene( SurfaceScene.class );
+            SPDSettings.addSpecialcoin(1);
         }
 
 //        if (action.equals( AC_BOSS )) {

@@ -203,6 +203,14 @@ public class Badges {
         GAMES_PLAYED_4              ( 108, BadgeType.GLOBAL ),
         HIGH_SCORE_4                ( 109 ),
         CHAMPION_1                  ( 110 ),
+        TENDENCYBADGE                  ( 111 ),
+        TENDENCYBADGE_WARRIOR,
+        TENDENCYBADGE_MAGE,
+        TENDENCYBADGE_DUELIST,
+        TENDENCYBADGE_ROGUE,
+        TENDENCYBADGE_HUNTRESS,
+        TENDENCYBADGE_CLERIC,
+        TENDENCYBADGE_ALL_CLASSES(111),
 
         //diamond
         PACIFIST_ASCENT             ( 120 ),
@@ -878,6 +886,35 @@ public class Badges {
         displayBadge(badge);
     }
 
+    public static void validateTendency() {
+
+
+        Badge badge = Badge.TENDENCYBADGE;
+        local.add(badge);
+        displayBadge(badge);
+
+        badge = dioClassBadges3.get(Dungeon.hero.heroClass);
+        if (badge == null) return;
+        local.add(badge);
+        unlock(badge);
+
+        boolean allUnlocked = true;
+        for (Badge b : dioClassBadges3.values()) {
+            if (!isUnlocked(b)) {
+                allUnlocked = false;
+                break;
+            }
+        }
+        if (allUnlocked) {
+            badge = Badge.TENDENCYBADGE_ALL_CLASSES;
+            if (!isUnlocked(badge)) {
+                displayBadge(badge);
+            }
+        }
+
+        displayBadge(badge);
+    }
+
     private static LinkedHashMap<HeroClass, Badge> firstBossClassBadges = new LinkedHashMap<>();
 
     static {
@@ -937,6 +974,17 @@ public class Badges {
         dioClassBadges2.put(HeroClass.DUELIST, Badge.BRANDOKILL_DUELIST);
         dioClassBadges2.put(HeroClass.HUNTRESS, Badge.BRANDOKILL_HUNTRESS);
         dioClassBadges2.put(HeroClass.CLERIC, Badge.BRANDOKILL_CLERIC);
+    }
+
+    private static LinkedHashMap<HeroClass, Badge> dioClassBadges3 = new LinkedHashMap<>();
+
+    static {
+        dioClassBadges3.put(HeroClass.WARRIOR, Badge.TENDENCYBADGE_WARRIOR);
+        dioClassBadges3.put(HeroClass.MAGE, Badge.TENDENCYBADGE_MAGE);
+        dioClassBadges3.put(HeroClass.ROGUE, Badge.TENDENCYBADGE_ROGUE);
+        dioClassBadges3.put(HeroClass.DUELIST, Badge.TENDENCYBADGE_DUELIST);
+        dioClassBadges3.put(HeroClass.HUNTRESS, Badge.TENDENCYBADGE_HUNTRESS);
+        dioClassBadges3.put(HeroClass.CLERIC, Badge.TENDENCYBADGE_CLERIC);
     }
 
     public static void validateBossSlain() {
@@ -1365,6 +1413,7 @@ public class Badges {
             {Badge.VICTORY, Badge.MIH},
             {Badge.CHAMPION_1, Badge.OVERHEAVEN},
             {Badge.BRANDOKILL, Badge.BRANDOKILL_ALL_CLASSES},
+            {Badge.TENDENCYBADGE, Badge.TENDENCYBADGE_ALL_CLASSES},
             {Badge.HAPPY_END,    Badge.PACIFIST_ASCENT},
             {Badge.VICTORY,      Badge.TAKING_THE_MICK}
     };
@@ -1381,6 +1430,7 @@ public class Badges {
             {Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
             {Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
             {Badge.BRANDOKILL, Badge.BRANDOKILL_ALL_CLASSES},
+            {Badge.TENDENCYBADGE, Badge.TENDENCYBADGE_ALL_CLASSES},
             {Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
             {Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
             {Badge.ALL_WANDS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
@@ -1519,6 +1569,17 @@ public class Badges {
             for (HeroClass cls : HeroClass.values()) {
                 result += "\n";
                 if (isUnlocked(dioClassBadges2.get(cls)))
+                    result += "_" + Messages.titleCase(cls.title()) + "_";
+                else result += Messages.titleCase(cls.title());
+            }
+
+            return result;
+
+        } else if (badge == Badge.TENDENCYBADGE_ALL_CLASSES) {
+
+            for (HeroClass cls : HeroClass.values()) {
+                result += "\n";
+                if (isUnlocked(dioClassBadges3.get(cls)))
                     result += "_" + Messages.titleCase(cls.title()) + "_";
                 else result += Messages.titleCase(cls.title());
             }

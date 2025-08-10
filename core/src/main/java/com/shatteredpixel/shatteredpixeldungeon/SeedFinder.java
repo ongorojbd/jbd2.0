@@ -135,8 +135,8 @@ public class SeedFinder {
 
         // 시작 시간(밀리초)
         long startTime = System.currentTimeMillis();
-        // 12초 이후에 자동 타임아웃
-        long timeLimit = 12000;
+        // 30초 이후에 자동 타임아웃
+        long timeLimit = 30000;
 
         // 실제 시드 탐색
         for (int i = Random.Int(9_999_999);
@@ -145,7 +145,7 @@ public class SeedFinder {
         {
             // 시간 제한 체크
             if (System.currentTimeMillis() - startTime > timeLimit) {
-                // 12초를 초과하면 반복을 멈추고 메시지 반환
+                // 30초를 초과하면 반복을 멈추고 메시지 반환
                 result = "잘못된 조건 또는 너무 복잡한 조건이기 때문에 검색할 수 없습니다.";
                 break;
             }

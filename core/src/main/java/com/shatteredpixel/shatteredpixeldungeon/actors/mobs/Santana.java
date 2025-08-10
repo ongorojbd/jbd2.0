@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel.itemPlace;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -89,14 +90,16 @@ public class Santana extends Mob {
 
             if (Dungeon.hero.heroClass == HeroClass.MAGE) {
                 WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new NewSantantaSprite(), new TrapperSprite(), new SturoSprite()},
-                        new String[]{"산타나", "죠셉", "슈트로하임"},
+                        new CharSprite[]{new SturoSprite(), new TrapperSprite(), new NewSantantaSprite(), new SturoSprite()},
+                        new String[]{"슈트로하임", "죠셉", "산타나", "슈트로하임"},
                         new String[]{
-                                Messages.get(Santana.class, "t7"),
+                                Messages.get(Santana.class, "t4"),
                                 Messages.get(Santana.class, "t8"),
+                                Messages.get(Santana.class, "t7"),
                                 Messages.get(Santana.class, "t9")
                         },
                         new byte[]{
+                                WndDialogueWithPic.IDLE,
                                 WndDialogueWithPic.IDLE,
                                 WndDialogueWithPic.IDLE,
                                 WndDialogueWithPic.IDLE
@@ -417,6 +420,8 @@ public class Santana extends Mob {
 
         Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
         Dungeon.level.drop( new Smask3(), pos ).sprite.drop( pos );
+
+        Badges.validateTendency();
 
         GameScene.bossSlain();
 

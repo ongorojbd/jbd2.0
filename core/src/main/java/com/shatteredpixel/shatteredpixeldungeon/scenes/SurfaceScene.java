@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SnakeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WardSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillaSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -228,6 +229,8 @@ public class SurfaceScene extends PixelScene {
             prtsSprtie.alpha(0.33f);
             window.add(prtsSprtie);
             allySprite = new SpeedwagonSprite();
+        } else if (Dungeon.tendencylevel) {
+            allySprite = new WillcSprite();
         }
 
         if (roseLevel >= 3 && roseLevel >= earthLevel && roseLevel >= wardLevel) {
@@ -259,7 +262,7 @@ public class SurfaceScene extends PixelScene {
 
         window.add(a);
 
-        if (Statistics.diocount != 1) {
+        if (Statistics.diocount != 1 && Statistics.spw12 == 0) {
             window.add(pet);
         }
 

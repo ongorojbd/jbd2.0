@@ -371,4 +371,9 @@ public class SandalsOfNature extends Artifact {
 		}
 	};
 
+	@Override
+	public int value() {
+		return 50 * quantity;
+	}
+
 }

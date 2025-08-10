@@ -93,12 +93,12 @@ public class TendencyShopRoom extends SpecialRoom {
 
     @Override
     public int minWidth() {
-        return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded())));
+        return Math.max(6, (int) Math.ceil(Math.sqrt(spacesNeeded())));
     }
 
     @Override
     public int minHeight() {
-        return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded())));
+        return Math.max(6, (int) Math.ceil(Math.sqrt(spacesNeeded())));
     }
 
     public int spacesNeeded() {
@@ -114,7 +114,7 @@ public class TendencyShopRoom extends SpecialRoom {
                 spacesNeeded--;
             }
         }
-        // spacesNeeded += 4;
+        spacesNeeded += 2;
 
         //we also add 1 more space, for the shopkeeper
         spacesNeeded++;
@@ -349,40 +349,40 @@ public class TendencyShopRoom extends SpecialRoom {
             case 1:
                 switch (Random.Int(12)) {
                     case 0:
-                        rare = new EtherealChains();
+                        rare = new EtherealChains().identify();
                         break;
                     case 1:
-                        rare = new ChaliceOfBlood();
+                        rare = new ChaliceOfBlood().identify();
                         break;
                     case 2:
-                        rare = new WoundsofWar();
+                        rare = new WoundsofWar().identify();
                         break;
                     case 3:
                         rare = new CurseInfusion();
                         break;
                     case 4:
-                        rare = new SandalsOfNature();
+                        rare = new SandalsOfNature().identify();
                         break;
                     case 5:
-                        rare = new PetrifiedSeed().upgrade(3);
+                        rare = new PetrifiedSeed().upgrade(3).identify();;
                         break;
                     case 6:
-                        rare = new ThirteenLeafClover().upgrade(3);
+                        rare = new ThirteenLeafClover().upgrade(3).identify();;
                         break;
                     case 7:
-                        rare = new WondrousResin().upgrade(3);
+                        rare = new WondrousResin().upgrade(3).identify();;
                         break;
                     case 8:
-                        rare = new EyeOfNewt().upgrade(3);
+                        rare = new EyeOfNewt().upgrade(3).identify();;
                         break;
                     case 9:
-                        rare = new VialOfBlood().upgrade(3);
+                        rare = new VialOfBlood().upgrade(3).identify();;
                         break;
                     case 10:
-                        rare = new ChaoticCenser().upgrade(3);
+                        rare = new ChaoticCenser().upgrade(3).identify();;
                         break;
                     case 11:
-                        rare = new FerretTuft().upgrade(3);
+                        rare = new FerretTuft().upgrade(3).identify();;
                         break;
                     default:
                         rare = new Dewdrop();

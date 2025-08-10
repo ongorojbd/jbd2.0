@@ -361,4 +361,9 @@ public class EtherealChains extends Artifact {
 
 		}
 	}
+
+	@Override
+	public int value() {
+		return 50 * quantity;
+	}
 }

@@ -71,9 +71,10 @@ public class Holy1 extends Buff {
                 Buff.detach(hero, Holy2.class);
                 Buff.detach(hero, Holy3.class);
 
-                Sbr4 pick = new Sbr4();
-
-                Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+                if (!Dungeon.tendencylevel) {
+                    Sbr4 pick = new Sbr4();
+                    Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+                }
 
             }
         }

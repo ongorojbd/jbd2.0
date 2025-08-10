@@ -24,13 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -51,7 +48,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
@@ -73,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Mdisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Ram;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr1;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
@@ -100,20 +95,19 @@ public class ShopRoom extends SpecialRoom {
 
     protected ArrayList<Item> itemsToSpawn;
 
-	@Override
-	public int minWidth() {
-		return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded())));
-	}
+    @Override
+    public int minWidth() {
+        return Math.max(7, (int)(Math.sqrt(spacesNeeded())+3));
+    }
 
-	@Override
-	public int minHeight() {
-		return Math.max(5, (int) Math.ceil(Math.sqrt(spacesNeeded())));
-	}
+    @Override
+    public int minHeight() {
+        return Math.max(7, (int)(Math.sqrt(spacesNeeded())+3));
+    }
 
     public int spacesNeeded() {
-        if (itemsToSpawn == null) {
-         itemsToSpawn = generateItems();
-        }
+        if (itemsToSpawn == null) itemsToSpawn = generateItems();
+
         //sandbags spawn based on current level of an hourglass the player may be holding
         // so, to avoid rare cases of min sizes differing based on that, we ignore all sandbags
         // and then add 4 items in all cases, which is max number of sandbags that can be in the shop
@@ -123,7 +117,7 @@ public class ShopRoom extends SpecialRoom {
                 spacesNeeded--;
             }
         }
-        // spacesNeeded += 4;
+        spacesNeeded += 4;
 
         //we also add 1 more space, for the shopkeeper
         spacesNeeded++;
@@ -179,43 +173,43 @@ public class ShopRoom extends SpecialRoom {
         for (Item item : itemsToSpawn.toArray(new Item[0])) {
 
             //place items in a clockwise pattern
-            if (curItemPlace.x == left + inset && curItemPlace.y != top + inset) {
+            if (curItemPlace.x == left+inset && curItemPlace.y != top+inset){
                 curItemPlace.y--;
-            } else if (curItemPlace.y == top + inset && curItemPlace.x != right - inset) {
+            } else if (curItemPlace.y == top+inset && curItemPlace.x != right-inset){
                 curItemPlace.x++;
-            } else if (curItemPlace.x == right - inset && curItemPlace.y != bottom - inset) {
+            } else if (curItemPlace.x == right-inset && curItemPlace.y != bottom-inset){
                 curItemPlace.y++;
             } else {
                 curItemPlace.x--;
             }
 
             //once we get to the inset from the entrance again, move another cell inward and loop
-            if (curItemPlace.equals(entryInset)) {
+            if (curItemPlace.equals(entryInset)){
 
-                if (entryInset.y == top + inset) {
+                if (entryInset.y == top+inset){
                     entryInset.y++;
-                } else if (entryInset.y == bottom - inset) {
+                } else if (entryInset.y == bottom-inset){
                     entryInset.y--;
                 }
-                if (entryInset.x == left + inset) {
+                if (entryInset.x == left+inset){
                     entryInset.x++;
-                } else if (entryInset.x == right - inset) {
+                } else if (entryInset.x == right-inset){
                     entryInset.x--;
                 }
                 inset++;
 
-                if (inset > (Math.min(width(), height()) - 3) / 2) {
+                if (inset > (Math.min(width(), height())-3)/2){
                     break; //out of space!
                 }
 
                 curItemPlace = entryInset.clone();
 
                 //make sure to step forward again
-                if (curItemPlace.x == left + inset && curItemPlace.y != top + inset) {
+                if (curItemPlace.x == left+inset && curItemPlace.y != top+inset){
                     curItemPlace.y--;
-                } else if (curItemPlace.y == top + inset && curItemPlace.x != right - inset) {
+                } else if (curItemPlace.y == top+inset && curItemPlace.x != right-inset){
                     curItemPlace.x++;
-                } else if (curItemPlace.x == right - inset && curItemPlace.y != bottom - inset) {
+                } else if (curItemPlace.x == right-inset && curItemPlace.y != bottom-inset){
                     curItemPlace.y++;
                 } else {
                     curItemPlace.x--;
@@ -250,96 +244,6 @@ public class ShopRoom extends SpecialRoom {
             ShatteredPixelDungeon.reportException(new RuntimeException("failed to place all items in a shop!"));
         }
 
-    }
-
-    protected static ArrayList<Item> generateItemsGauntlet() {
-        ArrayList<Item> itemsToSpawn = new ArrayList<>();
-
-        for (int i = 0; i < 2; i++) {
-            itemsToSpawn.add(Generator.random(Generator.Category.POTION).identify());
-            itemsToSpawn.add(Generator.random(Generator.Category.SCROLL).identify());
-            itemsToSpawn.add(Generator.random(Generator.Category.STONE));
-        }
-
-        itemsToSpawn.add(TippedDart.randomTipped(2));
-
-        if (Dungeon.depth % 2 == 0) itemsToSpawn.add(new ScrollOfUpgrade().identify());
-        if (Dungeon.depth % 3 == 0) itemsToSpawn.add(new PotionOfStrength().identify());
-        if (Dungeon.depth % 2 == 0) itemsToSpawn.add(Generator.randomMissile());
-
-        Item rare;
-        switch (Random.Int(5)) {
-            case 0:
-                rare = Generator.randomUsingDefaults(Generator.Category.WAND);
-                break;
-            case 1:
-                rare = Generator.randomUsingDefaults(Generator.Category.ARTIFACT);
-                break;
-            case 2:
-                rare = Generator.randomWeapon();
-                break;
-            case 3:
-                rare = Generator.randomArmor();
-                break;
-            default:
-                rare = new Dewdrop();
-        }
-        rare.identify();
-        itemsToSpawn.add(rare);
-        itemsToSpawn.add(new Bomb.DoubleTBomb());
-        if (Random.Int(2) == 0) {
-            Item additionalRare;
-            switch (hero.heroClass) {
-                case WARRIOR:
-                case ROGUE:
-                    additionalRare = Generator.randomWeapon();
-                    break;
-                case MAGE:
-                    additionalRare = Generator.random(Generator.Category.WAND);
-                    break;
-                case HUNTRESS:
-                    additionalRare = Generator.randomMissile();
-                    break;
-                default:
-                    additionalRare = new Dewdrop();
-            }
-            additionalRare.identify();
-            itemsToSpawn.add(additionalRare);
-        }
-
-        if (Dungeon.depth % 6 == 0) itemsToSpawn.add(ChooseBag(hero.belongings));
-
-        TimekeepersHourglass hourglass = hero.belongings.getItem(TimekeepersHourglass.class);
-        if (hourglass != null && hourglass.isIdentified() && !hourglass.cursed) {
-            int bags = 0;
-            //creates the given float percent of the remaining bags to be dropped.
-            //this way players who get the hourglass late can still max it, usually.
-            switch (Dungeon.depth) {
-                case 8:
-                    bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.20f);
-                    break;
-                case 16:
-                    bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.25f);
-                    break;
-                case 24:
-                    bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.50f);
-                    break;
-                case 32:
-                    bags = (int) Math.ceil((5 - hourglass.sandBags) * 0.80f);
-                    break;
-            }
-
-            for (int k = 1; k <= bags; k++) {
-                itemsToSpawn.add(new TimekeepersHourglass.sandBag());
-                hourglass.sandBags++;
-            }
-        }
-
-        Random.pushGenerator(Random.Long());
-        Random.shuffle(itemsToSpawn);
-        Random.popGenerator();
-
-        return itemsToSpawn;
     }
 
     protected static ArrayList<Item> generateItems() {

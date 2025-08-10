@@ -79,7 +79,10 @@ public class StoneOfAdvanceguard extends Runestone {
                 );
                 Dungeon.level.drop(prize, mob.pos).sprite.drop(mob.pos);
             } else {
-                mob.destroy();
+
+                if (Dungeon.tendencylevel) mob.die(this);
+                else mob.destroy();
+
                 mob.sprite.killAndErase();
                 TargetHealthIndicator.instance.target(null);
                 GameScene.flash(0x660099);

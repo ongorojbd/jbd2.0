@@ -341,7 +341,7 @@ public class Spw extends Item {
         private boolean shouldSkipItem(int itemType) {
             switch (itemType) {
                 case ITEM_TYPE_SPW1:
-                    return spw1 > MAX_SPW_COUNT;
+                    return spw1 >= 3;
                 case ITEM_TYPE_SPW2:
                     return spw2 > MAX_SPW_COUNT;
                 case ITEM_TYPE_SPW3:
@@ -491,7 +491,7 @@ public class Spw extends Item {
         private boolean isItemAvailable(Item item) {
             if (item == null) return false;
 
-            return !((item instanceof Spw1 && spw1 > MAX_SPW_COUNT) ||
+            return !((item instanceof Spw1 && spw1 >= 3) ||
                     (item instanceof Spw2 && spw2 > MAX_SPW_COUNT) ||
                     (item instanceof Spw3 && spw3 > MAX_SPW_COUNT) ||
                     (item instanceof Spw4 && spw4 > MAX_SPW_COUNT) ||

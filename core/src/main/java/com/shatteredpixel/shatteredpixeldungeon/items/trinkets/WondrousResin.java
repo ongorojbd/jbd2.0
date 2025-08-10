@@ -79,4 +79,9 @@ public class WondrousResin extends Trinket {
 		}
 	}
 
+	@Override
+	public int value() {
+		return 50 * quantity;
+	}
+
 }

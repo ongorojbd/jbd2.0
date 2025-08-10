@@ -69,7 +69,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
@@ -81,7 +80,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
@@ -960,9 +958,8 @@ public abstract class Mob extends Char {
                 Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1f, 2f);
 
                 if (Statistics.spw24 > 0) {
-                    // spw24 값에 따라 확률 계산 (10% + spw24 * 10%, 최대 100%)
-                    int capped = Math.min(10, Statistics.spw24);
-                    int chance = 10 + (capped * 10);
+                    // spw24 값에 따라 확률 계산 (10% + spw24 * 15%, 최대 100%)
+                    int chance = Math.min(100, 10 + (Statistics.spw24 * 15));
                     if (Random.Int(100) < chance) {
                         Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
                         new Flare(5, 32).color(0xFFFF00, true).show(hero.sprite, 2f);

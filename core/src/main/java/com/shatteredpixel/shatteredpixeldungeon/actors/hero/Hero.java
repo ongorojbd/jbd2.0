@@ -1882,40 +1882,43 @@ public class Hero extends Char {
 
             CellEmitter.get(hero.pos).burst(D4CParticle.FACTORY, 9);
 
+            int lt = 15;
+            if (Dungeon.tendencylevel) lt = 6;
+
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 CellEmitter.get(hero.pos + 1).burst(D4CParticle.FACTORY, 3);
                 if (mob.pos == hero.pos + 1) {
-                    mob.damage(15, hero);
+                    mob.damage(lt, hero);
                 }
             }
             for (Mob mob2 : Dungeon.level.mobs.toArray(new Mob[0])) {
                 CellEmitter.get(hero.pos - 1).burst(D4CParticle.FACTORY, 3);
                 if (mob2.pos == hero.pos - 1) {
-                    mob2.damage(15, hero);
+                    mob2.damage(lt, hero);
                 }
             }
             for (Mob mob3 : Dungeon.level.mobs.toArray(new Mob[0])) {
                 CellEmitter.get(hero.pos + 2).burst(D4CParticle.FACTORY, 3);
                 if (mob3.pos == hero.pos + 2) {
-                    mob3.damage(15, hero);
+                    mob3.damage(lt, hero);
                 }
             }
             for (Mob mob4 : Dungeon.level.mobs.toArray(new Mob[0])) {
                 CellEmitter.get(hero.pos - 2).burst(D4CParticle.FACTORY, 3);
                 if (mob4.pos == hero.pos - 2) {
-                    mob4.damage(15, hero);
+                    mob4.damage(lt, hero);
                 }
             }
             for (Mob mob5 : Dungeon.level.mobs.toArray(new Mob[0])) {
                 CellEmitter.get(hero.pos + 3).burst(D4CParticle.FACTORY, 3);
                 if (mob5.pos == hero.pos + 3) {
-                    mob5.damage(15, hero);
+                    mob5.damage(lt, hero);
                 }
             }
             for (Mob mob6 : Dungeon.level.mobs.toArray(new Mob[0])) {
                 CellEmitter.get(hero.pos - 3).burst(D4CParticle.FACTORY, 3);
                 if (mob6.pos == hero.pos - 3) {
-                    mob6.damage(15, hero);
+                    mob6.damage(lt, hero);
                 }
             }
         }

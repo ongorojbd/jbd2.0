@@ -203,4 +203,9 @@ public class ChaliceOfBlood extends Artifact {
 		//see Regeneration.class for effect
 	}
 
+	@Override
+	public int value() {
+		return 50 * quantity;
+	}
+
 }

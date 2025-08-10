@@ -90,4 +90,9 @@ public class VialOfBlood extends Trinket {
 		}
 	}
 
+	@Override
+	public int value() {
+		return 50 * quantity;
+	}
+
 }

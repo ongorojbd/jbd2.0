@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
@@ -41,6 +43,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.P3mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.P4mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.P5mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Willamob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
@@ -66,12 +70,15 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Passione2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PassioneSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PolpoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WillaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -295,6 +302,23 @@ public class Polpo extends NPC {
                     spawnAndLog(new P3mob(), "p3", "p3j", spawnPoints);
                     break;
                 case 1:
+                    GameScene.show(
+                            new WndOptions(new PassioneSprite.Ab(),
+                                    Messages.get(P2mob.class, "w"),
+                                    Messages.get(P2mob.class, "prick_warn"),
+                                    Messages.get(P2mob.class, "yes"),
+                                    Messages.get(P2mob.class, "no")) {
+                                @Override
+                                protected void onSelect(int index) {
+                                    if (index == 0) {
+                                        GameScene.flash(0x660000);
+                                        Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1, 1);
+                                        GLog.n(Messages.get(P2mob.class, "z6"));
+                                        hero.HP = 1;}
+                                    }
+
+                            }
+                    );
                     spawnAndLog(new P2mob(), "p2", "p2j", spawnPoints);
                     break;
                 case 2:

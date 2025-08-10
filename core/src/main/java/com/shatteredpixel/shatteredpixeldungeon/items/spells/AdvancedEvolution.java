@@ -248,6 +248,11 @@ public class AdvancedEvolution extends InventorySpell {
         }
     }
 
+    @Override
+    public int value() {
+        return 50 * quantity;
+    }
+
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe{
 
         {

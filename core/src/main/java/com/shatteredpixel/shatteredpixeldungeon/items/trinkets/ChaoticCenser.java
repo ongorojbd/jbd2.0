@@ -340,4 +340,9 @@ public class ChaoticCenser extends Trinket {
 		MISSILE_VFX.put(CorrosiveGas.class, MagicMissile.SPECK + Speck.CORROSION);
 	}
 
+	@Override
+	public int value() {
+		return 50 * quantity;
+	}
+
 }
