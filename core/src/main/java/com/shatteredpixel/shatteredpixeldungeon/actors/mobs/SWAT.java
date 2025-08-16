@@ -193,11 +193,11 @@ public class SWAT extends Mob implements Callback {
 	}
 
 	private void zap() {
-		spend(TIME_TO_ZAP);
+        spend(TIME_TO_ZAP);
 
-		if (hit(this, enemy, true)) {
+        if (enemy != null && hit(this, enemy, true)) {
 			//TODO would be nice for this to work on ghost/statues too
-			if (enemy == Dungeon.hero && Random.Int(0) == 0) {
+            if (enemy == Dungeon.hero && Random.Int(0) == 0) {
 				Buff.prolong(enemy, Charm.class, Charm.DURATION);
 				Sample.INSTANCE.play(Assets.Sounds.HIT);
 			}
@@ -205,11 +205,11 @@ public class SWAT extends Mob implements Callback {
 			int dmg = Random.NormalIntRange(25, 30);
 			enemy.damage(dmg, new DarkBolt());
 
-			if (enemy == Dungeon.hero && !enemy.isAlive()) {
+            if (enemy == Dungeon.hero && !enemy.isAlive()) {
 				Dungeon.fail(getClass());
 				GLog.n(Messages.get(this, "bolt_kill"));
 			}
-		} else {
+        } else if (enemy != null) {
 			enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
 		}
 	}

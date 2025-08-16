@@ -356,7 +356,6 @@ public class MobSpawner extends Actor {
                 return new ArrayList<>(Arrays.asList(
                         Niku.class));
 
-            // Caves (11-15층)
             case 12:
                 return new ArrayList<>(Arrays.asList(
                         ZombieSoldier.class, Niku.class));
@@ -391,38 +390,45 @@ public class MobSpawner extends Actor {
                         Niku.class, VampireTest.class, VampireTest.class,
                         VampireTest.class));
             case 19:
+                return new ArrayList<>(Arrays.asList(
+                        Vampire.class));
+
             case 20:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieBrute.class, ZombieBrute.class, ZombieBrute.class,
-                        ZombieTwo.class, ZombieTwo.class, ZombieTwo.class,
-                        ZombieThree.class, ZombieThree.class, ZombieThree.class));
+                        Vampire.class, Vampire.class, ZombieBrute3.class));
 
-            // Halls (21-25층)
             case 21:
                 return new ArrayList<>(Arrays.asList(
-                        Zombie2.class, Zombie2.class, Zombie2.class,
-                        Zombiedog2.class, Zombied2.class));
+                        Vampire.class, ZombieBrute3.class));
             case 22:
                 return new ArrayList<>(Arrays.asList(
-                        Zombie2.class, Zombie2.class, Zombie2.class,
-                        Zombiedog2.class, Zombied2.class, Zombied2.class));
+                        ZombieBrute3.class, ZombieBrute3.class,
+                        Vampire.class, Vampire.class, Vampire.class,
+                        Vampire2.class));
+
             case 23:
                 return new ArrayList<>(Arrays.asList(
-                        Zombie2.class, Zombie2.class, Zombie2.class,
-                        Zombiedog2.class, Zombied2.class, Zombied2.class,
-                        Zombiez2.class));
+                        ZombieBrute3.class, ZombieBrute3.class,
+                        Vampire2.class, Vampire.class, Vampire2.class,
+                        Vampire2.class));
+
             case 24:
+                return new ArrayList<>(Arrays.asList(
+                        ZombieBrute3.class, ZombieBrute3.class,
+                        Vampire.class, Vampire.class, Vampire2.class,
+                        ZombieTank.class));
+
             case 25:
                 return new ArrayList<>(Arrays.asList(
-                        Zombie2.class, Zombie2.class, Zombie2.class,
-                        Zombiedog2.class, Zombied2.class, Zombied2.class,
-                        Zombiez2.class, Zombie2p.random(), Zombiet2.class));
+                        ZombieBrute3.class, ZombieBrute3.class,
+                        Vampire.class, ZombieTank.class, Vampire2.class,
+                        ZombieTank.class));
 
-            // Labs (26-31층) - 좀비 계열이 없으므로 기본 몹들 사용
             case 26:
                 return new ArrayList<>(Arrays.asList(
-                        Zombie2.class, Zombie2.class, Zombie2.class,
-                        Zombiedog2.class));
+                        ZombieBrute3.class, Vampire.class,
+                        Vampire2.class, ZombieTank.class, ZombieTank.class,
+                        ZombieTank.class));
             case 27:
                 return new ArrayList<>(Arrays.asList(
                         Zombie2.class, Zombie2.class, Zombie2.class,

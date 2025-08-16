@@ -42,6 +42,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
@@ -205,12 +208,10 @@ public class TendencyShopkeeper extends NPC {
     // 판매 물품
     public static int sellPrice(Item item) {
         // 아이템별로 다른 가격 설정 - Tendency 모드에 맞게 조정
-        if (item instanceof Potion) {
-            return 40; // 포션은 중간 가격
-        } else if (item instanceof Scroll) {
+        if (item instanceof Scroll) {
             return 40; // 스크롤은 중간 가격
         } else if (item instanceof Runestone) {
-            return 30; // 룬석은 저렴
+            return 25; // 룬석은 저렴
         } else if (item instanceof Ram2 || item instanceof Food) {
             return 40; // 식량은 저렴
         } else if (item instanceof TippedDart) {
@@ -227,6 +228,8 @@ public class TendencyShopkeeper extends NPC {
             return 100; // 방어구는 비싸게
         } else if (item instanceof Wand) {
             return 100; // 지팡이는 매우 비싸게
+        } else if (item instanceof UV) {
+            return 100; // 자외선 조사장치는 매우 비싸게
         } else if (item instanceof Artifact) {
             return 100; // 아티팩트는 가장 비싸게
         } else {

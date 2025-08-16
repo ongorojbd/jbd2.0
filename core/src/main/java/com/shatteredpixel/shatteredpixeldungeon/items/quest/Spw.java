@@ -43,6 +43,16 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw29;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw3;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw30;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw4;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw31;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw32;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw33;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw34;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw35;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw36;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw37;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw38;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw39;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw40;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw6;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw7;
 
@@ -57,12 +67,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TrialOfPillars;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -71,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
@@ -215,9 +229,19 @@ public class Spw extends Item {
         private static final int ITEM_TYPE_SPW28 = 27;
         private static final int ITEM_TYPE_SPW29 = 28;
         private static final int ITEM_TYPE_SPW30 = 29;
+        private static final int ITEM_TYPE_SPW31 = 30;
+        private static final int ITEM_TYPE_SPW32 = 31;
+        private static final int ITEM_TYPE_SPW33 = 32;
+        private static final int ITEM_TYPE_SPW34 = 33;
+        private static final int ITEM_TYPE_SPW35 = 34;
+        private static final int ITEM_TYPE_SPW36 = 35;
+        private static final int ITEM_TYPE_SPW37 = 36;
+        private static final int ITEM_TYPE_SPW38 = 37;
+        private static final int ITEM_TYPE_SPW39 = 38;
+        private static final int ITEM_TYPE_SPW40 = 39;
 
         // 가능한 아이템 타입의 총 개수
-        private static final int TOTAL_ITEM_TYPES = 30;
+        private static final int TOTAL_ITEM_TYPES = 40;
 
         public WndSpw(Spw spw) {
             IconTitle titlebar = createTitleBar(spw);
@@ -369,7 +393,7 @@ public class Spw extends Item {
                 case ITEM_TYPE_SPW23:
                     return spw23 >= 2;
                 case ITEM_TYPE_SPW24:
-                    return spw24 > MAX_SPW_COUNT;
+                    return spw24 >= 6;
                 case ITEM_TYPE_SPW26:
                     return spw26 > MAX_SPW_COUNT;
                 case ITEM_TYPE_SPW27:
@@ -380,6 +404,17 @@ public class Spw extends Item {
                     return spw29 >= 5;
                 case ITEM_TYPE_SPW30:
                     return spw30 >= 2;
+                case ITEM_TYPE_SPW32:
+                    return spw32 >= 2;
+                case ITEM_TYPE_SPW33:
+                    return spw33 >= 2;
+                case ITEM_TYPE_SPW34:
+                    return spw34 >= 2;
+                case ITEM_TYPE_SPW35:
+                    // TrialOfPillars 버프 중에는 출현 금지
+                    return Dungeon.hero.buff(TrialOfPillars.class) != null;
+                case ITEM_TYPE_SPW36:
+                    return spw36 >= 5;
                 default:
                     return false;
             }
@@ -450,6 +485,18 @@ public class Spw extends Item {
                     return new Spw29();
                 case ITEM_TYPE_SPW30:
                     return new Spw30();
+                case ITEM_TYPE_SPW31:
+                    return new Spw31();
+                case ITEM_TYPE_SPW32:
+                    return new Spw32();
+                case ITEM_TYPE_SPW33:
+                    return new Spw33();
+                case ITEM_TYPE_SPW34:
+                    return new Spw34();
+                case ITEM_TYPE_SPW35:
+                    return new Spw35();
+                case ITEM_TYPE_SPW36:
+                    return new Spw36();
                 default:
                     return null;
             }
@@ -505,12 +552,17 @@ public class Spw extends Item {
                     (item instanceof Spw19 && spw19 >= 1) ||
                     (item instanceof Spw22 && spw22 > MAX_SPW_COUNT) ||
                     (item instanceof Spw23 && spw23 >= 2) ||
-                    (item instanceof Spw24 && spw24 > MAX_SPW_COUNT) ||
+                    (item instanceof Spw24 && spw24 >= 6) ||
                     (item instanceof Spw26 && spw26 > MAX_SPW_COUNT) ||
                     (item instanceof Spw27 && spw27 >= 2) ||
                     (item instanceof Spw28 && spw28 >= 2) ||
                     (item instanceof Spw29 && spw29 >= 5) ||
-                    (item instanceof Spw30 && spw30 >= 2));
+                    (item instanceof Spw30 && spw30 >= 2) ||
+                    (item instanceof Spw32 && spw32 >= 2) ||
+                    (item instanceof Spw33 && spw33 >= 2) ||
+                    (item instanceof Spw34 && spw34 >= 2) ||
+                    (item instanceof Spw35 && Dungeon.hero.buff(TrialOfPillars.class) != null) ||
+                    (item instanceof Spw36 && spw36 >= 5));
         }
 
         /**
@@ -662,15 +714,23 @@ public class Spw extends Item {
                     } else {
                         Dungeon.level.drop( jojo3, Dungeon.hero.pos ).sprite.drop();
                     }
-                }
-                else if (item instanceof Spw20) {
+                } else if (item instanceof Spw20) {
                     handleSpw20Effect();
                 } else if (item instanceof Spw21) {
                     Spw21.Spw21Ability();
                 } else if (item instanceof Spw25) {
                     Buff.prolong(hero, Triplespeed.class, 100f);
-                }  else if (item instanceof Spw26) {
+                } else if (item instanceof Spw26) {
                     spw26++;
+                } else if (item instanceof Spw31) {
+                    spw31++;
+                    hero.STR++;
+                    hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.STRENGTH);
+                } else if (item instanceof Spw35) {
+                    // 지옥승주의 시련 시작
+                    spw35++;
+                    Buff.affect(hero, TrialOfPillars.class);
+                    GLog.w(Messages.get(Spw.class, "spw35_start"));
                 } else {
                     handleGenericItem(item);
                 }
@@ -795,6 +855,26 @@ public class Spw extends Item {
                     spw29++;
                 } else if (item instanceof Spw30) {
                     spw30++;
+            } else if (item instanceof Spw31) {
+                spw31++;
+            } else if (item instanceof Spw32) {
+                spw32++;
+            } else if (item instanceof Spw33) {
+                spw33++;
+            } else if (item instanceof Spw34) {
+                spw34++;
+            } else if (item instanceof Spw35) {
+                spw35++;
+            } else if (item instanceof Spw36) {
+                spw36++;
+            } else if (item instanceof Spw37) {
+                spw37++;
+            } else if (item instanceof Spw38) {
+                spw38++;
+            } else if (item instanceof Spw39) {
+                spw39++;
+            } else if (item instanceof Spw40) {
+                spw40++;
                 }
 
             }

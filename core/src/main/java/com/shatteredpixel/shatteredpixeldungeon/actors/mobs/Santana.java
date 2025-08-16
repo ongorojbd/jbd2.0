@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WoolParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask3;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
@@ -65,7 +66,7 @@ public class Santana extends Mob {
     {
         spriteClass = NewSantantaSprite.class;
 
-        HP = HT = 300;
+        HP = HT = 350;
         EXP = 20;
         defenseSkill = 12;
 
@@ -145,7 +146,7 @@ public class Santana extends Mob {
             ribBladeCooldown = 0;
         }
 
-        if (Phase == 1 && HP < 100) {
+        if (Phase == 1 && HP < 150) {
             Phase = 2;
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new NewSantantaSprite(), new NewSantantaSprite()},
@@ -419,7 +420,7 @@ public class Santana extends Mob {
         );
 
         Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
-        Dungeon.level.drop( new Smask3(), pos ).sprite.drop( pos );
+        Dungeon.level.drop( new TengusMask(), pos ).sprite.drop( pos );
 
         Badges.validateTendency();
 
@@ -427,6 +428,7 @@ public class Santana extends Mob {
 
         Music.INSTANCE.end();
 
+        Dungeon.level.unseal();
     }
 
     @Override

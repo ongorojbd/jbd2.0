@@ -43,7 +43,7 @@ public class Spw24 extends Item {
     @Override
     public String desc() {
         // 기본값 10% + spw24당 15%, 최대 100%
-        int chance = Math.min(100, 10 + (spw24 * 15));
+        int chance = Math.min(100, 15 + (spw24 * 15));
         String result = "보상을 받을 때마다, SPW 재단의 보급 상자를 _" + chance + "%_ 확률로 1개 더 획득할 수 있습니다.\n\n이 효과를 선택할 때마다 확률이 +_15%_만큼 더 증가합니다.";
         return result;
     }

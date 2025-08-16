@@ -31,11 +31,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Esidisi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsUltimate;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wamuu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WamuuFirst;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
@@ -119,7 +124,7 @@ public class ArenaBossLevel extends Level {
     private static final short E = Terrain.ENTRANCE_SP;
     private static final short T = Terrain.TRAP;
     private static final short p = Terrain.PEDESTAL;
-    private static final short D = Terrain.DOOR;
+    private static final short d = Terrain.WALL_DECO;
     private static final short C = Terrain.CRYSTAL_DOOR;
     private static final short B = Terrain.STATUE_SP;
     private static final short A = Terrain.ALCHEMY;
@@ -141,8 +146,8 @@ public class ArenaBossLevel extends Level {
             W, W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W, W,
             W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W,
             W, W, W, W, h, h, e, e, e, e, e, e, w, e, e, e, e, e, w, e, e, e, e, e, e, h, h, W, W, W, W,
-            W, W, W, W, h, e, e, e, e, W, W, e, e, e, e, e, e, e, e, e, W, W, e, e, e, e, h, W, W, W, W,
-            W, W, W, W, h, e, e, e, e, W, e, e, e, e, e, e, e, e, e, e, e, W, e, e, e, e, h, W, W, W, W,
+            W, W, W, W, h, e, e, e, e, d, d, e, e, e, e, e, e, e, e, e, d, d, e, e, e, e, h, W, W, W, W,
+            W, W, W, W, h, e, e, e, e, d, e, e, e, e, e, e, e, e, e, e, e, d, e, e, e, e, h, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, W, W, W, W,
             W, W, W, W, S, e, e, e, w, e, e, e, e, h, e, e, e, h, e, e, e, e, w, e, e, e, S, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, h, e, h, h, h, e, h, e, e, e, e, e, e, e, h, W, W, W, W,
@@ -152,8 +157,8 @@ public class ArenaBossLevel extends Level {
             W, W, W, W, h, e, e, e, e, e, e, e, h, e, h, h, h, e, h, e, e, e, e, e, e, e, h, W, W, W, W,
             W, W, W, W, S, e, e, e, w, e, e, e, e, h, e, e, e, h, e, e, e, e, w, e, e, e, S, W, W, W, W,
             W, W, W, W, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, W, W, W, W,
-            W, W, W, W, h, e, e, e, e, W, e, e, e, e, e, e, e, e, e, e, e, W, e, e, e, e, h, W, W, W, W,
-            W, W, W, W, h, h, e, e, e, W, W, e, e, e, e, e, e, e, e, e, W, W, e, e, e, h, h, W, W, W, W,
+            W, W, W, W, h, e, e, e, e, d, e, e, e, e, e, e, e, e, e, e, e, d, e, e, e, e, h, W, W, W, W,
+            W, W, W, W, h, h, e, e, e, d, d, e, e, e, e, e, e, e, e, e, d, d, e, e, e, h, h, W, W, W, W,
             W, W, W, W, W, h, h, e, e, e, e, e, w, e, e, e, e, e, w, e, e, e, e, e, h, h, W, W, W, W, W,
             W, W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W, W,
             W, W, W, W, W, W, W, h, h, e, e, e, e, e, e, e, e, e, e, e, e, e, h, h, W, W, W, W, W, W, W,
@@ -285,6 +290,19 @@ public class ArenaBossLevel extends Level {
             }
 
             Santana boss = new Santana();
+            boss.pos = 15 + WIDTH * 10;
+            boss.state = boss.WANDERING;
+            GameScene.add(boss);
+            boss.beckon(Dungeon.hero.pos);
+
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha(0);
+                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+            }
+        } else if (Dungeon.depth == 27) {
+            // Optional: spawn Wamuu as an endgame tendency boss
+            WamuuFirst boss = new WamuuFirst();
             boss.pos = 15 + WIDTH * 10;
             boss.state = boss.WANDERING;
             GameScene.add(boss);

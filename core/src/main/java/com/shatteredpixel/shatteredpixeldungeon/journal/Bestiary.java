@@ -171,7 +171,7 @@ public enum Bestiary {
 
         REGIONAL.addEntities(Rat.class, Snake.class, Gnoll.class, Swarm.class, Crab.class, Slime.class,
                 Bcom.class, Bcomg.class, Skeleton.class, Thief.class, DM100.class, Guard.class, Necromancer.class,
-                Bat.class, Brute.class, Shaman.RedShaman.class, Shaman.BlueShaman.class, Shaman.PurpleShaman.class, Spinner.class, DM200.class,
+                Bat.class, Brute.class, Shaman.BlueShaman.class, Shaman.RedShaman.class, Shaman.PurpleShaman.class, Spinner.class, DM200.class,
                 Ghoul.class, Elemental.FireElemental.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class, Warlock.class, Monk.class, Golem.class,
                 RipperDemon.class, DemonSpawner.class, Succubus.class, Eye.class, Scorpio.class, Willsonmob.class, Supression.class, Medic.class, Tank.class, Researcher.class, Soldier.class);
 
@@ -192,7 +192,7 @@ public enum Bestiary {
 
         CASTLE.addEntities(Zombie.class, Zombiedog.class, Zombied.class, Zombiez.class, Zombiep.Zombiep1.class, Zombiep.Zombiep2.class, Zombiep.Zombiep3.class, Zombiep.Zombiep4.class, Zombiet.class, Zombiebr.class, Diobrando.class);
 
-        TENDENCY.addEntities(ZombieTwo.class, ZombieThree.class, ZombieBrute.class, ZombieBrute2.class, Tboss.class, ZombieSoldier.class, Niku.class, Abomination.class, VampireTest.class, Santana.class, TendencyShopkeeper.class, GSoldier.class, SpwSoldier.class, Sturo.class, TendencyTank.class);
+        TENDENCY.addEntities(ZombieTwo.class, ZombieThree.class, ZombieBrute.class, ZombieBrute2.class, Tboss.class, ZombieSoldier.class, Niku.class, Abomination.class, VampireTest.class, Santana.class, Vampire.class, ZombieBrute3.class, Vampire2.class, ZombieTank.class, WamuuFirst.class, TendencyShopkeeper.class, GSoldier.class, SpwSoldier.class, Sturo.class, TendencyTank.class, CaesarZeppeli.class);
 
         QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class, Manhatan2.class,
                 Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,

@@ -489,7 +489,7 @@ public enum Rankings {
 			if (win){
 				if(depth == 5 || depth == 6){
 					return Messages.get(this, "diok");
-				} else if (depth == 18){
+				} else if (depth == 27){ // 전투조류
 					return Messages.get(this, "tendencywon");
 				} else if (ascending){
 					return Messages.get(this, "ascended");

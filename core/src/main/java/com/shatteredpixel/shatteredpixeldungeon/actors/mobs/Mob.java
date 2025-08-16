@@ -70,11 +70,34 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponEnhance;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStamina;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStormClouds;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -92,6 +115,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
@@ -966,6 +990,48 @@ public abstract class Mob extends Char {
                     }
                 }
 
+                // SPW36: 보급 - 전투 보상 시 무작위 강화 물약 추가 드랍 (20% * spw36)
+                if (Statistics.spw36 > 0) {
+                    int supplyChance = Math.min(100, 20 * Statistics.spw36);
+                    if (Random.Int(100) < supplyChance) {
+                        Class<?>[] specialPotions = {
+                                // 엘릭서들
+                                ElixirOfArcaneArmor.class,      // 스탠드 저항 용액
+                                ElixirOfAquaticRejuvenation.class, // F.F.의 용액
+                                ElixirOfDragonsBlood.class,     // 괴염왕 용액
+                                ElixirOfHoneyedHealing.class,   // 폴포의 용액
+                                ElixirOfIcyTouch.class,         // 기화냉동 용액
+                                ElixirOfToxicEssence.class,     // 디스토션 용액
+                                ElixirOfWeaponEnhance.class,    // 복수의 물약
+                                ElixirOfWeaponUpgrade.class,    // 환각의 물약
+
+                                // 특수 물약들
+                                PotionOfCleansing.class,        // 청정의 물약
+                                PotionOfCorrosiveGas.class,     // 부식 물약
+                                PotionOfDragonsBreath.class,    // 불길의 물약
+                                PotionOfEarthenArmor.class,     // 바위 인간의 물약
+                                PotionOfDivineInspiration.class, // 죠스타의 물약
+                                PotionOfMagicalSight.class,     // 천리안의 물약
+                                PotionOfShielding.class,        // 보호막의 물약
+                                PotionOfShroudingFog.class,     // 연막 물약
+                                PotionOfSnapFreeze.class,       // 순간 빙결 물약
+                                PotionOfStamina.class,          // 지구력의 물약
+                                PotionOfStormClouds.class       // 폭우 물약
+                        };
+                        try {
+                            Class<?> selectedPotion = Random.element(specialPotions);
+                            Item pot = (Item) selectedPotion.newInstance();
+                            if (pot != null) Dungeon.level.drop(pot.identify(), pos).sprite.drop();
+                        } catch (Exception e) {
+                            // 오류 시 기본 물약 생성
+                            Item pot = Generator.random(Generator.Category.POTION);
+                            if (pot != null) Dungeon.level.drop(pot.identify(), pos).sprite.drop();
+                        }
+                    }
+                }
+
+
+
             }
         }
 
@@ -1040,6 +1106,8 @@ public abstract class Mob extends Char {
                 RingOfWealth.showFlareForBonusDrop(sprite);
             }
         }
+
+        // SPW36: 보급 - 전투조류 아레나에서 전투 보상 시 강화 물약 추가 드랍 확률 (아레나 보상 처리 블록으로 이동)
 
         //lucky enchant logic
         if (buff(Lucky.LuckProc.class) != null) {
@@ -1459,7 +1527,9 @@ public abstract class Mob extends Char {
                 heldAllies.add(mob);
             } else if (mob.alignment == Alignment.ALLY && mob.intelligentAlly
                     && Dungeon.level instanceof DioLevel || mob.alignment == Alignment.ALLY && mob.intelligentAlly
-                    && Dungeon.level instanceof JolyneLevel) {
+                    && Dungeon.level instanceof JolyneLevel || mob.alignment == Alignment.ALLY && mob.intelligentAlly
+                    && Dungeon.level instanceof ArenaLevel || mob.alignment == Alignment.ALLY && mob.intelligentAlly
+                    && Dungeon.level instanceof ArenaBossLevel) {
                 level.mobs.remove(mob);
                 heldAllies.add(mob);
             }

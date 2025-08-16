@@ -78,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Speed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TrialOfPillars;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
@@ -844,6 +845,10 @@ public abstract class Char extends Actor {
     }
 
     public void damage(int dmg, Object src) {
+
+        if (this == Dungeon.hero && buff(TrialOfPillars.class) != null) {
+            dmg = Math.round(dmg * 2f);
+        }
 
         if (!isAlive() || dmg < 0) {
             return;

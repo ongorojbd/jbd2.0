@@ -43,6 +43,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beast;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CaesarZeppeli;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diobrando;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
@@ -53,7 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WamuuFirst;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.jojo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne;
@@ -74,7 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jolynemap;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr8;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -106,20 +108,20 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM201Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LisaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NewSantantaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Pucci4Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SantanaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ScorpioSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Speedwagon2Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhsnakeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -590,30 +592,72 @@ public class GameScene extends PixelScene {
                     );
 
                     Item pick = new TendencyItem();
-                    if (pick.doPickUp( Dungeon.hero )) {
-                        GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
+                    if (pick.doPickUp(Dungeon.hero)) {
+                        GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name())));
                     } else {
-                        Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
+                        Dungeon.level.drop(pick, Dungeon.hero.pos).sprite.drop();
                     }
 
                     Statistics.spw12++;
 
                 } else if (Dungeon.tendencylevel && Dungeon.depth == 10) {
 
-                WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new NewSantantaSprite(), new NewSantantaSprite()},
-                        new String[]{"???", "???"},
-                        new String[]{
-                                Messages.get(Santana.class, "t1"),
-                                Messages.get(Santana.class, "t2")
-                        },
-                        new byte[]{
-                                WndDialogueWithPic.IDLE,
-                                WndDialogueWithPic.IDLE
-                        }
-                );
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new NewSantantaSprite(), new NewSantantaSprite()},
+                            new String[]{"???", "???"},
+                            new String[]{
+                                    Messages.get(Santana.class, "t1"),
+                                    Messages.get(Santana.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
 
-            } else if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 19) {
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new Speedwagon2Sprite(), new WillcSprite()},
+                            new String[]{"스피드왜건", "시저 체펠리"},
+                            new String[]{
+                                    Messages.get(CaesarZeppeli.class, "t1"),
+                                    Messages.get(CaesarZeppeli.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+
+                    GLog.p(Messages.get(CaesarZeppeli.class, "hi"));
+
+                    CaesarZeppeli jojo = new CaesarZeppeli();
+                    jojo.state = jojo.WANDERING;
+                    jojo.pos = Dungeon.hero.pos;
+                    GameScene.add(jojo);
+                    jojo.beckon(Dungeon.hero.pos);
+
+                    Bestiary.setSeen(CaesarZeppeli.class);
+
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 26) {
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new WamuuSprite(), new EsidisiSprite(), new KarsSprite()},
+                            new String[]{"???", "???", "???"},
+                            new String[]{
+                                    Messages.get(WamuuFirst.class, "t2"),
+                                    Messages.get(WamuuFirst.class, "t3"),
+                                    Messages.get(WamuuFirst.class, "t4")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+
+                } else if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     Dungeon.challenges = 0;
                     SPDSettings.challenges(0);

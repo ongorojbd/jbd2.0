@@ -31,6 +31,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -90,15 +92,17 @@ public class GSoldier2 extends Mob {
     @Override
     public void die(Object cause) {
 
-        GLog.n(Messages.get(this, "die"));
+        if (Dungeon.hero.buff(LockedFloor.class) != null) {
+            GLog.n(Messages.get(this, "die"));
+            Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+            new Flare(5, 32).color(0xCC0000, true).show(this.sprite, 1f);
+            ZombieSoldier zombieSoldier = new ZombieSoldier();
+            zombieSoldier.state = zombieSoldier.HUNTING;
+            zombieSoldier.pos = this.pos;
+            GameScene.add(zombieSoldier);
+            zombieSoldier.beckon(Dungeon.hero.pos);
+        }
 
-        Sample.INSTANCE.play(Assets.Sounds.MIMIC);
-        new Flare( 5, 32 ).color( 0xCC0000, true ).show( this.sprite, 1f );
-        ZombieSoldier zombieSoldier = new ZombieSoldier();
-        zombieSoldier.state = zombieSoldier.HUNTING;
-        zombieSoldier.pos = this.pos;
-        GameScene.add(zombieSoldier);
-        zombieSoldier.beckon(Dungeon.hero.pos);
         super.die(cause);
     }
 

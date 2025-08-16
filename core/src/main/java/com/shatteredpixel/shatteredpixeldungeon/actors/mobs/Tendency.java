@@ -247,7 +247,7 @@ public class Tendency extends DirectableAlly {
         sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
     }
 
-    public boolean a0() {
+    public boolean skill1() {
         int oldPos = pos;
         int newPos = hero.pos;
 

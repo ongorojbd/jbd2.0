@@ -142,7 +142,7 @@ public class WndTendency extends Window {
                 protected void onClick() {
                     for (Char c : Actor.chars()) {
                         if (c instanceof Tendency) {
-                            ((Tendency) c).a0();
+                            ((Tendency) c).skill1();
                         }
                     }
                     Buff.affect(hero, ShovelDigCoolDown6.class, 30f);

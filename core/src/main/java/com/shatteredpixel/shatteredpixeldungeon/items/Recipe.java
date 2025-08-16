@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
@@ -54,7 +53,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotio
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diodiary;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jotarodisc;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Yoyoma;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -83,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AJA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ChaosSword;
@@ -92,7 +91,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachineg
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LSWORD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PINK;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SnowHunter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -325,14 +323,16 @@ public abstract class Recipe {
     }
 
     public static boolean usableInRecipe(Item item) {
-        //only upgradeable thrown weapons and wands allowed among equipment items
+        // allow upgradable weapons (melee or missile) and wands when not cursed
         if (item instanceof EquipableItem){
-            return item.cursedKnown && !item.cursed &&
-                    item instanceof MissileWeapon && item.isUpgradable();
+            if (!(item.cursedKnown && !item.cursed)) return false;
+            // previously only MissileWeapon was allowed; restore support for all upgradable Weapons
+            return (item instanceof MissileWeapon && item.isUpgradable())
+                    || (item instanceof Weapon && item.isUpgradable());
         } else if (item instanceof Wand) {
             return item.cursedKnown && !item.cursed;
         } else {
-            //other items can be unidentified, but not cursed
+            // other items can be unidentified, but must not be cursed
             return !item.cursed;
         }
     }

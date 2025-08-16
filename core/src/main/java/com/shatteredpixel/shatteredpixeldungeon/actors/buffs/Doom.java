@@ -29,9 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Polpo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.PolpoItem;
-import com.shatteredpixel.shatteredpixeldungeon.items.remains.RemainsItem;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -61,19 +59,25 @@ public class Doom extends Buff {
         spend(TICK);
 
         if (target instanceof Hero && Statistics.polpoQuest) {
-            if (Statistics.deepestFloor == Statistics.polpocount && Dungeon.hero.belongings.getItem(PolpoItem.class) != null) {
+            if (Statistics.deepestFloor >= Statistics.polpocount && Dungeon.hero.belongings.getItem(PolpoItem.class) != null) {
 
+                // grant reward buff and remove the quest item first
                 Buff.affect(hero, PolpoBuff.class);
-                Buff.detach(hero, Doom.class);
 
-                new Flare(6, 32).color(0xFF6600, true).show(hero.sprite, 3f);
+                PolpoItem item = Dungeon.hero.belongings.getItem(PolpoItem.class);
+                if (item != null) {
+                    item.detach(hero.belongings.backpack);
+                }
+
+                if (hero.sprite != null) {
+                    new Flare(6, 32).color(0xFF6600, true).show(hero.sprite, 3f);
+                    hero.sprite.remove(CharSprite.State.DARKENED);
+                }
                 Sample.INSTANCE.play(Assets.Sounds.BADGE);
                 GLog.p(Messages.get(Polpo.class, "clear"));
 
-                PolpoItem item = Dungeon.hero.belongings.getItem(PolpoItem.class);
-                item.detach(hero.belongings.backpack);
-
-                target.sprite.remove(CharSprite.State.DARKENED);
+                // finally remove the Doom debuff
+                Buff.detach(hero, Doom.class);
             }
         }
         return true;

@@ -21,17 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.bombs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -209,10 +205,14 @@ public class Bomb extends Item {
                 }
 
                 if (ch instanceof Hero && ((Hero) ch).belongings.getItem(Jojo2.class) != null) {
-                    dmg *= 0;
+                    dmg = 0;
                 }
 
                 dmg -= ch.drRoll();
+
+                if (dmg > 0) {
+                    ch.damage(dmg, this);
+                }
 
                 if (ch == Dungeon.hero && !ch.isAlive()) {
                     if (this instanceof ConjuredBomb) {

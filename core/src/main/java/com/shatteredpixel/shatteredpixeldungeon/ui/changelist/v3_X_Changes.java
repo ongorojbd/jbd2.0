@@ -51,6 +51,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_2_1_Changes(changeInfos);
         add_v3_2_Changes(changeInfos);
         add_v3_1_Changes(changeInfos);
         add_a_Changes(changeInfos);
@@ -70,6 +71,34 @@ public class v3_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO7), "???",
                 "스틸 볼 런 애니화 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
 
+    }
+
+    public static void add_v3_2_1_Changes(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("v3.0c1", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TENS), "전투조류 추가 업데이트",
+                "전투조류 던전의 추가 컨텐츠가 있습니다!\n" +
+                        "\n" +
+                        "- 신규 적, 보스가 추가되었습니다.\n" +
+                        "- 신규 보상이 추가되었습니다.\n" +
+                        "- 상점 물품이 리워크되었습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
+                "버그 수정:\n" +
+                        "- 총기류 무기가 발사되지 않던 버그가 수정되었습니다.\n" +
+                        "- 코코 잠보에서 무기류를 선택하지 못하던 버그가 수정되었습니다.\n" +
+                        "- 오렌지 폭탄으로 피해를 줄 수 없었던 버그가 수정되었습니다."));
     }
 
     public static void add_v3_2_Changes(ArrayList<ChangeInfo> changeInfos) {
@@ -171,7 +200,7 @@ public class v3_X_Changes {
                         "- 표적 상태는 이제 모든 능력으로 직접 대상이 된 적에게 적용됩니다."));
 
         changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "죠나단 상향",
-                "- 흔들림 없는 용기는 이제 +1/2/3에서 연속 공격 수치와 방어막의 감소를 33/67/100% 늦춥니다.\n" +
+                "- 흔들림 없는 용기는 이제 +1/2/3에서 연속 공격 수치와 보호막의 감소를 33/67/100% 늦춥니다.\n" +
                         "\n" +
                         "- 연속 공격은 이제 적을 죽이면 15턴 동안 지속됩니다.\n" +
                         "- 정신적인 폭발력의 연속 공격 지속시간 증가가 +1/2/3에서 30/45/60턴으로 증가했습니다 (기존 15/30/45턴에서)."));
@@ -208,7 +237,7 @@ public class v3_X_Changes {
 
         changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "용기의 파문전사 하향",
                 "- 파문 에너지의 획득 및 손실 속도가 25% 감소했습니다\n" +
-                        "- 파문 가드의 방어막이 10+2*레벨에서 8+2*레벨로 감소했습니다 (브로치의 레벨)"));
+                        "- 파문 가드의 보호막이 10+2*레벨에서 8+2*레벨로 감소했습니다 (브로치의 레벨)"));
 
     }
 

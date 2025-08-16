@@ -347,6 +347,11 @@ public class HeavyMachinegun extends MeleeWeapon {
         }
 
         @Override
+        public int defaultQuantity() {
+            return 1;
+        }
+
+        @Override
         public int buffedLvl() {
             return HeavyMachinegun.this.buffedLvl();
         }

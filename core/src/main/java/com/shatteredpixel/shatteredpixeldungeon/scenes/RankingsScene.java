@@ -232,7 +232,7 @@ public class RankingsScene extends PixelScene {
 			if (rec.win) {
 				if(rec.depth ==5 || rec.depth ==6){
 					shield.copy( new ItemSprite(ItemSpriteSheet.SMASK, null) );
-				} else if (rec.depth == 18){
+				} else if (rec.depth == 27){ // 전투조류
 					shield.copy( new ItemSprite(ItemSpriteSheet.TENS, null) );
 				} else shield.copy( new ItemSprite(ItemSpriteSheet.AMULET, null) );
 

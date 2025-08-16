@@ -40,8 +40,6 @@ public class Smask3 extends Item {
     public void execute(Hero hero, String action) {
         super.execute( hero, action );
         if (action.equals( AC_LIGHT )) {
-            SPDSettings.addBrando(1);
-            Statistics.diokilled = true;
             Dungeon.win( Amulet.class );
             Dungeon.deleteGame( GamesInProgress.curSlot, true );
             Game.switchScene( SurfaceScene.class );

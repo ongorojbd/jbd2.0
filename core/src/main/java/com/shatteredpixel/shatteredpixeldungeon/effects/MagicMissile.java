@@ -46,7 +46,7 @@ import com.watabou.utils.Random;
 public class MagicMissile extends Emitter {
 
 	private static final float SPEED	= 200f;
-	
+
 	private Callback callback;
 	
 	private PointF to;
@@ -430,7 +430,7 @@ public class MagicMissile extends Emitter {
 			acc.set( 0, 0 );
 		}
 	}
-	
+
 	public static class ShamanParticle extends EarthParticle{
 		
 		public static final Emitter.Factory RED = new Factory() {

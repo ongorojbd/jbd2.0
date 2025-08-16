@@ -510,8 +510,6 @@ public class Rebel extends Mob {
                     }
             );
 
-            Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
-
             Sample.INSTANCE.play(Assets.Sounds.OH);
 
             WO WO = new WO();
@@ -798,19 +796,19 @@ public class Rebel extends Mob {
                         CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 4);
                         Char ch = Actor.findChar(cell);
 
-
                         Char Target = hero;
                         if (Target.buff(PortableCover2.CoverBuff.class) == null) {
-                            if (hit(this, enemy, true)) {
-                                if (ch != null && !(ch instanceof Rebel)) {
+                            // ensure we test hit against the actual character in the cell, if present
+                            if (ch != null && !(ch instanceof Rebel)) {
+                                if (hit(this, ch, true)) {
                                     ch.damage(Random.NormalIntRange(65, 70), new SummoningBlockDamage3());
+                                } else {
+                                    ch.sprite.showStatus(CharSprite.NEUTRAL, ch.defenseVerb());
                                 }
                             }
                         } else {
                             damage(5, this);
-
                             Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
-
                         }
 
 

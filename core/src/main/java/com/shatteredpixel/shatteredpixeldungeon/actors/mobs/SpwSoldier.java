@@ -47,7 +47,7 @@ public class SpwSoldier extends Mob implements Callback {
 
     {
         spriteClass = SpwSoldierSprite.class;
-        HP = HT = (2 + level) * 10;
+        HP = HT = (2 + level) * 8;
         EXP = 0;
 
         viewDistance = 5;

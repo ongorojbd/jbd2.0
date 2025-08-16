@@ -52,7 +52,7 @@ public class Spw12 extends Item {
 
     public static void Spw12Ability() {
 
-        new Gold().quantity(150).doPickUp( Dungeon.hero );
+        new Gold().quantity(200).doPickUp( Dungeon.hero );
 
     }
 

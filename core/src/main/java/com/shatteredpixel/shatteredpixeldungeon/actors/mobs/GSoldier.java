@@ -49,7 +49,7 @@ public class GSoldier extends Mob {
 
     {
         spriteClass = GSoldierSprite.class;
-        HP = HT = (2 + level) * 10;
+        HP = HT = (2 + level) * 8;
         EXP = 0;
 
         viewDistance = 5;

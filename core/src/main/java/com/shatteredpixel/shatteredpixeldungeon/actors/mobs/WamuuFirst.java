@@ -4,17 +4,22 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SkyParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -22,8 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Speedwagon2Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
@@ -38,16 +46,29 @@ import java.util.ArrayList;
 public class WamuuFirst extends Mob {
 
     {
-        spriteClass = ShamanSprite.Blue.class;
-        HP = HT = 360;
-        defenseSkill = 20;
-        EXP = 20;
-        maxLvl = 30;
+        spriteClass = WamuuSprite.class;
+        HP = HT = 700;
 
-        baseSpeed = 1.2f;
+        EXP = 30;
+        defenseSkill = 15;
 
         properties.add(Property.BOSS);
         properties.add(Property.DEMONIC);
+    }
+
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 20, 32 );
+    }
+
+    @Override
+    public int attackSkill( Char target ) {
+        return 20;
+    }
+
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(0, 12);
     }
 
     private int phase = 0;
@@ -80,27 +101,25 @@ public class WamuuFirst extends Mob {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
 
-            if (Dungeon.hero.heroClass == HeroClass.MAGE) {
+            if (Dungeon.hero.heroClass == HeroClass.WARRIOR || Dungeon.hero.heroClass == HeroClass.MAGE) {
                 WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new ShamanSprite.Blue(), new ShamanSprite.Blue(), new ShamanSprite.Blue(), new ShamanSprite.Purple()},
-                        new String[]{"와무우", "와무우", "와무우", "???"},
+                        new CharSprite[]{new WamuuSprite(), new WamuuSprite(), new KarsSprite()},
+                        new String[]{"와무우", "와무우", "???"},
                         new String[]{
-                                Messages.get(WamuuFirst.class, "t5"),
-                                Messages.get(WamuuFirst.class, "t6"),
-                                Messages.get(WamuuFirst.class, "t7"),
+                                Messages.get(WamuuFirst.class, "s1"),
+                                Messages.get(WamuuFirst.class, "s2"),
                                 Messages.get(WamuuFirst.class, "t8")
                         },
                         new byte[]{
                                 WndDialogueWithPic.IDLE,
                                 WndDialogueWithPic.IDLE,
                                 WndDialogueWithPic.IDLE,
-                                WndDialogueWithPic.IDLE
                         }
                 );
             }
             else {
                 WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new ShamanSprite.Blue(), new ShamanSprite.Blue(), new ShamanSprite.Blue(), new ShamanSprite.Purple()},
+                        new CharSprite[]{new WamuuSprite(), new WamuuSprite(), new WamuuSprite(), new KarsSprite()},
                         new String[]{"와무우", "와무우", "와무우", "???"},
                         new String[]{
                                 Messages.get(WamuuFirst.class, "t5"),
@@ -121,27 +140,36 @@ public class WamuuFirst extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
+        if (dmg >= 200) {
+            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+            dmg = 200;
+        }
         BossHealthBar.assignBoss(this);
         super.damage(dmg, src);
         if (phase == 0 && HP < HT / 2) {
             phase = 1;
 
             WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new ShamanSprite.Blue(), new ShamanSprite.Blue(), new Speedwagon2Sprite(), new Speedwagon2Sprite()},
-                    new String[]{"와무우", "와무우", "스피드왜건", "스피드왜건"},
+                    new CharSprite[]{new WamuuSprite(), new WamuuSprite(), new Speedwagon2Sprite(), new Speedwagon2Sprite(), new Speedwagon2Sprite()},
+                    new String[]{"와무우", "와무우", "스피드왜건", "스피드왜건", "스피드왜건"},
                     new String[]{
                             Messages.get(WamuuFirst.class, "t9"),
                             Messages.get(WamuuFirst.class, "t10"),
                             Messages.get(WamuuFirst.class, "t11"),
-                            Messages.get(WamuuFirst.class, "t12")
+                            Messages.get(WamuuFirst.class, "t12"),
+                            Messages.get(WamuuFirst.class, "t12s"),
                     },
                     new byte[]{
+                            WndDialogueWithPic.IDLE,
                             WndDialogueWithPic.IDLE,
                             WndDialogueWithPic.IDLE,
                             WndDialogueWithPic.IDLE,
                             WndDialogueWithPic.IDLE
                     }
             );
+
+            Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
 
             // enable sandstorm in next phase segment
             sandstormCD = 3;
@@ -152,7 +180,7 @@ public class WamuuFirst extends Mob {
     public void die( Object cause ) {
 
         WndDialogueWithPic.dialogue(
-                new CharSprite[]{new ShamanSprite.Blue(), new ShamanSprite.Blue(), new ShamanSprite.Red()},
+                new CharSprite[]{new WamuuSprite(), new WamuuSprite(), new EsidisiSprite()},
                 new String[]{"와무우", "와무우", "에시디시"},
                 new String[]{
                         Messages.get(WamuuFirst.class, "t14"),
@@ -168,7 +196,10 @@ public class WamuuFirst extends Mob {
 
         super.die( cause );
 
-        Dungeon.level.unseal();
+        Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
+        Dungeon.level.drop(new Smask3(), pos).sprite.drop(pos);
+        sprite.killAndErase();
+
         Music.INSTANCE.end();
 
         GameScene.bossSlain();
@@ -238,8 +269,9 @@ public class WamuuFirst extends Mob {
     // 바람의 프로텍터
     private boolean windProtector() {
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-        sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "protector"));
+        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "protector"));
         Buff.affect(this, Invisibility.class, 3f);
+        Buff.affect(this, Haste.class, 3f);
         for (int i : PathFinder.NEIGHBOURS9) {
             int p = pos + i;
             if (Dungeon.level.insideMap(p) && !Dungeon.level.solid[p]) {
@@ -282,9 +314,17 @@ public class WamuuFirst extends Mob {
             CellEmitter.center(c).burst(SkyParticle.FACTORY, 6);
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(16, 22);
-                ch.damage(dmg, this);
-                Buff.affect(ch, Bleeding.class).set(0.35f * dmg);
+
+                if (ch == Dungeon.hero) {
+                    ch.damage(Dungeon.hero.HT/2, this);
+                    Buff.affect(ch, Bleeding.class).set(0.35f * Dungeon.hero.HT/4);
+                }
+                else {
+                    int dmg = Random.NormalIntRange(16, 22);
+                    ch.damage(dmg, this);
+                    Buff.affect(ch, Bleeding.class).set(0.35f * dmg);
+                }
+                Buff.prolong( ch, Vulnerable.class, Vulnerable.DURATION );
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
             }
         }
@@ -336,8 +376,17 @@ public class WamuuFirst extends Mob {
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
                 int bonus = (wireStage == 2 ? 2 : 0);
+
+                if (ch == Dungeon.hero) {
+                    int dmg = Random.NormalIntRange(12, 26) + bonus;
+                    ch.damage(dmg, this);
+                }
+
                 int dmg = Random.NormalIntRange(12, 16) + bonus;
                 ch.damage(dmg, this);
+
+                Buff.prolong( ch, Vulnerable.class, Vulnerable.DURATION );
+
                 if (Random.Int(2) == 0) Buff.affect(ch, Bleeding.class).set(0.25f * dmg);
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
             }
@@ -385,15 +434,6 @@ public class WamuuFirst extends Mob {
         if (buff(Invisibility.class) != null) s *= 1.4f; // faster while wind protector active
         return s;
     }
-
-    @Override
-    public int damageRoll() { return Random.NormalIntRange(12, 22); }
-
-    @Override
-    public int attackSkill(Char target) { return 28; }
-
-    @Override
-    public int drRoll() { return Random.NormalIntRange(1, 5); }
 
     @Override
     public void storeInBundle(Bundle bundle) {

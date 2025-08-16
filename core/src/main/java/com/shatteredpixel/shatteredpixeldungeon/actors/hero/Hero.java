@@ -102,6 +102,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kawasiri;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CaesarZeppeli;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw23;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
@@ -175,6 +176,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -1765,6 +1767,10 @@ public class Hero extends Char {
 
                 int dmg = Random.NormalIntRange(50, 50);
 
+                if (Dungeon.tendencylevel) {
+                    dmg = 20;
+                }
+
                 for (Char ch : chars) {
                     ch.damage(dmg, Bomb.class);
                     ch.sprite.centerEmitter().burst(PurpleParticle.BURST, Random.IntRange(1, 2));
@@ -1972,12 +1978,15 @@ public class Hero extends Char {
                     }
                 }
 
-                int index = Random.index(respawnPoints);
-
-                MirrorImage mob = new MirrorImage();
-                mob.duplicate(hero);
-                GameScene.add(mob);
-                ScrollOfTeleportation.appear(mob, respawnPoints.get(index));
+                if (!respawnPoints.isEmpty()) {
+                    int index = Random.index(respawnPoints);
+                    if (index >= 0 && index < respawnPoints.size()) {
+                        MirrorImage mob = new MirrorImage();
+                        mob.duplicate(hero);
+                        GameScene.add(mob);
+                        ScrollOfTeleportation.appear(mob, respawnPoints.get(index));
+                    }
+                }
             }
         }
 
@@ -2540,6 +2549,27 @@ public class Hero extends Char {
     public void die(Object cause) {
 
         curAction = null;
+
+        // If Caesar is alive, he sacrifices himself to save the hero
+        if (Dungeon.level != null) {
+            for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if (m instanceof CaesarZeppeli && m.isAlive()) {
+                    // revive hero to 1/3 HP
+                    interrupt();
+                    this.HP = Math.max(1, this.HT / 5);
+                    PotionOfHealing.cure(this);
+                    GameScene.flash(0xFFFF00);
+                    new Flare( 5, 32 ).color( 0xFFFF00, true ).show( hero.sprite, 3f );
+                    Sample.INSTANCE.play(Assets.Sounds.TENDENCY3);
+                    GLog.n(Messages.get(CaesarZeppeli.class, "revive"));
+                    GLog.p(Messages.get(Willc.class, "6"));
+
+                    // Caesar dies instead (this will also start his respawn timer)
+                    m.die(this);
+                    return;
+                }
+            }
+        }
 
         Ankh ankh = null;
         //look for ankhs in player inventory, prioritize ones which are blessed.

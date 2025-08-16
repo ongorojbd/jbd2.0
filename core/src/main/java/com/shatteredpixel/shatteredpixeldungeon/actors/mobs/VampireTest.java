@@ -74,21 +74,6 @@ public class VampireTest extends Mob {
     private boolean adrenalineTriggered = false;
 
     @Override
-    protected boolean getCloser( int target ) {
-        if (moving > 1) {
-            moving-=2;
-            return super.getCloser( target );
-        } else if (moving==1) {
-            moving+=3;
-            return true;
-        }
-        else {
-            moving++;
-            return true;
-        }
-    }
-
-    @Override
     protected boolean act() {
         if (Dungeon.level.heroFOV[pos] && hero.armorAbility instanceof Ratmogrify){
             alignment = Alignment.ALLY;

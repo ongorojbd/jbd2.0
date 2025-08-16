@@ -95,7 +95,7 @@ public class Tmap extends Item {
                             } else {
                                 Sample.INSTANCE.play(Assets.Sounds.TRAP, 1, 1);
                                 GLog.p(Messages.get(Mdisc.class, "14"));
-                                Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
+                                Music.INSTANCE.play(Assets.Music.YUUKI, true);
                             }
                         }
 

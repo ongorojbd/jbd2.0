@@ -132,7 +132,7 @@ public class WandOfLightning extends DamageWand {
 
 		@Override
 		public int icon() {
-			return BuffIndicator.IMBUE;
+			return BuffIndicator.RECHARGING;
 		}
 
 		@Override

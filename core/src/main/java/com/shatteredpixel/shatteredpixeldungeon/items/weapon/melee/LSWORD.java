@@ -72,7 +72,9 @@ public class LSWORD extends MeleeWeapon {
                     }
                 }
 
-                CellEmitter.get( curUser.pos ).burst( Speck.factory( Speck.STAR ), 10 );
+                // curUser can be null here in some proc contexts; use attacker as a safe fallback
+                int particlePos = attacker != null ? attacker.pos : (Dungeon.hero != null ? Dungeon.hero.pos : defender.pos);
+                CellEmitter.get( particlePos ).burst( Speck.factory( Speck.STAR ), 10 );
                 Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
 
                 if (Dungeon.hero.belongings.getItem(RingOfWealth.class) != null) {

@@ -1,14 +1,17 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieBrute3Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class ZombieBrute3 extends Mob {
@@ -17,11 +20,11 @@ public class ZombieBrute3 extends Mob {
     {
         spriteClass = ZombieBrute3Sprite.class;
 
-        HP = HT = 20;
-        defenseSkill = 9;
+        HP = HT = 70;
+        defenseSkill = 12;
 
-        EXP = 5;
-        maxLvl = 10;
+        EXP = 8;
+        maxLvl = 16;
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);
         properties.add(Property.ACIDIC);
@@ -29,17 +32,17 @@ public class ZombieBrute3 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 2, 8 );
+        return Random.NormalIntRange( 5, 12 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 12;
+        return 18;
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 3);
+        return super.drRoll() + Random.NormalIntRange(0, 6);
     }
 
     @Override
@@ -72,7 +75,7 @@ public class ZombieBrute3 extends Mob {
 
         if (hit( this, enemy, true )) {
 
-            int dmg = Random.NormalIntRange(3, 10);
+            int dmg = Random.NormalIntRange(8, 16);
             enemy.damage( dmg, new AcidBolt());
             if (enemy.isAlive()) {
                 Buff.affect(enemy, Ooze.class).set(3f);
@@ -90,6 +93,22 @@ public class ZombieBrute3 extends Mob {
     public void onZapComplete() {
         zap();
         next();
+    }
+
+    @Override
+    public void die( Object cause ) {
+
+        super.die( cause );
+
+        if (Random.Int( 3 ) == 0) {
+            Dungeon.level.drop( new Gold().quantity(Random.IntRange(45, 55)), pos ).sprite.drop();
+        }
+
+        if (Dungeon.level.heroFOV[pos]) {
+            Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );
+            Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        }
+
     }
 
 }

@@ -299,7 +299,7 @@ public class Polpo extends NPC {
             int roll = Random.Int(5);
             switch (roll) {
                 case 0:
-                    spawnAndLog(new P3mob(), "p3", "p3j", spawnPoints);
+                    spawnAndLog(new P3mob(), "p1", "p1j", spawnPoints);
                     break;
                 case 1:
                     GameScene.show(
@@ -322,7 +322,7 @@ public class Polpo extends NPC {
                     spawnAndLog(new P2mob(), "p2", "p2j", spawnPoints);
                     break;
                 case 2:
-                    spawnAndLog(new P1mob(), "p1", "p1j", spawnPoints);
+                    spawnAndLog(new P1mob(), "p3", "p3j", spawnPoints);
                     break;
                 case 3:
                     spawnAndLog(new P4mob(), "p4", "p4j", spawnPoints);

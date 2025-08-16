@@ -68,14 +68,14 @@ public class ShipbossLevel extends Level {
     public void playLevelMusic() {
         if (locked){
             if(Statistics.duwang3 == 999){
-                Music.INSTANCE.play(Assets.Music.HEAVENDIO, true);
+                Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
             } else Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
             //if top door isn't unlocked
         } else if (map[exit()] != Terrain.EXIT){
             Music.INSTANCE.end();
         } else {
             Music.INSTANCE.playTracks(
-                    new String[]{Assets.Music.HEAVENDIO},
+                    new String[]{Assets.Music.SEWERS_BOSS},
                     new float[]{1},
                     false);
         }

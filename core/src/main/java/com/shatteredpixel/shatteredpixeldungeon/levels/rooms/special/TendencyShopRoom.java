@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ram2;
+import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
@@ -52,12 +53,41 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponEnhance;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStamina;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStormClouds;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw10;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw11;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfAntiMagic;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDread;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPrismaticImage;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
@@ -67,6 +97,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
@@ -246,9 +281,66 @@ public class TendencyShopRoom extends SpecialRoom {
     protected static ArrayList<Item> generateItemsGauntlet() {
         ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
-        // 기본 소모품 (항상 포함)
-        itemsToSpawn.add(Generator.random(Generator.Category.POTION).identify());
-        itemsToSpawn.add(Generator.random(Generator.Category.SCROLL).identify());
+        Class<?>[] specialPotions = {
+                // 엘릭서들
+                ElixirOfArcaneArmor.class,      // 스탠드 저항 용액
+                ElixirOfAquaticRejuvenation.class, // F.F.의 용액
+                ElixirOfDragonsBlood.class,     // 괴염왕 용액
+                ElixirOfHoneyedHealing.class,   // 폴포의 용액
+                ElixirOfIcyTouch.class,         // 기화냉동 용액
+                ElixirOfToxicEssence.class,     // 디스토션 용액
+                ElixirOfWeaponEnhance.class,    // 복수의 물약
+                ElixirOfWeaponUpgrade.class,    // 환각의 물약
+
+                // 특수 물약들
+                PotionOfCleansing.class,        // 청정의 물약
+                PotionOfCorrosiveGas.class,     // 부식 물약
+                PotionOfDragonsBreath.class,    // 불길의 물약
+                PotionOfEarthenArmor.class,     // 바위 인간의 물약
+                PotionOfDivineInspiration.class, // 죠스타의 물약
+                PotionOfMagicalSight.class,     // 천리안의 물약
+                PotionOfShielding.class,        // 보호막의 물약
+                PotionOfShroudingFog.class,     // 연막 물약
+                PotionOfSnapFreeze.class,       // 순간 빙결 물약
+                PotionOfStamina.class,          // 지구력의 물약
+                PotionOfStormClouds.class       // 폭우 물약
+        };
+        try {
+            Class<?> selectedPotion = Random.element(specialPotions);
+            Item pot = (Item) selectedPotion.newInstance();
+            itemsToSpawn.add(pot.identify());
+        } catch (Exception e) {
+
+        }
+
+        switch (Random.Int(2)) {
+            case 0:
+                itemsToSpawn.add(Generator.random(Generator.Category.SCROLL).identify());
+                break;
+            case 1:
+                Class<?>[] memoryDiscs = {
+                        UnstableSpell.class,            // 변형된 DISC
+                        ScrollOfSirensSong.class,       // 사사메 오지로의 기억 DISC
+                        ScrollOfAntiMagic.class,        // 푸치신부의 기억 DISC
+                        ScrollOfChallenge.class,        // 엠포리오의 기억 DISC
+                        ScrollOfDivination.class,       // 히로세 야스호의 기억 DISC
+                        ScrollOfDread.class,            // 미야모토 테루노스케의 기억 DISC
+                        ScrollOfForesight.class,        // 도피오의 기억 DISC
+                        ScrollOfMetamorphosis.class,    // 츠지 아야의 기억 DISC
+                        ScrollOfMysticalEnergy.class,   // 포코로코의 기억 DISC
+                        ScrollOfPrismaticImage.class,   // 퍼니 발렌타인의 기억 DISC
+                        ScrollOfPsionicBlast.class      // 카와지리 코사쿠의 기억 DISC
+                };
+                try {
+                    Class<?> selectedDisc = Random.element(memoryDiscs);
+                    Item disc = (Item) selectedDisc.newInstance();
+                    itemsToSpawn.add(disc.identify());
+                } catch (Exception e) {
+
+                }
+                break;
+        }
+
         itemsToSpawn.add(Generator.random(Generator.Category.STONE));
 
         // 음식
@@ -275,13 +367,25 @@ public class TendencyShopRoom extends SpecialRoom {
 
         // 추가 소모품 (랜덤)
         if (Random.Int(2) == 0) {
-            switch (Random.Int(2)) {
-                case 0:
-                    itemsToSpawn.add(new StoneOfAugmentation());
-                    break;
-                case 1:
-                    itemsToSpawn.add(new Highway());
-            }
+            itemsToSpawn.add(new Stylus());
+        }
+
+        switch (Random.Int(5)) {
+            case 0:
+                itemsToSpawn.add(new StoneOfAugmentation());
+                break;
+            case 1:
+                itemsToSpawn.add(new Highway());
+                break;
+            case 2:
+                itemsToSpawn.add(new PhaseShift().quantity(3));
+                break;
+            case 3:
+                itemsToSpawn.add(new TelekineticGrab().quantity(8));
+                break;
+            case 4:
+                itemsToSpawn.add(new WildEnergy().quantity(2));
+                break;
         }
 
         switch (Random.Int(4)) {
@@ -323,10 +427,6 @@ public class TendencyShopRoom extends SpecialRoom {
         }
 
         if (Random.Int(3) == 0) {
-            itemsToSpawn.add(new PotionOfExperience().identify());
-        }
-
-        if (Random.Int(3) == 0) {
             itemsToSpawn.add(new Bomb.DoubleTBomb());
         }
 
@@ -336,7 +436,7 @@ public class TendencyShopRoom extends SpecialRoom {
         // 깊이별 특별 아이템
         if (Dungeon.depth % 2 == 0) itemsToSpawn.add(new PotionOfHealing().identify());
         if (Dungeon.depth % 2 == 0) itemsToSpawn.add(Generator.randomMissile());
-        if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new ScrollOfUpgrade().identify());
+        if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new MagicalInfusion().identify());
         if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new ScrollOfRemoveCurse().identify());
         if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new PotionOfStrength().identify());
 
@@ -364,25 +464,32 @@ public class TendencyShopRoom extends SpecialRoom {
                         rare = new SandalsOfNature().identify();
                         break;
                     case 5:
-                        rare = new PetrifiedSeed().upgrade(3).identify();;
+                        rare = new PetrifiedSeed().upgrade(3).identify();
+                        ;
                         break;
                     case 6:
-                        rare = new ThirteenLeafClover().upgrade(3).identify();;
+                        rare = new ThirteenLeafClover().upgrade(3).identify();
+                        ;
                         break;
                     case 7:
-                        rare = new WondrousResin().upgrade(3).identify();;
+                        rare = new WondrousResin().upgrade(3).identify();
+                        ;
                         break;
                     case 8:
-                        rare = new EyeOfNewt().upgrade(3).identify();;
+                        rare = new EyeOfNewt().upgrade(3).identify();
+                        ;
                         break;
                     case 9:
-                        rare = new VialOfBlood().upgrade(3).identify();;
+                        rare = new VialOfBlood().upgrade(3).identify();
+                        ;
                         break;
                     case 10:
-                        rare = new ChaoticCenser().upgrade(3).identify();;
+                        rare = new ChaoticCenser().upgrade(3).identify();
+                        ;
                         break;
                     case 11:
-                        rare = new FerretTuft().upgrade(3).identify();;
+                        rare = new FerretTuft().upgrade(3).identify();
+                        ;
                         break;
                     default:
                         rare = new Dewdrop();
@@ -427,7 +534,7 @@ public class TendencyShopRoom extends SpecialRoom {
             itemsToSpawn.add(new UV());
         }
 
-        if (Random.Int(10) == 0) {
+        if (Random.Int(12) == 0) {
             itemsToSpawn.add(new Spw());
         }
 

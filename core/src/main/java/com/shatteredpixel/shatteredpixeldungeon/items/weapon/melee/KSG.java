@@ -333,6 +333,11 @@ public class KSG extends MeleeWeapon {
         }
 
         @Override
+        public int defaultQuantity() {
+            return 1;
+        }
+
+        @Override
         public int buffedLvl() {
             return KSG.this.buffedLvl();
         }

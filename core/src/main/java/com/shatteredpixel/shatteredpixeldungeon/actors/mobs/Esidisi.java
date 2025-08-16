@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
@@ -60,7 +61,7 @@ public class Esidisi extends Mob {
 
     {
         // Using existing Pillar Man sprite as a placeholder
-        spriteClass = ShamanSprite.Red.class;
+        spriteClass = EsidisiSprite.class;
 
         HP = HT = 360;
         defenseSkill = 18;
@@ -104,16 +105,14 @@ public class Esidisi extends Mob {
 
             if (Dungeon.hero.heroClass == HeroClass.MAGE) {
                 WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new ShamanSprite.Red(), new ShamanSprite.Red(), new ShamanSprite.Red(), new ShamanSprite.Red()},
-                        new String[]{"에시디시", "에시디시", "에시디시", "에시디시"},
+                        new CharSprite[]{new EsidisiSprite(), new EsidisiSprite(), new EsidisiSprite()},
+                        new String[]{"에시디시", "에시디시", "에시디시"},
                         new String[]{
                                 Messages.get(Esidisi.class, "t1"),
                                 Messages.get(Esidisi.class, "t2"),
-                                Messages.get(Esidisi.class, "t3"),
-                                Messages.get(Esidisi.class, "t4")
+                                Messages.get(Esidisi.class, "t3")
                         },
                         new byte[]{
-                                WndDialogueWithPic.IDLE,
                                 WndDialogueWithPic.IDLE,
                                 WndDialogueWithPic.IDLE,
                                 WndDialogueWithPic.IDLE
@@ -122,7 +121,7 @@ public class Esidisi extends Mob {
             }
             else {
                 WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new ShamanSprite.Red(), new ShamanSprite.Red(), new ShamanSprite.Red()},
+                        new CharSprite[]{new EsidisiSprite(), new EsidisiSprite(), new EsidisiSprite()},
                         new String[]{"에시디시", "에시디시", "에시디시"},
                         new String[]{
                                 Messages.get(Esidisi.class, "t1"),
@@ -155,7 +154,7 @@ public class Esidisi extends Mob {
             phase = 2; // unlocks grand hell more often
 
             WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new ShamanSprite.Red(), new ShamanSprite.Red(), new ShamanSprite.Red()},
+                    new CharSprite[]{new EsidisiSprite(), new EsidisiSprite(), new EsidisiSprite()},
                     new String[]{"에시디시", "에시디시", "에시디시"},
                     new String[]{
                             Messages.get(Esidisi.class, "t4"),
@@ -168,6 +167,8 @@ public class Esidisi extends Mob {
                             WndDialogueWithPic.IDLE
                     }
             );
+
+            Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
 
             grandHellCooldown = 6;
             // Phase 2 opener: Light Lattice telegraph (after 2 turns)
@@ -448,7 +449,7 @@ public class Esidisi extends Mob {
     public void die( Object cause ) {
 
         WndDialogueWithPic.dialogue(
-                new CharSprite[]{new ShamanSprite.Red()},
+                new CharSprite[]{new EsidisiSprite()},
                 new String[]{"에시디시"},
                 new String[]{
                         Messages.get(Esidisi.class, "die")

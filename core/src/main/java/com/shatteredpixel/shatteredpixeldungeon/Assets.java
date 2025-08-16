@@ -167,8 +167,6 @@ public class Assets {
 
         public static final String LABS_1 = "music/labs_1.ogg";
         public static final String LABS_BOSS = "music/labs_boss.ogg";
-        public static final String HEAVENDIO = "music/heavendio.ogg";
-
         public static final String EMPO = "music/empo.ogg";
 
         public static final String DIO_1 = "music/dio_1.ogg";
@@ -178,6 +176,7 @@ public class Assets {
         public static final String JONATHAN = "music/jonathan.ogg";
         public static final String TENDENCY1 = "music/tendency_1.ogg";
         public static final String TENDENCY2 = "music/tendency_2.ogg";
+        public static final String TENDENCY3 = "music/tendency_3.ogg";
     }
 
     public static class Sounds {
@@ -669,10 +668,16 @@ public class Assets {
 
         public static final String ZOMBIE3 = "sprites/zombie3.png";
         public static final String VAMPIRE = "sprites/vampire.png";
+        public static final String VAMPIRE2 = "sprites/vampire2.png";
         public static final String LISA = "sprites/lisa.png";
         public static final String DOPPIODIALOG = "sprites/doppiodialog.png";
         public static final String JOSUKEDIALOG = "sprites/josukedialog.png";
         public static final String DIODIALOG = "sprites/diodialog.png";
         public static final String PASSIONE = "sprites/passione.png";
+        public static final String WAMUU = "sprites/wammu.png";
+        public static final String ESIDISI = "sprites/esidisi.png";
+        public static final String KARS = "sprites/kars.png";
+        public static final String CAESAR = "sprites/caesar.png";
+        public static final String TANKZOMBIE = "sprites/tankzombie.png";
     }
 }
