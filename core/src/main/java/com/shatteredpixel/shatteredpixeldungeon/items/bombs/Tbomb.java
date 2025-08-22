@@ -47,6 +47,9 @@ import java.util.ArrayList;
 
 public class Tbomb extends Bomb {
 
+    // When true, this Tbomb will not damage the hero or allied units.
+    public boolean noFriendlyDamage = false;
+
     {
         image = ItemSpriteSheet.TBOMB;
     }
@@ -104,6 +107,11 @@ public class Tbomb extends Bomb {
             for (Char ch : affectedChars) {
 
                 if (!ch.isAlive()) {
+                    continue;
+                }
+
+                // Skip damaging the hero and allies if flagged for no friendly damage
+                if (noFriendlyDamage && (ch instanceof Hero || ch.alignment == Char.Alignment.ALLY)) {
                     continue;
                 }
 

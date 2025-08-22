@@ -26,10 +26,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+// import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+// import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -42,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.ArenaPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBossExitRoom2;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TendencyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
@@ -63,7 +60,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -74,11 +71,60 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+// imports for trial effects
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArenaTrialMarker;
+// import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+// import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob; // used for champion trials
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.watabou.utils.Reflection;
+
 public class ArenaLevel extends RegularLevel {
+
+    // Trial state (persisted)
+    private int trialType = 0;
+    private int trialTrapCount = 0;
 
     {
         color1 = 0x48763c;
         color2 = 0x48763c;
+        // Random trial selection for Arena depths 28-35 (inclusive)
+        if (Dungeon.tendencylevel && Dungeon.depth >= 1 && Dungeon.depth <= 35) {
+            // 5개 시련: 1 어둠, 2 함정, 3 대형, 5 약화, 6 챔피언, 7 전갈 (4 제거), 강화 저하 추가 예정
+            trialType = 1 + Random.Int(6);
+            if (trialType == 4) trialType = 7;
+
+            switch (trialType) {
+                case 1: // Darkness
+                    feeling = Level.Feeling.DARK;
+                    // reduce vision now so it's in effect on enter
+                    viewDistance = 2;
+                    break;
+                case 2: // Trap-heavy
+                    // Add a noticeable number of traps to make the arena hazardous
+                    trialTrapCount = 50 + Random.Int(6);
+                    break;
+                case 3: // Large (more mobs/items)
+                    feeling = Level.Feeling.LARGE;
+                    break;
+                case 5: // Combat debuff
+                    // create()에서 버프 적용
+                    break;
+                case 6: // Champion enemies
+                    break;
+                case 7: // Scorpio incursion
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public void playLevelMusic(){
@@ -126,10 +172,23 @@ public class ArenaLevel extends RegularLevel {
                 1, 1, 1, 1 };
     }
 
+    @Override
+    public com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap setTrap(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap, int pos) {
+        com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap placed = super.setTrap(trap, pos);
+        // 함정 시련에서는 모든 함정을 항상 보이도록 강제
+        if (Dungeon.tendencylevel && trialType == 2) {
+            if (placed != null) placed.visible = true;
+            map[pos] = Terrain.TRAP;
+        }
+        return placed;
+    }
+
     private static final String DOOR	= "door";
     private static final String ENTERED	= "entered";
     private static final String DROPPED	= "droppped";
     private static final String STAIRS	= "stairs";
+    private static final String TRIAL_TYPE = "trial_type";
+    private static final String TRIAL_TRAPS = "trial_traps";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -138,6 +197,8 @@ public class ArenaLevel extends RegularLevel {
         bundle.put( ENTERED, enteredArena );
         bundle.put( DROPPED, keyDropped );
         bundle.put( STAIRS, stairs );
+        bundle.put( TRIAL_TYPE, trialType );
+        bundle.put( TRIAL_TRAPS, trialTrapCount );
     }
 
     @Override
@@ -147,12 +208,20 @@ public class ArenaLevel extends RegularLevel {
         enteredArena = bundle.getBoolean( ENTERED );
         keyDropped = bundle.getBoolean( DROPPED );
         stairs = bundle.getInt( STAIRS );
+        if (bundle.contains(TRIAL_TYPE)) trialType = bundle.getInt(TRIAL_TYPE);
+        if (bundle.contains(TRIAL_TRAPS)) trialTrapCount = bundle.getInt(TRIAL_TRAPS);
+        if (trialType == 1) {
+            viewDistance = Math.round(5 * viewDistance / 8f);
+            feeling = Level.Feeling.DARK;
+        } else if (trialType == 3) {
+            feeling = Level.Feeling.LARGE;
+        }
         roomExit = roomEntrance;
     }
 
     @Override
     protected int nTraps() {
-        return 0;
+        return trialTrapCount;
     }
 
     public int nMobs() {
@@ -212,6 +281,77 @@ public class ArenaLevel extends RegularLevel {
 //        if (Dungeon.depth % 2 == 0) addItemToSpawn(new Food());
 
         super.create();
+
+        // 추가 패널티 적용 처리 (hazard 제거, 함정 공개 지연 제거)
+        if (Dungeon.tendencylevel && Dungeon.depth >= 1 && Dungeon.depth <= 35) {
+            if (trialType == 5) {
+                // 전투 디버프 시련: 허약/취약/절름발이 중 하나 적용 (이 층에서만 유지)
+                Buff.affect(Dungeon.hero, ArenaTrialMarker.class);
+                int roll = Random.Int(3);
+                if (roll == 0) Buff.prolong(Dungeon.hero, Weakness.class, Float.MAX_VALUE);
+                else if (roll == 1) Buff.prolong(Dungeon.hero, Vulnerable.class, Float.MAX_VALUE);
+                else Buff.prolong(Dungeon.hero, Cripple.class, Float.MAX_VALUE);
+            } else if (trialType == 6) {
+                // 챔피언의 위협: 일부 기존 몹에게 챔피언 버프 부여 (전갈과 분리)
+                int champions = 2 + Random.Int(3); // 2~4마리 정도로 증가
+                for (Mob m : mobs.toArray(new Mob[0])) {
+                    if (champions <= 0) break;
+                    if (m.alignment == com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ENEMY && m.buff(ChampionEnemy.class) == null) {
+                        // 강제 챔피언화: 무작위 챔피언 버프 직접 부여
+                        Class<? extends ChampionEnemy> buffCls;
+                        switch (Random.Int(6)){
+                            case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
+                            case 1:             buffCls = ChampionEnemy.Projecting.class;   break;
+                            case 2:             buffCls = ChampionEnemy.AntiMagic.class;    break;
+                            case 3:             buffCls = ChampionEnemy.Giant.class;        break;
+                            case 4:             buffCls = ChampionEnemy.Blessed.class;      break;
+                            case 5:             buffCls = ChampionEnemy.Growing.class;      break;
+                        }
+                        Buff.affect(m, buffCls);
+                        champions--;
+                    }
+                }
+            } else if (trialType == 7) {
+                // 전갈 난입: Scorpio 추가 소환
+                Mob sc = Reflection.newInstance(Scorpio.class);
+                if (sc != null) {
+                    sc.state = sc.WANDERING;
+                    int tries = 30;
+                    do {
+                        sc.pos = randomRespawnCell(sc);
+                        tries--;
+                    } while (sc.pos == -1 && tries > 0);
+                    if (sc.pos != -1) {
+                        mobs.add(sc);
+                    }
+                }
+            }
+        }
+
+        if (Dungeon.tendencylevel && Dungeon.depth >= 2 && Dungeon.depth <= 35) {
+            switch (trialType) {
+                case 1:
+                    GLog.p("파문의 수행: 어둠 - 시야가 감소합니다.");
+                    break;
+                case 2:
+                    GLog.p("파문의 수행: 함정 - 함정이 대량으로 배치되며, 모든 함정이 항상 보입니다.");
+                    break;
+                case 3:
+                    GLog.p("파문의 수행: 전투 - 적이 더 많이 등장합니다.");
+                    break;
+                case 5:
+                    GLog.p("파문의 수행: 약화 - 무작위 디버프가 (이 층에서만) 적용됩니다.");
+                    break;
+                case 6:
+                    GLog.p("파문의 수행: 강화 - 일부 적이 강화됩니다.");
+                    break;
+                case 7:
+                    GLog.p("파문의 수행: 전갈 난입 - 전갈이 추가로 등장합니다.");
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     @Override
@@ -345,9 +485,19 @@ public class ArenaLevel extends RegularLevel {
     @Override
     public Group addVisuals() {
         super.addVisuals();
+        // hazard trial removed
         if (map[exit()-1] != Terrain.WALL_DECO) visuals.add(new PrisonLevel.Torch(exit()-1));
         if (map[exit()+1] != Terrain.WALL_DECO) visuals.add(new PrisonLevel.Torch(exit()+1));
         return visuals;
     }
+
+    @Override
+    public Group addWallVisuals() {
+        Group g = super.addWallVisuals();
+        // no special trap handling (reverted to previous behavior)
+        return g;
+    }
+
+    // addVisualsAfter 훅이 없으므로 이 추가 코드는 제거
 
 }

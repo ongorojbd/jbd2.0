@@ -22,16 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw10;
-import static com.shatteredpixel.shatteredpixeldungeon.Statistics.wave;
+// removed unused static imports
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+// removed unused buff imports
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
@@ -109,6 +106,7 @@ public class GSoldier extends Mob {
     protected void zap() {
         spend(1f);
         Tbomb tbomb = new Tbomb();
+        tbomb.noFriendlyDamage = true;
         tbomb.explode(enemy.pos);
         Invisibility.dispel(this);
         blastcooldown = 80;

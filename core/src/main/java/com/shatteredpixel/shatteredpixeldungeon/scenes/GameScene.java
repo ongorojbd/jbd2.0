@@ -657,6 +657,23 @@ public class GameScene extends PixelScene {
                             }
                     );
 
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 28) {
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new WillcSprite(), new LisaSprite(), new LisaSprite()},
+                            new String[]{"시저 체펠리", "리사리사", "로긴즈 & 메시나"},
+                            new String[]{
+                                    Messages.get(CaesarZeppeli.class, "t3"),
+                                    Messages.get(CaesarZeppeli.class, "t4"),
+                                    Messages.get(CaesarZeppeli.class, "t5")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+
                 } else if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     Dungeon.challenges = 0;

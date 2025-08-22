@@ -36,12 +36,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EsidisiParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Music;
@@ -63,7 +63,7 @@ public class Esidisi extends Mob {
         // Using existing Pillar Man sprite as a placeholder
         spriteClass = EsidisiSprite.class;
 
-        HP = HT = 360;
+        HP = HT = 1000;
         defenseSkill = 18;
         EXP = 20;
         maxLvl = 30;
@@ -147,6 +147,8 @@ public class Esidisi extends Mob {
         if (phase == 0 && HP < HT * 2 / 3) {
             phase = 1; // heats up, shorter cooldowns
             sprite.showStatus(CharSprite.WARNING, Messages.get(this, "heat_up"));
+            // Heat-up visual burst
+            CellEmitter.center(this.pos).burst(EsidisiParticle.FACTORY, 8);
             veinJetCooldown = Math.min(veinJetCooldown, 2);
             grandHellCooldown = Math.max(10, grandHellCooldown - 2);
         }
@@ -169,6 +171,8 @@ public class Esidisi extends Mob {
             );
 
             Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
+            // Phase transition visual burst
+            CellEmitter.center(this.pos).burst(EsidisiParticle.FACTORY, 12);
 
             grandHellCooldown = 6;
             // Phase 2 opener: Light Lattice telegraph (after 2 turns)
@@ -269,6 +273,8 @@ public class Esidisi extends Mob {
         }
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "lattice_ready"));
+        // Telegraphing lattice: charge effect at caster
+        CellEmitter.center(this.pos).burst(EsidisiParticle.FACTORY, 6);
         latticeWindup = 1;
         spend(1f);
         return true;
@@ -281,8 +287,12 @@ public class Esidisi extends Mob {
                 ch.damage(com.watabou.utils.Random.NormalIntRange(12, 18), this);
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
             }
+            // Esidisi-specific particle burst per lattice cell
+            CellEmitter.center(c).burst(EsidisiParticle.FACTORY, 2);
             GameScene.add(com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob.seed(c, 3, Fire.class));
         }
+        // Resolution burst at caster
+        CellEmitter.center(this.pos).burst(EsidisiParticle.FACTORY, 8);
         latticeCells.clear();
         latticeCD = 10;
         spend(1f);
@@ -294,6 +304,8 @@ public class Esidisi extends Mob {
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "vein_ready"));
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         CellEmitter.center(this.pos).burst(BloodParticle.BURST, 8);
+        // Additional flame burst for Esidisi theme
+        CellEmitter.center(this.pos).burst(EsidisiParticle.FACTORY, 4);
         int shots = phase >= 1 ? 3 : 2;
         for (int s = 0; s < shots; s++) {
             int target = enemy.pos;
@@ -322,6 +334,8 @@ public class Esidisi extends Mob {
                     Buff.affect(ch, Burning.class).reignite(ch);
                     if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
                 }
+                // Impact spark at each hit cell
+                CellEmitter.center(p).burst(EsidisiParticle.FACTORY, 1);
                 GameScene.add(Blob.seed(p, 4, Fire.class));
             }
         }
@@ -334,6 +348,8 @@ public class Esidisi extends Mob {
         // Prepare
         Sample.INSTANCE.play(Assets.Sounds.BLAST);
         Invisibility.dispel(this);
+        // Big cast burst at caster
+        CellEmitter.center(this.pos).burst(EsidisiParticle.FACTORY, 12);
 
         // Emit radial needles, 8 directions, a short range each
         int range = 4;
@@ -344,6 +360,8 @@ public class Esidisi extends Mob {
                 if (!Dungeon.level.insideMap(cur) || Dungeon.level.solid[cur]) break;
                 sprite.parent.addToBack(new TargetedCell(cur, 0xFF00FF));
                 CellEmitter.center(cur).burst(BlastParticle.FACTORY, 6);
+                // Add Esidisi flame on each radial cell
+                CellEmitter.center(cur).burst(EsidisiParticle.FACTORY, 2);
                 Char ch = Actor.findChar(cur);
                 if (ch != null && ch.alignment != alignment) {
                     int dmg = Random.NormalIntRange(16, 24);
@@ -381,6 +399,8 @@ public class Esidisi extends Mob {
         }
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "lasers_ready"));
+        // Laser telegraph charge at caster
+        CellEmitter.center(this.pos).burst(EsidisiParticle.FACTORY, 6);
         lasersWindup = 1;
         spend(1f);
         return true;
@@ -388,6 +408,8 @@ public class Esidisi extends Mob {
 
     private void resolveLasers() {
         for (int p : laserCells) {
+            // Laser impact spark
+            CellEmitter.center(p).burst(EsidisiParticle.FACTORY, 2);
             GameScene.add(Blob.seed(p, 3, Fire.class));
             Char ch = Actor.findChar(p);
             if (ch != null && ch.alignment != alignment) {

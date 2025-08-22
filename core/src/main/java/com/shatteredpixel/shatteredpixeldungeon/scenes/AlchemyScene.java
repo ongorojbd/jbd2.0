@@ -563,13 +563,18 @@ public class AlchemyScene extends PixelScene {
 
         @Override
         public boolean itemSelectable(Item item) {
-            return Recipe.usableInRecipe(item);
+            // Disallow equipped items to prevent duplication
+            return Recipe.usableInRecipe(item) && !item.isEquipped(Dungeon.hero);
         }
 
         @Override
         public void onSelect(Item item) {
             synchronized (inputs) {
                 if (item != null && inputs[0] != null) {
+                    // Safety: ignore equipped items
+                    if (item.isEquipped(Dungeon.hero)) {
+                        return;
+                    }
                     for (int i = 0; i < inputs.length; i++) {
                         if (inputs[i].item() == null) {
                             if (item instanceof LiquidMetal || item instanceof MissileWeapon){

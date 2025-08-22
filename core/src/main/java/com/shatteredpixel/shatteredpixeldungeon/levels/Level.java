@@ -26,7 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+// import com.shatteredpixel.shatteredpixeldungeon.SPDSettings; // unused
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArenaTrialMarker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows;
@@ -457,7 +458,9 @@ public abstract class Level implements Bundlable {
 		}
 
 		if (bundle.contains( "mobs_to_spawn" )) {
-			for (Class<? extends Mob> mob : bundle.getClassArray("mobs_to_spawn")) {
+			@SuppressWarnings("unchecked")
+			Class<? extends Mob>[] mobClasses = (Class<? extends Mob>[]) bundle.getClassArray("mobs_to_spawn");
+			for (Class<? extends Mob> mob : mobClasses) {
 				if (mob != null) mobsToSpawn.add(mob);
 			}
 		}
@@ -610,6 +613,17 @@ public abstract class Level implements Bundlable {
 		if (foodImmune != null) foodImmune.detach();
 		ScrollOfChallenge.ChallengeArena arena = hero.buff(ScrollOfChallenge.ChallengeArena.class);
 		if (arena != null) arena.detach();
+		// Arena trial marker indicates floor-only debuffs, clear them here
+		ArenaTrialMarker marker = hero.buff(ArenaTrialMarker.class);
+		if (marker != null) {
+			if (hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness.class) != null)
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness.class).detach();
+			if (hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable.class) != null)
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable.class).detach();
+			if (hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple.class) != null)
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple.class).detach();
+			marker.detach();
+		}
 		Char ally = Stasis.getStasisAlly();
 		if (Char.hasProp(ally, Char.Property.IMMOVABLE)){
 			hero.buff(Stasis.StasisBuff.class).act();

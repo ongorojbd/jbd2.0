@@ -438,7 +438,12 @@ public class MobSpawner extends Actor {
                         Zombie2.class, Zombie2.class, Zombie2.class,
                         Zombiedog2.class, Zombied2.class, Zombied2.class));
             case 29:
+                return new ArrayList<>(Arrays.asList(
+                        VampireSoldier.class));
             case 30:
+                return new ArrayList<>(Arrays.asList(
+                        VampireSoldier.class, VampireSoldier.class, VampireSoldier.class,
+                        VampireSoldier.class, Abomination2.class, Abomination2.class));
             case 31:
                 return new ArrayList<>(Arrays.asList(
                         Zombie2.class, Zombie2.class, Zombie2.class,

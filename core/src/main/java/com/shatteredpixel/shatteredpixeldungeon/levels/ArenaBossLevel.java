@@ -268,7 +268,7 @@ public class ArenaBossLevel extends Level {
         Dungeon.observe();
 
         if (Dungeon.depth == 9) {
-            Tboss boss = new Tboss();
+            Esidisi boss = new Esidisi();
             boss.pos = 15 + WIDTH * 10;
             boss.state = boss.WANDERING;
             GameScene.add(boss);
