@@ -51,6 +51,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_2_2_Changes(changeInfos);
         add_v3_2_1_Changes(changeInfos);
         add_v3_2_Changes(changeInfos);
         add_v3_1_Changes(changeInfos);
@@ -71,6 +72,41 @@ public class v3_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO7), "???",
                 "스틸 볼 런 애니화 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
 
+    }
+
+    public static void add_v3_2_2_Changes(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("v3.0c2", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.VAMPIRESOLDIER, 0, 0, 12, 15), "전투조류 추가 업데이트",
+                "전투조류 던전의 추가 컨텐츠가 있습니다!\n" +
+                        "\n" +
+                        "- 신규 적, 보스가 추가되었습니다.\n" +
+                        "- 신규 보상이 추가되었습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KUNAI), "투척 무기 변경",
+                "투척 무기들은 전반적으로 매우 좋은 성과를 보이고 있습니다! 여전히 인기도는 낮지만, 사람들이 실제로 투척 무기를 업그레이드하기 시작했고, 투척 무기들이 동급의 근접 무기들과 경쟁력을 갖추게 되었습니다.\n" +
+                        "\n" +
+                        "상향:\n" +
+                        "- 렉킹 볼과 황금의 회전의 철구를 이제 땅에서 즉시 주워들 수 있습니다.\n" +
+                        "- 완전생물의 다람쥐의 기본 내구도가 5에서 8로 증가.\n" +
+                        "- 완전생물의 다람쥐의 피해 증가량이 1-2에서 1-3으로 증가.\n" +
+                        "- DISC가 심어진 독개구리의 기본 피해량이 5-20에서 다시 5-25로 증가."
+                ,
+                "하향:\n" +
+                        "- 크래커 볼리의 불구 지속시간이 10에서 5로 감소.\n" +
+                        "- 노토리어스 B.I.G의 피해 증가량이 1-4에서 1-3으로 감소.\n" +
+                        "- 노토리어스 B.I.G을 투척했을 때 돌아오는 턴이 3턴에서 4턴으로 증가."));
     }
 
     public static void add_v3_2_1_Changes(ArrayList<ChangeInfo> changeInfos) {
@@ -146,7 +182,7 @@ public class v3_X_Changes {
                         "총 12개의 명중 아이콘과 11개의 실패 아이콘이 있습니다."));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.PASSIONE, 0, 15, 12, 15), "파시오네 호위팀",
-                        "- 파시오네 조직의 간부인 폴포가 이제 특정 비밀 방에서 등장합니다.\n" +
+                "- 파시오네 조직의 간부인 폴포가 이제 특정 비밀 방에서 등장합니다.\n" +
                         "- 폴포에게 보수를 지불하면 파시오네 호위팀 중 한 명을 무작위로 고용할 수 있습니다\n" +
                         "- 호위팀원들은 각각 고유한 능력과 특성을 가지고 있습니다"));
 
@@ -193,7 +229,7 @@ public class v3_X_Changes {
                         "- 자세 교정 특성은 이제 투척 무기와 전갈 투척 모두에 속성이 부여되어 있으면 두 속성 모두 발동할 수 있습니다."));
 
         changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "죠린 상향",
-                        "- 동작 탐지 능력의 지속시간이 30턴에서 50턴으로 증가했습니다.\n" +
+                "- 동작 탐지 능력의 지속시간이 30턴에서 50턴으로 증가했습니다.\n" +
                         "\n" +
                         "의지의 스탠드사 버프:\n" +
                         "- 실 펀치의 무료 사용 재사용 대기시간이 100턴에서 50턴으로 감소했습니다.\n" +

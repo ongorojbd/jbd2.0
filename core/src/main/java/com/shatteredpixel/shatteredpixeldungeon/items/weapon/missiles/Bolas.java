@@ -55,7 +55,7 @@ public class Bolas extends MissileWeapon {
 	
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.prolong( defender, Cripple.class, Cripple.DURATION );
+		Buff.prolong( defender, Cripple.class, Cripple.DURATION/2 );
 
 		if (hero.heroClass == HeroClass.MAGE) {
 			if (SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof MageArmor) {
