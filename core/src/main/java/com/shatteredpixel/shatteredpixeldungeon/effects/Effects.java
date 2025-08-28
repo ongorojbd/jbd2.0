@@ -35,7 +35,8 @@ public class Effects {
 		ETHEREAL_CHAIN,
 		DEATH_RAY,
 		LIGHT_RAY,
-		HEALTH_RAY
+		HEALTH_RAY,
+		THUNDERBOLT
 	}
 	
 	public static Image get( Type type ) {
@@ -45,7 +46,8 @@ public class Effects {
 				icon.frame(icon.texture.uvRect(0, 0, 16, 16));
 				break;
 			case LIGHTNING:
-				icon.frame(icon.texture.uvRect(16, 0, 32, 8));
+            case THUNDERBOLT:
+                icon.frame(icon.texture.uvRect(16, 0, 32, 8));
 				break;
 			case WOUND:
 				icon.frame(icon.texture.uvRect(16, 8, 32, 16));
@@ -68,7 +70,7 @@ public class Effects {
 			case HEALTH_RAY:
 				icon.frame(icon.texture.uvRect(16, 30, 32, 38));
 				break;
-		}
+        }
 		return icon;
 	}
 }

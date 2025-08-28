@@ -42,21 +42,28 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBossExitRoom2;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TendencyShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ConfusionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisarmingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DisintegrationTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DoobieTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ExplosiveTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FlashingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FrostTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GrimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.MachineTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.PitfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.RockfallTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.StormTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WarpingTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WeakeningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -80,11 +87,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArenaTrialMarker;
 // import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 // import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob; // used for champion trials
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Scorpio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
-import com.watabou.utils.Reflection;
 
 public class ArenaLevel extends RegularLevel {
 
@@ -96,10 +101,11 @@ public class ArenaLevel extends RegularLevel {
         color1 = 0x48763c;
         color2 = 0x48763c;
         // Random trial selection for Arena depths 28-35 (inclusive)
-        if (Dungeon.tendencylevel && Dungeon.depth >= 1 && Dungeon.depth <= 35) {
-            // 5개 시련: 1 어둠, 2 함정, 3 대형, 5 약화, 6 챔피언, 7 전갈 (4 제거), 강화 저하 추가 예정
-            trialType = 1 + Random.Int(6);
-            if (trialType == 4) trialType = 7;
+        if (Dungeon.tendencylevel && Dungeon.depth >= 28 && Dungeon.depth < 35) {
+            // 사용 가능한 시련 목록:
+            // 1 어둠, 2 함정, 3 대형, 6 챔피언, 7 허약, 8 취약, 9 절름발이
+            int[] trials = new int[]{1, 2, 3, 6, 7, 8, 9};
+            trialType = trials[Random.Int(trials.length)];
 
             switch (trialType) {
                 case 1: // Darkness
@@ -114,12 +120,13 @@ public class ArenaLevel extends RegularLevel {
                 case 3: // Large (more mobs/items)
                     feeling = Level.Feeling.LARGE;
                     break;
-                case 5: // Combat debuff
-                    // create()에서 버프 적용
-                    break;
                 case 6: // Champion enemies
                     break;
-                case 7: // Scorpio incursion
+                case 7: // Weakness
+                    break;
+                case 8: // Vulnerable
+                    break;
+                case 9: // Cripple
                     break;
                 default:
                     break;
@@ -159,17 +166,17 @@ public class ArenaLevel extends RegularLevel {
     @Override
     protected Class<?>[] trapClasses() {
         return new Class[]{
-                FrostTrap.class, SummoningTrap.class, StormTrap.class, CorrosionTrap.class, CorrosionTrap.class, ConfusionTrap.class,
-                RockfallTrap.class, FlashingTrap.class, WornDartTrap.class, GuardianTrap.class, GuardianTrap.class, ExplosiveTrap.class,
-                DisarmingTrap.class, DisarmingTrap.class, WarpingTrap.class, CursingTrap.class, GrimTrap.class, PitfallTrap.class, DistortionTrap.class };
+                AlarmTrap.class, BurningTrap.class, FrostTrap.class, ConfusionTrap.class, DisarmingTrap.class, DisintegrationTrap.class,
+                ExplosiveTrap.class, FlashingTrap.class, GrimTrap.class, RockfallTrap.class, CorrosionTrap.class, WeakeningTrap.class,
+                DoobieTrap.class, MachineTrap.class};
     }
 
     @Override
     protected float[] trapChances() {
         return new float[]{
                 1, 1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1,
-                1, 1, 1, 1 };
+                1, 1, 1, 1, 1, 1,
+                1, 1};
     }
 
     @Override
@@ -283,14 +290,9 @@ public class ArenaLevel extends RegularLevel {
         super.create();
 
         // 추가 패널티 적용 처리 (hazard 제거, 함정 공개 지연 제거)
-        if (Dungeon.tendencylevel && Dungeon.depth >= 1 && Dungeon.depth <= 35) {
+        if (Dungeon.tendencylevel && Dungeon.depth >= 28 && Dungeon.depth <= 35) {
             if (trialType == 5) {
-                // 전투 디버프 시련: 허약/취약/절름발이 중 하나 적용 (이 층에서만 유지)
-                Buff.affect(Dungeon.hero, ArenaTrialMarker.class);
-                int roll = Random.Int(3);
-                if (roll == 0) Buff.prolong(Dungeon.hero, Weakness.class, Float.MAX_VALUE);
-                else if (roll == 1) Buff.prolong(Dungeon.hero, Vulnerable.class, Float.MAX_VALUE);
-                else Buff.prolong(Dungeon.hero, Cripple.class, Float.MAX_VALUE);
+                // legacy path (not used)
             } else if (trialType == 6) {
                 // 챔피언의 위협: 일부 기존 몹에게 챔피언 버프 부여 (전갈과 분리)
                 int champions = 2 + Random.Int(3); // 2~4마리 정도로 증가
@@ -312,41 +314,42 @@ public class ArenaLevel extends RegularLevel {
                     }
                 }
             } else if (trialType == 7) {
-                // 전갈 난입: Scorpio 추가 소환
-                Mob sc = Reflection.newInstance(Scorpio.class);
-                if (sc != null) {
-                    sc.state = sc.WANDERING;
-                    int tries = 30;
-                    do {
-                        sc.pos = randomRespawnCell(sc);
-                        tries--;
-                    } while (sc.pos == -1 && tries > 0);
-                    if (sc.pos != -1) {
-                        mobs.add(sc);
-                    }
-                }
+                // 허약 고정 부여
+                Buff.affect(Dungeon.hero, ArenaTrialMarker.class);
+                Buff.prolong(Dungeon.hero, Weakness.class, Float.MAX_VALUE);
+            } else if (trialType == 8) {
+                // 취약 고정 부여
+                Buff.affect(Dungeon.hero, ArenaTrialMarker.class);
+                Buff.prolong(Dungeon.hero, Vulnerable.class, Float.MAX_VALUE);
+            } else if (trialType == 9) {
+                // 절름발이 고정 부여
+                Buff.affect(Dungeon.hero, ArenaTrialMarker.class);
+                Buff.prolong(Dungeon.hero, Cripple.class, Float.MAX_VALUE);
             }
         }
 
         if (Dungeon.tendencylevel && Dungeon.depth >= 2 && Dungeon.depth <= 35) {
             switch (trialType) {
                 case 1:
-                    GLog.p("파문의 수행: 어둠 - 시야가 감소합니다.");
+                    GLog.p("파문 수행: 어둠 - 시야가 감소합니다.");
                     break;
                 case 2:
-                    GLog.p("파문의 수행: 함정 - 함정이 대량으로 배치되며, 모든 함정이 항상 보입니다.");
+                    GLog.p("파문 수행: 함정 - 함정이 대량으로 배치됩니다.");
                     break;
                 case 3:
-                    GLog.p("파문의 수행: 전투 - 적이 더 많이 등장합니다.");
-                    break;
-                case 5:
-                    GLog.p("파문의 수행: 약화 - 무작위 디버프가 (이 층에서만) 적용됩니다.");
+                    GLog.p("파문 수행: 전투 - 적이 더 많이 등장합니다.");
                     break;
                 case 6:
-                    GLog.p("파문의 수행: 강화 - 일부 적이 강화됩니다.");
+                    GLog.p("파문 수행: 강화 - 일부 적이 강화됩니다.");
                     break;
                 case 7:
-                    GLog.p("파문의 수행: 전갈 난입 - 전갈이 추가로 등장합니다.");
+                    GLog.p("파문 수행: 약화 - 공격력 저하가 (이 층에서만) 적용됩니다.");
+                    break;
+                case 8:
+                    GLog.p("파문 수행: 약화 - 방어력 저하가 (이 층에서만) 적용됩니다.");
+                    break;
+                case 9:
+                    GLog.p("파문 수행: 약화 - 불구가 (이 층에서만) 적용됩니다.");
                     break;
                 default:
                     break;
@@ -423,9 +426,9 @@ public class ArenaLevel extends RegularLevel {
     public String tileName( int tile ) {
         switch (tile) {
             case Terrain.WATER:
-                return Messages.get(CityLevel.class, "water_name");
+                return Messages.get(Level.class, "water_name");
             case Terrain.HIGH_GRASS:
-                return Messages.get(CityLevel.class, "high_grass_name");
+                return Messages.get(Level.class, "high_grass_name");
             default:
                 return super.tileName( tile );
         }
@@ -435,19 +438,19 @@ public class ArenaLevel extends RegularLevel {
     public String tileDesc(int tile) {
         switch (tile) {
             case Terrain.ENTRANCE:
-                return Messages.get(CityLevel.class, "entrance_desc");
+                return Messages.get(Level.class, "entrance_desc");
             case Terrain.EXIT:
-                return Messages.get(CityLevel.class, "exit_desc");
+                return Messages.get(Level.class, "exit_desc");
             case Terrain.WALL_DECO:
             case Terrain.EMPTY_DECO:
-                return Messages.get(CityLevel.class, "deco_desc");
+                return Messages.get(Level.class, "deco_desc");
             case Terrain.EMPTY_SP:
-                return Messages.get(CityLevel.class, "sp_desc");
+                return Messages.get(Level.class, "sp_desc");
             case Terrain.STATUE:
             case Terrain.STATUE_SP:
-                return Messages.get(CityLevel.class, "statue_desc");
+                return Messages.get(Level.class, "statue_desc");
             case Terrain.BOOKSHELF:
-                return Messages.get(CityLevel.class, "bookshelf_desc");
+                return Messages.get(Level.class, "bookshelf_desc");
             default:
                 return super.tileDesc( tile );
         }

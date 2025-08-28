@@ -32,10 +32,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ThunderImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -106,6 +108,10 @@ public class CaesarZeppeli extends DirectableAlly {
         if (bubbleCutterCooldown > 0) bubbleCutterCooldown--;
         if (bubbleLensCooldown > 0) bubbleLensCooldown--;
         if (hamonKickCooldown > 0) hamonKickCooldown--;
+
+        if (Dungeon.depth >= 35 && this.buff(ThunderImbue.class) == null) {
+            Buff.affect(this, ThunderImbue.class);
+        }
 
         // Cat Stance activation when HP is low
         if (HP < HT / 3 && !catStanceActive) {

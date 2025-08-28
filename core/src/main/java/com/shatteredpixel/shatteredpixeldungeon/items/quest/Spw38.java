@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -10,9 +11,13 @@ public class Spw38 extends Item {
     public static final String AC_LIGHT = "LIGHT";
 
     {
-        image = ItemSpriteSheet.TENS;
+        image = ItemSpriteSheet.POTION_GOLDEN;
+
+        icon = ItemSpriteSheet.Icons.POTION_EXP;
+
         stackable = true;
         levelKnown = true;
+
         defaultAction = AC_LIGHT;
         unique = true;
     }
@@ -23,9 +28,22 @@ public class Spw38 extends Item {
         actions.add(AC_LIGHT);
         return actions;
     }
+
+    @Override
+    public boolean isUpgradable() {
+        return true;
+    }
+
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
+
+    @Override
+    public int value() {
+        return 20 * quantity;
+    }
 }
-
-
 
 
 

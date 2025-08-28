@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw36;
 import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -70,7 +71,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -78,10 +78,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponEnhance;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWeaponUpgrade;
@@ -92,7 +90,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDiv
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
@@ -103,7 +100,17 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfClairvoyance;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfShock;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -965,6 +972,32 @@ public abstract class Mob extends Char {
         }
 
         if (alignment == Alignment.ENEMY && tendencylevel && Dungeon.level instanceof ArenaLevel){ // 전투조류
+
+            if (Statistics.spw40 > 0) {
+                int sc = Math.min(100, 8 + 8 * Statistics.spw40);
+                if (Random.Int(100) < sc) {
+                    Class<?>[] st = {
+                            StoneOfAggression.class,
+                            StoneOfBlast.class,
+                            StoneOfBlink.class,
+                            StoneOfClairvoyance.class,
+                            StoneOfDeepSleep.class,
+                            StoneOfEnchantment.class,
+                            StoneOfFear.class,
+                            StoneOfFlock.class,
+                            StoneOfShock.class,
+                    };
+                    try {
+                        Class<?> selectedPotion = Random.element(st);
+                        Item pot = (Item) selectedPotion.newInstance();
+                        if (pot != null) Dungeon.level.drop(pot.identify(), pos).sprite.drop();
+                    } catch (Exception e) {
+                        Item pot = Generator.random(Generator.Category.STONE);
+                        if (pot != null) Dungeon.level.drop(pot.identify(), pos).sprite.drop();
+                    }
+                }
+            }
+
             // 현재 죽는 몹을 제외하고 다른 적 몹이 살아있는지 확인
             boolean mobsAlive = false;
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -990,9 +1023,9 @@ public abstract class Mob extends Char {
                     }
                 }
 
-                // SPW36: 보급 - 전투 보상 시 무작위 강화 물약 추가 드랍 (20% * spw36)
+                // SPW36: 보급 - 전투 보상 시 무작위 강화 물약 추가 드랍 (10% * spw36)
                 if (Statistics.spw36 > 0) {
-                    int supplyChance = Math.min(100, 20 * Statistics.spw36);
+                    int supplyChance = Math.min(100, 20 + spw36 * 10);
                     if (Random.Int(100) < supplyChance) {
                         Class<?>[] specialPotions = {
                                 // 엘릭서들

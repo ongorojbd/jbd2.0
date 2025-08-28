@@ -301,6 +301,7 @@ public class Assets {
         public static final String EMP = "sounds/emp.mp3";
 
         public static final String ANNA = "sounds/anna.mp3";
+        public static final String HORSE = "sounds/horse.mp3";
 
         public static final String SHEER2 = "sounds/sheer2.mp3";
 
@@ -441,7 +442,7 @@ public class Assets {
                 KIRA1, KIRA2, KIRA3, KIRA4, KIRA5, KIRA6,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
                 MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
-                RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
+                RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, HORSE, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA, POL,
                 JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5, JT6, JT7
         };
@@ -671,6 +672,15 @@ public class Assets {
         public static final String VAMPIRE = "sprites/vampire.png";
         public static final String VAMPIRE2 = "sprites/vampire2.png";
         public static final String VAMPIRESOLDIER = "sprites/vampiresoldier.png";
+        public static final String VAMPIRESOLDIER2 = "sprites/vampiresoldier2.png";
+        public static final String VAMPIRESOLDIER3 = "sprites/vampiresoldier3.png";
+        public static final String CHARIOT = "sprites/chariot.png";
+        public static final String WAMMUCHARIOT = "sprites/wammuchariot.png";
+        public static final String WAMMUCHARIOT2 = "sprites/wammuchariot2.png";
+        public static final String SQUIRREL = "sprites/squirrel.png";
+        public static final String TENTACLE = "sprites/tentacle.png";
+        public static final String BUTTERFLY = "sprites/butterfly.png";
+        public static final String FISH = "sprites/fish.png";
         public static final String LISA = "sprites/lisa.png";
         public static final String DOPPIODIALOG = "sprites/doppiodialog.png";
         public static final String JOSUKEDIALOG = "sprites/josukedialog.png";

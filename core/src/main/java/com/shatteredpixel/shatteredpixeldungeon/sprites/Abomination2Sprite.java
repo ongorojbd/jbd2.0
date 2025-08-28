@@ -33,6 +33,8 @@ public class Abomination2Sprite extends MobSprite {
         zap.frames(frames, 1, 9, 8);
 
         play(idle);
+
+        scale.set(1.1f);
     }
 
     public void zap( int cell ) {

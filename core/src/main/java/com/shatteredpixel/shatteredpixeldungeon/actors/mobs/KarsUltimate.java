@@ -1,27 +1,45 @@
 /*
- * Kars Ultimate Life Form - Final Boss
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2025 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -33,489 +51,291 @@ public class KarsUltimate extends Mob {
 
     {
         // Placeholder sprite
-        spriteClass = ShamanSprite.Purple.class;
+        spriteClass = WamuuSprite.class;
 
-        HP = HT = 800;
-        defenseSkill = 30;
-        EXP = 50;
+        HP = HT = 420;
+        defenseSkill = 22;
+        EXP = 25;
         maxLvl = 30;
-
-        baseSpeed = 1.4f;
 
         properties.add(Property.BOSS);
         properties.add(Property.DEMONIC);
-
-        // broad immunities befitting the ultimate life form
-        immunities.add(Burning.class);
-        immunities.add(Paralysis.class);
-        immunities.add(Fire.class);
     }
 
     private int phase = 0;
-
-    // abilities
-    private int hamonCD = 10;      // 태양의 파문: 1턴 예고 후 큰 원형 범위 피해
-    private int hamonWindup = 0;
-    private ArrayList<Integer> hamonCells = new ArrayList<>();
-
-    private int morphCD = 12;      // 생물 창조: 소환/변형 하수인 생성
-    private int bladeCD = 6;       // 광휘 절단파: 직선 광선 절단
-    private int prismCD = 9;       // 프리즘 스윕: 4방향 광선 예고 후 발동(방향/기점 토글)
-    private boolean prismDiagonal = false;
-    private boolean prismAtHero = false;
-    private int prismWindup = 0;
-    private ArrayList<Integer> prismCells = new ArrayList<>();
-
-    // 신규: 태양의 다이얼(회전 안전쐐기 링)
-    private int dialCD = 12;
-    private boolean dialActive = false;
-    private int dialStep = 0;         // 0: 예고1, 1: 예고2/피해
-    private int dialRadius = 5;
-    private int dialGapDir = 0;       // 0..7 (45도 단위)
-    private ArrayList<Integer> dialCells = new ArrayList<>();
-
-    // (moved to Esidisi) 라이트 라티스(격자 광선)
-
-    // 특수 기믹: 화산 대분출 (페이즈2 시작 연출)
-    private boolean eruptionActive = false;
-    private int eruptionStep = 0;
-    private ArrayList<Integer> eruptionCells = new ArrayList<>();
+    private int sandstormCD = 8;       // 신사폭풍
+    private int protectorCD = 12;      // 바람의 프로텍터
+    private int finalModeCD = 18;      // 혼설삽
+    private int sandstormWindup = 0;   // 신사폭풍 예고 대기턴
+    private ArrayList<Integer> sandstormCells = new ArrayList<>();
+    private int riftTurns = 0;         // 혼설삽: 전장 절단 패턴 남은 턴
+    private int riftSafeCell = -1;     // 안전 타일
 
     private static final String PHASE = "phase";
-    private static final String HAMON_CD = "hamon_cd";
-    private static final String HAMON_WIND = "hamon_wind";
-    private static final String HAMON_CELLS = "hamon_cells";
-    private static final String MORPH_CD = "morph_cd";
-    private static final String BLADE_CD = "blade_cd";
-    private static final String PRISM_CD = "prism_cd";
-    private static final String PRISM_DIAG = "prism_diag";
-    private static final String PRISM_WIND = "prism_wind";
-    private static final String PRISM_CELLS = "prism_cells";
-    private static final String PRISM_AT_HERO = "prism_at_hero";
-    private static final String DIAL_CD = "dial_cd";
-    private static final String DIAL_ACTIVE = "dial_active";
-    private static final String DIAL_STEP = "dial_step";
-    private static final String DIAL_RADIUS = "dial_radius";
-    private static final String DIAL_GAP = "dial_gap";
-    private static final String DIAL_CELLS = "dial_cells";
-    // lattice keys moved to Esidisi
-    private static final String ERUPTION_ACTIVE = "eruption_active";
-    private static final String ERUPTION_STEP = "eruption_step";
+    private static final String SAND_CD = "sand_cd";
+    private static final String PROT_CD = "prot_cd";
+    private static final String FINAL_CD = "final_cd";
+    private static final String SAND_WINDUP = "sand_windup";
+    private static final String SAND_CELLS = "sand_cells";
+    private static final String RIFT_TURNS = "rift_turns";
+    private static final String RIFT_SAFE = "rift_safe";
 
     @Override
     public void notice() {
         super.notice();
-        if (!BossHealthBar.isAssigned()) BossHealthBar.assignBoss(this);
+        if (!BossHealthBar.isAssigned()) {
+            BossHealthBar.assignBoss(this);
+        }
         sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "notice"));
     }
 
     @Override
     public void damage(int dmg, Object src) {
-        // ultimate resilience: cap incoming damage and regen will counter
-        if (dmg > 45) dmg = 45;
-        super.damage(dmg, src);
         BossHealthBar.assignBoss(this);
+        super.damage(dmg, src);
 
         if (phase == 0 && HP < HT * 2 / 3) {
             phase = 1;
-            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "evolve"));
-            hamonCD = Math.min(hamonCD, 8);
-            morphCD = Math.min(morphCD, 10);
+            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "focus_wind"));
+            sandstormCD = Math.min(sandstormCD, 5);
+            protectorCD = Math.min(protectorCD, 8);
         }
         if (phase == 1 && HP < HT / 3) {
             phase = 2;
-            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "apex"));
-            bladeCD = 4;
-            // trigger eruption sequence at phase 2 start
-            startEruption();
+            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "final_mode"));
+            finalModeCD = 10;
         }
     }
 
     @Override
     protected boolean act() {
-        if (!BossHealthBar.isAssigned()) BossHealthBar.assignBoss(this);
+        if (!BossHealthBar.isAssigned()) {
+            BossHealthBar.assignBoss(this);
+        }
 
-        // passive regeneration and senses
-        if (HP < HT) HP = Math.min(HT, HP + (phase >= 1 ? 6 : 4));
+        if (sandstormCD > 0) sandstormCD--;
+        if (protectorCD > 0) protectorCD--;
+        if (finalModeCD > 0) finalModeCD--;
 
-        if (hamonCD > 0) hamonCD--;
-        if (morphCD > 0) morphCD--;
-        if (bladeCD > 0) bladeCD--;
-        if (prismCD > 0) prismCD--;
-        if (dialCD > 0) dialCD--;
-
-        // resolve hamon if telegraphed
-        if (hamonWindup > 0) {
-            hamonWindup--;
-            if (hamonWindup == 0 && !hamonCells.isEmpty()) {
-                resolveHamon();
+        // resolve delayed sandstorm if telegraphed last turn
+        if (sandstormWindup > 0) {
+            sandstormWindup--;
+            if (sandstormWindup == 0 && !sandstormCells.isEmpty()) {
+                resolveSandstorm();
                 return true;
             }
         }
 
-        // resolve prism sweep if telegraphed
-        if (prismWindup > 0) {
-            prismWindup--;
-            if (prismWindup == 0 && !prismCells.isEmpty()) {
-                resolvePrism();
-                return true;
-            }
-        }
-
-        // eruption sequence progression
-        if (eruptionActive) {
-            if (advanceEruption()) return true;
-        }
-
-        // dial progression if active
-        if (dialActive) {
-            if (advanceDial()) return true;
+        // Resolve rift pattern if active
+        if (riftTurns > 0) {
+            resolveRift();
+            return true;
         }
 
         if (enemy != null) {
-            if (bladeCD <= 0) {
-                if (bladeWave()) return true;
+            // Priority: Final Mode in phase 2, then Sandstorm when close, then Protector
+            if (phase >= 2 && finalModeCD <= 0) {
+                if (finalMode()) return true;
             }
-            if (prismCD <= 0 && prismWindup == 0) {
-                if (telegraphPrism()) return true;
+            if (sandstormCD <= 0 && Dungeon.level.distance(pos, enemy.pos) <= 4 && sandstormWindup == 0 && sandstormCells.isEmpty()) {
+                if (telegraphSandstorm()) return true;
             }
-            // lattice removed from KarsUltimate
-            if (dialCD <= 0 && !dialActive) {
-                if (startDial()) return true;
-            }
-            if (hamonCD <= 0) {
-                if (telegraphHamon()) return true;
-            }
-            if (morphCD <= 0) {
-                if (morphSpawn()) return true;
+            if (phase >= 1 && protectorCD <= 0) {
+                if (windProtector()) return true;
             }
         }
 
         return super.act();
     }
 
-    private boolean telegraphPrism() {
-        prismCells.clear();
-        int[] dirs;
-        int w = Dungeon.level.width();
-        if (!prismDiagonal) {
-            dirs = new int[]{-w, w, -1, 1};
-        } else {
-            dirs = new int[]{-w-1, -w+1, w-1, w+1};
-        }
-        int origin = prismAtHero && enemy != null ? enemy.pos : pos;
-        for (int d : dirs) collectLine(prismCells, origin, d);
-        for (int c : prismCells) {
-            sprite.parent.addToBack(new TargetedCell(c, 0xCCE6FF));
-            CellEmitter.center(c).burst(SparkParticle.FACTORY, 1);
+    // 신사폭풍: 양팔 회전으로 큰 전방 원뿔 영역 절삭 피해, 출혈 부여
+    private boolean telegraphSandstorm() {
+        if (enemy == null) return false;
+        // Compute and store target area
+        Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.WONT_STOP);
+        ConeAOE cone = new ConeAOE(aim, Float.POSITIVE_INFINITY, 70, Ballistica.STOP_SOLID);
+        sandstormCells.clear();
+        for (int cell : cone.cells) {
+            if (!Dungeon.level.insideMap(cell) || Dungeon.level.solid[cell]) continue;
+            sandstormCells.add(cell);
+            // show telegraph
+            sprite.parent.addToBack(new TargetedCell(cell, 0xFF00FF));
+            CellEmitter.center(cell).burst(SparkParticle.FACTORY, 1);
         }
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "prism_ready"));
-        prismWindup = 1;
+        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "sandstorm_ready"));
+        sandstormWindup = 1; // resolve next turn
         spend(1f);
         return true;
     }
 
-    private void resolvePrism() {
-        Sample.INSTANCE.play(Assets.Sounds.RAY);
-        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "prism"));
-        for (int c : prismCells) {
-            Char ch = Actor.findChar(c);
-            if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(16, 22) + (phase >= 1 ? 6 : 0);
-                ch.damage(dmg, this);
-                if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
-            }
-        }
-        prismCells.clear();
-        prismDiagonal = !prismDiagonal; // toggle orientation
-        prismAtHero = !prismAtHero;     // toggle origin between self and hero
-        prismCD = 7;
-        spend(1f);
-    }
-
-    private void collectLine(ArrayList<Integer> out, int start, int step) {
-        int c = start;
-        while (Dungeon.level.insideMap(c) && !Dungeon.level.solid[c]) {
-            if (!out.contains(c)) out.add(c);
-            c += step;
-        }
-        c = start;
-        while (Dungeon.level.insideMap(c) && !Dungeon.level.solid[c]) {
-            if (!out.contains(c)) out.add(c);
-            c -= step;
-        }
-    }
-
-    // lattice removed from KarsUltimate
-
-    // 태양의 다이얼(회전 안전쐐기 링)
-    private boolean startDial() {
-        dialCells.clear();
-        dialRadius = phase >= 2 ? 6 : 5;
-        dialGapDir = Random.Int(8);
-        dialStep = 0;
-        // collect ring cells around Kars
-        int w = Dungeon.level.width();
-        int len = Dungeon.level.length();
-        int origin = (enemy != null ? enemy.pos : pos);
-        int cx = origin % w, cy = origin / w;
-        for (int c = 0; c < len; c++) {
-            if (!Dungeon.level.insideMap(c) || Dungeon.level.solid[c]) continue;
-            int x = c % w, y = c / w;
-            double dist = Math.hypot(x - cx, y - cy);
-            if (Math.abs(dist - dialRadius) <= 1.0) {
-                if (!inGap(cx, cy, x, y, dialGapDir)) {
-                    if (Random.Int(3) == 0) dialCells.add(c);
-                }
-            }
-        }
-        for (int c : dialCells) sprite.parent.addToBack(new TargetedCell(c, 0xFFCC99));
-        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "dial_ready"));
-        dialActive = true;
-        spend(1f);
-        return true;
-    }
-
-    private boolean advanceDial() {
-        if (dialStep == 0) {
-            // rotate the safe wedge and retrace ring
-            dialStep = 1;
-            dialCells.clear();
-            dialGapDir = (dialGapDir + 1) % 8; // rotate 45 deg
-            int w = Dungeon.level.width();
-            int len = Dungeon.level.length();
-            int origin = (enemy != null ? enemy.pos : pos);
-            int cx = origin % w, cy = origin / w;
-            for (int c = 0; c < len; c++) {
-                if (!Dungeon.level.insideMap(c) || Dungeon.level.solid[c]) continue;
-                int x = c % w, y = c / w;
-                double dist = Math.hypot(x - cx, y - cy);
-                if (Math.abs(dist - dialRadius) <= 1.0) {
-                    if (!inGap(cx, cy, x, y, dialGapDir)) {
-                        if (Random.Int(3) == 0) dialCells.add(c);
-                    }
-                }
-            }
-            for (int c : dialCells) sprite.parent.addToBack(new TargetedCell(c, 0xFFAA66));
-            spend(1f);
-            return true;
-        } else {
-            // detonate ring
-            Sample.INSTANCE.play(Assets.Sounds.BLAST);
-            sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "dial"));
-            for (int c : dialCells) {
-                Char ch = Actor.findChar(c);
-                if (ch != null && ch.alignment != alignment) {
-                    ch.damage(Random.NormalIntRange(22, 30) + (phase >= 2 ? 6 : 0), this);
-                    if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
-                }
-            }
-            dialActive = false;
-            dialStep = 0;
-            dialCells.clear();
-            dialCD = 12;
-            spend(1f);
-            return true;
-        }
-    }
-
-    private boolean inGap(int cx, int cy, int x, int y, int dirIndex) {
-        double ang = Math.atan2(y - cy, x - cx); // radians
-        double deg = ang * (180.0 / Math.PI);
-        if (deg < 0) deg += 360.0;
-        double gapCenter = dirIndex * 45.0;
-        double diff = Math.abs(((deg - gapCenter + 540) % 360) - 180); // angular difference 0..180
-        return diff <= 20.0; // 40-degree safe wedge (harder)
-    }
-
-    private boolean telegraphHamon() {
-        // choose radius based on phase
-        int r = phase >= 2 ? 6 : 5;
-        hamonCells.clear();
-        int len = Dungeon.level.length();
-        int w = Dungeon.level.width();
-        int cx = pos % w;
-        int cy = pos / w;
-        for (int c = 0; c < len; c++) {
-            if (!Dungeon.level.insideMap(c) || Dungeon.level.solid[c]) continue;
-            int x = c % w;
-            int y = c / w;
-            double dist = Math.hypot(x - cx, y - cy);
-            if (dist <= r) {
-                hamonCells.add(c);
-                sprite.parent.addToBack(new TargetedCell(c, 0xFFFF66));
-                CellEmitter.center(c).burst(SparkParticle.FACTORY, 1);
-            }
-        }
-        Sample.INSTANCE.play(Assets.Sounds.RAY);
-        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "hamon_ready"));
-        hamonWindup = 1;
-        spend(1f);
-        return true;
-    }
-
-    private void resolveHamon() {
-        // devastate the telegraphed area
+    private void resolveSandstorm() {
+        // Execute stored sandstorm
         Sample.INSTANCE.play(Assets.Sounds.BLAST);
-        sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "hamon"));
-        for (int c : hamonCells) {
-            sprite.parent.addToBack(new TargetedCell(c, 0xFFFFAA));
-            CellEmitter.center(c).burst(BlastParticle.FACTORY, 2);
-            Char ch = Actor.findChar(c);
+        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "sandstorm"));
+        for (int cell : sandstormCells) {
+            if (!Dungeon.level.insideMap(cell) || Dungeon.level.solid[cell]) continue;
+            CellEmitter.center(cell).burst(SparkParticle.FACTORY, 2);
+            Char ch = Actor.findChar(cell);
             if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(28, 40) + (phase >= 2 ? 8 : 0);
+                int dmg = Random.NormalIntRange(18, 26);
+                if (phase >= 1) dmg += 4;
                 ch.damage(dmg, this);
-                Buff.affect(ch, Burning.class).reignite(ch);
-                if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
+                Buff.affect(ch, Bleeding.class).set(0.35f * dmg);
+                if (ch == Dungeon.hero && !ch.isAlive()) {
+                    Dungeon.fail(getClass());
+                }
             }
         }
-        hamonCells.clear();
-        hamonCD = phase >= 2 ? 8 : 10;
+        sandstormCells.clear();
+        sandstormCD = phase >= 1 ? 7 : 9;
         spend(1f);
     }
 
-    private boolean bladeWave() {
-        // high-speed monomolecular cut in a line
-        Ballistica beam = new Ballistica(pos, enemy.pos, Ballistica.WONT_STOP);
-        boolean hit = false;
-        for (int p : beam.path) {
-            sprite.parent.addToBack(new TargetedCell(p, 0xFFEECC));
-            Char ch = Actor.findChar(p);
-            if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(18, 26) + (phase >= 1 ? 6 : 0);
-                ch.damage(dmg, this);
-                if (Random.Int(2) == 0) Buff.affect(ch, Bleeding.class).set(0.3f * dmg);
-                hit = true;
+    // 바람의 프로텍터: 잠시 투명화 및 접근전 대비
+    private boolean windProtector() {
+        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+        sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "protector"));
+        // brief invisibility, thematically refraction
+        Buff.affect(this, Invisibility.class, 4f);
+        // visual hint around Wamuu
+        for (int i : PathFinder.NEIGHBOURS9) {
+            int p = pos + i;
+            if (Dungeon.level.insideMap(p) && !Dungeon.level.solid[p]) {
+                CellEmitter.center(p).burst(SparkParticle.FACTORY, 1);
             }
         }
-        if (hit) Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-        bladeCD = phase >= 2 ? 4 : 6;
+        protectorCD = 10;
         spend(1f);
         return true;
     }
 
-    private boolean morphSpawn() {
-        // spawn up to 2 swift minions around target area
-        int summons = 2;
-        int placed = 0;
-        for (int i : PathFinder.NEIGHBOURS8) {
-            int p = enemy.pos + i;
-            if (Dungeon.level.insideMap(p) && Dungeon.level.passable[p] && Actor.findChar(p) == null) {
-                Mob m = new Niku(); // reuse fast small minion
-                m.pos = p;
-                m.state = m.HUNTING;
-                GameScene.add(m, 1);
-                placed++;
-                sprite.parent.addToBack(new TargetedCell(p, 0xFF00FF));
-                if (placed >= summons) break;
+    // 혼설삽: 10턴간 전장 전체를 절단, 무작위 1타일만 안전
+    private boolean finalMode() {
+        // choose a safe passable tile
+        riftSafeCell = chooseSafeCell();
+        riftTurns = 10;
+
+        Sample.INSTANCE.play(Assets.Sounds.RAY);
+        sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "final_cast"));
+
+        // initial telegraph across the map
+        telegraphRift();
+
+        // Wamuu strains body at start
+        this.damage(Random.NormalIntRange(4, 8), this);
+
+        finalModeCD = 16;
+        spend(1f);
+        return true;
+    }
+
+    private int chooseSafeCell() {
+        // strictly choose an EMPTY terrain tile
+        ArrayList<Integer> candidates = new ArrayList<>();
+        int len = Dungeon.level.length();
+        for (int c = 0; c < len; c++) {
+            if (!Dungeon.level.insideMap(c)) continue;
+            if (Dungeon.level.map[c] == Terrain.EMPTY && Actor.findChar(c) == null) {
+                candidates.add(c);
             }
         }
-        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-        sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "morph"));
-        morphCD = 12;
-        spend(1f);
-        return placed > 0;
+        if (!candidates.isEmpty()) {
+            return candidates.get(Random.Int(candidates.size()));
+        }
+        // fallback: any passable tile
+        for (int c = 0; c < len; c++) {
+            if (!Dungeon.level.insideMap(c)) continue;
+            if (Dungeon.level.passable[c] && !Dungeon.level.solid[c] && Actor.findChar(c) == null) {
+                candidates.add(c);
+            }
+        }
+        if (!candidates.isEmpty()) {
+            return candidates.get(Random.Int(candidates.size()));
+        }
+        // last resort
+        return pos;
     }
 
-    private void startEruption() {
-        eruptionActive = true;
-        eruptionStep = 0;
+    private void telegraphRift() {
+        int len = Dungeon.level.length();
+        for (int c = 0; c < len; c++) {
+            if (!Dungeon.level.insideMap(c) || Dungeon.level.solid[c]) continue;
+            if (c == riftSafeCell) continue;
+            sprite.parent.addToBack(new TargetedCell(c, 0xFF00FF));
+        }
+        // mark safe cell with a softer hint
+        sprite.parent.addToBack(new TargetedCell(riftSafeCell, 0x00FF00));
     }
 
-    private boolean advanceEruption() {
-        // 2-step sequence: telegraph -> eruption
-        if (eruptionStep == 0) {
-            eruptionCells.clear();
+    private void resolveRift() {
+        // If 마지막 턴이면 피해 적용, 아니면 예고만 유지
+        if (riftTurns == 1) {
             int len = Dungeon.level.length();
             for (int c = 0; c < len; c++) {
                 if (!Dungeon.level.insideMap(c) || Dungeon.level.solid[c]) continue;
-                eruptionCells.add(c);
-                sprite.parent.addToBack(new TargetedCell(c, 0xFF9966));
-            }
-            Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "eruption_ready"));
-            eruptionStep = 1;
-            spend(1f);
-            return true;
-        } else {
-            // erupt
-            Sample.INSTANCE.play(Assets.Sounds.BLAST);
-            for (int c : eruptionCells) {
+                if (c == riftSafeCell) continue;
+                // VFX and damage
+                sprite.parent.addToBack(new TargetedCell(c, 0xFF00FF));
                 CellEmitter.center(c).burst(BlastParticle.FACTORY, 2);
                 Char ch = Actor.findChar(c);
                 if (ch != null && ch.alignment != alignment) {
-                    ch.damage(Random.NormalIntRange(18, 26), this);
+                    int dmg = Random.NormalIntRange(28, 42);
+                    if (phase >= 2) dmg += 6;
+                    ch.damage(dmg, this);
+                    if (ch == Dungeon.hero && !ch.isAlive()) {
+                        Dungeon.fail(getClass());
+                    }
                 }
-                GameScene.add(com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob.seed(c, 4, Fire.class));
             }
-            eruptionActive = false;
-            eruptionStep = 0;
+            riftTurns = 0;
+            riftSafeCell = -1;
             spend(1f);
-            return true;
+        } else {
+            // 유지 예고
+            telegraphRift();
+            riftTurns--;
+            spend(1f);
         }
     }
-
-    @Override
-    public int defenseProc(Char enemy, int damage) {
-        // extreme resilience to projectiles
-        if (enemy instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero) {
-            return (int) Math.ceil(damage * 0.7f);
-        }
-        return super.defenseProc(enemy, damage);
-    }
-
-    @Override
-    public int damageRoll() { return Random.NormalIntRange(18, 28); }
-
-    @Override
-    public int attackSkill(Char target) { return 36; }
-
-    @Override
-    public int drRoll() { return Random.NormalIntRange(4, 8); }
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(PHASE, phase);
-        bundle.put(HAMON_CD, hamonCD);
-        bundle.put(HAMON_WIND, hamonWindup);
-        int[] arr = new int[hamonCells.size()];
-        for (int i = 0; i < hamonCells.size(); i++) arr[i] = hamonCells.get(i);
-        bundle.put(HAMON_CELLS, arr);
-        bundle.put(MORPH_CD, morphCD);
-        bundle.put(BLADE_CD, bladeCD);
-        bundle.put(PRISM_CD, prismCD);
-        bundle.put(PRISM_DIAG, prismDiagonal);
-        bundle.put(PRISM_WIND, prismWindup);
-        int[] pc = new int[prismCells.size()];
-        for (int i = 0; i < prismCells.size(); i++) pc[i] = prismCells.get(i);
-        bundle.put(PRISM_CELLS, pc);
-        bundle.put(PRISM_AT_HERO, prismAtHero);
-        bundle.put(ERUPTION_ACTIVE, eruptionActive);
-        bundle.put(ERUPTION_STEP, eruptionStep);
+        bundle.put(SAND_CD, sandstormCD);
+        bundle.put(PROT_CD, protectorCD);
+        bundle.put(FINAL_CD, finalModeCD);
+        bundle.put(SAND_WINDUP, sandstormWindup);
+        int[] cells = new int[sandstormCells.size()];
+        for (int i = 0; i < sandstormCells.size(); i++) cells[i] = sandstormCells.get(i);
+        bundle.put(SAND_CELLS, cells);
+        bundle.put(RIFT_TURNS, riftTurns);
+        bundle.put(RIFT_SAFE, riftSafeCell);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         phase = bundle.getInt(PHASE);
-        hamonCD = bundle.getInt(HAMON_CD);
-        hamonWindup = bundle.getInt(HAMON_WIND);
-        hamonCells.clear();
-        for (int c : bundle.getIntArray(HAMON_CELLS)) hamonCells.add(c);
-        morphCD = bundle.getInt(MORPH_CD);
-        bladeCD = bundle.getInt(BLADE_CD);
-        prismCD = bundle.getInt(PRISM_CD);
-        prismDiagonal = bundle.getBoolean(PRISM_DIAG);
-        prismWindup = bundle.getInt(PRISM_WIND);
-        prismCells.clear();
-        for (int c : bundle.getIntArray(PRISM_CELLS)) prismCells.add(c);
-        prismAtHero = bundle.getBoolean(PRISM_AT_HERO);
-        eruptionActive = bundle.getBoolean(ERUPTION_ACTIVE);
-        eruptionStep = bundle.getInt(ERUPTION_STEP);
+        sandstormCD = bundle.getInt(SAND_CD);
+        protectorCD = bundle.getInt(PROT_CD);
+        finalModeCD = bundle.getInt(FINAL_CD);
+        sandstormWindup = bundle.getInt(SAND_WINDUP);
+        sandstormCells.clear();
+        for (int c : bundle.getIntArray(SAND_CELLS)) sandstormCells.add(c);
+        riftTurns = bundle.getInt(RIFT_TURNS);
+        riftSafeCell = bundle.getInt(RIFT_SAFE);
     }
+
+    @Override
+    public int damageRoll() { return Random.NormalIntRange(12, 22); }
+
+    @Override
+    public int attackSkill(Char target) { return 30; }
+
+    @Override
+    public int drRoll() { return Random.NormalIntRange(2, 6); }
 }
 
 

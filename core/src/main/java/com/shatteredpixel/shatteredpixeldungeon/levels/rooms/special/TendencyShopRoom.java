@@ -104,6 +104,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
@@ -367,7 +368,14 @@ public class TendencyShopRoom extends SpecialRoom {
 
         // 추가 소모품 (랜덤)
         if (Random.Int(2) == 0) {
-            itemsToSpawn.add(new Stylus());
+            switch (Random.Int(2)) {
+                case 0:
+                    itemsToSpawn.add(new StoneOfEnchantment());
+                    break;
+                case 1:
+                    itemsToSpawn.add(new Stylus());
+                    break;
+            }
         }
 
         switch (Random.Int(5)) {

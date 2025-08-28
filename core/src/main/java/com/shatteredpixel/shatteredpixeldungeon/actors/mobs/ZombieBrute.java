@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TentacleSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieBruteSprite;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -20,7 +21,7 @@ import com.watabou.utils.Random;
 
 public class ZombieBrute extends Mob {
     {
-        spriteClass = ZombieBruteSprite.class;
+        spriteClass = TentacleSprite.class;
 
         HP = HT = 16;
         defenseSkill = 5;

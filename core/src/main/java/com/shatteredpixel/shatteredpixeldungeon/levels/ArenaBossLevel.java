@@ -22,28 +22,21 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Esidisi;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsLight;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsUltimate;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wamuu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WamuuFirst;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -61,7 +54,6 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -268,7 +260,7 @@ public class ArenaBossLevel extends Level {
         Dungeon.observe();
 
         if (Dungeon.depth == 9) {
-            Esidisi boss = new Esidisi();
+            Wamuu boss = new Wamuu();
             boss.pos = 15 + WIDTH * 10;
             boss.state = boss.WANDERING;
             GameScene.add(boss);
@@ -301,8 +293,19 @@ public class ArenaBossLevel extends Level {
                 boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
             }
         } else if (Dungeon.depth == 27) {
-            // Optional: spawn Wamuu as an endgame tendency boss
             WamuuFirst boss = new WamuuFirst();
+            boss.pos = 15 + WIDTH * 10;
+            boss.state = boss.WANDERING;
+            GameScene.add(boss);
+            boss.beckon(Dungeon.hero.pos);
+
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha(0);
+                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+            }
+        } else if (Dungeon.depth == 36) {
+            Esidisi boss = new Esidisi();
             boss.pos = 15 + WIDTH * 10;
             boss.state = boss.WANDERING;
             GameScene.add(boss);

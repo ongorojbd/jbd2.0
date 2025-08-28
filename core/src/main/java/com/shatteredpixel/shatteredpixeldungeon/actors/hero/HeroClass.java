@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
@@ -146,7 +147,8 @@ public enum HeroClass {
             new RingOfMight().identify().upgrade(999).collect();
             new RingOfEnergy().identify().upgrade(999).collect();
             new RingOfAccuracy().identify().upgrade(999).collect();
-            new WandOfCorruption().identify().upgrade(999).collect();
+            new WornShortsword().identify().upgrade(12).collect();
+            new PlateArmor().identify().upgrade(999).collect();
             new Neotel().collect();
             new Spw().identify().quantity(100).collect();
             new Bomb().identify().quantity(100).collect();

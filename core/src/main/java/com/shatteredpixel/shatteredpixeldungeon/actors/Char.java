@@ -78,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Speed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ThunderImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TrialOfPillars;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -550,6 +551,7 @@ public abstract class Char extends Actor {
 
             if (buff(FireImbue.class) != null) buff(FireImbue.class).proc(enemy);
             if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
+            if (buff(ThunderImbue.class) != null) buff(ThunderImbue.class).proc(enemy, (int)dmg);
 
             if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)) {
                 enemy.HP = 0;
@@ -882,6 +884,11 @@ public abstract class Char extends Actor {
                     }
                 }
             }
+        }
+
+        // SPW39: count hits taken for invisibility effect
+        if (this == Dungeon.hero) {
+            Dungeon.hero.onHeroDamagedBy(src);
         }
 
         //temporarily assign to a float to avoid rounding a bunch

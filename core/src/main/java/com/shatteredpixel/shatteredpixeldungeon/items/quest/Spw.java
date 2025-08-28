@@ -55,6 +55,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw39;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw40;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw6;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw7;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw9;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -81,6 +82,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnc
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -369,11 +373,13 @@ public class Spw extends Item {
                 case ITEM_TYPE_SPW2:
                     return spw2 > MAX_SPW_COUNT;
                 case ITEM_TYPE_SPW3:
-                    return spw3 > MAX_SPW_COUNT;
+                    return spw3 >= 3;
                 case ITEM_TYPE_SPW4:
                     return spw4 > MAX_SPW_COUNT;
                 case ITEM_TYPE_SPW7:
                     return spw7 > MAX_SPW_COUNT;
+                case ITEM_TYPE_SPW9:
+                    return spw9 >= 3;
                 case ITEM_TYPE_SPW13:
                     return spw13 >= 6; // SPW13은 최대 6까지만
                 case ITEM_TYPE_SPW14:
@@ -415,6 +421,12 @@ public class Spw extends Item {
                     return Dungeon.hero.buff(TrialOfPillars.class) != null;
                 case ITEM_TYPE_SPW36:
                     return spw36 >= 5;
+                case ITEM_TYPE_SPW37:
+                    return spw37 > MAX_SPW_COUNT;
+                case ITEM_TYPE_SPW39:
+                    return spw39 > MAX_SPW_COUNT;
+                case ITEM_TYPE_SPW40:
+                    return spw40 > MAX_SPW_COUNT;
                 default:
                     return false;
             }
@@ -497,10 +509,19 @@ public class Spw extends Item {
                     return new Spw35();
                 case ITEM_TYPE_SPW36:
                     return new Spw36();
+                case ITEM_TYPE_SPW37:
+                    return new Spw37();
+                case ITEM_TYPE_SPW38:
+                    return new Spw38();
+                case ITEM_TYPE_SPW39:
+                    return new Spw39();
+                case ITEM_TYPE_SPW40:
+                    return new Spw40();
                 default:
                     return null;
             }
         }
+
 
         /**
          * 아이템이 기존 아이템들과 중복되는지 확인
@@ -540,9 +561,10 @@ public class Spw extends Item {
 
             return !((item instanceof Spw1 && spw1 >= 3) ||
                     (item instanceof Spw2 && spw2 > MAX_SPW_COUNT) ||
-                    (item instanceof Spw3 && spw3 > MAX_SPW_COUNT) ||
+                    (item instanceof Spw3 && spw3 >= 3) ||
                     (item instanceof Spw4 && spw4 > MAX_SPW_COUNT) ||
                     (item instanceof Spw7 && spw7 > MAX_SPW_COUNT) ||
+                    (item instanceof Spw7 && spw9 >= 3) ||
                     (item instanceof Spw13 && spw13 >= 6) ||
                     (item instanceof Spw14 && spw14 >= 1) ||
                     (item instanceof Spw15 && spw15 >= 1) ||
@@ -562,7 +584,11 @@ public class Spw extends Item {
                     (item instanceof Spw33 && spw33 >= 2) ||
                     (item instanceof Spw34 && spw34 >= 2) ||
                     (item instanceof Spw35 && Dungeon.hero.buff(TrialOfPillars.class) != null) ||
-                    (item instanceof Spw36 && spw36 >= 5));
+                    (item instanceof Spw36 && spw36 >= 5) ||
+                    (item instanceof Spw37 && spw37 > MAX_SPW_COUNT) ||
+                    (item instanceof Spw38 && spw38 > MAX_SPW_COUNT) ||
+                    (item instanceof Spw39 && spw39 > MAX_SPW_COUNT) ||
+                    (item instanceof Spw40 && spw40 > MAX_SPW_COUNT));
         }
 
         /**
@@ -693,26 +719,26 @@ public class Spw extends Item {
                 } else if (item instanceof Spw17) {
                     spw17++;
                     Jojo1 jojo1 = new Jojo1();
-                    if (jojo1.doPickUp( Dungeon.hero )) {
-                        GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", jojo1.name()) ));
+                    if (jojo1.doPickUp(Dungeon.hero)) {
+                        GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", jojo1.name())));
                     } else {
-                        Dungeon.level.drop( jojo1, Dungeon.hero.pos ).sprite.drop();
+                        Dungeon.level.drop(jojo1, Dungeon.hero.pos).sprite.drop();
                     }
                 } else if (item instanceof Spw18) {
                     spw18++;
                     Jojo2 jojo2 = new Jojo2();
-                    if (jojo2.doPickUp( Dungeon.hero )) {
-                        GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", jojo2.name()) ));
+                    if (jojo2.doPickUp(Dungeon.hero)) {
+                        GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", jojo2.name())));
                     } else {
-                        Dungeon.level.drop( jojo2, Dungeon.hero.pos ).sprite.drop();
+                        Dungeon.level.drop(jojo2, Dungeon.hero.pos).sprite.drop();
                     }
                 } else if (item instanceof Spw19) {
                     spw19++;
                     Jojo3 jojo3 = new Jojo3();
-                    if (jojo3.doPickUp( Dungeon.hero )) {
-                        GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", jojo3.name()) ));
+                    if (jojo3.doPickUp(Dungeon.hero)) {
+                        GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", jojo3.name())));
                     } else {
-                        Dungeon.level.drop( jojo3, Dungeon.hero.pos ).sprite.drop();
+                        Dungeon.level.drop(jojo3, Dungeon.hero.pos).sprite.drop();
                     }
                 } else if (item instanceof Spw20) {
                     handleSpw20Effect();
@@ -731,6 +757,16 @@ public class Spw extends Item {
                     spw35++;
                     Buff.affect(hero, TrialOfPillars.class);
                     GLog.w(Messages.get(Spw.class, "spw35_start"));
+                } else if (item instanceof Spw37) {
+                    handleSpw37Effect();
+                } else if (item instanceof Spw38) {
+                    Item potion = new PotionOfExperience();
+                    potion.identify().quantity(2);
+                    pickOrDropItem(potion);
+                } else if (item instanceof Spw39) {
+                    spw39++;
+                } else if (item instanceof Spw40) {
+                    spw40++;
                 } else {
                     handleGenericItem(item);
                 }
@@ -832,6 +868,20 @@ public class Spw extends Item {
                 pickOrDropItem(uv);
             }
 
+            private void handleSpw37Effect() {
+                if (spw37 == 0) {
+                    Item ring = new RingOfArcana();
+                    ring.identify();
+                    pickOrDropItem(ring);
+                    spw37++;
+                } else if (spw37 >= 1 && Dungeon.hero.belongings.getItem(RingOfArcana.class) != null) {
+                    Spw37.Spw37Ability();
+                } else {
+                    GLog.i(Messages.get(Spw.class, "spw37"));
+                }
+            }
+
+
             private void handleGenericItem(Item item) {
                 // 아이템을 인벤토리에 추가하지 않고 능력만 발동
                 // 현재는 기본적인 통계 증가만 적용
@@ -855,28 +905,39 @@ public class Spw extends Item {
                     spw29++;
                 } else if (item instanceof Spw30) {
                     spw30++;
-            } else if (item instanceof Spw31) {
-                spw31++;
-            } else if (item instanceof Spw32) {
-                spw32++;
-            } else if (item instanceof Spw33) {
-                spw33++;
-            } else if (item instanceof Spw34) {
-                spw34++;
-            } else if (item instanceof Spw35) {
-                spw35++;
-            } else if (item instanceof Spw36) {
-                spw36++;
-            } else if (item instanceof Spw37) {
-                spw37++;
-            } else if (item instanceof Spw38) {
-                spw38++;
-            } else if (item instanceof Spw39) {
-                spw39++;
-            } else if (item instanceof Spw40) {
-                spw40++;
+                } else if (item instanceof Spw31) {
+                    spw31++;
+                } else if (item instanceof Spw32) {
+                    spw32++;
+                } else if (item instanceof Spw33) {
+                    spw33++;
+                } else if (item instanceof Spw34) {
+                    spw34++;
+                } else if (item instanceof Spw35) {
+                    spw35++;
+                } else if (item instanceof Spw36) {
+                    spw36++;
+                } else if (item instanceof Spw37) {
+                    // Grant RingOfArcana first time, then upgrade it on repeats
+                    RingOfArcana ring = Dungeon.hero.belongings.getItem(RingOfArcana.class);
+                    if (ring == null) {
+                        RingOfArcana newRing = new RingOfArcana();
+                        newRing.identify();
+                        pickOrDropItem(newRing);
+                    } else {
+                        ring.upgrade();
+                    }
+                    spw37++;
+                } else if (item instanceof Spw38) {
+                    spw38++;
+                    PotionOfExperience p = new PotionOfExperience();
+                    p.quantity(2);
+                    pickOrDropItem(p);
+                } else if (item instanceof Spw39) {
+                    spw39++;
+                } else if (item instanceof Spw40) {
+                    spw40++;
                 }
-
             }
         }
     }

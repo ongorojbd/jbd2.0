@@ -37,11 +37,13 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EsidisiParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask3;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Music;
@@ -64,12 +66,12 @@ public class Esidisi extends Mob {
         spriteClass = EsidisiSprite.class;
 
         HP = HT = 1000;
-        defenseSkill = 18;
-        EXP = 20;
-        maxLvl = 30;
+        EXP = 40;
+        defenseSkill = 22;
 
         properties.add(Property.BOSS);
         properties.add(Property.DEMONIC);
+        properties.add(Property.UNDEAD);
 
         // fire theme
         immunities.add(Burning.class);
@@ -105,12 +107,12 @@ public class Esidisi extends Mob {
 
             if (Dungeon.hero.heroClass == HeroClass.MAGE) {
                 WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new EsidisiSprite(), new EsidisiSprite(), new EsidisiSprite()},
-                        new String[]{"에시디시", "에시디시", "에시디시"},
+                        new CharSprite[]{new EsidisiSprite(), new TrapperSprite(), new TrapperSprite()},
+                        new String[]{"에시디시", "죠셉", "죠셉"},
                         new String[]{
-                                Messages.get(Esidisi.class, "t1"),
-                                Messages.get(Esidisi.class, "t2"),
-                                Messages.get(Esidisi.class, "t3")
+                                Messages.get(Esidisi.class, "t7"),
+                                Messages.get(Esidisi.class, "t8"),
+                                Messages.get(Esidisi.class, "t9")
                         },
                         new byte[]{
                                 WndDialogueWithPic.IDLE,
@@ -141,6 +143,11 @@ public class Esidisi extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
+        if (dmg >= 200) {
+            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+            dmg = 200;
+        }
         BossHealthBar.assignBoss(this);
         super.damage(dmg, src);
 
@@ -284,7 +291,11 @@ public class Esidisi extends Mob {
         for (int c : latticeCells) {
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
-                ch.damage(com.watabou.utils.Random.NormalIntRange(12, 18), this);
+                int dmg = Random.NormalIntRange(40, 56);
+                if (ch.alignment == Char.Alignment.ALLY && ch != Dungeon.hero) {
+                    dmg = Math.round(dmg * 0.2f);
+                }
+                ch.damage(dmg, this);
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
             }
             // Esidisi-specific particle burst per lattice cell
@@ -320,8 +331,8 @@ public class Esidisi extends Mob {
     }
 
     private void resolveVeinJet() {
-        int damageMin = 14;
-        int damageMax = 22;
+        int damageMin = 16;
+        int damageMax = 25;
         for (int target : veinCells) {
             for (int i : PathFinder.NEIGHBOURS9) {
                 int p = target + i;
@@ -329,9 +340,12 @@ public class Esidisi extends Mob {
                 Char ch = Actor.findChar(p);
                 if (ch != null && ch.alignment != alignment) {
                     int dmg = Random.NormalIntRange(damageMin, damageMax);
+                    if (ch.alignment == Char.Alignment.ALLY && ch != Dungeon.hero) {
+                        dmg = Math.round(dmg * 0.25f);
+                    }
                     ch.damage(dmg, this);
-                    Buff.affect(ch, Bleeding.class).set(0.4f * dmg);
-                    Buff.affect(ch, Burning.class).reignite(ch);
+                    Buff.affect(ch, Bleeding.class).set(0.3f * dmg);
+                    Buff.affect(ch, Burning.class).reignite(ch, 3f);
                     if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
                 }
                 // Impact spark at each hit cell
@@ -364,10 +378,12 @@ public class Esidisi extends Mob {
                 CellEmitter.center(cur).burst(EsidisiParticle.FACTORY, 2);
                 Char ch = Actor.findChar(cur);
                 if (ch != null && ch.alignment != alignment) {
-                    int dmg = Random.NormalIntRange(16, 24);
+                    int dmg = Random.NormalIntRange(25, 36);
+                    if (ch.alignment == Char.Alignment.ALLY && ch != Dungeon.hero) {
+                        dmg = Math.round(dmg * 0.25f);
+                    }
                     ch.damage(dmg, this);
-                    Buff.affect(ch, Bleeding.class).set(0.5f * dmg);
-                    Buff.affect(ch, Burning.class).reignite(ch);
+                    Buff.affect(ch, Burning.class).reignite(ch, 3f);
                     if (ch == Dungeon.hero && !ch.isAlive()) {
                         Dungeon.fail(getClass());
                     }
@@ -413,7 +429,10 @@ public class Esidisi extends Mob {
             GameScene.add(Blob.seed(p, 3, Fire.class));
             Char ch = Actor.findChar(p);
             if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(24, 36);
+                int dmg = Random.NormalIntRange(25, 36);
+                if (ch.alignment == Char.Alignment.ALLY && ch != Dungeon.hero) {
+                    dmg = Math.round(dmg * 0.25f);
+                }
                 ch.damage(dmg, this);
                 Buff.affect(ch, Burning.class).reignite(ch, 3f);
                 if (!ch.isAlive() && ch == Dungeon.hero) Dungeon.fail(getClass());
@@ -428,27 +447,24 @@ public class Esidisi extends Mob {
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc(enemy, damage);
         if (Random.Int(3) == 0) {
-            Buff.affect(enemy, Bleeding.class).set(0.25f * damage);
-        }
-        if (Random.Int(3) == 0) {
-            Buff.affect(enemy, Burning.class).reignite(enemy);
+            Buff.affect(enemy, Burning.class).reignite(enemy, 2f);
         }
         return damage;
     }
-
+    
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(12, 20);
+        return Random.NormalIntRange( 25, 36 );
     }
 
     @Override
-    public int attackSkill(Char target) {
-        return 28;
+    public int attackSkill( Char target ) {
+        return 35;
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(2, 6);
+        return super.drRoll() + Random.NormalIntRange(0, 13);
     }
 
     @Override
@@ -483,7 +499,8 @@ public class Esidisi extends Mob {
 
         super.die( cause );
 
-        Dungeon.level.unseal();
+        Dungeon.level.drop(new Smask3(), pos).sprite.drop(pos);
+        
         Music.INSTANCE.end();
 
         GameScene.bossSlain();

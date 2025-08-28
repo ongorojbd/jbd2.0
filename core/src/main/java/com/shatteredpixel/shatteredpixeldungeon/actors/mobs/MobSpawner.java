@@ -319,7 +319,7 @@ public class MobSpawner extends Actor {
             case 1:
             default:
                 return new ArrayList<>(Arrays.asList(
-                        ZombieTwo.class));
+                        VampireChariot.class));
             case 2:
                 return new ArrayList<>(Arrays.asList(
                         ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieThree.class,
@@ -433,22 +433,47 @@ public class MobSpawner extends Actor {
                 return new ArrayList<>(Arrays.asList(
                         Zombie2.class, Zombie2.class, Zombie2.class,
                         Zombiedog2.class, Zombied2.class));
+
             case 28:
                 return new ArrayList<>(Arrays.asList(
-                        Zombie2.class, Zombie2.class, Zombie2.class,
-                        Zombiedog2.class, Zombied2.class, Zombied2.class));
+                        VampireSoldier.class));
+
             case 29:
                 return new ArrayList<>(Arrays.asList(
-                        VampireSoldier.class));
+                        VampireSoldier.class, VampireSoldier.class, VampireSoldier2.class));
+
             case 30:
                 return new ArrayList<>(Arrays.asList(
-                        VampireSoldier.class, VampireSoldier.class, VampireSoldier.class,
-                        VampireSoldier.class, Abomination2.class, Abomination2.class));
+                        VampireSoldier.class, VampireSoldier2.class));
             case 31:
                 return new ArrayList<>(Arrays.asList(
-                        Zombie2.class, Zombie2.class, Zombie2.class,
-                        Zombiedog2.class, Zombied2.class, Zombied2.class,
-                        Zombiez2.class, Zombie2p.random()));
+                        VampireSoldier2.class, VampireSoldier2.class,
+                        VampireSoldier.class, VampireSoldier.class, VampireSoldier.class,
+                        Abomination2.class));
+
+            case 32:
+                return new ArrayList<>(Arrays.asList(
+                        VampireSoldier2.class, VampireSoldier2.class,
+                        Abomination2.class, VampireSoldier.class, Abomination2.class,
+                        Abomination2.class));
+
+            case 33:
+                return new ArrayList<>(Arrays.asList(
+                        VampireSoldier2.class, VampireSoldier2.class,
+                        VampireSoldier.class, VampireSoldier.class, Abomination2.class,
+                        VampireSoldier3.class));
+
+            case 34:
+                return new ArrayList<>(Arrays.asList(
+                        VampireSoldier2.class, VampireSoldier2.class,
+                        VampireSoldier.class, VampireSoldier3.class, Abomination2.class,
+                        VampireSoldier3.class));
+
+            case 35:
+                return new ArrayList<>(Arrays.asList(
+                        VampireSoldier2.class, VampireSoldier.class,
+                        Abomination2.class, VampireSoldier3.class, VampireSoldier3.class,
+                        VampireSoldier3.class));
         }
     }
 

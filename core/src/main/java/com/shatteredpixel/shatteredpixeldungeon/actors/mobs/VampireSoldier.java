@@ -21,9 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSoldierSprite;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class VampireSoldier extends Mob {
@@ -31,27 +36,29 @@ public class VampireSoldier extends Mob {
 	{
 		spriteClass = VampireSoldierSprite.class;
 
-		// 콜로세움 기사와 유사한 튜닝
-		HP = HT = 175;
+		HP = HT = 120;
 		defenseSkill = 15;
-		EXP = 15;
-		maxLvl = 30;
 
+		EXP = 12;
+		maxLvl = 22;
+
+		properties.add(Property.UNDEAD);
+		properties.add(Property.DEMONIC);
 	}
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange(30, 43);
+		return Random.NormalIntRange( 25, 30 );
 	}
 
 	@Override
-	public int attackSkill(Char target) {
-		return 40;
+	public int attackSkill( Char target ) {
+		return 28;
 	}
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return super.drRoll() + Random.NormalIntRange(0, 12);
 	}
 
 	@Override
@@ -60,9 +67,25 @@ public class VampireSoldier extends Mob {
 		int heal = Math.max(1, Math.round(dealt * 0.25f));
 		if (heal > 0 && HP < HT) {
 			HP = Math.min(HT, HP + heal);
-			if (sprite != null) sprite.showStatus(CharSprite.POSITIVE, Integer.toString(heal));
+			if (sprite != null) sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
 		}
 		return dealt;
+	}
+
+	@Override
+	public void die( Object cause ) {
+
+		super.die( cause );
+
+		if (Random.Int( 3 ) == 0) {
+			Dungeon.level.drop( new Gold().quantity(Random.IntRange(45, 55)), pos ).sprite.drop();
+		}
+
+		if (Dungeon.level.heroFOV[pos]) {
+			Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );
+			Sample.INSTANCE.play(Assets.Sounds.BURNING);
+		}
+
 	}
 
 }

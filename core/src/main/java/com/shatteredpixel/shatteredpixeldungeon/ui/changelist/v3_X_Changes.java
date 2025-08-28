@@ -84,7 +84,7 @@ public class v3_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.VAMPIRESOLDIER, 0, 0, 12, 15), "전투조류 추가 업데이트",
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.TUSK3, 0, 0, 12, 15), "전투조류 추가 업데이트",
                 "전투조류 던전의 추가 컨텐츠가 있습니다!\n" +
                         "\n" +
                         "- 신규 적, 보스가 추가되었습니다.\n" +

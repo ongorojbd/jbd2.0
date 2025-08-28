@@ -520,14 +520,6 @@ public class Dungeon {
         return level;
     }
 
-    public static void resetLevel() {
-
-        Actor.clear();
-
-        level.reset();
-        switchLevel(level, level.entrance());
-    }
-
     public static long seedCurDepth() {
         return seedForDepth(depth, branch);
     }

@@ -4,7 +4,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -13,12 +12,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Wedding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SkyParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask3;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -29,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Speedwagon2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
@@ -171,6 +168,13 @@ public class WamuuFirst extends Mob {
 
             Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
 
+            // swap sprite to Esidisi for phase 2 visuals
+            if (sprite != null) {
+                sprite.killAndErase();
+            }
+            spriteClass = EsidisiSprite.class;
+            GameScene.addSprite(this);
+
             // enable sandstorm in next phase segment
             sandstormCD = 3;
         }
@@ -197,12 +201,15 @@ public class WamuuFirst extends Mob {
         super.die( cause );
 
         Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
-        Dungeon.level.drop(new Smask3(), pos).sprite.drop(pos);
+        Buff.affect(Dungeon.hero, Wedding.class);
+
         sprite.killAndErase();
 
         Music.INSTANCE.end();
 
         GameScene.bossSlain();
+
+        Dungeon.level.unseal();
     }
 
     @Override
@@ -455,6 +462,11 @@ public class WamuuFirst extends Mob {
         wireCD = bundle.getInt(WIRE_CD);
         sandWindup = bundle.getInt(SAND_WIND);
         wireWindup = bundle.getInt(WIRE_WIND);
+
+        // ensure correct sprite after load if already in phase 2
+        if (phase >= 1) {
+            spriteClass = EsidisiSprite.class;
+        }
     }
 }
 

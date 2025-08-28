@@ -33,11 +33,11 @@ public class Abomination2 extends Mob {
 	{
 		spriteClass = Abomination2Sprite.class;
 
-		// 강화된 변종 설정
-		HP = HT = 80;
-		defenseSkill = 14;
-		EXP = 10;
-		maxLvl = 20;
+		HP = HT = 150;
+		defenseSkill = 15;
+
+		EXP = 12;
+		maxLvl = 22;
 
 		properties.add(Property.UNDEAD);
 		properties.add(Property.DEMONIC);
@@ -72,7 +72,7 @@ public class Abomination2 extends Mob {
 		spend(TIME_TO_ZAP);
 
 		if (hit(this, enemy, true)) {
-			int dmg = Random.NormalIntRange(8, 16);
+			int dmg = Random.NormalIntRange(12, 20);
 			enemy.damage(dmg, new CursedBolt());
 
 			// 명중 시 무작위 저주 완드 효과 발동(희귀도 고정: 커먼 풀만 사용)
@@ -91,21 +91,19 @@ public class Abomination2 extends Mob {
 		next();
 	}
 
-	// 공격 시에는 별도 저주 시전 없음(고유 패턴과 차별화)
-
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange(6, 14);
+		return Random.NormalIntRange( 25, 30 );
 	}
 
 	@Override
-	public int attackSkill(Char target) {
-		return 14;
+	public int attackSkill( Char target ) {
+		return 28;
 	}
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 5);
+		return super.drRoll() + Random.NormalIntRange(0, 12);
 	}
 }
 

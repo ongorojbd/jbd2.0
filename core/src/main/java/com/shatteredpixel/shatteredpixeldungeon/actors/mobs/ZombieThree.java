@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ButterflySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Zombie2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Zombie3Sprite;
@@ -62,7 +63,7 @@ import com.watabou.utils.Random;
 public class ZombieThree extends Mob {
 
     {
-        spriteClass = Zombie3Sprite.class;
+        spriteClass = ButterflySprite.class;
 
         HP = HT = 12;
         defenseSkill = 4;

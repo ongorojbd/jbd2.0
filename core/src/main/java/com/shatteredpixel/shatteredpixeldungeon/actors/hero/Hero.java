@@ -285,6 +285,19 @@ public class Hero extends Char {
     private int attackSkill = 10;
     private int defenseSkill = 5;
     private int attackCount = 0;
+    private int defenseCount = 0;
+
+    public void onHeroDamagedBy(Object src){
+        // SPW39: count actual hits taken (only when source is a character i.e., physical/basic)
+        if (Statistics.spw39 > 0 && src instanceof Char){
+            defenseCount++;
+            int required = Math.max(1, 10 - Statistics.spw39);
+            if (defenseCount > required){
+                defenseCount = 0;
+                Buff.prolong(this, Invisibility.class, 2f);
+            }
+        }
+    }
 
     public boolean ready = false;
     public boolean damageInterrupt = true;
@@ -392,6 +405,7 @@ public class Hero extends Char {
 
         bundle.put(HTBOOST, HTBoost);
         bundle.put(ATTACKCOUNT, attackCount);
+        bundle.put("defenseCount", defenseCount);
 
         belongings.storeInBundle(bundle);
     }
@@ -416,6 +430,7 @@ public class Hero extends Char {
 
         STR = bundle.getInt(STRENGTH);
         attackCount = bundle.getInt(ATTACKCOUNT);
+        defenseCount = bundle.getInt("defenseCount");
 
         belongings.restoreFromBundle(bundle);
         
@@ -707,6 +722,7 @@ public class Hero extends Char {
 
     @Override
     public String defenseVerb() {
+        // SPW39 handled in onHeroDamagedBy to ensure only real hits count
         Combo.ParryTracker parry = buff(Combo.ParryTracker.class);
         if (parry != null) {
             parry.parried = true;
@@ -2376,7 +2392,9 @@ public class Hero extends Char {
                 && (visibleEnemies.size() == 0 || cell == pos)
                 && !Dungeon.level.locked
                 && !Dungeon.level.plants.containsKey(cell)
-                && (Dungeon.depth < 31 || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE)) {
+                && (Dungeon.depth < 31 // 전투조류
+                    || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE
+                    || Dungeon.tendencylevel)) {
 
             curAction = new HeroAction.LvlTransition(cell);
 

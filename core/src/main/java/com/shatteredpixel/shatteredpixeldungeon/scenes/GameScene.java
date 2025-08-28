@@ -38,7 +38,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ThunderImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -661,11 +663,30 @@ public class GameScene extends PixelScene {
 
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new WillcSprite(), new LisaSprite(), new LisaSprite()},
-                            new String[]{"시저 체펠리", "리사리사", "로긴즈 & 메시나"},
+                            new String[]{"시저 체펠리", "리사리사", "리사리사"},
                             new String[]{
                                     Messages.get(CaesarZeppeli.class, "t3"),
                                     Messages.get(CaesarZeppeli.class, "t4"),
                                     Messages.get(CaesarZeppeli.class, "t5")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 35) {
+
+                    Buff.affect(Dungeon.hero, ThunderImbue.class);
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new LisaSprite(), new WillcSprite(), new WillcSprite()},
+                            new String[]{"리사리사", "시저 체펠리", "시저 체펠리"},
+                            new String[]{
+                                    Messages.get(CaesarZeppeli.class, "t6"),
+                                    Messages.get(CaesarZeppeli.class, "t7"),
+                                    Messages.get(CaesarZeppeli.class, "t8")
                             },
                             new byte[]{
                                     WndDialogueWithPic.IDLE,
@@ -854,25 +875,27 @@ public class GameScene extends PixelScene {
                     }
                 }
 
-                if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1 && Dungeon.depth == 26) {
-                    GLog.n(Messages.get(this, "miniboss"));
-                }
-                if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss9 == 1 && Dungeon.depth == 27) {
-                    GLog.n(Messages.get(this, "miniboss"));
-                }
-                if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss14 == 1 && Dungeon.depth == 28) {
-                    GLog.n(Messages.get(this, "miniboss"));
-                }
-                if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss19 == 1 && Dungeon.depth == 29) {
-                    GLog.n(Messages.get(this, "miniboss"));
-                }
-                if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.bossLevel() && Dungeon.depth == 30) {
-                    if (Dungeon.mboss4 == 1 || Dungeon.mboss9 == 1 || Dungeon.mboss14 == 1 || Dungeon.mboss19 == 1)
-                        GLog.n(Messages.get(this, "miniboss2"));
-                }
-                if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.depth == 30 && Dungeon.bossLevel()) {
-                    if (Dungeon.mboss4 == 1 && Dungeon.mboss9 == 1 && Dungeon.mboss14 == 1 && Dungeon.mboss19 == 1)
-                        GLog.p(Messages.get(this, "miniboss_final"));
+                if (!(Dungeon.tendencylevel)) {
+                    if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1 && Dungeon.depth == 26) {
+                        GLog.n(Messages.get(this, "miniboss"));
+                    }
+                    if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss9 == 1 && Dungeon.depth == 27) {
+                        GLog.n(Messages.get(this, "miniboss"));
+                    }
+                    if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss14 == 1 && Dungeon.depth == 28) {
+                        GLog.n(Messages.get(this, "miniboss"));
+                    }
+                    if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss19 == 1 && Dungeon.depth == 29) {
+                        GLog.n(Messages.get(this, "miniboss"));
+                    }
+                    if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.bossLevel() && Dungeon.depth == 30) {
+                        if (Dungeon.mboss4 == 1 || Dungeon.mboss9 == 1 || Dungeon.mboss14 == 1 || Dungeon.mboss19 == 1)
+                            GLog.n(Messages.get(this, "miniboss2"));
+                    }
+                    if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.depth == 30 && Dungeon.bossLevel()) {
+                        if (Dungeon.mboss4 == 1 && Dungeon.mboss9 == 1 && Dungeon.mboss14 == 1 && Dungeon.mboss19 == 1)
+                            GLog.p(Messages.get(this, "miniboss_final"));
+                    }
                 }
 
                 int spawnersAbove = Statistics.spawnersAlive;

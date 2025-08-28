@@ -157,7 +157,7 @@ public class Com extends NPC {
                         } else if (index == 1) {
                             tell(Messages.get(Com.class, "w", SPDSettings.getDio()));
                         } else if (index == 2) {
-                            tell(Messages.get(Com.class, "w", SPDSettings.getDio()));
+                            tell(Messages.get(Com.class, "e", SPDSettings.getDio()));
                         } else if (index == 3) {
                             if (SPDSettings.getSpecialcoin() >= 1) {
                                 ShatteredPixelDungeon.switchScene(SeedFindScene.class);

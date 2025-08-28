@@ -58,25 +58,25 @@ public class TbossSprite extends MobSprite {
         idle = new Animation( 1, true );
         idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
-        run = new Animation( 20, true );
+        run = new Animation( 15, true );
         run.frames( frames, 2, 3, 4, 5, 6, 7 );
 
         attack = new Animation( 15, false );
         attack.frames( frames, 8, 9, 10, 0 );
 
         stab = new Animation( 12, false );
-        stab.frames( frames,  9, 10, 11, 0 );
+        stab.frames( frames, 8, 9, 10, 0 );
 
         prep = new Animation( 1, true );
-        prep.frames( frames, 2 );
+        prep.frames( frames, 0 );
 
         leap = new Animation( 1, true );
-        leap.frames( frames, 12 );
+        leap.frames( frames, 8 );
 
         zap = attack.clone();
 
         die = new Animation( 20, false );
-        die.frames( frames, 11, 12, 13, 14, 15, 16);
+        die.frames( frames, 11, 12, 13, 14, 15);
 
         play( idle );
     }
