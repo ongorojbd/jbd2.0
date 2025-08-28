@@ -103,6 +103,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CaesarZeppeli;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw23;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
@@ -715,6 +716,11 @@ public class Hero extends Char {
 
         if (belongings.armor() != null) {
             evasion = belongings.armor().evasionFactor(this, evasion);
+
+            //stone specifically overrides to 0 always, guaranteed hit
+            if (belongings.armor().hasGlyph(Stone.class, this) && !Stone.testingEvasion()){
+                return 0;
+            }
         }
 
         return Math.max(1, Math.round(evasion));

@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
@@ -78,7 +77,6 @@ public class PixelScene extends Scene {
 
 	public static int defaultZoom = 0;
 	public static int maxDefaultZoom = 0;
-	public static int maxScreenZoom = 0;
 	public static float minZoom;
 	public static float maxZoom;
 
@@ -122,7 +120,7 @@ public class PixelScene extends Scene {
 		}
 
 		maxDefaultZoom = (int)Math.min(Game.width/minWidth, Game.height/minHeight);
-		maxScreenZoom = (int)Math.min(Game.dispWidth/minWidth, Game.dispHeight/minHeight);
+		maxDefaultZoom = Math.max(2, maxDefaultZoom);
 		defaultZoom = SPDSettings.scale();
 
 		if (defaultZoom < Math.ceil( Game.density * 2 ) || defaultZoom > maxDefaultZoom){
@@ -325,7 +323,7 @@ public class PixelScene extends Scene {
 	public static RenderedTextBlock renderTextBlock(String text, int size ){
 		//some systems (macOS mainly) require this back buffer check to ensure
 		// that we're working with real pixels, not logical ones
-		float scale = Game.width / (float)Gdx.graphics.getBackBufferWidth();
+		float scale = DeviceCompat.getRealPixelScaleX();
 		RenderedTextBlock result = new RenderedTextBlock( text, size*Math.round(defaultZoom*scale));
 		result.zoom(1/(float)Math.round(defaultZoom*scale));
 		return result;
