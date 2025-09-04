@@ -41,6 +41,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ThunderImbue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Wedding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Wedding2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -694,6 +696,11 @@ public class GameScene extends PixelScene {
                                     WndDialogueWithPic.IDLE
                             }
                     );
+
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 3) {
+
+                    Buff.detach(Dungeon.hero, Wedding.class);
+                    Buff.affect(Dungeon.hero, Wedding2.class);
 
                 } else if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 

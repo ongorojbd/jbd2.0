@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Esidisi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wamuu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WamuuFirst;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;

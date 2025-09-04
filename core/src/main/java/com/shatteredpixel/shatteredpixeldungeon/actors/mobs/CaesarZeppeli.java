@@ -278,7 +278,6 @@ public class CaesarZeppeli extends DirectableAlly {
         catStanceActive = true;
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "cat_stance"));
         Buff.affect(this, Barkskin.class).set(5, 1);
-        Sample.INSTANCE.play(Assets.Sounds.SHATTER);
     }
 
     // Bubble Launcher - basic ranged attack
@@ -433,21 +432,18 @@ public class CaesarZeppeli extends DirectableAlly {
     public void defendPos(int cell) {
         super.defendPos(cell);
         yell(Messages.get(this, "defend"));
-        Sample.INSTANCE.play(Assets.Sounds.SHATTER);
     }
 
     @Override
     public void followHero() {
         super.followHero();
         yell(Messages.get(this, "follow"));
-        Sample.INSTANCE.play(Assets.Sounds.SHATTER);
     }
 
     @Override
     public void targetChar(Char ch) {
         super.targetChar(ch);
         yell(Messages.get(this, "target"));
-        Sample.INSTANCE.play(Assets.Sounds.SHATTER);
     }
 
     // 300-turn respawn countdown applied to the hero on Caesar's death

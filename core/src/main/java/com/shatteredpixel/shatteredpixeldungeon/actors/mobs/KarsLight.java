@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.DM201Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.UltimateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Music;
@@ -35,7 +36,7 @@ public class KarsLight extends Mob {
 
     {
         // placeholder sprite; replace when custom sprite is available
-        spriteClass = KarsSprite.class;
+        spriteClass = UltimateSprite.class;
 
         HP = HT = 450;
         defenseSkill = 24;

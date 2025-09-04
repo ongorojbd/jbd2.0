@@ -319,7 +319,7 @@ public class MobSpawner extends Actor {
             case 1:
             default:
                 return new ArrayList<>(Arrays.asList(
-                        VampireChariot.class));
+                        ZombieTwo.class));
             case 2:
                 return new ArrayList<>(Arrays.asList(
                         ZombieTwo.class, ZombieTwo.class, ZombieTwo.class, ZombieThree.class,

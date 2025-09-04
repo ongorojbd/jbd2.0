@@ -16,6 +16,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SkyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
@@ -26,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WammuChariot2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WammuChariotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Wedding2;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -70,7 +72,7 @@ public class Wamuu extends Mob {
     private int wireCD = 9;           // all phases
     private int finalModeCD = 18;     // phase 3 opener
     private int windSenseCD = 6;      // phase 2 only: blind wind-sense sweep
-    private int blinkCD = 4;          // phase 3 only: periodic blink
+    private int windPressureCD = 5;   // phase 3 only: tracking wind pressure
 
     // sandstorm windup/targeting (phase 1 only)
     private int sandWindup = 0;
@@ -84,19 +86,16 @@ public class Wamuu extends Mob {
     private ArrayList<Integer> wireRing2 = new ArrayList<>();
     private ArrayList<Integer> wireRing3 = new ArrayList<>();
 
-    // phase 3: final mode spiral state
-    private boolean finalActive = false;
-    private int finalStage = 0;            // used as cycle counter
-    private int finalWindup = 0;
-    private ArrayList<Integer> finalCells = new ArrayList<>();
-    private double finalAngle = 0;         // degrees, rotating clock hand
-    private double finalWidth = 60;        // sector width in degrees (narrow sweep)
-    private int finalRadius = Integer.MAX_VALUE; // effectively whole map
-    private int finalSpinDir = 1;          // 1 or -1
-    private double finalSpinStep = 35;     // degrees per cycle
-    // approaching-band state (Tengu fire-like)
-    private int finalDir = -1;             // direction index along path to hero (0..7)
-    private int finalStepIndex = 0;        // current step along ballistica path
+    // phase 3: final mode
+    private boolean finalEnraged = false;  // becomes true when HP < 15%
+
+    // phase 3: expanding square telegraph based on player's position
+    private boolean squareExpanding = false;
+    private int squareCenter = -1;
+    private int squareRadius = -1; // chebyshev radius: 0=1x1, 1=3x3, ...
+    private int squareMaxRadius = 0;
+    private int squareTelegraphDelay = 0; // 1 turn per expansion step
+    private ArrayList<Integer> squareCells = new ArrayList<>();
 
     private boolean sandstormPending = false;
     // Phase 1: chariot charge
@@ -116,16 +115,18 @@ public class Wamuu extends Mob {
     private static final String FINAL_CD = "final_cd";
     private static final String SAND_WIND = "sand_wind";
     private static final String WIRE_WIND = "wire_wind";
-    private static final String FINAL_ACTIVE = "final_active";
-    private static final String FINAL_STAGE = "final_stage";
-    private static final String FINAL_WINDUP = "final_windup";
-    private static final String FINAL_CELLS = "final_cells";
-    private static final String FINAL_ANGLE = "final_angle";
-    private static final String FINAL_DIR = "final_dir";
+    private static final String FINAL_ENRAGED = "final_enraged";
     private static final String SENSE_CD = "sense_cd";
     private static final String SENSE_WIND = "sense_wind";
     private static final String SENSE_LAST = "sense_last";
     private static final String SENSE_MODE = "sense_mode";
+
+    private static final String SQ_ACTIVE = "sq_active";
+    private static final String SQ_CENTER = "sq_center";
+    private static final String SQ_RADIUS = "sq_radius";
+    private static final String SQ_MAX = "sq_max";
+    private static final String SQ_DELAY = "sq_delay";
+    private static final String SQ_CELLS = "sq_cells";
 
     @Override
     public void notice() {
@@ -218,7 +219,13 @@ public class Wamuu extends Mob {
 
             // visually accentuate and apply visual-only blind state to self
             if (sprite != null) sprite.aura(0x66CCFF, 4);
-            finalModeCD = 8;
+            finalModeCD = 0;
+            // reset expanding-square state
+            squareExpanding = false;
+            squareCells.clear();
+            squareCenter = -1;
+            squareRadius = -1;
+            squareTelegraphDelay = 0;
         }
     }
 
@@ -231,19 +238,15 @@ public class Wamuu extends Mob {
         if (wireCD > 0) wireCD--;
         if (finalModeCD > 0) finalModeCD--;
         if (windSenseCD > 0) windSenseCD--;
-        if (blinkCD > 0) blinkCD--;
+        if (windPressureCD > 0) windPressureCD--;
         if (chariotCD > 0) chariotCD--;
 
-        // Phase 3: allow blink even during final pattern; if blinking mid-cast, re-telegraph to new origin
-        if (phase >= 2 && blinkCD <= 0) {
-            new com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf().activate(this);
-            blinkCD = 999;
-            if (finalActive) {
-                finalActive = false;
-                finalWindup = 0;
-                finalCells.clear();
-                if (telegraphFinalWave()) return true;
-            }
+        // Phase 3: No more teleportation - Wamuu stands his ground and unleashes relentless wind pressure
+        
+        // Check for enraged state (< 15% HP)
+        if (phase >= 2 && !finalEnraged && HP < HT * 15 / 100) {
+            finalEnraged = true;
+            Sample.INSTANCE.play(Assets.Sounds.BLAST);
         }
 
         // resolve windups
@@ -295,23 +298,7 @@ public class Wamuu extends Mob {
                 return true;
             }
         }
-        // final mode sequencing
-        if (finalActive) {
-            if (finalWindup > 0) {
-                finalWindup--;
-                if (finalWindup == 0 && !finalCells.isEmpty()) {
-                    resolveFinalWave();
-                    return true;
-                } else if (finalWindup > 0) {
-                    for (int c : finalCells) sprite.parent.addToBack(new TargetedCell(c, 0xFF00FF));
-                    spend(1f);
-                    return true;
-                }
-            } else {
-                // safety: if windup ended but no cells were queued, reset state so we can re-telegraph
-                finalActive = false;
-            }
-        }
+        
 
         if (phase < 2 && enemy != null) {
             // Phase 0: allow sandstorm
@@ -335,16 +322,33 @@ public class Wamuu extends Mob {
                 if (telegraphWindSense()) return true;
             }
         }
-        // Phase 3: only final mode, continuously
+        // Phase 3: Expanding square telegraph 1x1 -> 3x3 -> ... -> full map, then big damage
         if (phase >= 2) {
-            // short-circuit other actions; run only final mode
-            if (!finalActive && finalWindup == 0) {
-                if (telegraphFinalWave()) return true;
-            } else if (finalActive && finalWindup == 0) {
-                // safety fallback: if active but no windup/cells, re-telegraph
-                if (telegraphFinalWave()) return true;
+            if (!squareExpanding && finalModeCD <= 0) {
+                startSquareExpansion();
+                return true;
             }
-            spend(TICK);
+            if (squareExpanding) {
+
+                if (squareTelegraphDelay > 0) {
+                    squareTelegraphDelay--;
+                    if (squareTelegraphDelay == 0) {
+                        if (squareRadius >= squareMaxRadius) {
+                            resolveSquareBigDamage();
+                            return true;
+                        } else {
+                            expandSquareOnce();
+                            return true;
+                        }
+                    } else {
+                        float speedMultiplier = finalEnraged ? 0.7f : 1f;
+                        spend(TICK * speedMultiplier);
+                        return true;
+                    }
+                }
+            }
+            float speedMultiplier = finalEnraged ? 0.7f : 1f;
+            spend(TICK * speedMultiplier);
             return true;
         }
 
@@ -383,6 +387,95 @@ public class Wamuu extends Mob {
         windSenseCells.clear(); windEchoCells.clear();
         windSenseCD = 6;
         spend(1f);
+    }
+
+    // Phase 3: Expanding square helpers
+    private void startSquareExpansion() {
+        squareExpanding = true;
+        if (Dungeon.level instanceof ArenaBossLevel) {
+            // Arena center as requested: 15 + WIDTH * 15 (WIDTH=31)
+            squareCenter = 15 + 31 * 15;
+        } else {
+            // fallback: current position of player if available
+            squareCenter = (enemy != null) ? enemy.pos : pos;
+        }
+        squareRadius = 0;
+        squareCells.clear();
+        computeSquareMaxRadius();
+        buildSquareCells(squareCenter, squareRadius, squareCells);
+        showSquareTelegraph(true);
+        squareTelegraphDelay = 1; // 1 turn per step
+        float speedMultiplier = finalEnraged ? 0.7f : 1f;
+        spend(TICK * speedMultiplier);
+    }
+
+    private void expandSquareOnce() {
+        squareRadius = Math.min(squareRadius + 1, squareMaxRadius);
+        squareCells.clear();
+        buildSquareCells(squareCenter, squareRadius, squareCells);
+        showSquareTelegraph(false);
+        squareTelegraphDelay = 1;
+        float speedMultiplier = finalEnraged ? 0.7f : 1f;
+        spend(TICK * speedMultiplier);
+    }
+
+    private void resolveSquareBigDamage() {
+        Sample.INSTANCE.play(Assets.Sounds.BLAST);
+        int base = finalEnraged ? Random.NormalIntRange(26, 36) : Random.NormalIntRange(18, 28);
+        for (int c : squareCells) {
+            CellEmitter.center(c).burst(SkyParticle.FACTORY, finalEnraged ? 9 : 6);
+            Char ch = Actor.findChar(c);
+            if (ch != null && ch.alignment != alignment) {
+                ch.damage(base, this);
+                Buff.affect(ch, Bleeding.class).set(0.30f * base);
+                if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
+            }
+        }
+        // Wamuu also takes slight self-damage on the explosion
+        int selfDmg = Math.max(1, base / 6);
+        this.damage(selfDmg, this);
+        // restart immediately
+        squareExpanding = false;
+        // brief minimal cooldown to allow sprite/UI update, effectively spams
+        finalModeCD = 1;
+    }
+
+    private void computeSquareMaxRadius() {
+        int w = Dungeon.level.width();
+        int cx = squareCenter % w;
+        int cy = squareCenter / w;
+        int maxDx = Math.max(cx, w - 1 - cx);
+        int h = Dungeon.level.length() / w;
+        int maxDy = Math.max(cy, h - 1 - cy);
+        squareMaxRadius = Math.max(maxDx, maxDy);
+        // cap to around 12 expansions if suggested value is smaller than map edge distance
+        squareMaxRadius = Math.min(squareMaxRadius, 11);
+    }
+
+    private void buildSquareCells(int center, int radius, ArrayList<Integer> out) {
+        out.clear();
+        int w = Dungeon.level.width();
+        int cx = center % w;
+        int cy = center / w;
+        for (int dy = -radius; dy <= radius; dy++) {
+            for (int dx = -radius; dx <= radius; dx++) {
+                int x = cx + dx;
+                int y = cy + dy;
+                if (x < 0 || y < 0 || x >= w) continue;
+                int c = x + y * w;
+                if (!Dungeon.level.insideMap(c) || Dungeon.level.solid[c]) continue;
+                out.add(c);
+            }
+        }
+    }
+
+    private void showSquareTelegraph(boolean first) {
+        int color = 0xFF00FF;
+        for (int c : squareCells) sprite.parent.addToBack(new TargetedCell(c, color));
+        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+         if (first) {
+            sprite.showStatus(CharSprite.WARNING,"[파이널 모드, 혼설삽!]");
+        }
     }
 
     // Phase 0: 신사폭풍 (원형 부채꼴) 예고
@@ -545,85 +638,22 @@ public class Wamuu extends Mob {
         }
     }
 
-    // Phase 3 Final: approaching band towards the hero (Tengu fire-like)
-    private boolean telegraphFinalWave() {
-        if (enemy == null) return false;
-        finalCells.clear();
+    // (Removed unused buildFilled helper; not needed for 5x5 pattern)
 
-        Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.WONT_STOP);
-        if (aim.path.size() < 2) return false;
+    // (Removed expanding AoE helpers; replaced by continuous 5x5 pattern)
 
-        // reset or continue progression
-        if (finalStepIndex <= 0 || finalStepIndex >= aim.path.size()) {
-            finalStepIndex = 1;
-        }
+    // (Removed old wide path-based final-phase telegraph)
+    
+    // (Removed legacy pending-damage resolver)
 
-        // get current position along path
-        int centerCell = aim.path.get(Math.min(finalStepIndex, aim.path.size()-1));
-        
-        // add band cells (7-wide: center + 3 on each side perpendicular to path)
-        addWideBandCells(centerCell, aim, finalCells);
 
-        for (int c : finalCells) sprite.parent.addToBack(new TargetedCell(c, 0xFF00FF));
-        finalWindup = 1;
-        finalActive = true;
-        spend(1f);
-        return true;
+    @Override
+    public void die(Object cause) {
+        // On defeating Wamuu within time, safely remove the timed death buff from the hero
+        Buff.detach(Dungeon.hero, Wedding2.class);
+        super.die(cause);
     }
-
-    private void resolveFinalWave() {
-        Sample.INSTANCE.play(Assets.Sounds.BLAST);
-        // self drain while sustaining final mode
-        int selfDmg = Random.NormalIntRange(2, 4);
-        this.damage(selfDmg, this);
-        for (int c : finalCells) {
-            CellEmitter.center(c).burst(SkyParticle.FACTORY, 6);
-            Char ch = Actor.findChar(c);
-            if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(22, 34) + 6;
-                ch.damage(dmg, this);
-                if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
-            }
-        }
-        finalCells.clear();
-        
-        // advance the band 3 steps closer to hero (faster approach)
-        finalStepIndex += 3;
-        finalStage++;
-        finalActive = false;
-        
-        // immediately telegraph next wave
-        telegraphFinalWave();
-    }
-
-    private void addWideBandCells(int center, Ballistica aim, ArrayList<Integer> out){
-        if (!Dungeon.level.insideMap(center)) return;
-        
-        // add center cell
-        if (!Dungeon.level.solid[center]) out.add(center);
-        
-        // determine direction from previous to current cell to get perpendicular
-        int prevIdx = Math.max(0, finalStepIndex - 1);
-        int prev = aim.path.get(prevIdx);
-        int dx = (center % Dungeon.level.width()) - (prev % Dungeon.level.width());
-        int dy = (center / Dungeon.level.width()) - (prev / Dungeon.level.width());
-        
-        // perpendicular offsets (rotate 90 degrees)
-        int perpX = -dy;
-        int perpY = dx;
-        
-        // add cells perpendicular to path (3 on each side for 7-wide band)
-        for (int i = -3; i <= 3; i++) {
-            if (i == 0) continue; // center already added
-            int offsetX = i * perpX;
-            int offsetY = i * perpY;
-            int cell = center + offsetX + offsetY * Dungeon.level.width();
-            if (Dungeon.level.insideMap(cell) && !Dungeon.level.solid[cell]) {
-                out.add(cell);
-            }
-        }
-    }
-
+    
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
@@ -634,18 +664,21 @@ public class Wamuu extends Mob {
         bundle.put(FINAL_CD, finalModeCD);
         bundle.put(SAND_WIND, sandWindup);
         bundle.put(WIRE_WIND, wireWindup);
-        bundle.put(FINAL_ACTIVE, finalActive);
-        bundle.put(FINAL_STAGE, finalStage);
-        bundle.put(FINAL_WINDUP, finalWindup);
-        int[] fc = new int[finalCells.size()];
-        for (int i = 0; i < finalCells.size(); i++) fc[i] = finalCells.get(i);
-        bundle.put(FINAL_CELLS, fc);
-        bundle.put(FINAL_ANGLE, (float) finalAngle);
-        bundle.put(FINAL_DIR, finalSpinDir);
+        bundle.put(FINAL_ENRAGED, finalEnraged);
         bundle.put(SENSE_CD, windSenseCD);
         bundle.put(SENSE_WIND, windSenseWindup);
         bundle.put(SENSE_LAST, lastSensePos);
         bundle.put(SENSE_MODE, windSenseMode);
+
+        // Expanding square state
+        bundle.put(SQ_ACTIVE, squareExpanding);
+        bundle.put(SQ_CENTER, squareCenter);
+        bundle.put(SQ_RADIUS, squareRadius);
+        bundle.put(SQ_MAX, squareMaxRadius);
+        bundle.put(SQ_DELAY, squareTelegraphDelay);
+        int[] sc = new int[squareCells.size()];
+        for (int i = 0; i < squareCells.size(); i++) sc[i] = squareCells.get(i);
+        bundle.put(SQ_CELLS, sc);
     }
 
     @Override
@@ -658,17 +691,20 @@ public class Wamuu extends Mob {
         finalModeCD = bundle.getInt(FINAL_CD);
         sandWindup = bundle.getInt(SAND_WIND);
         wireWindup = bundle.getInt(WIRE_WIND);
-        finalActive = bundle.getBoolean(FINAL_ACTIVE);
-        finalStage = bundle.getInt(FINAL_STAGE);
-        finalWindup = bundle.getInt(FINAL_WINDUP);
-        finalCells.clear();
-        for (int c : bundle.getIntArray(FINAL_CELLS)) finalCells.add(c);
-        finalAngle = bundle.getFloat(FINAL_ANGLE);
-        finalSpinDir = bundle.getInt(FINAL_DIR);
+        finalEnraged = bundle.getBoolean(FINAL_ENRAGED);
         windSenseCD = bundle.getInt(SENSE_CD);
         windSenseWindup = bundle.getInt(SENSE_WIND);
         lastSensePos = bundle.getInt(SENSE_LAST);
         windSenseMode = bundle.getInt(SENSE_MODE);
+
+        // Expanding square state
+        squareExpanding = bundle.getBoolean(SQ_ACTIVE);
+        squareCenter = bundle.getInt(SQ_CENTER);
+        squareRadius = bundle.getInt(SQ_RADIUS);
+        squareMaxRadius = bundle.getInt(SQ_MAX);
+        squareTelegraphDelay = bundle.getInt(SQ_DELAY);
+        squareCells.clear();
+        for (int c : bundle.getIntArray(SQ_CELLS)) squareCells.add(c);
 
         // restore sprite based on phase
         if (phase == 0) spriteClass = WammuChariotSprite.class;
