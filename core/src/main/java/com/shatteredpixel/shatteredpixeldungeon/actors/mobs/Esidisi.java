@@ -37,7 +37,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EsidisiParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -498,12 +500,14 @@ public class Esidisi extends Mob {
         );
 
         super.die( cause );
-
-        Dungeon.level.drop(new Smask3(), pos).sprite.drop(pos);
         
         Music.INSTANCE.end();
 
         GameScene.bossSlain();
+
+        Dungeon.level.drop(new KingsCrown(), pos).sprite.drop(pos);
+
+        Dungeon.level.unseal();
     }
 
 }

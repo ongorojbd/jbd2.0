@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSoldier3Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
@@ -41,11 +42,12 @@ public class VampireSoldier3 extends Mob {
 	{
 		spriteClass = VampireSoldier3Sprite.class;
 
-		HP = HT = 170;
-		defenseSkill = 15;
 
-		EXP = 13;
-		maxLvl = 23;
+		HP = HT = 180;
+		defenseSkill = 26;
+
+		EXP = 16;
+		maxLvl = 27;
 
 		properties.add(Property.UNDEAD);
 		properties.add(Property.DEMONIC);
@@ -77,8 +79,8 @@ public class VampireSoldier3 extends Mob {
 			// 경고와 동시에 반격 자세 진입
 			if (counterCooldown == 1) {
 				sprite.showStatus(CharSprite.WARNING, Messages.get(this, "ready"));
+				GLog.w(Messages.get(this, "ready2"));
 				SpellSprite.show(Dungeon.hero, SpellSprite.VISION, 1, 0f, 0f);
-				Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1, Random.Float(0.96f, 1.05f));
 				Dungeon.hero.interrupt();
 				Buff.affect(this, CounterStance.class, 1f);
 				counterWindup = false;
@@ -103,7 +105,7 @@ public class VampireSoldier3 extends Mob {
 
 			// counterattack the attacker
 			if (enemy == hero) {
-				enemy.damage(Random.NormalIntRange(15, 20), this);
+				enemy.damage(Random.NormalIntRange(35, 45), this);
 			} else {
 				enemy.damage(Random.NormalIntRange(12, 15), this);
 			}
@@ -137,17 +139,17 @@ public class VampireSoldier3 extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 25, 36 );
+		return Random.NormalIntRange( 35, 45 );
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 28;
+		return 36;
 	}
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 12);
+		return super.drRoll() + Random.NormalIntRange(0, 20);
 	}
 
 	@Override

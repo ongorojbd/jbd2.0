@@ -35,7 +35,7 @@ public enum Holiday {
 	PRIDE,                  //Jun 24th to Jun 30th                                  (7 days)
 	//Nothing in Jul
 	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th                                    (7 days)
-	//Nothing in Sept
+	CHUSEOK,                //Around late Sep to early Oct                          (5-9 days)
 	HALLOWEEN,              //Oct 24th to Oct 31st                                  (7 days)
 	//Nothing in Nov
 	PD_BIRTHDAY,            //Dec 1st to Dec 7th                                    (7 days)
@@ -90,6 +90,13 @@ public enum Holiday {
 		if (cal.get(Calendar.MONTH) == Calendar.AUGUST
 				&& cal.get(Calendar.DAY_OF_MONTH) <= 7){
 			return SHATTEREDPD_BIRTHDAY;
+		}
+
+		//Chuseok: Oct 2nd to Oct 12th
+		if (cal.get(Calendar.MONTH) == Calendar.OCTOBER
+				&& cal.get(Calendar.DAY_OF_MONTH) >= 2
+				&& cal.get(Calendar.DAY_OF_MONTH) <= 12){
+			return CHUSEOK;
 		}
 
 		//Halloween

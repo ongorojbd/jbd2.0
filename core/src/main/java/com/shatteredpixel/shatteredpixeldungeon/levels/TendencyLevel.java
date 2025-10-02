@@ -160,6 +160,16 @@ public class TendencyLevel extends Level {
     }
 
     @Override
+    public String tileName(int tile) {
+        return super.tileName(tile);
+    }
+
+    @Override
+    public String tileDesc(int tile) {
+        return super.tileDesc(tile);
+    }
+
+    @Override
     protected void createMobs() {
     }
 

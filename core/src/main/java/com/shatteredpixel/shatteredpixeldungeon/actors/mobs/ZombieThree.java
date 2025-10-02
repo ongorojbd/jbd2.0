@@ -63,7 +63,7 @@ import com.watabou.utils.Random;
 public class ZombieThree extends Mob {
 
     {
-        spriteClass = ButterflySprite.class;
+        spriteClass = Zombie3Sprite.class;
 
         HP = HT = 12;
         defenseSkill = 4;

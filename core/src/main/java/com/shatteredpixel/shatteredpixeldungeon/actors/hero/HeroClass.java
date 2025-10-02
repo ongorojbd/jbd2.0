@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
@@ -84,22 +85,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachinegun;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KSG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -144,6 +139,7 @@ public enum HeroClass {
         new ScrollOfIdentify().identify();
 
         if (DeviceCompat.isDebug()) {
+            new Pasty().collect();
             new RingOfMight().identify().upgrade(999).collect();
             new RingOfEnergy().identify().upgrade(999).collect();
             new RingOfAccuracy().identify().upgrade(999).collect();

@@ -51,6 +51,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_2_3_Changes(changeInfos);
         add_v3_2_2_Changes(changeInfos);
         add_v3_2_1_Changes(changeInfos);
         add_v3_2_Changes(changeInfos);
@@ -72,6 +73,31 @@ public class v3_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO7), "???",
                 "스틸 볼 런 애니화 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
 
+    }
+    public static void add_v3_2_3_Changes(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("v3.0c3", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.VAMPIRESOLDIERNEW, 0, 0, 12, 15), "전투조류 추가 업데이트",
+                "전투조류 던전의 추가 컨텐츠가 있습니다!\n" +
+                        "\n" +
+                        "- 신규 적, 보스가 추가되었습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), "인터페이스 변경",
+                        "- 메인 메뉴에 인터페이스를 숨기는 버튼이 추가되었습니다.\n" +
+                        "- 체력바가 이제 HP 위가 아닌 HP에 추가로 보호막을 표시합니다.\n" +
+                        "- 경험치바가 이동되어 훨씬 더 잘 보이게 되었습니다.\n" +
+                        "- 버프 목록이 이제 두 줄을 지원합니다."));
     }
 
     public static void add_v3_2_2_Changes(ArrayList<ChangeInfo> changeInfos) {

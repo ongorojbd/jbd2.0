@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Esidisi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wamuu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WamuuFirst;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
@@ -259,7 +260,7 @@ public class ArenaBossLevel extends Level {
         Dungeon.observe();
 
         if (Dungeon.depth == 9) {
-            Wamuu boss = new Wamuu();
+            Tboss boss = new Tboss();
             boss.pos = 15 + WIDTH * 10;
             boss.state = boss.WANDERING;
             GameScene.add(boss);
@@ -315,7 +316,7 @@ public class ArenaBossLevel extends Level {
                 boss.sprite.alpha(0);
                 boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
             }
-        } else if (Dungeon.depth == 46) {
+        } else if (Dungeon.depth == 45) {
             Wamuu boss = new Wamuu();
             boss.pos = 15 + WIDTH * 10;
             boss.state = boss.WANDERING;

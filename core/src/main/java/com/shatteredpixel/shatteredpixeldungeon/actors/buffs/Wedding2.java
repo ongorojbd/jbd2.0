@@ -29,14 +29,14 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class Wedding2 extends Buff implements Hero.Doom {
+public class Wedding2 extends FlavourBuff implements Hero.Doom {
+
+    public static final float DURATION = 1200f;
 
     {
         type = buffType.NEGATIVE;
         announced = true;
     }
-
-    public static final float DURATION = 1500f;
 
     private float left;
 
@@ -102,12 +102,18 @@ public class Wedding2 extends Buff implements Hero.Doom {
 
     @Override
     public float iconFadePercent() {
-        return Math.max(0, (DURATION - left) / DURATION);
+        return Math.max(0, (DURATION - visualcooldown()) / DURATION);
     }
 
     @Override
-    public String toString() {
-        return Messages.get(this, "name");
+    public String desc() {
+        return Messages.get(this, "desc", dispTurns());
+    }
+
+    // Ensure description/dispTurns() and fade use our custom remaining time
+    @Override
+    public float cooldown() {
+        return left;
     }
 
     @Override

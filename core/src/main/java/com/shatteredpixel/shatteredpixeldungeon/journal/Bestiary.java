@@ -193,7 +193,8 @@ public enum Bestiary {
         CASTLE.addEntities(Zombie.class, Zombiedog.class, Zombied.class, Zombiez.class, Zombiep.Zombiep1.class, Zombiep.Zombiep2.class, Zombiep.Zombiep3.class, Zombiep.Zombiep4.class, Zombiet.class, Zombiebr.class, Diobrando.class);
 
         TENDENCY.addEntities(ZombieTwo.class, ZombieThree.class, ZombieBrute.class, ZombieBrute2.class, Tboss.class, ZombieSoldier.class, Niku.class, Abomination.class, VampireTest.class, Santana.class,
-                Vampire.class, ZombieBrute3.class, Vampire2.class, ZombieTank.class, WamuuFirst.class, VampireSoldier.class, VampireSoldier2.class, Abomination2.class, VampireSoldier3.class, Esidisi.class, TendencyShopkeeper.class, GSoldier.class, SpwSoldier.class, Sturo.class, TendencyTank.class, CaesarZeppeli.class);
+                Vampire.class, ZombieBrute3.class, Vampire2.class, ZombieTank.class, WamuuFirst.class, VampireSoldier.class, VampireSoldier2.class, Abomination2.class, VampireSoldier3.class, Esidisi.class, TendencyShopkeeper.class, GSoldier.class, SpwSoldier.class, Sturo.class, TendencyTank.class, CaesarZeppeli.class,
+                Wired.class, VampireHorse.class, VampireSoldierNew.class, VampireChariot.class, Wamuu.class);
 
         QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class, Manhatan2.class,
                 Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,

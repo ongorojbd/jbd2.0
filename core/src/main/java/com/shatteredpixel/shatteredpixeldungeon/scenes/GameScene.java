@@ -816,10 +816,23 @@ public class GameScene extends PixelScene {
                             }
                     );
 
-                } else if (Dungeon.tendencylevel && Dungeon.depth == 3) {
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 37) {
 
                     Buff.detach(Dungeon.hero, Wedding.class);
                     Buff.affect(Dungeon.hero, Wedding2.class);
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new WillcSprite(), new WillcSprite()},
+                            new String[]{"시저 체펠리", "시저 체펠리"},
+                            new String[]{
+                                    Messages.get(CaesarZeppeli.class, "t9"),
+                                    Messages.get(CaesarZeppeli.class, "t10")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
 
                 } else if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 

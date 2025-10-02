@@ -8,13 +8,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SkyParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask3;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -42,27 +42,28 @@ public class Wamuu extends Mob {
     {
         // Phase 1: Wamuu riding a chariot
         spriteClass = WammuChariotSprite.class;
-        HP = HT = 900;
+        HP = HT = 1600;
+        defenseSkill = 30;
         EXP = 40;
-        defenseSkill = 20;
 
         properties.add(Property.BOSS);
+        properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(18, 30);
+        return Random.NormalIntRange( 35, 50 );
     }
 
     @Override
-    public int attackSkill(Char target) {
-        return 28;
+    public int attackSkill( Char target ) {
+        return 36;
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 10);
+        return super.drRoll() + Random.NormalIntRange(0, 20);
     }
 
     private int phase = 0;            // 0: Chariot, 1: Wind-Sense, 2: Final Mode
@@ -154,7 +155,13 @@ public class Wamuu extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
-        if (dmg >= 250) dmg = 250;
+		// In final phase, Wamuu only takes one-third damage
+		if (phase >= 2) {
+			int reduced = Math.round(dmg / 3f);
+			// ensure at least 1 damage when non-zero
+			dmg = Math.max(1, reduced);
+		}
+		if (dmg >= 250) dmg = 250;
         BossHealthBar.assignBoss(this);
         super.damage(dmg, src);
 
@@ -204,7 +211,7 @@ public class Wamuu extends Mob {
             GameScene.addSprite(this);
 
             WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new WammuChariot2Sprite(), new WammuChariot2Sprite(), new WammuChariot2Sprite(), new KarsSprite(), new WammuChariot2Sprite()},
+                    new CharSprite[]{new WammuChariot2Sprite(), new WammuChariot2Sprite(), new WammuChariot2Sprite(), new KarsSprite(), new WammuThirdSprite()},
                     new String[]{"와무우", "와무우", "와무우", "카즈", "와무우"},
                     new String[]{
                             Messages.get(Wamuu.class, "t6"),
@@ -384,9 +391,8 @@ public class Wamuu extends Mob {
             CellEmitter.center(c).burst(SkyParticle.FACTORY, 2);
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(10, 18);
+                int dmg = Random.NormalIntRange(35, 50);
                 ch.damage(dmg, this);
-                if (ch == Dungeon.hero) Buff.prolong(Dungeon.hero, Blindness.class, 3f);
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
             }
         }
@@ -432,14 +438,18 @@ public class Wamuu extends Mob {
             CellEmitter.center(c).burst(SkyParticle.FACTORY, finalEnraged ? 9 : 6);
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
-                ch.damage(base, this);
-                Buff.affect(ch, Bleeding.class).set(0.30f * base);
+                int dmg;
+                if (ch == Dungeon.hero) {
+                    dmg = Math.round(Dungeon.hero.HT * 0.9f);
+                } else {
+                    dmg = base;
+                }
+                ch.damage(dmg, this);
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
             }
         }
-        // Wamuu also takes slight self-damage on the explosion
-        int selfDmg = Math.max(1, base / 6);
-        this.damage(selfDmg, this);
+        // Wamuu also takes fixed self-damage on the explosion
+        this.damage(10, this);
         // restart immediately
         squareExpanding = false;
         // brief minimal cooldown to allow sprite/UI update, effectively spams
@@ -530,7 +540,7 @@ public class Wamuu extends Mob {
     private void resolveChariot() {
         for (int c : chariotPath) {
             if (Dungeon.hero.pos == c) {
-                int dmg = Random.NormalIntRange(18, 28);
+                int dmg = Random.NormalIntRange(35, 50);
                 Dungeon.hero.damage(dmg, this);
                 if (!Dungeon.hero.isAlive()) Dungeon.fail(getClass());
                 break;
@@ -558,9 +568,14 @@ public class Wamuu extends Mob {
             CellEmitter.center(c).burst(SkyParticle.FACTORY, 6);
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(16, 22);
-                ch.damage(dmg, this);
-                Buff.affect(ch, Bleeding.class).set(0.35f * dmg);
+                if (ch == Dungeon.hero) {
+                    ch.damage(Dungeon.hero.HT/2, this);
+                    Buff.affect(ch, Bleeding.class).set(0.35f * Dungeon.hero.HT/4);
+                } else {
+                    int dmg = Random.NormalIntRange(16, 22);
+                    ch.damage(dmg, this);
+                    Buff.affect(ch, Bleeding.class).set(0.35f * dmg);
+                }
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
             }
         }
@@ -603,8 +618,7 @@ public class Wamuu extends Mob {
             CellEmitter.center(c).burst(SkyParticle.FACTORY, 2);
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
-                int bonus = (wireStage == 2 ? 2 : 0);
-                int dmg = Random.NormalIntRange(12, 16) + bonus;
+                int dmg = Random.NormalIntRange(35, 50);
                 ch.damage(dmg, this);
                 Buff.affect(ch, Bleeding.class).set(0.25f * dmg);
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
@@ -652,12 +666,36 @@ public class Wamuu extends Mob {
     
     // (Removed legacy pending-damage resolver)
 
+    // removed ensureBase (no longer used after flat damage changes)
+
 
     @Override
     public void die(Object cause) {
         // On defeating Wamuu within time, safely remove the timed death buff from the hero
         Buff.detach(Dungeon.hero, Wedding2.class);
-        super.die(cause);
+
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new WammuThirdSprite(), new WammuThirdSprite(), new WammuThirdSprite()},
+                new String[]{"와무우", "와무우", "와무우"},
+                new String[]{
+                        Messages.get(Wamuu.class, "t11"),
+                        Messages.get(Wamuu.class, "t12"),
+                        Messages.get(Wamuu.class, "t13")
+                },
+                new byte[]{
+                        WndDialogueWithPic.IDLE,
+                        WndDialogueWithPic.IDLE,
+                        WndDialogueWithPic.IDLE
+                }
+        );
+
+        Dungeon.level.drop(new Smask3(), pos).sprite.drop(pos);
+
+        super.die( cause );
+
+        Music.INSTANCE.end();
+
+        GameScene.bossSlain();
     }
     
     @Override

@@ -50,11 +50,11 @@ public class VampireChariot extends Mob {
 	{
 		spriteClass = ChariotSprite.class;
 
-		HP = HT = 120;
-		defenseSkill = 15;
+		HP = HT = 200;
+		defenseSkill = 30;
 
-		EXP = 12;
-		maxLvl = 22;
+		EXP = 20;
+		maxLvl = 27;
 
 		properties.add(Property.UNDEAD);
 		properties.add(Property.DEMONIC);
@@ -78,7 +78,7 @@ public class VampireChariot extends Mob {
 			// damage hero if they are anywhere on the path
 			for (int c : chargePath) {
 				if (Dungeon.hero.pos == c) {
-					int dmg = Random.NormalIntRange(16, 22);
+					int dmg = Random.NormalIntRange(35, 50);
 					Dungeon.hero.damage(dmg, this);
 					if (!Dungeon.hero.isAlive()) {
 						Dungeon.fail(getClass());
@@ -127,19 +127,20 @@ public class VampireChariot extends Mob {
 		return super.act();
 	}
 
+
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 25, 30 );
+		return Random.NormalIntRange( 35, 50 );
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 28;
+		return 36;
 	}
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 12);
+		return super.drRoll() + Random.NormalIntRange(0, 20);
 	}
 
 	@Override

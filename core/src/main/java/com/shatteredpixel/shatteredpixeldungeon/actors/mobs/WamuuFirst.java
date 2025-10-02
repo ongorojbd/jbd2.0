@@ -168,12 +168,7 @@ public class WamuuFirst extends Mob {
 
             Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
 
-            // swap sprite to Esidisi for phase 2 visuals
-            if (sprite != null) {
-                sprite.killAndErase();
-            }
-            spriteClass = EsidisiSprite.class;
-            GameScene.addSprite(this);
+            // keep WamuuSprite in phase 2 as well (no sprite swap)
 
             // enable sandstorm in next phase segment
             sandstormCD = 3;
@@ -463,10 +458,7 @@ public class WamuuFirst extends Mob {
         sandWindup = bundle.getInt(SAND_WIND);
         wireWindup = bundle.getInt(WIRE_WIND);
 
-        // ensure correct sprite after load if already in phase 2
-        if (phase >= 1) {
-            spriteClass = EsidisiSprite.class;
-        }
+        // keep WamuuSprite after load regardless of phase
     }
 }
 

@@ -21,41 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-import static com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie.spwPrize;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CursedBlow;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
-import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireHorseSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.Zombie2Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class VampireHorse extends Mob {
@@ -63,10 +40,12 @@ public class VampireHorse extends Mob {
     {
         spriteClass = VampireHorseSprite.class;
 
-        HP = HT = 8;
-        defenseSkill = 2;
+        HP = HT = 170;
+        defenseSkill = 24;
+        baseSpeed = 2.0f;
 
-        maxLvl = 5;
+        EXP = 14;
+        maxLvl = 27;
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);
 
@@ -74,17 +53,43 @@ public class VampireHorse extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 1, 4 );
+        return Random.NormalIntRange( 30, 40 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 8;
+        return 36;
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 1);
+        return super.drRoll() + Random.NormalIntRange(0, 16);
+    }
+
+    @Override
+    public int attackProc(Char enemy, int damage) {
+        int dealt = super.attackProc(enemy, damage);
+
+        if (Random.Int(3) == 0) {
+            Invisibility.dispel(this);
+            Sample.INSTANCE.play(Assets.Sounds.HORSE);
+            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "horse"));
+            Ballistica trajectory = new Ballistica(this.pos, enemy.pos, Ballistica.STOP_TARGET);
+            //trim it to just be the part that goes past them
+            trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+            //knock them back along that ballistica
+            WandOfBlastWave.throwChar(enemy, trajectory, 6, false, true, getClass());
+            return damage;
+        }
+        
+        // Vampire horse healing - heals from dealing damage
+        int heal = Math.max(1, Math.round(dealt * 0.2f));
+        if (heal > 0 && HP < HT) {
+            HP = Math.min(HT, HP + heal);
+            if (sprite != null) sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
+        }
+        
+        return dealt;
     }
 
     @Override
@@ -97,7 +102,6 @@ public class VampireHorse extends Mob {
         }
 
         if (Dungeon.level.heroFOV[pos]) {
-            Sample.INSTANCE.play( Assets.Sounds.BONES,  Random.Float(1.2f, 0.9f) );
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
         }
 

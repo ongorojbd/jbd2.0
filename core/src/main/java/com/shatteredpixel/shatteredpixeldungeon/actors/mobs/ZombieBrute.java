@@ -21,7 +21,7 @@ import com.watabou.utils.Random;
 
 public class ZombieBrute extends Mob {
     {
-        spriteClass = TentacleSprite.class;
+        spriteClass = ZombieBruteSprite.class;
 
         HP = HT = 16;
         defenseSkill = 5;

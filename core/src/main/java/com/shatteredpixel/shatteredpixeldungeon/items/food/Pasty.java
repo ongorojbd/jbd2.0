@@ -21,23 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
+// unused imports removed
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReachIncrease;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ToxicImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -72,6 +66,9 @@ public class Pasty extends Food {
 			case LUNAR_NEW_YEAR:
 				image = ItemSpriteSheet.STEAMED_FISH;
 				break;
+			case CHUSEOK:
+				image = ItemSpriteSheet.SHATTERED_CAKE; // temporary: reuse egg sprite as songpyeon placeholder
+				break;
 			case APRIL_FOOLS:
 				image = ItemSpriteSheet.CHOC_AMULET;
 				break;
@@ -105,6 +102,13 @@ public class Pasty extends Food {
 				if (!left.collect()){
 					Dungeon.level.drop(left, hero.pos).sprite.drop();
 				}
+				break;
+			case CHUSEOK:
+				// 송편: 포만감은 기본과 동일. 추가 효과: 축복 5턴 + 아티팩트 충전 1턴, 작은 치유
+				Buff.affect( hero, Bless.class, 5f );
+				int heal = Math.max(2, hero.HT/25);
+				hero.HP = Math.min(hero.HT, hero.HP + heal);
+				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING );
 				break;
 			case APRIL_FOOLS:
 				Sample.INSTANCE.play(Assets.Sounds.MIMIC);
@@ -161,6 +165,8 @@ public class Pasty extends Food {
 				return super.name();
 			case LUNAR_NEW_YEAR:
 				return Messages.get(this, "fish_name");
+			case CHUSEOK:
+				return Messages.get(this, "songpyeon_name");
 			case APRIL_FOOLS:
 				return Messages.get(this, "amulet_name");
 			case EASTER:
@@ -179,6 +185,8 @@ public class Pasty extends Food {
 				return super.desc();
 			case LUNAR_NEW_YEAR:
 				return Messages.get(this, "fish_desc");
+			case CHUSEOK:
+				return Messages.get(this, "songpyeon_desc");
 			case APRIL_FOOLS:
 				return Messages.get(this, "amulet_desc");
 			case EASTER:
