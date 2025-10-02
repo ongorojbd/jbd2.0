@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WammuChariot2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WammuChariotSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WammuThirdSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Wedding2;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
@@ -196,6 +197,11 @@ public class Wamuu extends Mob {
         if (phase == 1 && HP < HT / 3) {
             phase = 2;
             Music.INSTANCE.play(Assets.Music.TENDENCY2, true);
+
+            // switch to final phase sprite
+            if (sprite != null) sprite.killAndErase();
+            spriteClass = WammuThirdSprite.class;
+            GameScene.addSprite(this);
 
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new WammuChariot2Sprite(), new WammuChariot2Sprite(), new WammuChariot2Sprite(), new KarsSprite(), new WammuChariot2Sprite()},
@@ -708,6 +714,7 @@ public class Wamuu extends Mob {
 
         // restore sprite based on phase
         if (phase == 0) spriteClass = WammuChariotSprite.class;
-        else spriteClass = WammuChariot2Sprite.class;
+        else if (phase == 1) spriteClass = WammuChariot2Sprite.class;
+        else spriteClass = WammuThirdSprite.class;
     }
 }

@@ -33,7 +33,7 @@ public class WammuThirdSprite extends MobSprite {
     public WammuThirdSprite() {
         super();
 
-        texture( Assets.Sprites.ZOMBIE2 );
+        texture( Assets.Sprites.WAMMUCHARIOT3 );
 
         TextureFilm frames = new TextureFilm( texture, 12, 15 );
 

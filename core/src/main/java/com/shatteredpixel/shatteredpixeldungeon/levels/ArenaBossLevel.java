@@ -315,6 +315,18 @@ public class ArenaBossLevel extends Level {
                 boss.sprite.alpha(0);
                 boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
             }
+        } else if (Dungeon.depth == 46) {
+            Wamuu boss = new Wamuu();
+            boss.pos = 15 + WIDTH * 10;
+            boss.state = boss.WANDERING;
+            GameScene.add(boss);
+            boss.beckon(Dungeon.hero.pos);
+
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha(0);
+                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+            }
         }
 
         GameScene.updateMap(bottomDoor);
