@@ -36,7 +36,6 @@ import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.RectF;
 
 import org.robovm.apple.audiotoolbox.AudioServices;
-import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.systemconfiguration.SCNetworkReachability;
 import org.robovm.apple.systemconfiguration.SCNetworkReachabilityFlags;
 import org.robovm.apple.uikit.UIApplication;
@@ -59,29 +58,57 @@ public class IOSPlatformSupport extends PlatformSupport {
 	}
 
 	@Override
+	public RectF getDisplayCutout() {
+		int topInset = Gdx.graphics.getSafeInsetTop();
+
+		//older device with no cutout, or landscape (we ignore cutouts in this case)
+		if (topInset == 0){
+			return new RectF();
+		}
+
+		//magic number BS for larger status bar caused by dynamic island
+		boolean hasDynamicIsland = topInset / Gdx.graphics.getBackBufferScale() >= 51;
+
+		if (!hasDynamicIsland){
+			//classic notch, just shrink for the oversized safe are and then return all top.
+			// this is inaccurate, as there's space left and right, but we don't care
+			return new RectF(0, 0, Game.width, topInset / 1.2f);
+		} else {
+			//we estimate dynamic island as being 390x120 px, 40px from top.
+			// this is mostly accurate, slightly oversized
+			RectF cutout = new RectF( Game.width/2 - 195, 40, Game.width/2 + 195, 160);
+
+			//iPhone air specifically has its island a bit lower
+			// so we check for its machine string and also simulator with same width
+			String machineString = HWMachine.getMachineString();
+			if (machineString.equals("iPhone18,4")
+					|| (machineString.equals("arm64") && Game.width == 1260)){
+				cutout.shift(0, 15);
+			}
+			return cutout;
+		}
+	}
+
+	@Override
 	public RectF getSafeInsets(int level) {
 		RectF insets = super.getSafeInsets(INSET_ALL);
+
+		//magic number BS for larger status bar caused by dynamic island
+		boolean hasDynamicIsland = insets.top / Gdx.graphics.getBackBufferScale() >= 51;
 
 		//iOS gives us ALL insets by default, and so we need to filter from there:
 
 		//ignore the home indicator if we're in fullscreen
 		if (!supportsFullScreen() || SPDSettings.fullscreen()){
 			insets.bottom = 0;
-		} else {
-			//otherwise bottom inset is pretty big, halve it
-			insets.bottom /= 2;
 		}
 
 		//only cutouts can be on top/left/right, which are never blocking
 		if (level == INSET_BLK){
 			insets.left = insets.top = insets.right = 0;
-		} else if (level == INSET_LRG){
-			//Dynamic Island counts as a 'small cutout', we have to use status bar height to get it =I
-			CGRect statusBarFrame = UIApplication.getSharedApplication().getStatusBarFrame();
-			double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight());
-			if (statusBarHeight >= 51){ //magic number BS for larger status bar caused by island
-				insets.left = insets.top = insets.right = 0;
-			}
+		} else if (level == INSET_LRG && hasDynamicIsland){
+			//Dynamic Island counts as a 'small cutout'
+			insets.left = insets.top = insets.right = 0;
 		}
 
 		//if we are in landscape, the display cutout is only actually on one side, so cancel the other
@@ -92,6 +119,12 @@ public class IOSPlatformSupport extends PlatformSupport {
 				insets.right = 0;
 			}
 		}
+
+		//finally iOS is very conservative with these insets, we can shrink them a bit.
+		insets.top /= hasDynamicIsland ? 1.2f : 1.4f;
+		insets.left /= hasDynamicIsland ? 1.2f : 1.4f;
+		insets.right /= hasDynamicIsland ? 1.2f : 1.4f;
+		insets.bottom /= 2; //home bar inset is especially big for no reason
 
 		return insets;
 	}

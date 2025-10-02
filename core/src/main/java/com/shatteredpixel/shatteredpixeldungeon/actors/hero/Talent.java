@@ -999,7 +999,7 @@ public enum Talent {
                 // 10/15%
                 if (Random.Int(20) < 1 + hero.pointsInTalent(RECALL_INSCRIPTION)) {
                     Reflection.newInstance(cls).collect();
-                    GLog.p("refunded!");
+                    GLog.p(Messages.get(Talent.class, RECALL_INSCRIPTION.name() + "을(를) 복제했다!"));
                 }
             }
         }
@@ -1018,7 +1018,7 @@ public enum Talent {
                 // 10/15%
                 if (Random.Int(20) < 1 + hero.pointsInTalent(RECALL_INSCRIPTION)) {
                     Reflection.newInstance(cls).collect();
-                    GLog.p("refunded!");
+                    GLog.p(Messages.get(Talent.class, RECALL_INSCRIPTION.name() + "을(를) 복제했다!"));
                 }
             }
         }

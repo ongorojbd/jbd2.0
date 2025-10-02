@@ -185,6 +185,7 @@ import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.NoosaScriptNoLighting;
+import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.SkinnedBlock;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
@@ -295,7 +296,8 @@ public class GameScene extends PixelScene {
         }
 
         RectF insets = getCommonInsets();
-
+        //we want to check if large is the same as blocking here
+        float largeInsetTop = Game.platform.getSafeInsets(PlatformSupport.INSET_LRG).scale(1f/defaultZoom).top;
         scene = this;
 
         terrain = new Group();
@@ -426,27 +428,115 @@ public class GameScene extends PixelScene {
 
         int uiSize = SPDSettings.interfaceSize();
 
-        //TODO this is a good start but just emulating black bars is boring. There must be more to do here.
+        //display cutouts can obstruct various UI elements, so we need to adjust for that sometimes
+        float heroPaneExtraWidth = insets.left;
+        float menuBarMaxLeft = uiCamera.width-insets.right-MenuPane.WIDTH;
+        int hpBarMaxWidth = 50; //default max width
+        float[] buffBarRowLimits = new float[9];
+        float[] buffBarRowAdjusts = new float[9];
+
+        if (largeInsetTop == 0 && insets.top > 0){
+            //smaller non-notch cutouts are of varying size and may obstruct various UI elements
+            // some are small hole punches, some are huge dynamic islands
+            RectF cutout = Game.platform.getDisplayCutout().scale(1f / defaultZoom);
+            //if the cutout is positioned to obstruct the hero portrait in the status pane
+            if (cutout.top < 30
+                    && cutout.left < 20
+                    && cutout.right > 12) {
+                heroPaneExtraWidth = Math.max(heroPaneExtraWidth, cutout.right-12);
+                //make sure we have space to actually move it though
+                heroPaneExtraWidth = Math.min(heroPaneExtraWidth, uiCamera.width - PixelScene.MIN_WIDTH_P);
+            }
+            //if the cutout is positioned to obstruct the menu bar
+            else if (cutout.top < 20
+                    && cutout.left < menuBarMaxLeft + MenuPane.WIDTH
+                    && cutout.right > menuBarMaxLeft) {
+                menuBarMaxLeft = Math.min(menuBarMaxLeft, cutout.left - MenuPane.WIDTH);
+                //make sure we have space to actually move it though
+                menuBarMaxLeft = Math.max(menuBarMaxLeft, PixelScene.MIN_WIDTH_P-MenuPane.WIDTH);
+            }
+            //if the cutout is positioned to obstruct the HP bar
+            else if (cutout.left < 78
+                    && cutout.top < 4
+                    && cutout.right > 32) {
+                //subtract starting position, but add a bit back due to end of bar
+                hpBarMaxWidth = Math.round(cutout.left - 32 + 4);
+                hpBarMaxWidth = Math.max(hpBarMaxWidth, 21); //cannot go below 21 (30 effective)
+            }
+            //if the cutout is positioned to obstruct the buff bar
+            if (cutout.left < 84
+                    && cutout.top < 10
+                    && cutout.right > 32
+                    && cutout.bottom > 11) {
+                int i = 1;
+                int rowTop = 11;
+                //in most cases this just obstructs one row, but dynamic island can block more =S
+                while (cutout.bottom > rowTop){
+                    if (i == 1 || cutout.bottom > rowTop+2 ) { //always shorten first row
+                        //subtract starting position, add a bit back to allow slight overlap
+                        buffBarRowLimits[i] = cutout.left - 32 + 3;
+                    } else {
+                        //if row is only slightly cut off, lower it instead of limiting width
+                        buffBarRowAdjusts[i] = cutout.bottom - rowTop + 1;
+                        rowTop += buffBarRowAdjusts[i];
+                    }
+                    i++;
+                    rowTop += 8;
+                }
+            }
+        }
+
+        float screentop = largeInsetTop;
+        if (screentop == 0 && uiSize == 0){
+            screentop--; //on mobile UI, if we render in fullscreen, clip the top 1px;
+        }
 
         menu = new MenuPane();
         menu.camera = uiCamera;
-        menu.setPos( uiCamera.width-MenuPane.WIDTH-insets.right, insets.top + (uiSize > 0 ? 0 : 1));
+        menu.setPos( menuBarMaxLeft, screentop);
         add(menu);
+
+        float extraRight = uiCamera.width - (menuBarMaxLeft + MenuPane.WIDTH);
+        if (extraRight > 0){
+            SkinnedBlock bar = new SkinnedBlock(extraRight, 20, TextureCache.createSolid(0x88000000));
+            bar.x = uiCamera.width - extraRight;
+            bar.camera = uiCamera;
+            add(bar);
+
+            PointerArea blocker = new PointerArea(uiCamera.width - extraRight, 0, extraRight, 20);
+            blocker.camera = uiCamera;
+            add(blocker);
+        }
 
         status = new StatusPane(SPDSettings.interfaceSize() > 0);
         status.camera = uiCamera;
-        status.setRect(insets.left, uiSize > 0 ? uiCamera.height-39-insets.bottom : insets.top, uiCamera.width - insets.left - insets.right, 0 );
+        StatusPane.heroPaneExtraWidth = heroPaneExtraWidth;
+        StatusPane.hpBarMaxWidth = hpBarMaxWidth;
+        StatusPane.buffBarRowMaxWidths = buffBarRowLimits;
+        StatusPane.buffBarRowAdjusts = buffBarRowAdjusts;
+        status.setRect(insets.left, uiSize > 0 ? uiCamera.height-39-insets.bottom : screentop, uiCamera.width - insets.left - insets.right, 0 );
         add(status);
 
-        if (uiSize < 2 && insets.top > 0) {
-            SkinnedBlock bar = new SkinnedBlock(uiCamera.width, insets.top, TextureCache.createSolid(0xFF1C1E18));
+        if (uiSize < 2 && largeInsetTop != 0) {
+            SkinnedBlock bar = new SkinnedBlock(uiCamera.width, largeInsetTop, TextureCache.createSolid(0x88000000));
             bar.camera = uiCamera;
             add(bar);
+
+            PointerArea blocker = new PointerArea(0, 0, uiCamera.width, largeInsetTop);
+            blocker.camera = uiCamera;
+            add(blocker);
         }
 
         boss = new BossHealthBar();
         boss.camera = uiCamera;
-        boss.setPos( insets.left + 6 + (uiCamera.width - insets.left - insets.right - boss.width())/2, insets.top + 20);
+        boss.setPos( (uiCamera.width - boss.width())/2, screentop + (landscape() ? 7 : 26));
+        if (buffBarRowLimits[2] != 0){
+            //if we potentially have a 3rd buff bar row, lower by 7px
+            boss.setPos(boss.left(), boss.top() + 7);
+        } else if (buffBarRowAdjusts[2] != 0){
+            //
+            boss.setPos(boss.left(), boss.top() + buffBarRowAdjusts[2]);
+        }
         add(boss);
 
         resume = new ResumeIndicator();
@@ -506,7 +596,17 @@ public class GameScene extends PixelScene {
                 new Flare(5, 16).color(0xFFFF00, true).show(hero, 4f);
                 break;
             case RETURN:
-                ScrollOfTeleportation.appearVFX(Dungeon.hero);
+                if (Dungeon.level.pit[Dungeon.hero.pos] && !Dungeon.hero.flying){
+                    //delay this so falling into the chasm processes properly
+                    ShatteredPixelDungeon.runOnRenderThread(new Callback() {
+                        @Override
+                        public void call() {
+                            ScrollOfTeleportation.appearVFX(Dungeon.hero);
+                        }
+                    });
+                } else {
+                    ScrollOfTeleportation.appearVFX(Dungeon.hero);
+                }
                 if (Dungeon.level instanceof EmporioLevel) {
                     add(new WndStory(Messages.get(this, "emporio") + "\n\n" + Messages.get(this, "emporio2")).setDelays(0.4f, 0.4f));
                 }
@@ -1398,29 +1498,21 @@ public class GameScene extends PixelScene {
         customWalls.add(visual.create());
     }
 
-    private void addHeapSprite(Heap heap) {
+    private synchronized void addHeapSprite( Heap heap ) {
         ItemSprite sprite = heap.sprite = (ItemSprite) heaps.recycle(ItemSprite.class);
         sprite.revive();
         sprite.link(heap);
         heaps.add(sprite);
     }
 
-    private void addDiscardedSprite(Heap heap) {
+    private synchronized void addDiscardedSprite( Heap heap ) {
         heap.sprite = (DiscardedItemSprite) heaps.recycle(DiscardedItemSprite.class);
         heap.sprite.revive();
         heap.sprite.link(heap);
         heaps.add(heap.sprite);
     }
 
-    private void addPlantSprite(Plant plant) {
-
-    }
-
-    private void addTrapSprite(Trap trap) {
-
-    }
-
-    private void addBlobSprite(final Blob gas) {
+    private synchronized void addBlobSprite( final Blob gas ) {
         if (gas.emitter == null) {
             gases.add(new BlobEmitter(gas));
         }
@@ -1495,18 +1587,6 @@ public class GameScene extends PixelScene {
     }
 
     // -------------------------------------------------------
-
-    public static void add(Plant plant) {
-        if (scene != null) {
-            scene.addPlantSprite(plant);
-        }
-    }
-
-    public static void add(Trap trap) {
-        if (scene != null) {
-            scene.addTrapSprite(trap);
-        }
-    }
 
     public static void add(Blob gas) {
         Actor.add(gas);
@@ -1854,10 +1934,12 @@ public class GameScene extends PixelScene {
                 @Override
                 public void call() {
                     //greater than 0 to account for negative values (which have the first bit set to 1)
-                    if (color > 0 && color < 0x01000000) {
-                        scene.fadeIn(0xFF000000 | color, lightmode);
-                    } else {
-                        scene.fadeIn(color, lightmode);
+                    if (scene != null) {
+                        if (color > 0 && color < 0x01000000) {
+                            scene.fadeIn(0xFF000000 | color, lightmode);
+                        } else {
+                            scene.fadeIn(color, lightmode);
+                        }
                     }
                 }
             });

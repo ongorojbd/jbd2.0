@@ -205,7 +205,8 @@ public class WndSettings extends WndTabbed {
             sep1 = new ColorBlock(1, 1, 0xFF000000);
             add(sep1);
 
-            chkFullscreen = new CheckBox(Messages.get(this, "fullscreen")) {
+            String fullscreenText = Messages.get(this, "fullscreen");
+            chkFullscreen = new CheckBox( fullscreenText ) {
                 @Override
                 protected void onClick() {
                     super.onClick();
