@@ -139,7 +139,7 @@ public class Rebel extends Mob {
     private static final int ARENA_BOTTOM = 26;  // 아레나 끝 행
 
     // DistortionTrap 패턴
-    private int distortionCooldown = 15;
+    private int distortionCooldown = 9999;
     private static boolean telling_1 = false;
     private static boolean telling_2 = false;
     private static boolean telling_3 = false;
@@ -378,8 +378,8 @@ public class Rebel extends Mob {
             return true;
         }
 
-        // 중력 역전: 페이즈 2 이상에서 사용
-        if (Phase >= 2 && gravityCooldown <= 0 && enemy != null && Dungeon.level.distance(pos, enemy.pos) > 2) {
+        // 중력 역전: 페이즈 2 이상에서 사용 (장벽 시전 중에는 사용 안함)
+        if (Phase >= 2 && gravityCooldown <= 0 && !barrierActive && enemy != null && Dungeon.level.distance(pos, enemy.pos) > 2) {
             chargeGravityPull();
             gravityCooldown = Random.NormalIntRange(12, 18);
             return true;
@@ -388,10 +388,10 @@ public class Rebel extends Mob {
         // 데미지 장벽 패턴: 페이즈 2 이상에서 사용
         if (barrierCooldown > 0) barrierCooldown--;
 
-        // 장벽이 활성화되어 있으면 진행
+        // 장벽이 활성화되어 있으면 진행 (다른 행동도 가능)
         if (barrierActive) {
             progressBarrier();
-            return true;
+            // return하지 않고 계속 진행하여 자유롭게 행동
         }
 
         // 장벽 시작 조건 (Phase 2 이상)
@@ -521,6 +521,7 @@ public class Rebel extends Mob {
             GameScene.flash(0x8B00FF);
             new Fadeleaf().activate(this);
             new Fadeleaf().activate(hero);
+            distortionCooldown = 6;
             Buff.prolong(this, Haste.class, 1_000_000);
             ACoolDown = 12;
             summonCooldown = 0;
@@ -688,8 +689,9 @@ public class Rebel extends Mob {
             m.die(null);
         }
 
+        // Rebel 사망 시 모든 몬스터 제거
         for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
-            if (mob instanceof WO || mob instanceof Newgenkaku || mob instanceof Newcmoon || mob instanceof Mih || mob instanceof Kousaku || mob instanceof Cmoon || mob instanceof Genkaku || mob instanceof Pucci || mob instanceof Dvdol) {
+            if (mob != this) {
                 mob.die(cause);
             }
         }
@@ -1064,8 +1066,8 @@ public class Rebel extends Mob {
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         Camera.main.shake(3, 0.5f);
 
-        // 첫 줄 예고 표시 (3줄 앞까지 미리 보여줌)
-        for (int i = 0; i < 3 && barrierCurrentRow + i < ARENA_BOTTOM; i++) {
+        // 첫 줄 예고 표시 (4줄 앞까지 미리 보여줌 - 2칸씩 이동하므로)
+        for (int i = 0; i < 4 && barrierCurrentRow + i < ARENA_BOTTOM; i++) {
             showBarrierWarning(barrierCurrentRow + i);
         }
 
@@ -1079,11 +1081,14 @@ public class Rebel extends Mob {
     }
 
     private void progressBarrier() {
-        // 현재 줄에 피해 적용
+        // 현재 2줄에 피해 적용 (y축 2칸 범위)
         applyBarrierDamage(barrierCurrentRow);
+        if (barrierCurrentRow + 1 < ARENA_BOTTOM) {
+            applyBarrierDamage(barrierCurrentRow + 1);
+        }
 
-        // 다음 줄로 이동
-        barrierCurrentRow++;
+        // 2칸씩 이동
+        barrierCurrentRow += 2;
 
         // 장벽이 아레나 끝에 도달하면 종료
         if (barrierCurrentRow >= ARENA_BOTTOM) {
@@ -1095,13 +1100,17 @@ public class Rebel extends Mob {
             return;
         }
 
-        // 다음 줄 예고 표시 (2줄 앞까지)
+        // 다음 예고 표시 (4줄 앞까지, 2칸씩 이동하므로)
         if (barrierCurrentRow + 2 < ARENA_BOTTOM) {
             showBarrierWarning(barrierCurrentRow + 2);
+            showBarrierWarning(barrierCurrentRow + 3);
         }
 
-        // 현재 장벽 위치 이펙트
+        // 현재 장벽 위치 이펙트 (2줄)
         showBarrierEffect(barrierCurrentRow);
+        if (barrierCurrentRow + 1 < ARENA_BOTTOM) {
+            showBarrierEffect(barrierCurrentRow + 1);
+        }
 
         spend(0.5f); // 빠르게 내려옴
     }
@@ -1123,7 +1132,7 @@ public class Rebel extends Mob {
                     sprite.parent.addToBack(new TargetedCell(cell, 0x00FFFF));
                 } else {
                     // 위험 구역 표시
-                    sprite.parent.addToBack(new TargetedCell(cell, 0xFF4444));
+                    sprite.parent.addToBack(new TargetedCell(cell, 0xFF00FF));
                 }
             }
         }
