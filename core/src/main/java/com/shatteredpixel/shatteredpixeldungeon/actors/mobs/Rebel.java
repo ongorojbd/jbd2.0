@@ -1046,13 +1046,18 @@ public class Rebel extends Mob {
 
     public static class BarrierDamage {}
 
+    // 아레나 실제 빈 공간 범위 (LabsBossLevel 맵 기준: x 12~20이 통로)
+    private static final int ARENA_LEFT = 13;   // 빈 공간 시작 (벽 제외)
+    private static final int ARENA_RIGHT = 19;  // 빈 공간 끝 (벽 제외)
+
     private void startBarrier() {
         barrierActive = true;
         barrierCurrentRow = ARENA_TOP;
 
-        // 안전 구역 랜덤 지정 (가로축에서 1칸은 항상 비어있음)
-        // 아레나 내부 (x: 1~31) 중 랜덤으로 선택
-        barrierSafeColumn = Random.Int(1, 32);
+        // 안전 구역 랜덤 지정 (가로축에서 3칸은 항상 비어있음)
+        // 아레나 실제 빈 공간 내에서만 선택 (x: 13~19)
+        // 3칸 안전구역의 중앙이므로 양쪽 1칸씩 여유 필요: 14~18
+        barrierSafeColumn = Random.Int(ARENA_LEFT + 1, ARENA_RIGHT);  // 14~18 사이
 
         GLog.n(Messages.get(this, "barrier_start"));
         yell(Messages.get(this, "barrier_yell"));
@@ -1066,6 +1071,11 @@ public class Rebel extends Mob {
 
         Dungeon.hero.interrupt();
         spend(TICK);
+    }
+
+    // 안전 구역인지 확인 (3칸: barrierSafeColumn-1, barrierSafeColumn, barrierSafeColumn+1)
+    private boolean isSafeColumn(int x) {
+        return x >= barrierSafeColumn - 1 && x <= barrierSafeColumn + 1;
     }
 
     private void progressBarrier() {
@@ -1098,12 +1108,18 @@ public class Rebel extends Mob {
 
     private void showBarrierWarning(int row) {
         int levelWidth = Dungeon.level.width();
+
+        // 안전 구역이 유효하지 않으면 재설정 (아레나 실제 빈 공간 내에서)
+        if (barrierSafeColumn < ARENA_LEFT + 1 || barrierSafeColumn > ARENA_RIGHT - 1) {
+            barrierSafeColumn = Random.Int(ARENA_LEFT + 1, ARENA_RIGHT);  // 14~18 사이
+        }
+
         // 아레나 전체 너비 (x: 1~31)
         for (int x = 1; x < levelWidth - 1; x++) {
             int cell = row * levelWidth + x;
             if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
-                if (x == barrierSafeColumn) {
-                    // 안전 구역 표시
+                if (isSafeColumn(x)) {
+                    // 안전 구역 표시 - 3칸
                     sprite.parent.addToBack(new TargetedCell(cell, 0x00FFFF));
                 } else {
                     // 위험 구역 표시
@@ -1117,7 +1133,7 @@ public class Rebel extends Mob {
         int levelWidth = Dungeon.level.width();
         // 아레나 전체 너비 (x: 1~31), 안전 구역 제외
         for (int x = 1; x < levelWidth - 1; x++) {
-            if (x == barrierSafeColumn) continue;  // 안전 구역은 이펙트 없음
+            if (isSafeColumn(x)) continue;  // 안전 구역(3칸)은 이펙트 없음
 
             int cell = row * levelWidth + x;
             if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
@@ -1132,8 +1148,8 @@ public class Rebel extends Mob {
 
         // 아레나 전체 너비 (x: 1~31), 안전 구역 제외
         for (int x = 1; x < levelWidth - 1; x++) {
-            // 안전 구역은 피해 없음
-            if (x == barrierSafeColumn) continue;
+            // 안전 구역(3칸)은 피해 없음
+            if (isSafeColumn(x)) continue;
 
             int cell = row * levelWidth + x;
             if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {

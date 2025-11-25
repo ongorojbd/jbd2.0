@@ -301,35 +301,37 @@ public class LabsBossLevel extends Level {
 
 	@Override
 	public void seal() {
-		super.seal();
+		if (!locked) {
+			super.seal();
 
-        //moves intelligent allies with the hero, preferring closer pos to entrance door
-		int doorPos = bottomDoor;
-		Mob.holdAllies(this, doorPos);
-		Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+			//moves intelligent allies with the hero, preferring closer pos to entrance door
+			int doorPos = bottomDoor;
+			Mob.holdAllies(this, doorPos);
+			Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
-		Rebel boss = new Rebel();
-		boss.state = boss.WANDERING;
-		boss.pos = pointToCell(arena.center());
-		GameScene.add( boss );
-		boss.beckon(Dungeon.hero.pos);
+			Rebel boss = new Rebel();
+			boss.state = boss.WANDERING;
+			boss.pos = pointToCell(arena.center());
+			GameScene.add( boss );
+			boss.beckon(Dungeon.hero.pos);
 
-		if (heroFOV[boss.pos]) {
-			boss.notice();
-			boss.sprite.alpha( 0 );
-			boss.sprite.parent.add( new AlphaTweener( boss.sprite, 1, 0.1f ) );
-		}
-
-		set(bottomDoor, Terrain.LOCKED_DOOR);
-		GameScene.updateMap(bottomDoor);
-		Dungeon.observe();
-
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
+			if (heroFOV[boss.pos]) {
+				boss.notice();
+				boss.sprite.alpha( 0 );
+				boss.sprite.parent.add( new AlphaTweener( boss.sprite, 1, 0.1f ) );
 			}
-		});
+
+			set(bottomDoor, Terrain.LOCKED_DOOR);
+			GameScene.updateMap(bottomDoor);
+			Dungeon.observe();
+
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
+				}
+			});
+		}
 	}
 
 	@Override
