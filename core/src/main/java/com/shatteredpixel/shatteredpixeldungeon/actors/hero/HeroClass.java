@@ -223,10 +223,6 @@ public enum HeroClass {
             Catalog.setSeen(BrokenSeal.class); //as it's not added to the inventory
         }
 
-        if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-            new Drago().quantity(5).collect();
-        }
-
         if (SPDSettings.getDio() >= 1) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
@@ -247,10 +243,6 @@ public enum HeroClass {
 
         (hero.belongings.weapon = staff).identify();
         hero.belongings.weapon.activate(hero);
-
-        if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-            new Drago().quantity(5).collect();
-        }
 
         if (SPDSettings.getDio() >= 1) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
@@ -277,11 +269,6 @@ public enum HeroClass {
         ThrowingKnife knives = new ThrowingKnife();
         knives.identify().collect();
 
-        if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-            new Drago().quantity(5).collect();
-        }
-
-
         Dungeon.quickslot.setSlot(0, cloak);
         Dungeon.quickslot.setSlot(1, knives);
 
@@ -304,10 +291,6 @@ public enum HeroClass {
         SpiritBow bow = new SpiritBow();
         bow.identify().collect();
 
-        if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-            new Drago().quantity(5).collect();
-        }
-
         if (SPDSettings.getDio() >= 1) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
@@ -327,10 +310,6 @@ public enum HeroClass {
 
         (hero.belongings.weapon = new Rapier()).identify();
         hero.belongings.weapon.activate(hero);
-
-        if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-            new Drago().quantity(5).collect();
-        }
 
         ThrowingSpike spikes = new ThrowingSpike();
         spikes.quantity(2).identify().collect(); //set quantity is 3, but Duelist starts with 2
@@ -356,10 +335,6 @@ public enum HeroClass {
         (hero.belongings.weapon = new Cudgel()).identify();
         hero.belongings.weapon.activate(hero);
 
-        if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-            new Drago().quantity(5).collect();
-        }
-
         HolyTome tome = new HolyTome();
         (hero.belongings.artifact = tome).identify();
         hero.belongings.artifact.activate(hero);
@@ -383,10 +358,6 @@ public enum HeroClass {
 
         (hero.belongings.weapon = new Cudgel()).identify();
         hero.belongings.weapon.activate(hero);
-
-        if (Dungeon.isChallenged(Challenges.GAMBLER)) {
-            new Drago().quantity(5).collect();
-        }
 
         Buff.affect(hero, HorseRiding.class).set();
 

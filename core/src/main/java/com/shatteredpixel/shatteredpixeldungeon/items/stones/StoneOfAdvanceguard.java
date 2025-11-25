@@ -58,8 +58,7 @@ public class StoneOfAdvanceguard extends Runestone {
                 GLog.h(Messages.get(this, "fail"));
                 Dungeon.level.drop(new StoneOfAdvanceguard(), cell).sprite.drop();
             } else if (mob instanceof ZombieFour) {
-                mob.destroy();
-                mob.sprite.killAndErase();
+                mob.die(this);
                 TargetHealthIndicator.instance.target(null);
                 GameScene.flash(0x660099);
                 Sample.INSTANCE.play(Assets.Sounds.PUFF, 1f);
@@ -79,10 +78,8 @@ public class StoneOfAdvanceguard extends Runestone {
                 );
                 Dungeon.level.drop(prize, mob.pos).sprite.drop(mob.pos);
             } else {
-
                 if (Dungeon.tendencylevel) mob.die(this);
                 else mob.destroy();
-
                 mob.sprite.killAndErase();
                 TargetHealthIndicator.instance.target(null);
                 GameScene.flash(0x660099);

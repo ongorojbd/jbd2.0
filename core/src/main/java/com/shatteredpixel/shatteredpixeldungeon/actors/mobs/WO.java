@@ -229,6 +229,13 @@ public class WO extends Mob {
     @Override
     public void die(Object cause) {
         super.die(cause);
+
+        // Rebel 보스의 무적 해제 조건 체크
+        for (Char ch : Actor.chars()) {
+            if (ch instanceof Rebel) {
+                ((Rebel) ch).checkInvulnerabilityCondition();
+            }
+        }
     }
 
     private final String CHAINSUSED = "chainsused";

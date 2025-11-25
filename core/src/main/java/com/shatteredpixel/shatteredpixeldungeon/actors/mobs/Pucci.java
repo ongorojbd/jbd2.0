@@ -192,7 +192,6 @@ public class Pucci extends Mob {
                 mob.die( cause );
             }
         }
-
     }
 
 

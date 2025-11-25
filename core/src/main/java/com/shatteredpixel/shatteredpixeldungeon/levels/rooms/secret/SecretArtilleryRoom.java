@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Dannynpc;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -34,7 +35,13 @@ public class SecretArtilleryRoom extends SecretRoom {
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.EMPTY_SP);
 		
-		Painter.set(level, center(), Terrain.STATUE_SP);
+		// Make the center an empty special tile and place Dannynpc there.
+		Painter.set(level, center(), Terrain.EMPTY_SP);
+		int centerPos = level.pointToCell(center());
+		Dannynpc danny = new Dannynpc();
+		danny.HP = danny.HT;
+		danny.pos = centerPos;
+		level.mobs.add(danny);
 		
 		for (int i = 0; i < 3; i++){
 			int itemPos;

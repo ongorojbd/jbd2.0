@@ -751,30 +751,6 @@ public abstract class Mob extends Char {
             Badges.validateHuntressUnlock();
         }
 
-        for (int i : PathFinder.NEIGHBOURS4) {
-            if (Dungeon.isChallenged(Challenges.GAMBLER) && enemy instanceof Hero && enemy.pos == this.pos + i) {
-
-                Dungeon.hero.damage(damage, this);
-
-                damage *= 0f;
-
-                Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN);
-                GLog.n(Messages.get(Act3.class, "d"));
-            }
-        }
-
-        for (int i : PathFinder.NEIGHBOURS4) {
-            if (Dungeon.isChallenged(Challenges.GAMBLER) && enemy instanceof DriedRose.GhostHero && enemy.pos == this.pos + i) {
-
-                Dungeon.hero.damage(damage, this);
-
-                damage *= 0f;
-
-                Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN);
-                GLog.n(Messages.get(Act3.class, "s"));
-            }
-        }
-
         if (surprisedBy(enemy)) {
             Statistics.sneakAttacks++;
             Badges.validateRogueUnlock();

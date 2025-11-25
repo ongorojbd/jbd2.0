@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -71,6 +72,11 @@ public class Mih extends Mob {
     @Override
     public int drRoll() {
         return Random.NormalIntRange(0, 10);
+    }
+
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
     }
 
 }

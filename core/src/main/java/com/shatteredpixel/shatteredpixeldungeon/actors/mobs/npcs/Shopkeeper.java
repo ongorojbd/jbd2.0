@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Enemytonio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -74,6 +75,7 @@ public class Shopkeeper extends NPC {
 	public ArrayList<Item> buybackItems = new ArrayList<>();
 
 	private int turnsSinceHarmed = -1;
+	private boolean hasFled = false;
 
 	@Override
 	public Notes.Landmark landmark() {
@@ -171,15 +173,27 @@ public class Shopkeeper extends NPC {
 
 	public void flee() {
 
+		// prevent duplicate spawns if flee() is triggered multiple times
+		if (hasFled) return;
+		hasFled = true;
+
 		if (Dungeon.hero.buff(AscensionChallenge.class) == null) {
 			Sample.INSTANCE.play(Assets.Sounds.MIMIC);
 			Sample.INSTANCE.play(Assets.Sounds.REIMI);
 			GameScene.flash(0x660000);
-			Enemytonio Kawasiri = new Enemytonio();
-			Kawasiri.state = Kawasiri.HUNTING;
-			Kawasiri.pos = this.pos;
-			GameScene.add(Kawasiri);
-			Kawasiri.beckon(Dungeon.hero.pos);
+
+			// ensure only one Enemytonio exists on the level
+			boolean exists = false;
+			for (Mob m : Dungeon.level.mobs) {
+				if (m instanceof Enemytonio) { exists = true; break; }
+			}
+			if (!exists) {
+				Enemytonio Kawasiri = new Enemytonio();
+				Kawasiri.state = Kawasiri.HUNTING;
+				Kawasiri.pos = this.pos;
+				GameScene.add(Kawasiri);
+				Kawasiri.beckon(Dungeon.hero.pos);
+			}
 		}
 
 		destroy();
@@ -350,12 +364,14 @@ public class Shopkeeper extends NPC {
 	public static String BUYBACK_ITEMS = "buyback_items";
 
 	public static String TURNS_SINCE_HARMED = "turns_since_harmed";
+	public static String HAS_FLED = "has_fled";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(BUYBACK_ITEMS, buybackItems);
 		bundle.put(TURNS_SINCE_HARMED, turnsSinceHarmed);
+		bundle.put(HAS_FLED, hasFled);
 	}
 
 	@Override
@@ -368,5 +384,6 @@ public class Shopkeeper extends NPC {
 			}
 		}
 		turnsSinceHarmed = bundle.contains(TURNS_SINCE_HARMED) ? bundle.getInt(TURNS_SINCE_HARMED) : -1;
+		hasFled = bundle.contains(HAS_FLED) && bundle.getBoolean(HAS_FLED);
 	}
 }

@@ -46,22 +46,22 @@ public class EnemytonioSprite extends MobSprite {
 
         texture( Assets.Sprites.TONIO );
 
-        TextureFilm frames = new TextureFilm( texture, 18, 17 );
+        TextureFilm frames = new TextureFilm( texture, 32, 16 );
 
-        idle = new Animation( 5, true );
-        idle.frames( frames, 0, 0, 0, 0, 0, 1, 1, 1 );
+        idle = new Animation( 12, true );
+        idle.frames( frames, 0, 1, 2, 3, 4, 5, 6, 7 );
 
-        run = new Animation( 7, true );
-        run.frames( frames, 2, 3, 2, 3, 2, 3 );
+        run = new Animation( 12, true );
+        run.frames( frames, 8, 9, 10, 11, 12, 13, 14, 15 );
 
-        attack = new Animation( 15, false );
-        attack.frames( frames, 0, 4, 5);
+        attack = new Animation( 12, false );
+        attack.frames( frames, 16, 17, 18, 19, 20 );
 
-        zap = attack.clone();
-
-        die = new Animation( 20, false );
-        die.frames( frames, 0);
+        die = new Animation( 12, false );
+        die.frames( frames, 0, 21, 22, 23, 24, 25 );
 
         play( idle );
+
+        scale.set(0.75f);
     }
 }

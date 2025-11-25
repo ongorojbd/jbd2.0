@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
@@ -27,13 +28,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
@@ -51,6 +55,8 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LabsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -106,7 +112,7 @@ public class Rebel extends Mob {
     private int Burstcooldown = 0; // 1이 되면 은신 파괴
 
     public int Phase = 0; // 1~6까지
-    private int GasCoolDown = 15;
+    private int GasCoolDown = 6;
     private int ACoolDown = 9999;
     private int BurstTime = 0;
     private int BurstTimt = 0; // 화염 폭발 발동 시간. 2가 되면 발동함
@@ -114,6 +120,26 @@ public class Rebel extends Mob {
     private static final Rect arena = new Rect(0, 0, 33, 26);
     private static final int bottomDoor = 16 + (arena.bottom + 1) * 33;
     private float abilityCooldown;
+
+    // 중력 역전
+    private int gravityCooldown = 0;
+    private boolean gravityCharging = false;
+
+    // 무적 기믹
+    private boolean invulnerable = false;
+    private boolean invulnWarned = false;
+
+    // 데미지 장벽 패턴
+    private int barrierCooldown = 20;
+    private boolean barrierActive = false;
+    private int barrierCurrentRow = 0;
+    private int barrierSafeColumn = -1;  // 안전 구역 칸 (매 장벽마다 랜덤 지정)
+    private static final int BARRIER_DAMAGE = 35;
+    private static final int ARENA_TOP = 1;      // 아레나 시작 행 (맨 위)
+    private static final int ARENA_BOTTOM = 26;  // 아레나 끝 행
+
+    // DistortionTrap 패턴
+    private int distortionCooldown = 15;
     private static boolean telling_1 = false;
     private static boolean telling_2 = false;
     private static boolean telling_3 = false;
@@ -132,6 +158,14 @@ public class Rebel extends Mob {
     private static final String SKILL3TCD = "GasCoolDown";
     private static final String SUMMON_COOLDOWN = "summoncooldown";
     private static final String BURST = "Burstcooldown";
+    private static final String GRAVITY_COOLDOWN = "gravity_cooldown";
+    private static final String GRAVITY_CHARGING = "gravity_charging";
+    private static final String INVULNERABLE = "invulnerable";
+    private static final String BARRIER_COOLDOWN = "barrier_cooldown";
+    private static final String BARRIER_ACTIVE = "barrier_active";
+    private static final String BARRIER_CURRENT_ROW = "barrier_current_row";
+    private static final String BARRIER_SAFE_COLUMN = "barrier_safe_column";
+    private static final String DISTORTION_COOLDOWN = "distortion_cooldown";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -152,6 +186,14 @@ public class Rebel extends Mob {
         bundle.put(SUMMON_COOLDOWN, summonCooldown);
         bundle.put(BURST, Burstcooldown);
         bundle.put(SKILLCD, charge);
+        bundle.put(GRAVITY_COOLDOWN, gravityCooldown);
+        bundle.put(GRAVITY_CHARGING, gravityCharging);
+        bundle.put(INVULNERABLE, invulnerable);
+        bundle.put(BARRIER_COOLDOWN, barrierCooldown);
+        bundle.put(BARRIER_ACTIVE, barrierActive);
+        bundle.put(BARRIER_CURRENT_ROW, barrierCurrentRow);
+        bundle.put(BARRIER_SAFE_COLUMN, barrierSafeColumn);
+        bundle.put(DISTORTION_COOLDOWN, distortionCooldown);
     }
 
     @Override
@@ -173,6 +215,14 @@ public class Rebel extends Mob {
         summonCooldown = bundle.getInt(SUMMON_COOLDOWN);
         Burstcooldown = bundle.getInt(BURST);
         charge = bundle.getInt(SKILLCD);
+        gravityCooldown = bundle.getInt(GRAVITY_COOLDOWN);
+        gravityCharging = bundle.getBoolean(GRAVITY_CHARGING);
+        invulnerable = bundle.getBoolean(INVULNERABLE);
+        barrierCooldown = bundle.getInt(BARRIER_COOLDOWN);
+        barrierActive = bundle.getBoolean(BARRIER_ACTIVE);
+        barrierCurrentRow = bundle.getInt(BARRIER_CURRENT_ROW);
+        barrierSafeColumn = bundle.getInt(BARRIER_SAFE_COLUMN);
+        distortionCooldown = bundle.getInt(DISTORTION_COOLDOWN);
     }
 
     @Override
@@ -319,39 +369,44 @@ public class Rebel extends Mob {
     protected boolean act() {
         summonCooldown--;
         cleanCooldown--;
+        if (gravityCooldown > 0) gravityCooldown--;
 
-        if (summonCooldown <= 0 && Dungeon.level instanceof LabsBossLevel) {
-            Mih Newgenkaku = new Mih();
-            Newgenkaku.state = Newgenkaku.HUNTING;
-            Newgenkaku.pos = bottomDoor - 26 * 33;
-            GameScene.add(Newgenkaku);
-            Newgenkaku.beckon(Dungeon.hero.pos);
-            if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1)
-                Buff.affect(Newgenkaku, Adrenaline.class, 30f);
+        // 중력 역전 차징 중이면 다음 턴에 발동
+        if (gravityCharging) {
+            activateGravityPull();
+            gravityCharging = false;
+            return true;
+        }
 
-            Mih Newcmoon = new Mih();
-            Newcmoon.state = Newcmoon.HUNTING;
-            Newcmoon.pos = bottomDoor - 26 * 33;
-            GameScene.add(Newcmoon);
-            Newcmoon.beckon(Dungeon.hero.pos);
-            if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1)
-                Buff.affect(Newcmoon, Adrenaline.class, 30f);
+        // 중력 역전: 페이즈 2 이상에서 사용
+        if (Phase >= 2 && gravityCooldown <= 0 && enemy != null && Dungeon.level.distance(pos, enemy.pos) > 2) {
+            chargeGravityPull();
+            gravityCooldown = Random.NormalIntRange(12, 18);
+            return true;
+        }
 
-            Mih Mih = new Mih();
-            Mih.state = Mih.HUNTING;
-            Mih.pos = bottomDoor - 26 * 33;
-            GameScene.add(Mih);
-            Mih.beckon(Dungeon.hero.pos);
-            if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1)
-                Buff.affect(Mih, Adrenaline.class, 30f);
+        // 데미지 장벽 패턴: 페이즈 2 이상에서 사용
+        if (barrierCooldown > 0) barrierCooldown--;
 
-            GLog.w(Messages.get(Rebel.class, "summon"));
+        // 장벽이 활성화되어 있으면 진행
+        if (barrierActive) {
+            progressBarrier();
+            return true;
+        }
 
-            summonCooldown = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 14 : 26);
-            if (Phase == 5) summonCooldown = (9);
+        // 장벽 시작 조건 (Phase 2 이상)
+        if (Phase >= 2 && barrierCooldown <= 0 && !barrierActive) {
+            startBarrier();
+            barrierCooldown = Random.NormalIntRange(25, 35);
+            return true;
+        }
 
-            new Flare(5, 32).color(0xFFFFFF, true).show(this.sprite, 3f);
-            Sample.INSTANCE.play(Assets.Sounds.OH1, 1.2f);
+        // DistortionTrap 패턴: 페이즈 1 이상에서 사용
+        if (distortionCooldown > 0) distortionCooldown--;
+        if (Phase >= 1 && distortionCooldown <= 0 && enemy != null) {
+            activateDistortionTrap();
+            distortionCooldown = Random.NormalIntRange(12, 20);
+            return true;
         }
 
         if (cleanCooldown <= 0) {
@@ -451,6 +506,13 @@ public class Rebel extends Mob {
             // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
             dmg = 150;
         }
+
+        // 무적 상태면 피해 무시
+        if (isInvulnerable(src.getClass())) {
+            sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
+            return;
+        }
+
         BossHealthBar.assignBoss(this);
         super.damage(dmg, src);
 
@@ -488,6 +550,7 @@ public class Rebel extends Mob {
             Pucci.pos = bottomDoor - 9 * 33;
             GameScene.add(Pucci);
             Pucci.beckon(Dungeon.hero.pos);
+
             yell(Messages.get(this, "telling_3"));
             sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
         } else if (Phase == 2 && HP < 600) {
@@ -517,6 +580,9 @@ public class Rebel extends Mob {
             WO.pos = bottomDoor - 12 * 33;
             GameScene.add(WO);
             WO.beckon(Dungeon.hero.pos);
+
+            // 무적 활성화!
+            activateInvulnerability();
 
             sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 
@@ -757,8 +823,8 @@ public class Rebel extends Mob {
     private boolean UseAbility() {
         // 폭발 > 국가 순
         if (enemy == null) return true;
-        //폭발
-        if (ACoolDown <= 0) {
+        // 폭발 (진실 조작): Phase 1 이상에서만 사용
+        if (Phase >= 1 && ACoolDown <= 0) {
             if (Burstpos == -1) {
                 // 위치 미지정시, 이번 턴에는 폭발을 일으킬 지점을 정합니다.
                 Burstpos = Dungeon.hero.pos;
@@ -810,8 +876,6 @@ public class Rebel extends Mob {
                             damage(5, this);
                             Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
                         }
-
-
                     }
                 }
 
@@ -846,6 +910,253 @@ public class Rebel extends Mob {
         GameScene.add(Blob.seed(target.pos, 250, Dominion.class));
         GLog.w(Messages.get(Rebel.class, "skill2"));
         GasCoolDown = 10;
+    }
+
+    // ==================== DistortionTrap 패턴 ====================
+
+    private void activateDistortionTrap() {
+        GLog.n(Messages.get(this, "distortion_start"));
+        yell(Messages.get(this, "distortion_yell"));
+
+        GameScene.flash(0x660066);
+
+        // 트랩 생성 및 발동
+        new DistortionTrap().set(hero.pos).activate();
+
+        Dungeon.hero.interrupt();
+        spend(TICK);
+    }
+
+    // ==================== 중력 역전 ====================
+
+    private void chargeGravityPull() {
+        gravityCharging = true;
+        GLog.n(Messages.get(this, "gravity_charge"));
+        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+        sprite.centerEmitter().start(Speck.factory(Speck.MASK), 0.05f, 20);
+
+        // 끌어당김 범위 표시
+        for (int i : PathFinder.NEIGHBOURS8) {
+            if (pos + i >= 0 && pos + i < Dungeon.level.length()) {
+                sprite.parent.addToBack(new TargetedCell(pos + i, 0x00FFFF));
+            }
+        }
+
+        Dungeon.hero.interrupt();
+        spend(TICK);
+    }
+
+    private void activateGravityPull() {
+        yell(Messages.get(this, "gravity_pull"));
+        Sample.INSTANCE.play(Assets.Sounds.BLAST);
+        Camera.main.shake(8, 1f);
+        GameScene.flash(0x8B00FF);
+
+        // 영웅을 보스 쪽으로 강하게 끌어당김
+        if (hero.buff(Roots.class) == null && !hero.rooted) {
+            Ballistica trajectory = new Ballistica(hero.pos, pos, Ballistica.STOP_TARGET);
+
+            // 최대 6칸까지 끌어당김 (매우 강력)
+            int pullDist = Math.min(6, trajectory.dist);
+            int newPos = trajectory.path.get(pullDist);
+
+            // 이동 가능한 위치 찾기
+            while (pullDist > 0 && (Dungeon.level.solid[newPos] || Actor.findChar(newPos) != null)) {
+                pullDist--;
+                newPos = trajectory.path.get(pullDist);
+            }
+
+            if (pullDist > 0 && newPos != hero.pos) {
+                int finalNewPos = newPos;
+                Actor.add(new Pushing(hero, hero.pos, finalNewPos, new com.watabou.utils.Callback() {
+                    @Override
+                    public void call() {
+                        hero.pos = finalNewPos;
+                        Dungeon.level.occupyCell(hero);
+                        Dungeon.observe();
+                        GameScene.updateFog();
+                    }
+                }));
+
+                // 끌려온 후 강력한 디버프
+                Buff.affect(hero, Cripple.class, 5f);
+                Buff.affect(hero, Vertigo.class, 4f);
+                Buff.affect(hero, Paralysis.class, 1f);
+                hero.damage(Random.NormalIntRange(25, 40), this);
+
+                GLog.n(Messages.get(this, "gravity_hit"));
+            }
+        } else {
+            GLog.p(Messages.get(this, "gravity_resist"));
+        }
+
+        spend(TICK);
+    }
+
+    // ==================== 무적 기믹 ====================
+
+    @Override
+    public boolean isInvulnerable(Class effect) {
+        if (invulnerable && !invulnWarned) {
+            invulnWarned = true;
+            GLog.w(Messages.get(this, "invuln_hint"));
+        }
+        return invulnerable || super.isInvulnerable(effect);
+    }
+
+    private void activateInvulnerability() {
+        invulnerable = true;
+        invulnWarned = false;
+        this.sprite.add(CharSprite.State.SHIELDED);
+        GLog.n(Messages.get(this, "invuln_start"));
+        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+        new Flare(8, 48).color(0x8B00FF, true).show(this.sprite, 3f);
+    }
+
+    public void loseInvulnerability() {
+        if (invulnerable) {
+            invulnerable = false;
+            this.sprite.remove(CharSprite.State.SHIELDED);
+            GLog.p(Messages.get(this, "invuln_end"));
+            Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+            Camera.main.shake(5, 1f);
+        }
+    }
+
+    // 무적 해제 조건 체크 (WO 처치 시 호출)
+    public void checkInvulnerabilityCondition() {
+        if (!invulnerable) return;
+
+        // WO가 살아있는지 확인
+        boolean woAlive = false;
+        for (Mob m : Dungeon.level.mobs) {
+            if (m instanceof WO) {
+                woAlive = true;
+                break;
+            }
+        }
+
+        // WO가 죽으면 무적 해제
+        if (!woAlive) {
+            loseInvulnerability();
+        }
+    }
+
+    // ==================== 데미지 장벽 패턴 ====================
+
+    public static class BarrierDamage {}
+
+    private void startBarrier() {
+        barrierActive = true;
+        barrierCurrentRow = ARENA_TOP;
+
+        // 안전 구역 랜덤 지정 (가로축에서 1칸은 항상 비어있음)
+        // 아레나 내부 (x: 1~31) 중 랜덤으로 선택
+        barrierSafeColumn = Random.Int(1, 32);
+
+        GLog.n(Messages.get(this, "barrier_start"));
+        yell(Messages.get(this, "barrier_yell"));
+        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+        Camera.main.shake(3, 0.5f);
+
+        // 첫 줄 예고 표시 (3줄 앞까지 미리 보여줌)
+        for (int i = 0; i < 3 && barrierCurrentRow + i < ARENA_BOTTOM; i++) {
+            showBarrierWarning(barrierCurrentRow + i);
+        }
+
+        Dungeon.hero.interrupt();
+        spend(TICK);
+    }
+
+    private void progressBarrier() {
+        // 현재 줄에 피해 적용
+        applyBarrierDamage(barrierCurrentRow);
+
+        // 다음 줄로 이동
+        barrierCurrentRow++;
+
+        // 장벽이 아레나 끝에 도달하면 종료
+        if (barrierCurrentRow >= ARENA_BOTTOM) {
+            barrierActive = false;
+            barrierCurrentRow = 0;
+            GLog.p(Messages.get(this, "barrier_end"));
+            Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+            spend(TICK);
+            return;
+        }
+
+        // 다음 줄 예고 표시 (2줄 앞까지)
+        if (barrierCurrentRow + 2 < ARENA_BOTTOM) {
+            showBarrierWarning(barrierCurrentRow + 2);
+        }
+
+        // 현재 장벽 위치 이펙트
+        showBarrierEffect(barrierCurrentRow);
+
+        spend(0.5f); // 빠르게 내려옴
+    }
+
+    private void showBarrierWarning(int row) {
+        int levelWidth = Dungeon.level.width();
+        // 아레나 전체 너비 (x: 1~31)
+        for (int x = 1; x < levelWidth - 1; x++) {
+            int cell = row * levelWidth + x;
+            if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
+                if (x == barrierSafeColumn) {
+                    // 안전 구역 표시
+                    sprite.parent.addToBack(new TargetedCell(cell, 0x00FFFF));
+                } else {
+                    // 위험 구역 표시
+                    sprite.parent.addToBack(new TargetedCell(cell, 0xFF4444));
+                }
+            }
+        }
+    }
+
+    private void showBarrierEffect(int row) {
+        int levelWidth = Dungeon.level.width();
+        // 아레나 전체 너비 (x: 1~31), 안전 구역 제외
+        for (int x = 1; x < levelWidth - 1; x++) {
+            if (x == barrierSafeColumn) continue;  // 안전 구역은 이펙트 없음
+
+            int cell = row * levelWidth + x;
+            if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
+                CellEmitter.get(cell).burst(SparkParticle.FACTORY, 8);
+            }
+        }
+        Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
+    }
+
+    private void applyBarrierDamage(int row) {
+        int levelWidth = Dungeon.level.width();
+
+        // 아레나 전체 너비 (x: 1~31), 안전 구역 제외
+        for (int x = 1; x < levelWidth - 1; x++) {
+            // 안전 구역은 피해 없음
+            if (x == barrierSafeColumn) continue;
+
+            int cell = row * levelWidth + x;
+            if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
+                Char ch = Actor.findChar(cell);
+                if (ch != null && ch != this && ch.alignment != alignment) {
+                    // 피해 적용
+                    ch.damage(BARRIER_DAMAGE, new BarrierDamage());
+                    Buff.affect(ch, Cripple.class, 2f);
+
+                    CellEmitter.center(cell).burst(BlastParticle.FACTORY, 10);
+
+                    if (ch == Dungeon.hero) {
+                        GLog.n(Messages.get(this, "barrier_hit"));
+                        Camera.main.shake(5, 0.5f);
+
+                        if (!ch.isAlive()) {
+                            Dungeon.fail(getClass());
+                            GLog.n(Messages.get(this, "barrier_kill"));
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

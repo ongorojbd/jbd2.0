@@ -444,7 +444,7 @@ public class TendencyShopRoom extends SpecialRoom {
         // 깊이별 특별 아이템
         if (Dungeon.depth % 2 == 0) itemsToSpawn.add(new PotionOfHealing().identify());
         if (Dungeon.depth % 2 == 0) itemsToSpawn.add(Generator.randomMissile());
-        if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new MagicalInfusion().identify());
+        if (Dungeon.depth % 6 == 0) itemsToSpawn.add(new MagicalInfusion().identify());
         if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new ScrollOfRemoveCurse().identify());
         if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new PotionOfStrength().identify());
 

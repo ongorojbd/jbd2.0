@@ -31,7 +31,7 @@ import com.watabou.utils.Bundle;
 
 public class Wedding2 extends FlavourBuff implements Hero.Doom {
 
-    public static final float DURATION = 1200f;
+    public static final float DURATION = 1600f;
 
     {
         type = buffType.NEGATIVE;
