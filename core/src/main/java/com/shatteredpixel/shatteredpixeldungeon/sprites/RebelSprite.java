@@ -51,10 +51,10 @@ public class RebelSprite extends MobSprite {
 		
 		TextureFilm frames = new TextureFilm( texture, 16, 16 );
 
-		idle = new Animation( 10, true );
-		idle.frames( frames, 0, 0, 1, 1, 2, 1, 1, 0 );
+		idle = new Animation( 1, true );
+		idle.frames( frames, 0, 0, 0, 3, 0, 0, 3, 3 );
 
-		run = new Animation( 15, true );
+		run = new Animation( 12, true );
 		run.frames( frames, 4, 5, 6, 7, 8, 9 );
 
 		attack = new Animation( 15, false );

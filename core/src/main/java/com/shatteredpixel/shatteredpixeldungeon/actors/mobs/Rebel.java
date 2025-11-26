@@ -33,10 +33,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
@@ -397,7 +399,7 @@ public class Rebel extends Mob {
         // 장벽 시작 조건 (Phase 2 이상)
         if (Phase >= 2 && barrierCooldown <= 0 && !barrierActive) {
             startBarrier();
-            barrierCooldown = Random.NormalIntRange(25, 35);
+            barrierCooldown = Random.NormalIntRange(3, 5);
             return true;
         }
 
@@ -405,7 +407,7 @@ public class Rebel extends Mob {
         if (distortionCooldown > 0) distortionCooldown--;
         if (Phase >= 1 && distortionCooldown <= 0 && enemy != null) {
             activateDistortionTrap();
-            distortionCooldown = Random.NormalIntRange(12, 20);
+            distortionCooldown = Random.NormalIntRange(999, 999);
             return true;
         }
 
@@ -696,7 +698,6 @@ public class Rebel extends Mob {
             }
         }
 
-        Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
         Camera.main.shake(31, 3f);
 
         Statistics.yorihimes++;
@@ -920,7 +921,15 @@ public class Rebel extends Mob {
         GLog.n(Messages.get(this, "distortion_start"));
         yell(Messages.get(this, "distortion_yell"));
 
-        GameScene.flash(0x660066);
+        // 플레이어 주변 이펙트
+        for (int i : PathFinder.NEIGHBOURS8) {
+            int cell = hero.pos + i;
+            if (cell >= 0 && cell < Dungeon.level.length()) {
+                CellEmitter.get(cell).burst(MagicMissile.WardParticle.UP, 5);
+            }
+        }
+
+        new Flare(8, 32).color(0xFF00FF, true).show(hero.sprite, 2f);
 
         // 트랩 생성 및 발동
         new DistortionTrap().set(hero.pos).activate();
@@ -980,11 +989,8 @@ public class Rebel extends Mob {
                     }
                 }));
 
-                // 끌려온 후 강력한 디버프
-                Buff.affect(hero, Cripple.class, 5f);
-                Buff.affect(hero, Vertigo.class, 4f);
-                Buff.affect(hero, Paralysis.class, 1f);
-                hero.damage(Random.NormalIntRange(25, 40), this);
+                Buff.affect(hero, Cripple.class, 2f);
+                Buff.affect(hero, Vertigo.class, 2f);
 
                 GLog.n(Messages.get(this, "gravity_hit"));
             }
@@ -1112,7 +1118,6 @@ public class Rebel extends Mob {
             showBarrierEffect(barrierCurrentRow + 1);
         }
 
-        spend(0.5f); // 빠르게 내려옴
     }
 
     private void showBarrierWarning(int row) {
@@ -1145,11 +1150,15 @@ public class Rebel extends Mob {
             if (isSafeColumn(x)) continue;  // 안전 구역(3칸)은 이펙트 없음
 
             int cell = row * levelWidth + x;
+            Char ch = Actor.findChar(cell);
             if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
-                CellEmitter.get(cell).burst(SparkParticle.FACTORY, 8);
+                CellEmitter.get(cell).burst(MagicMissile.WardParticle.UP, 8);
+                if (ch instanceof Hero) {
+                    ch.damage(Random.NormalIntRange(40, 50), new SummoningBlockDamage3());
+                }
             }
         }
-        Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
+        Sample.INSTANCE.play( Assets.Sounds.MINE, 2, Random.Float(1f, 1.2f) );
     }
 
     private void applyBarrierDamage(int row) {

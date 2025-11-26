@@ -1109,7 +1109,6 @@ public abstract class Char extends Actor {
         NO_ARMOR_PHYSICAL_SOURCES.add(Heap.class); //damage from wraiths attempting to spawn from heaps
         NO_ARMOR_PHYSICAL_SOURCES.add(Necromancer.SummoningBlockDamage.class);
         NO_ARMOR_PHYSICAL_SOURCES.add(Rebel.SummoningBlockDamage2.class);
-        NO_ARMOR_PHYSICAL_SOURCES.add(Rebel.SummoningBlockDamage3.class);
         NO_ARMOR_PHYSICAL_SOURCES.add(SpwSoldier.DarkBolt.class);
         NO_ARMOR_PHYSICAL_SOURCES.add(Diobrando.Blast.class);
         NO_ARMOR_PHYSICAL_SOURCES.add(Diobrando2.DarkBolt.class);
