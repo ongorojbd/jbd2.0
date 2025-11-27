@@ -82,6 +82,10 @@ public class Danny extends Mob {
 			Sample.INSTANCE.play(Assets.Sounds.GOLD, 1, 1, Random.Float(0.9f, 1.1f));
 		}
 
+		if (enemy instanceof Mob) {
+			((Mob)enemy).aggro( this );
+		}
+
 		return damage;
 	}
 
@@ -94,6 +98,20 @@ public class Danny extends Mob {
 
 		Sample.INSTANCE.play(Assets.Sounds.BURNING);
 
+	}
+
+	@Override
+	protected Char chooseEnemy() {
+
+		return super.chooseEnemy();
+	}
+
+	@Override
+	protected boolean getCloser(int target) {
+
+		target = Dungeon.hero.pos;
+
+		return super.getCloser( target );
 	}
 
 }

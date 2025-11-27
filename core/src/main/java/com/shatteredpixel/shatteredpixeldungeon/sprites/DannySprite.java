@@ -31,7 +31,7 @@ public class DannySprite extends MobSprite {
 		
 		texture( Assets.Sprites.DANNY );
 		
-		TextureFilm frames = new TextureFilm( texture, 32, 16 );
+		TextureFilm frames = new TextureFilm( texture, 29, 16 );
 		
 		idle = new Animation( 12, true );
 		idle.frames( frames, 0, 1, 2, 3, 4, 5, 6, 7 );

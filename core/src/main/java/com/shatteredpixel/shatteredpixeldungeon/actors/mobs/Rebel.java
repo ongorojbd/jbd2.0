@@ -108,7 +108,6 @@ public class Rebel extends Mob {
     }
 
     int cleanCooldown = 9999;
-    int summonCooldown = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 9999 : 9999;
     private int charge = 0; // 2이 될경우 강화 사격
     private int LastPos = -1;
     private int Burstcooldown = 0; // 1이 되면 은신 파괴
@@ -158,7 +157,6 @@ public class Rebel extends Mob {
     private static final String SKILL2TPOS = "Burstpos";
     private static final String SKILL2TCD = "ACoolDown";
     private static final String SKILL3TCD = "GasCoolDown";
-    private static final String SUMMON_COOLDOWN = "summoncooldown";
     private static final String BURST = "Burstcooldown";
     private static final String GRAVITY_COOLDOWN = "gravity_cooldown";
     private static final String GRAVITY_CHARGING = "gravity_charging";
@@ -185,7 +183,6 @@ public class Rebel extends Mob {
         bundle.put(SKILL2TCD, ACoolDown);
         bundle.put(SKILL2TPOS, Burstpos);
         bundle.put(SKILL3TCD, GasCoolDown);
-        bundle.put(SUMMON_COOLDOWN, summonCooldown);
         bundle.put(BURST, Burstcooldown);
         bundle.put(SKILLCD, charge);
         bundle.put(GRAVITY_COOLDOWN, gravityCooldown);
@@ -214,7 +211,6 @@ public class Rebel extends Mob {
         ACoolDown = bundle.getInt(SKILL2TCD);
         Burstpos = bundle.getInt(SKILL2TPOS);
         GasCoolDown = bundle.getInt(SKILL3TCD);
-        summonCooldown = bundle.getInt(SUMMON_COOLDOWN);
         Burstcooldown = bundle.getInt(BURST);
         charge = bundle.getInt(SKILLCD);
         gravityCooldown = bundle.getInt(GRAVITY_COOLDOWN);
@@ -254,7 +250,6 @@ public class Rebel extends Mob {
 
         if (charge >= 4) {
             enemy.sprite.showStatus(CharSprite.POSITIVE, "5타 추가 피해!", charge + 1);
-            SpellSprite.show(this, SpellSprite.PURITY);
             Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
             CellEmitter.get(hero.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
             enemy.damage(20, new SummoningBlockDamage2());
@@ -321,30 +316,98 @@ public class Rebel extends Mob {
             BossHealthBar.assignBoss(this);
             switch (Dungeon.hero.heroClass) {
                 case WARRIOR:
-                case MAGE:
-                case DUELIST:
-                case HUNTRESS:
-				case CLERIC:
                     WndDialogueWithPic.dialogue(
-                            new CharSprite[]{new RebelSprite()},
-                            new String[]{"천국 DIO"},
+                            new CharSprite[]{new RebelSprite(), new RebelSprite(), new RebelSprite()},
+                            new String[]{"천국 DIO", "천국 DIO", "천국 DIO"},
                             new String[]{
-                                    Messages.get(Rebel.class, "n1")
+                                    Messages.get(Rebel.class, "t1"),
+                                    Messages.get(Rebel.class, "c1"),
+                                    Messages.get(Rebel.class, "t2")
                             },
                             new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case MAGE:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new RebelSprite(), new RebelSprite(), new RebelSprite()},
+                            new String[]{"천국 DIO", "천국 DIO", "천국 DIO"},
+                            new String[]{
+                                    Messages.get(Rebel.class, "t1"),
+                                    Messages.get(Rebel.class, "c2"),
+                                    Messages.get(Rebel.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case DUELIST:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new RebelSprite(), new RebelSprite(), new RebelSprite()},
+                            new String[]{"천국 DIO", "천국 DIO", "천국 DIO"},
+                            new String[]{
+                                    Messages.get(Rebel.class, "t1"),
+                                    Messages.get(Rebel.class, "c4"),
+                                    Messages.get(Rebel.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case HUNTRESS:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new RebelSprite(), new RebelSprite(), new RebelSprite()},
+                            new String[]{"천국 DIO", "천국 DIO", "천국 DIO"},
+                            new String[]{
+                                    Messages.get(Rebel.class, "t1"),
+                                    Messages.get(Rebel.class, "c5"),
+                                    Messages.get(Rebel.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+				case CLERIC:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new RebelSprite(), new RebelSprite(), new RebelSprite()},
+                            new String[]{"천국 DIO", "천국 DIO", "천국 DIO"},
+                            new String[]{
+                                    Messages.get(Rebel.class, "t1"),
+                                    Messages.get(Rebel.class, "c6"),
+                                    Messages.get(Rebel.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
                                     WndDialogueWithPic.IDLE
                             }
                     );
                     break;
                 case ROGUE:
                     WndDialogueWithPic.dialogue(
-                            new CharSprite[]{new RebelSprite(), new TankSprite()},
-                            new String[]{"천국 DIO", "죠타로"},
+                            new CharSprite[]{new RebelSprite(), new RebelSprite(), new RebelSprite(), new TankSprite()},
+                            new String[]{"천국 DIO", "천국 DIO", "천국 DIO", "죠타로"},
                             new String[]{
-                                    Messages.get(Rebel.class, "n2"),
+                                    Messages.get(Rebel.class, "t1"),
+                                    Messages.get(Rebel.class, "c3"),
+                                    Messages.get(Rebel.class, "t2"),
                                     Messages.get(Rebel.class, "n3")
                             },
                             new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
                                     WndDialogueWithPic.IDLE,
                                     WndDialogueWithPic.IDLE
                             }
@@ -369,7 +432,6 @@ public class Rebel extends Mob {
 
     @Override
     protected boolean act() {
-        summonCooldown--;
         cleanCooldown--;
         if (gravityCooldown > 0) gravityCooldown--;
 
@@ -383,7 +445,7 @@ public class Rebel extends Mob {
         // 중력 역전: 페이즈 2 이상에서 사용 (장벽 시전 중에는 사용 안함)
         if (Phase >= 2 && gravityCooldown <= 0 && !barrierActive && enemy != null && Dungeon.level.distance(pos, enemy.pos) > 2) {
             chargeGravityPull();
-            gravityCooldown = Random.NormalIntRange(12, 18);
+            gravityCooldown = Random.NormalIntRange(16, 22);
             return true;
         }
 
@@ -399,7 +461,7 @@ public class Rebel extends Mob {
         // 장벽 시작 조건 (Phase 2 이상)
         if (Phase >= 2 && barrierCooldown <= 0 && !barrierActive) {
             startBarrier();
-            barrierCooldown = Random.NormalIntRange(3, 5);
+            barrierCooldown = Random.NormalIntRange(8, 12);
             return true;
         }
 
@@ -407,16 +469,25 @@ public class Rebel extends Mob {
         if (distortionCooldown > 0) distortionCooldown--;
         if (Phase >= 1 && distortionCooldown <= 0 && enemy != null) {
             activateDistortionTrap();
-            distortionCooldown = Random.NormalIntRange(999, 999);
+            distortionCooldown = Random.NormalIntRange(15, 20);
+            if (Phase == 5) distortionCooldown = 8;
             return true;
         }
 
         if (cleanCooldown <= 0) {
             if (BurstTimt == 0) {
+                sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s1"));
                 GLog.h(Messages.get(this, "fire_ready"));
 
                 Sample.INSTANCE.play(Assets.Sounds.MIMIC);
                 SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
+
+                // 맵 전역에 TargetedCell 표시
+                for (int i = 0; i < Dungeon.level.length(); i++) {
+                    if (!Dungeon.level.solid[i]) {
+                        sprite.parent.addToBack(new TargetedCell(i, 0xFF00FF));
+                    }
+                }
 
                 Dungeon.hero.interrupt();
                 spend(1f);
@@ -523,26 +594,37 @@ public class Rebel extends Mob {
             GameScene.flash(0x8B00FF);
             new Fadeleaf().activate(this);
             new Fadeleaf().activate(hero);
-            distortionCooldown = 6;
-            Buff.prolong(this, Haste.class, 1_000_000);
+            distortionCooldown = 3;
             ACoolDown = 12;
-            summonCooldown = 0;
 
-            yell(Messages.get(this, "telling_1"));
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new RebelSprite(), new RebelSprite()},
+                    new String[]{"천국 DIO", "천국 DIO"},
+                    new String[]{
+                            Messages.get(Rebel.class, "telling_1"),
+                            Messages.get(Rebel.class, "telling_2")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE,
+                            WndDialogueWithPic.IDLE
+                    }
+            );
+
             sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
         } else if (Phase == 1 && HP < 900) {
             Phase = 2;
             GameScene.flash(0x8B00FF);
-            Buff.prolong(this, Bless.class, Bless.DURATION * 1_000_000);
 
             WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new PucciSprite(), new RebelSprite()},
-                    new String[]{"퍼니 발렌타인", "천국 DIO"},
+                    new CharSprite[]{new RebelSprite(), new PucciSprite(), new RebelSprite()},
+                    new String[]{"천국 DIO", "퍼니 발렌타인", "천국 DIO"},
                     new String[]{
-                            Messages.get(Rebel.class, "n5"),
-                            Messages.get(Rebel.class, "n6")
+                            Messages.get(Rebel.class, "telling_3"),
+                            Messages.get(Rebel.class, "telling_4"),
+                            Messages.get(Rebel.class, "telling_5")
                     },
                     new byte[]{
+                            WndDialogueWithPic.IDLE,
                             WndDialogueWithPic.IDLE,
                             WndDialogueWithPic.IDLE
                     }
@@ -554,12 +636,10 @@ public class Rebel extends Mob {
             GameScene.add(Pucci);
             Pucci.beckon(Dungeon.hero.pos);
 
-            yell(Messages.get(this, "telling_3"));
             sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
         } else if (Phase == 2 && HP < 600) {
             Phase = 3;
             GameScene.flash(0x8B00FF);
-            Buff.prolong(this, BlobImmunity.class, BlobImmunity.DURATION * 1_000_000);
             Buff.detach(this, Doom.class);
             Buff.affect(Dungeon.hero, MindVision.class, 3f);
             immunities.add(Doom.class);
@@ -765,7 +845,6 @@ public class Rebel extends Mob {
 
     }
 
-
     @Override
     public int defenseProc(Char enemy, int damage) {
         damage = super.defenseProc(enemy, damage);
@@ -830,9 +909,9 @@ public class Rebel extends Mob {
         if (Phase >= 1 && ACoolDown <= 0) {
             if (Burstpos == -1) {
                 // 위치 미지정시, 이번 턴에는 폭발을 일으킬 지점을 정합니다.
+                sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s2"));
                 Burstpos = Dungeon.hero.pos;
                 sprite.parent.addToBack(new TargetedCell(Burstpos, 0xFF00FF));
-                GLog.w(Messages.get(Rebel.class, "skill1"));
 
                 for (int i : PathFinder.NEIGHBOURS9) {
                     int vol = Fire.volumeAt(Burstpos + i, Fire.class);
@@ -911,15 +990,14 @@ public class Rebel extends Mob {
     public void ThorwGas(Char target) {
         Dungeon.hero.interrupt();
         GameScene.add(Blob.seed(target.pos, 250, Dominion.class));
-        GLog.w(Messages.get(Rebel.class, "skill2"));
+        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s3"));
         GasCoolDown = 10;
     }
 
     // ==================== DistortionTrap 패턴 ====================
 
     private void activateDistortionTrap() {
-        GLog.n(Messages.get(this, "distortion_start"));
-        yell(Messages.get(this, "distortion_yell"));
+        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s4"));
 
         // 플레이어 주변 이펙트
         for (int i : PathFinder.NEIGHBOURS8) {
@@ -942,7 +1020,8 @@ public class Rebel extends Mob {
 
     private void chargeGravityPull() {
         gravityCharging = true;
-        GLog.n(Messages.get(this, "gravity_charge"));
+        SpellSprite.show( this, SpellSprite.VISION );
+        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s5"));
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         sprite.centerEmitter().start(Speck.factory(Speck.MASK), 0.05f, 20);
 
@@ -958,7 +1037,7 @@ public class Rebel extends Mob {
     }
 
     private void activateGravityPull() {
-        yell(Messages.get(this, "gravity_pull"));
+
         Sample.INSTANCE.play(Assets.Sounds.BLAST);
         Camera.main.shake(8, 1f);
         GameScene.flash(0x8B00FF);
@@ -1068,7 +1147,8 @@ public class Rebel extends Mob {
         barrierSafeColumn = Random.Int(ARENA_LEFT + 1, ARENA_RIGHT);  // 14~18 사이
 
         GLog.n(Messages.get(this, "barrier_start"));
-        yell(Messages.get(this, "barrier_yell"));
+        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s6"));
+
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         Camera.main.shake(3, 0.5f);
 
@@ -1100,7 +1180,6 @@ public class Rebel extends Mob {
         if (barrierCurrentRow >= ARENA_BOTTOM) {
             barrierActive = false;
             barrierCurrentRow = 0;
-            GLog.p(Messages.get(this, "barrier_end"));
             Sample.INSTANCE.play(Assets.Sounds.SHATTER);
             spend(TICK);
             return;
@@ -1180,9 +1259,6 @@ public class Rebel extends Mob {
                     CellEmitter.center(cell).burst(BlastParticle.FACTORY, 10);
 
                     if (ch == Dungeon.hero) {
-                        GLog.n(Messages.get(this, "barrier_hit"));
-                        Camera.main.shake(5, 0.5f);
-
                         if (!ch.isAlive()) {
                             Dungeon.fail(getClass());
                             GLog.n(Messages.get(this, "barrier_kill"));
