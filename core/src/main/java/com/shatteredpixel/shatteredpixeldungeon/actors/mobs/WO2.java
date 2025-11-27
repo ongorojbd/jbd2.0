@@ -21,17 +21,13 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
@@ -42,8 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -57,12 +51,12 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class WO extends Mob {
+public class WO2 extends Mob {
 
     {
         spriteClass = MudaSprite.class;
 
-        HP = HT = 1200;
+        HP = HT = 600;
 
         defenseSkill = 25;
         EXP = 0;
@@ -141,7 +135,7 @@ public class WO extends Mob {
         if (wireCD > 0) wireCD--;
         if (chessboardCD > 0) chessboardCD--;
         if (teleportCD > 0) teleportCD--;
-
+        this.sprite.add(CharSprite.State.INVISIBLE);
         // resolve chessboard windup (체스판 패턴 중에도 자유롭게 행동 가능)
         if (chessboardWindup > 0) {
             chessboardWindup--;
@@ -205,18 +199,6 @@ public class WO extends Mob {
         super.damage(dmg, src);
     }
 
-    @Override
-    public void die(Object cause) {
-        super.die(cause);
-
-        // Rebel 보스의 무적 해제 조건 체크
-        for (Char ch : Actor.chars()) {
-            if (ch instanceof Rebel) {
-                ((Rebel) ch).checkInvulnerabilityCondition();
-            }
-        }
-    }
-
     // 와이어(회오리 바람) - 도넛 3단계(작은→중간→큰)로 3턴 연속 타격
     private boolean telegraphWire() {
         wireCells.clear();
@@ -234,7 +216,7 @@ public class WO extends Mob {
             sprite.parent.addToBack(new TargetedCell(c, 0xFF00FF));
         }
         Sample.INSTANCE.play(Assets.Sounds.D11);
-        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s1"));
+        sprite.showStatus(CharSprite.WARNING, Messages.get(WO.class, "s1"));
         wireActive = true;
         wireStage = 0;
         wireWindup = 1; // resolve small ring next turn
@@ -315,7 +297,7 @@ public class WO extends Mob {
 
         Sample.INSTANCE.play(Assets.Sounds.D12);
         Camera.main.shake(9, 0.5f);
-        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s2"));
+        sprite.showStatus(CharSprite.WARNING, Messages.get(WO.class, "s2"));
         chessboardActive = true;
         chessboardStage = 0;
         chessboardWindup = 1; // 1턴 후 폭발
@@ -355,7 +337,7 @@ public class WO extends Mob {
             }
             Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
             Camera.main.shake(9, 0.5f);
-            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s2"));
+            sprite.showStatus(CharSprite.WARNING, Messages.get(WO.class, "s2"));
 
             // 다음 단계: 검정색 폭발 대기
             chessboardStage = 2;
@@ -403,8 +385,8 @@ public class WO extends Mob {
         if (!validCells.isEmpty()) {
             int targetCell = Random.element(validCells);
             ScrollOfTeleportation.appear(this, targetCell);
-            d2class();
-            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s3"));
+            WO.d2class();
+            sprite.showStatus(CharSprite.WARNING, Messages.get(WO.class, "s3"));
             teleportCD = 8;
             spend(1f);
         }
@@ -430,51 +412,4 @@ public class WO extends Mob {
         teleportCD = bundle.getInt(TELEPORT_CD);
     }
 
-    public static void d2class() {
-        switch (Random.Int(4)) {
-            case 0:
-                Sample.INSTANCE.play(Assets.Sounds.D21);
-                break;
-            case 1:
-                Sample.INSTANCE.play(Assets.Sounds.D22);
-                break;
-            case 2:
-                Sample.INSTANCE.play(Assets.Sounds.D23);
-                break;
-            case 3:
-                Sample.INSTANCE.play(Assets.Sounds.D24);
-                break;
-        }
-    }
-
-    public static void d3class() {
-        switch (Random.Int(5)) {
-            case 0:
-                Sample.INSTANCE.play(Assets.Sounds.D31);
-                break;
-            case 1:
-                Sample.INSTANCE.play(Assets.Sounds.D32);
-                break;
-            case 2:
-                Sample.INSTANCE.play(Assets.Sounds.D33);
-                break;
-            case 3:
-                Sample.INSTANCE.play(Assets.Sounds.D34);
-                break;
-            case 4:
-                Sample.INSTANCE.play(Assets.Sounds.D35);
-                break;
-        }
-    }
-
-    public static void d4class() {
-        switch (Random.Int(2)) {
-            case 0:
-                Sample.INSTANCE.play(Assets.Sounds.D41);
-                break;
-            case 1:
-                Sample.INSTANCE.play(Assets.Sounds.D43);
-                break;
-        }
-    }
 }

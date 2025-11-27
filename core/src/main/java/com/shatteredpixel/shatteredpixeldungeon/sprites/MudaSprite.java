@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -34,12 +35,15 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class MudaSprite extends MobSprite {
 
     int cellToAttack;
+
+    private Emitter chargeParticles;
 
     public MudaSprite() {
         super();
@@ -65,5 +69,33 @@ public class MudaSprite extends MobSprite {
         scale.set(0.65f);
 
         play( idle );
+    }
+
+    @Override
+    public void link(Char ch) {
+        super.link(ch);
+
+        chargeParticles = centerEmitter();
+        chargeParticles.autoKill = true;
+        chargeParticles.pour(MagicMissile.MagicParticle.ATTRACTING, 0.05f);
+        chargeParticles.on = true;
+
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        if (chargeParticles != null){
+            chargeParticles.pos( center() );
+            chargeParticles.visible = visible;
+        }
+    }
+
+    @Override
+    public void die() {
+        super.die();
+        if (chargeParticles != null){
+            chargeParticles.on = false;
+        }
     }
 }

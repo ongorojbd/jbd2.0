@@ -421,6 +421,20 @@ public class Assets {
         public static final String JT6 = "sounds/jt6.mp3";
         public static final String JT7 = "sounds/jt7.mp3";
         public static final String POL = "sounds/polpo.mp3";
+        public static final String D11 = "sounds/d11.mp3";
+        public static final String D12 = "sounds/d12.mp3";
+        public static final String D21 = "sounds/d21.mp3";
+        public static final String D22 = "sounds/d22.mp3";
+        public static final String D23 = "sounds/d23.mp3";
+        public static final String D24 = "sounds/d24.mp3";
+        public static final String D31 = "sounds/d31.mp3";
+        public static final String D32 = "sounds/d32.mp3";
+        public static final String D33 = "sounds/d33.mp3";
+        public static final String D34 = "sounds/d34.mp3";
+        public static final String D35 = "sounds/d35.mp3";
+        public static final String D41 = "sounds/d41.mp3";
+        public static final String D42 = "sounds/d42.mp3";
+        public static final String D43 = "sounds/d43.mp3";
 
         public static final String[] all = new String[]{
                 CLICK, BADGE, GOLD,
@@ -442,6 +456,7 @@ public class Assets {
                 KIRA1, KIRA2, KIRA3, KIRA4, KIRA5, KIRA6,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
                 MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
+                D11, D12, D21, D22, D23, D24, D31, D32, D33, D34, D35, D41, D42, D43,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, HORSE, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA, POL,
                 JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5, JT6, JT7

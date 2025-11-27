@@ -112,23 +112,7 @@ public class jojo extends Mob {
         }
 
         if (!seenBefore) {
-            switch(Dungeon.hero.heroClass){
-                case WARRIOR:
-                    this.yell(Messages.get(this, "notice"));
-                    break;
-                case ROGUE:
-                    this.yell(Messages.get(this, "notice2"));
-                    break;
-                case MAGE:
-                    this.yell(Messages.get(this, "notice3"));
-                    break;
-                case HUNTRESS:
-                    this.yell(Messages.get(this, "notice4"));
-                    break;
-            }
-
             new Flare( 5, 32 ).color( 0x00FFFF, true ).show( this.sprite, 3f );
-            Sample.INSTANCE.play( Assets.Sounds.YAREYARE, 3 );
         }
 
         seenBefore = true;
