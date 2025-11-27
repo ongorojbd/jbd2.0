@@ -41,7 +41,7 @@ public class Dominion extends Blob implements Hero.Doom {
             for (int j = area.top; j < area.bottom; j++){
                 cell = i + j* Dungeon.level.width();
                 if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
-                    if (!ch.isImmune(this.getClass()) && !(ch instanceof Rebel)) {
+                    if (!ch.isImmune(this.getClass()) && ch.alignment != Char.Alignment.ENEMY) {
                         Buff.prolong(ch, Weakness.class, 1);
                         Buff.prolong(ch, Vulnerable.class, 1);
                         Buff.prolong(ch, Hex.class, 1);

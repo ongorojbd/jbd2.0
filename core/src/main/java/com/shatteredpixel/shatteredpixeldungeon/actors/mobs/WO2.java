@@ -56,7 +56,7 @@ public class WO2 extends Mob {
     {
         spriteClass = MudaSprite.class;
 
-        HP = HT = 600;
+        HP = HT = 500;
 
         defenseSkill = 25;
         EXP = 0;

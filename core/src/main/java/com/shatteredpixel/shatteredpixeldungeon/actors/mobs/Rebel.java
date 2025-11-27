@@ -294,19 +294,19 @@ public class Rebel extends Mob {
         String desc = super.description();
 
         if (Dungeon.mboss4 == 1) {
-            desc += "\n" + Messages.get(this, "p1");
+            desc += "\n\n" + Messages.get(this, "p1");
         }
 
         if (Dungeon.mboss9 == 1) {
-            desc += "\n" + Messages.get(this, "p2");
+            desc += "\n\n" + Messages.get(this, "p2");
         }
 
         if (Dungeon.mboss14 == 1) {
-            desc += "\n" + Messages.get(this, "p3");
+            desc += "\n\n" + Messages.get(this, "p3");
         }
 
         if (Dungeon.mboss19 == 1) {
-            desc += "\n" + Messages.get(this, "p4");
+            desc += "\n\n" + Messages.get(this, "p4");
         }
 
         return desc;
@@ -479,7 +479,7 @@ public class Rebel extends Mob {
         if (Phase >= 1 && distortionCooldown <= 0 && enemy != null) {
             activateDistortionTrap();
             distortionCooldown = Random.NormalIntRange(15, 20);
-            if (Phase == 5) distortionCooldown = 8;
+            if (Phase == 5) distortionCooldown = 12;
             return true;
         }
 
@@ -528,7 +528,6 @@ public class Rebel extends Mob {
                     Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
                 }
 
-
                 BurstTimt = 0;
 
                 for (int i = 0; i < 1122; i++) {
@@ -542,7 +541,8 @@ public class Rebel extends Mob {
                         GameScene.updateMap(i);
                     }
                 }
-                cleanCooldown = (35);
+
+                cleanCooldown = Random.NormalIntRange(22, 25);
 
                 return true;
             }
@@ -600,8 +600,8 @@ public class Rebel extends Mob {
         if (Phase == 0 && HP < 1250) {
             Phase = 1;
             GameScene.flash(0x8B00FF);
-            distortionCooldown = 2;
-            gravityCooldown = 5;
+            distortionCooldown = 3;
+            gravityCooldown = 6;
 
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new RebelSprite(), new RebelSprite()},
@@ -673,6 +673,10 @@ public class Rebel extends Mob {
             WO.pos = bottomDoor - 12 * 33;
             GameScene.add(WO);
             WO.beckon(Dungeon.hero.pos);
+
+            if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1) {
+                Buff.affect(WO, Adrenaline.class, 1_000_000);
+            }
 
             // 무적 활성화!
             activateInvulnerability();
@@ -810,7 +814,7 @@ public class Rebel extends Mob {
 
         // Rebel 사망 시 모든 몬스터 제거
         for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
-            if (mob != this) {
+            if (mob != this && mob.alignment == Char.Alignment.ENEMY) {
                 mob.die(cause);
             }
         }
@@ -981,7 +985,7 @@ public class Rebel extends Mob {
                         Char Target = hero;
                         if (Target.buff(PortableCover2.CoverBuff.class) == null) {
                             // ensure we test hit against the actual character in the cell, if present
-                            if (ch != null && !(ch instanceof Rebel)) {
+                            if (ch != null && ch.alignment != Char.Alignment.ENEMY) {
                                 if (hit(this, ch, true)) {
                                     ch.damage(Random.NormalIntRange(65, 70), new SummoningBlockDamage3());
                                 } else {
@@ -1292,6 +1296,7 @@ public class Rebel extends Mob {
                 CellEmitter.get(cell).burst(MagicMissile.WardParticle.UP, 8);
                 if (ch instanceof Hero) {
                     ch.damage(Random.NormalIntRange(40, 50), new SummoningBlockDamage3());
+                    Buff.affect(ch, Paralysis.class, 1f);
                 }
             }
         }
@@ -1310,9 +1315,6 @@ public class Rebel extends Mob {
             if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
                 Char ch = Actor.findChar(cell);
                 if (ch != null && ch != this && ch.alignment != alignment) {
-                    // 피해 적용
-                    ch.damage(BARRIER_DAMAGE, new BarrierDamage());
-                    Buff.affect(ch, Cripple.class, 2f);
 
                     CellEmitter.center(cell).burst(BlastParticle.FACTORY, 10);
 

@@ -167,7 +167,7 @@ public class Wraith extends Mob {
 
 			if (w instanceof TormentedSpirit){
 				w.sprite.emitter().burst(ChallengeParticle.FACTORY, 10);
-				GLog.w(Messages.get(TormentedSpirit.class, "notice"));
+				GLog.n(Messages.get(TormentedSpirit.class, "notice"));
 				Sample.INSTANCE.play(Assets.Sounds.YOSHIHIRO);
 			} else {
 				w.sprite.emitter().burst(ShadowParticle.CURSE, 5);

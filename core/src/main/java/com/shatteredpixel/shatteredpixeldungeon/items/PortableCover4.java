@@ -46,7 +46,7 @@ public class PortableCover4 extends Item {
                 GLog.w(Messages.get(this, "not_ready"));
             }
             else {
-                Buff.append(curUser, PortableCover4.CoverBuff.class, 1f);
+                Buff.append(curUser, PortableCover4.CoverBuff.class, 3f);
                 Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.MASK),20);
                 new Flare( 5, 32 ).color( 0x9999FF, true ).show( hero.sprite, 1f );
                 hero.sprite.operate(hero.pos);

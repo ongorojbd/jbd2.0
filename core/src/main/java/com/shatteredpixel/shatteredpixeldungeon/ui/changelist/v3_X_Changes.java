@@ -51,12 +51,9 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
-        add_v3_2_3_Changes(changeInfos);
-        add_v3_2_2_Changes(changeInfos);
-        add_v3_2_1_Changes(changeInfos);
+        add_v3_3_Changes(changeInfos);
         add_v3_2_Changes(changeInfos);
         add_v3_1_Changes(changeInfos);
-        add_a_Changes(changeInfos);
         add_jolyne_Changes(changeInfos);
     }
 
@@ -67,16 +64,16 @@ public class v3_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image(new ImpSprite()), "17~19층 퀘스트 개편",
-                "3.0d에서 제공될 주요 콘텐츠 개선사항은 오시리스신 퀘스트 개편입니다.\n" +
+                "3.0e에서 제공될 주요 콘텐츠 개선사항은 오시리스신 퀘스트 개편입니다.\n" +
                         "죠니 퀘스트 개편과 마찬가지로, 이 새로운 퀘스트는 독특한 게임플레이를 가진 던전의 새로운 하위 지역으로 플레이어를 보낼 것입니다."));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO7), "???",
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "천국DIO 리워크",
                 "스틸 볼 런 애니화 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
 
     }
-    public static void add_v3_2_3_Changes(ArrayList<ChangeInfo> changeInfos) {
+    public static void add_v3_3_Changes(ArrayList<ChangeInfo> changeInfos) {
 
-        ChangeInfo changes = new ChangeInfo("v3.0c3", true, "");
+        ChangeInfo changes = new ChangeInfo("v3.0d", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -84,85 +81,135 @@ public class v3_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.VAMPIRESOLDIERNEW, 0, 0, 12, 15), "전투조류 추가 업데이트",
-                "전투조류 던전의 추가 컨텐츠가 있습니다!\n" +
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.THROWING_SPEAR), "투척 무기 리워크",
+                "투척 무기가 업그레이드할 가치가 있도록 대대적으로 개편되었습니다!\n" +
                         "\n" +
-                        "- 신규 적, 보스가 추가되었습니다."));
+                        "- 투척 무기는 이제 3개 세트로 등장하며, 세트는 섞이지 않습니다.\n" +
+                        "- 투척 무기 기본 내구도가 3x5/8/12로 증가했습니다 (기존 2x5/10/15에서).\n" +
+                        "- 세트는 단위로 업그레이드되며 (3개 모두), 업그레이드하면 세트가 완전히 수리됩니다.\n" +
+                        "- 업그레이드는 이제 내구도를 1.5배 증가시킵니다 (기존 3배에서 감소).\n" +
+                        "- 투척 무기의 기본 업그레이드당 데미지 증가가 1티어로 감소했습니다 (기존 2티어에서).\n" +
+                        "- 세트는 속성 부여, 저주, 강화, 미식별 등이 가능합니다.\n" +
+                        "- 세트는 자연 업그레이드, 속성 부여, 또는 저주와 함께 등장할 수 있습니다.\n" +
+                        "- 몇몇 특별한 방에서 더 높은 가치의 투척 무기 세트가 등장할 확률이 있습니다.\n" +
+                        "\n" +
+                        "보우건 탄환은 이러한 변경사항의 영향을 받지 않으며, 사실상 모두 같은 세트에 속하고 여전히 업그레이드할 수 없습니다."));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.DANNY, 0, 0, 29, 16), "신규 NPC",
+                "_신규 던전_이 추가되었습니다!\n" +
+                        "\n" +
+                        "- 전투조류 던전은 첫 클리어 이후 캐릭터 선택 화면에서 언제든지 선택하여 플레이할 수 있습니다!\n" +
+                        "- 기존 던전과는 다른 독립적인 진행 방식을 제공합니다.\n" +
+                        "- 새로운 적, 아이템, 그리고 환경 요소들이 포함되어 있습니다.\n" +
+                        "- 전투조류 관련 신규 뱃지도 추가되었습니다!" +
+                        "\n\n" +
+                        "베타 버전 안내:\n" +
+                        "- 현재 전투조류 던전은 베타 테스트 단계입니다.\n" +
+                        "- 밸런스 조정과 컨텐츠 추가가 지속적으로 이루어질 예정입니다.\n" +
+                        "- 플레이어 피드백을 바탕으로 추가 개선사항이 적용될 수 있습니다."));
+
+        changes.addButton(new ChangeButton(new BuffIcon(BuffIndicator.ILLUMINATED, true), "명중 및 회피 아이콘",
+                "정확도나 회피력을 변경하는 거의 모든 효과에 대해, 해당 효과가 공격 명중이나 실패의 원인일 때 표시되는 아이콘이 추가되었습니다!\n" +
+                        "\n" +
+                        "이를 통해서 다양한 버프/디버프가 명중률에 얼마나 차이를 만드는지 훨씬 쉽게 알 수 있게 됩니다.\n" +
+                        "\n" +
+                        "총 12개의 명중 아이콘과 11개의 실패 아이콘이 있습니다."));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.PASSIONE, 0, 15, 12, 15), "파시오네 호위팀",
+                "- 파시오네 조직의 간부인 폴포가 이제 특정 비밀 방에서 등장합니다.\n" +
+                        "- 폴포에게 보수를 지불하면 파시오네 호위팀 중 한 명을 무작위로 고용할 수 있습니다\n" +
+                        "- 호위팀원들은 각각 고유한 능력과 특성을 가지고 있습니다"));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.DISPLAY), "인터페이스 변경",
-                        "- 메인 메뉴에 인터페이스를 숨기는 버튼이 추가되었습니다.\n" +
-                        "- 체력바가 이제 HP 위가 아닌 HP에 추가로 보호막을 표시합니다.\n" +
-                        "- 경험치바가 이동되어 훨씬 더 잘 보이게 되었습니다.\n" +
-                        "- 버프 목록이 이제 두 줄을 지원합니다."));
-    }
-
-    public static void add_v3_2_2_Changes(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("v3.0c2", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.TUSK3, 0, 0, 12, 15), "전투조류 추가 업데이트",
-                "전투조류 던전의 추가 컨텐츠가 있습니다!\n" +
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.REBEL, 0, 0, 16, 16), "천국DIO 리워크",
+                "수리 물약도 투척 무기의 전반적인 변경사항에 맞춰 변경되었습니다:\n" +
                         "\n" +
-                        "- 신규 적, 보스가 추가되었습니다.\n" +
-                        "- 신규 보상이 추가되었습니다."));
+                        "- 제작법 조정: 이제 식별되고 저주받지 않은 투척 무기 세트 하나를 필요로 하며 항상 3 에너지를 소모합니다.\n" +
+                        "- 수리 물약은 이제 세트에서 분실/파손된 투척 무기를 교체할 수 있습니다 (일반적인 3개 한도까지)\n" +
+                        "- 수리 물약의 업그레이드당 증가율이 2배에서 1.33배로 감소했습니다."));
 
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.SURVIVALISTS_INTUITION), "죠르노 특성 변경",
+                "- 냉철함 특성은 이제 죠르노가 +1에서 투척 무기를 3배 속도로 식별하거나 +2에서 사용 시 즉시 식별할 수 있게 해줍니다.\n\n이전에는 +1에서 모든 아이템의 식별 속도를 1.75배, +2에서 2.5배 증가시켰습니다."));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KUNAI), "투척 무기 변경",
-                "투척 무기들은 전반적으로 매우 좋은 성과를 보이고 있습니다! 여전히 인기도는 낮지만, 사람들이 실제로 투척 무기를 업그레이드하기 시작했고, 투척 무기들이 동급의 근접 무기들과 경쟁력을 갖추게 되었습니다.\n" +
-                        "\n" +
-                        "상향:\n" +
-                        "- 렉킹 볼과 황금의 회전의 철구를 이제 땅에서 즉시 주워들 수 있습니다.\n" +
-                        "- 완전생물의 다람쥐의 기본 내구도가 5에서 8로 증가.\n" +
-                        "- 완전생물의 다람쥐의 피해 증가량이 1-2에서 1-3으로 증가.\n" +
-                        "- DISC가 심어진 독개구리의 기본 피해량이 5-20에서 다시 5-25로 증가."
-                ,
-                "하향:\n" +
-                        "- 크래커 볼리의 불구 지속시간이 10에서 5로 감소.\n" +
-                        "- 노토리어스 B.I.G의 피해 증가량이 1-4에서 1-3으로 감소.\n" +
-                        "- 노토리어스 B.I.G을 투척했을 때 돌아오는 턴이 3턴에서 4턴으로 증가."));
-    }
-
-    public static void add_v3_2_1_Changes(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("v3.0c1", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TENS), "전투조류 추가 업데이트",
-                "전투조류 던전의 추가 컨텐츠가 있습니다!\n" +
-                        "\n" +
-                        "- 신규 적, 보스가 추가되었습니다.\n" +
-                        "- 신규 보상이 추가되었습니다.\n" +
-                        "- 상점 물품이 리워크되었습니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO1), "만화책 변경",
+                "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
-                "버그 수정:\n" +
-                        "- 총기류 무기가 발사되지 않던 버그가 수정되었습니다.\n" +
-                        "- 코코 잠보에서 무기류를 선택하지 못하던 버그가 수정되었습니다.\n" +
-                        "- 오렌지 폭탄으로 피해를 줄 수 없었던 버그가 수정되었습니다."));
-    }
+                "주요 사항:\n" +
+                        "- 죠니의 장비 선택 옵션이 이제 2개의 근접 무기와 1개의 갑옷에 추가로 투척 무기를 제공합니다\n" +
+                        "- 투척 무기(전갈 투척 포함)는 이제 대상을 겨누지 않으면 항상 1턴의 투척 지연이 있습니다\n" +
+                        "- 역행은 이제 천국의 DISC가 처음 약화될 때 항상 플레이어에게 알립니다\n" +
+                        "- 쇼트 키 No. 2는 더 이상 수동적인 적을 겨누지 않습니다\n" +
+                        "\n" +
+                        "투척 무기:\n" +
+                        "- 강화는 이제 공격 속도에 미치는 영향에 따라 투척 무기 내구도에 영향을 줍니다\n" +
+                        "- 폭발 저주는 이제 발동 시 투척 무기의 사용 횟수를 소모합니다\n" +
+                        "기타:\n" +
+                        "- 대부분의 튜토리얼/가이드북 텍스트를 더 간결하게 개선했습니다\n" +
+                        "- 관찰의 명령 DISC의 추측 창이 이제 어떤 아이템을 추측하는지 보여줍니다"));
 
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.PROJECTILE_MOMENTUM), "투척 무기 특성 강화",
+                "투척 무기 변경의 일환으로 투척 무기와 상호작용하는 일부 특성이 강화됩니다:\n" +
+                        "\n" +
+                        "- 나이프 투척 특성의 정확도 증가가 대폭 상승하여 +1/2/3에서 +50/100/150%가 됩니다 (기존 +20/40/60%에서).\n" +
+                        "\n" +
+                        "- 자세 교정 특성은 이제 투척 무기와 전갈 투척 모두에 속성이 부여되어 있으면 두 속성 모두 발동할 수 있습니다."));
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "죠린 상향",
+                "- 동작 탐지 능력의 지속시간이 30턴에서 50턴으로 증가했습니다.\n" +
+                        "\n" +
+                        "의지의 스탠드사 버프:\n" +
+                        "- 실 펀치의 무료 사용 재사용 대기시간이 100턴에서 50턴으로 감소했습니다.\n" +
+                        "- 표적 상태는 이제 모든 능력으로 직접 대상이 된 적에게 적용됩니다."));
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "죠나단 상향",
+                "- 흔들림 없는 용기는 이제 +1/2/3에서 연속 공격 수치와 보호막의 감소를 33/67/100% 늦춥니다.\n" +
+                        "\n" +
+                        "- 연속 공격은 이제 적을 죽이면 15턴 동안 지속됩니다.\n" +
+                        "- 정신적인 폭발력의 연속 공격 지속시간 증가가 +1/2/3에서 30/45/60턴으로 증가했습니다 (기존 15/30/45턴에서)."));
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 6), "적석의 수호자 상향",
+                "적석의 수호자의 일부 근접 공격 효과가 더 흥미롭고 강력하게 변경되었습니다:\n" +
+                        "\n" +
+                        "- 매지션즈 레드 융합: 이제 화염을 폭발시켜 날려버릴 확률이 발생하고, 적에게 데미지를 줍니다.\n" +
+                        "- 레드 핫 칠리 페퍼 융합: 이제 번개 면역과 추가 전류 사거리를 부여합니다.\n" +
+                        "- C-MOON 융합: 이제 적에게 부여된 마비를 소모하여 큰 추가 피해를 줍니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(CharSprite.NEGATIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMAHAWK), "투척 무기 하향",
+                "투척 무기 리워크에 따른 조정이 있습니다.\n" +
+                        "\n" +
+                        "- 킹 크림슨의 주먹의 즉시 투척 조건이 단순한 20턴 쿨다운으로 변경되었습니다\n" +
+                        "- 완전생물의 다람쥐의 기본 데미지가 6-15에서 6-12로 감소했습니다\n" +
+                        "- 크래커 볼리의 피해 증가량이 1-3에서 1-2로 감소했습니다\n" +
+                        "- 노토리어스 B.I.G의 내구도가 8에서 5로 감소했습니다\n" +
+                        "- DIO의 나이프의 피해 증가량이 1-4에서 1-3으로 감소했습니다\n" +
+                        "- DIO의 나이프의 출혈 확률이 60%에서 33%로 감소했지만, 이제 적의 방어력을 무시하는 별도의 판정입니다\n" +
+                        "- DISC가 심어진 독개구리의 기본 데미지가 10-25에서 10-20으로 감소했습니다"));
+
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.SHARED_UPGRADES), "투척 무기 특성 하향",
+                "투척 무기 변경의 일환으로 일부 특성도 너프됩니다:\n" +
+                        "\n" +
+                        "- 나이프 투척 특성의 데미지 증가율이 +1/2/3에서 +10/20/30%로 감소했습니다 (기존 +15/30/45%에서)\n" +
+                        "\n" +
+                        "- 생명력 주입 특성의 내구도 증가율이 +1/+2에서 +33%/+50%로 감소했습니다 (기존 +50%/+75%에서)\n" +
+                        "- 자세 교정 특성이 이제 투척 무기 레벨당 고정 +16.67% 데미지 증가와 +1 지속시간을 부여하지만, 특성 레벨 1/2/3에서 +33/67/100% 데미지와 +2/4/6 지속시간으로 제한됩니다."));
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "용기의 파문전사 하향",
+                "- 파문 에너지의 획득 및 손실 속도가 25% 감소했습니다\n" +
+                        "- 파문 가드의 보호막이 10+2*레벨에서 8+2*레벨로 감소했습니다 (브로치의 레벨)"));
+
+    }
     public static void add_v3_2_Changes(ArrayList<ChangeInfo> changeInfos) {
 
         ChangeInfo changes = new ChangeInfo("v3.0c", true, "");
@@ -446,30 +493,8 @@ public class v3_X_Changes {
 
     }
 
-    private static void add_a_Changes(ArrayList<ChangeInfo> changeInfos) {
-        ChangeInfo changes = new ChangeInfo("v3.0a", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo("새로운 요소", false, null);
-        changes.hardlight(CharSprite.POSITIVE);
-        changeInfos.add(changes);
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.WILLSON, 0, 0, 23, 14), "신규 npc",
-                "이제 오시리스신의 지도가 아닌 카이로 시내에 있는 상원의원을 통해서 미니 던전에 입장할 수 있습니다."));
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.VAMPIRE, 0, 0, 12, 16), "미니 던전 추가",
-                "신규 미니 던전인 _쌍두룡의 방_이 추가되었습니다!"));
-        changes = new ChangeInfo("변경", false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CM), "편의성 개선",
-                "메이드 인 헤븐의 장비 DISC의 전 단계인, C-MOON(각성)의 DISC의 능력이 추가되었습니다.\n\n" +
-                        "이제 로한과 도박을 할 때 보유 골드와 획득 골드가 출력됩니다.\n\n" +
-                        "시드 검색 및 시드 분석이 클리어 포인트를 소모하는 방식으로 변경되었습니다."));
-    }
-
     private static void add_jolyne_Changes(ArrayList<ChangeInfo> changeInfos) {
-        ChangeInfo changes = new ChangeInfo("v3.0", true, "");
+        ChangeInfo changes = new ChangeInfo("v3.0a", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -489,6 +514,11 @@ public class v3_X_Changes {
                         "_스탠드 전개_: 죠린은 스탠드 전개를 통해서 몸을 실로 변형하고 새로운 능력, 추가 공격 범위, 보호막을 얻습니다.\n\n" +
                         "_버닝 다운 더 하우스_: 엠포리오의 도움으로 버닝 다운 더 하우스의 능력을 사용할 수 있습니다.\n\n" +
                         "_동료의 유대_: 기존 동료를 강화하거나 스톤 프리를 소환할 수 있습니다."));
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.VAMPIRE, 0, 0, 12, 16), "미니 던전 추가",
+                "신규 미니 던전인 _쌍두룡의 방_이 추가되었습니다!"));
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.WILLSON, 0, 0, 23, 14), "신규 npc",
+                "이제 오시리스신의 지도가 아닌 카이로 시내에 있는 상원의원을 통해서 미니 던전에 입장할 수 있습니다."));
+
 
         changes = new ChangeInfo("변경", false, null);
         changes.hardlight(CharSprite.WARNING);
@@ -498,6 +528,10 @@ public class v3_X_Changes {
                 "이제 게임 진행 화면에서 최대 6개의 진행 중인 게임이 표시되고 정렬 옵션이 추가되었습니다."));
         changes.addButton(new ChangeButton(new BuffIcon(BuffIndicator.LOCKED_FLOOR, true), "보스 컷씬 추가",
                 "이제 각 보스에 전용 컷씬이 추가됩니다."));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CM), "편의성 개선",
+                "메이드 인 헤븐의 장비 DISC의 전 단계인, C-MOON(각성)의 DISC의 능력이 추가되었습니다.\n\n" +
+                        "이제 로한과 도박을 할 때 보유 골드와 획득 골드가 출력됩니다.\n\n" +
+                        "시드 검색 및 시드 분석이 클리어 포인트를 소모하는 방식으로 변경되었습니다."));
 
         changes = new ChangeInfo("상향", false, null);
         changes.hardlight(Window.TITLE_COLOR);

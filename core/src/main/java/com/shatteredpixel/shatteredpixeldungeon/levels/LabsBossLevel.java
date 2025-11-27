@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Emporio2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Josuke8;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -128,17 +129,9 @@ public class LabsBossLevel extends Level {
 
 		buildLevel();
 
-//		Emporio2 npc = new Emporio2();
-//		npc.pos = 30 * width() + 16;
-//		mobs.add( npc );
-//
-//		Emporio2 npc2 = new Emporio2();
-//		npc2.pos = 28 * width() + 14;
-//		mobs.add( npc2 );
-//
-//		Emporio2 npc3 = new Emporio2();
-//		npc3.pos = 28 * width() + 18;
-//		mobs.add( npc3 );
+		Josuke8 npc = new Josuke8();
+		npc.pos = 30 * width() + 26;
+		mobs.add( npc );
 
 		return true;
 	}
@@ -188,7 +181,7 @@ public class LabsBossLevel extends Level {
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, D, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, C, i, i, i, C, W, W, W, i, i, i, i, i, i, i, i, i, W, W, W, C, i, i, i, C, W, W, W, W,
 			W, W, W, W, i, e, e, e, i, W, W, W, i, J, t, e, e, e, t, J, i, W, W, W, i, e, e, e, i, W, W, W, W,
-			W, W, W, W, i, e, s, e, i, i, i, D, i, J, t, e, E, e, t, J, i, D, i, i, i, e, s, e, i, W, W, W, W,
+			W, W, W, W, i, e, s, e, i, i, i, D, i, J, t, e, E, e, t, J, i, D, i, i, i, e, e, e, i, W, W, W, W,
 			W, W, W, W, i, e, e, e, i, W, W, W, i, J, t, e, e, e, t, J, i, W, W, W, i, e, e, e, i, W, W, W, W,
 			W, W, W, W, C, i, i, i, C, W, W, W, i, i, i, i, i, i, i, i, i, W, W, W, C, i, i, i, C, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W

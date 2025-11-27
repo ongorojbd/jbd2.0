@@ -21,9 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MandomSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -68,11 +71,7 @@ public class Mandom extends Mob {
 
         super.die(cause);
 
-        InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-        InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth -1));
-        InterlevelScene.returnBranch = 0;
-        InterlevelScene.returnPos = -2;
-        Game.switchScene(InterlevelScene.class);
+        new Fadeleaf().activate(hero);
 
     }
 

@@ -566,13 +566,6 @@ public class YogDzewa extends Mob {
         }
         Bestiary.skipCountingEncounters = false;
 
-        Item pick = new NitoDismantleHammer2();
-        if (pick.doPickUp(Dungeon.hero)) {
-
-        } else {
-            Dungeon.level.drop(pick, Dungeon.hero.pos).sprite.drop();
-        }
-
         updateVisibility(Dungeon.level);
 
         GameScene.bossSlain();
