@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.watabou.utils.Random;
@@ -89,7 +90,7 @@ public class MobSpawner extends Actor {
                             Zombiedog.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(
-                            Rat.class, Rat.class, Rat.class,
+                            DArby.class, Rat.class, Rat.class,
                             Snake.class));
                 }
             case 2:
@@ -500,7 +501,26 @@ public class MobSpawner extends Actor {
                         VampireChariot.class, VampireChariot.class));
             case 44:
                 return new ArrayList<>(Arrays.asList(VampireChariot.class));
-
+            case 45:
+                return new ArrayList<>(Arrays.asList(VampireChariot.class));
+            case 46:
+                return new ArrayList<>(Arrays.asList(KS1.class, KS2.class));
+            case 47:
+                return new ArrayList<>(Arrays.asList(KS1.class, KS2.class));
+            case 48:
+                return new ArrayList<>(Arrays.asList(KS1.class, KS2.class, KS1.class, KS2.class, KS3.class));
+            case 49:
+                return new ArrayList<>(Arrays.asList(KS1.class, KS2.class, KS3.class));
+            case 50:
+                return new ArrayList<>(Arrays.asList(KS1.class, KS2.class, KS3.class, KS4.class));
+            case 51:
+                return new ArrayList<>(Arrays.asList(KS1.class, KS2.class, KS4.class, KS4.class));
+            case 52:
+                return new ArrayList<>(Arrays.asList(KS3.class, KS4.class));
+            case 53:
+                return new ArrayList<>(Arrays.asList(KS4.class));
+            case 54:
+                return new ArrayList<>(Arrays.asList(KS4.class));
         }
     }
 
@@ -521,11 +541,9 @@ public class MobSpawner extends Actor {
                 case 7:
                     if (Random.Float() < 0.035f) rotation.add(Stower.class);
                     return;
-
                 case 8:
                     if (Random.Float() < 0.025f) rotation.add(Stower.class);
                     return;
-
                 case 9:
                     if (Random.Float() < 0.025f) rotation.add(Bat.class);
                     return;
@@ -543,24 +561,28 @@ public class MobSpawner extends Actor {
                     if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
                     if (Random.Float() < 0.025f) rotation.add(Mandom.class);
                     return;
-
                 case 19:
                     if (Random.Float() < 0.04f) rotation.add(Boytwo.class);
                     if (Random.Float() < 0.025f) rotation.add(Succubus.class);
                     if (Random.Float() < 0.02f) rotation.add(Retonio.class);
                     return;
-
                 case 21:
                     if (Random.Float() < 0.029f) rotation.add(Mandom.class);
                     if (Random.Float() < 0.02f) rotation.add(Retonio.class);
                     return;
-
                 case 23:
+                    if (Random.Float() < 0.03f) rotation.add(Cat.class);
                     if (Random.Float() < 0.031f) rotation.add(Mandom.class);
                     return;
-
+                case 24:
+                    if (Random.Float() < 0.03f) rotation.add(Cat.class);
+                    return;
                 case 27:
+                    if (Random.Float() < 0.03f) rotation.add(Cat.class);
                     if (Random.Float() < 0.04f) rotation.add(Retonio.class);
+                    return;
+                case 28:
+                    if (Random.Float() < 0.03f) rotation.add(Cat.class);
                     return;
             }
         }

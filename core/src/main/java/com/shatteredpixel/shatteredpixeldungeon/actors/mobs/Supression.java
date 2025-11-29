@@ -61,7 +61,7 @@ public class Supression extends Mob {
 		baseSpeed = 1f;
 
 		loot = new PotionOfShielding();
-		lootChance = 0.15f;
+		lootChance = 0.1f;
 	}
 
 	@Override

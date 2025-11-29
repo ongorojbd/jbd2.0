@@ -64,9 +64,8 @@ public class Medic extends Mob {
 		maxLvl = 30;
 
 		loot = new PotionOfShroudingFog();
-		lootChance = 0.15f;
+		lootChance = 0.1f;
 	}
-
 
 	@Override
 	public int damageRoll() {
@@ -121,12 +120,10 @@ public class Medic extends Mob {
 
 	public void setTraps(){
 
-
 		Trap[] trapClasses = new Trap[]{
 				new BurningTrap(),new ShockingTrap(),new ToxicTrap(),new DoobieTrap(),
 				new AlarmTrap(),new OozeTrap(),
 				new ConfusionTrap() ,new FrostTrap() ,new DistortionTrap() ,new TeleportationTrap() ,new FancakeTrap() };
-
 
 		int trapPos = trapPos();
 		if (trapPos != -1) {
@@ -256,7 +253,7 @@ public class Medic extends Mob {
 	@Override
 	public void move(int step, boolean travelling) {
 		if (travelling && enemySeen && trapcooldown <= 0 && lastEnemyPos != -1){
-			if (trapPos() != -1){
+			if (trapPos() != -1 && Dungeon.depth != 30){
 
 				setTraps();
 

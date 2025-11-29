@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DannySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HermitCrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
@@ -71,6 +72,7 @@ public class v3_X_Changes {
                 "스틸 볼 런 애니화 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
 
     }
+
     public static void add_v3_3_Changes(ArrayList<ChangeInfo> changeInfos) {
 
         ChangeInfo changes = new ChangeInfo("v3.0d", true, "");
@@ -81,7 +83,7 @@ public class v3_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.THROWING_SPEAR), "투척 무기 리워크",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME), "투척 무기 리워크",
                 "투척 무기가 업그레이드할 가치가 있도록 대대적으로 개편되었습니다!\n" +
                         "\n" +
                         "- 투척 무기는 이제 3개 세트로 등장하며, 세트는 섞이지 않습니다.\n" +
@@ -95,43 +97,47 @@ public class v3_X_Changes {
                         "\n" +
                         "보우건 탄환은 이러한 변경사항의 영향을 받지 않으며, 사실상 모두 같은 세트에 속하고 여전히 업그레이드할 수 없습니다."));
 
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.DANNY, 0, 0, 29, 16), "신규 NPC",
-                "_신규 던전_이 추가되었습니다!\n" +
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WONDROUS_RESIN), "투척 무기 리워크",
+                "투척 무기가 업그레이드할 가치가 있도록 대대적으로 개편되었습니다!\n" +
                         "\n" +
-                        "- 전투조류 던전은 첫 클리어 이후 캐릭터 선택 화면에서 언제든지 선택하여 플레이할 수 있습니다!\n" +
-                        "- 기존 던전과는 다른 독립적인 진행 방식을 제공합니다.\n" +
-                        "- 새로운 적, 아이템, 그리고 환경 요소들이 포함되어 있습니다.\n" +
-                        "- 전투조류 관련 신규 뱃지도 추가되었습니다!" +
-                        "\n\n" +
-                        "베타 버전 안내:\n" +
-                        "- 현재 전투조류 던전은 베타 테스트 단계입니다.\n" +
-                        "- 밸런스 조정과 컨텐츠 추가가 지속적으로 이루어질 예정입니다.\n" +
-                        "- 플레이어 피드백을 바탕으로 추가 개선사항이 적용될 수 있습니다."));
+                        "- 투척 무기는 이제 3개 세트로 등장하며, 세트는 섞이지 않습니다.\n" +
+                        "- 투척 무기 기본 내구도가 3x5/8/12로 증가했습니다 (기존 2x5/10/15에서).\n" +
+                        "- 세트는 단위로 업그레이드되며 (3개 모두), 업그레이드하면 세트가 완전히 수리됩니다.\n" +
+                        "- 업그레이드는 이제 내구도를 1.5배 증가시킵니다 (기존 3배에서 감소).\n" +
+                        "- 투척 무기의 기본 업그레이드당 데미지 증가가 1티어로 감소했습니다 (기존 2티어에서).\n" +
+                        "- 세트는 속성 부여, 저주, 강화, 미식별 등이 가능합니다.\n" +
+                        "- 세트는 자연 업그레이드, 속성 부여, 또는 저주와 함께 등장할 수 있습니다.\n" +
+                        "- 몇몇 특별한 방에서 더 높은 가치의 투척 무기 세트가 등장할 확률이 있습니다.\n" +
+                        "\n" +
+                        "보우건 탄환은 이러한 변경사항의 영향을 받지 않으며, 사실상 모두 같은 세트에 속하고 여전히 업그레이드할 수 없습니다."));
 
-        changes.addButton(new ChangeButton(new BuffIcon(BuffIndicator.ILLUMINATED, true), "명중 및 회피 아이콘",
-                "정확도나 회피력을 변경하는 거의 모든 효과에 대해, 해당 효과가 공격 명중이나 실패의 원인일 때 표시되는 아이콘이 추가되었습니다!\n" +
-                        "\n" +
-                        "이를 통해서 다양한 버프/디버프가 명중률에 얼마나 차이를 만드는지 훨씬 쉽게 알 수 있게 됩니다.\n" +
-                        "\n" +
-                        "총 12개의 명중 아이콘과 11개의 실패 아이콘이 있습니다."));
+        Image i = new Image(new DannySprite());
+        i.scale.set(PixelScene.align(0.75f));
+        changes.addButton(new ChangeButton(i, "신규 NPC",
+                "- 신규 NPC인 대니가 추가되었습니다.\n" +
+                        "- 대니는 던전의 숨겨진 방에서 만날 수 있습니다."));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.PASSIONE, 0, 15, 12, 15), "파시오네 호위팀",
                 "- 파시오네 조직의 간부인 폴포가 이제 특정 비밀 방에서 등장합니다.\n" +
                         "- 폴포에게 보수를 지불하면 파시오네 호위팀 중 한 명을 무작위로 고용할 수 있습니다\n" +
                         "- 호위팀원들은 각각 고유한 능력과 특성을 가지고 있습니다"));
 
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO1), "만화책 변경",
+                "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
+
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.KARS, 0, 0, 14, 15), "전투조류 컨텐츠 추가",
+                "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
+
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.REBEL, 0, 0, 16, 16), "천국DIO 리워크",
-                "수리 물약도 투척 무기의 전반적인 변경사항에 맞춰 변경되었습니다:\n" +
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.REBEL, 0, 0, 16, 16), "천국DIO 리메이크",
+                "천국에 도달한 DIO가 리메이크되었습니다!\n" +
                         "\n" +
-                        "- 제작법 조정: 이제 식별되고 저주받지 않은 투척 무기 세트 하나를 필요로 하며 항상 3 에너지를 소모합니다.\n" +
-                        "- 수리 물약은 이제 세트에서 분실/파손된 투척 무기를 교체할 수 있습니다 (일반적인 3개 한도까지)\n" +
-                        "- 수리 물약의 업그레이드당 증가율이 2배에서 1.33배로 감소했습니다."));
+                        "- 천국에 도달한 DIO의 오래된 패턴과 효과가 전면 수정되었습니다. 이제 더 역동적이고 균형 잡힌 전투 경험이 될 것입니다."));
 
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.SURVIVALISTS_INTUITION), "죠르노 특성 변경",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CHALICE3), "만화책 변경",
                 "- 냉철함 특성은 이제 죠르노가 +1에서 투척 무기를 3배 속도로 식별하거나 +2에서 사용 시 즉시 식별할 수 있게 해줍니다.\n\n이전에는 +1에서 모든 아이템의 식별 속도를 1.75배, +2에서 2.5배 증가시켰습니다."));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO1), "만화책 변경",
@@ -155,36 +161,12 @@ public class v3_X_Changes {
         changes.hardlight(CharSprite.POSITIVE);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.PROJECTILE_MOMENTUM), "투척 무기 특성 강화",
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.DURABLE_PROJECTILES), "투척 무기 특성 강화",
                 "투척 무기 변경의 일환으로 투척 무기와 상호작용하는 일부 특성이 강화됩니다:\n" +
                         "\n" +
                         "- 나이프 투척 특성의 정확도 증가가 대폭 상승하여 +1/2/3에서 +50/100/150%가 됩니다 (기존 +20/40/60%에서).\n" +
                         "\n" +
                         "- 자세 교정 특성은 이제 투척 무기와 전갈 투척 모두에 속성이 부여되어 있으면 두 속성 모두 발동할 수 있습니다."));
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "죠린 상향",
-                "- 동작 탐지 능력의 지속시간이 30턴에서 50턴으로 증가했습니다.\n" +
-                        "\n" +
-                        "의지의 스탠드사 버프:\n" +
-                        "- 실 펀치의 무료 사용 재사용 대기시간이 100턴에서 50턴으로 감소했습니다.\n" +
-                        "- 표적 상태는 이제 모든 능력으로 직접 대상이 된 적에게 적용됩니다."));
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "죠나단 상향",
-                "- 흔들림 없는 용기는 이제 +1/2/3에서 연속 공격 수치와 보호막의 감소를 33/67/100% 늦춥니다.\n" +
-                        "\n" +
-                        "- 연속 공격은 이제 적을 죽이면 15턴 동안 지속됩니다.\n" +
-                        "- 정신적인 폭발력의 연속 공격 지속시간 증가가 +1/2/3에서 30/45/60턴으로 증가했습니다 (기존 15/30/45턴에서)."));
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 6), "적석의 수호자 상향",
-                "적석의 수호자의 일부 근접 공격 효과가 더 흥미롭고 강력하게 변경되었습니다:\n" +
-                        "\n" +
-                        "- 매지션즈 레드 융합: 이제 화염을 폭발시켜 날려버릴 확률이 발생하고, 적에게 데미지를 줍니다.\n" +
-                        "- 레드 핫 칠리 페퍼 융합: 이제 번개 면역과 추가 전류 사거리를 부여합니다.\n" +
-                        "- C-MOON 융합: 이제 적에게 부여된 마비를 소모하여 큰 추가 피해를 줍니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
-        changes.hardlight(CharSprite.NEGATIVE);
-        changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMAHAWK), "투척 무기 하향",
                 "투척 무기 리워크에 따른 조정이 있습니다.\n" +
@@ -197,19 +179,23 @@ public class v3_X_Changes {
                         "- DIO의 나이프의 출혈 확률이 60%에서 33%로 감소했지만, 이제 적의 방어력을 무시하는 별도의 판정입니다\n" +
                         "- DISC가 심어진 독개구리의 기본 데미지가 10-25에서 10-20으로 감소했습니다"));
 
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.SHARED_UPGRADES), "투척 무기 특성 하향",
-                "투척 무기 변경의 일환으로 일부 특성도 너프됩니다:\n" +
-                        "\n" +
-                        "- 나이프 투척 특성의 데미지 증가율이 +1/2/3에서 +10/20/30%로 감소했습니다 (기존 +15/30/45%에서)\n" +
-                        "\n" +
-                        "- 생명력 주입 특성의 내구도 증가율이 +1/+2에서 +33%/+50%로 감소했습니다 (기존 +50%/+75%에서)\n" +
-                        "- 자세 교정 특성이 이제 투척 무기 레벨당 고정 +16.67% 데미지 증가와 +1 지속시간을 부여하지만, 특성 레벨 1/2/3에서 +33/67/100% 데미지와 +2/4/6 지속시간으로 제한됩니다."));
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(CharSprite.NEGATIVE);
+        changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "용기의 파문전사 하향",
-                "- 파문 에너지의 획득 및 손실 속도가 25% 감소했습니다\n" +
-                        "- 파문 가드의 보호막이 10+2*레벨에서 8+2*레벨로 감소했습니다 (브로치의 레벨)"));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOLAS), "투척 무기 하향",
+                "투척 무기 리워크에 따른 조정이 있습니다.\n" +
+                        "\n" +
+                        "- 킹 크림슨의 주먹의 즉시 투척 조건이 단순한 20턴 쿨다운으로 변경되었습니다\n" +
+                        "- 완전생물의 다람쥐의 기본 데미지가 6-15에서 6-12로 감소했습니다\n" +
+                        "- 크래커 볼리의 피해 증가량이 1-3에서 1-2로 감소했습니다\n" +
+                        "- 노토리어스 B.I.G의 내구도가 8에서 5로 감소했습니다\n" +
+                        "- DIO의 나이프의 피해 증가량이 1-4에서 1-3으로 감소했습니다\n" +
+                        "- DIO의 나이프의 출혈 확률이 60%에서 33%로 감소했지만, 이제 적의 방어력을 무시하는 별도의 판정입니다\n" +
+                        "- DISC가 심어진 독개구리의 기본 데미지가 10-25에서 10-20으로 감소했습니다"));
 
     }
+
     public static void add_v3_2_Changes(ArrayList<ChangeInfo> changeInfos) {
 
         ChangeInfo changes = new ChangeInfo("v3.0c", true, "");

@@ -689,7 +689,7 @@ public class Wamuu extends Mob {
                 }
         );
 
-        Dungeon.level.drop(new Smask3(), pos).sprite.drop(pos);
+        Dungeon.level.unseal();
 
         super.die( cause );
 

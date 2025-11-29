@@ -80,6 +80,9 @@ public class CaesarZeppeli extends DirectableAlly {
         immunities.add(Paralysis.class);
     }
 
+    // 층 진행에 따른 스탯 보너스 추적
+    private int depthBonus = 0;
+
     // Caesar's special abilities
     private int bubbleLauncherCooldown = 0;
     private int bubbleCutterCooldown = 0;
@@ -87,9 +90,6 @@ public class CaesarZeppeli extends DirectableAlly {
     private int hamonKickCooldown = 0;
     private boolean catStanceActive = false;
     private int healthState = 0;
-
-    // Track bubble projectiles for combo attacks
-    private ArrayList<Integer> activeBubbles = new ArrayList<>();
 
     @Override
     public String description() {
@@ -103,6 +103,9 @@ public class CaesarZeppeli extends DirectableAlly {
 
     @Override
     protected boolean act() {
+        // 층 진행에 따른 스탯 업데이트
+        updateDepthScaling();
+
         // Cooldown management
         if (bubbleLauncherCooldown > 0) bubbleLauncherCooldown--;
         if (bubbleCutterCooldown > 0) bubbleCutterCooldown--;
@@ -142,13 +145,53 @@ public class CaesarZeppeli extends DirectableAlly {
         return super.act();
     }
 
-    public boolean skill1() {
+    // 층 진행에 따른 스탯 업데이트 (서서히 강해짐)
+    private void updateDepthScaling() {
+        // 현재 층에서의 보너스 계산 (5층마다 1씩 증가)
+        int currentBonus = Dungeon.depth / 5;
+        
+        // 보너스가 변경되었으면 스탯 업데이트
+        if (currentBonus != depthBonus) {
+            int bonusDiff = currentBonus - depthBonus;
+            depthBonus = currentBonus;
+            
+            // 체력 보너스 (층당 +8 HP, 5층마다 +40 HP)
+            int hpBonus = bonusDiff * 40;
+            HT += hpBonus;
+            HP = Math.min(HP + hpBonus, HT);
+            
+            // 방어 스킬 보너스 (5층마다 +2)
+            defenseSkill += bonusDiff * 2;
+        }
+    }
+
+    @Override
+    public int damageRoll() {
+        // 기본 데미지 4-8에 층 보너스 추가 (5층마다 +1~+3 데미지, 이전보다 약간 완만)
+        int baseMin = 4 + (depthBonus * 1);
+        int baseMax = 8 + (depthBonus * 3);
+        return Random.NormalIntRange(baseMin, baseMax);
+    }
+
+    @Override
+    public int attackSkill(Char target) {
+        // 기본 공격 스킬 18에 층 보너스 추가 (5층마다 +3)
+        return 18 + (depthBonus * 3);
+    }
+
+    @Override
+    public int drRoll() {
+        // 기본 방어력 0-6에 층 보너스 추가 (5층마다 +2~+4)
+        return super.drRoll() + Random.NormalIntRange(0 + depthBonus * 2, 6 + depthBonus * 4);
+    }
+
+    public void skill1() {
         int oldPos = pos;
         int newPos = hero.pos;
 
         PathFinder.buildDistanceMap(hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
         if (PathFinder.distance[pos] == Integer.MAX_VALUE) {
-            return true;
+            return;
         }
 
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "skill1"));
@@ -164,8 +207,6 @@ public class CaesarZeppeli extends DirectableAlly {
 
         Dungeon.observe();
         GameScene.updateFog();
-
-        return true;
     }
 
     public void skill2() {
@@ -294,9 +335,10 @@ public class CaesarZeppeli extends DirectableAlly {
                     null);
         }
 
-        // Deal damage after short delay
-        int damage = Random.NormalIntRange(3, 8) * 3; // 3 bubbles worth
-        target.damage(damage, this);
+        // Deal damage after short delay (스케일링 적용)
+        int baseDamage = Random.NormalIntRange(3, 8) * 3; // 3 bubbles worth
+        int scaledDamage = baseDamage + (depthBonus * 4); // 5층마다 +12 데미지 (약간 완만)
+        target.damage(scaledDamage, this);
 
         // Apply weakness to undead targets
         if (target.properties().contains(Property.UNDEAD)) {
@@ -317,9 +359,10 @@ public class CaesarZeppeli extends DirectableAlly {
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "hamon_kick"));
         Sample.INSTANCE.play(Assets.Sounds.CE2);
 
-        // Damage and knockback
-        int damage = Random.NormalIntRange(5, 10);
-        target.damage(damage, this);
+        // Damage and knockback (스케일링 적용)
+        int baseDamage = Random.NormalIntRange(5, 10);
+        int scaledDamage = baseDamage + (depthBonus * 2); // 5층마다 +6 데미지 (약간 완만)
+        target.damage(scaledDamage, this);
         Buff.affect(target, SoulMark.class, 3f);
 
         // Knockback effect
@@ -351,8 +394,10 @@ public class CaesarZeppeli extends DirectableAlly {
         sprite.centerEmitter().start(ElmoParticle.FACTORY, 0.15f, 4);
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "hamon_control"));
 
-        // Heal hero
-        Buff.affect(hero, Barrier.class).setShield(hero.HT / 10);
+        // Heal hero (스케일링 적용)
+        int baseShield = hero.HT / 10;
+        int scaledShield = baseShield + (depthBonus * 3); // 5층마다 +15 실드 (HT가 50일 때)
+        Buff.affect(hero, Barrier.class).setShield(scaledShield);
         Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
 
         // Remove debuffs from hero
@@ -362,22 +407,6 @@ public class CaesarZeppeli extends DirectableAlly {
 
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
     }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 4, 8 );
-    }
-
-    @Override
-    public int attackSkill( Char target ) {
-        return 18;
-    }
-
-    @Override
-    public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 6);
-    }
-
 
     @Override
     public int attackProc(Char enemy, int damage) {
@@ -543,6 +572,7 @@ public class CaesarZeppeli extends DirectableAlly {
     private static final String HAMON_KICK_CD = "hamon_kick_cd";
     private static final String CAT_STANCE = "cat_stance";
     private static final String HEALTH_STATE = "health_state";
+    private static final String DEPTH_BONUS = "depth_bonus";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -553,6 +583,7 @@ public class CaesarZeppeli extends DirectableAlly {
         bundle.put(HAMON_KICK_CD, hamonKickCooldown);
         bundle.put(CAT_STANCE, catStanceActive);
         bundle.put(HEALTH_STATE, healthState);
+        bundle.put(DEPTH_BONUS, depthBonus);
     }
 
     @Override
@@ -564,5 +595,6 @@ public class CaesarZeppeli extends DirectableAlly {
         hamonKickCooldown = bundle.getInt(HAMON_KICK_CD);
         catStanceActive = bundle.getBoolean(CAT_STANCE);
         healthState = bundle.getInt(HEALTH_STATE);
+        depthBonus = bundle.getInt(DEPTH_BONUS);
     }
 }

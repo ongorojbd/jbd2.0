@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShovelDigCoolDown8;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CaesarZeppeli;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Lisa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -100,6 +101,10 @@ public class TendencyItem extends Item {
                             case 2:
                                 ((CaesarZeppeli) c).skill3();
                         }
+                    }
+                    // Lisa의 TendencyItem 스킬
+                    if (c instanceof Lisa) {
+                        ((Lisa) c).tendencySkill();
                     }
                 }
 

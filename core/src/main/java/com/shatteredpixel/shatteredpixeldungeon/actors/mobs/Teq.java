@@ -52,7 +52,7 @@ public class Teq extends Mob {
         maxLvl = 30;
 
         loot = new PotionOfCleansing();
-        lootChance = 0.30f;
+        lootChance = 0.1f;
     }
 
     private boolean seenBefore = false;

@@ -24,30 +24,30 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.TextureFilm;
 
-public class LisaSprite extends MobSprite {
+public class CatSprite extends MobSprite {
 
-	public LisaSprite() {
+	public CatSprite() {
 		super();
 		
-		texture( Assets.Sprites.LISA );
+		texture( Assets.Sprites.CAT );
 		
-		TextureFilm frames = new TextureFilm( texture, 12, 15 );
-
-		idle = new Animation( 1, true );
-		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
-
+		TextureFilm frames = new TextureFilm( texture, 17, 12 );
+		
+		idle = new Animation( 12, true );
+		idle.frames( frames, 0, 1, 2, 3 );
+		
 		run = new Animation( 12, true );
-		run.frames( frames, 2, 3, 4, 5, 6, 7 );
-
+		run.frames( frames, 4, 5, 6, 7, 8, 9, 10, 11 );
+		
 		attack = new Animation( 15, false );
-		attack.frames( frames, 13, 14, 15, 0 );
-
-		zap = attack.clone();
-
-		die = new Animation( 20, false );
-		die.frames( frames, 8, 9, 10, 11, 12);
+		attack.frames( frames, 12, 13, 14, 15, 16, 17, 0 );
+		
+		die = new Animation( 12, false );
+		die.frames( frames, 0, 18, 19, 20, 21);
 		
 		play( idle );
+
+		scale.set(0.9f);
 	}
 
 }

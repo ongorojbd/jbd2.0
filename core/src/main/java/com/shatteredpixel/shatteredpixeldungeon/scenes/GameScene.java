@@ -48,7 +48,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CaesarZeppeli;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diobrando;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
@@ -63,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WamuuFirst;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.jojo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Lisa;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -80,7 +80,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jolynemap;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -192,7 +191,6 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
-import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Point;
@@ -833,6 +831,35 @@ public class GameScene extends PixelScene {
                                     WndDialogueWithPic.IDLE
                             }
                     );
+
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 46) {
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new LisaSprite(), new WillcSprite(), new LisaSprite(), new WillcSprite()},
+                            new String[]{"리사리사", "시저 체펠리", "리사리사", "시저 체펠리"},
+                            new String[]{
+                                    Messages.get(CaesarZeppeli.class, "t11"),
+                                    Messages.get(CaesarZeppeli.class, "t12"),
+                                    Messages.get(CaesarZeppeli.class, "t13"),
+                                    Messages.get(CaesarZeppeli.class, "t14")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+
+                    Lisa lisa = new Lisa();
+                    lisa.state = lisa.WANDERING;
+                    lisa.pos = Dungeon.hero.pos;
+                    GameScene.add(lisa);
+                    lisa.beckon(Dungeon.hero.pos);
+
+                    Bestiary.setSeen(Lisa.class);
+
+                    GLog.p(Messages.get(CaesarZeppeli.class, "t15"));
 
                 } else if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 

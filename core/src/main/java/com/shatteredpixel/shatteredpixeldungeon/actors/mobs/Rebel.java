@@ -15,14 +15,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
@@ -36,8 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -70,7 +64,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.JotaroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RebelSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
@@ -138,7 +131,7 @@ public class Rebel extends Mob {
     private boolean barrierActive = false;
     private int barrierCurrentRow = 0;
     private int barrierSafeColumn = -1;  // 안전 구역 칸 (매 장벽마다 랜덤 지정)
-    private static final int BARRIER_DAMAGE = 35;
+
     private static final int ARENA_TOP = 1;      // 아레나 시작 행 (맨 위)
     private static final int ARENA_BOTTOM = 26;  // 아레나 끝 행
 
@@ -240,6 +233,14 @@ public class Rebel extends Mob {
     @Override
     public int attackSkill(Char target) {
         return 70;
+    }
+
+    @Override
+    public float attackDelay() {
+        if (Phase >= 4) {
+            return super.attackDelay() * 0.5f;
+        }
+        return super.attackDelay();
     }
 
     public static class SummoningBlockDamage2 {
@@ -486,6 +487,7 @@ public class Rebel extends Mob {
         if (cleanCooldown <= 0) {
             if (BurstTimt == 0) {
                 sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s1"));
+
                 GLog.h(Messages.get(this, "fire_ready"));
 
                 Sample.INSTANCE.play(Assets.Sounds.D11);
@@ -597,7 +599,7 @@ public class Rebel extends Mob {
         BossHealthBar.assignBoss(this);
         super.damage(dmg, src);
 
-        if (Phase == 0 && HP < 1250) {
+        if (Phase == 0 && HP < 1300) {
             Phase = 1;
             GameScene.flash(0x8B00FF);
             distortionCooldown = 3;
@@ -617,7 +619,7 @@ public class Rebel extends Mob {
             );
 
             sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
-        } else if (Phase == 1 && HP < 1000) {
+        } else if (Phase == 1 && HP < 1100) {
             Phase = 2;
             GameScene.flash(0x8B00FF);
             barrierCooldown = 2;
@@ -635,21 +637,30 @@ public class Rebel extends Mob {
                             WndDialogueWithPic.IDLE
                     }
             );
+            LabsBossLevel level = (LabsBossLevel) Dungeon.level;
+
+            int newPos;
+            do {
+                newPos = level.randomCellPos();
+            } while (level.map[newPos] == Terrain.WALL || Actor.findChar(newPos) != null);
 
             Pucci Pucci = new Pucci();
             Pucci.state = Pucci.WANDERING;
-            Pucci.pos = bottomDoor - 9 * 33;
+            Pucci.pos = newPos;
             GameScene.add(Pucci);
             Pucci.beckon(Dungeon.hero.pos);
 
             sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
-        } else if (Phase == 2 && HP < 800) {
+        } else if (Phase == 2 && HP < 900) {
             Phase = 3;
             GameScene.flash(0x8B00FF);
             Buff.detach(this, Doom.class);
             Buff.affect(Dungeon.hero, MindVision.class, 3f);
             immunities.add(Doom.class);
             immunities.add(Grim.class);
+            immunities.add(Paralysis.class);
+            immunities.add(Roots.class);
+            immunities.add(Vertigo.class);
 
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new RebelSprite(), new RebelSprite(), new RebelSprite()},
@@ -668,9 +679,16 @@ public class Rebel extends Mob {
 
             Sample.INSTANCE.play(Assets.Sounds.OH);
 
+            LabsBossLevel level = (LabsBossLevel) Dungeon.level;
+
+            int newPos;
+            do {
+                newPos = level.randomCellPos();
+            } while (level.map[newPos] == Terrain.WALL || Actor.findChar(newPos) != null);
+
             WO WO = new WO();
             WO.state = WO.HUNTING;
-            WO.pos = bottomDoor - 12 * 33;
+            WO.pos = newPos;
             GameScene.add(WO);
             WO.beckon(Dungeon.hero.pos);
 
@@ -683,12 +701,11 @@ public class Rebel extends Mob {
 
             sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
 
-        } else if (Phase == 3 && HP < 600) {
+        } else if (Phase == 3 && HP < 700) {
             Phase = 4;
             GameScene.flash(0x8B00FF);
-            Buff.prolong(this, Adrenaline.class, Adrenaline.DURATION * 1_000_000);
-            immunities.add(Doom.class);
-            immunities.add(Grim.class);
+            baseSpeed = 3f;
+
 
             // 화염 폭발 활성화
             cleanCooldown = 8;
@@ -752,12 +769,9 @@ public class Rebel extends Mob {
 
             Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
             sprite.centerEmitter().start(Speck.factory(Speck.UP), 0.4f, 2);
-        } else if (Phase == 4 && HP < 300) {
+        } else if (Phase == 4 && HP < 450) {
             Phase = 5;
-            Buff.prolong(this, MagicImmune.class, MagicImmune.DURATION * 1_000_000);
             Buff.affect(Dungeon.hero, Blindness.class, 30f);
-            immunities.add(Doom.class);
-            immunities.add(Grim.class);
 
             GameScene.flash(0x8B00FF);
 
@@ -985,12 +999,14 @@ public class Rebel extends Mob {
                         Char Target = hero;
                         if (Target.buff(PortableCover2.CoverBuff.class) == null) {
                             // ensure we test hit against the actual character in the cell, if present
-                            if (ch != null && ch.alignment != Char.Alignment.ENEMY) {
+                            if (ch != null && ch == hero) {
                                 if (hit(this, ch, true)) {
                                     ch.damage(Random.NormalIntRange(65, 70), new SummoningBlockDamage3());
                                 } else {
                                     ch.sprite.showStatus(CharSprite.NEUTRAL, ch.defenseVerb());
                                 }
+                            } else if (ch != null && ch.alignment == Char.Alignment.ENEMY && !ch.properties().contains(Property.BOSS)) {
+                                ch.damage(ch.HT / 2, new SummoningBlockDamage3());
                             }
                         } else {
                             damage(5, this);
@@ -1040,7 +1056,6 @@ public class Rebel extends Mob {
         GLog.w(Messages.get(this, "summon"));
         WO.d4class();
 
-        // 플레이어 주변 이펙트
         for (int i : PathFinder.NEIGHBOURS8) {
             int cell = hero.pos + i;
             if (cell >= 0 && cell < Dungeon.level.length()) {
@@ -1050,11 +1065,70 @@ public class Rebel extends Mob {
 
         new Flare(8, 32).color(0xFF00FF, true).show(hero.sprite, 2f);
 
-        // 트랩 생성 및 발동
-        new DistortionTrap().set(hero.pos).activate();
+        switch (Random.Int(2)) {
+            case 0:
+                switch (Random.Int(2)) {
+                    case 0: // 1/3 확률: 1마리 소환
+                        summonMobs(1);
+                        break;
+                    case 1: // 1/3 확률: 2마리 소환
+                        summonMobs(2);
+                        break;
+                }
+                break;
+            case 1:
+                new DistortionTrap().set(hero.pos).activate();
+                break;
+        }
 
         Dungeon.hero.interrupt();
         spend(TICK);
+    }
+
+    private void summonMobs(int count) {
+        LabsBossLevel level = (LabsBossLevel) Dungeon.level;
+
+        for (int i = 0; i < count; i++) {
+            // soldier, supression, researcher, tank, medic 중 랜덤 선택
+            Mob mob;
+            int mobType = Random.Int(5);
+
+            switch (mobType) {
+                case 0:
+                    mob = new Soldier();
+                    break;
+                case 1:
+                    mob = new Supression();
+                    break;
+                case 2:
+                    mob = new Researcher();
+                    break;
+                case 3:
+                    mob = new Tank();
+                    break;
+                case 4:
+                default:
+                    mob = new Medic();
+                    break;
+            }
+
+            // 소환 위치 찾기 (빈 공간)
+            int newPos;
+            do {
+                newPos = level.randomCellPos();
+            } while (level.map[newPos] == Terrain.WALL || Actor.findChar(newPos) != null);
+
+            mob.state = mob.WANDERING;
+            mob.pos = newPos;
+            GameScene.add(mob);
+            mob.beckon(Dungeon.hero.pos);
+
+            // 소환 이펙트
+            CellEmitter.get(newPos).burst(Speck.factory(Speck.LIGHT), 10);
+            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+        }
+
+        new Flare(8, 32).color(0xFF00FF, true).show(sprite, 2f);
     }
 
     // ==================== 중력 역전 ====================
@@ -1165,7 +1239,6 @@ public class Rebel extends Mob {
             invulnerable = false;
             this.sprite.remove(CharSprite.State.SHIELDED);
             GLog.p(Messages.get(this, "invuln_end"));
-            Sample.INSTANCE.play(Assets.Sounds.SHATTER);
             Camera.main.shake(5, 1f);
         }
     }
@@ -1296,6 +1369,8 @@ public class Rebel extends Mob {
                 CellEmitter.get(cell).burst(MagicMissile.WardParticle.UP, 8);
                 if (ch instanceof Hero) {
                     ch.damage(Random.NormalIntRange(40, 50), new SummoningBlockDamage3());
+                    Buff.affect(ch, Paralysis.class, 1f);
+                } else if (ch != null && ch.alignment == Char.Alignment.ENEMY && !ch.properties().contains(Property.BOSS)) {
                     Buff.affect(ch, Paralysis.class, 1f);
                 }
             }

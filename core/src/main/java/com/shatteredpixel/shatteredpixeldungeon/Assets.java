@@ -702,6 +702,7 @@ public class Assets {
         public static final String FISH = "sprites/fish.png";
         public static final String ULTIMATE = "sprites/ultimate.png";
         public static final String LISA = "sprites/lisa.png";
+        public static final String LISA2 = "sprites/lisa2.png";
         public static final String DOPPIODIALOG = "sprites/doppiodialog.png";
         public static final String JOSUKEDIALOG = "sprites/josukedialog.png";
         public static final String DIODIALOG = "sprites/diodialog.png";
@@ -712,5 +713,10 @@ public class Assets {
         public static final String CAESAR = "sprites/caesar.png";
         public static final String TANKZOMBIE = "sprites/tankzombie.png";
         public static final String DANNY = "sprites/danny.png";
+        public static final String CAT = "sprites/cat.png";
+        public static final String KS1 = "sprites/ks1.png";
+        public static final String KS2 = "sprites/ks2.png";
+        public static final String KS3 = "sprites/ks3.png";
+        public static final String KS4 = "sprites/ks4.png";
     }
 }

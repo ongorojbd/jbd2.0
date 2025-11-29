@@ -71,8 +71,6 @@ public class Tendency extends DirectableAlly {
         immunities.add(AllyBuff.class);
     }
 
-    private int sph = 1;
-
     public void updateTendencyHT(boolean boostHP) {
         int curHT = HT;
 

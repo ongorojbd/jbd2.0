@@ -82,7 +82,7 @@ public class WO2 extends Mob {
     private ArrayList<Integer> wireRing2 = new ArrayList<>();
     private ArrayList<Integer> wireRing3 = new ArrayList<>();
 
-    private int chessboardCD = 12; // 처음부터 사용 가능
+    private int chessboardCD = 2; // 처음부터 사용 가능
     private int chessboardWindup = 0;
     private boolean chessboardActive = false;
     private int chessboardStage = 0; // 0: white explode, 1: black telegraph, 2: black explode
@@ -119,14 +119,6 @@ public class WO2 extends Mob {
             dr = Random.NormalIntRange(5, 15);
         }
         return dr;
-    }
-
-    @Override
-    protected boolean getCloser(int target) {
-
-        target = Dungeon.hero.pos;
-
-        return super.getCloser( target );
     }
 
 
@@ -367,7 +359,7 @@ public class WO2 extends Mob {
             chessboardActive = false;
             chessboardWhite.clear();
             chessboardBlack.clear();
-            chessboardCD = 15;
+            chessboardCD = 8;
         }
     }
 

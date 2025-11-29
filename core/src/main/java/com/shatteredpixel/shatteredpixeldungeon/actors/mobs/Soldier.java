@@ -40,7 +40,7 @@ public class Soldier extends Mob {
 		maxLvl = 30;
 
 		loot = new RegrowthBomb();
-		lootChance = 0.15f;
+		lootChance = 0.1f;
 	}
 
 	@Override

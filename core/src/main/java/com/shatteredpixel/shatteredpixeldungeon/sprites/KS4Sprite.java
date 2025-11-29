@@ -26,26 +26,26 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.watabou.noosa.TextureFilm;
 
-public class VampireHorseSprite extends MobSprite {
+public class KS4Sprite extends MobSprite {
 
-    public VampireHorseSprite() {
+    public KS4Sprite() {
         super();
 
-        texture( Assets.Sprites.VAMPIREHORSE );
+        texture( Assets.Sprites.KS4 );
 
-        TextureFilm frames = new TextureFilm( texture, 16, 16 );
+        TextureFilm frames = new TextureFilm( texture, 19, 20 );
 
         idle = new Animation( 1, true );
         idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
         run = new Animation( 20, true );
-        run.frames( frames, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        run.frames( frames, 2, 3, 4, 5, 6, 7, 8, 9 );
 
         attack = new Animation( 20, true );
-        attack.frames( frames, 11, 12, 13, 0);
+        attack.frames( frames, 10, 11, 12, 0);
 
         die = new Animation( 15, false );
-        die.frames( frames, 13, 14, 15);
+        die.frames( frames, 13, 14, 15, 16);
 
         play( idle );
     }

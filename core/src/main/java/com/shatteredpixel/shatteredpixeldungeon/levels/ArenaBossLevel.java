@@ -30,7 +30,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Esidisi;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FakeKars;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KS1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
@@ -125,8 +128,14 @@ public class ArenaBossLevel extends Level {
     private static final short H = Terrain.EMPTY_WELL;
 
     private boolean bossSpawned = false;
+    private boolean fakeKarsDefeated = false;
+    private boolean zombiesSpawned = false;
+    private int zombiesRemaining = 0;
 
     private static final String BOSS_SPAWNED = "boss_spawned";
+    private static final String FAKE_KARS_DEFEATED = "fake_kars_defeated";
+    private static final String ZOMBIES_SPAWNED = "zombies_spawned";
+    private static final String ZOMBIES_REMAINING = "zombies_remaining";
 
     private static final short[] level = {
             W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
@@ -230,12 +239,18 @@ public class ArenaBossLevel extends Level {
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(BOSS_SPAWNED, bossSpawned);
+        bundle.put(FAKE_KARS_DEFEATED, fakeKarsDefeated);
+        bundle.put(ZOMBIES_SPAWNED, zombiesSpawned);
+        bundle.put(ZOMBIES_REMAINING, zombiesRemaining);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         bossSpawned = bundle.getBoolean(BOSS_SPAWNED);
+        fakeKarsDefeated = bundle.getBoolean(FAKE_KARS_DEFEATED);
+        zombiesSpawned = bundle.getBoolean(ZOMBIES_SPAWNED);
+        zombiesRemaining = bundle.getInt(ZOMBIES_REMAINING);
     }
 
     @Override
@@ -328,6 +343,18 @@ public class ArenaBossLevel extends Level {
                 boss.sprite.alpha(0);
                 boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
             }
+        } else if (Dungeon.depth == 54) {
+            FakeKars boss = new FakeKars();
+            boss.pos = 15 + WIDTH * 10;
+            boss.state = boss.WANDERING;
+            GameScene.add(boss);
+            boss.beckon(Dungeon.hero.pos);
+
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha(0);
+                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+            }
         }
 
         GameScene.updateMap(bottomDoor);
@@ -358,6 +385,87 @@ public class ArenaBossLevel extends Level {
                 LevelTransition exit = new LevelTransition(this, i, LevelTransition.Type.REGULAR_EXIT);
                 transitions.add(exit);
             }
+        }
+
+        Dungeon.observe();
+    }
+
+    // Called when FakeKars is defeated - spawns 8 KS1 elite soldiers
+    public void onFakeKarsDefeated() {
+        if (fakeKarsDefeated) return;
+        fakeKarsDefeated = true;
+
+        spawnKS1Soldiers();
+    }
+
+    private void spawnKS1Soldiers() {
+        if (zombiesSpawned) return;
+        zombiesSpawned = true;
+
+        int[] spawnPositions = {
+                15 + WIDTH * 8,   // top center
+                10 + WIDTH * 10,  // left
+                20 + WIDTH * 10,  // right
+                15 + WIDTH * 12   // bottom center
+        };
+
+        zombiesRemaining = 4;
+
+        for (int i = 0; i < 4; i++) {
+            int spawnPos = spawnPositions[i];
+
+            // If position is occupied, find a nearby empty cell
+            if (Actor.findChar(spawnPos) != null || !passable[spawnPos]) {
+                for (int j : PathFinder.NEIGHBOURS8) {
+                    if (Actor.findChar(spawnPos + j) == null && passable[spawnPos + j]) {
+                        spawnPos = spawnPos + j;
+                        break;
+                    }
+                }
+            }
+
+            KS1 ks1 = new KS1() {
+                @Override
+                public void die(Object cause) {
+                    super.die(cause);
+                    if (Dungeon.level instanceof ArenaBossLevel) {
+                        ((ArenaBossLevel) Dungeon.level).onZombieDeath();
+                    }
+                }
+            };
+            ks1.pos = spawnPos;
+            ks1.state = ks1.HUNTING;
+            GameScene.add(ks1);
+
+            if (heroFOV[ks1.pos]) {
+                ks1.sprite.alpha(0);
+                ks1.sprite.parent.add(new AlphaTweener(ks1.sprite, 1, 0.2f));
+            }
+        }
+
+        Dungeon.observe();
+    }
+
+    // Called when a zombie dies - spawns KarsLight when all zombies are defeated
+    public void onZombieDeath() {
+        zombiesRemaining--;
+
+        if (zombiesRemaining <= 0) {
+            spawnKarsLight();
+        }
+    }
+
+    private void spawnKarsLight() {
+        KarsLight boss = new KarsLight();
+        boss.pos = 15 + WIDTH * 10;
+        boss.state = boss.WANDERING;
+        GameScene.add(boss);
+        boss.beckon(Dungeon.hero.pos);
+
+        if (heroFOV[boss.pos]) {
+            boss.notice();
+            boss.sprite.alpha(0);
+            boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
         }
 
         Dungeon.observe();
