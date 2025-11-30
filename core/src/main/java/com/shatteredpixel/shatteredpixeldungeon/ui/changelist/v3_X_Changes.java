@@ -64,12 +64,12 @@ public class v3_X_Changes {
         changes.hardlight(0xCCCCCC);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new Image(new ImpSprite()), "17~19층 퀘스트 개편",
-                "3.0e에서 제공될 주요 콘텐츠 개선사항은 오시리스신 퀘스트 개편입니다.\n" +
-                        "죠니 퀘스트 개편과 마찬가지로, 이 새로운 퀘스트는 독특한 게임플레이를 가진 던전의 새로운 하위 지역으로 플레이어를 보낼 것입니다."));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
+                "3.0e에서 제공될 주요 콘텐츠 변경사항은 오시리스신 퀘스트 개편입니다.\n\n" +
+                        "이 새로운 퀘스트는 독특한 플레이 스타일로 진행될 것입니다."));
 
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "천국DIO 리워크",
-                "스틸 볼 런 애니화 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
+        changes.addButton(new ChangeButton(new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "스틸 볼 런 업데이트",
+                "스틸 볼 런 애니메이션 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
 
     }
 
@@ -111,11 +111,18 @@ public class v3_X_Changes {
                         "\n" +
                         "보우건 탄환은 이러한 변경사항의 영향을 받지 않으며, 사실상 모두 같은 세트에 속하고 여전히 업그레이드할 수 없습니다."));
 
+        changes.addButton(new ChangeButton(new Image(new ImpSprite()), "숨겨진 장소",
+                "오시리스신 옆에 _저택의 창고_로 향하는 통로가 추가되었습니다!\n\n" +
+                        "DIO의 저택 창고로 들어가면 오시리스신의 스탠드사인 _다니엘 J. 다비_를 만날 수 있습니다."));
+
         Image i = new Image(new DannySprite());
         i.scale.set(PixelScene.align(0.75f));
         changes.addButton(new ChangeButton(i, "신규 NPC",
-                "- 신규 NPC인 대니가 추가되었습니다.\n" +
-                        "- 대니는 던전의 숨겨진 방에서 만날 수 있습니다."));
+                "- 신규 NPC인 _대니_가 추가되었습니다.\n" +
+                        "대니는 던전의 특정한 장소에서 만날 수 있습니다.\n\n" +
+                        "- 신규 NPC인 _다니엘 J. 다비_가 추가되었습니다.\n" +
+                        "다니엘 J. 다비는 DIO 저택의 창고에서 만날 수 있으며, 영혼을 건 내기를 할 수 있습니다.\n\n" +
+                        "- 또한 카이로 시내에 특수 희귀 적이 1종 추가되었습니다.\n" ));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.PASSIONE, 0, 15, 12, 15), "파시오네 호위팀",
                 "- 파시오네 조직의 간부인 폴포가 이제 특정 비밀 방에서 등장합니다.\n" +
@@ -126,7 +133,10 @@ public class v3_X_Changes {
                 "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.KARS, 0, 0, 14, 15), "전투조류 컨텐츠 추가",
-                "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
+                "- 기둥의 사내 - 카즈가 추가되었습니다.\n" +
+                        "- 전체 층이 54층까지 확장되었습니다.\n" +
+                        "- 죽음의 웨딩 링의 지속시간이 1200턴에서 1600턴으로 증가했습니다.\n" +
+                        "- 청정의 물약으로 죽음의 웨딩 링을 해제할 수 있었던 버그가 수정되었습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);

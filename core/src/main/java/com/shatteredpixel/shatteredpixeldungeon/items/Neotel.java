@@ -12,6 +12,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -89,10 +91,15 @@ public class Neotel extends Item {
         }
         if (action.equals(AC_RETURN)) {
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
+            InterlevelScene.returnDepth = 30;
             InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -2;
             Game.switchScene(InterlevelScene.class);
+
+            for (int lvl = hero.lvl; lvl < 30; lvl++) {
+                Potion expPotion = new PotionOfExperience();
+                expPotion.apply(hero);
+            }
         }
         int length = Dungeon.level.length();
         int[] map = Dungeon.level.map;

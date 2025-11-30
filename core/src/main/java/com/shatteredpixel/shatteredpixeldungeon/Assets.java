@@ -280,6 +280,10 @@ public class Assets {
         public static final String NANIDI = "sounds/nanidi.mp3";
         public static final String D1 = "sounds/d1.mp3";
         public static final String D2 = "sounds/d2.mp3";
+        public static final String DA1 = "sounds/da1.mp3";
+        public static final String DA2 = "sounds/da2.mp3";
+        public static final String DA3 = "sounds/da3.mp3";
+        public static final String DA4 = "sounds/da4.mp3";
         public static final String DIEGO = "sounds/diego.mp3";
         public static final String DIEGO2 = "sounds/diego2.mp3";
         public static final String JOSEPH = "sounds/joseph.mp3";
@@ -456,7 +460,7 @@ public class Assets {
                 KIRA1, KIRA2, KIRA3, KIRA4, KIRA5, KIRA6,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
                 MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
-                D11, D12, D21, D22, D23, D24, D31, D32, D33, D34, D35, D41, D42, D43,
+                D11, D12, D21, D22, D23, D24, D31, D32, D33, D34, D35, D41, D42, D43, DA1, DA2, DA3, DA4,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, HORSE, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA, POL,
                 JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5, JT6, JT7
@@ -713,6 +717,7 @@ public class Assets {
         public static final String CAESAR = "sprites/caesar.png";
         public static final String TANKZOMBIE = "sprites/tankzombie.png";
         public static final String DANNY = "sprites/danny.png";
+        public static final String DARBY = "sprites/darby.png";
         public static final String CAT = "sprites/cat.png";
         public static final String KS1 = "sprites/ks1.png";
         public static final String KS2 = "sprites/ks2.png";

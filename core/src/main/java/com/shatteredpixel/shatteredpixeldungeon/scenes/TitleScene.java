@@ -196,7 +196,7 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnPlay.left(), btnRankings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.right() + 2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
 		} else {
-			btnPlay.setRect(btnAreaLeft, insets.top + topRegion+GAP - 15, buttonAreaWidth, BTN_HEIGHT);
+			btnPlay.setRect(btnAreaLeft, insets.top + topRegion+GAP - 10, buttonAreaWidth, BTN_HEIGHT);
 			align(btnPlay);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
 			btnBadges.setRect(btnRankings.left(), btnRankings.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);

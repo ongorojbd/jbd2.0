@@ -108,7 +108,7 @@ public class Imp extends NPC {
 
     @Override
     public boolean interact(Char c) {
-        Sample.INSTANCE.play(Assets.Sounds.DARBY);
+        Sample.INSTANCE.play(Assets.Sounds.DA3);
 
         sprite.turnTo(pos, Dungeon.hero.pos);
 

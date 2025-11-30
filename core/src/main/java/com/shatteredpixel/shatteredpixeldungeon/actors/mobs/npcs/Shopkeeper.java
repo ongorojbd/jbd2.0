@@ -270,7 +270,7 @@ public class Shopkeeper extends NPC {
 	public boolean interact(Char c) {
 
 		if(spriteClass == ImpSprite.class) {
-			Sample.INSTANCE.play(Assets.Sounds.DARBY);
+			Sample.INSTANCE.play(Assets.Sounds.DA3);
 		}
 
 		if (c != Dungeon.hero) {

@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlam
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
@@ -141,9 +142,9 @@ public enum HeroClass {
         if (DeviceCompat.isDebug()) {
             new Pasty().collect();
             new RingOfMight().identify().upgrade(999).collect();
-            new RingOfEnergy().identify().upgrade(999).collect();
+            new ThrowingSpike().identify().upgrade(9999).collect();
             new RingOfAccuracy().identify().upgrade(999).collect();
-            new WornShortsword().identify().upgrade(12).collect();
+            new PotionOfCleansing().identify().collect();
             new PlateArmor().identify().upgrade(999).collect();
             new Neotel().collect();
             new Spw().identify().quantity(100).collect();

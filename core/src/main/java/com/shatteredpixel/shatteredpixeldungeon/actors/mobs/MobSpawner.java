@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Utest;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.watabou.utils.Random;
 
@@ -90,7 +91,7 @@ public class MobSpawner extends Actor {
                             Zombiedog.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(
-                            DArby.class, Rat.class, Rat.class,
+                            Rat.class, Rat.class, Rat.class,
                             Snake.class));
                 }
             case 2:

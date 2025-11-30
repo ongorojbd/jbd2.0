@@ -24,16 +24,16 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.TextureFilm;
 
-public class DArbySprite extends MobSprite {
+public class DArbyOldSprite extends MobSprite {
 
-	public DArbySprite() {
+	public DArbyOldSprite() {
 		super();
 
 		texture(Assets.Sprites.DARBY);
 		TextureFilm film = new TextureFilm(texture, 12, 15);
 
 		idle = new Animation( 1, true );
-		idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
+		idle.frames( film, 2, 2, 2, 3, 2, 2, 3, 3 );
 
 		idle();
 	}

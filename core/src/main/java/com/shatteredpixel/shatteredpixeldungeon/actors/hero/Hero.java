@@ -2575,7 +2575,7 @@ public class Hero extends Char {
         curAction = null;
 
         // If Caesar is alive, he sacrifices himself to save the hero
-        if (Dungeon.level != null) {
+        if (Dungeon.level != null && Dungeon.depth < 46) {
             for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (m instanceof CaesarZeppeli && m.isAlive()) {
                     // revive hero to 1/3 HP

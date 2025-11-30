@@ -21,49 +21,34 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
-import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.addSpecialcoin;
-import static com.shatteredpixel.shatteredpixeldungeon.SPDSettings.getSpecialcoin;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Utest;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Annasui;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Com;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Emporio;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Pian;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So1;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weather;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weza;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CavesPainter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.CaveRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -141,9 +126,9 @@ public class EmporioLevel extends Level {
         So1.pos = 3 * width() + 3;
         mobs.add( So1 );
 //
-//        So2 So2 = new So2();
-//        So2.pos = 5 * width() + 8;
-//        mobs.add( So2 );
+        DArby So2 = new DArby();
+        So2.pos = 5 * width() + 8;
+        mobs.add( So2 );
 
         Com npcc = new Com();
         npcc.pos = 9 * width() + 3;

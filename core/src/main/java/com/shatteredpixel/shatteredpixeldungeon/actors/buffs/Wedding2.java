@@ -34,7 +34,7 @@ public class Wedding2 extends FlavourBuff implements Hero.Doom {
     public static final float DURATION = 1600f;
 
     {
-        type = buffType.NEGATIVE;
+        type = buffType.NEUTRAL;
         announced = true;
     }
 

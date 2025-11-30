@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Annasui;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Bdth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Dannynpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -203,7 +204,7 @@ public enum Bestiary {
                 Civil.class, Bmore.class, Diego.class, Pucci12.class, Diego21.class, Diego12.class, ZombieFour.class, ZombietBoss.class,
                 TempleLastLevel.TempleBrute.class, TempleLastLevel.TempleGuard.class, Keichomob.class);
 
-        NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, Willson.class, Sheep.class, Bee.class, Amblance.class, Heavyw.class, Rohan.class, Yukako.class, Retonio.class, Yasu.class, Weather.class, Bdth.class, Annasui.class, So1.class, Polpo.class, Dannynpc.class);
+        NEUTRAL.addEntities(Ghost.class, RatKing.class, Shopkeeper.class, Wandmaker.class, Blacksmith.class, Imp.class, DArby.class, Willson.class, Sheep.class, Bee.class, Amblance.class, Heavyw.class, Rohan.class, Yukako.class, Retonio.class, Yasu.class, Weather.class, Bdth.class, Annasui.class, So1.class, Polpo.class, Dannynpc.class);
 
         ALLY.addEntities(MirrorImage.class, PrismaticImage.class,
                 DriedRose.GhostHero.class, Willamob.class, Willcmob.class, Willgmob.class,

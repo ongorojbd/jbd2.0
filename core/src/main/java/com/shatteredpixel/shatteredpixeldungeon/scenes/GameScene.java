@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WamuuFirst;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.jojo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne;
@@ -1252,6 +1253,10 @@ public class GameScene extends PixelScene {
         }
 
         if (!invVisible) toggleInvPane();
+        
+        // 게임 로드 시 Rebel의 타이밍 게임이 진행 중이었으면 창 표시
+        Rebel.checkPendingTimingGame();
+        
         fadeIn();
 
         //re-show WndResurrect if needed

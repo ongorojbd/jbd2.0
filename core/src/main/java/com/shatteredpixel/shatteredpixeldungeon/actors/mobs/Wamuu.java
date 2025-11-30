@@ -162,7 +162,9 @@ public class Wamuu extends Mob {
 			dmg = Math.max(1, reduced);
 		}
 		if (dmg >= 250) dmg = 250;
+
         BossHealthBar.assignBoss(this);
+
         super.damage(dmg, src);
 
         // Phase changes: 0 -> 1 at < 2/3 HP, 1 -> 2 at < 1/3 HP

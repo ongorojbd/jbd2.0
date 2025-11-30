@@ -21,7 +21,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -43,7 +42,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover2;
-import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover4;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -51,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LabsBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.DistortionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -67,7 +64,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndRebelTimingGame;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
@@ -137,6 +136,10 @@ public class Rebel extends Mob {
 
     // DistortionTrap 패턴
     private int distortionCooldown = 9999;
+    
+    // 타이밍 게임 진행 중 플래그 (게임 종료 시 피해 적용용)
+    private boolean timingGameActive = false;
+    
     private static boolean telling_1 = false;
     private static boolean telling_2 = false;
     private static boolean telling_3 = false;
@@ -162,6 +165,7 @@ public class Rebel extends Mob {
     private static final String BARRIER_CURRENT_ROW = "barrier_current_row";
     private static final String BARRIER_SAFE_COLUMN = "barrier_safe_column";
     private static final String DISTORTION_COOLDOWN = "distortion_cooldown";
+    private static final String TIMING_GAME_ACTIVE = "timing_game_active";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -189,6 +193,7 @@ public class Rebel extends Mob {
         bundle.put(BARRIER_CURRENT_ROW, barrierCurrentRow);
         bundle.put(BARRIER_SAFE_COLUMN, barrierSafeColumn);
         bundle.put(DISTORTION_COOLDOWN, distortionCooldown);
+        bundle.put(TIMING_GAME_ACTIVE, timingGameActive);
     }
 
     @Override
@@ -217,6 +222,7 @@ public class Rebel extends Mob {
         barrierCurrentRow = bundle.getInt(BARRIER_CURRENT_ROW);
         barrierSafeColumn = bundle.getInt(BARRIER_SAFE_COLUMN);
         distortionCooldown = bundle.getInt(DISTORTION_COOLDOWN);
+        timingGameActive = bundle.getBoolean(TIMING_GAME_ACTIVE);
     }
 
     @Override
@@ -436,6 +442,62 @@ public class Rebel extends Mob {
 
     @Override
     protected boolean act() {
+        // 타이밍 게임 도중 앱 전환 후 돌아왔거나 게임 로드 시 창 다시 표시
+        if (timingGameActive) {
+            // 타이밍 게임 창이 이미 열려있으면 대기
+            if (WndRebelTimingGame.instance != null) {
+                spend(1f);
+                return true;
+            }
+            
+            // 창이 닫혀있으면 다시 표시
+            final Rebel rebel = this;
+            final int currentPhase = Phase;
+            Game.runOnRenderThread(new com.watabou.utils.Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndRebelTimingGame(currentPhase,
+                            // 성공 콜백 - 피해 없음
+                            new com.watabou.utils.Callback() {
+                                @Override
+                                public void call() {
+                                    timingGameActive = false;
+                                    Camera.main.shake(4, 0.5f);
+                                    GLog.p(Messages.get(Rebel.class, "timing_success"));
+                                    GLog.n(Messages.get(Rebel.class, Random.element(LINE_KEYS)));
+                                    Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
+                                    cleanCooldown = Random.NormalIntRange(20, 25);
+                                    BurstTimt = 0;
+                                }
+                            },
+                            // 실패 콜백 - 피해 적용
+                            new com.watabou.utils.Callback() {
+                                @Override
+                                public void call() {
+                                    timingGameActive = false;
+                                    GameScene.flash(0xFF00FF);
+                                    Sample.INSTANCE.play(Assets.Sounds.BLAST);
+                                    Sample.INSTANCE.play(Assets.Sounds.D21);
+
+                                    int damage = Math.max(20, Dungeon.hero.HP * 3 / 5);
+                                    Dungeon.hero.damage(damage, rebel);
+                                    CellEmitter.center(Dungeon.hero.pos).burst(BlastParticle.FACTORY, 20);
+                                    GLog.n(Messages.get(Rebel.class, "timing_fail"));
+                                    if (!Dungeon.hero.isAlive()) {
+                                        Dungeon.fail(Rebel.class);
+                                    }
+                                    cleanCooldown = Random.NormalIntRange(20, 25);
+                                    BurstTimt = 0;
+                                }
+                            }
+                    ));
+                }
+            });
+            
+            spend(1f);
+            return true;
+        }
+        
         cleanCooldown--;
         if (gravityCooldown > 0) gravityCooldown--;
 
@@ -447,7 +509,7 @@ public class Rebel extends Mob {
         }
 
         // 중력 역전: 페이즈 1 이상에서 사용
-        if (Phase >= 1 && gravityCooldown <= 0 && enemy != null && Dungeon.level.distance(pos, enemy.pos) > 2) {
+        if (Phase >= 1 && gravityCooldown <= 0 && enemy != null && Dungeon.level.distance(pos, enemy.pos) > 2 && !isWOAlive()) {
             chargeGravityPull();
             gravityCooldown = Random.NormalIntRange(16, 28);
             return true;
@@ -486,66 +548,71 @@ public class Rebel extends Mob {
 
         if (cleanCooldown <= 0) {
             if (BurstTimt == 0) {
+                // 1턴 전: 경고만 (사운드, 이펙트)
                 sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s1"));
-
-                GLog.h(Messages.get(this, "fire_ready"));
+                GLog.h(Messages.get(this, "timing_game_start"));
 
                 Sample.INSTANCE.play(Assets.Sounds.D11);
                 Sample.INSTANCE.play(Assets.Sounds.MIMIC);
                 SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
 
-                // 맵 전역에 TargetedCell 표시
-                for (int i = 0; i < Dungeon.level.length(); i++) {
-                    if (!Dungeon.level.solid[i]) {
-                        sprite.parent.addToBack(new TargetedCell(i, 0xFF00FF));
-                    }
-                }
-
                 Dungeon.hero.interrupt();
                 spend(1f);
                 BurstTimt++;
                 return true;
+            } else if (BurstTimt == 1) {
+                // 다음 턴: 타이밍 게임 시작
+                timingGameActive = true; // 타이밍 게임 시작 플래그 설정
+                cleanCooldown = 9999; // 중복 호출 방지
+                BurstTimt = 2; // 즉시 대기 상태로 전환
+                final Rebel rebel = this;
+                final int currentPhase = Phase;
+                Game.runOnRenderThread(new com.watabou.utils.Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndRebelTimingGame(currentPhase,
+                                // 성공 콜백 - 피해 없음
+                                new com.watabou.utils.Callback() {
+                                    @Override
+                                    public void call() {
+                                        timingGameActive = false;
+                                        Camera.main.shake(4, 0.5f);
+                                        GLog.p(Messages.get(Rebel.class, "timing_success"));
+                                        GLog.n(Messages.get(Rebel.class, Random.element(LINE_KEYS)));
+                                        Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
+                                        cleanCooldown = Random.NormalIntRange(20, 25);
+                                        BurstTimt = 0;
+                                    }
+                                },
+                                // 실패 콜백 - 피해 적용
+                                new com.watabou.utils.Callback() {
+                                    @Override
+                                    public void call() {
+                                        timingGameActive = false;
+                                        GameScene.flash(0xFF00FF);
+                                        Sample.INSTANCE.play(Assets.Sounds.BLAST);
+                                        Sample.INSTANCE.play(Assets.Sounds.D21);
+                                        int damage = Math.max(20, Dungeon.hero.HP * 3 / 5);
+                                        Dungeon.hero.damage(damage, rebel);
+                                        CellEmitter.center(Dungeon.hero.pos).burst(BlastParticle.FACTORY, 20);
+                                        GLog.n(Messages.get(Rebel.class, "timing_fail"));
+                                        if (!Dungeon.hero.isAlive()) {
+                                            Dungeon.fail(Rebel.class);
+                                        }
+                                        cleanCooldown = Random.NormalIntRange(20, 25);
+                                        BurstTimt = 0;
+                                    }
+                                }
+                        ));
+                    }
+                });
+
+                Dungeon.hero.interrupt();
+                spend(1f);
+                return true;
             } else {
-                Char Target = hero;
-
-                if (Target.buff(PortableCover4.CoverBuff.class) == null) {
-                    Camera.main.shake(24, 2f);
-                    GameScene.flash(0xFF00FF);
-                    Sample.INSTANCE.play(Assets.Sounds.BLAST);
-                    Sample.INSTANCE.play(Assets.Sounds.HAHAH);
-                    hero.damage(hero.HP * 3 / 5, this);
-                    CellEmitter.center(hero.pos).burst(BlastParticle.FACTORY, 20);
-                    GLog.n(Messages.get(this, "o"));
-
-                    if (enemy == Dungeon.hero && !enemy.isAlive()) {
-                        Dungeon.fail(getClass());
-                    }
-
-                } else {
-                    Camera.main.shake(16, 1.5f);
-                    Buff.prolong(this, Paralysis.class, 1f);
-                    GLog.p(Messages.get(this, "g"));
-                    GLog.n(Messages.get(this, Random.element(LINE_KEYS)));
-
-                    Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
-                }
-
-                BurstTimt = 0;
-
-                for (int i = 0; i < 1122; i++) {
-                    if (Dungeon.level.map[i] == Terrain.BARRICADE
-                            || Dungeon.level.map[i] == Terrain.HIGH_GRASS
-                            || Dungeon.level.map[i] == Terrain.GRASS
-                            || Dungeon.level.map[i] == Terrain.FURROWED_GRASS
-                            || Dungeon.level.map[i] == Terrain.EMBERS
-                            || Dungeon.level.map[i] == Terrain.WATER) {
-                        Level.set(i, Terrain.EMPTY);
-                        GameScene.updateMap(i);
-                    }
-                }
-
-                cleanCooldown = Random.NormalIntRange(22, 25);
-
+                // 타이밍 게임이 진행 중일 때는 대기 (BurstTimt >= 2)
+                spend(1f);
                 return true;
             }
         }
@@ -706,9 +773,9 @@ public class Rebel extends Mob {
             GameScene.flash(0x8B00FF);
             baseSpeed = 3f;
 
-
             // 화염 폭발 활성화
-            cleanCooldown = 8;
+            cleanCooldown = 5;
+            gravityCooldown = 10;
 
             if (hero.heroClass == HeroClass.CLERIC) {
                 GameScene.flash(0xFFFFFF);
@@ -809,7 +876,6 @@ public class Rebel extends Mob {
 
     private static final String PHASE = "Phase";
     private static final String SKILLPOS = "LastPos";
-
     private static final String SKILLCD = "charge";
 
     @Override
@@ -1315,7 +1381,6 @@ public class Rebel extends Mob {
         if (barrierCurrentRow >= ARENA_BOTTOM) {
             barrierActive = false;
             barrierCurrentRow = 0;
-            Sample.INSTANCE.play(Assets.Sounds.SHATTER);
             spend(TICK);
             return;
         }
@@ -1399,6 +1464,62 @@ public class Rebel extends Mob {
                             GLog.n(Messages.get(this, "barrier_kill"));
                         }
                     }
+                }
+            }
+        }
+    }
+
+    // ==================== 타이밍 게임 복구 ====================
+
+    /**
+     * 게임 로드 시 타이밍 게임이 진행 중이었으면 즉시 창을 표시
+     * GameScene.create()에서 호출됨
+     */
+    public static void checkPendingTimingGame() {
+        if (Dungeon.level == null) return;
+        
+        for (Mob m : Dungeon.level.mobs) {
+            if (m instanceof Rebel) {
+                Rebel rebel = (Rebel) m;
+                if (rebel.timingGameActive && WndRebelTimingGame.instance == null) {
+                    // 타이밍 게임 창 표시
+                    final Rebel finalRebel = rebel;
+                    final int currentPhase = rebel.Phase;
+                    GameScene.show(new WndRebelTimingGame(currentPhase,
+                            // 성공 콜백
+                            new com.watabou.utils.Callback() {
+                                @Override
+                                public void call() {
+                                    finalRebel.timingGameActive = false;
+                                    Camera.main.shake(4, 0.5f);
+                                    GLog.p(Messages.get(Rebel.class, "timing_success"));
+                                    GLog.n(Messages.get(Rebel.class, Random.element(LINE_KEYS)));
+                                    Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
+                                    finalRebel.cleanCooldown = Random.NormalIntRange(20, 25);
+                                    finalRebel.BurstTimt = 0;
+                                }
+                            },
+                            // 실패 콜백
+                            new com.watabou.utils.Callback() {
+                                @Override
+                                public void call() {
+                                    finalRebel.timingGameActive = false;
+                                    GameScene.flash(0xFF00FF);
+                                    Sample.INSTANCE.play(Assets.Sounds.BLAST);
+                                    Sample.INSTANCE.play(Assets.Sounds.D21);
+                                    int damage = Math.max(20, Dungeon.hero.HP * 3 / 5);
+                                    Dungeon.hero.damage(damage, finalRebel);
+                                    CellEmitter.center(Dungeon.hero.pos).burst(BlastParticle.FACTORY, 20);
+                                    GLog.n(Messages.get(Rebel.class, "timing_fail"));
+                                    if (!Dungeon.hero.isAlive()) {
+                                        Dungeon.fail(Rebel.class);
+                                    }
+                                    finalRebel.cleanCooldown = Random.NormalIntRange(20, 25);
+                                    finalRebel.BurstTimt = 0;
+                                }
+                            }
+                    ));
+                    break; // 하나의 Rebel만 처리
                 }
             }
         }

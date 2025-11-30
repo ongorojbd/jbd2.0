@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -36,14 +37,17 @@ import com.watabou.utils.Random;
 
 public class WndCoinGame extends Window {
 
+	// 물컵 관련 상수 (다른 static 변수에서 참조하므로 먼저 선언)
+	private static final int MAX_WATER = 150;
+	private static final int START_WATER = 50;
+
 	// === 게임 상태 저장용 static 변수 (탭 전환 시 유지) ===
-	private static int savedWater = 0;
+	private static int savedWater = START_WATER;
 	private static boolean savedIsPlayerTurn = true;
 	private static int savedStateOrdinal = 0; // GameState의 ordinal 저장
 	private static int savedSelectedCoins = 0; // 선택한 동전 수 저장
 	private static boolean savedTurnActionDone = false; // 현재 턴에서 액션을 완료했는지
 	private static boolean gameInProgress = false;
-	private static boolean gameAlreadyPlayed = false; // 이미 플레이했는지 여부
 
 	// 반응형 크기 설정
 	private int WIDTH;
@@ -69,9 +73,8 @@ public class WndCoinGame extends Window {
 	private GameState state = GameState.COIN_SELECT;
 	private boolean isPlayerTurn = true;
 
-	// 물컵 관련
-	private static final int MAX_WATER = 100;
-	private int currentWater = 0;
+	// 물컵 현재 상태
+	private int currentWater = START_WATER;
 
 	// 동전 선택
 	private int selectedCoins = 0;
@@ -82,8 +85,8 @@ public class WndCoinGame extends Window {
 	private boolean arrowAMovingRight = true;
 	private boolean arrowBMovingRight = false;
 	private boolean arrowsStopped = false;  // 둘 다 동시에 멈춤
-	private float arrowASpeed = 300f;  // 화살표 A 속도 (더 빠르게)
-	private float arrowBSpeed = 200f;  // 화살표 B 속도
+	private float arrowASpeed = 200f;  // 화살표 A 속도 (더 빠르게)
+	private float arrowBSpeed = 300f;  // 화살표 B 속도
 
 	// UI 요소
 	private RenderedTextBlock titleText;
@@ -121,7 +124,7 @@ public class WndCoinGame extends Window {
 	private boolean processingClick = false;
 
 	// 보상 관련 (최대 체력 변화)
-	private static final int HP_CHANGE = 10;
+	private static final int HP_CHANGE = 20;
 
 	public WndCoinGame() {
 		super();
@@ -151,12 +154,6 @@ public class WndCoinGame extends Window {
 
 		resize(WIDTH, HEIGHT);
 
-		// 이미 플레이한 경우
-		if (gameAlreadyPlayed && !gameInProgress) {
-			showAlreadyPlayed();
-			return;
-		}
-
 		// 저장된 게임 상태 복원
 		if (gameInProgress) {
 			currentWater = savedWater;
@@ -165,7 +162,7 @@ public class WndCoinGame extends Window {
 			selectedCoins = savedSelectedCoins;
 		} else {
 			// 새 게임 시작
-			currentWater = 0;
+			currentWater = START_WATER;
 			isPlayerTurn = true;
 			state = GameState.COIN_SELECT;
 			selectedCoins = 0;
@@ -251,24 +248,6 @@ public class WndCoinGame extends Window {
 		}
 	}
 	
-	// 이미 플레이한 경우 메시지 표시
-	private void showAlreadyPlayed() {
-		RenderedTextBlock msg = PixelScene.renderTextBlock(
-				Messages.get(this, "already_played"), 7);
-		msg.maxWidth(WIDTH - 20);
-		msg.setPos((WIDTH - msg.width()) / 2, HEIGHT / 2 - 20);
-		add(msg);
-
-		RedButton exitBtn = new RedButton(Messages.get(this, "close")) {
-			@Override
-			protected void onClick() {
-				hide();
-			}
-		};
-		exitBtn.setRect(20, HEIGHT / 2 + 10, WIDTH - 40, 20);
-		add(exitBtn);
-	}
-
 	// 현재 상태 저장
 	private void saveGameState() {
 		savedWater = currentWater;
@@ -290,23 +269,12 @@ public class WndCoinGame extends Window {
 
 	// 게임 종료 시 저장 상태 초기화
 	public static void resetGameState() {
-		savedWater = 0;
+		savedWater = START_WATER;
 		savedIsPlayerTurn = true;
 		savedStateOrdinal = 0;
 		savedSelectedCoins = 0;
 		savedTurnActionDone = false;
 		gameInProgress = false;
-	}
-	
-	// 새 던전 시작 시 호출 (게임 플레이 가능하도록 초기화)
-	public static void resetForNewGame() {
-		resetGameState();
-		gameAlreadyPlayed = false;
-	}
-	
-	// 게임이 이미 플레이되었는지 확인
-	public static boolean hasBeenPlayed() {
-		return gameAlreadyPlayed;
 	}
 
 	private void setupMainUI() {
@@ -406,14 +374,14 @@ public class WndCoinGame extends Window {
 		float waterHeight = innerHeight * waterRatio;
 		
 		int waterColor;
-		if (waterRatio < 0.5f) {
-			waterColor = 0xFF4488FF; // 파란색
-		} else if (waterRatio < 0.75f) {
+		if (waterRatio < 0.67f) {
+			waterColor = 0xFF4488FF; // 파란색 (100 미만)
+		} else if (waterRatio < 0.83f) {
 			Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
-			waterColor = 0xFFFFAA00; // 주황색
+			waterColor = 0xFFFFAA00; // 주황색 (100~124)
 		} else {
 			Music.INSTANCE.play(Assets.Music.KOICHI, true);
-			waterColor = 0xFFFF4444; // 빨간색 (위험)
+			waterColor = 0xFFFF4444; // 빨간색 (125 이상, 위험)
 		}
 
 		if (waterHeight > 0) {
@@ -466,7 +434,7 @@ public class WndCoinGame extends Window {
 
 	private void selectCoins(int coins) {
 		selectedCoins = coins;
-		Sample.INSTANCE.play(Assets.Sounds.CLICK);
+		Sample.INSTANCE.play(Assets.Sounds.GOLD);
 		markTurnActionDone(); // 동전 선택 완료 표시
 		startArrowPhase();
 	}
@@ -516,7 +484,7 @@ public class WndCoinGame extends Window {
 	private void stopArrows() {
 		// 둘 다 동시에 멈춤
 		arrowsStopped = true;
-		Sample.INSTANCE.play(Assets.Sounds.HIT);
+		Sample.INSTANCE.play(Assets.Sounds.ITEM);
 		
 		if (stopButton != null) {
 			stopButton.enable(false);
@@ -706,9 +674,6 @@ public class WndCoinGame extends Window {
 		state = GameState.GAME_OVER;
 		clearActionUI();
 		
-		// 게임 정상 종료 - 재플레이 불가
-		gameAlreadyPlayed = true;
-		
 		// 게임 종료 시 저장 상태 초기화
 		resetGameState();
 
@@ -718,6 +683,7 @@ public class WndCoinGame extends Window {
 			// 최대 체력 증가
 			Dungeon.hero.HT += HP_CHANGE;
 			Dungeon.hero.HP = Math.min(Dungeon.hero.HP + HP_CHANGE, Dungeon.hero.HT);
+			Statistics.spw30++;
 
 			instructionText = PixelScene.renderTextBlock(
 					Messages.get(this, "player_wins"), 7);
@@ -735,6 +701,7 @@ public class WndCoinGame extends Window {
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.FALLING);
 			Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
+			Statistics.spw20++;
 
 			// 최대 체력 감소
 			Dungeon.hero.HT = Math.max(1, Dungeon.hero.HT - HP_CHANGE);
@@ -757,6 +724,7 @@ public class WndCoinGame extends Window {
 			@Override
 			protected void onClick() {
 				Music.INSTANCE.play(Assets.Music.EMPO, true);
+				Dungeon.hero.spendAndNext(1f);
 				hide();
 			}
 		};
@@ -765,11 +733,25 @@ public class WndCoinGame extends Window {
 	}
 
 	private void clearActionUI() {
-		if (instructionText != null) { remove(instructionText); instructionText = null; }
-		if (stopButton != null) { remove(stopButton); stopButton = null; }
-		if (continueButton != null) { remove(continueButton); continueButton = null; }
+		// destroy()를 호출해야 PointerArea와 KeyListener가 정리됨
+		if (instructionText != null) { 
+			instructionText.destroy();
+			remove(instructionText); 
+			instructionText = null; 
+		}
+		if (stopButton != null) { 
+			stopButton.destroy();
+			remove(stopButton); 
+			stopButton = null; 
+		}
+		if (continueButton != null) { 
+			continueButton.destroy();
+			remove(continueButton); 
+			continueButton = null; 
+		}
 		for (int i = 0; i < 5; i++) {
 			if (coinButtons[i] != null) { 
+				coinButtons[i].destroy();
 				remove(coinButtons[i]); 
 				coinButtons[i] = null; 
 			}
@@ -880,6 +862,14 @@ public class WndCoinGame extends Window {
 		if (gameInProgress && state != GameState.GAME_OVER) {
 			saveGameState();
 		}
+		
+		// 클릭 관련 플래그 정리
+		processingClick = false;
+		clickGuardTimer = 0;
+		
+		// UI 요소 정리 (destroy() 호출해서 PointerArea/KeyListener 정리)
+		clearActionUI();
+		
 		super.destroy();
 	}
 }

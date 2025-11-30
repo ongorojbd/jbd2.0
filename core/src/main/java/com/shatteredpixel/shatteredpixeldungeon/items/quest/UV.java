@@ -57,11 +57,8 @@ public class UV extends Item {
 
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
                 if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
-                    if (!mob.properties().contains(Char.Property.BOSS) && !mob.properties().contains(Char.Property.MINIBOSS) && mob.properties().contains(Char.Property.UNDEAD)) {
+                    if (!mob.properties().contains(Char.Property.BOSS) && !mob.properties().contains(Char.Property.MINIBOSS)) {
                         mob.die(this);
-                    } else if (mob.properties().contains(Char.Property.BOSS)) {
-                        Buff.affect(mob, Paralysis.class, 10f);
-                        mob.damage(mob.HT / 10, this);
                     }
                 }
             }

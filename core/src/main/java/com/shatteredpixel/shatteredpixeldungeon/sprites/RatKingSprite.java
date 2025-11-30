@@ -43,7 +43,7 @@ public class RatKingSprite extends MobSprite {
 		int c;
 		switch (Holiday.getCurrentHoliday()){
 			default:
-				c = 0;
+				c = 24;
 				break;
 			case WINTER_HOLIDAYS:
 				c = 8;
@@ -51,7 +51,7 @@ public class RatKingSprite extends MobSprite {
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.armorAbility instanceof Ratmogrify){
-			c = 24;
+			c = 16;
 			if (parent != null) aura(0xFFFF00, 5);
 		}
 

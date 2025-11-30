@@ -201,7 +201,7 @@ public class KarsLight extends Mob {
     }
 
     private void resolveBladeNet() {
-        Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+        Sample.INSTANCE.play(Assets.Sounds.TONIO);
         for (int c : netCells) {
             // Speck.LIGHT 이펙트 추가
             CellEmitter.get(c).burst(Speck.factory(Speck.LIGHT), 8);
@@ -304,6 +304,7 @@ public class KarsLight extends Mob {
         }
         int cur = pos;
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s3"));
+        Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
         for (int dst : route) {
             Ballistica ray = new Ballistica(cur, dst, Ballistica.WONT_STOP);
             for (int c : ray.path) {
@@ -388,8 +389,8 @@ public class KarsLight extends Mob {
         super.die(cause);
 
         WndDialogueWithPic.dialogue(
-                new CharSprite[]{new KarsSprite(), new SturoSprite(), new GSoldierSprite(), new SturoSprite(), new Lisa3Sprite(), new Speedwagon2Sprite(), new UltimateSprite(), new UltimateSprite(), new Speedwagon2Sprite() },
-                new String[]{"카즈", "슈트로하임", "독일 군인", "슈트로하임", "카즈", "스피드왜건", "완전생물 카즈", "완전생물 카즈", "스피드왜건"},
+                new CharSprite[]{new KarsSprite(), new SturoSprite(), new GSoldierSprite(), new SturoSprite(), new Lisa3Sprite(), new Speedwagon2Sprite(), new SturoSprite(), new UltimateSprite(), new UltimateSprite(), new Speedwagon2Sprite() },
+                new String[]{"카즈", "슈트로하임", "독일 군인", "슈트로하임", "카즈", "스피드왜건", "슈트로하임", "완전생물 카즈", "완전생물 카즈", "스피드왜건"},
                 new String[]{
                         Messages.get(KarsLight.class, "t6"),
                         Messages.get(KarsLight.class, "t7"),
@@ -399,9 +400,11 @@ public class KarsLight extends Mob {
                         Messages.get(KarsLight.class, "t11"),
                         Messages.get(KarsLight.class, "t12"),
                         Messages.get(KarsLight.class, "t13"),
-                        Messages.get(KarsLight.class, "t14")
+                        Messages.get(KarsLight.class, "t14"),
+                        Messages.get(KarsLight.class, "t15")
                 },
                 new byte[]{
+                        WndDialogueWithPic.IDLE,
                         WndDialogueWithPic.IDLE,
                         WndDialogueWithPic.IDLE,
                         WndDialogueWithPic.IDLE,
