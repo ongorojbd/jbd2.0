@@ -253,7 +253,7 @@ public class Dungeon {
             //Ensures that daily seeds are not in the range of user-enterable seeds
             seed = SPDSettings.lastDaily() + DungeonSeed.TOTAL_SEEDS;
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
             customSeedText = format.format(new Date(SPDSettings.lastDaily()));
         } else if (!SPDSettings.customSeed().isEmpty()) {
             customSeedText = SPDSettings.customSeed();

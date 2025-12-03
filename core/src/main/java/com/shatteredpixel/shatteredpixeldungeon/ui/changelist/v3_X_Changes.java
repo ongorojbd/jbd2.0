@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DannySprite;
@@ -83,127 +84,116 @@ public class v3_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME), "투척 무기 리워크",
-                "투척 무기가 업그레이드할 가치가 있도록 대대적으로 개편되었습니다!\n" +
-                        "\n" +
-                        "- 투척 무기는 이제 3개 세트로 등장하며, 세트는 섞이지 않습니다.\n" +
-                        "- 투척 무기 기본 내구도가 3x5/8/12로 증가했습니다 (기존 2x5/10/15에서).\n" +
-                        "- 세트는 단위로 업그레이드되며 (3개 모두), 업그레이드하면 세트가 완전히 수리됩니다.\n" +
-                        "- 업그레이드는 이제 내구도를 1.5배 증가시킵니다 (기존 3배에서 감소).\n" +
-                        "- 투척 무기의 기본 업그레이드당 데미지 증가가 1티어로 감소했습니다 (기존 2티어에서).\n" +
-                        "- 세트는 속성 부여, 저주, 강화, 미식별 등이 가능합니다.\n" +
-                        "- 세트는 자연 업그레이드, 속성 부여, 또는 저주와 함께 등장할 수 있습니다.\n" +
-                        "- 몇몇 특별한 방에서 더 높은 가치의 투척 무기 세트가 등장할 확률이 있습니다.\n" +
-                        "\n" +
-                        "보우건 탄환은 이러한 변경사항의 영향을 받지 않으며, 사실상 모두 같은 세트에 속하고 여전히 업그레이드할 수 없습니다."));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WONDROUS_RESIN), "투척 무기 리워크",
-                "투척 무기가 업그레이드할 가치가 있도록 대대적으로 개편되었습니다!\n" +
-                        "\n" +
-                        "- 투척 무기는 이제 3개 세트로 등장하며, 세트는 섞이지 않습니다.\n" +
-                        "- 투척 무기 기본 내구도가 3x5/8/12로 증가했습니다 (기존 2x5/10/15에서).\n" +
-                        "- 세트는 단위로 업그레이드되며 (3개 모두), 업그레이드하면 세트가 완전히 수리됩니다.\n" +
-                        "- 업그레이드는 이제 내구도를 1.5배 증가시킵니다 (기존 3배에서 감소).\n" +
-                        "- 투척 무기의 기본 업그레이드당 데미지 증가가 1티어로 감소했습니다 (기존 2티어에서).\n" +
-                        "- 세트는 속성 부여, 저주, 강화, 미식별 등이 가능합니다.\n" +
-                        "- 세트는 자연 업그레이드, 속성 부여, 또는 저주와 함께 등장할 수 있습니다.\n" +
-                        "- 몇몇 특별한 방에서 더 높은 가치의 투척 무기 세트가 등장할 확률이 있습니다.\n" +
-                        "\n" +
-                        "보우건 탄환은 이러한 변경사항의 영향을 받지 않으며, 사실상 모두 같은 세트에 속하고 여전히 업그레이드할 수 없습니다."));
+        changes.addButton(new ChangeButton(
+                new ItemSprite(ItemSpriteSheet.SMOOTH),
+                "신규 아이템",
+                "새로운 장비 DISC와 위험한 물건이 추가되었습니다!\n\n" +
+                        "- _스무스 오퍼레이터즈의 장비 DISC_는 던전 환경을 제어할 수 있는 새로운 아이템입니다. 잠긴 문을 열거나 임시 장벽을 생성하는 등 다양한 활용이 가능합니다.\n\n" +
+                        "- 신규 위험한 물건인 _어텀 리브스_는 던전에 등장하는 아이템의 수를 늘려 주지만, 대신 아이템을 찾기 더 어렵게 만듭니다!"
+        ));
 
         changes.addButton(new ChangeButton(new Image(new ImpSprite()), "숨겨진 장소",
                 "오시리스신 옆에 _저택의 창고_로 향하는 통로가 추가되었습니다!\n\n" +
                         "DIO의 저택 창고로 들어가면 오시리스신의 스탠드사인 _다니엘 J. 다비_를 만날 수 있습니다."));
 
-        Image i = new Image(new DannySprite());
+        Image i = new Image(Assets.Sprites.DANNY, 3, 0, 18, 16);
         i.scale.set(PixelScene.align(0.75f));
         changes.addButton(new ChangeButton(i, "신규 NPC",
                 "- 신규 NPC인 _대니_가 추가되었습니다.\n" +
                         "대니는 던전의 특정한 장소에서 만날 수 있습니다.\n\n" +
                         "- 신규 NPC인 _다니엘 J. 다비_가 추가되었습니다.\n" +
                         "다니엘 J. 다비는 DIO 저택의 창고에서 만날 수 있으며, 영혼을 건 내기를 할 수 있습니다.\n\n" +
-                        "- 또한 카이로 시내에 특수 희귀 적이 1종 추가되었습니다.\n" ));
+                        "- 또한 카이로 시내에 특수한 희귀 적이 1종 추가되었습니다."));
 
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.PASSIONE, 0, 15, 12, 15), "파시오네 호위팀",
-                "- 파시오네 조직의 간부인 폴포가 이제 특정 비밀 방에서 등장합니다.\n" +
-                        "- 폴포에게 보수를 지불하면 파시오네 호위팀 중 한 명을 무작위로 고용할 수 있습니다\n" +
-                        "- 호위팀원들은 각각 고유한 능력과 특성을 가지고 있습니다"));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO1), "만화책 변경",
-                "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
+        Image aboutIcon = Icons.get(Icons.CHALLENGE_GREY);
+        aboutIcon.hardlight(0.65f, 1.05f, 1.55f); // 밝은 하늘색
+        changes.addButton(new ChangeButton(aboutIcon, "경쟁 모드",
+                "신규 모드인 _경쟁 모드_가 추가되었습니다!\n\n" +
+                        "매일 모든 도전자에게 똑같은 던전이 주어집니다. 닉네임을 설정하고 당신의 실력을 증명하세요!\n\n" +
+                        "- 다른 플레이어들과 점수를 경쟁할 수 있습니다.\n\n" +
+                        "- Top 10 랭킹은 매일 갱신됩니다.\n\n" +
+                        "- 기회는 하루에 단 한 번!\n\n" +
+                        "- 관련 신규 배지도 1종 추가되었습니다!\n\n" +
+                        "경쟁 모드는 게임을 한 번 이상 클리어해야 해금됩니다."));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.KARS, 0, 0, 14, 15), "전투조류 컨텐츠 추가",
-                "- 기둥의 사내 - 카즈가 추가되었습니다.\n" +
-                        "- 전체 층이 54층까지 확장되었습니다.\n" +
-                        "- 죽음의 웨딩 링의 지속시간이 1200턴에서 1600턴으로 증가했습니다.\n" +
+                "- 기둥의 사내 - 카즈가 추가되었습니다.\n\n" +
+                        "- 전체 층이 54층까지 확장되었습니다.\n\n" +
+                        "- 죽음의 웨딩 링의 지속시간이 1200턴에서 1600턴으로 증가했습니다.\n\n" +
                         "- 청정의 물약으로 죽음의 웨딩 링을 해제할 수 있었던 버그가 수정되었습니다."));
+
+        Image i2 = Icons.get(Icons.RANDOMIZE);
+        i2.scale.set(PixelScene.align(0.85f));
+        changes.addButton(new ChangeButton(i2, "랜덤화",
+                "- 게임에 _랜덤화_ 옵션이 추가되었습니다!\n\n" +
+                        "- 해당 옵션 활성화 시 무작위 영웅과 시련이 적용되며, 게임 진행 중에는 무작위 특성, 보조 직업, 레퀴엠 능력을 적용할 수 있습니다.\n\n" +
+                        "- 이러한 요소들은 플레이에 재미와 예측 불가능함을 더해주며, 어떤 선택을 해야 할지 고민되는 플레이어에게 새로운 대안을 제공합니다.\n\n" +
+                        "또한 랜덤화 옵션을 선택하면 해금할 수 있는 _신규 배지_가 추가되었습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.REBEL, 0, 0, 16, 16), "천국DIO 리메이크",
-                "천국에 도달한 DIO가 리메이크되었습니다!\n" +
+        changes.addButton(new ChangeButton(
+                new Image(Assets.Sprites.REBEL, 0, 0, 16, 16),
+                "천국DIO 리메이크",
+                "천국에 도달한 DIO가 새롭게 리메이크되었습니다!\n\n" +
+                        "- 기존에 사용되던 오래된 패턴과 효과가 전면적으로 재작업되었으며, 보다 역동적이고 균형 잡힌 전투 경험을 제공하도록 개선되었습니다."
+        ));
+
+        changes.addButton(new ChangeButton(new Image(new AlbinoSprite()), "밸런스 변경",
+                "초반 게임 밸런스를 일부 조정했습니다.\n" +
+                        "이번 변경은 주로 오버 헤븐 시련과 크눔신 때문에 발생하던 난이도 급상승을 완화하기 위한 것입니다.\n\n" +
+                        "- _오버 헤븐_\n" +
+                        "다음 적들은 더 이상 강화 개체로 등장하지 않습니다: 3층의 호루스신, 4층의 하베스트, 7층의 옐로 템퍼런스, 9층의 하이웨이 스타\n\n" +
+                        "강화 개체의 등장 확률이 기존처럼 항상 1/8로 고정되지 않고 이제 던전 깊이에 따라 최대 1/6까지 증가합니다.\n\n" +
+                        "- _크눔신_\n" +
+                        "체력이 15에서 12로 감소했습니다.\n" +
+                        "더 이상 크눔신의 피해량에 따라 출혈량이 결정되지 않으며, 출혈이 보너스 피해와 완전히 독립적으로 작동합니다."));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CHALICE3), "하이웨이 스타의 장비 DISC",
+                "기존에는 하이웨이 스타의 장비 DISC가 플레이어에게 얼마나 피해를 주는지 직접적인 정보를 확인할 수 없어, 많은 플레이어가 인터넷에서 수치를 찾아봐야 했습니다.\n" +
                         "\n" +
-                        "- 천국에 도달한 DIO의 오래된 패턴과 효과가 전면 수정되었습니다. 이제 더 역동적이고 균형 잡힌 전투 경험이 될 것입니다."));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CHALICE3), "만화책 변경",
-                "- 냉철함 특성은 이제 죠르노가 +1에서 투척 무기를 3배 속도로 식별하거나 +2에서 사용 시 즉시 식별할 수 있게 해줍니다.\n\n이전에는 +1에서 모든 아이템의 식별 속도를 1.75배, +2에서 2.5배 증가시켰습니다."));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO1), "만화책 변경",
-                "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
+                        "이제 플레이어는 하이웨이 스타의 장비 DISC가 가할 예정인 피해를 미리 확인할 수 있으며, 하이웨이 스타의 장비 DISC의 피해는 고정 수치가 아니라 -8%에서 -11% 범위 내에서 변동됩니다.\n\n이를 통해 플레이어는 피해 감소 효과가 적용되기 이전 기준으로, 자신에게 얼마나 피해가 들어올지 정확히 파악할 수 있습니다.\n" +
+                        "\n" +
+                        "또한 하이웨이 스타의 장비 DISC 피해량은 이제 물리 방어력뿐 아니라, 모든 종류의 피해 감소 효과에 의해 감소됩니다."));
 
         changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
                 "주요 사항:\n" +
-                        "- 죠니의 장비 선택 옵션이 이제 2개의 근접 무기와 1개의 갑옷에 추가로 투척 무기를 제공합니다\n" +
-                        "- 투척 무기(전갈 투척 포함)는 이제 대상을 겨누지 않으면 항상 1턴의 투척 지연이 있습니다\n" +
-                        "- 역행은 이제 천국의 DISC가 처음 약화될 때 항상 플레이어에게 알립니다\n" +
-                        "- 쇼트 키 No. 2는 더 이상 수동적인 적을 겨누지 않습니다\n" +
-                        "\n" +
-                        "투척 무기:\n" +
-                        "- 강화는 이제 공격 속도에 미치는 영향에 따라 투척 무기 내구도에 영향을 줍니다\n" +
-                        "- 폭발 저주는 이제 발동 시 투척 무기의 사용 횟수를 소모합니다\n" +
-                        "기타:\n" +
-                        "- 대부분의 튜토리얼/가이드북 텍스트를 더 간결하게 개선했습니다\n" +
-                        "- 관찰의 명령 DISC의 추측 창이 이제 어떤 아이템을 추측하는지 보여줍니다"));
+                        "- 위험한 물건을 선택할 수 있는 옵션이 확장되었습니다. (총 4개)\n" +
+                        "- 엔야 할멈에게 스톤 프리의 장비 DISC로 피해를 입히면 특수 배지를 얻을 수 없습니다.\n" +
+                        "- 각성의 파문전사의 연속 타격이 5 이상일 경우 적에게 공격을 맞춰도 연속 타격 지속시간이 연장되지 않습니다.\n" +
+                        "- 정원과 우물방이 잠겨있도록 변경되었습니다.\n" +
+                        "- 레이미 처치 시 아놀드가 여러 마리 나오는 버그가 수정되었습니다.\n" +
+                        "- 디아볼로 보스전 진입 시 디아볼로가 1턴동안 공격하지 않습니다.\n" +
+                        "- 이동 속도에 영향을 주는 상형문자가 작동 중일 때 시각 효과가 추가되었습니다.\n" +
+                        "- 보우건이 다트에 얼마의 피해를 추가하는지 확인할 수 있게 되었습니다.\n" +
+                        "- 폴포의 용액 제조 에너지가 4 -> 2로 감소, 죠죠 포인트로 교환 시 에너지 제공량이 12 -> 8로 감소합니다.\n" +
+                        "- 위험한 물건을 죠죠 포인트로 교환 시 경고문이 출력됩니다.\n" +
+                        "- 역행 시 플레이어가 적을 처치했는지 확실하게 확인 가능하도록 텍스트가 수정되었습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(CharSprite.POSITIVE);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.DURABLE_PROJECTILES), "투척 무기 특성 강화",
-                "투척 무기 변경의 일환으로 투척 무기와 상호작용하는 일부 특성이 강화됩니다:\n" +
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.DURABLE_PROJECTILES), "투척 무기 특성 상향",
+                "투척 무기와 상호작용하는 일부 특성이 상향됩니다:\n" +
                         "\n" +
-                        "- 나이프 투척 특성의 정확도 증가가 대폭 상승하여 +1/2/3에서 +50/100/150%가 됩니다 (기존 +20/40/60%에서).\n" +
-                        "\n" +
-                        "- 자세 교정 특성은 이제 투척 무기와 전갈 투척 모두에 속성이 부여되어 있으면 두 속성 모두 발동할 수 있습니다."));
+                        "- 나이프 투척 특성의 피해량이 +1/2/3에서 +10/+20/+30% -> +15/+30/+45%가 됩니다.\n\n" +
+                        "- 생명력 주입 특성의 투척 무기 내구도 증가량이 33/50% -> 50/75%이 됩니다.\n\n" +
+                        "- 투쟁심 특성의 정확도가 +1/2/3에서 -30/-10/+10% -> -25/0/+25%이 됩니다."));
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMAHAWK), "투척 무기 하향",
-                "투척 무기 리워크에 따른 조정이 있습니다.\n" +
-                        "\n" +
-                        "- 킹 크림슨의 주먹의 즉시 투척 조건이 단순한 20턴 쿨다운으로 변경되었습니다\n" +
-                        "- 완전생물의 다람쥐의 기본 데미지가 6-15에서 6-12로 감소했습니다\n" +
-                        "- 크래커 볼리의 피해 증가량이 1-3에서 1-2로 감소했습니다\n" +
-                        "- 노토리어스 B.I.G의 내구도가 8에서 5로 감소했습니다\n" +
-                        "- DIO의 나이프의 피해 증가량이 1-4에서 1-3으로 감소했습니다\n" +
-                        "- DIO의 나이프의 출혈 확률이 60%에서 33%로 감소했지만, 이제 적의 방어력을 무시하는 별도의 판정입니다\n" +
-                        "- DISC가 심어진 독개구리의 기본 데미지가 10-25에서 10-20으로 감소했습니다"));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMAHAWK), "투척 무기 상향",
+                        "- 자철석으로 가져올 아이템이 즉시 회수 가능한 아이템(렉킹 볼, 황금의 회전의 철구 등)일 경우 시전에 턴을 소모하지 않습니다.\n\n" +
+                        "- DIO의 나이프의 출혈 피해량이 딜 비례가 아닌 독자적인 범위를 가지도록 변경됩니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(CharSprite.NEGATIVE);
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOLAS), "투척 무기 하향",
-                "투척 무기 리워크에 따른 조정이 있습니다.\n" +
-                        "\n" +
-                        "- 킹 크림슨의 주먹의 즉시 투척 조건이 단순한 20턴 쿨다운으로 변경되었습니다\n" +
-                        "- 완전생물의 다람쥐의 기본 데미지가 6-15에서 6-12로 감소했습니다\n" +
-                        "- 크래커 볼리의 피해 증가량이 1-3에서 1-2로 감소했습니다\n" +
-                        "- 노토리어스 B.I.G의 내구도가 8에서 5로 감소했습니다\n" +
-                        "- DIO의 나이프의 피해 증가량이 1-4에서 1-3으로 감소했습니다\n" +
-                        "- DIO의 나이프의 출혈 확률이 60%에서 33%로 감소했지만, 이제 적의 방어력을 무시하는 별도의 판정입니다\n" +
-                        "- DISC가 심어진 독개구리의 기본 데미지가 10-25에서 10-20으로 감소했습니다"));
-
+                        "- 크래커 볼리의 피해량이 6-9 -> 4-9로 감소되었습니다. 강화 시 피해량은 +1-2 -> +0-2로 변경되었습니다.\n\n" +
+                        "- 노토리어스 B.I.G이 돌아올 때 필요한 턴이 4턴에서 5턴으로 증가합니다."));
     }
 
     public static void add_v3_2_Changes(ArrayList<ChangeInfo> changeInfos) {

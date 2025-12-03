@@ -307,7 +307,7 @@ public class Esidisi extends Mob {
         // Resolution burst at caster
         CellEmitter.center(this.pos).burst(EsidisiParticle.FACTORY, 8);
         latticeCells.clear();
-        latticeCD = 10;
+        latticeCD = 6;
         spend(1f);
     }
 
@@ -334,7 +334,7 @@ public class Esidisi extends Mob {
 
     private void resolveVeinJet() {
         int damageMin = 16;
-        int damageMax = 25;
+        int damageMax = 20;
         for (int target : veinCells) {
             for (int i : PathFinder.NEIGHBOURS9) {
                 int p = target + i;

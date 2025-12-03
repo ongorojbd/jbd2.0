@@ -4,6 +4,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping.discover;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
@@ -19,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCle
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -100,6 +102,28 @@ public class Neotel extends Item {
                 Potion expPotion = new PotionOfExperience();
                 expPotion.apply(hero);
             }
+
+            // 디버그: 경쟁 모드 제한 및 기록 제거 (다시 도전 가능하도록)
+            long DAY = 24 * 60 * 60 * 1000;
+            long time = Game.realTime - (Game.realTime % DAY);
+            time = Math.max(time, 20_148 * DAY); // earliest possible daily for v3.0.1
+            SPDSettings.lastDaily(time - DAY); // 하루 전으로 설정하여 즉시 도전 가능하게
+
+            // 경쟁 모드 기록도 초기화
+            Rankings.INSTANCE.load();
+            Rankings.INSTANCE.latestDaily = null;
+            Rankings.INSTANCE.dailyScoreHistory.clear();
+            Rankings.INSTANCE.save();
+
+            GLog.h("경쟁 모드 제한 및 기록이 초기화되었습니다.");
+
+            // 시크릿 팩터 페이지를 미획득 상태로 되돌림
+//            Document.SEWERS_GUARD.deletePage("j1");
+//            Document.SEWERS_GUARD.deletePage("j2");
+//            Document.SEWERS_GUARD.deletePage("j3");
+//            Document.SEWERS_GUARD.deletePage("j4");
+//            Document.SEWERS_GUARD.deletePage("j5");
+//            Document.SEWERS_GUARD.deletePage("j6");
         }
         int length = Dungeon.level.length();
         int[] map = Dungeon.level.map;

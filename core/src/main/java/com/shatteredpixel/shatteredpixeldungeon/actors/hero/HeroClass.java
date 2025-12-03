@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
@@ -73,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Drago;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw11;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
@@ -84,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
@@ -99,6 +102,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortswor
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HealingDart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.DeviceCompat;
@@ -144,18 +148,15 @@ public enum HeroClass {
             new RingOfMight().identify().upgrade(999).collect();
             new ThrowingSpike().identify().upgrade(9999).collect();
             new RingOfAccuracy().identify().upgrade(999).collect();
-            new PotionOfCleansing().identify().collect();
+            new HealingDart().identify().quantity(100).collect();
             new PlateArmor().identify().upgrade(999).collect();
             new Neotel().collect();
             new Spw().identify().quantity(100).collect();
-            new Bomb().identify().quantity(100).collect();
             new StoneOfAdvanceguard().identify().quantity(100).collect();
             new UV().identify().quantity(100).collect();
             new WandOfDisintegration().identify().upgrade(12).collect();
             new Spw11().identify().quantity(100).collect();
             new PotionOfHealing().identify().quantity(100).collect();
-            new TengusMask().collect();
-            new KingsCrown().collect();
         }
 
         switch (this) {

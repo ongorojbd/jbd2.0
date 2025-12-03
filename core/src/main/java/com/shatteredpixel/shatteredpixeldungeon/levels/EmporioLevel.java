@@ -51,6 +51,7 @@ import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -125,10 +126,12 @@ public class EmporioLevel extends Level {
         So1 So1 = new So1();
         So1.pos = 3 * width() + 3;
         mobs.add( So1 );
-//
-        DArby So2 = new DArby();
-        So2.pos = 5 * width() + 8;
-        mobs.add( So2 );
+
+        if (DeviceCompat.isDebug()) {
+            DArby So2 = new DArby();
+            So2.pos = 5 * width() + 8;
+            mobs.add(So2);
+        }
 
         Com npcc = new Com();
         npcc.pos = 9 * width() + 3;

@@ -678,11 +678,10 @@ public class WndCoinGame extends Window {
 		resetGameState();
 
 		if (playerWon) {
-			Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
 			
-			// 최대 체력 증가
-			Dungeon.hero.HT += HP_CHANGE;
-			Dungeon.hero.HP = Math.min(Dungeon.hero.HP + HP_CHANGE, Dungeon.hero.HT);
+			// 최대 체력 증가 (HTBoost를 사용하여 레벨업 시에도 유지)
+			Dungeon.hero.HTBoost += HP_CHANGE;
+			Dungeon.hero.updateHT(true); // HP도 함께 증가
 			Statistics.spw30++;
 
 			instructionText = PixelScene.renderTextBlock(
@@ -703,8 +702,13 @@ public class WndCoinGame extends Window {
 			Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
 			Statistics.spw20++;
 
-			// 최대 체력 감소
-			Dungeon.hero.HT = Math.max(1, Dungeon.hero.HT - HP_CHANGE);
+			// 최대 체력 감소 (HTBoost를 사용하여 레벨업 시에도 유지)
+			Dungeon.hero.HTBoost -= HP_CHANGE;
+			Dungeon.hero.updateHT(false); // HP는 증가시키지 않음
+			// HT가 1 미만이 되지 않도록 보장
+			if (Dungeon.hero.HT < 1) {
+				Dungeon.hero.HT = 1;
+			}
 			Dungeon.hero.HP = Math.min(Dungeon.hero.HP, Dungeon.hero.HT);
 
 			instructionText = PixelScene.renderTextBlock(

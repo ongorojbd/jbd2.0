@@ -25,8 +25,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
@@ -37,14 +38,15 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KS3Sprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.GameMath;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 /**
  * KS3 - 카즈의 정예병 (기마병)
- * 빠른 이동속도와 돌진 공격을 가진 기동형 유닛
- * 일정 쿨타임마다 영웅을 향해 돌진하여 큰 데미지를 가함
+ * 빠른 이동속도와 도약 공격을 가진 기동형 유닛
+ * 적을 밀쳐낸 후 도약 공격을 사용
  */
 public class KS3 extends Mob {
 
@@ -60,14 +62,17 @@ public class KS3 extends Mob {
 
 		properties.add(Property.UNDEAD);
 		properties.add(Property.DEMONIC);
+
+		HUNTING = new KS3.Hunting();
 	}
 
-	private int chargeCooldown = 5;
-	private int chargeWindup = 0;
-	private ArrayList<Integer> chargePath = new ArrayList<>();
+	private int leapPos = -1;
+	private float leapCooldown = 0; // 초기값 0으로 설정하여 평소에도 사용 가능
+	private int lastEnemyPos = -1;
 
-	private static final String CHARGE_CD = "charge_cd";
-	private static final String CHARGE_WIND = "charge_wind";
+	private static final String LEAP_POS = "leap_pos";
+	private static final String LEAP_CD = "leap_cd";
+	private static final String LAST_ENEMY_POS = "last_enemy_pos";
 
 	@Override
 	public int damageRoll() {
@@ -86,123 +91,223 @@ public class KS3 extends Mob {
 
 	@Override
 	protected boolean act() {
-		if (chargeCooldown > 0) chargeCooldown--;
-
-		// 돌진 준비중일 때
-		if (chargeWindup > 0) {
-			chargeWindup--;
-			if (chargeWindup == 0 && !chargePath.isEmpty()) {
-				resolveCharge();
-				return true;
-			} else if (chargeWindup > 0) {
-				// 돌진 경로 표시
-				for (int c : chargePath) {
-					sprite.parent.addToBack(new TargetedCell(c, 0xFF8800));
-				}
-				spend(TICK);
-				return true;
-			}
-		}
-
-		// 돌진 가능 조건: 쿨타임 끝 + 적이 3칸 이상 떨어져 있음
-		if (enemy != null && chargeCooldown <= 0 && Dungeon.level.distance(pos, enemy.pos) >= 3) {
-			if (telegraphCharge()) {
-				return true;
-			}
-		}
-
+		// 쿨다운 감소
+		if (leapCooldown > 0) leapCooldown--;
 		return super.act();
 	}
 
-	private boolean telegraphCharge() {
-		if (enemy == null) return false;
-		
-		chargePath.clear();
-		Ballistica path = new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
-		
-		if (path.dist <= 1) return false;
-		
-		// 경로 설정 (최소 2칸, 최대 5칸)
-		int chargeDistance = Math.min(5, path.dist);
-		for (int i = 1; i <= chargeDistance; i++) {
-			if (i < path.path.size()) {
-				chargePath.add(path.path.get(i));
+	@Override
+	public int attackProc(Char enemy, int damage) {
+		damage = super.attackProc(enemy, damage);
+
+		// 1/3 확률로 적을 2칸 밀쳐내기
+		if (Random.Int(3) == 0 && enemy.isAlive()) {
+			boolean pushed = pushEnemy(enemy);
+			if (pushed && enemy.isAlive()) {
+				// 밀쳐내기 성공 시 leap 사용
+				sprite.showStatus(CharSprite.WARNING, Messages.get(KS3.class, "s1"));
+				triggerLeap(enemy);
+				Sample.INSTANCE.play(Assets.Sounds.HORSE);
 			}
 		}
-		
-		if (chargePath.isEmpty()) return false;
 
-		// 돌진 예고
-		for (int c : chargePath) {
-			sprite.parent.addToBack(new TargetedCell(c, 0xFF8800));
-		}
-
-		sprite.showStatus(CharSprite.WARNING, Messages.get(this, "charge"));
-		Sample.INSTANCE.play(Assets.Sounds.HORSE);
-		Dungeon.hero.interrupt();
-
-		chargeWindup = 1;
-		spend(TICK);
-		return true;
+		return damage;
 	}
 
-	private void resolveCharge() {
-		Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-		
-		// 경로상의 모든 캐릭터에게 데미지
-		for (int c : chargePath) {
-			Char ch = Actor.findChar(c);
-			if (ch != null && ch.alignment != alignment) {
-				int dmg = Random.NormalIntRange(30, 45);
-				ch.damage(dmg, this);
-				
-				// 50% 확률로 다리 부상
-				if (Random.Int(2) == 0) {
-					Buff.affect(ch, Cripple.class, 3f);
-				}
-				
-				if (ch == Dungeon.hero && !ch.isAlive()) {
-					Dungeon.fail(getClass());
-				}
-			}
-		}
+	private boolean pushEnemy(Char enemy) {
+		if (enemy == null) return false;
 
-		// 말이 최종 위치로 이동
-		int destination = pos;
-		for (int i = chargePath.size() - 1; i >= 0; i--) {
-			int cell = chargePath.get(i);
-			if (!Dungeon.level.solid[cell] && Actor.findChar(cell) == null) {
-				destination = cell;
+		int direction = enemy.pos - pos;
+		Ballistica trajectory = new Ballistica(enemy.pos, enemy.pos + direction, Ballistica.MAGIC_BOLT);
+		int knockbackDist = 2;
+
+		int destination = enemy.pos;
+		for (int i = 0; i < knockbackDist && trajectory.path.size() > i + 1; i++) {
+			int next = trajectory.path.get(i + 1);
+			if (Dungeon.level.solid[next] || Actor.findChar(next) != null) {
+				// 벽이나 장애물에 부딪힘
 				break;
 			}
+			destination = next;
 		}
 
-		if (destination != pos) {
-			int old = pos;
-			pos = destination;
-			Actor.add(new Pushing(this, old, pos));
-			Dungeon.level.occupyCell(this);
-			sprite.emitter().burst(Speck.factory(Speck.DUST), 8);
+		// 밀쳐내기 실행
+		if (destination != enemy.pos) {
+			Actor.add(new Pushing(enemy, enemy.pos, destination));
+			enemy.pos = destination;
+			Dungeon.level.occupyCell(enemy);
+			return true;
+		}
+		return false;
+	}
+
+	private void triggerLeap(Char target) {
+		if (target == null || leapCooldown > 0) return;
+
+		int targetPos = target.pos;
+		Ballistica b = new Ballistica(pos, targetPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+		if (b.collisionPos == targetPos) {
+			leapPos = targetPos;
+			lastEnemyPos = target.pos;
+			
+			// 도약 목적지 표시
+			if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos]) {
+				sprite.parent.addToBack(new TargetedCell(leapPos, 0xFF00FF));
+				Dungeon.hero.interrupt();
+			}
+		}
+	}
+
+	public class Hunting extends Mob.Hunting {
+
+		@Override
+		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+
+			if (leapPos != -1){
+				leapCooldown = Random.NormalIntRange(4, 8);
+
+				sprite.showStatus(CharSprite.WARNING, Messages.get(KS3.class, "leap"));
+				Sample.INSTANCE.play(Assets.Sounds.HORSE);
+				Ballistica b = new Ballistica(pos, leapPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+
+				//check if leap pos is not obstructed by terrain
+				if (rooted || b.collisionPos != leapPos){
+					leapPos = -1;
+					return true;
+				}
+
+				final Char leapVictim = Actor.findChar(leapPos);
+				final int endPos;
+
+				//ensure there is somewhere to land after leaping
+				if (leapVictim != null){
+					int bouncepos = -1;
+					for (int i : PathFinder.NEIGHBOURS8){
+						if ((bouncepos == -1 || Dungeon.level.trueDistance(pos, leapPos+i) < Dungeon.level.trueDistance(pos, bouncepos))
+								&& Actor.findChar(leapPos+i) == null && Dungeon.level.passable[leapPos+i]){
+							bouncepos = leapPos+i;
+						}
+					}
+					if (bouncepos == -1) {
+						leapPos = -1;
+						return true;
+					} else {
+						endPos = bouncepos;
+					}
+				} else {
+					endPos = leapPos;
+				}
+
+				//do leap
+				sprite.visible = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos] || Dungeon.level.heroFOV[endPos];
+				sprite.jump(pos, leapPos, new Callback() {
+					@Override
+					public void call() {
+
+						if (leapVictim != null && alignment != leapVictim.alignment){
+							Buff.affect(leapVictim, Bleeding.class).set(0.6f*damageRoll());
+							leapVictim.sprite.flash();
+							Sample.INSTANCE.play(Assets.Sounds.HIT);
+						}
+
+						if (endPos != leapPos){
+							Actor.addDelayed(new Pushing(KS3.this, leapPos, endPos), -1);
+						}
+
+						pos = endPos;
+						leapPos = -1;
+						sprite.idle();
+						Dungeon.level.occupyCell(KS3.this);
+						next();
+					}
+				});
+				return false;
+			}
+
+			enemySeen = enemyInFOV;
+			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
+
+				return doAttack( enemy );
+
+			} else {
+
+				if (enemyInFOV) {
+					target = enemy.pos;
+				} else if (enemy == null) {
+					state = WANDERING;
+					target = Dungeon.level.randomDestination( KS3.this );
+					return true;
+				}
+
+				if (leapCooldown <= 0 && enemyInFOV && !rooted
+						&& Dungeon.level.distance(pos, enemy.pos) >= 3) {
+
+					int targetPos = enemy.pos;
+					if (lastEnemyPos != enemy.pos){
+						int closestIdx = 0;
+						for (int i = 1; i < PathFinder.CIRCLE8.length; i++){
+							if (Dungeon.level.trueDistance(lastEnemyPos, enemy.pos)
+									< Dungeon.level.trueDistance(lastEnemyPos, enemy.pos)){
+								closestIdx = i;
+							}
+						}
+						targetPos = enemy.pos;
+					}
+
+					Ballistica b = new Ballistica(pos, targetPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+					//try aiming directly at hero if aiming near them doesn't work
+					if (b.collisionPos != targetPos && targetPos != enemy.pos){
+						targetPos = enemy.pos;
+						b = new Ballistica(pos, targetPos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+					}
+					if (b.collisionPos == targetPos){
+						//get ready to leap
+						leapPos = targetPos;
+						//don't want to overly punish players with slow move or attack speed
+						spend(GameMath.gate(TICK, enemy.cooldown(), 3*TICK));
+						if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[leapPos]){
+
+							sprite.parent.addToBack(new TargetedCell(leapPos, 0xFF00FF));
+							Dungeon.hero.interrupt();
+						}
+						return true;
+					}
+				}
+
+				int oldPos = pos;
+				if (target != -1 && getCloser( target )) {
+
+					spend( 1 / speed() );
+					return moveSprite( oldPos,  pos );
+
+				} else {
+					spend( TICK );
+					if (!enemyInFOV) {
+						sprite.showLost();
+						state = WANDERING;
+						target = Dungeon.level.randomDestination( KS3.this );
+					}
+					return true;
+				}
+			}
 		}
 
-		chargePath.clear();
-		chargeWindup = 0;
-		chargeCooldown = 6; // 돌진 후 쿨타임
-		spend(1f);
 	}
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
-		bundle.put(CHARGE_CD, chargeCooldown);
-		bundle.put(CHARGE_WIND, chargeWindup);
+		bundle.put(LEAP_POS, leapPos);
+		bundle.put(LEAP_CD, leapCooldown);
+		bundle.put(LAST_ENEMY_POS, lastEnemyPos);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
-		chargeCooldown = bundle.getInt(CHARGE_CD);
-		chargeWindup = bundle.getInt(CHARGE_WIND);
+		leapPos = bundle.getInt(LEAP_POS);
+		leapCooldown = bundle.getFloat(LEAP_CD);
+		lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
 	}
 
 	@Override

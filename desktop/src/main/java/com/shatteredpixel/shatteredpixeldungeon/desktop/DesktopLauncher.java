@@ -31,6 +31,8 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.RankingImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.watabou.noosa.Game;
@@ -128,6 +130,9 @@ public class DesktopLauncher {
 		}
 		if (NewsImpl.supportsNews()){
 			News.service = NewsImpl.getNewsService();
+		}
+		if (RankingImpl.supportsRankings()){
+			Ranking.service = RankingImpl.getRankingService();
 		}
 		
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();

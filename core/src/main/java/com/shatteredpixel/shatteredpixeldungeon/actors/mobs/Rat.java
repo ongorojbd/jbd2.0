@@ -23,60 +23,78 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage;
+import com.shatteredpixel.shatteredpixeldungeon.items.journal.RegionLorePage;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 public class Rat extends Mob {
 
-	{
-		spriteClass = RatSprite.class;
-		
-		HP = HT = 8;
-		defenseSkill = 2;
+    {
+        spriteClass = RatSprite.class;
 
-		maxLvl = 5;
-	}
+        HP = HT = 8;
+        defenseSkill = 2;
 
-	@Override
-	protected boolean act() {
-		if (alignment != Alignment.ALLY
-				&& Dungeon.level.heroFOV[pos]
-				&& Dungeon.hero.armorAbility instanceof Ratmogrify){
-			alignment = Alignment.NEUTRAL;
-			if (enemy == Dungeon.hero) enemy = null;
-			if (state == SLEEPING) state = WANDERING;
-		}
-		return super.act();
-	}
+        maxLvl = 5;
+    }
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 8;
-	}
-	
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 1);
-	}
+    @Override
+    protected boolean act() {
+        if (alignment != Alignment.ALLY
+                && Dungeon.level.heroFOV[pos]
+                && Dungeon.hero.armorAbility instanceof Ratmogrify) {
+            alignment = Alignment.NEUTRAL;
+            if (enemy == Dungeon.hero) enemy = null;
+            if (state == SLEEPING) state = WANDERING;
+        }
+        return super.act();
+    }
 
-	private static final String RAT_ALLY = "rat_ally";
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange(1, 4);
+    }
 
-	@Override
-	public void storeInBundle(Bundle bundle) {
-		super.storeInBundle(bundle);
-		if (alignment == Alignment.ALLY) bundle.put(RAT_ALLY, true);
-	}
+    @Override
+    public int attackSkill(Char target) {
+        return 8;
+    }
 
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		super.restoreFromBundle(bundle);
-		if (bundle.contains(RAT_ALLY)) alignment = Alignment.ALLY;
-	}
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(0, 1);
+    }
+
+    private static final String RAT_ALLY = "rat_ally";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        if (alignment == Alignment.ALLY) bundle.put(RAT_ALLY, true);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        if (bundle.contains(RAT_ALLY)) alignment = Alignment.ALLY;
+    }
+
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+
+//		시크릿 팩터 예시
+//		if (cause == Dungeon.hero && Dungeon.hero.heroClass == HeroClass.MAGE) {
+//			if (!Document.SEWERS_GUARD.isPageFound("j2")) {
+//				DocumentPage page = RegionLorePage.pageForDoc(Document.SEWERS_GUARD);
+//				page.page("j2");
+//				Dungeon.level.drop(page, pos).sprite.drop();
+//			}
+//		}
+    }
 }

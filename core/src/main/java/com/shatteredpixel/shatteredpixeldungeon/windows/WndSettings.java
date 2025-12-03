@@ -746,7 +746,6 @@ public class WndSettings extends WndTabbed {
         ColorBlock sep1;
         CheckBox chkNews;
         CheckBox chkUpdates;
-        CheckBox chkWifi;
 
         @Override
         protected void createChildren() {
@@ -781,17 +780,7 @@ public class WndSettings extends WndTabbed {
                 add(chkUpdates);
             }
 
-            if (!DeviceCompat.isDesktop()) {
-                chkWifi = new CheckBox(Messages.get(this, "wifi")) {
-                    @Override
-                    protected void onClick() {
-                        super.onClick();
-                        SPDSettings.WiFi(checked());
-                    }
-                };
-                chkWifi.checked(SPDSettings.WiFi());
-                add(chkWifi);
-            }
+            // WiFi 설정 제거 - 랭킹은 항상 데이터로도 사용 가능하도록
         }
 
         @Override
@@ -812,11 +801,6 @@ public class WndSettings extends WndTabbed {
                     chkUpdates.setRect(0, chkNews.bottom() + GAP, width, BTN_HEIGHT);
                     pos = chkUpdates.bottom();
                 }
-            }
-
-            if (chkWifi != null) {
-                chkWifi.setRect(0, pos + GAP, width, BTN_HEIGHT);
-                pos = chkWifi.bottom();
             }
 
             height = pos;

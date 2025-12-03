@@ -35,303 +35,323 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 
 public enum Document {
-	
-	ADVENTURERS_GUIDE(ItemSpriteSheet.GUIDE_PAGE, false),
-	ALCHEMY_GUIDE(ItemSpriteSheet.ALCH_PAGE, false),
-	INTROS(Icons.STAIRS, true);
-	
-	Document( int sprite, boolean lore ){
-		pageIcon = null;
-		pageSprite = sprite;
-		loreDocument = lore;
-	}
 
-	Document( Icons icon, boolean lore ){
-		pageIcon = icon;
-		pageSprite = 0;
-		loreDocument = lore;
-	}
+    ADVENTURERS_GUIDE(ItemSpriteSheet.GUIDE_PAGE, false),
+    ALCHEMY_GUIDE(ItemSpriteSheet.ALCH_PAGE, false),
+    INTROS(Icons.STAIRS, true);
 
-	public static final int NOT_FOUND = 0;
-	public static final int FOUND = 1;
-	public static final int READ = 2;
-	private LinkedHashMap<String, Integer> pagesStates = new LinkedHashMap<>();
-	
-	public boolean findPage( String page ) {
-		if (pagesStates.containsKey(page) && pagesStates.get(page) == NOT_FOUND){
-			pagesStates.put(page, FOUND);
-			Journal.saveNeeded = true;
-			Badges.validateCatalogBadges();
-			return true;
-		}
-		return false;
-	}
+//    SEWERS_GUARD(ItemSpriteSheet.SEWER_PAGE, true); 시크릿 팩터
 
-	public boolean findPage( int pageIdx ) {
-		return findPage( pagesStates.keySet().toArray(new String[0])[pageIdx] );
-	}
+    Document(int sprite, boolean lore) {
+        pageIcon = null;
+        pageSprite = sprite;
+        loreDocument = lore;
+    }
 
-	public boolean deletePage( String page ){
-		if (pagesStates.containsKey(page) && pagesStates.get(page) != NOT_FOUND){
-			pagesStates.put(page, NOT_FOUND);
-			Journal.saveNeeded = true;
-			return true;
-		}
-		return false;
-	}
+    Document(Icons icon, boolean lore) {
+        pageIcon = icon;
+        pageSprite = 0;
+        loreDocument = lore;
+    }
 
-	public boolean deletePage( int pageIdx ) {
-		return deletePage( pagesStates.keySet().toArray(new String[0])[pageIdx] );
-	}
+    public static final int NOT_FOUND = 0;
+    public static final int FOUND = 1;
+    public static final int READ = 2;
+    private LinkedHashMap<String, Integer> pagesStates = new LinkedHashMap<>();
 
-	public boolean unreadPage( String page ){
-		if (pagesStates.containsKey(page) && pagesStates.get(page) == READ){
-			pagesStates.put(page, FOUND);
-			Journal.saveNeeded = true;
-			return true;
-		}
-		return false;
-	}
+    public boolean findPage(String page) {
+        if (pagesStates.containsKey(page) && pagesStates.get(page) == NOT_FOUND) {
+            pagesStates.put(page, FOUND);
+            Journal.saveNeeded = true;
+            Badges.validateCatalogBadges();
+            return true;
+        }
+        return false;
+    }
 
-	public boolean unreadPage( int pageIdx ) {
-		return deletePage( pagesStates.keySet().toArray(new String[0])[pageIdx] );
-	}
+    public boolean findPage(int pageIdx) {
+        return findPage(pagesStates.keySet().toArray(new String[0])[pageIdx]);
+    }
 
-	public boolean isPageFound( String page ){
-		return pagesStates.containsKey(page) && pagesStates.get(page) > NOT_FOUND;
-	}
+    public boolean deletePage(String page) {
+        if (pagesStates.containsKey(page) && pagesStates.get(page) != NOT_FOUND) {
+            pagesStates.put(page, NOT_FOUND);
+            Journal.saveNeeded = true;
+            return true;
+        }
+        return false;
+    }
 
-	public boolean isPageFound( int pageIdx ){
-		return isPageFound( pagesStates.keySet().toArray(new String[0])[pageIdx] );
-	}
+    public boolean deletePage(int pageIdx) {
+        return deletePage(pagesStates.keySet().toArray(new String[0])[pageIdx]);
+    }
 
-	public boolean anyPagesFound(){
-		for( Integer val : pagesStates.values()){
-			if (val != NOT_FOUND){
-				return true;
-			}
-		}
-		return false;
-	}
+    public boolean unreadPage(String page) {
+        if (pagesStates.containsKey(page) && pagesStates.get(page) == READ) {
+            pagesStates.put(page, FOUND);
+            Journal.saveNeeded = true;
+            return true;
+        }
+        return false;
+    }
 
-	public boolean allPagesFound(){
-		for( Integer val : pagesStates.values()){
-			if (val == NOT_FOUND){
-				return false;
-			}
-		}
-		return true;
-	}
+    public boolean unreadPage(int pageIdx) {
+        return deletePage(pagesStates.keySet().toArray(new String[0])[pageIdx]);
+    }
 
-	public boolean readPage( String page ) {
-		if (pagesStates.containsKey(page)){
-			pagesStates.put(page, READ);
-			Journal.saveNeeded = true;
-			Badges.validateCatalogBadges();
-			return true;
-		}
-		return false;
-	}
+    public boolean isPageFound(String page) {
+        return pagesStates.containsKey(page) && pagesStates.get(page) > NOT_FOUND;
+    }
 
-	public boolean readPage( int pageIdx ) {
-		return readPage( pagesStates.keySet().toArray(new String[0])[pageIdx] );
-	}
+    public boolean isPageFound(int pageIdx) {
+        return isPageFound(pagesStates.keySet().toArray(new String[0])[pageIdx]);
+    }
 
-	public boolean isPageRead( String page ){
-		return pagesStates.containsKey(page) && pagesStates.get(page) == READ;
-	}
+    public boolean anyPagesFound() {
+        for (Integer val : pagesStates.values()) {
+            if (val != NOT_FOUND) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public boolean isPageRead( int pageIdx ){
-		return isPageRead( pagesStates.keySet().toArray(new String[0])[pageIdx] );
-	}
+    public boolean allPagesFound() {
+        for (Integer val : pagesStates.values()) {
+            if (val == NOT_FOUND) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	public Collection<String> pageNames(){
-		return pagesStates.keySet();
-	}
+    public boolean readPage(String page) {
+        if (pagesStates.containsKey(page)) {
+            pagesStates.put(page, READ);
+            Journal.saveNeeded = true;
+            Badges.validateCatalogBadges();
+            return true;
+        }
+        return false;
+    }
 
-	public int pageIdx(String name){
-		int i = 0;
-		for( String page : pagesStates.keySet()){
-			if (page.equals(name)){
-				return i;
-			}
-			i++;
-		}
-		return -1;
-	}
+    public boolean readPage(int pageIdx) {
+        return readPage(pagesStates.keySet().toArray(new String[0])[pageIdx]);
+    }
 
-	private int pageSprite;
-	private Icons pageIcon;
-	public Image pageSprite(){
-		return pageSprite("");
-	}
+    public boolean isPageRead(String page) {
+        return pagesStates.containsKey(page) && pagesStates.get(page) == READ;
+    }
 
-	public Image pageSprite(String page){
-		if (page.isEmpty() || !isPageFound(page) || this != ADVENTURERS_GUIDE){
-			if (pageIcon != null){
-				return Icons.get(pageIcon);
-			} else {
-				return new ItemSprite(pageSprite);
-			}
-		} else {
-			//special per-page visuals for guidebook
-			switch (page){
-				case Document.GUIDE_INTRO: default:
-					return new ItemSprite(ItemSpriteSheet.MASTERY);
-				case "Examining":
-					return Icons.get(Icons.MAGNIFY);
-				case "Surprise_Attacks":
-					return Icons.get(Icons.SNAKE);
-				case "Identifying":
-					return new ItemSprite( new ScrollOfIdentify() );
-				case "Food":
-					return new ItemSprite( ItemSpriteSheet.PASTY );
-				case "Alchemy":
-					return new ItemSprite( ItemSpriteSheet.TRINKET_CATA );
-				case "Dieing":
-					return new ItemSprite( ItemSpriteSheet.TOMB );
-				case Document.GUIDE_SEARCHING:
-					return Icons.get(Icons.MAGNIFY);
-				case "Strength":
-					return new ItemSprite( ItemSpriteSheet.GREATAXE );
-				case "Upgrades":
-					return new ItemSprite( ItemSpriteSheet.RING_EMERALD );
-				case "Looting":
-					return new ItemSprite( ItemSpriteSheet.CRYSTAL_KEY );
-				case "Levelling":
-					return Icons.get(Icons.TALENT);
-				case "Positioning":
-					return new ItemSprite( ItemSpriteSheet.SPIRIT_BOW );
-				case "Magic":
-					return new ItemSprite( ItemSpriteSheet.WAND_FIREBOLT );
-			}
-		}
-	}
+    public boolean isPageRead(int pageIdx) {
+        return isPageRead(pagesStates.keySet().toArray(new String[0])[pageIdx]);
+    }
 
-	private boolean loreDocument;
-	public boolean isLoreDoc(){
-		return loreDocument;
-	}
+    public Collection<String> pageNames() {
+        return pagesStates.keySet();
+    }
 
-	public String title(){
-		return Messages.get( this, name() + ".title");
-	}
+    public int pageIdx(String name) {
+        int i = 0;
+        for (String page : pagesStates.keySet()) {
+            if (page.equals(name)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
 
-	public String discoverHint(){
-		return Messages.get( this, name() + ".discover_hint");
-	}
-	
-	public String pageTitle( String page ){
-		return Messages.get( this, name() + "." + page + ".title");
-	}
-	
-	public String pageTitle( int pageIdx ){
-		return pageTitle( pagesStates.keySet().toArray(new String[0])[pageIdx] );
-	}
-	
-	public String pageBody( String page ){
-		return Messages.get( this, name() + "." + page + ".body");
-	}
-	
-	public String pageBody( int pageIdx ){
-		return pageBody( pagesStates.keySet().toArray(new String[0])[pageIdx] );
-	}
+    private int pageSprite;
+    private Icons pageIcon;
 
-	public static final String GUIDE_INTRO          = "Intro";
-	public static final String GUIDE_EXAMINING      = "Examining";
-	public static final String GUIDE_SURPRISE_ATKS  = "Surprise_Attacks";
-	public static final String GUIDE_IDING          = "Identifying";
-	public static final String GUIDE_FOOD           = "Food";
-	public static final String GUIDE_ALCHEMY        = "Alchemy";
-	public static final String GUIDE_DIEING         = "Dieing";
-	public static final String GUIDE_SEARCHING      = "Searching";
+    public Image pageSprite() {
+        return pageSprite("");
+    }
+
+    public Image pageSprite(String page) {
+        if (page.isEmpty() || !isPageFound(page) || this != ADVENTURERS_GUIDE) {
+            if (pageIcon != null) {
+                return Icons.get(pageIcon);
+            } else {
+                return new ItemSprite(pageSprite);
+            }
+        } else {
+            //special per-page visuals for guidebook
+            switch (page) {
+                case Document.GUIDE_INTRO:
+                default:
+                    return new ItemSprite(ItemSpriteSheet.MASTERY);
+                case "Examining":
+                    return Icons.get(Icons.MAGNIFY);
+                case "Surprise_Attacks":
+                    return Icons.get(Icons.SNAKE);
+                case "Identifying":
+                    return new ItemSprite(new ScrollOfIdentify());
+                case "Food":
+                    return new ItemSprite(ItemSpriteSheet.PASTY);
+                case "Alchemy":
+                    return new ItemSprite(ItemSpriteSheet.TRINKET_CATA);
+                case "Dieing":
+                    return new ItemSprite(ItemSpriteSheet.TOMB);
+                case Document.GUIDE_SEARCHING:
+                    return Icons.get(Icons.MAGNIFY);
+                case "Strength":
+                    return new ItemSprite(ItemSpriteSheet.GREATAXE);
+                case "Upgrades":
+                    return new ItemSprite(ItemSpriteSheet.RING_EMERALD);
+                case "Looting":
+                    return new ItemSprite(ItemSpriteSheet.CRYSTAL_KEY);
+                case "Levelling":
+                    return Icons.get(Icons.TALENT);
+                case "Positioning":
+                    return new ItemSprite(ItemSpriteSheet.SPIRIT_BOW);
+                case "Magic":
+                    return new ItemSprite(ItemSpriteSheet.WAND_FIREBOLT);
+            }
+        }
+    }
+
+    private boolean loreDocument;
+
+    public boolean isLoreDoc() {
+        return loreDocument;
+    }
+
+    public String title() {
+        return Messages.get(this, name() + ".title");
+    }
+
+    public String discoverHint() {
+        return Messages.get(this, name() + ".discover_hint");
+    }
+
+    public String discoverHint(String page) {
+        String pageHint = Messages.get(this, name() + "." + page + ".discover_hint");
+        if (!pageHint.equals(Messages.NO_TEXT_FOUND)) {
+            return pageHint;
+        }
+        return discoverHint();
+    }
+
+    public String pageTitle(String page) {
+        return Messages.get(this, name() + "." + page + ".title");
+    }
+
+    public String pageTitle(int pageIdx) {
+        return pageTitle(pagesStates.keySet().toArray(new String[0])[pageIdx]);
+    }
+
+    public String pageBody(String page) {
+        return Messages.get(this, name() + "." + page + ".body");
+    }
+
+    public String pageBody(int pageIdx) {
+        return pageBody(pagesStates.keySet().toArray(new String[0])[pageIdx]);
+    }
+
+    public static final String GUIDE_INTRO = "Intro";
+    public static final String GUIDE_EXAMINING = "Examining";
+    public static final String GUIDE_SURPRISE_ATKS = "Surprise_Attacks";
+    public static final String GUIDE_IDING = "Identifying";
+    public static final String GUIDE_FOOD = "Food";
+    public static final String GUIDE_ALCHEMY = "Alchemy";
+    public static final String GUIDE_DIEING = "Dieing";
+    public static final String GUIDE_SEARCHING = "Searching";
 
 
-	//pages and default states
-	static {
-		boolean debug = DeviceCompat.isDebug();
-		//hero gets these when guidebook is collected
-		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_INTRO,          debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_EXAMINING,      debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_SURPRISE_ATKS,  debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_IDING,          debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_FOOD,           debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_ALCHEMY,        debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_DIEING,         debug ? READ : NOT_FOUND);
-		//given in sewers
-		ADVENTURERS_GUIDE.pagesStates.put(GUIDE_SEARCHING,      debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put("Strength",           debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put("Upgrades",           debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put("Looting",            debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put("Levelling",          debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put("Positioning",        debug ? READ : NOT_FOUND);
-		ADVENTURERS_GUIDE.pagesStates.put("Magic",              debug ? READ : NOT_FOUND);
-		
-		//given in sewers
-		ALCHEMY_GUIDE.pagesStates.put("Potions",                debug ? READ : NOT_FOUND);
-		ALCHEMY_GUIDE.pagesStates.put("Stones",                 debug ? READ : NOT_FOUND);
-		ALCHEMY_GUIDE.pagesStates.put("Energy_Food",            debug ? READ : NOT_FOUND);
-		ALCHEMY_GUIDE.pagesStates.put("Exotic_Potions",         debug ? READ : NOT_FOUND);
-		ALCHEMY_GUIDE.pagesStates.put("Exotic_Scrolls",         debug ? READ : NOT_FOUND);
-		//given in prison
-		ALCHEMY_GUIDE.pagesStates.put("Bombs",                  debug ? READ : NOT_FOUND);
-		ALCHEMY_GUIDE.pagesStates.put("Weapons",                debug ? READ : NOT_FOUND);
-		ALCHEMY_GUIDE.pagesStates.put("Brews_Elixirs",          debug ? READ : NOT_FOUND);
-		ALCHEMY_GUIDE.pagesStates.put("Spells",                 debug ? READ : NOT_FOUND);
+    //pages and default states
+    static {
+        boolean debug = DeviceCompat.isDebug();
+        //hero gets these when guidebook is collected
+        ADVENTURERS_GUIDE.pagesStates.put(GUIDE_INTRO, debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put(GUIDE_EXAMINING, debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put(GUIDE_SURPRISE_ATKS, debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put(GUIDE_IDING, debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put(GUIDE_FOOD, debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put(GUIDE_ALCHEMY, debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put(GUIDE_DIEING, debug ? READ : NOT_FOUND);
+        //given in sewers
+        ADVENTURERS_GUIDE.pagesStates.put(GUIDE_SEARCHING, debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put("Strength", debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put("Upgrades", debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put("Looting", debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put("Levelling", debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put("Positioning", debug ? READ : NOT_FOUND);
+        ADVENTURERS_GUIDE.pagesStates.put("Magic", debug ? READ : NOT_FOUND);
 
-		INTROS.pagesStates.put("Dungeon",                       READ);
-		INTROS.pagesStates.put("Sewers",                        debug ? READ : NOT_FOUND);
-		INTROS.pagesStates.put("Prison",                        debug ? READ : NOT_FOUND);
-		INTROS.pagesStates.put("Caves",                         debug ? READ : NOT_FOUND);
-		INTROS.pagesStates.put("City",                          debug ? READ : NOT_FOUND);
-		INTROS.pagesStates.put("Halls",                         debug ? READ : NOT_FOUND);
-		INTROS.pagesStates.put("Labs",                          debug ? READ : NOT_FOUND);
+        //given in sewers
+        ALCHEMY_GUIDE.pagesStates.put("Potions", debug ? READ : NOT_FOUND);
+        ALCHEMY_GUIDE.pagesStates.put("Stones", debug ? READ : NOT_FOUND);
+        ALCHEMY_GUIDE.pagesStates.put("Energy_Food", debug ? READ : NOT_FOUND);
+        ALCHEMY_GUIDE.pagesStates.put("Exotic_Potions", debug ? READ : NOT_FOUND);
+        ALCHEMY_GUIDE.pagesStates.put("Exotic_Scrolls", debug ? READ : NOT_FOUND);
+        //given in prison
+        ALCHEMY_GUIDE.pagesStates.put("Bombs", debug ? READ : NOT_FOUND);
+        ALCHEMY_GUIDE.pagesStates.put("Weapons", debug ? READ : NOT_FOUND);
+        ALCHEMY_GUIDE.pagesStates.put("Brews_Elixirs", debug ? READ : NOT_FOUND);
+        ALCHEMY_GUIDE.pagesStates.put("Spells", debug ? READ : NOT_FOUND);
 
-	}
-	
-	private static final String DOCUMENTS = "documents";
-	
-	public static void store( Bundle bundle ){
-		
-		Bundle docsBundle = new Bundle();
-		
-		for ( Document doc : values()){
-			Bundle pagesBundle = new Bundle();
-			boolean empty = true;
-			for (String page : doc.pageNames()){
-				if (doc.pagesStates.get(page) != NOT_FOUND){
-					pagesBundle.put(page, doc.pagesStates.get(page));
-					empty = false;
-				}
-			}
-			if (!empty){
-				docsBundle.put(doc.name(), pagesBundle);
-			}
-		}
-		
-		bundle.put( DOCUMENTS, docsBundle );
-		
-	}
-	
-	public static void restore( Bundle bundle ){
-		
-		if (!bundle.contains( DOCUMENTS )){
-			return;
-		}
-		
-		Bundle docsBundle = bundle.getBundle( DOCUMENTS );
-		
-		for ( Document doc : values()){
-			if (docsBundle.contains(doc.name())){
-				Bundle pagesBundle = docsBundle.getBundle(doc.name());
+        INTROS.pagesStates.put("Dungeon", READ);
+        INTROS.pagesStates.put("Sewers", debug ? READ : NOT_FOUND);
+        INTROS.pagesStates.put("Prison", debug ? READ : NOT_FOUND);
+        INTROS.pagesStates.put("Caves", debug ? READ : NOT_FOUND);
+        INTROS.pagesStates.put("City", debug ? READ : NOT_FOUND);
+        INTROS.pagesStates.put("Halls", debug ? READ : NOT_FOUND);
+        INTROS.pagesStates.put("Labs", debug ? READ : NOT_FOUND);
 
-				for (String page : doc.pageNames()) {
-					if (pagesBundle.contains(page)) {
-						doc.pagesStates.put(page, pagesBundle.getInt(page));
-					}
-				}
-			}
-		}
-	}
-	
+//        SEWERS_GUARD.pagesStates.put("j1", NOT_FOUND);
+//        SEWERS_GUARD.pagesStates.put("j2", NOT_FOUND);
+//        SEWERS_GUARD.pagesStates.put("j3", NOT_FOUND);
+//        SEWERS_GUARD.pagesStates.put("j4", NOT_FOUND);
+//        SEWERS_GUARD.pagesStates.put("j5", NOT_FOUND);
+//        SEWERS_GUARD.pagesStates.put("j6", NOT_FOUND);
+
+    }
+
+    private static final String DOCUMENTS = "documents";
+
+    public static void store(Bundle bundle) {
+
+        Bundle docsBundle = new Bundle();
+
+        for (Document doc : values()) {
+            Bundle pagesBundle = new Bundle();
+            boolean empty = true;
+            for (String page : doc.pageNames()) {
+                if (doc.pagesStates.get(page) != NOT_FOUND) {
+                    pagesBundle.put(page, doc.pagesStates.get(page));
+                    empty = false;
+                }
+            }
+            if (!empty) {
+                docsBundle.put(doc.name(), pagesBundle);
+            }
+        }
+
+        bundle.put(DOCUMENTS, docsBundle);
+
+    }
+
+    public static void restore(Bundle bundle) {
+
+        if (!bundle.contains(DOCUMENTS)) {
+            return;
+        }
+
+        Bundle docsBundle = bundle.getBundle(DOCUMENTS);
+
+        for (Document doc : values()) {
+            if (docsBundle.contains(doc.name())) {
+                Bundle pagesBundle = docsBundle.getBundle(doc.name());
+
+                for (String page : doc.pageNames()) {
+                    if (pagesBundle.contains(page)) {
+                        doc.pagesStates.put(page, pagesBundle.getInt(page));
+                    }
+                }
+            }
+        }
+    }
+
 }

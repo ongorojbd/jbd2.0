@@ -120,6 +120,8 @@ public class WndRebelTimingGame extends Window {
 			barWidth = 100;
 			barLeft = 10;
 			barTop = 40;
+			// 세로 모드에서는 막대가 좁아서 어려우므로 속도를 약간 줄임 (약 20% 감소)
+			arrowSpeed *= 0.8f;
 		}
 
 		resize(WIDTH, HEIGHT);
@@ -342,22 +344,9 @@ public class WndRebelTimingGame extends Window {
 			instance = null;
 		}
 		
-		// 게임이 완료되지 않은 상태에서 창이 닫히면 즉시 다시 표시
-		if (state != GameState.FINISHED && onSuccess != null && onFail != null) {
-			final int diff = this.difficulty;
-			final Callback success = this.onSuccess;
-			final Callback fail = this.onFail;
-			
-			// 다음 프레임에 창 다시 표시
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					if (Game.scene() instanceof GameScene) {
-						GameScene.show(new WndRebelTimingGame(diff, success, fail));
-					}
-				}
-			});
-		}
+		// 게임이 완료되지 않은 상태에서 창이 닫히면
+		// Rebel.act()에서 timingGameActive 플래그를 확인하여 창을 다시 표시하므로
+		// 여기서는 다시 표시하지 않음 (중복 방지)
 		
 		super.destroy();
 	}

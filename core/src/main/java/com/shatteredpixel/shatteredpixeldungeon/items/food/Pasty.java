@@ -28,10 +28,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 // unused imports removed
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReachIncrease;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ToxicImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -152,8 +154,9 @@ public class Pasty extends Food {
 				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING );
 				break;
 			case WINTER_HOLIDAYS:
-				hero.belongings.charge(0.5f); //2 turns worth
 				ScrollOfRecharging.charge( hero );
+				ArtifactRecharge.chargeArtifacts(hero, 1f);
+				Buff.affect(hero, D4C.class).oneTurn();
 				break;
 		}
 	}

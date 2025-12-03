@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover;
 import com.shatteredpixel.shatteredpixeldungeon.items.PortableCover4;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ram2;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.TendencyItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
@@ -116,6 +117,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Sleepcmoon;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenHilt;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenStaff;
@@ -277,8 +279,8 @@ public enum Catalog {
 				Jojo5.class, Jojo6.class, Jojo7.class, Jojo8.class, Jojo9.class);
 
 		MISC_EQUIPMENT.addItems(BrokenSeal.class, SpiritBow.class, Waterskin.class, VelvetPouch.class,
-				PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, NitoDismantleHammer.class, NitoDismantleHammer2.class,
-				Cen.class, Amulet.class, Bcomdisc.class, Sleepcmoon.class, PortableCover.class, PortableCover4.class);
+				PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, NitoDismantleHammer.class,
+				Cen.class, Amulet.class, Bcomdisc.class, Sleepcmoon.class, PortableCover.class, TendencyItem.class);
 
 		SPECIAL_WEAPONS.addItems(ChaosSword.class, FlameKatana.class, KSG.class, HeavyMachinegun.class,
 				LSWORD.class, DBLADE.class, MISTA.class, PINK.class, AJA.class, SnowHunter.class, Spheaven.class);
@@ -321,7 +323,7 @@ public enum Catalog {
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
 				LiquidMetal.class, ArcaneResin.class,
-				SealShard.class, BrokenStaff.class, CloakScrap.class, BrokenHilt.class, BowFragment.class, TornPage.class, Danny.class, Ram2.class, Drago.class, Highway.class, Araki.class);
+				SealShard.class, BrokenStaff.class, CloakScrap.class, BrokenHilt.class, BowFragment.class, TornPage.class, Danny.class, Ram2.class, UV.class, Drago.class, Highway.class, Araki.class);
 
 	}
 

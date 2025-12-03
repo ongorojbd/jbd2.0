@@ -3,6 +3,8 @@
  */
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -10,6 +12,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -46,14 +50,14 @@ public class KarsLight extends Mob {
         // placeholder sprite; replace when custom sprite is available
         spriteClass = KarsSprite.class;
 
-        HP = HT = 450;
-        defenseSkill = 24;
-        EXP = 30;
+        HP = HT = 1600;
+        defenseSkill = 35;
+
+        EXP = 50;
         maxLvl = 30;
 
-        baseSpeed = 1.3f;
-
         properties.add(Property.BOSS);
+        properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);
     }
 
@@ -130,6 +134,13 @@ public class KarsLight extends Mob {
     @Override
     public void damage(int dmg, Object src) {
         BossHealthBar.assignBoss(this);
+
+        if (dmg >= 300) {
+            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+            dmg = 300;
+        }
+
         super.damage(dmg, src);
 
         if (phase == 0 && HP < HT * 2 / 3) {
@@ -208,9 +219,10 @@ public class KarsLight extends Mob {
             
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
-                int dmg = Random.NormalIntRange(16, 22) + (phase >= 1 ? 4 : 0);
+                int dmg = Random.NormalIntRange(30, 36);
                 ch.damage(dmg, this);
                 if (Random.Int(2) == 0) Buff.affect(ch, Bleeding.class).set(0.3f * dmg);
+                Buff.affect(ch, Hex.class, 2f);
                 if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
             }
         }
@@ -305,14 +317,15 @@ public class KarsLight extends Mob {
         int cur = pos;
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s3"));
         Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+        Sample.INSTANCE.play(Assets.Sounds.HIT);
         for (int dst : route) {
             Ballistica ray = new Ballistica(cur, dst, Ballistica.WONT_STOP);
             for (int c : ray.path) {
                 Char ch = Actor.findChar(c);
                 if (ch != null && ch.alignment != alignment) {
                     int dmg = Random.NormalIntRange(10, 14) + (phase >= 2 ? 5 : 0);
+                    Buff.affect(ch, Hex.class, 1f);
                     ch.damage(dmg, this);
-                    if (Random.Int(3) == 0) Buff.affect(ch, Bleeding.class).set(0.25f * dmg);
                     if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
                 }
             }
@@ -338,7 +351,7 @@ public class KarsLight extends Mob {
         if (spots.isEmpty()) return false;
         int dst = spots.get(Random.Int(spots.size()));
         sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s4"));
-        Buff.affect(this, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility.class, 2f);
+        Buff.affect(this, Invisibility.class, 2f);
         int old = pos;
         pos = dst;
         Dungeon.level.occupyCell(this);
@@ -349,13 +362,19 @@ public class KarsLight extends Mob {
     }
 
     @Override
-    public int damageRoll() { return Random.NormalIntRange(14, 22); }
+    public int damageRoll() {
+        return Random.NormalIntRange( 50, 60 );
+    }
 
     @Override
-    public int attackSkill(Char target) { return 32; }
+    public int attackSkill( Char target ) {
+        return 40;
+    }
 
     @Override
-    public int drRoll() { return Random.NormalIntRange(1, 5); }
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(0, 20);
+    }
 
     @Override
     public void storeInBundle(Bundle bundle) {

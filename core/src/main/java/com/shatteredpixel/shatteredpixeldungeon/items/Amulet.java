@@ -109,6 +109,7 @@ public class Amulet extends Item {
 			@Override
 			public void afterCreate() {
 				Badges.validateVictory();
+				Badges.validateDailyVictory(); // 일일 도전 클리어 배지
 				Badges.validateChampion(Challenges.activeChallenges());
 				try {
 					Dungeon.saveAll();

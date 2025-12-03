@@ -24,17 +24,18 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KS1Sprite;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 /**
  * KS1 - 카즈의 정예병 (쌍도끼)
  * 높은 공격력과 출혈 효과를 가진 공격형 유닛
- * 방어력은 낮지만 강력한 데미지를 가함
+ * 제자리에서 3회 이상 공격하면 아드레날린 30턴 부여
  */
 public class KS1 extends Mob {
 
@@ -50,6 +51,10 @@ public class KS1 extends Mob {
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);
     }
+
+    private int stationaryAttackCount = 0; // 제자리 공격 횟수 (Diego.java 참조)
+
+    private static final String STATIONARY_ATTACK = "stationary_attack";
 
     @Override
     public int damageRoll() {
@@ -67,10 +72,38 @@ public class KS1 extends Mob {
     }
 
     @Override
+    public void move(int step, boolean travelling) {
+        // 이동하면 제자리 공격 횟수 리셋 (Diego.java 참조)
+        stationaryAttackCount = 0;
+        super.move(step, travelling);
+    }
+
+    @Override
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc(enemy, damage);
 
+        // 제자리에서 공격하면 카운트 증가
+        stationaryAttackCount++;
+        
+        // 3회 이상 제자리에서 공격하면 아드레날린 30턴 부여
+        if (stationaryAttackCount >= 3) {
+            Buff.affect(this, Adrenaline.class, 30f);
+            stationaryAttackCount = 0; // 리셋
+        }
+
         return damage;
+    }
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(STATIONARY_ATTACK, stationaryAttackCount);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        stationaryAttackCount = bundle.getInt(STATIONARY_ATTACK);
     }
 
     @Override

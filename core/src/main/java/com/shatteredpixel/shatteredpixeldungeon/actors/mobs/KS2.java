@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KS2Sprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
@@ -75,7 +77,8 @@ public class KS2 extends Mob {
 
 		// 피해를 받았을 때, 아직 배리어를 사용하지 않았다면 단 한 번 대량의 배리어 전개
 		if (!shieldUsed && buff(Barrier.class) == null) {
-			Buff.affect(this, Barrier.class).setShield(120);
+			Buff.affect(this, Barrier.class).setShield(200);
+			sprite.showStatus(CharSprite.WARNING, Messages.get(KS2.class, "s1"));
 			sprite.emitter().burst(Speck.factory(Speck.LIGHT), 12);
 			Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 			shieldUsed = true;

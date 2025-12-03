@@ -26,17 +26,23 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KS4Sprite;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -45,7 +51,7 @@ import java.util.ArrayList;
 /**
  * KS4 - 카즈의 정예병 (전차)
  * 매우 높은 체력과 방어력을 가진 중장갑 유닛
- * 주기적으로 주변에 범위 공격을 가하고 적을 기절시킴
+ * 돌진 공격과 충격파 능력을 가짐
  */
 public class KS4 extends Mob {
 
@@ -62,12 +68,20 @@ public class KS4 extends Mob {
 		properties.add(Property.DEMONIC);
 	}
 
-	private int trampleCooldown = 6;
-	private int trampleWindup = 0;
-	private ArrayList<Integer> trampleCells = new ArrayList<>();
+	// VampireChariot의 돌진 능력
+	private ArrayList<Integer> chargePath;
+	private int chargeWindup = 0;
+	private int chargeCooldown = Random.NormalIntRange(3, 5);
 
-	private static final String TRAMPLE_CD = "trample_cd";
-	private static final String TRAMPLE_WIND = "trample_wind";
+	// 충격파 능력 (새로운 능력)
+	private int shockwaveCooldown = Random.NormalIntRange(5, 8);
+	private int shockwaveWindup = 0;
+
+	private static final String CHARGE_PATH = "charge_path";
+	private static final String CHARGE_WIND = "charge_wind";
+	private static final String CHARGE_CD = "charge_cd";
+	private static final String SHOCKWAVE_CD = "shockwave_cd";
+	private static final String SHOCKWAVE_WIND = "shockwave_wind";
 
 	@Override
 	public int damageRoll() {
@@ -86,82 +100,150 @@ public class KS4 extends Mob {
 
 	@Override
 	protected boolean act() {
-		if (trampleCooldown > 0) trampleCooldown--;
+		// 돌진 해결 (VampireChariot의 돌진 능력)
+		if (chargeWindup > 0 && chargePath != null && !chargePath.isEmpty()) {
+			sprite.emitter().burst(Speck.factory(Speck.JET), 12);
+			int oldPos = pos;
+			// choose furthest safe destination from end of path
+			int dest = pos;
+			for (int i = chargePath.size()-1; i >= 0; i--) {
+				int c = chargePath.get(i);
+				if (!Dungeon.level.solid[c] && Actor.findChar(c) == null) {
+					dest = c;
+					break;
+				}
+			}
+			// damage hero if they are anywhere on the path
+			for (int c : chargePath) {
+				if (Dungeon.hero.pos == c) {
+					int dmg = Random.NormalIntRange(35, 50);
+					Dungeon.hero.damage(dmg, this);
+					if (!Dungeon.hero.isAlive()) {
+						Dungeon.fail(getClass());
+					}
+					break;
+				}
+			}
+			// move the chariot to the chosen destination
+			pos = dest;
+			Actor.add(new Pushing(this, oldPos, pos));
+			spend(TICK);
+			chargePath = null;
+			chargeWindup = 0;
+			chargeCooldown = Random.NormalIntRange(4, 6);
+			return true;
+		}
 
-		// 짓밟기 준비중일 때
-		if (trampleWindup > 0) {
-			trampleWindup--;
-			if (trampleWindup == 0 && !trampleCells.isEmpty()) {
-				resolveTrample();
+		// 충격파 해결
+		if (shockwaveWindup > 0) {
+			shockwaveWindup--;
+			if (shockwaveWindup == 0) {
+				resolveShockwave();
 				return true;
-			} else if (trampleWindup > 0) {
-				// 범위 표시
-				for (int c : trampleCells) {
-					sprite.parent.addToBack(new TargetedCell(c, 0xFF0000));
+			} else {
+				// 충격파 범위 표시
+				for (int i : PathFinder.NEIGHBOURS8) {
+					int cell = pos + i;
+					if (Dungeon.level.insideMap(cell)) {
+						sprite.parent.addToBack(new TargetedCell(cell, 0xFFFF00));
+					}
 				}
 				spend(TICK);
 				return true;
 			}
 		}
 
-		// 짓밟기 가능 조건: 쿨타임 끝 + 적이 가까이 있음
-		if (enemy != null && trampleCooldown <= 0 && Dungeon.level.distance(pos, enemy.pos) <= 4) {
-			if (telegraphTrample()) {
+		// 돌진 시작 시도 (VampireChariot의 돌진 능력)
+		if (enemy != null && !rooted && chargeCooldown <= 0 && state != SLEEPING) {
+			Ballistica path = new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+			if (path.dist > 0) {
+				// extend one tile behind the hero if LOS and map allows
+				int endIndex = path.dist;
+				if (path.collisionPos != null && path.collisionPos == enemy.pos) {
+					endIndex = Math.min(path.dist + 1, path.path.size()-1);
+				}
+				// prepare path excluding current cell
+				chargePath = new ArrayList<>(path.subPath(1, endIndex));
+				for (int c : chargePath) {
+					// show telegraph
+					if (sprite != null && (sprite.visible || Dungeon.level.heroFOV[c])) {
+						sprite.parent.addToBack(new TargetedCell(c, 0xFF00FF));
+					}
+				}
+				// spend based on hero speed so slower heroes aren't punished as much
+				sprite.showStatus(CharSprite.WARNING, Messages.get(this, "horse"));
+				spend(GameMath.gate(TICK, (int)Math.ceil(Dungeon.hero.cooldown()), 3*TICK));
+				Dungeon.hero.interrupt();
+				chargeWindup = 1;
+				Sample.INSTANCE.play(Assets.Sounds.HORSE);
 				return true;
 			}
 		}
 
-		return super.act();
-	}
-
-	private boolean telegraphTrample() {
-		if (enemy == null) return false;
-
-		trampleCells.clear();
-		
-		// 자신 위치 포함 3x3 범위
-		trampleCells.add(pos);
-		for (int i : PathFinder.NEIGHBOURS9) {
-			int cell = pos + i;
-			if (Dungeon.level.insideMap(cell) && !trampleCells.contains(cell)) {
-				trampleCells.add(cell);
+		// 충격파 시작 시도 (새로운 능력)
+		if (enemy != null && shockwaveCooldown <= 0 && state != SLEEPING 
+				&& Dungeon.level.distance(pos, enemy.pos) <= 2) {
+			// 주변에 적이 있을 때 충격파 사용
+			boolean enemyNearby = false;
+			for (int i : PathFinder.NEIGHBOURS8) {
+				int cell = pos + i;
+				Char ch = Actor.findChar(cell);
+				if (ch != null && ch.alignment != alignment) {
+					enemyNearby = true;
+					break;
+				}
+			}
+			if (enemyNearby) {
+				// 충격파 예고
+				for (int i : PathFinder.NEIGHBOURS8) {
+					int cell = pos + i;
+					if (Dungeon.level.insideMap(cell)) {
+						sprite.parent.addToBack(new TargetedCell(cell, 0xFF00FF));
+					}
+				}
+				sprite.showStatus(CharSprite.WARNING, Messages.get(this, "s1"));
+				Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+				Dungeon.hero.interrupt();
+				Camera.main.shake(2, 0.3f);
+				shockwaveWindup = 1;
+				spend(TICK);
+				return true;
 			}
 		}
 
-		if (trampleCells.isEmpty()) return false;
-
-		// 범위 공격 예고
-		for (int c : trampleCells) {
-			sprite.parent.addToBack(new TargetedCell(c, 0xFF0000));
-			CellEmitter.get(c).burst(Speck.factory(Speck.ROCK), 2);
-		}
-
-		sprite.showStatus(CharSprite.WARNING, Messages.get(this, "trample"));
-		Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-		Dungeon.hero.interrupt();
-		Camera.main.shake(3, 0.3f);
-
-		trampleWindup = 1;
-		spend(TICK);
-		return true;
+		if (chargeCooldown > 0) chargeCooldown--;
+		if (shockwaveCooldown > 0) shockwaveCooldown--;
+		return super.act();
 	}
 
-	private void resolveTrample() {
+	// 충격파 능력 해결
+	private void resolveShockwave() {
 		Sample.INSTANCE.play(Assets.Sounds.BLAST);
-		Camera.main.shake(6, 0.5f);
+		Camera.main.shake(4, 0.5f);
 
-		// 범위 내 모든 적에게 데미지
-		for (int c : trampleCells) {
-			CellEmitter.get(c).burst(Speck.factory(Speck.ROCK), 8);
+		// 주변 8칸의 모든 적을 밀쳐내고 데미지
+		for (int i : PathFinder.NEIGHBOURS8) {
+			int cell = pos + i;
+			CellEmitter.get(cell).burst(Speck.factory(Speck.ROCK), 6);
 			
-			Char ch = Actor.findChar(c);
+			Char ch = Actor.findChar(cell);
 			if (ch != null && ch.alignment != alignment) {
-				int dmg = Random.NormalIntRange(35, 50);
-				ch.damage(dmg, this);
+				// 데미지
+				int dmg = Random.NormalIntRange(25, 35);
+				if (ch == Dungeon.hero) {
+					ch.damage(dmg, this);
+				} else {
+					ch.damage(5, this);
+				}
 
-				// 70% 확률로 기절
-				if (Random.Int(10) < 7) {
-					Buff.affect(ch, Paralysis.class, 2f);
+				// 밀쳐내기
+				Ballistica trajectory = new Ballistica(pos, ch.pos, Ballistica.STOP_TARGET);
+				trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+				WandOfBlastWave.throwChar(ch, trajectory, 2, false, true, getClass());
+
+				// 50% 확률로 불구
+				if (Random.Int(2) == 0) {
+					Buff.affect(ch, Vulnerable.class, 3f);
 				}
 
 				if (ch == Dungeon.hero && !ch.isAlive()) {
@@ -170,10 +252,21 @@ public class KS4 extends Mob {
 			}
 		}
 
-		trampleCells.clear();
-		trampleWindup = 0;
-		trampleCooldown = 8; // 짓밟기 후 쿨타임
+		shockwaveWindup = 0;
+		shockwaveCooldown = Random.NormalIntRange(6, 9);
 		spend(1f);
+	}
+
+	@Override
+	public int attackProc(Char enemy, int damage) {
+		int dealt = super.attackProc(enemy, damage);
+		// 공격 시 체력 회복 (VampireChariot의 능력)
+		int heal = Math.max(1, Math.round(dealt * 0.25f));
+		if (heal > 0 && HP < HT) {
+			HP = Math.min(HT, HP + heal);
+			if (sprite != null) sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
+		}
+		return dealt;
 	}
 
 	@Override
@@ -188,15 +281,33 @@ public class KS4 extends Mob {
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
-		bundle.put(TRAMPLE_CD, trampleCooldown);
-		bundle.put(TRAMPLE_WIND, trampleWindup);
+		if (chargePath != null && !chargePath.isEmpty()) {
+			int[] pathArray = new int[chargePath.size()];
+			for (int i = 0; i < chargePath.size(); i++) {
+				pathArray[i] = chargePath.get(i);
+			}
+			bundle.put(CHARGE_PATH, pathArray);
+		}
+		bundle.put(CHARGE_WIND, chargeWindup);
+		bundle.put(CHARGE_CD, chargeCooldown);
+		bundle.put(SHOCKWAVE_CD, shockwaveCooldown);
+		bundle.put(SHOCKWAVE_WIND, shockwaveWindup);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
-		trampleCooldown = bundle.getInt(TRAMPLE_CD);
-		trampleWindup = bundle.getInt(TRAMPLE_WIND);
+		if (bundle.contains(CHARGE_PATH)) {
+			int[] pathArray = bundle.getIntArray(CHARGE_PATH);
+			chargePath = new ArrayList<>();
+			for (int c : pathArray) {
+				chargePath.add(c);
+			}
+		}
+		chargeWindup = bundle.getInt(CHARGE_WIND);
+		chargeCooldown = bundle.getInt(CHARGE_CD);
+		shockwaveCooldown = bundle.getInt(SHOCKWAVE_CD);
+		shockwaveWindup = bundle.getInt(SHOCKWAVE_WIND);
 	}
 
 	@Override

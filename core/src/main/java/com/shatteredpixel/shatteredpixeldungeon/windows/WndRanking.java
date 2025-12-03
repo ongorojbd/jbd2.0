@@ -162,14 +162,19 @@ public class WndRanking extends WndTabbed {
 		public StatsTab() {
 			super();
 			
-			String heroClass = record.heroClass.name();
-			if (Dungeon.hero != null){
-				heroClass = Dungeon.hero.className();
+			String displayName;
+			// 일일 도전 랭킹의 경우 플레이어 닉네임 표시
+			if (record.playerName != null && !record.playerName.isEmpty()) {
+				displayName = record.playerName;
+			} else if (Dungeon.hero != null) {
+				displayName = Dungeon.hero.className();
+			} else {
+				displayName = record.heroClass.name();
 			}
 			
 			IconTitle title = new IconTitle();
 			title.icon( HeroSprite.avatar( record.heroClass, record.armorTier ) );
-			title.label( Messages.get(this, "title", record.herolevel, heroClass ).toUpperCase( Locale.ENGLISH ) );
+			title.label( Messages.get(this, "title", record.herolevel, displayName ).toUpperCase( Locale.ENGLISH ) );
 			title.color(Window.TITLE_COLOR);
 			title.setRect( 0, 0, WIDTH, 0 );
 			add( title );
@@ -320,14 +325,6 @@ public class WndRanking extends WndTabbed {
 			super();
 
 			camera = WndRanking.this.camera;
-
-			int tiers = 1;
-			if (Dungeon.hero.lvl >= 6) tiers++;
-			if (Dungeon.hero.lvl >= 12 && Dungeon.hero.subClass != HeroSubClass.NONE) tiers++;
-			if (Dungeon.hero.lvl >= 20 && Dungeon.hero.armorAbility != null) tiers++;
-			while (Dungeon.hero.talents.size() > tiers){
-				Dungeon.hero.talents.remove(Dungeon.hero.talents.size()-1);
-			}
 
 			TalentsPane p = new TalentsPane(TalentButton.Mode.INFO);
 			add(p);

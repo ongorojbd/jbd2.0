@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -200,7 +201,10 @@ import com.watabou.utils.Random;
 import com.watabou.utils.RectF;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Comparator;
 import java.util.Locale;
 
@@ -1998,21 +2002,48 @@ public class GameScene extends PixelScene {
         gameOver.show(0x000000, 2f);
         scene.showBanner(gameOver);
 
-        StyledButton restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9) {
-            @Override
-            protected void onClick() {
-                GamesInProgress.selectedClass = Dungeon.hero.heroClass;
-                GamesInProgress.curSlot = GamesInProgress.firstEmpty();
-                ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
-            }
+        StyledButton restart;
+        // 일일 도전 모드일 때는 랭킹 보러 가기 버튼으로 변경
+        if (Dungeon.daily && !Dungeon.dailyReplay) {
+            restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(GameScene.class, "view_rankings"), 9) {
+                @Override
+                protected void onClick() {
+                    // 랭킹 강제 새로고침 후 이동
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ROOT);
+                    String currentDate = format.format(new Date(Game.realTime));
+                    if (Ranking.supportsRankings()) {
+                        Ranking.clearRankings(); // 캐시 클리어
+                        Ranking.checkForRankings(currentDate, true); // 강제 새로고침
+                    }
+                    ShatteredPixelDungeon.switchScene(AboutScene.class);
+                }
 
-            @Override
-            public void update() {
-                alpha(gameOver.am);
-                super.update();
-            }
-        };
-        restart.icon(Icons.get(Icons.ENTER));
+                @Override
+                public void update() {
+                    alpha(gameOver.am);
+                    super.update();
+                }
+            };
+            Image aboutIcon = Icons.get(Icons.CHALLENGE_GREY);
+            aboutIcon.hardlight(0.65f, 1.05f, 1.55f); // 밝은 하늘색
+            restart.icon(aboutIcon);
+        } else {
+            restart = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(StartScene.class, "new"), 9) {
+                @Override
+                protected void onClick() {
+                    GamesInProgress.selectedClass = Dungeon.hero.heroClass;
+                    GamesInProgress.curSlot = GamesInProgress.firstEmpty();
+                    ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+                }
+
+                @Override
+                public void update() {
+                    alpha(gameOver.am);
+                    super.update();
+                }
+            };
+            restart.icon(Icons.get(Icons.ENTER));
+        }
         restart.alpha(0);
         restart.camera = uiCamera;
         float offset = Camera.main.centerOffset.y;

@@ -442,6 +442,8 @@ public class Rebel extends Mob {
 
     @Override
     protected boolean act() {
+        if (!BossHealthBar.isAssigned()) BossHealthBar.assignBoss(this);
+
         // 타이밍 게임 도중 앱 전환 후 돌아왔거나 게임 로드 시 창 다시 표시
         if (timingGameActive) {
             // 타이밍 게임 창이 이미 열려있으면 대기
@@ -466,7 +468,7 @@ public class Rebel extends Mob {
                                     GLog.p(Messages.get(Rebel.class, "timing_success"));
                                     GLog.n(Messages.get(Rebel.class, Random.element(LINE_KEYS)));
                                     Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
-                                    cleanCooldown = Random.NormalIntRange(20, 25);
+                                    cleanCooldown = Random.NormalIntRange(22, 30);
                                     BurstTimt = 0;
                                 }
                             },
@@ -486,7 +488,7 @@ public class Rebel extends Mob {
                                     if (!Dungeon.hero.isAlive()) {
                                         Dungeon.fail(Rebel.class);
                                     }
-                                    cleanCooldown = Random.NormalIntRange(20, 25);
+                                    cleanCooldown = Random.NormalIntRange(22, 30);
                                     BurstTimt = 0;
                                 }
                             }
@@ -580,7 +582,7 @@ public class Rebel extends Mob {
                                         GLog.p(Messages.get(Rebel.class, "timing_success"));
                                         GLog.n(Messages.get(Rebel.class, Random.element(LINE_KEYS)));
                                         Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
-                                        cleanCooldown = Random.NormalIntRange(20, 25);
+                                        cleanCooldown = Random.NormalIntRange(22, 30);
                                         BurstTimt = 0;
                                     }
                                 },
@@ -599,7 +601,7 @@ public class Rebel extends Mob {
                                         if (!Dungeon.hero.isAlive()) {
                                             Dungeon.fail(Rebel.class);
                                         }
-                                        cleanCooldown = Random.NormalIntRange(20, 25);
+                                        cleanCooldown = Random.NormalIntRange(22, 30);
                                         BurstTimt = 0;
                                     }
                                 }
@@ -663,7 +665,6 @@ public class Rebel extends Mob {
             return;
         }
 
-        BossHealthBar.assignBoss(this);
         super.damage(dmg, src);
 
         if (Phase == 0 && HP < 1300) {
@@ -910,11 +911,11 @@ public class Rebel extends Mob {
             Statistics.qualifiedForBossChallengeBadge = false;
         }
 
-        if (Dungeon.hero.buff(Triplespeed.class) != null) {
-            Badges.validateMih();
-        } else {
-            Statistics.qualifiedForBossChallengeBadge = false;
-        }
+//        if (Dungeon.hero.buff(Triplespeed.class) != null) {
+//            Badges.validateMih();
+//        } else {
+//            Statistics.qualifiedForBossChallengeBadge = false;
+//        }
 
         if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Dungeon.mboss4 == 1 && Dungeon.mboss9 == 1 && Dungeon.mboss14 == 1 && Dungeon.mboss19 == 1) {
             Badges.validateOVERHEAVEN();
@@ -1495,7 +1496,7 @@ public class Rebel extends Mob {
                                     GLog.p(Messages.get(Rebel.class, "timing_success"));
                                     GLog.n(Messages.get(Rebel.class, Random.element(LINE_KEYS)));
                                     Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
-                                    finalRebel.cleanCooldown = Random.NormalIntRange(20, 25);
+                                    finalRebel.cleanCooldown = Random.NormalIntRange(22, 30);
                                     finalRebel.BurstTimt = 0;
                                 }
                             },
@@ -1514,7 +1515,7 @@ public class Rebel extends Mob {
                                     if (!Dungeon.hero.isAlive()) {
                                         Dungeon.fail(Rebel.class);
                                     }
-                                    finalRebel.cleanCooldown = Random.NormalIntRange(20, 25);
+                                    finalRebel.cleanCooldown = Random.NormalIntRange(22, 30);
                                     finalRebel.BurstTimt = 0;
                                 }
                             }

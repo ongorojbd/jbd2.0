@@ -58,6 +58,7 @@ import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -296,7 +297,18 @@ public class SurfaceScene extends PixelScene {
 
         RedButton gameOver = new RedButton(Messages.get(this, "exit")) {
             protected void onClick() {
-                Game.switchScene(RankingsScene.class);
+                // 일일 도전(경쟁 모드)인 경우 AboutScene으로 이동
+                // 점수 제출 후 랭킹 반영을 위해 딜레이 추가
+                if (Dungeon.daily && !Dungeon.dailyReplay) {
+                    SurfaceScene.this.add(new Delayer(1.5f){
+                        @Override
+                        protected void onComplete() {
+                            Game.switchScene(AboutScene.class);
+                        }
+                    });
+                } else {
+                    Game.switchScene(RankingsScene.class);
+                }
             }
         };
         gameOver.setSize(SKY_WIDTH - FRAME_MARGIN_X * 2, BUTTON_HEIGHT);

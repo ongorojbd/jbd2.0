@@ -205,6 +205,7 @@ public class Badges {
         HIGH_SCORE_4                ( 109 ),
         CHAMPION_1                  ( 110 ),
         TENDENCYBADGE                  ( 111 ),
+
         TENDENCYBADGE_WARRIOR,
         TENDENCYBADGE_MAGE,
         TENDENCYBADGE_DUELIST,
@@ -212,6 +213,9 @@ public class Badges {
         TENDENCYBADGE_HUNTRESS,
         TENDENCYBADGE_CLERIC,
         TENDENCYBADGE_ALL_CLASSES(111),
+
+        // 일일 도전 (경쟁 모드) 클리어 배지
+        DAILY_VICTORY(113),
 
         //diamond
         PACIFIST_ASCENT             ( 120 ),
@@ -231,7 +235,6 @@ public class Badges {
         YORIHIMES_HUNTRESS,
         YORIHIMES_CLERIC,
         YORIHIMES_ALL_CLASSES(28),
-        MIH(26),
         OVERHEAVEN(27),
 
         BRANDOKILL(29),
@@ -243,6 +246,7 @@ public class Badges {
         BRANDOKILL_HUNTRESS,
         BRANDOKILL_CLERIC,
         BRANDOKILL_ALL_CLASSES(29),
+
         ;
 
         public boolean meta;
@@ -1190,6 +1194,15 @@ public class Badges {
             displayBadge(badge);
         }
     }
+    
+    public static void validateDailyVictory() {
+        // 일일 도전 (경쟁 모드) 클리어 시 배지 획득
+        if (Dungeon.daily && !Dungeon.dailyReplay) {
+            Badge badge = Badge.DAILY_VICTORY;
+            local.add(badge);
+            displayBadge(badge);
+        }
+    }
 
     public static void validateTakingTheMick(Object cause){
         if ((cause == Dungeon.hero || cause instanceof Explosive.ExplosiveCurseBomb)
@@ -1297,10 +1310,6 @@ public class Badges {
         }
     }
 
-    public static void validateMih() {
-        displayBadge(Badge.MIH);
-    }
-
     public static void validateOVERHEAVEN() {
         displayBadge(Badge.OVERHEAVEN);
     }
@@ -1326,7 +1335,8 @@ public class Badges {
 
     private static void displayBadge(Badge badge) {
 
-        if (badge == null || (badge.type != BadgeType.JOURNAL && !Dungeon.customSeedText.isEmpty())) {
+        // DAILY_VICTORY 배지는 일일 도전(커스텀 시드)에서도 허용
+        if (badge == null || (badge != Badge.DAILY_VICTORY && badge.type != BadgeType.JOURNAL && !Dungeon.customSeedText.isEmpty())) {
             return;
         }
 
@@ -1363,7 +1373,8 @@ public class Badges {
     }
 
     public static void unlock(Badge badge) {
-        if (!isUnlocked(badge) && (badge.type == BadgeType.JOURNAL || Dungeon.customSeedText.isEmpty())) {
+        // DAILY_VICTORY 배지는 일일 도전(커스텀 시드)에서도 허용
+        if (!isUnlocked(badge) && (badge == Badge.DAILY_VICTORY || badge.type == BadgeType.JOURNAL || Dungeon.customSeedText.isEmpty())) {
             global.add(badge);
             saveNeeded = true;
         }
@@ -1411,7 +1422,6 @@ public class Badges {
             {Badge.BOSS_SLAIN_4, Badge.BOSS_CHALLENGE_4},
             {Badge.VICTORY, Badge.BOSS_CHALLENGE_5},
             {Badge.VICTORY, Badge.YORIHIMES},
-            {Badge.VICTORY, Badge.MIH},
             {Badge.CHAMPION_1, Badge.OVERHEAVEN},
             {Badge.BRANDOKILL, Badge.BRANDOKILL_ALL_CLASSES},
             {Badge.TENDENCYBADGE, Badge.TENDENCYBADGE_ALL_CLASSES},

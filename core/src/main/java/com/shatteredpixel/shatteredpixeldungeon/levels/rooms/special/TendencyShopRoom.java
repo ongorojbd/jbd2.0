@@ -112,6 +112,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.HealingDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -378,7 +379,7 @@ public class TendencyShopRoom extends SpecialRoom {
             }
         }
 
-        switch (Random.Int(5)) {
+        switch (Random.Int(6)) {
             case 0:
                 itemsToSpawn.add(new StoneOfAugmentation());
                 break;
@@ -393,6 +394,9 @@ public class TendencyShopRoom extends SpecialRoom {
                 break;
             case 4:
                 itemsToSpawn.add(new WildEnergy().quantity(2));
+                break;
+            case 5:
+                itemsToSpawn.add(new HealingDart().quantity(1));
                 break;
         }
 

@@ -124,4 +124,5 @@ dependencies {
 
     implementation project(':services:updates:githubUpdates')
     implementation project(':services:news:shatteredNews')
+    implementation project(':services:rankings:supabaseRankings')
 }

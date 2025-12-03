@@ -43,7 +43,7 @@ public class RatKingSprite extends MobSprite {
 		int c;
 		switch (Holiday.getCurrentHoliday()){
 			default:
-				c = 24;
+				c = 0;
 				break;
 			case WINTER_HOLIDAYS:
 				c = 8;

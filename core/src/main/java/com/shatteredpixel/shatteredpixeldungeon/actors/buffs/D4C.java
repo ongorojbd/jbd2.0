@@ -21,12 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class D4C extends Buff {
@@ -37,6 +33,8 @@ public class D4C extends Buff {
     }
 
     public static final float DURATION = 1_000_000;
+    
+    private float left = DURATION;
 
     @Override
     public void fx(boolean on) {
@@ -52,6 +50,49 @@ public class D4C extends Buff {
     @Override
     public String toString() {
         return Messages.get(this, "name");
+    }
+    
+    public void oneTurn() {
+        left = 1f;
+    }
+    
+    @Override
+    public boolean act() {
+        if (left < DURATION) {
+            // 시간 제한이 있는 경우 (1턴 버프)
+            left -= 1f;
+            if (left <= 0) {
+                detach();
+                return true;
+            }
+        }
+        return super.act();
+    }
+    
+    @Override
+    public String desc() {
+        if (left < DURATION) {
+            return Messages.get(this, "desc", dispTurns(Math.max(0, left)));
+        }
+        return Messages.get(this, "desc");
+    }
+    
+    private static final String LEFT = "left";
+    
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(LEFT, left);
+    }
+    
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        if (bundle.contains(LEFT)) {
+            left = bundle.getFloat(LEFT);
+        } else {
+            left = DURATION;
+        }
     }
 
 }

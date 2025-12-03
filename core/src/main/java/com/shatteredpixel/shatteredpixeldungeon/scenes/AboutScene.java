@@ -21,206 +21,301 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.DailyRankingEntry;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.input.PointerEvent;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndRanking;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Group;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.PointerArea;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.GameMath;
 import com.watabou.utils.RectF;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 public class AboutScene extends PixelScene {
+
+    private static final float ROW_HEIGHT_MAX = 22;
+    private static final float ROW_HEIGHT_MIN = 14;
+    private static final float MAX_ROW_WIDTH = 180;
+    private static final float GAP = 4;
+
+    private Archs archs;
+    private String currentDate;
+    private float refreshTimer = 0;
+    private static final float REFRESH_INTERVAL = 3f; // 3초마다 확인
+    private float loadingTimer = 0;
+    private static final float LOADING_TIMEOUT = 10f; // 10초 후 타임아웃
+    private RenderedTextBlock statusText;
+    private Component rankingContainer;
+    private boolean wasLoading = false; // 이전 프레임의 로딩 상태 추적
 
 	@Override
 	public void create() {
 		super.create();
 
-		final float colWidth = 120;
-		final float fullWidth = colWidth * (landscape() ? 2 : 1);
+        Music.INSTANCE.playTracks(
+                new String[]{Assets.Music.THEME_1},
+                new float[]{1},
+                false);
+
+        uiCamera.visible = false;
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;
-
 		RectF insets = getCommonInsets();
 
-		Archs archs = new Archs();
-		archs.setSize( w, h );
-		add( archs );
+        archs = new Archs();
+        archs.setSize(w, h);
+        add(archs);
 
-		//darkens the arches
+        // 어두운 배경 레이어
 		add(new ColorBlock(w, h, 0x88000000));
 
-		ScrollPane list = new ScrollPane( new Component() );
-		add( list );
+        w -= insets.left + insets.right;
+        h -= insets.top + insets.bottom;
 
-		Component content = list.content();
-		content.clear();
+        // 날짜 선택 (오늘 날짜)
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+        format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        currentDate = format.format(new Date(Game.realTime));
 
-		//*** Shattered Pixel Dungeon Credits ***
+        // 제목
+        Image titleIcon = Icons.CALENDAR.get();
+        titleIcon.hardlight(0.5f, 1f, 2f); // 경쟁 모드 색깔과 동일
+        IconTitle title = new IconTitle(titleIcon, "플레이어 랭킹");
+        title.setSize(200, 0);
+        title.setPos(
+                insets.left + (w - title.reqWidth()) / 2f,
+                insets.top + (20 - title.height()) / 2f
+        );
+        align(title);
+        add(title);
 
-		CreditsBlock shpx = new CreditsBlock(true, Window.TITLE_COLOR,
-				"죠죠의 기묘한 던전",
-				Icons.SHPX.get(),
-				"Developed by: _Ongoro_\nBased on SPD's open source",
-				" ",
-				"https://www.youtube.com/watch?v=tLyRpGKWXRs");
-		if (landscape()){
-			shpx.setRect((w - fullWidth)/2f - 6, insets.top + 10, 120, 0);
-		} else {
-			shpx.setRect((w - fullWidth)/2f, insets.top + 6, 120, 0);
+        // 랭킹 컨테이너
+        rankingContainer = new Component();
+        add(rankingContainer);
+
+		// 랭킹 로드 (강제 새로고침)
+		if (Ranking.supportsRankings()) {
+			// 캐시를 클리어하고 최신 데이터 로드
+			Ranking.clearRankings();
+			Ranking.checkForRankings(currentDate, true); // 강제 새로고침
+			loadingTimer = 0; // 로딩 타이머 초기화
+			wasLoading = true; // 초기 상태는 로딩 중
 		}
-		content.add(shpx);
 
-		CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
-				"Link",
-				Icons.KRISTJAN.get(),
-				"kakao",
-				"url",
-				"https://open.kakao.com/o/gC7ZgGjd");
-		alex.setSize(colWidth/2f, 0);
-		if (landscape()){
-			alex.setPos(shpx.right(), shpx.top() + (shpx.height() - alex.height()*2)/2f);
-		} else {
-			alex.setPos(w/2f - colWidth/2f, shpx.bottom()+5);
-		}
-		content.add(alex);
+        updateRankingsDisplay();
 
-		CreditsBlock charlie = new CreditsBlock(false, Window.SHPX_COLOR,
-				"Pixel Design",
-				Icons.CELESTI.get(),
-				"너구리풀",
-				"",
-				"https://www.youtube.com/watch?v=FPyIMtXsIcY");
-		charlie.setRect(alex.right(), alex.top(), colWidth/2f, 0);
-		content.add(charlie);
+        // 날짜 표시
+        RenderedTextBlock dateText = PixelScene.renderTextBlock("날짜: " + currentDate, 7);
+        dateText.hardlight(0x88FFFF);
+        float dateTextX = insets.left + (w - dateText.width() - 20) / 2; // 새로고침 버튼 공간 확보
+        float dateTextY = insets.top + h - dateText.height() - 50;
+        dateText.setPos(
+                dateTextX,
+                dateTextY
+        );
+        align(dateText);
+        add(dateText);
 
-		CreditsBlock kristjan = new CreditsBlock(false, Window.SHPX_COLOR,
-				"",
-				Icons.ALEKS.get(),
-				"",
-				"",
-				"");
-		kristjan.setRect(alex.right() - colWidth/4f, alex.bottom() + 5, colWidth/2f, 0);
-		content.add(kristjan);
+        // 새로고침 버튼 (날짜 오른쪽)
+        IconButton refreshBtn = new IconButton(Icons.get(Icons.RANDOMIZE)) {
+            @Override
+            protected void onClick() {
+                super.onClick();
+                // 강제 새로고침
+                if (Ranking.supportsRankings()) {
+                    Ranking.clearRankings(); // 캐시 클리어
+                    Ranking.checkForRankings(currentDate, true); // 강제 새로고침
+                    loadingTimer = 0; // 로딩 타이머 리셋
+                    wasLoading = true; // 로딩 상태로 설정
+                    updateRankingsDisplay(); // 즉시 UI 업데이트
+                }
+            }
+        };
+        // 날짜 텍스트와 y축 중앙 정렬
+        float refreshBtnY = dateTextY + (dateText.height() - 16) / 2f;
+        refreshBtn.setRect(
+                dateTextX + dateText.width() + 4,
+                refreshBtnY,
+                16,
+                16
+        );
+        align(refreshBtn);
+        add(refreshBtn);
 
-		//*** Pixel Dungeon Credits ***
+        // 도움말 버튼 (개발자 정보 버튼 위)
+        StyledButton helpBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "도움말", 7) {
+            @Override
+            protected void onClick() {
+                super.onClick();
+                ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
+                        Icons.get(Icons.INFO),
+                        "플레이어 랭킹",
+                        "오늘의 경쟁 모드 플레이어 랭킹을 확인하세요!\n\n" +
+                                "랭킹은 새로운 기록이 등록되면 실시간으로 반영되며, 기록 상세 보기도 제공됩니다.\n\n" +
+                                "점수가 높을수록 상위에 표시되며, 1~3위는 특별한 색상으로 빛납니다."
+                ));
+            }
+        };
+        helpBtn.setRect(
+                insets.left + (w - 80) / 2,
+                insets.top + h - 45, // 도움말, 개발자 정보 위치
+                80,
+                18
+        );
+        align(helpBtn);
+        add(helpBtn);
 
-		final int WATA_COLOR = 0x55AAFF;
-		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
-				"To Be Countinued....",
-				Icons.WATA.get(),
-				"Next Update : 3.0d",
-				"",
-				"");
-		if (landscape()){
-			wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
-		} else {
-			wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
-		}
-		content.add(wata);
+        // 개발자 소개 버튼 (하단 중앙)
+        StyledButton creditsBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "개발자 정보", 7) {
+            @Override
+            protected void onClick() {
+                super.onClick();
+                ShatteredPixelDungeon.switchScene(CreditScene.class);
+            }
+        };
+        creditsBtn.setRect(
+                insets.left + (w - 80) / 2,
+                insets.top + h - 25,
+                80,
+                18
+        );
+        align(creditsBtn);
+        add(creditsBtn);
 
-		addLine(wata.top() - 4, content);
+        ExitButton btnExit = new ExitButton();
+        btnExit.setPos(Camera.main.width - btnExit.width() - insets.right, insets.top);
+        add(btnExit);
 
-		CreditsBlock cube = new CreditsBlock(false, WATA_COLOR,
-				"",
-				Icons.CUBE_CODE.get(),
-				"",
-				null,
-				null);
-		cube.setSize(colWidth/2f, 0);
-		if (landscape()){
-			cube.setPos(wata.right() + colWidth/4f, wata.top() + (wata.height() - cube.height())/2f);
-		} else {
-			cube.setPos(alex.left() + colWidth/4f, wata.bottom()+5);
-		}
-		content.add(cube);
+        fadeIn();
+    }
 
-		//*** libGDX Credits ***
+    private void updateRankingsDisplay() {
+        if (rankingContainer == null) return;
 
-		final int GDX_COLOR = 0xE44D3C;
-		CreditsBlock gdx = new CreditsBlock(true,
-				GDX_COLOR,
-				"",
-				Icons.LIBGDX.get(),
-				"Thank you for playing!",
-				"",
-				"");
-		if (landscape()){
-			gdx.setRect(wata.left(), wata.bottom() + 8, colWidth, 0);
-		} else {
-			gdx.setRect(wata.left(), cube.bottom() + 8, colWidth, 0);
-		}
-		content.add(gdx);
+        rankingContainer.clear();
 
-		addLine(gdx.top() - 4, content);
+        int w = Camera.main.width;
+        int h = Camera.main.height;
+        RectF insets = getCommonInsets();
+        w -= insets.left + insets.right;
+        h -= insets.top + insets.bottom;
 
-		CreditsBlock arcnor = new CreditsBlock(false, GDX_COLOR,
-				"",
-				Icons.ARCNOR.get(),
-				"",
-				"",
-				"");
-		arcnor.setSize(colWidth/2f, 0);
-		if (landscape()){
-			arcnor.setPos(gdx.right(), gdx.top() + (gdx.height() - arcnor.height())/2f);
-		} else {
-			arcnor.setPos(alex.left(), gdx.bottom()+5);
-		}
-		content.add(arcnor);
+        // 랭킹 리스트
+        ArrayList<DailyRankingEntry> rankings = Ranking.rankings();
+        // 로딩 중인지 확인: rankings가 null이면 아직 로딩 중
+        // 단, 타임아웃이 지나면 데이터 없음으로 처리
+        boolean isLoading = Ranking.supportsRankings() && Ranking.isLoading() && loadingTimer < LOADING_TIMEOUT;
 
-		CreditsBlock purigro = new CreditsBlock(false, GDX_COLOR,
-				"",
-				Icons.PURIGRO.get(),
-				"",
-				"",
-				"");
-		purigro.setRect(arcnor.right()+2, arcnor.top(), colWidth/2f, 0);
-		content.add(purigro);
+        if (isLoading) {
+            // 로딩 중 메시지
+            statusText = PixelScene.renderTextBlock("랭킹 데이터를 불러오는 중입니다.\n인터넷 연결이 필요합니다.", 8);
+            statusText.hardlight(0x88FFFF);
+            statusText.setPos(
+                    insets.left + (w - statusText.width()) / 2,
+                    insets.top + (h - statusText.height()) / 2
+            );
+            align(statusText);
+            rankingContainer.add(statusText);
+        } else if (rankings.size() > 0) {
+            // 각 항목에 최대한 공간 할당
+            float rowHeight = GameMath.gate(ROW_HEIGHT_MIN, (h - 120) / rankings.size(), ROW_HEIGHT_MAX);
 
-		//*** Transifex Credits ***
+            float left = (w - Math.min(MAX_ROW_WIDTH, w)) / 2 + GAP;
+            float top = (h - rowHeight * rankings.size()) / 2 - 10; // 더 위로 올림
 
-		CreditsBlock transifex = new CreditsBlock(true,
-				Window.TITLE_COLOR,
-				null,
-				null,
-				"",
-				"",
-				"");
-		transifex.setRect((Camera.main.width - colWidth)/2f, purigro.bottom() + 12, colWidth, 0);
-		content.add(transifex);
+            int pos = 0;
+            for (DailyRankingEntry entry : rankings) {
+                RankingRow row = new RankingRow(pos, entry);
+                float offset = 0;
+                if (rowHeight <= 16) {
+                    offset = (pos % 2 == 1) ? 5 : -5;
+                }
+                float rowY = insets.top + top + pos * rowHeight;
+                row.setRect(insets.left + left + offset, rowY, w - left * 2, rowHeight);
+                rankingContainer.add(row);
 
-		//*** Freesound Credits ***
+                pos++;
+            }
+        } else {
+            // 네트워크 실패와 데이터 없음 구분
+            String message;
+            int color;
+            if (DailyRankingEntry.networkFailed) {
+                message = "랭킹을 불러오지 못했습니다.\n인터넷 연결을 확인해주세요.";
+                color = 0xFF6666; // 빨간색
+            } else {
+                message = "오늘 도전한 플레이어가 없습니다.";
+                color = 0xCCCCCC; // 회색
+            }
+            statusText = PixelScene.renderTextBlock(message, 8);
+            statusText.hardlight(color);
+            statusText.setPos(
+                    insets.left + (w - statusText.width()) / 2,
+                    insets.top + (h - statusText.height()) / 2
+            );
+            align(statusText);
+            rankingContainer.add(statusText);
+        }
+    }
 
-		CreditsBlock freesound = new CreditsBlock(true,
-				Window.TITLE_COLOR,
-				null,
-				null,
-				"",
-				"",
-				"");
-		freesound.setRect(transifex.left()-10, transifex.bottom() + 8, colWidth+20, 0);
-		content.add(freesound);
+    @Override
+    public void update() {
+        super.update();
 
-		content.setSize( fullWidth, freesound.bottom()+10 + insets.bottom );
+        // 로딩 타이머 업데이트
+        boolean isLoading = Ranking.supportsRankings() && Ranking.isLoading();
+        if (isLoading) {
+            loadingTimer += Game.elapsed;
+        } else {
+            loadingTimer = 0; // 로딩 완료되면 타이머 리셋
+        }
 
-		list.setRect( 0, 0, w, h );
-		list.scrollTo(0, 0);
+        // 로딩 상태가 변경되었을 때 즉시 UI 업데이트
+        // (로딩 중 -> 완료, 또는 완료 -> 로딩 중으로 변경된 경우)
+        if (wasLoading != isLoading) {
+            updateRankingsDisplay();
+            wasLoading = isLoading;
+        }
 
-		ExitButton btnExit = new ExitButton();
-		int ofs = PixelScene.landscape() ? 0 : 4;
-		btnExit.setPos( Camera.main.width - btnExit.width() - ofs, ofs );
-		add( btnExit );
-
-		//fadeIn();
+        // 주기적으로 랭킹 확인 및 업데이트
+        refreshTimer += Game.elapsed;
+        if (refreshTimer >= REFRESH_INTERVAL) {
+            refreshTimer = 0;
+            if (Ranking.supportsRankings()) {
+                // 로딩 중이 아니거나 타임아웃이 지났을 때만 새로 요청
+                if (!Ranking.isLoading() || loadingTimer >= LOADING_TIMEOUT) {
+                    // 주기적으로 자동 새로고침 (CHECK_DELAY 체크)
+                    Ranking.checkForRankings(currentDate, true);
+                    loadingTimer = 0; // 새 요청 시작 시 타이머 리셋
+                }
+            }
+        }
 	}
 
 	@Override
@@ -228,149 +323,270 @@ public class AboutScene extends PixelScene {
 		ShatteredPixelDungeon.switchScene(TitleScene.class);
 	}
 
-	private void addLine( float y, Group content ){
-		ColorBlock line = new ColorBlock(Camera.main.width, 1, 0xFF333333);
-		line.y = y;
-		content.add(line);
-	}
+    public static class RankingRow extends Button {
 
-	private static class CreditsBlock extends Component {
+        private static final float GAP = 4;
 
-		boolean large;
-		RenderedTextBlock title;
-		Image avatar;
-		Flare flare;
-		RenderedTextBlock body;
+        // 순위별 색상
+        private static final int[] TEXT_1ST = {0xFFD700, 0xFFA500}; // 금색
+        private static final int[] TEXT_2ND = {0xE0E0E0, 0xC8C8C8}; // 은색
+        private static final int[] TEXT_3RD = {0xCD7F32, 0x8B6914}; // 동색
+        private static final int[] TEXT_TOP = {0xFFFF88, 0xB2B25F};
+        private static final int[] TEXT_NORMAL = {0xDDDDDD, 0x888888};
+        private static final int FLARE_1ST = 0xFFD700;
+        private static final int FLARE_2ND = 0xE0E0E0;
+        private static final int FLARE_3RD = 0xCD7F32;
+        private static final int FLARE_TOP = 0x888866;
 
-		RenderedTextBlock link;
-		ColorBlock linkUnderline;
-		PointerArea linkButton;
+        protected Image shield;
+        private Flare flare;
+        private BitmapText position;
+        private RenderedTextBlock name;
+        private BitmapText score;
+        private Image steps;
+        private BitmapText depth;
+        private Image classIcon;
+        private BitmapText level;
+        private ColorBlock bg;
+        
+        private DailyRankingEntry rankingEntry;
 
-		//many elements can be null, but body is assumed to have content.
-		private CreditsBlock(boolean large, int highlight, String title, Image avatar, String body, String linkText, String linkUrl){
+        public RankingRow(int pos, DailyRankingEntry entry) {
 			super();
+			
+			this.rankingEntry = entry;
 
-			this.large = large;
+            // 배경 추가 (짝수/홀수 행 구분)
+            bg = new ColorBlock(1, 1, pos % 2 == 0 ? 0x22000000 : 0x11000000);
+            addToBack(bg);
 
-			if (title != null) {
-				this.title = PixelScene.renderTextBlock(title, large ? 8 : 6);
-				if (highlight != -1) this.title.hardlight(highlight);
-				add(this.title);
+            // 상위 3위는 Flare 효과
+            if (pos == 0) {
+                flare = new Flare(8, 28);
+                flare.angularSpeed = 90;
+                flare.color(FLARE_1ST);
+                addToBack(flare);
+            } else if (pos == 1) {
+                flare = new Flare(7, 26);
+                flare.angularSpeed = 90;
+                flare.color(FLARE_2ND);
+                addToBack(flare);
+            } else if (pos == 2) {
+                flare = new Flare(6, 24);
+                flare.angularSpeed = 90;
+                flare.color(FLARE_3RD);
+                addToBack(flare);
+            }
+
+            position.text(Integer.toString(entry.rank));
+            position.measure();
+
+            name.text(entry.playerName);
+            score.text(Integer.toString(entry.score));
+            score.measure();
+
+            // depth 표시
+            if (entry.depth != 0) {
+                depth.text(Integer.toString(entry.depth));
+                depth.measure();
+                steps.copy(Icons.STAIRS.get());
+                add(steps);
+                add(depth);
 			}
 
-			if (avatar != null){
-				this.avatar = avatar;
-				add(this.avatar);
-			}
+            // heroClass 아이콘 표시 (먼저 추가하여 뒤에 배치)
+            if (entry.heroClass != null && !entry.heroClass.isEmpty()) {
+                try {
+                    HeroClass heroClassEnum = HeroClass.valueOf(entry.heroClass);
+                    classIcon.copy(Icons.get(heroClassEnum));
+                    add(classIcon);
+                } catch (IllegalArgumentException e) {
+                    // 잘못된 heroClass 문자열인 경우 무시
+                }
+            }
 
-			if (large && highlight != -1 && this.avatar != null){
-				this.flare = new Flare( 7, 24 ).color( highlight, true ).show(this.avatar, 0);
-				this.flare.angularSpeed = 20;
-			}
+            // level 표시 (나중에 추가하여 아이콘 위에 표시)
+            if (entry.level != 0) {
+                level.text(Integer.toString(entry.level));
+                level.measure();
+                add(level);
+            }
 
-			this.body = PixelScene.renderTextBlock(body, 6);
-			if (highlight != -1) this.body.setHightlighting(true, highlight);
-			if (large) this.body.align(RenderedTextBlock.CENTER_ALIGN);
-			add(this.body);
+            int odd = pos % 2;
 
-			if (linkText != null && linkUrl != null){
+            // 순위별 색상 적용
+            if (entry.rank == 1) {
+                shield.copy(Icons.get(Icons.CHALLENGE_GREY));
+                shield.hardlight(1f, 0.84f, 0f); // 금색
+                position.hardlight(TEXT_1ST[odd]);
+                name.hardlight(TEXT_1ST[odd]);
+                score.hardlight(TEXT_1ST[odd]);
+                if (depth != null) depth.hardlight(TEXT_1ST[odd]);
+                if (level != null) level.hardlight(TEXT_1ST[odd]);
+            } else if (entry.rank == 2) {
+                shield.copy(Icons.get(Icons.CHALLENGE_GREY));
+                shield.hardlight(0.88f, 0.88f, 0.88f); // 더 밝은 은색
+                position.hardlight(TEXT_2ND[odd]);
+                name.hardlight(TEXT_2ND[odd]);
+                score.hardlight(TEXT_2ND[odd]);
+                if (depth != null) depth.hardlight(TEXT_2ND[odd]);
+                if (level != null) level.hardlight(TEXT_2ND[odd]);
+            } else if (entry.rank == 3) {
+                shield.copy(Icons.get(Icons.CHALLENGE_GREY));
+                shield.hardlight(0.8f, 0.5f, 0.2f); // 동색
+                position.hardlight(TEXT_3RD[odd]);
+                name.hardlight(TEXT_3RD[odd]);
+                score.hardlight(TEXT_3RD[odd]);
+                if (depth != null) depth.hardlight(TEXT_3RD[odd]);
+                if (level != null) level.hardlight(TEXT_3RD[odd]);
+            } else if (entry.rank <= 10) {
+                shield.copy(Icons.get(Icons.CHALLENGE_GREY));
+                // 나머지는 트로피 아이콘 그대로 (색상 변경 없음)
+                position.hardlight(TEXT_TOP[odd]);
+                name.hardlight(TEXT_TOP[odd]);
+                score.hardlight(TEXT_TOP[odd]);
+                if (depth != null) depth.hardlight(TEXT_TOP[odd]);
+                if (level != null) level.hardlight(TEXT_TOP[odd]);
+            } else {
+                shield.copy(Icons.get(Icons.CHALLENGE_GREY));
+                // 나머지는 트로피 아이콘 그대로 (색상 변경 없음)
+                position.hardlight(TEXT_NORMAL[odd]);
+                name.hardlight(TEXT_NORMAL[odd]);
+                score.hardlight(TEXT_NORMAL[odd]);
+                if (depth != null) depth.hardlight(TEXT_NORMAL[odd]);
+                if (level != null) level.hardlight(TEXT_NORMAL[odd]);
+            }
+        }
 
-				int color = 0xFFFFFFFF;
-				if (highlight != -1) color = 0xFF000000 | highlight;
-				this.linkUnderline = new ColorBlock(1, 1, color);
-				add(this.linkUnderline);
-
-				this.link = PixelScene.renderTextBlock(linkText, 6);
-				if (highlight != -1) this.link.hardlight(highlight);
-				add(this.link);
-
-				linkButton = new PointerArea(0, 0, 0, 0){
 					@Override
-					protected void onClick( PointerEvent event ) {
-						ShatteredPixelDungeon.platform.openURI( linkUrl );
-					}
-				};
-				add(linkButton);
-			}
+        protected void createChildren() {
+            super.createChildren();
 
+            shield = new Image(Icons.get(Icons.CHALLENGE_GREY));
+            add(shield);
+
+            position = new BitmapText(PixelScene.pixelFont);
+            add(position);
+
+            name = renderTextBlock(7);
+            add(name);
+
+            score = new BitmapText(PixelScene.pixelFont);
+            add(score);
+
+            depth = new BitmapText(PixelScene.pixelFont);
+            steps = new Image();
+
+            classIcon = new Image();
+
+            level = new BitmapText(PixelScene.pixelFont);
 		}
 
 		@Override
 		protected void layout() {
 			super.layout();
 
-			float topY = top();
+            bg.x = x;
+            bg.y = y;
+            bg.size(width, height);
 
-			if (title != null){
-				title.maxWidth((int)width());
-				title.setPos( x + (width() - title.width())/2f, topY);
-				topY += title.height() + (large ? 2 : 1);
-			}
+            // RankingsScene과 동일한 고정 위치로 배치
+            shield.x = x + (16 - shield.width) / 2f;
+            shield.y = y + (height - shield.height) / 2f;
+            align(shield);
 
-			if (large){
+            position.x = shield.x + (shield.width - position.width()) / 2f;
+            position.y = shield.y + (shield.height - position.height()) / 2f + 1;
+            align(position);
 
-				if (avatar != null){
-					avatar.x = x + (width()-avatar.width())/2f;
-					avatar.y = topY;
-					PixelScene.align(avatar);
-					if (flare != null){
-						flare.point(avatar.center());
-					}
-					topY = avatar.y + avatar.height() + 2;
-				}
-
-				body.maxWidth((int)width());
-				body.setPos( x + (width() - body.width())/2f, topY);
-				topY += body.height() + 2;
-
-			} else {
-
-				if (avatar != null){
-					avatar.x = x;
-					body.maxWidth((int)(width() - avatar.width - 1));
-
-					float fullAvHeight = Math.max(avatar.height(), 16);
-					if (fullAvHeight > body.height()){
-						avatar.y = topY + (fullAvHeight - avatar.height())/2f;
-						PixelScene.align(avatar);
-						body.setPos( avatar.x + avatar.width() + 1, topY + (fullAvHeight - body.height())/2f);
-						topY += fullAvHeight + 1;
-					} else {
-						avatar.y = topY + (body.height() - fullAvHeight)/2f;
-						PixelScene.align(avatar);
-						body.setPos( avatar.x + avatar.width() + 1, topY);
-						topY += body.height() + 2;
+            if (flare != null) {
+                flare.point(shield.center());
 					}
 
+            // classIcon을 오른쪽 끝에 고정 배치
+            if (classIcon != null && classIcon.visible) {
+                classIcon.x = x + width - 16 + (16 - classIcon.width()) / 2f;
+                classIcon.y = shield.y + (16 - classIcon.height()) / 2f;
+                align(classIcon);
+
+                // level을 classIcon 위에 배치
+                if (level != null && level.visible) {
+                    level.x = classIcon.x + (classIcon.width - level.width()) / 2f;
+                    level.y = classIcon.y + (classIcon.height - level.height()) / 2f + 1;
+                    align(level);
+                }
+            }
+
+            // steps와 depth를 오른쪽에서 두 번째 위치에 고정 배치
+            if (steps != null && steps.visible) {
+                steps.x = x + width - 32 + (16 - steps.width()) / 2f;
+                steps.y = shield.y + (16 - steps.height()) / 2f;
+                align(steps);
+
+                if (depth != null && depth.visible) {
+                    depth.x = steps.x + (steps.width - depth.width()) / 2f;
+                    depth.y = steps.y + (steps.height - depth.height()) / 2f + 1;
+                    align(depth);
+                }
+            }
+
+            // score를 steps 왼쪽에 고정 배치 (steps가 있으면 steps 기준, 없으면 classIcon 기준)
+            if (steps != null && steps.visible) {
+                score.x = steps.x - 16 - score.width();
+            } else if (classIcon != null && classIcon.visible) {
+                score.x = classIcon.x - 16 - score.width();
 				} else {
-					topY += 1;
-					body.maxWidth((int)width());
-					body.setPos( x, topY);
-					topY += body.height()+2;
-				}
+                score.x = x + width - 16 - score.width();
+            }
+            score.y = shield.y + (shield.height - score.height()) / 2f + 1;
+            align(score);
 
-			}
+            // name을 왼쪽에서 고정 위치에 배치 (RankingsScene의 desc와 동일)
+            float nameLeft = x + 16 + GAP;
+            float nameRight;
+            if (steps != null && steps.visible) {
+                nameRight = steps.x;
+            } else if (score != null) {
+                nameRight = score.x;
+            } else if (classIcon != null && classIcon.visible) {
+                nameRight = classIcon.x;
+            } else {
+                nameRight = x + width - 16;
+            }
+            name.maxWidth((int) (nameRight - nameLeft));
+            name.setPos(nameLeft, shield.y + (shield.height - name.height()) / 2f + 1);
+            align(name);
+        }
 
-			if (link != null){
-				if (large) topY += 1;
-				link.maxWidth((int)width());
-				link.setPos( x + (width() - link.width())/2f, topY);
-				topY += link.height() + 2;
-
-				linkButton.x = link.left()-1;
-				linkButton.y = link.top()-1;
-				linkButton.width = link.width()+2;
-				linkButton.height = link.height()+2;
-
-				linkUnderline.size(link.width(), PixelScene.align(0.49f));
-				linkUnderline.x = link.left();
-				linkUnderline.y = link.bottom()+1;
-
-			}
-
-			topY -= 2;
-
-			height = Math.max(height, topY - top());
+        @Override
+        protected void onClick() {
+            // 클릭 시 상세 정보 표시
+            if (rankingEntry != null && rankingEntry.gameData != null && !rankingEntry.gameData.isEmpty()) {
+                Rankings.Record record = Rankings.createRecordFromDailyEntry(rankingEntry);
+                if (record != null && record.gameData != null) {
+                    ShatteredPixelDungeon.scene().addToFront(new WndRanking(record));
+                } else {
+                    // gameData가 없으면 간단한 정보만 표시
+                    showSimpleInfo();
+                }
+            } else {
+                // gameData가 없으면 간단한 정보만 표시
+                showSimpleInfo();
+            }
 		}
+		
+		private void showSimpleInfo() {
+            if (rankingEntry != null) {
+                String info = rankingEntry.playerName + "\n\n" +
+                        "점수: " + rankingEntry.score + "\n" +
+                        "층: " + rankingEntry.depth + "\n" +
+                        "레벨: " + rankingEntry.level;
+                ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
+                        Icons.get(Icons.RANKINGS),
+                        "플레이어 정보",
+                        info
+                ));
+            }
+        }
 	}
 }

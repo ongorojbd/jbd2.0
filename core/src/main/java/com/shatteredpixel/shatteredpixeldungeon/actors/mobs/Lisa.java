@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LisaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -49,7 +50,7 @@ public class Lisa extends Mob {
 	{
 		spriteClass = LisaSprite.class;
 
-		HP = HT = 350;
+		HP = HT = 400;
 		defenseSkill = 30;
 
 		alignment = Alignment.ALLY;
@@ -232,6 +233,8 @@ public class Lisa extends Mob {
 		Barrier barrier = enemy.buff(Barrier.class);
 		if (barrier != null) {
 			barrier.detach();
+			Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+			GLog.w(Messages.get(this, "i"));
 		}
 		
 		return damage;

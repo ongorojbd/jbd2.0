@@ -1041,10 +1041,10 @@ public class WndJournal extends WndTabbed {
 						} else {
 							if (ShatteredPixelDungeon.scene() instanceof GameScene){
 								GameScene.show(new WndJournalItem(sprite, "???",
-										Messages.get(CatalogTab.class, "not_seen_lore") + "\n\n" + doc.discoverHint()));
+										Messages.get(CatalogTab.class, "not_seen_lore") + "\n\n" + doc.discoverHint(page)));
 							} else {
 								ShatteredPixelDungeon.scene().addToFront(new WndJournalItem(sprite, "???",
-										Messages.get(CatalogTab.class, "not_seen_lore") + "\n\n" + doc.discoverHint()));
+										Messages.get(CatalogTab.class, "not_seen_lore") + "\n\n" + doc.discoverHint(page)));
 							}
 
 						}

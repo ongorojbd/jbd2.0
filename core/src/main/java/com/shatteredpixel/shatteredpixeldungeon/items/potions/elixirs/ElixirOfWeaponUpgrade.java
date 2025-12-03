@@ -32,8 +32,7 @@ import com.watabou.noosa.audio.Sample;
 public class ElixirOfWeaponUpgrade extends Elixir {
 
     {
-        image = ItemSpriteSheet.BREW_INFERNAL;
-        icon = ItemSpriteSheet.Icons.SCROLL_FORESIGHT;
+        image = ItemSpriteSheet.P2;
     }
 
     @Override

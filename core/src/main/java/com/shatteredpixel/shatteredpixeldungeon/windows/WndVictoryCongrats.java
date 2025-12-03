@@ -105,6 +105,24 @@ public class WndVictoryCongrats extends Window {
 
 		height += Math.max(dailyImg.height(), dailyTxt.height()) + 6;
 
+		Image newsImg = Icons.NEWS.get();
+		newsImg.y = height;
+		newsImg.x = (16-newsImg.width())/2f;
+		PixelScene.align(newsImg);
+		add(newsImg);
+
+		RenderedTextBlock newsTxt = PixelScene.renderTextBlock(Messages.get(this, "news"), 6);
+		newsTxt.maxWidth(width - 16);
+		newsTxt.setPos(16, height);
+		add(newsTxt);
+
+		if (newsTxt.height() > newsImg.height()){
+			newsImg.y = newsImg.y + (newsTxt.height() - newsImg.height())/2f;
+			PixelScene.align(newsImg);
+		}
+
+		height += Math.max(newsImg.height(), newsTxt.height()) + 6;
+
 		RenderedTextBlock finalTxt = PixelScene.renderTextBlock(Messages.get(this, "thank_you") + " "  + Messages.get(this, "support_prompt"), 6);
 		finalTxt.maxWidth(width);
 		finalTxt.setPos(0, height);

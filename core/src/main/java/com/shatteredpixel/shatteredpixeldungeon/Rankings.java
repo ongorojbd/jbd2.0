@@ -36,6 +36,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.DailyRankingEntry;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.RankingService;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
@@ -44,7 +47,9 @@ import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -131,6 +136,19 @@ public enum Rankings {
 				dailyScoreHistory.put(Dungeon.seed - DungeonSeed.TOTAL_SEEDS, rec.score);
 			}
 			save();
+			
+			// Submit to cloud ranking service with saved nickname
+			if (Ranking.supportsRankings() && Ranking.service != null) {
+				String playerNickname = SPDSettings.playerNickname();
+				// 닉네임이 없으면 기본값 사용
+				if (playerNickname.isEmpty()) {
+					playerNickname = "Player_" + rec.gameID.substring(0, 8);
+				}
+				submitDailyScore(rec, playerNickname);
+			} else {
+				Game.reportException(new Exception("Ranking service not available: supportsRankings=" + Ranking.supportsRankings() + ", service=" + Ranking.service));
+			}
+			
 			return;
 		}
 
@@ -162,6 +180,45 @@ public enum Rankings {
 		Badges.validateGamesPlayed();
 		
 		save();
+	}
+	
+	// 경쟁 모드 점수 제출 (닉네임 포함)
+	private void submitDailyScore(Record rec, String playerName) {
+		Game.reportException(new Exception("Submitting daily score to Supabase: date=" + rec.date + ", score=" + rec.score + ", player=" + playerName + ", depth=" + rec.depth + ", level=" + rec.herolevel + ", class=" + rec.heroClass));
+		
+		// 인터넷 연결 없으면 점수 제출 건너뛰기
+		if (Ranking.service == null) {
+			Game.reportException(new Exception("Ranking service is null - skipping submission"));
+			return;
+		}
+		
+		// gameData를 JSON 문자열로 직렬화
+		String gameDataJson = null;
+		if (rec.gameData != null) {
+			gameDataJson = rec.gameData.toString();
+		}
+		
+		// 항상 데이터로도 사용 가능하도록 true로 설정
+		Ranking.service.submitDailyScore(rec.date, rec.score, playerName, 
+			rec.depth, rec.herolevel, rec.heroClass.name(),
+			rec.armorTier, rec.win, rec.ascending,
+			gameDataJson,
+			true, new RankingService.SubmitResultCallback() {
+				@Override
+				public void onSubmitSuccess() {
+					Game.reportException(new Exception("Daily score submitted successfully to Supabase"));
+					// 점수 제출 성공 시 즉시 새로고침 (clearRankings 제거하고 force=true로 직접 요청)
+					// clearRankings()를 제거하여 이전 데이터가 유지되어 로딩 화면을 피함
+					Ranking.checkForRankings(rec.date, true);
+				}
+				
+				@Override
+				public void onSubmitFailed() {
+					Game.reportException(new Exception("Daily score submission FAILED to Supabase - Network may be unavailable"));
+					// 제출 실패 시에도 게임은 정상적으로 진행
+					// 사용자는 나중에 AboutScene에서 랭킹을 확인할 수 있음
+				}
+			});
 	}
 
 	private int score( boolean win ) {
@@ -484,6 +541,8 @@ public enum Rankings {
 
 		public String date;
 		public String version;
+		
+		public String playerName; // 일일 도전 랭킹용 플레이어 닉네임
 
 		public String desc(){
 			if (win){
@@ -584,4 +643,52 @@ public enum Rankings {
 			}
 		}
 	};
+	
+	/**
+	 * DailyRankingEntry를 Rankings.Record로 변환
+	 * @param entry 변환할 DailyRankingEntry
+	 * @return 변환된 Record (gameData가 없으면 null 반환)
+	 */
+	public static Record createRecordFromDailyEntry(DailyRankingEntry entry) {
+		Record rec = new Record();
+		
+		rec.date = entry.date;
+		rec.score = entry.score;
+		rec.depth = entry.depth;
+		rec.herolevel = entry.level;
+		rec.armorTier = entry.armorTier;
+		rec.win = entry.win;
+		rec.ascending = entry.ascending;
+		rec.daily = true;
+		rec.customSeed = entry.date; // daily uses date as custom seed
+		rec.gameID = entry.playerName + "_" + entry.date + "_" + entry.score;
+		rec.version = "";
+		rec.playerName = entry.playerName; // 플레이어 닉네임 저장
+		
+		// heroClass 파싱
+		if (entry.heroClass != null && !entry.heroClass.isEmpty()) {
+			try {
+				rec.heroClass = HeroClass.valueOf(entry.heroClass);
+			} catch (IllegalArgumentException e) {
+				rec.heroClass = HeroClass.WARRIOR; // 기본값
+			}
+		} else {
+			rec.heroClass = HeroClass.WARRIOR;
+		}
+		
+		// gameData JSON 파싱 - Bundle.read()를 사용하여 JSON 문자열을 Bundle로 변환
+		if (entry.gameData != null && !entry.gameData.isEmpty()) {
+			try {
+				ByteArrayInputStream inputStream = new ByteArrayInputStream(
+						entry.gameData.getBytes(StandardCharsets.UTF_8));
+				rec.gameData = Bundle.read(inputStream);
+				inputStream.close();
+			} catch (Exception e) {
+				Game.reportException(e);
+				rec.gameData = null;
+			}
+		}
+		
+		return rec;
+	}
 }

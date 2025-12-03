@@ -101,6 +101,7 @@ public class SPDSettings extends GameSettings {
 
 	public static void addTendency(int value) { put(TENDENCY, getInt(TENDENCY, 0) + value); }
 	public static int getTendency() { return getInt(TENDENCY, 0); }
+	public static void setTendency(int value) { put(TENDENCY, value); }
 
 	public static void addSid(int value) { put(SID, getInt(SID, 0) + value); }
 	public static int getSid() { return getInt(SID, 0); }
@@ -273,6 +274,15 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_SUPPORT_NAGGED= "support_nagged";
 	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
+	public static final String KEY_PLAYER_NICKNAME = "player_nickname";
+	
+	public static void playerNickname( String value ) {
+		put( KEY_PLAYER_NICKNAME, value );
+	}
+	
+	public static String playerNickname() {
+		return getString( KEY_PLAYER_NICKNAME, "" );
+	}
 	
 	public static void intro( boolean value ) {
 		put( KEY_INTRO, value );
@@ -389,7 +399,7 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static boolean WiFi(){
-		return getBoolean(KEY_WIFI, true);
+		return getBoolean(KEY_WIFI, false);
 	}
 
 	public static void newsLastRead(long lastRead){

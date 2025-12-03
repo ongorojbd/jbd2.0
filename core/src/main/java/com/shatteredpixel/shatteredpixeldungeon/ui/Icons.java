@@ -77,6 +77,7 @@ public enum Icons {
 	SCROLL_COLOR,
 	COPY,
 	PASTE,
+	RANDOMIZE,
 
 	BACKPACK_LRG,
 	TALENT,
@@ -262,6 +263,9 @@ public enum Icons {
 				break;
 			case PASTE:
 				icon.frame( icon.texture.uvRectBySize( 192, 32, 13, 13 ) );
+				break;
+			case RANDOMIZE:
+				icon.frame( icon.texture.uvRectBySize( 240, 32, 15, 12 ) );
 				break;
 
 			case BACKPACK_LRG:

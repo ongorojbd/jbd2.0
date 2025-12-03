@@ -177,7 +177,9 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchScene( AboutScene.class );
 			}
 		};
-		btnAbout.icon(Icons.get(Icons.SHPX));
+		Image aboutIcon = Icons.get(Icons.CHALLENGE_GREY);
+		aboutIcon.hardlight(0.65f, 1.05f, 1.55f); // 밝은 하늘색
+		btnAbout.icon(aboutIcon);
 		add(btnAbout);
 
 		final int BTN_HEIGHT = 20;
@@ -192,17 +194,17 @@ public class TitleScene extends PixelScene {
 			align(btnPlay);
 			btnBadges.setRect(btnPlay.right() + 2, btnPlay.top(), btnPlay.width(), BTN_HEIGHT);
 			btnRankings.setRect(btnPlay.left(), btnPlay.bottom() + GAP, btnPlay.width(), BTN_HEIGHT);
-			btnChanges.setRect(btnRankings.right() + 2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
+			btnAbout.setRect(btnRankings.right() + 2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
 			btnSettings.setRect(btnPlay.left(), btnRankings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
-			btnAbout.setRect(btnSettings.right() + 2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
+			btnChanges.setRect(btnSettings.right() + 2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
 		} else {
 			btnPlay.setRect(btnAreaLeft, insets.top + topRegion+GAP - 10, buttonAreaWidth, BTN_HEIGHT);
 			align(btnPlay);
-			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
-			btnBadges.setRect(btnRankings.left(), btnRankings.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
-			btnChanges.setRect(btnRankings.left(), btnBadges.bottom() + GAP, btnBadges.width(), BTN_HEIGHT);
-			btnSettings.setRect(btnBadges.left(), btnChanges.bottom() +GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
-			btnAbout.setRect(btnSettings.right()+2, btnChanges.bottom()+GAP,(btnPlay.width()/2)-1, BTN_HEIGHT);
+			btnBadges.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
+			btnRankings.setRect(btnBadges.left(), btnBadges.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
+			btnAbout.setRect(btnBadges.left(), btnRankings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
+			btnSettings.setRect(btnRankings.left(), btnAbout.bottom() +GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
+			btnChanges.setRect(btnSettings.right()+2, btnAbout.bottom()+GAP,(btnPlay.width()/2)-1, BTN_HEIGHT);
 		}
 
 

@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
@@ -706,7 +707,7 @@ public class HeroSelectScene extends PixelScene {
                 add(dailyButton);
                 buttons.add(dailyButton);
 
-            }
+            } else {
             StyledButton seedButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "custom_seed"), 6) {
                 @Override
                 protected void onClick() {
@@ -797,7 +798,9 @@ public class HeroSelectScene extends PixelScene {
                     else icon.hardlight(1f, 0.5f, 2f);
                     ShatteredPixelDungeon.scene().addToFront(new WndOptions(
                             icon,
-                            Messages.get(HeroSelectScene.class, "daily"),
+                            diff > 0 ?
+                                    Messages.get(HeroSelectScene.class, "daily_repeat_name") :
+                                    Messages.get(HeroSelectScene.class, "daily"),
                             diff > 0 ?
                                     Messages.get(HeroSelectScene.class, "daily_repeat") :
                                     Messages.get(HeroSelectScene.class, "daily_desc"),
@@ -806,25 +809,87 @@ public class HeroSelectScene extends PixelScene {
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0) {
-                                if (diff <= 0) {
-                                    long time = Game.realTime - (Game.realTime % DAY);
-
-                                    //earliest possible daily for v3.0.1 is Mar 01 2025
-                                    //which is 20,148 days days after Jan 1 1970
-                                    time = Math.max(time, 20_148 * DAY);
-
-                                    SPDSettings.lastDaily(time);
-                                    Dungeon.dailyReplay = false;
-                                } else {
+                                // 리플레이 모드(diff > 0)일 때는 닉네임 입력 없이 바로 시작
+                                if (diff > 0) {
+                                    // 경쟁 모드: tendency가 1이면 0으로 설정
+                                    if (SPDSettings.getTendency() == 1) {
+                                        SPDSettings.setTendency(0);
+                                    }
+                                    // 리플레이 모드 시작
                                     Dungeon.dailyReplay = true;
-                                }
-                                Dungeon.hero = null;
-                                Dungeon.daily = true;
-                                Dungeon.initSeed();
-                                ActionIndicator.clearAction();
-                                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                    Dungeon.hero = null;
+                                    Dungeon.daily = true;
+                                    Dungeon.initSeed();
+                                    ActionIndicator.clearAction();
+                                    InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                    Game.switchScene(InterlevelScene.class);
+                                } else {
+                                    // 오늘의 일일 도전: 닉네임 입력 받기
+                                    String currentNickname = SPDSettings.playerNickname();
+                                    ShatteredPixelDungeon.scene().addToFront(new WndTextInput(
+                                            Messages.get(HeroSelectScene.class, "daily_nickname_title"),
+                                            Messages.get(HeroSelectScene.class, "daily_nickname_body"),
+                                            currentNickname.isEmpty() ? "" : currentNickname,
+                                            5, // Max length for nickname
+                                            false,
+                                            Messages.get(HeroSelectScene.class, "daily_yes"),
+                                            Messages.get(HeroSelectScene.class, "daily_no")
+                                    ) {
+                                        @Override
+                                        public void onSelect(boolean positive, String text) {
+                                            if (positive) {
+                                                String trimmedText = text.trim();
+                                                
+                                                // 닉네임이 비어있으면 게임 시작 불가
+                                                if (trimmedText.isEmpty()) {
+                                                    ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
+                                                            Icons.get(Icons.WARNING),
+                                                            Messages.get(HeroSelectScene.class, "nickname_empty_title"),
+                                                            Messages.get(HeroSelectScene.class, "nickname_empty_body")
+                                                    ));
+                                                    return;
+                                                }
+                                                
+                                                // 부적절한 닉네임 검증
+                                                if (HeroSelectScene.containsInappropriateWords(trimmedText)) {
+                                                    ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
+                                                            Icons.get(Icons.WARNING),
+                                                            Messages.get(HeroSelectScene.class, "nickname_inappropriate_title"),
+                                                            Messages.get(HeroSelectScene.class, "nickname_inappropriate_body")
+                                                    ));
+                                                    return;
+                                                }
+                                                
+                                                // 닉네임 저장
+                                                SPDSettings.playerNickname(trimmedText);
+                                                
+                                                // 경쟁 모드: tendency가 1이면 0으로 설정
+                                                if (SPDSettings.getTendency() == 1) {
+                                                    SPDSettings.setTendency(0);
+                                                }
+                                                
+                                                // 오늘의 일일 도전 시작 (한국 시간 기준)
+                                                long KST_OFFSET = 9 * HOUR; // UTC+9
+                                                long time = Game.realTime + KST_OFFSET; // 한국 시간으로 변환
+                                                time = time - (time % DAY); // 한국 시간 기준 오늘 자정
+                                                time = time - KST_OFFSET; // 다시 UTC로 변환
 
-                                Game.switchScene(InterlevelScene.class);
+                                                //earliest possible daily for v3.0.1 is Mar 01 2025
+                                                //which is 20,148 days days after Jan 1 1970
+                                                time = Math.max(time, 20_148 * DAY);
+
+                                                SPDSettings.lastDaily(time);
+                                                Dungeon.dailyReplay = false;
+                                                Dungeon.hero = null;
+                                                Dungeon.daily = true;
+                                                Dungeon.initSeed();
+                                                ActionIndicator.clearAction();
+                                                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                                Game.switchScene(InterlevelScene.class);
+                                            }
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
@@ -913,6 +978,7 @@ public class HeroSelectScene extends PixelScene {
             if (SPDSettings.getTendency() > 0) dioButton.icon().hardlight(1f, 0.5f, 0.5f);
             add(dioButton);
             buttons.add(dioButton);
+            }
 
             for (int i = 1; i < buttons.size(); i++) {
                 ColorBlock spc = new ColorBlock(1, 1, 0xFF000000);
@@ -964,6 +1030,44 @@ public class HeroSelectScene extends PixelScene {
                 spc.alpha(value);
             }
         }
+    }
+
+    // 부적절한 단어 필터링
+    private static boolean containsInappropriateWords(String text) {
+        String lowerText = text.toLowerCase();
+        
+        // 부적절한 단어 리스트 (한국어 및 영어)
+        String[] inappropriateWords = {
+            // 욕설 및 비속어 (한국어)
+            "시발", "씨발", "개새끼", "병신", "좆", "지랄", "닥쳐", "애미", "새끼", "섹스", "운지", "무현",
+                "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ",
+                "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ",
+                "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ",
+                "ㅋ", "ㅌ", "ㅍ", "ㅎ",
+
+                // 중성 21 (Vowels)
+                "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ",
+                "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ",
+                "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ",
+                "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ",
+                "ㅣ",
+
+                // 종성 27 (Final consonants)
+                "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ",
+                "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ",
+                "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ",
+                "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ",
+                "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ",
+                "ㅍ", "ㅎ"
+        };
+        
+        for (String word : inappropriateWords) {
+            if (lowerText.contains(word)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 }

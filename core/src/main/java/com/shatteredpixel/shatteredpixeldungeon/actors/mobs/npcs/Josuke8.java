@@ -106,9 +106,9 @@ public class Josuke8 extends NPC {
                 GameScene.show(new WndOptions(
                         sprite(),
                         Messages.titleCase(name()),
-                        Messages.get(NitoDismantleHammer.class, "think"),
-                        Messages.get(NitoDismantleHammer.class, "yes"),
-                        Messages.get(NitoDismantleHammer.class, "no")) {
+                        Messages.get(NitoDismantleHammer2.class, "think"),
+                        Messages.get(NitoDismantleHammer2.class, "yes"),
+                        Messages.get(NitoDismantleHammer2.class, "no")) {
                     @Override
                     protected void onSelect(int index) {
                         switch (index) {

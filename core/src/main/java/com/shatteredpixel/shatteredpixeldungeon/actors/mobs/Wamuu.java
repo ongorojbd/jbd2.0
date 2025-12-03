@@ -161,7 +161,11 @@ public class Wamuu extends Mob {
 			// ensure at least 1 damage when non-zero
 			dmg = Math.max(1, reduced);
 		}
-		if (dmg >= 250) dmg = 250;
+        if (dmg >= 250) {
+            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
+            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
+            dmg = 250;
+        }
 
         BossHealthBar.assignBoss(this);
 
