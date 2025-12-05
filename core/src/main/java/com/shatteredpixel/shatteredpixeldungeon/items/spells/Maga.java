@@ -7,7 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Acidic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomg;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Boytwo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Boytwo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Genkaku;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mandom;

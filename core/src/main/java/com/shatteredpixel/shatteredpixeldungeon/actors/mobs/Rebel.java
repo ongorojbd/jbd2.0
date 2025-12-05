@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -227,13 +228,7 @@ public class Rebel extends Mob {
 
     @Override
     public int damageRoll() {
-        int dmg;
-        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-            dmg = Random.NormalIntRange(45, 65);
-        } else {
-            dmg = Random.NormalIntRange(35, 55);
-        }
-        return dmg;
+        return Random.NormalIntRange(35, 55);
     }
 
     @Override
@@ -282,13 +277,7 @@ public class Rebel extends Mob {
 
     @Override
     public int drRoll() {
-        int dr;
-        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-            dr = Random.NormalIntRange(10, 25);
-        } else {
-            dr = Random.NormalIntRange(5, 25);
-        }
-        return dr;
+        return Random.NormalIntRange(5, 25);
     }
 
     @Override
@@ -300,19 +289,19 @@ public class Rebel extends Mob {
     public String description() {
         String desc = super.description();
 
-        if (Dungeon.mboss4 == 1) {
+        if (Dungeon.mboss4 == 1 && Dungeon.depth == 30) {
             desc += "\n\n" + Messages.get(this, "p1");
         }
 
-        if (Dungeon.mboss9 == 1) {
+        if (Dungeon.mboss9 == 1 && Dungeon.depth == 30) {
             desc += "\n\n" + Messages.get(this, "p2");
         }
 
-        if (Dungeon.mboss14 == 1) {
+        if (Dungeon.mboss14 == 1 && Dungeon.depth == 30) {
             desc += "\n\n" + Messages.get(this, "p3");
         }
 
-        if (Dungeon.mboss19 == 1) {
+        if (Dungeon.mboss19 == 1 && Dungeon.depth == 30) {
             desc += "\n\n" + Messages.get(this, "p4");
         }
 
@@ -521,9 +510,9 @@ public class Rebel extends Mob {
         if (barrierCooldown > 0) barrierCooldown--;
 
         // 장벽이 활성화되어 있으면 진행 (다른 행동도 가능)
-        // WO가 살아있으면 장벽 진행 중단
+        // Phase 4에서는 WO가 있어도 장벽 진행, 다른 페이즈에서는 WO가 살아있으면 장벽 진행 중단
         if (barrierActive) {
-            if (isWOAlive()) {
+            if (Phase != 4 && isWOAlive()) {
                 barrierActive = false;
                 barrierCurrentRow = 0;
             } else {
@@ -532,8 +521,8 @@ public class Rebel extends Mob {
             // return하지 않고 계속 진행하여 자유롭게 행동
         }
 
-        // 장벽 시작 조건 (Phase 2 이상, WO가 살아있지 않을 때만)
-        if (Phase >= 2 && barrierCooldown <= 0 && !barrierActive && !isWOAlive()) {
+        // 장벽 시작 조건 (Phase 2 이상, Phase 4는 WO 상관없이 사용, 다른 페이즈는 WO가 살아있지 않을 때만)
+        if (Phase >= 2 && barrierCooldown <= 0 && !barrierActive && (Phase == 4 || !isWOAlive())) {
             startBarrier();
             barrierCooldown = Random.NormalIntRange(10, 13);
             return true;
@@ -778,6 +767,28 @@ public class Rebel extends Mob {
             cleanCooldown = 5;
             gravityCooldown = 10;
 
+            // STRONGER_BOSSES 활성화 시에만 Phase 4에서 WO 소환
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                LabsBossLevel level4 = (LabsBossLevel) Dungeon.level;
+                int newPosWO;
+                do {
+                    newPosWO = level4.randomCellPos();
+                } while (level4.map[newPosWO] == Terrain.WALL || Actor.findChar(newPosWO) != null);
+
+                WO WO = new WO();
+                WO.state = WO.HUNTING;
+                WO.pos = newPosWO;
+                GameScene.add(WO);
+                WO.beckon(Dungeon.hero.pos);
+
+                if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss4 == 1) {
+                    Buff.affect(WO, Adrenaline.class, 1_000_000);
+                }
+
+                // Phase 4에서도 무적 활성화! (STRONGER_BOSSES 모드에서만)
+                activateInvulnerability();
+            }
+
             if (hero.heroClass == HeroClass.CLERIC) {
                 GameScene.flash(0xFFFFFF);
                 Bestiary.setSeen(Jotaro.class);
@@ -975,53 +986,33 @@ public class Rebel extends Mob {
     public int defenseProc(Char enemy, int damage) {
         damage = super.defenseProc(enemy, damage);
 
+        // 플레이어의 공격만 텔레포트 발동 (아군은 제외)
+        if (enemy != Dungeon.hero) {
+            return damage;
+        }
+
         int newPos;
 
         LabsBossLevel level = (LabsBossLevel) Dungeon.level;
         if (Dungeon.level instanceof LabsBossLevel) {
-            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                if (Random.Int(3) == 0) {
-                    do {
-                        newPos = level.randomCellPos();
-                    } while (level.map[newPos] == Terrain.WALL || Actor.findChar(newPos) != null);
+            if (Random.Int(5) == 0) {
+                do {
+                    newPos = level.randomCellPos();
+                } while (level.map[newPos] == Terrain.WALL || Actor.findChar(newPos) != null);
 
-                    if (level.heroFOV[pos])
-                        CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+                if (level.heroFOV[pos])
+                    CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 
-                    sprite.move(pos, newPos);
-                    move(newPos);
+                sprite.move(pos, newPos);
+                move(newPos);
 
-                    if (level.heroFOV[newPos])
-                        CellEmitter.get(newPos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-                    Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-                    GameScene.flash(0x333333);
-                    WO.d2class();
-                    Buff.affect(Dungeon.hero, Blindness.class, 3f);
+                if (level.heroFOV[newPos])
+                    CellEmitter.get(newPos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+                Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+                WO.d2class();
 
-                    if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss9 == 1) {
-                        new Fadeleaf().activate(hero);
-                    }
-                }
-            } else {
-                if (Random.Int(5) == 0) {
-                    do {
-                        newPos = level.randomCellPos();
-                    } while (level.map[newPos] == Terrain.WALL || Actor.findChar(newPos) != null);
-
-                    if (level.heroFOV[pos])
-                        CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-
-                    sprite.move(pos, newPos);
-                    move(newPos);
-
-                    if (level.heroFOV[newPos])
-                        CellEmitter.get(newPos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
-                    Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-                    WO.d2class();
-
-                    if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss9 == 1) {
-                        new Fadeleaf().activate(hero);
-                    }
+                if (Dungeon.isChallenged(Challenges.EOH) && Dungeon.mboss9 == 1) {
+                    new Fadeleaf().activate(hero);
                 }
             }
         }
@@ -1228,6 +1219,13 @@ public class Rebel extends Mob {
 
         Sample.INSTANCE.play(Assets.Sounds.CHARMS);
         Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+
+        // 맵의 모든 SmokeScreen 제거
+        for (Blob blob : Dungeon.level.blobs.values()) {
+            if (blob instanceof SmokeScreen) {
+                blob.fullyClear();
+            }
+        }
 
         // 보스 중심 강렬한 폭발 이펙트
         sprite.centerEmitter().burst(Speck.factory(Speck.LIGHT), 30);

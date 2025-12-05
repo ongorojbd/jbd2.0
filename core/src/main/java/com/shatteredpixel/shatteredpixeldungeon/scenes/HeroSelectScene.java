@@ -800,7 +800,7 @@ public class HeroSelectScene extends PixelScene {
                             icon,
                             diff > 0 ?
                                     Messages.get(HeroSelectScene.class, "daily_repeat_name") :
-                                    Messages.get(HeroSelectScene.class, "daily"),
+                            Messages.get(HeroSelectScene.class, "daily"),
                             diff > 0 ?
                                     Messages.get(HeroSelectScene.class, "daily_repeat") :
                                     Messages.get(HeroSelectScene.class, "daily_desc"),
@@ -874,18 +874,18 @@ public class HeroSelectScene extends PixelScene {
                                                 time = time - (time % DAY); // 한국 시간 기준 오늘 자정
                                                 time = time - KST_OFFSET; // 다시 UTC로 변환
 
-                                                //earliest possible daily for v3.0.1 is Mar 01 2025
-                                                //which is 20,148 days days after Jan 1 1970
-                                                time = Math.max(time, 20_148 * DAY);
+                                    //earliest possible daily for v3.0.1 is Mar 01 2025
+                                    //which is 20,148 days days after Jan 1 1970
+                                    time = Math.max(time, 20_148 * DAY);
 
-                                                SPDSettings.lastDaily(time);
-                                                Dungeon.dailyReplay = false;
-                                                Dungeon.hero = null;
-                                                Dungeon.daily = true;
-                                                Dungeon.initSeed();
-                                                ActionIndicator.clearAction();
-                                                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-                                                Game.switchScene(InterlevelScene.class);
+                                    SPDSettings.lastDaily(time);
+                                    Dungeon.dailyReplay = false;
+                                Dungeon.hero = null;
+                                Dungeon.daily = true;
+                                Dungeon.initSeed();
+                                ActionIndicator.clearAction();
+                                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+                                Game.switchScene(InterlevelScene.class);
                                             }
                                         }
                                     });

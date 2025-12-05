@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Annasui;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Bdth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Boytwo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Dannynpc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;

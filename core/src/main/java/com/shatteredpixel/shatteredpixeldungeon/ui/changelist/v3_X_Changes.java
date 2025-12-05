@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RollerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -68,6 +69,10 @@ public class v3_X_Changes {
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
                 "3.0e에서 제공될 주요 콘텐츠 변경사항은 오시리스신 퀘스트 개편입니다.\n\n" +
                         "이 새로운 퀘스트는 독특한 플레이 스타일로 진행될 것입니다."));
+
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "전투조류 출시",
+                "전투조류 던전의 베타 기간이 끝나고 정식 출시될 예정입니다!\n\n" +
+                        "총 63층 예정으로, 전투조류 던전 클리어 보상도 추가 예정입니다."));
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "스틸 볼 런 업데이트",
                 "스틸 볼 런 애니메이션 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
@@ -165,6 +170,7 @@ public class v3_X_Changes {
                         "- 각성의 파문전사의 연속 타격이 5 이상일 경우 적에게 공격을 맞춰도 연속 타격 지속시간이 연장되지 않습니다.\n" +
                         "- 정원과 우물방이 잠겨있도록 변경되었습니다.\n" +
                         "- 레이미 처치 시 아놀드가 여러 마리 나오는 버그가 수정되었습니다.\n" +
+                        "- 보이 투 맨의 가위바위보 게임이 개선되었습니다.\n" +
                         "- 디아볼로 보스전 진입 시 디아볼로가 1턴동안 공격하지 않습니다.\n" +
                         "- 이동 속도에 영향을 주는 상형문자가 작동 중일 때 시각 효과가 추가되었습니다.\n" +
                         "- 보우건이 다트에 얼마의 피해를 추가하는지 확인할 수 있게 되었습니다.\n" +

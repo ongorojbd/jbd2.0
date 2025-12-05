@@ -57,27 +57,24 @@ public class TalentsPane extends ScrollPane {
 		int tiersAvailable = 1;
 
 		if (mode == TalentButton.Mode.INFO){
-			// 먼저 배지 기준으로 체크
-			if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_1)){
-				tiersAvailable = 1;
-			} else if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_2) || !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_2)){
-				tiersAvailable = 2;
-			} else if (!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_4)){
-				tiersAvailable = 3;
-			} else {
-				tiersAvailable = Talent.MAX_TALENT_TIERS;
-			}
-			
 			// 랭킹 상세보기: 실제 로드된 Hero의 레벨과 능력을 기준으로 tier 결정
-			// (본인이 배지를 획득하지 않아도 다른 플레이어의 특성을 볼 수 있도록)
+			// (조건을 만족하지 못하면 unlock 메시지 표시)
 			if (Dungeon.hero != null) {
-				int heroTiers = 1;
-				if (Dungeon.hero.lvl >= 6) heroTiers = 2;
-				if (Dungeon.hero.lvl >= 12 && Dungeon.hero.subClass != HeroSubClass.NONE) heroTiers = 3;
-				if (Dungeon.hero.lvl >= 20 && Dungeon.hero.armorAbility != null) heroTiers = 4;
-				
-				// 배지 기준과 Hero 기준 중 더 큰 값 사용
-				tiersAvailable = Math.max(tiersAvailable, heroTiers);
+				tiersAvailable = 1;
+				if (Dungeon.hero.lvl >= 6) tiersAvailable = 2;
+				if (Dungeon.hero.lvl >= 12 && Dungeon.hero.subClass != HeroSubClass.NONE) tiersAvailable = 3;
+				if (Dungeon.hero.lvl >= 20 && Dungeon.hero.armorAbility != null) tiersAvailable = 4;
+			} else {
+				// Hero가 없을 경우 배지 기준으로 체크
+				if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_1)){
+					tiersAvailable = 1;
+				} else if (!Badges.isUnlocked(Badges.Badge.LEVEL_REACHED_2) || !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_2)){
+					tiersAvailable = 2;
+				} else if (!Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_4)){
+					tiersAvailable = 3;
+				} else {
+					tiersAvailable = Talent.MAX_TALENT_TIERS;
+				}
 			}
 		} else {
 			while (tiersAvailable < Talent.MAX_TALENT_TIERS

@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.tendencylevel;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Boytwo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Retonio;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Utest;
