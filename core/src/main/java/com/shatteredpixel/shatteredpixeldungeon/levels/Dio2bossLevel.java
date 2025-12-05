@@ -59,7 +59,7 @@ public class Dio2bossLevel extends Level {
             Music.INSTANCE.play(Assets.Music.YUUKI, true);
         } else if (map[exit()] != Terrain.EXIT) {
             Music.INSTANCE.playTracks(
-                    new String[]{Assets.Music.LABS_1},
+                    new String[]{Assets.Music.DIO_1},
                     new float[]{1},
                     false);
         } else {

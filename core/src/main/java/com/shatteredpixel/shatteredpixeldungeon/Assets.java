@@ -165,8 +165,6 @@ public class Assets {
         public static final String HALLS_2 = "music/halls_2.ogg";
         public static final String HALLS_BOSS = "music/halls_boss.ogg";
         public static final String DIOLOWHP = "music/diolowhp.ogg";
-
-        public static final String LABS_1 = "music/labs_1.ogg";
         public static final String LABS_BOSS = "music/labs_boss.ogg";
         public static final String EMPO = "music/empo.ogg";
 

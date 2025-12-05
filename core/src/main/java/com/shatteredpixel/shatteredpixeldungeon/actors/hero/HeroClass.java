@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Sh
 import com.shatteredpixel.shatteredpixeldungeon.items.AnnihilationGear;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
@@ -148,6 +149,7 @@ public enum HeroClass {
             new ScrollOfMysticalEnergy().identify().quantity(100).collect();
             new PlateArmor().identify().upgrade(999).collect();
             new Neotel().collect();
+            new KingsCrown().collect();
             new ScrollOfIdentify().identify().collect();
             new SkeletonKey().collect();
             new ChaliceOfBlood().identify().collect();

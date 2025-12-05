@@ -73,14 +73,14 @@ public class JolyneBossLevel extends Level {
     public void playLevelMusic() {
         if (locked) {
             if (Statistics.duwang3 == 999) {
-                Music.INSTANCE.play(Assets.Music.LABS_1, true);
+                Music.INSTANCE.play(Assets.Music.PRISON_TENSE, true);
             } else Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
             //if top door isn't unlocked
         } else if (map[exit()] != Terrain.EXIT) {
             Music.INSTANCE.end();
         } else {
             Music.INSTANCE.playTracks(
-                    new String[]{Assets.Music.LABS_1},
+                    new String[]{Assets.Music.PRISON_TENSE},
                     new float[]{1},
                     false);
         }

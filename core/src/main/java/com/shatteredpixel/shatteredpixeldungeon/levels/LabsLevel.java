@@ -70,18 +70,21 @@ public class LabsLevel extends RegularLevel {
 		color2 = 0x59994a;
 	}
 
-	public void playLevelMusic(){
+    @Override
+    public void playLevelMusic() {
 
-		if (hero.buff(AscensionChallenge.class) != null){
-			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.CIV},
-					new float[]{1},
-					false);
-		}else {Music.INSTANCE.playTracks(
-				new String[]{Assets.Music.LABS_1},
-				new float[]{1},
-				false);
-	}}
+        if (hero.buff(AscensionChallenge.class) != null){
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.CIV},
+                    new float[]{1},
+                    false);
+        } else{
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.HALLS_1, Assets.Music.HALLS_2, Assets.Music.HALLS_2},
+                    new float[]{1, 1, 0.5f},
+                    false);
+        }
+    }
 
 	@Override
 	protected ArrayList<Room> initRooms() {
