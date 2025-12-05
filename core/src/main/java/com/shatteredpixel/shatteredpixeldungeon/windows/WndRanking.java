@@ -347,8 +347,11 @@ public class WndRanking extends WndTabbed {
 			
 			// 사망 사유 표시 (2줄까지 가능, 폰트 크기 7 고정)
 			RenderedTextBlock valueTxt = PixelScene.renderTextBlock( value, 7 );
-			valueTxt.maxWidth((int)(WIDTH * 0.55f)); // 최대 너비 설정하여 자동 줄바꿈
-			valueTxt.setPos(WIDTH * 0.55f, pos);
+			// 라벨 너비를 고려하여 사용 가능한 전체 너비 활용
+			float labelWidth = labelTxt.width();
+			float availableWidth = WIDTH - labelWidth - GAP * 2;
+			valueTxt.maxWidth((int)availableWidth); // 최대 너비 설정하여 자동 줄바꿈
+			valueTxt.setPos(labelWidth + GAP, pos);
 			PixelScene.align(valueTxt);
 			parent.add( valueTxt );
 			

@@ -103,6 +103,8 @@ public class Neotel extends Item {
                 expPotion.apply(hero);
             }
 
+            if (SPDSettings.getTendency() != 0) SPDSettings.addTendency(-1);
+
             // 디버그: 경쟁 모드 제한 및 기록 제거 (다시 도전 가능하도록)
             long DAY = 24 * 60 * 60 * 1000;
             long time = Game.realTime - (Game.realTime % DAY);

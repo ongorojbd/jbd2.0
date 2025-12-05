@@ -2013,10 +2013,20 @@ public class GameScene extends PixelScene {
                     DateFormat format = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ROOT);
                     String currentDate = format.format(new Date(Game.realTime));
                     if (Ranking.supportsRankings()) {
-                        Ranking.clearRankings(); // 캐시 클리어
-                        Ranking.checkForRankings(currentDate, true); // 강제 새로고침
+                        // 제출이 완료될 때까지 약간의 지연 후 새로고침
+                        // Rankings.submitDailyScore()가 비동기적으로 작동하므로
+                        // 약간의 지연을 두어 제출이 완료될 시간을 확보
+                        Game.runOnRenderThread(new Callback() {
+                            @Override
+                            public void call() {
+                                Ranking.clearRankings(); // 캐시 클리어
+                                Ranking.checkForRankings(currentDate, true); // 강제 새로고침
+                                ShatteredPixelDungeon.switchScene(AboutScene.class);
+                            }
+                        });
+                    } else {
+                        ShatteredPixelDungeon.switchScene(AboutScene.class);
                     }
-                    ShatteredPixelDungeon.switchScene(AboutScene.class);
                 }
 
                 @Override

@@ -174,7 +174,12 @@ public class CreditScene extends PixelScene {
 		);
 		list.scrollTo(0, 0);
 
-		ExitButton btnExit = new ExitButton();
+		ExitButton btnExit = new ExitButton() {
+			@Override
+			protected void onClick() {
+				ShatteredPixelDungeon.switchScene(AboutScene.class);
+			}
+		};
 		btnExit.setPos(Camera.main.width - btnExit.width() - insets.right, insets.top);
 		add(btnExit);
 

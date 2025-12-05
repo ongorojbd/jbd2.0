@@ -68,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
@@ -1490,6 +1491,7 @@ public abstract class Level implements Bundlable {
 						|| m instanceof Jolyne3
 						|| m instanceof Tendency
 						|| m instanceof SpiritHawk.HawkAlly
+						|| m instanceof DArby
 						|| m.buff(PowerOfMany.PowerBuff.class) != null){
 					if (m.fieldOfView == null || m.fieldOfView.length != length()){
 						m.fieldOfView = new boolean[length()];

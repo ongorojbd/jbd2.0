@@ -60,6 +60,38 @@ public class SpectralWallParticle extends PixelParticle {
 		}
 	};
 
+	// SkeletonKey용 연한 노란색 방벽 Factory
+	public static final Emitter.Factory KEY_WALL_FACTORY = new Emitter.Factory() {
+		@Override
+		public void emit( Emitter emitter, int index, float x, float y ) {
+			//scale frequency roughly to the size of the bricks used
+			int type = 1 + Dungeon.depth/5;
+			if (type > 5) type = 5;
+
+			switch (type){
+				case 1:
+					if (Random.Int(2) != 0) return;
+					break;
+				case 2:
+					if (Random.Int(3) != 0) return;
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					if (Random.Int(4) != 0) return;
+					break;
+			}
+
+			((SpectralWallParticle)emitter.recycle( SpectralWallParticle.class )).resetKeyWall( x, y );
+		}
+		@Override
+		public boolean lightMode() {
+			return false;
+		}
+	};
+
 	private int type = 0; //1-5 for sewers - demon halls
 
 	public SpectralWallParticle() {
@@ -112,6 +144,52 @@ public class SpectralWallParticle extends PixelParticle {
 				this.x = Math.round(x/4)*4;
 				this.y = Math.round((y+8)/16)*16 - 14;
 				color(ColorMath.interpolate(0xa2947d, 0x594847));
+				break;
+		}
+	}
+
+	// SkeletonKey용 연한 노란색 방벽
+	public void resetKeyWall( float x, float y ) {
+		revive();
+
+		type = 1 + Dungeon.depth/5;
+		if (type > 5) type = 5;
+
+		this.x = x;
+		this.y = y;
+
+		left = lifespan;
+
+		// 연한 노란색 색상 범위: 0xFFFFE0 (light yellow) ~ 0xFFF8DC (cornsilk)
+		switch (type){
+			case 1:
+				this.x = Math.round(x/7)*7;
+				this.y = Math.round(y/4)*4 - 6;
+				this.x += Math.round(this.y % 8)/4f - 1;
+				color(ColorMath.random(0xFFFFE0, 0xFFF8DC));
+				break;
+			case 2:
+				this.x = Math.round(x/7)*7;
+				this.y = Math.round(y/6)*6 - 6;
+				this.x += Math.round(this.y % 8)/4f - 1;
+				color(ColorMath.random(0xFFFFE0, 0xFFF8DC));
+				break;
+			case 3:
+				this.y -= 6;
+				float colorScale = (this.x%16)/16 + (this.y%16)/16;
+				if (colorScale > 1f) colorScale = 2f - colorScale;
+				color(ColorMath.interpolate(0xFFFFE0, 0xFFF8DC, colorScale));
+				break;
+			case 4:
+				this.x = Math.round(x/4)*4;
+				this.y = Math.round(y/4)*4 - 6;
+				this.x += Math.round(this.y % 16)/4f - 2;
+				color(ColorMath.interpolate(0xFFFFE0, 0xFFF8DC));
+				break;
+			case 5:
+				this.x = Math.round(x/4)*4;
+				this.y = Math.round((y+8)/16)*16 - 14;
+				color(ColorMath.interpolate(0xFFFFE0, 0xFFF8DC));
 				break;
 		}
 	}

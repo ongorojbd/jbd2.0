@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -30,11 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -199,29 +193,7 @@ public class VaultLevel extends Level { //for now
 			mobs.add(So2);
 		}
 
-		for (Room n : rooms){
-			if (Random.Int(5) != 0){
-				Item item = Generator.randomUsingDefaults(Random.oneOf(
-						Generator.Category.WEAPON, Generator.Category.WEAPON,
-						Generator.Category.ARMOR,
-						Generator.Category.WAND,
-						Generator.Category.RING));
-				int pos;
-				do {
-					pos = pointToCell(n.random());
-				} while (map[pos] != Terrain.EMPTY);
-				if (item.cursed){
-					item.cursed = false;
-					if (item instanceof MeleeWeapon && ((MeleeWeapon) item).hasCurseEnchant()){
-						((MeleeWeapon) item).enchant(null);
-					} else if (item instanceof Armor && ((Armor) item).hasCurseGlyph()){
-						((Armor) item).inscribe(null);
-					}
-				}
-				item.identify();
-				drop(item, pos);
-			}
-		}
+		// 아이템 생성 비활성화
 
 		return true;
 	}
@@ -247,14 +219,7 @@ public class VaultLevel extends Level { //for now
 
 	@Override
 	protected void createItems() {
-		Random.pushGenerator(Random.Long());
-		ArrayList<Item> bonesItems = Bones.get();
-		if (bonesItems != null) {
-			for (Item i : bonesItems) {
-				drop(i, entrance()-width()).setHauntedIfCursed().type = Heap.Type.REMAINS;
-			}
-		}
-		Random.popGenerator();
+		// 아이템 생성 비활성화
 	}
 
 	@Override

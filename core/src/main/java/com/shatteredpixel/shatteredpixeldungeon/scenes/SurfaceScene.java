@@ -300,7 +300,7 @@ public class SurfaceScene extends PixelScene {
                 // 일일 도전(경쟁 모드)인 경우 AboutScene으로 이동
                 // 점수 제출 후 랭킹 반영을 위해 딜레이 추가
                 if (Dungeon.daily && !Dungeon.dailyReplay) {
-                    SurfaceScene.this.add(new Delayer(1.5f){
+                    SurfaceScene.this.add(new Delayer(1f){
                         @Override
                         protected void onComplete() {
                             Game.switchScene(AboutScene.class);

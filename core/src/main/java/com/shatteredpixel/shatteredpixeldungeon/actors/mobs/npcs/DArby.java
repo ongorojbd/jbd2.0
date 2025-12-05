@@ -57,6 +57,15 @@ public class DArby extends NPC {
 			return true;
 		}
 		
+		// 플레이어와 시야 공유 - fieldOfView를 플레이어 시야와 동기화
+		if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()) {
+			fieldOfView = new boolean[Dungeon.level.length()];
+		}
+		// 플레이어의 시야를 DArby의 시야로 복사
+		if (Dungeon.level.heroFOV != null) {
+			System.arraycopy(Dungeon.level.heroFOV, 0, fieldOfView, 0, Dungeon.level.heroFOV.length);
+		}
+		
 		// spw30 > 0이면 스프라이트를 DArbyOldSprite로 변경
 		if (Statistics.spw30 > 0 && spriteClass != DArbyOldSprite.class) {
 			if (sprite != null) sprite.killAndErase();

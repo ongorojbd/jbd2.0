@@ -56,8 +56,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -83,6 +85,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -141,15 +145,15 @@ public enum HeroClass {
             new RingOfMight().identify().upgrade(999).collect();
             new ThrowingSpike().identify().upgrade(9999).collect();
             new RingOfAccuracy().identify().upgrade(999).collect();
-            new HealingDart().identify().quantity(100).collect();
+            new ScrollOfMysticalEnergy().identify().quantity(100).collect();
             new PlateArmor().identify().upgrade(999).collect();
             new Neotel().collect();
-            new TuskEquipmentDisc().identify().collect();
+            new ScrollOfIdentify().identify().collect();
+            new SkeletonKey().collect();
+            new ChaliceOfBlood().identify().collect();
             new DwarfToken().identify().quantity(100).collect();
-            new PotionOfShroudingFog().identify().quantity(100).collect();
             new UV().identify().quantity(100).collect();
             new WandOfDisintegration().identify().upgrade(12).collect();
-            new Spw11().identify().quantity(100).collect();
             new PotionOfHealing().identify().quantity(100).collect();
         }
 
