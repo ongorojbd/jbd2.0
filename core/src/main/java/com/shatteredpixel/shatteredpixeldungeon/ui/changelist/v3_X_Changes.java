@@ -90,7 +90,7 @@ public class v3_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(
-                new ItemSprite(ItemSpriteSheet.SMOOTH),
+                new ItemSprite(ItemSpriteSheet.ARTIFACT_KEY),
                 "신규 아이템",
                 "새로운 장비 DISC와 위험한 물건이 추가되었습니다!\n\n" +
                         "- _스무스 오퍼레이터즈의 장비 DISC_는 던전 환경을 제어할 수 있는 새로운 아이템입니다. 잠긴 문을 열거나 임시 장벽을 생성하는 등 다양한 활용이 가능합니다.\n\n" +

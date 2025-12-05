@@ -211,6 +211,13 @@ public class WndRanking extends WndTabbed {
 				errorText.maxWidth((int)(WIDTH-errorIcon.width()-GAP));
 				errorText.setPos(errorIcon.width()+GAP, pos + (errorIcon.height()-errorText.height())/2);
 				add(errorText);
+				
+				pos = errorText.bottom() + GAP;
+				
+				// 일일 도전 랭킹에서 사망한 경우 사망 사유 표시
+				if (record.daily && !record.win && record.cause != null) {
+					pos = deathCauseSlot(this, Messages.get(this, "death_cause"), record.desc(), pos);
+				}
 
 			} else {
 
@@ -264,6 +271,12 @@ public class WndRanking extends WndTabbed {
 				pos = statSlot(this, Messages.get(this, "gold"), num.format(Statistics.goldCollected), pos);
 				pos = statSlot(this, Messages.get(this, "food"), num.format(Statistics.foodEaten), pos);
 				pos = statSlot(this, Messages.get(this, "alchemy"), num.format(Statistics.itemsCrafted), pos);
+				
+				// 일일 도전 랭킹에서 사망한 경우 사망 사유 표시
+				if (record.daily && !record.win && record.cause != null) {
+					pos += GAP;
+					pos = deathCauseSlot(this, Messages.get(this, "death_cause"), record.desc(), pos);
+				}
 			}
 
 			int buttontop = HEIGHT - 16;
@@ -302,20 +315,47 @@ public class WndRanking extends WndTabbed {
 		}
 		
 		private float statSlot( Group parent, String label, String value, float pos ) {
-			
-			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 7 );
-			txt.setPos(0, pos);
-			parent.add( txt );
 
 			int size = 7;
-			if (value.length() >= 14) size -=1;
-			if (value.length() >= 18) size -=1;
-			txt = PixelScene.renderTextBlock( value, size );
-			txt.setPos(WIDTH * 0.55f, pos);
+			RenderedTextBlock txt;
+			do {
+				txt = PixelScene.renderTextBlock( label, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.55f);
+			txt.setPos(0, pos + (6 - txt.height())/2);
+			PixelScene.align(txt);
+			parent.add( txt );
+
+			size = 7;
+			do {
+				txt = PixelScene.renderTextBlock( value, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.45f);
+			txt.setPos(WIDTH * 0.55f, pos + (6 - txt.height())/2);
 			PixelScene.align(txt);
 			parent.add( txt );
 			
 			return pos + GAP + txt.height();
+		}
+		
+		private float deathCauseSlot( Group parent, String label, String value, float pos ) {
+			// 라벨 표시
+			RenderedTextBlock labelTxt = PixelScene.renderTextBlock( label, 7 );
+			labelTxt.setPos(0, pos);
+			PixelScene.align(labelTxt);
+			parent.add( labelTxt );
+			
+			// 사망 사유 표시 (2줄까지 가능, 폰트 크기 7 고정)
+			RenderedTextBlock valueTxt = PixelScene.renderTextBlock( value, 7 );
+			valueTxt.maxWidth((int)(WIDTH * 0.55f)); // 최대 너비 설정하여 자동 줄바꿈
+			valueTxt.setPos(WIDTH * 0.55f, pos);
+			PixelScene.align(valueTxt);
+			parent.add( valueTxt );
+			
+			// 라벨과 값 중 더 높은 것 기준으로 다음 위치 계산
+			float labelHeight = labelTxt.height();
+			float valueHeight = valueTxt.height();
+			return pos + GAP + Math.max(labelHeight, valueHeight);
 		}
 	}
 

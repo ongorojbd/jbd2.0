@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
@@ -49,7 +50,10 @@ public class WndImp extends Window {
 		titlebar.setRect( 0, 0, WIDTH, 0 );
 		add( titlebar );
 		
-		RenderedTextBlock message = PixelScene.renderTextBlock( Messages.get(this, "message"), 6 );
+		// DArby와 게임을 하지 않았다면(미니게임이 가능한 상태면) message2 사용
+		String messageKey = (Statistics.spw16 == 0 && Statistics.spw20 == 0 && Statistics.spw30 == 0) 
+				? "message2" : "message";
+		RenderedTextBlock message = PixelScene.renderTextBlock( Messages.get(this, messageKey), 6 );
 		message.maxWidth(WIDTH);
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.services.rankings.DailyRankingEntry;
@@ -329,7 +330,10 @@ public enum Rankings {
 
 		//remove all buffs (ones tied to equipment will be re-applied)
 		for(Buff b : Dungeon.hero.buffs()){
-			Dungeon.hero.remove(b);
+			//except Duelist's melee weapon charge buff
+			if (!(b instanceof MeleeWeapon.Charger)) {
+				Dungeon.hero.remove(b);
+			}
 		}
 
 		rec.gameData.put( HERO, Dungeon.hero );
@@ -366,6 +370,11 @@ public enum Rankings {
 		rec.gameData.put( CUSTOM_SEED, Dungeon.customSeedText );
 		rec.gameData.put( DAILY, Dungeon.daily );
 		rec.gameData.put( DAILY_REPLAY, Dungeon.dailyReplay );
+		
+		//save death cause for daily challenge rankings
+		if (rec.cause != null) {
+			rec.gameData.put( Record.CAUSE, rec.cause );
+		}
 	}
 
 	public void loadGameData(Record rec){
@@ -683,6 +692,11 @@ public enum Rankings {
 						entry.gameData.getBytes(StandardCharsets.UTF_8));
 				rec.gameData = Bundle.read(inputStream);
 				inputStream.close();
+				
+				// gameData에서 cause 복원
+				if (rec.gameData != null && rec.gameData.contains(Record.CAUSE)) {
+					rec.cause = rec.gameData.getClass(Record.CAUSE);
+				}
 			} catch (Exception e) {
 				Game.reportException(e);
 				rec.gameData = null;

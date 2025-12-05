@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw11;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
@@ -144,7 +145,7 @@ public enum HeroClass {
             new PlateArmor().identify().upgrade(999).collect();
             new Neotel().collect();
             new TuskEquipmentDisc().identify().collect();
-            new Spw().identify().quantity(100).collect();
+            new DwarfToken().identify().quantity(100).collect();
             new PotionOfShroudingFog().identify().quantity(100).collect();
             new UV().identify().quantity(100).collect();
             new WandOfDisintegration().identify().upgrade(12).collect();

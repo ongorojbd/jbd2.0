@@ -32,7 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -274,7 +274,7 @@ public class ArenaLevel extends RegularLevel {
         for (Heap heap : Dungeon.level.heaps.valueList().toArray(new Heap[0])){
             if (heap.pos == cell){
                 for (Item item : heap.items){
-                    if (item instanceof SkeletonKey){
+                    if (item instanceof WornKey){
                         keyDropped = true;
                     }
                 }

@@ -1547,21 +1547,21 @@ public class GameScene extends PixelScene {
         customWalls.add(visual.create());
     }
 
-    private synchronized void addHeapSprite( Heap heap ) {
+    private void addHeapSprite( Heap heap ) {
         ItemSprite sprite = heap.sprite = (ItemSprite) heaps.recycle(ItemSprite.class);
         sprite.revive();
         sprite.link(heap);
         heaps.add(sprite);
     }
 
-    private synchronized void addDiscardedSprite( Heap heap ) {
+    private void addDiscardedSprite( Heap heap ) {
         heap.sprite = (DiscardedItemSprite) heaps.recycle(DiscardedItemSprite.class);
         heap.sprite.revive();
         heap.sprite.link(heap);
         heaps.add(heap.sprite);
     }
 
-    private synchronized void addBlobSprite( final Blob gas ) {
+    private void addBlobSprite( final Blob gas ) {
         if (gas.emitter == null) {
             gases.add(new BlobEmitter(gas));
         }
@@ -1659,11 +1659,7 @@ public class GameScene extends PixelScene {
     }
 
     public static void add(Mob mob) {
-        Dungeon.level.mobs.add(mob);
-        if (scene != null) {
-            scene.addMobSprite(mob);
-            Actor.add(mob);
-        }
+        add( mob, 0);
     }
 
     public static void addSprite(Mob mob) {
@@ -1672,8 +1668,13 @@ public class GameScene extends PixelScene {
 
     public static void add(Mob mob, float delay) {
         Dungeon.level.mobs.add(mob);
-        scene.addMobSprite(mob);
-        Actor.addDelayed(mob, delay);
+        //mobs added on partial turns wait until next full turn to act
+        delay = (float)Math.ceil(Actor.now() + delay) - Actor.now();
+        if (scene != null) {
+            scene.addMobSprite(mob);
+            Actor.addDelayed(mob, delay);
+            mob.spendToWhole();
+        }
     }
 
     public static void add(EmoIcon icon) {

@@ -32,8 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -102,7 +102,7 @@ public abstract class AllyBuff extends Buff {
 				if (!mobsAlive && Dungeon.level.entrance == 0 && !Dungeon.level.combatRewardDropped) {
 					Dungeon.level.combatRewardDropped = true;
 					spwPrize(enemy.pos);
-					Dungeon.level.drop(new SkeletonKey(Dungeon.depth), enemy.pos).sprite.drop();
+					Dungeon.level.drop(new WornKey(Dungeon.depth), enemy.pos).sprite.drop();
 					Dungeon.level.unseal();
 					Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1f, 2f);
                     if (Statistics.spw24 > 0) {

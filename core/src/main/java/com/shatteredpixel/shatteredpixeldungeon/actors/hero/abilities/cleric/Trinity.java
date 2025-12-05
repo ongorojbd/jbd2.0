@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Madeinheaven;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
@@ -550,7 +551,7 @@ public class Trinity extends ArmorAbility {
 			return 2*chargeUse;
 		}
 		if (Artifact.class.isAssignableFrom(cls)){
-			if (cls.equals(DriedRose.class) || cls.equals(UnstableSpellbook.class)){
+			if (cls.equals(DriedRose.class) || cls.equals(UnstableSpellbook.class) || cls.equals(SkeletonKey.class)){
 				return 2*chargeUse; //50 charge
 			}
 			if (cls.equals(EtherealChains.class) || cls.equals(TalismanOfForesight.class) || cls.equals(TimekeepersHourglass.class)){

@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -69,7 +70,8 @@ public class Hunger extends Buff implements Hero.Doom {
 				|| SPDSettings.intro()
 				|| Dungeon.level instanceof EmporioLevel
 				|| Dungeon.level instanceof HumanVillageBossLevel
-				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null){
+				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null
+				|| Dungeon.level instanceof VaultLevel){
 			spend(TICK);
 			return true;
 		}

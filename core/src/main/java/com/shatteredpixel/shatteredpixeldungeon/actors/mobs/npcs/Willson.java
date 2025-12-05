@@ -135,7 +135,7 @@ public class Willson extends NPC {
                                     switch (Random.Int(3)) {
                                         case 0:
                                             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                                            InterlevelScene.returnDepth = 17;
+                                            InterlevelScene.returnDepth = 20;
                                             InterlevelScene.returnBranch = 1;
                                             InterlevelScene.returnPos = -2;
                                             Game.switchScene(InterlevelScene.class);

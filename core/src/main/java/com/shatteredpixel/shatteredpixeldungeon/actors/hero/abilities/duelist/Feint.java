@@ -176,6 +176,16 @@ public class Feint extends ArmorAbility {
 		}
 
 		@Override
+		public String name() {
+			return ""; //shouldn't be examinable
+		}
+
+		@Override
+		public String description() {
+			return ""; //shouldn't be examinable
+		}
+
+		@Override
 		public boolean canInteract(Char c) {
 			return false;
 		}

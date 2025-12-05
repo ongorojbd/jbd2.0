@@ -28,6 +28,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -218,9 +220,30 @@ public class Alchemize extends Spell {
 					RedButton btnEnergize = new RedButton(Messages.get(this, "energize", item.energyVal())) {
 						@Override
 						protected void onClick() {
-							WndEnergizeItem.energizeAll(item);
-							hide();
-							consumeAlchemize();
+							if (item instanceof Trinket){
+								GameScene.show(new WndOptions(new ItemSprite(item), Messages.titleCase(item.name()),
+										Messages.get(WndEnergizeItem.class, "trinket_warn"),
+										Messages.get(WndEnergizeItem.class, "trinket_yes"),
+										Messages.get(WndEnergizeItem.class, "trinket_no")){
+
+									@Override
+									protected void onSelect(int index) {
+										if (index == 0) {
+											WndEnergizeItem.energizeAll(item);
+										}
+									}
+
+									@Override
+									public void hide() {
+										super.hide();
+										WndAlchemizeItem.this.hide();
+									}
+								});
+							} else {
+								WndEnergizeItem.energizeAll(item);
+								hide();
+								consumeAlchemize();
+							}
 						}
 					};
 					btnEnergize.setRect(0, pos + GAP, width, BTN_HEIGHT);

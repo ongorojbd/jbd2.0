@@ -37,27 +37,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho2;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
-import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ButterflySprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.Zombie2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Zombie3Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class ZombieThree extends Mob {

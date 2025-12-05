@@ -54,7 +54,7 @@ import java.util.Collections;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = 859;
+	private static final int LATEST_UPDATE = ShatteredPixelDungeon.v3_3_0;
 
 	//used so that the game does not keep showing the window forever if cleaning fails
 	private static boolean triedCleaningTemp = false;
@@ -287,9 +287,6 @@ public class WelcomeScene extends PixelScene {
 			}
 			Dungeon.daily = Dungeon.dailyReplay = false;
 
-			if (previousVersion <= ShatteredPixelDungeon.v2_4_2){
-				Document.ADVENTURERS_GUIDE.findPage(Document.GUIDE_ALCHEMY);
-			}
 
 			Badges.saveGlobal(true);
 			Journal.saveGlobal(true);

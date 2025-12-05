@@ -40,14 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho2;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
-import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Zombie2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
