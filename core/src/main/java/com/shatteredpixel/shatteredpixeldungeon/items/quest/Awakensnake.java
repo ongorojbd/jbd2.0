@@ -28,18 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class Awakensnake extends Item {
 
     {
-        image = ItemSpriteSheet.ARTIFACT_SPELLBOOK;
-
-        icon = ItemSpriteSheet.Icons.SCROLL_METAMORPH;
+        image = ItemSpriteSheet.FRIEND;
 
         unique = true;
     }
-
-    @Override
-    public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x000000, 1f);
-    }
-
 
     @Override
     public boolean isUpgradable() {

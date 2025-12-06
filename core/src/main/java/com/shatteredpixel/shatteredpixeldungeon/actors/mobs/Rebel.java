@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -313,6 +314,7 @@ public class Rebel extends Mob {
         super.notice();
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
+            GameScene.heavendio();
             switch (Dungeon.hero.heroClass) {
                 case WARRIOR:
                     WndDialogueWithPic.dialogue(
@@ -642,6 +644,12 @@ public class Rebel extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
+        // 첫 피해를 받을 때 seal() 호출 (다른 보스들처럼)
+        if (!BossHealthBar.isAssigned()){
+            BossHealthBar.assignBoss(this);
+            Dungeon.level.seal();
+        }
+        
         if (dmg >= 150) {
             //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
             // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
@@ -655,6 +663,13 @@ public class Rebel extends Mob {
         }
 
         super.damage(dmg, src);
+        
+        // LockedFloor 시간 연장 (다른 보스들처럼)
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+            else                                                    lock.addTime(dmg*1.5f);
+        }
 
         if (Phase == 0 && HP < 1300) {
             Phase = 1;
@@ -830,6 +845,8 @@ public class Rebel extends Mob {
                 GameScene.add(jojo);
                 jojo.beckon(Dungeon.hero.pos);
 
+                BossHealthBar.bleed(true);
+
                 WndDialogueWithPic.dialogue(
                         new CharSprite[]{new RebelSprite(), new RebelSprite(), new JojoSprite(), new RebelSprite()},
                         new String[]{"천국 DIO", "천국 DIO", "죠린", "천국 DIO"},
@@ -944,7 +961,7 @@ public class Rebel extends Mob {
             beacon.upgrade();
         }
 
-        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999982L);
         boolean shouldDropRare = Random.Int( 10 ) == 0;
         Random.popGenerator();
 

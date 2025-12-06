@@ -240,7 +240,7 @@ public class Tengu extends Mob {
 		GameScene.bossSlain();
 		super.die( cause );
 
-        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999979L);
         boolean shouldDropRare = Random.Int( 10 ) == 0;
         Random.popGenerator();
 

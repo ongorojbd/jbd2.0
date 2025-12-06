@@ -673,7 +673,7 @@ public class DM300 extends Mob {
 
 		Sample.INSTANCE.play( Assets.Sounds.SHEER2);
 
-        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999984L);
         boolean shouldDropRare1 = Random.Int( 2 ) == 0;
         Random.popGenerator();
 
@@ -685,7 +685,7 @@ public class DM300 extends Mob {
 			Kawasiri.beckon(Dungeon.hero.pos);
 		}
 
-        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999983L);
         boolean shouldDropRare2 = Random.Int( 10 ) == 0;
         Random.popGenerator();
 

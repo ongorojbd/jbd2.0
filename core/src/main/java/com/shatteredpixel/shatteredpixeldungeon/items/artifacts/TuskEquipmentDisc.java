@@ -29,7 +29,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -48,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTuskAiming;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -126,15 +131,15 @@ public class TuskEquipmentDisc extends Artifact {
 		}
 	}
 
-	// 3레벨 이상일 때 자기 자신 사용 가능 여부
+	// 6레벨 이상일 때 자기 자신 사용 가능 여부
 	public boolean canTargetSelf() {
-		return level() >= 3;
+		return level() >= 6;
 	}
 
 	// 자기 자신에게 사용 (Fadeleaf 효과)
 	private void useSelfEffect(Hero hero) {
-		// 충전량 소모
-		charge--;
+		// 충전량 소모 (2 소모)
+		charge -= 2;
 
 		// Fadeleaf 효과 발동
 		new Fadeleaf().activate(hero);
@@ -167,7 +172,12 @@ public class TuskEquipmentDisc extends Artifact {
 			// 자기 자신을 선택한 경우
 			if (ch == curUser) {
 				if (canTargetSelf()) {
-					// 3레벨 이상이면 Fadeleaf 효과 발동
+					// 충전량이 2 이상인지 확인
+					if (charge < 2) {
+						GLog.i(Messages.get(this, "no_charge"));
+						return;
+					}
+					// 6레벨 이상이면 Fadeleaf 효과 발동
 					useSelfEffect((Hero) curUser);
 				} else {
 					GLog.w(Messages.get(TuskEquipmentDisc.class, "cannot_target_self"));
@@ -199,8 +209,51 @@ public class TuskEquipmentDisc extends Artifact {
 				return;
 			}
 
-			// 타이밍 미니게임 창 열기
-			GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
+			// 레벨 0일 때 벽 체크: 벽에 막히면 경고 메시지 표시
+			if (level() == 0) {
+				Ballistica beam = new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT);
+				Char chAtCollision = Actor.findChar(beam.collisionPos);
+				// 벽에 막혔거나 타겟이 collisionPos에 없으면 경고
+				if (chAtCollision == null || chAtCollision != ch) {
+					GLog.w(Messages.get(TuskEquipmentDisc.class, "blocked_by_terrain"));
+					return;
+				}
+			}
+
+			// 레벨 3 이상일 때 관통 기능: 경로상의 모든 적 찾기
+			if (level() >= 3) {
+				Ballistica beam = new Ballistica(curUser.pos, target, Ballistica.WONT_STOP);
+				piercedTargets.clear();
+				
+				// 경로상의 모든 적 찾기
+				for (int c : beam.subPath(1, beam.dist)) {
+					Char enemy = Actor.findChar(c);
+					if (enemy != null && enemy != curUser 
+							&& enemy instanceof Mob 
+							&& !(enemy instanceof NPC)
+							&& enemy.alignment != Char.Alignment.ALLY
+							&& enemy.alignment == Char.Alignment.ENEMY) {
+						// PASSIVE 상태의 미발견 적은 제외
+						if (enemy instanceof Mob && ((Mob) enemy).state == ((Mob) enemy).PASSIVE
+								&& !(Dungeon.level.mapped[c] || Dungeon.level.visited[c])) {
+							continue;
+						}
+						piercedTargets.add(enemy);
+					}
+				}
+				
+				// 첫 번째 적에 대해서만 미니게임 실행
+				if (!piercedTargets.isEmpty()) {
+					GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, piercedTargets.get(0)));
+				} else {
+					// 경로상에 적이 없으면 원래 타겟에 대해서만 실행
+					GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
+				}
+			} else {
+				// 레벨 0~2일 때는 기존처럼 단일 타겟만
+				piercedTargets.clear();
+				GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
+			}
 		}
 
 		@Override
@@ -217,6 +270,14 @@ public class TuskEquipmentDisc extends Artifact {
 
 	// 현재 타겟 저장 (미니게임에서 사용)
 	private Char currentTarget = null;
+
+	// 관통된 적들 저장 (레벨 1 이상일 때, 각 발사마다)
+	private ArrayList<Char> piercedTargets = new ArrayList<>();
+	
+	// 미니게임 결과 저장 (관통된 적들에게 적용하기 위해, 각 발사마다)
+	private int lastDamage = 0;
+	private String lastHitType = "";
+	private float lastDamageRatio = 0f;
 
 	// 각 발사마다 호출되는 메서드 (즉시 데미지 적용 및 GLog 표시)
 	// 반환값: 타겟이 살아있으면 true, 죽었으면 false
@@ -239,8 +300,53 @@ public class TuskEquipmentDisc extends Artifact {
 		// 1. 히어로 스프라이트 zap 애니메이션
 		hero.sprite.zap(target.pos);
 
-		// 2. 경로에 빛 파티클 추가
-		Ballistica beam = new Ballistica(hero.pos, target.pos, Ballistica.WONT_STOP);
+		// 2. 경로에 빛 파티클 추가 및 관통된 적들 찾기
+		// 레벨 0~2일 때는 벽에 막히도록, 레벨 3 이상일 때는 벽을 통과하도록
+		int collisionProps = (level() >= 3) ? Ballistica.WONT_STOP : Ballistica.MAGIC_BOLT;
+		Ballistica beam = new Ballistica(hero.pos, target.pos, collisionProps);
+		
+		// 레벨 0일 때 벽에 막혔는지 확인 (WandOfMagicMissile처럼)
+		if (level() == 0) {
+			Char ch = Actor.findChar(beam.collisionPos);
+			// 벽에 막혔거나 타겟이 collisionPos에 없으면 데미지를 주지 않음
+			if (ch == null || ch != target) {
+				// 이펙트만 표시하고 데미지는 주지 않음
+				for (int c : beam.subPath(1, beam.dist)) {
+					CellEmitter.center(c).burst(LightParticle.BURST, 8);
+				}
+				int cell = beam.path.get(Math.min(beam.dist, beam.path.size() - 1));
+				hero.sprite.parent.add(new Beam.SuperNovaRay(
+					hero.sprite.center(),
+					DungeonTilemap.raisedTileCenterToWorld(cell),
+					2
+				));
+				Dungeon.level.pressCell(beam.collisionPos);
+				return false; // 데미지 없이 종료
+			}
+		}
+		
+		// 레벨 3 이상일 때 각 발사마다 관통된 적들 계산 (2발 모드 대응)
+		if (level() >= 3) {
+			piercedTargets.clear();
+			// 경로상의 모든 적 찾기
+			for (int c : beam.subPath(1, beam.dist)) {
+				Char enemy = Actor.findChar(c);
+				if (enemy != null && enemy != hero 
+						&& enemy instanceof Mob 
+						&& !(enemy instanceof NPC)
+						&& enemy.alignment != Char.Alignment.ALLY
+						&& enemy.alignment == Char.Alignment.ENEMY) {
+					// PASSIVE 상태의 미발견 적은 제외
+					if (enemy instanceof Mob && ((Mob) enemy).state == ((Mob) enemy).PASSIVE
+							&& !(Dungeon.level.mapped[c] || Dungeon.level.visited[c])) {
+						continue;
+					}
+					piercedTargets.add(enemy);
+				}
+			}
+		}
+		
+		// 경로에 빛 파티클 추가
 		for (int c : beam.subPath(1, beam.dist)) {
 			CellEmitter.center(c).burst(LightParticle.BURST, 8);
 		}
@@ -257,16 +363,68 @@ public class TuskEquipmentDisc extends Artifact {
 		target.sprite.centerEmitter().burst(LightParticle.BURST, 8);
 		target.sprite.flash();
 
-		// 데미지 적용
-		target.damage(damage, this);
+        // 디버그 용도 업그레이드
+//        upgrade();
 
-		// GLog 메시지 표시
-		GLog.i(Messages.get("windows.wndtuskaiming." + hitType, damage));
+		// 데미지 적용
+		boolean wasAlive = target.isAlive();
+		target.damage(damage, this);
+        Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+
+		// provoked_anger talent: 적을 처치했을 때 아드레날린 부여
+		if (!wasAlive || !target.isAlive()) {
+			if (hero.hasTalent(Talent.PROVOKED_ANGER)) {
+				int talentLevel = hero.pointsInTalent(Talent.PROVOKED_ANGER);
+				if (talentLevel >= 1) {
+					float duration = talentLevel * 4; // 1레벨: 4턴, 2레벨: 8턴
+					Buff.prolong(hero, Adrenaline.class, duration);
+				}
+			}
+		}
+
+		// 미니게임 결과 저장 (관통된 적들에게 적용하기 위해)
+		lastDamage = damage;
+		lastHitType = hitType;
+		lastDamageRatio = damageRatio;
+
+		// GLog 메시지 표시 (hitType에 따라 색상 다르게)
+		String message = Messages.get("windows.wndtuskaiming." + hitType, damage);
+		switch (hitType) {
+			case "perfect":
+				GLog.p(message);
+				break;
+			case "great":
+				GLog.h(message);
+				break;
+			case "good":
+				GLog.w(message);
+				break;
+			case "miss":
+			default:
+				GLog.n(message);
+				break;
+		}
 
 		// Perfect 판정 체크 (50% 데미지 = Perfect)
 		if (damageRatio >= 0.50f) {
 			perfectCount++;
 			checkLevelUp();
+			
+			// HorseRiding leap 충전량 획득
+			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding horseRiding = hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class);
+			if (horseRiding != null) {
+				horseRiding.addLeapCharge();
+			}
+			
+			// improvised_projectiles talent: 정확한 공격 시 Doom 부여
+			if (hero.hasTalent(Talent.PROVOKED_ANGER)) {
+				int talentLevel = hero.pointsInTalent(Talent.PROVOKED_ANGER);
+				if (talentLevel >= 1) {
+					float duration = talentLevel * 2; // 1레벨: 2턴, 2레벨: 4턴
+					Doom doom = Buff.affect(target, Doom.class);
+					doom.setDuration(duration);
+				}
+			}
 		}
 
 		// 타겟이 살아있는지 반환
@@ -283,16 +441,58 @@ public class TuskEquipmentDisc extends Artifact {
 		}
 
 		if (perfectCount >= totalNeeded) {
-			upgrade();
-			GLog.p(Messages.get(this, "upgrade", level()));
+			// 레벨업 전에 현재 레벨이 levelCap에 도달했는지 다시 확인
+			if (level() < levelCap) {
+				upgrade();
+				GLog.p(Messages.get(this, "upgrade", level()));
+			}
 		}
 	}
 
 	@Override
 	public Item upgrade() {
+		// levelCap을 초과하지 않도록 체크
+		if (level() >= levelCap) {
+			return this;
+		}
+		
 		chargeCap = Math.min(chargeCap + 1, 10);
 		charge = Math.min(charge + 1, chargeCap);
-		return super.upgrade();
+		Item result = super.upgrade();
+		
+		// 레벨에 따라 이미지 설정 (SandalsOfNature.java 참조)
+		int lvl = level();
+		if (lvl <= 2) {
+			image = ItemSpriteSheet.ARTIFACT_TUSK1;
+		} else if (lvl <= 5) {
+			image = ItemSpriteSheet.ARTIFACT_TUSK2;
+		} else if (lvl <= 9) {
+			image = ItemSpriteSheet.ARTIFACT_TUSK3;
+		} else { // lvl == 10
+			image = ItemSpriteSheet.ARTIFACT_TUSK4;
+		}
+		
+		return result;
+	}
+
+	// 각 발사 완료 후 관통된 적들 처리 (2발 모드 대응)
+	public void processPiercedTargets() {
+		// 레벨 3 이상이고 관통된 적들이 있으면 나머지 적들도 처리
+		if (level() >= 3 && !piercedTargets.isEmpty() && lastDamage > 0) {
+			// 첫 번째 적은 이미 처리되었으므로 나머지만 처리
+			for (int i = 1; i < piercedTargets.size(); i++) {
+				Char enemy = piercedTargets.get(i);
+				if (enemy != null && enemy.isAlive() && enemy != currentTarget) {
+					// 같은 데미지와 hitType 적용
+					applyPierceDamage(enemy, lastDamage, lastHitType, lastDamageRatio);
+				}
+			}
+		}
+		// 각 발사마다 관통 처리 후 리셋 (다음 발사를 위해)
+		piercedTargets.clear();
+		lastDamage = 0;
+		lastHitType = "";
+		lastDamageRatio = 0f;
 	}
 
 	// 모든 발사 완료 후 호출되는 메서드
@@ -316,11 +516,111 @@ public class TuskEquipmentDisc extends Artifact {
 		// 첫 발사 플래그 및 타겟 리셋
 		isFirstShot = true;
 		currentTarget = null;
+		piercedTargets.clear();
+		lastDamage = 0;
+		lastHitType = "";
+		lastDamageRatio = 0f;
+	}
+
+	// 관통된 적에게 데미지 적용 (이펙트 포함)
+	private void applyPierceDamage(Char target, int damage, String hitType, float damageRatio) {
+		if (target == null || !target.isAlive()) return;
+
+		Hero hero = Dungeon.hero;
+		if (hero == null) return;
+
+		// 레이저 이펙트는 첫 번째 타겟에서만 생성되므로 여기서는 제거
+		// 타겟에 파티클 및 플래시 효과만 적용
+		target.sprite.centerEmitter().burst(LightParticle.BURST, 8);
+		target.sprite.flash();
+
+		// 데미지 적용
+		boolean wasAlive = target.isAlive();
+		target.damage(damage, this);
+		
+		// provoked_anger talent: 적을 처치했을 때 아드레날린 부여
+		if (!wasAlive || !target.isAlive()) {
+			if (hero.hasTalent(Talent.PROVOKED_ANGER)) {
+				int talentLevel = hero.pointsInTalent(Talent.PROVOKED_ANGER);
+				if (talentLevel >= 1) {
+					float duration = talentLevel; // 1레벨: 1턴, 2레벨: 2턴
+					Buff.prolong(hero, Adrenaline.class, duration);
+				}
+			}
+		}
+
+		// GLog 메시지 표시 (hitType에 따라 색상 다르게)
+		String message = Messages.get("windows.wndtuskaiming." + hitType, damage);
+		switch (hitType) {
+			case "perfect":
+				GLog.p(message);
+				break;
+			case "great":
+				GLog.h(message);
+				break;
+			case "good":
+				GLog.w(message);
+				break;
+			case "miss":
+			default:
+				GLog.n(message);
+				break;
+		}
+
+		// Perfect 판정 체크 (50% 데미지 = Perfect)
+		if (damageRatio >= 0.50f) {
+			perfectCount++;
+			checkLevelUp();
+			
+			// HorseRiding leap 충전량 획득
+			if (hero != null) {
+				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding horseRiding = hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class);
+				if (horseRiding != null) {
+					horseRiding.addLeapCharge();
+				}
+			}
+		}
 	}
 
 	// 업그레이드 여부 확인 (2발 발사 가능 여부)
+	// GLADIATOR 서브클래스인 경우에만 2발 발사 가능
 	public boolean isUpgraded() {
-		return level() >= 6;
+		Hero hero = Dungeon.hero;
+		return hero != null && hero.subClass == HeroSubClass.GLADIATOR;
+	}
+
+	// 고정 데미지 계산 (강화 수치 기반)
+	public int calculateDamage(String hitType, Char target) {
+		int lvl = level();
+		
+		switch (hitType) {
+			case "perfect":
+				// 초록 영역: 최대 12+5×level
+				int maxDmg = 12 + 5 * lvl;
+				// 최소: BOSS/MINIBOSS가 아니면 적의 최대 체력의 절반, 아니면 7+level
+				int minDmg;
+				if (target != null && !Char.hasProp(target, Char.Property.BOSS) 
+						&& !Char.hasProp(target, Char.Property.MINIBOSS)) {
+					minDmg = target.HT / 2;
+				} else {
+					minDmg = 7 + lvl;
+				}
+				// 최소가 최대를 넘지 않도록 보장
+				return Random.NormalIntRange(Math.min(minDmg, maxDmg), maxDmg);
+			
+			case "great":
+				// 노랑 영역: 최소 2+level, 최대 8+2×level
+				return Random.NormalIntRange(2 + lvl, 8 + 2 * lvl);
+			
+			case "good":
+				// 주황 영역: 최소 1+level/2, 최대 4+level (더 약하게)
+				return Random.NormalIntRange(1 + lvl/2, 4 + lvl);
+			
+			case "miss":
+			default:
+				// 빨강 영역: 피해량 없음
+				return 0;
+		}
 	}
 
 	@Override
@@ -355,18 +655,22 @@ public class TuskEquipmentDisc extends Artifact {
 			if (cursed) {
 				desc += Messages.get(this, "desc_cursed");
 			} else {
-				desc += Messages.get(this, "desc_equipped");
-				if (isUpgraded()) {
-					desc += "\n\n" + Messages.get(this, "desc_upgraded");
-				}
+                desc += Messages.get(this, "desc_equipped");
+				
+				if (level() >= 3 && level() <= 5) {
+					desc += "\n\n" + Messages.get(this, "desc_upgraded2");
+				} else if (level() >= 6 && level() <= 8) {
+                    desc += "\n\n" + Messages.get(this, "desc_upgraded3");
+                } else if (level() >= 9 && level() <= 10) {
+                    desc += "\n\n" + Messages.get(this, "desc_upgraded4");
+                }
+
 				if (level() < levelCap) {
 					int current = perfectsAtCurrentLevel();
 					int needed = perfectsForLevel(level());
 					int remaining = needed - current;
 					desc += "\n\n" + Messages.get(this, "desc_perfect", 
 						current, needed, remaining);
-				} else {
-					desc += "\n\n" + Messages.get(this, "desc_max_level");
 				}
 			}
 		}
@@ -416,5 +720,17 @@ public class TuskEquipmentDisc extends Artifact {
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		perfectCount = bundle.getInt(PERFECT_COUNT);
+		
+		// 레벨에 따라 이미지 설정 (SandalsOfNature.java 참조)
+		int lvl = level();
+		if (lvl <= 2) {
+			image = ItemSpriteSheet.ARTIFACT_TUSK1;
+		} else if (lvl <= 5) {
+			image = ItemSpriteSheet.ARTIFACT_TUSK2;
+		} else if (lvl <= 9) {
+			image = ItemSpriteSheet.ARTIFACT_TUSK3;
+		} else { // lvl == 10
+			image = ItemSpriteSheet.ARTIFACT_TUSK4;
+		}
 	}
 }

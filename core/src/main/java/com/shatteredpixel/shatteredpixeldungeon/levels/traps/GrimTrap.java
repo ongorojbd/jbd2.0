@@ -121,7 +121,7 @@ public class GrimTrap extends Trap {
 												GameScene.add(Roller);
 												Roller.beckon(Dungeon.hero.pos);
 											}
-
+                                            GameScene.roadroller();
 											Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
 											Sample.INSTANCE.play(Assets.Sounds.BLAST);
 											if (!finalTarget.isAlive()) {
@@ -139,7 +139,7 @@ public class GrimTrap extends Trap {
 												GameScene.add(Roller);
 												Roller.beckon(Dungeon.hero.pos);
 											}
-
+                                            GameScene.roadroller();
 											Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
 											Sample.INSTANCE.play(Assets.Sounds.BLAST);
 										}
@@ -154,6 +154,7 @@ public class GrimTrap extends Trap {
 					}
 				} else {
 					CellEmitter.get(pos).burst(ShadowParticle.UP, 10);
+                    GameScene.roadroller();
 					Sample.INSTANCE.play(Assets.Sounds.ROLLERDA);
 					Sample.INSTANCE.play(Assets.Sounds.BLAST);
 					return true;

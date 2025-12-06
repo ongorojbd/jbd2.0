@@ -558,6 +558,9 @@ public class ItemSpriteSheet {
     public static final int ARTIFACT_TOME = ARTIFACTS + 23;
     public static final int ARTIFACT_KEY = ARTIFACTS + 24;
     public static final int ARTIFACT_TUSK1 = ARTIFACTS + 25;
+    public static final int ARTIFACT_TUSK2 = ARTIFACTS + 26;
+    public static final int ARTIFACT_TUSK3 = ARTIFACTS + 27;
+    public static final int ARTIFACT_TUSK4 = ARTIFACTS + 28;
 
     static {
         assignItemRect(ARTIFACT_CLOAK, 14, 14);
@@ -586,6 +589,9 @@ public class ItemSpriteSheet {
         assignItemRect(ARTIFACT_TOME, 14, 14);
         assignItemRect(ARTIFACT_KEY, 14, 14);
         assignItemRect(ARTIFACT_TUSK1, 14, 14);
+        assignItemRect(ARTIFACT_TUSK2, 14, 14);
+        assignItemRect(ARTIFACT_TUSK3, 14, 14);
+        assignItemRect(ARTIFACT_TUSK4, 14, 14);
     }
 
     private static final int TRINKETS = xy(1, 18);  //32 slots
@@ -943,6 +949,8 @@ public class ItemSpriteSheet {
     public static final int CAVES_PAGE = DOCUMENTS + 4;
     public static final int CITY_PAGE = DOCUMENTS + 5;
     public static final int HALLS_PAGE = DOCUMENTS + 6;
+    public static final int FRIEND = DOCUMENTS + 7;
+    public static final int BABY = DOCUMENTS + 8;
 
     static {
         assignItemRect(GUIDE_PAGE, 8, 8);
@@ -952,6 +960,8 @@ public class ItemSpriteSheet {
         assignItemRect(CAVES_PAGE, 8, 8);
         assignItemRect(CITY_PAGE, 8, 8);
         assignItemRect(HALLS_PAGE, 8, 8);
+        assignItemRect(FRIEND, 14, 14);
+        assignItemRect(BABY, 14, 14);
     }
 
     //for smaller 8x8 icons that often accompany an item sprite

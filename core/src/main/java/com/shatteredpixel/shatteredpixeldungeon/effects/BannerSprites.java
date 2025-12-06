@@ -33,7 +33,8 @@ public class BannerSprites {
 		TITLE_GLOW_LAND,
 		BOSS_SLAIN,
 		GAME_OVER,
-		SELECT_YOUR_HERO
+		SELECT_YOUR_HERO,
+		HEAVEN_DIO,
 	}
 
 	public static Image get( Type type ) {
@@ -57,9 +58,14 @@ public class BannerSprites {
 			case GAME_OVER:
 				icon.frame( icon.texture.uvRect( 0, 192, 128, 227 ) );
 				break;
+//            X: 0~60 픽셀 (왼쪽에서 60픽셀 너비)
+//            Y: 227~265 픽셀 (위에서 265픽셀 아래부터 372픽셀 높이)
 			case SELECT_YOUR_HERO:
-				icon.frame( icon.texture.uvRect( 0, 227, 128, 248 ) );
+				icon.frame( icon.texture.uvRect( 0, 265, 60, 372 ) );
 				break;
+            case HEAVEN_DIO:
+                icon.frame( icon.texture.uvRect( 0, 377, 100, 458 ) );
+                break;
 		}
 		return icon;
 	}

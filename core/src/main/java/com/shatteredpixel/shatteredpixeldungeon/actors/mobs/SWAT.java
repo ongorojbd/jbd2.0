@@ -86,7 +86,7 @@ public class SWAT extends Mob implements Callback {
 
 		Dungeon.level.drop( new Araki().identify(), pos ).sprite.drop( pos );
 
-        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999978L);
         boolean shouldDropRare = Random.Int( 4 ) == 0;
         Random.popGenerator();
 

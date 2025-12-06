@@ -28,16 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class Greenbaby extends Item {
 
     {
-        image = ItemSpriteSheet.ARTIFACT_SHOES;
-
-        icon = ItemSpriteSheet.Icons.SCROLL_METAMORPH;
+        image = ItemSpriteSheet.BABY;
 
         unique = true;
-    }
-
-    @Override
-    public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x000000, 1f);
     }
 
     @Override

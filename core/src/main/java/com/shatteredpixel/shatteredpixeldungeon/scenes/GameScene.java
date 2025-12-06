@@ -2098,6 +2098,22 @@ public class GameScene extends PixelScene {
         }
     }
 
+    public static void roadroller() {
+        if (scene == null) return;
+        
+        Banner roadroller = new Banner(BannerSprites.get(BannerSprites.Type.SELECT_YOUR_HERO));
+        roadroller.show(0x00000000, 0.6f, 1f);
+        scene.showBanner(roadroller);
+    }
+
+    public static void heavendio() {
+        if (scene == null) return;
+
+        Banner heavendio = new Banner(BannerSprites.get(BannerSprites.Type.HEAVEN_DIO));
+        heavendio.show(0x00000000, 0.6f, 1f);
+        scene.showBanner(heavendio);
+    }
+
     public static void handleCell(int cell) {
         cellSelector.select(cell, PointerEvent.LEFT);
     }

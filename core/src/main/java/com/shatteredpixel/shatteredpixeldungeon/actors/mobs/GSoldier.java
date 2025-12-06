@@ -107,6 +107,7 @@ public class GSoldier extends Mob {
         spend(1f);
         Tbomb tbomb = new Tbomb();
         tbomb.noFriendlyDamage = true;
+        tbomb.thrownByGSoldier = true;
         tbomb.explode(enemy.pos);
         Invisibility.dispel(this);
         blastcooldown = 80;

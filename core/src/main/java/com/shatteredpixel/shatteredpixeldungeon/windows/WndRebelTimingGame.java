@@ -57,7 +57,7 @@ public class WndRebelTimingGame extends Window {
 	// 화살표 관련
 	private float arrowPos = 0; // 0 ~ barWidth
 	private boolean arrowMovingRight = true;
-	private float arrowSpeed = 180f; // 기본 속도
+	private float arrowSpeed = 160f; // 기본 속도
 	private boolean arrowStopped = false;
 
 	// UI 요소

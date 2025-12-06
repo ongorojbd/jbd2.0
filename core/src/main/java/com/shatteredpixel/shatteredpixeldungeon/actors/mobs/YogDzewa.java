@@ -585,7 +585,7 @@ public class YogDzewa extends Mob {
 
         Statistics.zombiecount = 2;
 
-        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999981L);
         boolean shouldDropRare = Random.Int( 10 ) == 0;
         Random.popGenerator();
 

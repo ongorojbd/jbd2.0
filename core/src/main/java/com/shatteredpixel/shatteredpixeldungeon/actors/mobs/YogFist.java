@@ -562,6 +562,7 @@ public abstract class YogFist extends Mob {
 				state = WANDERING;
 
 				if (!spawnPoints.isEmpty()){
+                    GameScene.roadroller();
 					Rollermob Rollermob = new Rollermob();
 					Rollermob.state = Rollermob.PASSIVE;
 					Rollermob.pos = Random.element(spawnPoints);

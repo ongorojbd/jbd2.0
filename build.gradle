@@ -14,7 +14,7 @@ allprojects {
         appName = '죠죠의 기묘한 던전'
         appPackageName = 'com.shatteredpixel.shatteredpixeldungeon7'
 
-        appVersionCode = 883
+        appVersionCode = 889
         appVersionName = '3.0d'
 
         appJavaCompatibility = JavaVersion.VERSION_11

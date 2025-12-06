@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
+import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
@@ -65,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDis
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Pasty;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
@@ -153,8 +155,9 @@ public enum HeroClass {
             new Danny().collect();
             new NitoDismantleHammer().collect();
             new TuskEquipmentDisc().identify().collect();
-            new SkeletonKey().collect();
+            new TengusMask().collect();
             new ChaliceOfBlood().identify().collect();
+            new PotionOfExperience().identify().quantity(100).collect();
             new DwarfToken().identify().quantity(100).collect();
             new UV().identify().quantity(100).collect();
             new WandOfDisintegration().identify().upgrade(12).collect();

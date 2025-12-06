@@ -9,10 +9,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
-import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -22,8 +22,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SpiritHorseSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -43,19 +46,37 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
     private HorseAlly horse = null;
     private int horseHP = 0;
     private int horseHT = 0;
+    private int leapCharges = 0;
+    private static final int MAX_LEAP_CHARGES = 5;
 
     public void set() {
-        horseHT = (15+ hero.lvl*5);
+        horseHT = (15+Dungeon.hero.lvl*5);
         horseHP = horseHT;
+    }
+    
+    public void addLeapCharge() {
+        if (leapCharges < MAX_LEAP_CHARGES) {
+            leapCharges++;
+            BuffIndicator.refreshHero();
+            ActionIndicator.refresh();
+        }
+    }
+    
+    public int getLeapCharges() {
+        return leapCharges;
+    }
+    
+    public int getMaxLeapCharges() {
+        return MAX_LEAP_CHARGES;
     }
 
     public void set(int HP) {
-        horseHT = (15+ hero.lvl*5);
+        horseHT = (15+Dungeon.hero.lvl*5);
         horseHP = HP;
     }
 
     public void onLevelUp() {
-        horseHT = (15+ hero.lvl*5);
+        horseHT = (15+Dungeon.hero.lvl*5);
         BuffIndicator.refreshHero();
     }
 
@@ -89,13 +110,12 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             int fallDmg = Math.round(Math.max( target.HP / 2, Random.NormalIntRange( target.HP / 2, target.HT / 4 ))*dmgMulti);
             Buff.affect( target, Bleeding.class).set( bleedAmt, RideFall.class);
             target.damage( fallDmg, new RideFall() );
-            Buff.affect(target, RidingCooldown.class).set();
+            Buff.affect(target, RidingCooldown.class, 300f);
         }
     }
 
     public static int drRoll() {
-        int baseDr = Random.NormalIntRange(2, 16); //기본 방어력: 2~16
-        return baseDr; //추가 방어력: 특성 레벨~8*특성 레벨
+        return Random.NormalIntRange(2, 16); //기본 방어력: 2~16
     }
 
     @Override
@@ -119,13 +139,22 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
     }
 
     @Override
+    public Visual secondaryVisual() {
+        BitmapText txt = new BitmapText(PixelScene.pixelFont);
+        txt.text(leapCharges + "/" + MAX_LEAP_CHARGES);
+        txt.hardlight(CharSprite.POSITIVE);
+        txt.measure();
+        return txt;
+    }
+
+    @Override
     public int indicatorColor() {
         return 0x26058C;
     }
 
     @Override
     public void doAction() {
-        spawnHorse();
+        GameScene.selectCell(leapSelector);
     }
 
     @Override
@@ -151,7 +180,9 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         }
 
         if (!spawnPoints.isEmpty()) {
-            this.horse = new HorseAlly(hero, this.horseHP);
+            // 기존 체력을 그대로 사용 (0이면 최대 체력으로)
+            int spawnHP = this.horseHP > 0 ? this.horseHP : this.horseHT;
+            this.horse = new HorseAlly(hero, spawnHP);
 
             horse.pos = Random.element(spawnPoints);
 
@@ -159,34 +190,147 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             Dungeon.level.occupyCell(horse);
 
             Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+            Sample.INSTANCE.play(Assets.Sounds.HORSE);
             CellEmitter.get(horse.pos).start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
 
             hero.spend(1f);
             hero.busy();
             hero.sprite.operate(hero.pos);
-            Buff.affect(hero, Cripple2.class);
 
             detach();
         } else
             GLog.i( Messages.get(this, "no_space") );
     }
 
-    public CellSelector.Listener dashDirector = new CellSelector.Listener(){
-
+    private CellSelector.Listener leapSelector = new CellSelector.Listener() {
         @Override
-        public void onSelect(Integer cell) {
-            if (cell == null) return;
-            if (cell == hero.pos) {
-                spawnHorse();
-            } else {
-                spawnHorse();
+        public void onSelect(Integer target) {
+            if (target == null) return;
+            
+            Hero hero = (Hero) HorseRiding.this.target;
+            
+            if (hero.rooted) {
+                PixelScene.shake(1, 1f);
+                return;
             }
+            
+            // 자기 자신에게 도약하면 말 소환 (충전량 소모 없음, 충전량 체크도 없음)
+            if (target == hero.pos) {
+                spawnHorse();
+                return;
+            }
+            
+            // 충전량 체크 (자기 자신이 아닌 경우에만)
+            if (leapCharges <= 0) {
+                GLog.w(Messages.get(HorseRiding.class, "no_leap_charge"));
+                return;
+            }
+            
+            // 충전량 체크 (자기 자신이 아닌 경우에만)
+            if (leapCharges <= 0) {
+                GLog.w(Messages.get(HorseRiding.class, "no_leap_charge"));
+                return;
+            }
+            
+            // 최대 5칸 거리 제한
+            int dist = Dungeon.level.distance(hero.pos, target);
+            if (dist > 5) {
+                GLog.w(Messages.get(HorseRiding.class, "too_far"));
+                return;
+            }
+            
+            Ballistica route = new Ballistica(hero.pos, target, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
+            int cell = route.collisionPos;
+            
+            // 다른 캐릭터가 있는 셀에는 도약할 수 없음
+            int backTrace = route.dist - 1;
+            while (Actor.findChar(cell) != null && cell != hero.pos) {
+                if (backTrace < 0) {
+                    GLog.w(Messages.get(HorseRiding.class, "blocked"));
+                    return;
+                }
+                cell = route.path.get(backTrace);
+                backTrace--;
+            }
+            
+            // 도약할 수 없는 지형인지 확인
+            if (!Dungeon.level.passable[cell] && !(hero.flying && Dungeon.level.avoid[cell])) {
+                GLog.w(Messages.get(HorseRiding.class, "blocked"));
+                return;
+            }
+            
+            // 목표 장소에 TargetedCell 표시
+            if (hero.sprite != null && hero.sprite.parent != null) {
+                hero.sprite.parent.addToBack(new TargetedCell(cell, 0xFF00FF));
+            }
+            
+            final int dest = cell;
+            final Ballistica finalRoute = route;
+            hero.busy();
+            
+            // 도약 이펙트
+            hero.sprite.emitter().start(Speck.factory(Speck.JET), 0.01f, Math.round(4 + 2*Dungeon.level.trueDistance(hero.pos, cell)));
+            
+            // 도약 속도를 빠르게 (기본 duration의 절반)
+            float distance = Math.max(1f, Dungeon.level.trueDistance(hero.pos, cell));
+            float height = distance * 2;
+            float duration = distance * 0.05f; // 기본 0.1f에서 0.05f로 줄여서 2배 빠르게
+            
+            hero.sprite.jump(hero.pos, cell, height, duration, new Callback() {
+                @Override
+                public void call() {
+                    // 경로상의 셀 처리 (지형 압박, 적 데미지)
+                    ArrayList<Char> pathEnemies = new ArrayList<>();
+                    for (int c : finalRoute.subPath(1, finalRoute.dist)) {
+                        // 지형 압박
+                        if (!hero.flying) {
+                            Dungeon.level.pressCell(c);
+                        }
+                        
+                        // 경로상의 적 찾기
+                        Char enemy = Actor.findChar(c);
+                        if (enemy != null && enemy != hero && enemy.alignment == Char.Alignment.ENEMY) {
+                            pathEnemies.add(enemy);
+                        }
+                        
+                        // 경로에 이펙트 추가
+                        CellEmitter.get(c).burst(Speck.factory(Speck.DUST), 1);
+                    }
+                    
+                    // 경로상의 적에게 데미지
+                    for (Char enemy : pathEnemies) {
+                        if (enemy.isAlive()) {
+                            int dmg = Random.NormalIntRange(hero.damageRoll() / 2, hero.damageRoll());
+                            dmg -= enemy.drRoll();
+                            dmg = Math.max(0, dmg);
+                            if (dmg > 0) {
+                                enemy.damage(dmg, hero);
+                                enemy.sprite.flash();
+                            }
+                        }
+                    }
+                    
+                    hero.move(dest);
+                    Dungeon.level.occupyCell(hero);
+                    Dungeon.observe();
+                    GameScene.updateFog();
+                    
+                    WandOfBlastWave.BlastWave.blast(dest);
+                    Sample.INSTANCE.play(Assets.Sounds.HORSE);
+                    Invisibility.dispel();
+                    hero.spendAndNext(Actor.TICK);
+                    
+                    // 충전량 소모
+                    leapCharges--;
+                    BuffIndicator.refreshHero();
+                    ActionIndicator.refresh();
+                }
+            });
         }
-
-
+        
         @Override
         public String prompt() {
-            return Messages.get(HorseRiding.class, "direct_prompt");
+            return Messages.get(HorseRiding.class, "leap_prompt", leapCharges, MAX_LEAP_CHARGES);
         }
     };
 
@@ -198,12 +342,14 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
     private static final String HORSE_HP = "horseHP";
     private static final String HORSE_HT = "horseHT";
+    private static final String LEAP_CHARGES = "leapCharges";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(HORSE_HP, horseHP);
         bundle.put(HORSE_HT, horseHT);
+        bundle.put(LEAP_CHARGES, leapCharges);
     }
 
     @Override
@@ -211,6 +357,15 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         super.restoreFromBundle(bundle);
         horseHP = bundle.getInt(HORSE_HP);
         horseHT = bundle.getInt(HORSE_HT);
+        if (bundle.contains(LEAP_CHARGES)) {
+            leapCharges = bundle.getInt(LEAP_CHARGES);
+        } else {
+            leapCharges = 0;
+        }
+        // 말 체력이 0이거나 최대 체력이 0이면 초기화
+        if (horseHT == 0 || horseHP == 0) {
+            set();
+        }
     }
 
     public static class HorseAlly extends DirectableAlly {
@@ -259,14 +414,14 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         @Override
         public boolean canInteract(Char c) {
-            return super.canInteract(c); //can use ALLY_WARP talent
+            return super.canInteract(c);
         }
 
         @Override
         public boolean interact(Char c) {
             if (c instanceof Hero) {
                 Buff.affect(c, HorseRiding.class).set(this.HP);
-                Buff.detach(hero, Cripple2.class );
+                Sample.INSTANCE.play(Assets.Sounds.HORSE);
                 destroy();
                 sprite.die();
             }
@@ -275,7 +430,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         @Override
         public void die(Object cause) {
-            Buff.affect(hero, RidingCooldown.class).set();
+            Buff.affect(Dungeon.hero, RidingCooldown.class, 300f);
             super.die(cause);
         }
 
@@ -324,15 +479,14 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         }
     }
 
-    public static class RidingCooldown extends Buff {
+    public static class RidingCooldown extends FlavourBuff {
 
         {
             type = buffType.NEUTRAL;
             announced = false;
         }
 
-        private int coolDown;
-        private int maxCoolDown;
+        public static final float DURATION = 300f;
 
         @Override
         public int icon() {
@@ -346,25 +500,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         @Override
         public float iconFadePercent() {
-            return Math.max(0, (maxCoolDown - coolDown)/(float)maxCoolDown);
-        }
-
-        @Override
-        public String iconTextDisplay() {
-            return Integer.toString(coolDown);
-        }
-
-        public void kill() {
-            coolDown --;
-            if (coolDown <= 0) {
-                detach();
-            }
-            BuffIndicator.refreshHero();    //영웅의 버프창 갱신
-        }
-
-        public void set() {
-            maxCoolDown = 5;
-            coolDown = maxCoolDown;
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
         }
 
         @Override
@@ -375,24 +511,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         @Override
         public String desc() {
-            return Messages.get(this, "desc", coolDown, maxCoolDown);
-        }
-
-        private static final String MAXCOOLDOWN = "maxCoolDown";
-        private static final String COOLDOWN  = "cooldown";
-
-        @Override
-        public void storeInBundle(Bundle bundle) {
-            super.storeInBundle(bundle);
-            bundle.put(MAXCOOLDOWN, maxCoolDown);
-            bundle.put(COOLDOWN, coolDown);
-        }
-
-        @Override
-        public void restoreFromBundle(Bundle bundle) {
-            super.restoreFromBundle(bundle);
-            maxCoolDown = bundle.getInt( MAXCOOLDOWN );
-            coolDown = bundle.getInt( COOLDOWN );
+            return Messages.get(this, "desc", dispTurns());
         }
     }
 }

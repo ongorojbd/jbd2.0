@@ -672,7 +672,7 @@ public class DwarfKing extends Mob {
             Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
         }
 
-        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999980L);
         boolean shouldDropRare = Random.Int(10) == 0;
         Random.popGenerator();
 

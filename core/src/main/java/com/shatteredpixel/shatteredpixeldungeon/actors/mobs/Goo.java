@@ -304,7 +304,7 @@ public class Goo extends Mob {
 		Dungeon.level.drop( new NitoDismantleHammer().identify(), pos ).sprite.drop( pos );
 
 		// 독립적인 시드 오프셋을 사용하여 같은 시드에서 일관된 결과 보장
-		Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+		Random.pushGenerator(Dungeon.seedCurDepth() + 999985L);
 		boolean shouldDropRare = Random.Int( 10 ) == 0;
 		Random.popGenerator();
 

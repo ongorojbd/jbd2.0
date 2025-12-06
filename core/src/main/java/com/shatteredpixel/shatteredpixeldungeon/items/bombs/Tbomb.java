@@ -50,6 +50,9 @@ public class Tbomb extends Bomb {
     // When true, this Tbomb will not damage the hero or allied units.
     public boolean noFriendlyDamage = false;
 
+    // When true, this Tbomb was thrown by GSoldier and should deal fixed 20 damage.
+    public boolean thrownByGSoldier = false;
+
     {
         image = ItemSpriteSheet.TBOMB;
     }
@@ -115,6 +118,12 @@ public class Tbomb extends Bomb {
                     continue;
                 }
 
+                int dmg;
+                
+                // GSoldier가 던진 경우 데미지를 20으로 고정
+                if (thrownByGSoldier) {
+                    dmg = 20;
+                } else {
                 int base = Random.NormalIntRange(4 + Dungeon.scalingDepth(), 12 + 3 * Dungeon.scalingDepth());
 
                 if (Dungeon.hero.buff(Kawasiribuff.class) != null) {
@@ -127,7 +136,8 @@ public class Tbomb extends Bomb {
                 }
 
                 int depthBonus = Dungeon.depth / 4;
-                int dmg = Math.round(scaled) + depthBonus;
+                    dmg = Math.round(scaled) + depthBonus;
+                }
 
                 if (ch instanceof Hero && ((Hero) ch).belongings.getItem(Jojo2.class) != null) {
                     dmg = 0;

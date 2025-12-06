@@ -202,13 +202,73 @@ public class LabsBossLevel extends Level {
             }
         }
 
+        // seal() 호출을 제거 - Rebel이 첫 피해를 받을 때 seal()이 호출되도록 함
+        // 이렇게 하면 LockedFloor가 보스 전투 시작 시점에만 생성되어 충전 문제가 해결됨
         if (map[bottomDoor] != Terrain.LOCKED_DOOR && ch.pos < bottomDoor && ch == Dungeon.hero && !isCompleted) {
-            seal();
+            // 보스 등장 로직만 실행 (seal()은 제거)
+            if (!locked) {
+                //moves intelligent allies with the hero, preferring closer pos to entrance door
+                int doorPos = bottomDoor;
+                Mob.holdAllies(this, doorPos);
+                Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+
+                Rebel boss = new Rebel();
+                boss.state = boss.WANDERING;
+                boss.pos = pointToCell(arena.center());
+                GameScene.add(boss);
+                boss.beckon(Dungeon.hero.pos);
+
+                if (heroFOV[boss.pos]) {
+                    boss.notice();
+                    boss.sprite.alpha(0);
+                    boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+                }
+
+                set(bottomDoor, Terrain.LOCKED_DOOR);
+                GameScene.updateMap(bottomDoor);
+                Dungeon.observe();
+
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
+                    }
+                });
+            }
             return;
         }
 
         if (Dungeon.level.map[topDoor] == Terrain.LOCKED_EXIT && ch.pos < bottomDoor && ch == Dungeon.hero && !isRebelAlive) {
-            seal(); //When the boss is not appeared
+            // 보스 등장 로직만 실행 (seal()은 제거)
+            if (!locked) {
+                //moves intelligent allies with the hero, preferring closer pos to entrance door
+                int doorPos = bottomDoor;
+                Mob.holdAllies(this, doorPos);
+                Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+
+                Rebel boss = new Rebel();
+                boss.state = boss.WANDERING;
+                boss.pos = pointToCell(arena.center());
+                GameScene.add(boss);
+                boss.beckon(Dungeon.hero.pos);
+
+                if (heroFOV[boss.pos]) {
+                    boss.notice();
+                    boss.sprite.alpha(0);
+                    boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+                }
+
+                set(bottomDoor, Terrain.LOCKED_DOOR);
+                GameScene.updateMap(bottomDoor);
+                Dungeon.observe();
+
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
+                    }
+                });
+            }
         }
     }
 

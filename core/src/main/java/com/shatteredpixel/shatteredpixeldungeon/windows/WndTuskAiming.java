@@ -22,7 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -74,16 +78,16 @@ public class WndTuskAiming extends Window {
 	private static final int COLOR_MARKER = 0xFFFF88CC;
 	private static final int COLOR_BAR_HIGHLIGHT = 0x22FFFFFF;
 
-	// 데미지 비율
-	private static final float DAMAGE_PERFECT = 0.50f;
-	private static final float DAMAGE_GREAT   = 0.3f;
-	private static final float DAMAGE_GOOD    = 0.15f;
-	private static final float DAMAGE_MISS    = 0.05f;
+	// 데미지 계산을 위한 히트 타입 (비율 대신 고정 데미지 사용)
+	private static final String HIT_TYPE_PERFECT = "perfect";
+	private static final String HIT_TYPE_GREAT = "great";
+	private static final String HIT_TYPE_GOOD = "good";
+	private static final String HIT_TYPE_MISS = "miss";
 
 	// 마커 관련
 	private float markerPos;
 	private float markerSpeed;
-	private float baseMarkerSpeed = 300f;
+	private float baseMarkerSpeed = 225f;
 	private boolean markerMovingRight = true;
 
 	// 2발 모드 관련
@@ -133,8 +137,8 @@ public class WndTuskAiming extends Window {
 		float targetWidth, targetHeight;
 
 		if (landscape) {
-			targetWidth  = uiW * 0.62f;
-			targetHeight = uiH * 0.34f; // 약간 더 낮게
+			targetWidth  = uiW * 0.25f; // 가로 모드에서 UI 너비 더 줄임WndTuskAiming
+			targetHeight = uiH * 0.24f; // 가로 모드에서 UI 크기 줄임
 		} else {
 			// 모바일 세로 화면 → 더 낮게, 가로는 넓게
 			targetWidth  = uiW * 0.94f;
@@ -155,12 +159,29 @@ public class WndTuskAiming extends Window {
 		WIDTH  = Math.max(WIDTH,  110);
 		HEIGHT = Math.max(HEIGHT,  64);  // 🔥 더 얇게
 
-		// 조준 바 X축 최대화 (좌우 여백 6px 정도만)
-		barWidth = WIDTH - 12;
+		// 조준 바 X축 크기 설정
+		if (landscape) {
+			// 가로 모드: 조준 바 크기 유지를 위해 여백을 줄임
+			barWidth = WIDTH - 12;
+		} else {
+			// 세로 모드에서는 최대화 (좌우 여백 6px 정도만)
+			barWidth = WIDTH - 12;
+		}
 		if (barWidth < 60) barWidth = 60;
 
-		// 마커 속도
-		markerSpeed = landscape ? baseMarkerSpeed : baseMarkerSpeed * 0.85f;
+		// 마커 속도 (landscape 모드에 따라 기본 조정)
+		markerSpeed = landscape ? baseMarkerSpeed : baseMarkerSpeed * 1.05f;
+		
+		// provoked_anger talent에 따른 조준 속도 감소
+		Hero hero = Dungeon.hero;
+		if (hero != null && hero.hasTalent(Talent.PROVOKED_ANGER)) {
+			int talentLevel = hero.pointsInTalent(Talent.PROVOKED_ANGER);
+			if (talentLevel >= 1) {
+				// 레벨 1: 10% 감소 (0.9배), 레벨 2: 20% 감소 (0.8배)
+				float speedMultiplier = 1.0f - (0.1f * talentLevel);
+				markerSpeed *= speedMultiplier;
+			}
+		}
 
 		resize(WIDTH, HEIGHT);
 
@@ -170,7 +191,9 @@ public class WndTuskAiming extends Window {
 
 
 	private void setupUI() {
-		float padding = 6;
+		boolean landscape = PixelScene.landscape();
+		// 세로 모드에서 타이틀을 더 위로 올리기 위해 padding 조정
+		float padding = landscape ? 6 : 3;
 		float y = padding;
 
 		// 제목
@@ -191,8 +214,8 @@ public class WndTuskAiming extends Window {
 		// 이제 instruction 텍스트는 없음 → 바로 바 영역 계산
 
 		// 하단 버튼 위치 계산
-		float buttonHeight = 18;
-		float buttonBottomMargin = 6;
+		float buttonHeight = landscape ? 14 : 18; // 가로 모드에서 버튼 크기 줄임
+		float buttonBottomMargin = landscape ? 4 : 6; // 가로 모드에서 여백 줄임
 		float buttonTop = HEIGHT - (buttonHeight + buttonBottomMargin);
 
 		// 바 + 여백 가능한 범위
@@ -218,7 +241,7 @@ public class WndTuskAiming extends Window {
 		createTimingBar();
 
 		// 버튼
-		float buttonWidth = WIDTH - 20;
+		float buttonWidth = landscape ? WIDTH - 40 : WIDTH - 20; // 가로 모드에서 버튼 너비 더 줄임
 		fireButton = new RedButton(Messages.get(this, "fire")) {
 			@Override
 			protected void onClick() {
@@ -349,7 +372,6 @@ public class WndTuskAiming extends Window {
 		// 판정
 		float ratio = markerPos / barWidth;
 		String hitType;
-		float dmgRatio;
 
 		float gStart = RED_RATIO + ORANGE_RATIO + YELLOW_RATIO;
 		float gEnd   = gStart + GREEN_RATIO;
@@ -359,24 +381,34 @@ public class WndTuskAiming extends Window {
 		float oEnd   = 1f - RED_RATIO;
 
 		if (ratio >= gStart && ratio <= gEnd) {
-			hitType = "perfect"; dmgRatio = DAMAGE_PERFECT;
+			hitType = HIT_TYPE_PERFECT;
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 		}
 		else if ((ratio >= yStart && ratio < gStart) || (ratio > gEnd && ratio <= yEnd)) {
-			hitType = "great"; dmgRatio = DAMAGE_GREAT;
+			hitType = HIT_TYPE_GREAT;
 		}
 		else if ((ratio >= oStart && ratio < yStart) || (ratio > yEnd && ratio <= oEnd)) {
-			hitType = "good"; dmgRatio = DAMAGE_GOOD;
+			hitType = HIT_TYPE_GOOD;
 		}
 		else {
-			hitType = "miss"; dmgRatio = DAMAGE_MISS;
+			hitType = HIT_TYPE_MISS;
 		}
 
+		// 고정 데미지 계산 (강화 수치 기반)
+		int damage = artifact.calculateDamage(hitType, target);
+		float dmgRatio = hitType.equals(HIT_TYPE_PERFECT) ? 0.50f : 
+		                hitType.equals(HIT_TYPE_GREAT) ? 0.30f :
+		                hitType.equals(HIT_TYPE_GOOD) ? 0.15f : 0f;
+		
 		damageResults.add(dmgRatio);
 		currentShot++;
 
-		int damage = Math.round(target.HT * dmgRatio);
 		boolean alive = artifact.onSingleShotComplete(target, dmgRatio, hitType, damage);
+
+		// 각 발사 완료 후 관통된 적들 처리 (레벨 3 이상일 때)
+		if (artifact.level() >= 3) {
+			artifact.processPiercedTargets();
+		}
 
 		if (currentShot < totalShots && alive) {
 			startAiming();

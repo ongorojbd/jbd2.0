@@ -132,7 +132,12 @@ public class Willson extends NPC {
                             @Override
                             protected void onSelect(int index) {
                                 if (index == 0) {
-                                    switch (Random.Int(3)) {
+                                    // 독립적인 시드 오프셋을 사용하여 같은 시드에서 일관된 결과 보장
+                                    Random.pushGenerator(Dungeon.seedCurDepth() + 999986L);
+                                    int destination = Random.Int(3);
+                                    Random.popGenerator();
+                                    
+                                    switch (destination) {
                                         case 0:
                                             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
                                             InterlevelScene.returnDepth = 20;

@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 
 public class Doom extends Buff {
 
@@ -42,6 +43,10 @@ public class Doom extends Buff {
         type = buffType.NEGATIVE;
         announced = true;
     }
+
+    public static final float DURATION = 1_000_000;
+    
+    private float left = DURATION;
 
     @Override
     public void fx(boolean on) {
@@ -57,6 +62,15 @@ public class Doom extends Buff {
     @Override
     public boolean act() {
         spend(TICK);
+
+        // 시간 제한이 있는 경우 (일시적 Doom)
+        if (left < DURATION) {
+            left -= 1f;
+            if (left <= 0) {
+                detach();
+                return true;
+            }
+        }
 
         if (target instanceof Hero && Statistics.polpoQuest) {
             if (Statistics.deepestFloor >= Statistics.polpocount && Dungeon.hero.belongings.getItem(PolpoItem.class) != null) {
@@ -81,5 +95,35 @@ public class Doom extends Buff {
             }
         }
         return true;
+    }
+
+    public void setDuration(float duration) {
+        left = duration;
+    }
+
+    @Override
+    public String desc() {
+        if (left < DURATION) {
+            return Messages.get(this, "desc", dispTurns(Math.max(0, left)));
+        }
+        return Messages.get(this, "desc");
+    }
+
+    private static final String LEFT = "left";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(LEFT, left);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        if (bundle.contains(LEFT)) {
+            left = bundle.getFloat(LEFT);
+        } else {
+            left = DURATION;
+        }
     }
 }
