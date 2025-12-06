@@ -33,6 +33,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LightParticle;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -53,17 +56,19 @@ public class TuskEquipmentDisc extends Artifact {
 	public static final String AC_SHOOT = "SHOOT";
 
 	{
-		image = ItemSpriteSheet.TUSK;
+		image = ItemSpriteSheet.ARTIFACT_TUSK1;
 
-		levelCap = 10;
-		exp = 0;
-
-		charge = Math.min(level()+3, 10);
+        exp = 0;
+        levelCap = 10;
+        charge = Math.min(level()+3, 10);
 		partialCharge = 0;
 		chargeCap = Math.min(level()+3, 10);
 
 		defaultAction = AC_SHOOT;
 		usesTargeting = true;
+
+        unique = true;
+        bones = false;
 	}
 
 	// Perfect 횟수 카운터 (영구 저장)
@@ -73,16 +78,6 @@ public class TuskEquipmentDisc extends Artifact {
 	private int perfectsForLevel(int level) {
 		// 레벨 0→1: 2회, 레벨 1→2: 4회, ..., 레벨 9→10: 20회
 		return (level + 1) * 2;
-	}
-
-	// 현재 레벨에서 다음 레벨까지 필요한 Perfect 횟수
-	public int perfectsToNextLevel() {
-		if (level() >= levelCap) return 0;
-		int needed = 0;
-		for (int i = 0; i < level(); i++) {
-			needed += perfectsForLevel(i);
-		}
-		return perfectsForLevel(level()) - (perfectCount - needed);
 	}
 
 	// 현재 레벨에서 얻은 Perfect 횟수
@@ -240,12 +235,27 @@ public class TuskEquipmentDisc extends Artifact {
 			isFirstShot = false;
 		}
 
-		// 빔 이펙트 발사 (각 발사마다)
-		hero.sprite.parent.add(new Beam.DeathRay(
-			DungeonTilemap.raisedTileCenterToWorld(hero.pos),
-			DungeonTilemap.raisedTileCenterToWorld(target.pos)
+		// SuperNova 스타일 이펙트
+		// 1. 히어로 스프라이트 zap 애니메이션
+		hero.sprite.zap(target.pos);
+
+		// 2. 경로에 빛 파티클 추가
+		Ballistica beam = new Ballistica(hero.pos, target.pos, Ballistica.WONT_STOP);
+		for (int c : beam.subPath(1, beam.dist)) {
+			CellEmitter.center(c).burst(LightParticle.BURST, 8);
+		}
+
+		// 3. SuperNovaRay 빔 이펙트 (두께 2)
+		int cell = beam.path.get(Math.min(beam.dist, beam.path.size() - 1));
+		hero.sprite.parent.add(new Beam.SuperNovaRay(
+			hero.sprite.center(),
+			DungeonTilemap.raisedTileCenterToWorld(cell),
+			2
 		));
-		Sample.INSTANCE.play(Assets.Sounds.RAY);
+
+		// 4. 타겟에 파티클 및 플래시 효과
+		target.sprite.centerEmitter().burst(LightParticle.BURST, 8);
+		target.sprite.flash();
 
 		// 데미지 적용
 		target.damage(damage, this);
@@ -275,7 +285,6 @@ public class TuskEquipmentDisc extends Artifact {
 		if (perfectCount >= totalNeeded) {
 			upgrade();
 			GLog.p(Messages.get(this, "upgrade", level()));
-			Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
 		}
 	}
 
@@ -311,11 +320,7 @@ public class TuskEquipmentDisc extends Artifact {
 
 	// 업그레이드 여부 확인 (2발 발사 가능 여부)
 	public boolean isUpgraded() {
-		return level() >= 1;
-	}
-
-	public int getPerfectCount() {
-		return perfectCount;
+		return level() >= 6;
 	}
 
 	@Override

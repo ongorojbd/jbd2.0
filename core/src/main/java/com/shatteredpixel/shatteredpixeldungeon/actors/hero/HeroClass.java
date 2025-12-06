@@ -72,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Danny;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
@@ -149,8 +150,9 @@ public enum HeroClass {
             new ScrollOfMysticalEnergy().identify().quantity(100).collect();
             new PlateArmor().identify().upgrade(999).collect();
             new Neotel().collect();
-            new KingsCrown().collect();
-            new ScrollOfIdentify().identify().collect();
+            new Danny().collect();
+            new NitoDismantleHammer().collect();
+            new TuskEquipmentDisc().identify().collect();
             new SkeletonKey().collect();
             new ChaliceOfBlood().identify().collect();
             new DwarfToken().identify().quantity(100).collect();

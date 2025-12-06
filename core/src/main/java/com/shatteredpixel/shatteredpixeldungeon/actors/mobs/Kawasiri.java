@@ -160,6 +160,10 @@ public class Kawasiri extends Mob {
     @Override
     public void damage(int dmg, Object src) {
 
+        if (Phase == 7) {
+            dmg = dmg / 5;
+        }
+
         if (dmg >= 49) {
             //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
             // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
@@ -301,8 +305,6 @@ public class Kawasiri extends Mob {
 
     private static final String PHASE = "Phase";
     private static final float DELAY = 2f;
-    private static final float DELAY3 = 249f;
-
     @Override
     public int damageRoll() {
         return Random.NormalIntRange(15, 25);

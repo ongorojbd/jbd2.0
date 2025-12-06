@@ -30,7 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wezamob;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WezaSprite;
@@ -175,14 +177,37 @@ public class Weza extends NPC {
 
 
     public static void spawn(HallsLevel level) {
-        if (Random.Int( 2 ) == 0) {
+        // 독립적인 시드 오프셋을 사용
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999994L);
+        boolean shouldSpawn = Random.Int( 2 ) == 0;
+        Random.popGenerator();
+        
+        if (shouldSpawn) {
         if (Dungeon.depth == 23 && !Dungeon.bossLevel()) {
 
             Weza centinel = new Weza();
             do {
                 centinel.pos = level.randomRespawnCell(centinel);
-            } while (centinel.pos == -1);
+            } while (
+                    centinel.pos == -1 ||
+                            level.heaps.get(centinel.pos) != null ||
+                            level.traps.get(centinel.pos) != null ||
+                            level.findMob(centinel.pos) != null ||
+                            level.map[centinel.pos] == Terrain.GRASS ||
+                            level.map[centinel.pos] == Terrain.HIGH_GRASS ||
+                            level.map[centinel.pos] == Terrain.FURROWED_GRASS ||
+                            !(level.passable[centinel.pos + PathFinder.CIRCLE4[0]] && level.passable[centinel.pos + PathFinder.CIRCLE4[2]]) ||
+                            !(level.passable[centinel.pos + PathFinder.CIRCLE4[1]] && level.passable[centinel.pos + PathFinder.CIRCLE4[3]]));
             level.mobs.add(centinel);
+            
+            // 풀 타일을 EMPTY로 변경하여 겹침 방지 (do-while에서 이미 제외했지만 안전을 위해)
+            if (level.map[centinel.pos] == Terrain.GRASS ||
+                    level.map[centinel.pos] == Terrain.HIGH_GRASS ||
+                    level.map[centinel.pos] == Terrain.FURROWED_GRASS) {
+                Level.set(centinel.pos, Terrain.EMPTY, level);
+            } else if (level.map[centinel.pos] != Terrain.EMPTY_DECO) {
+                Level.set(centinel.pos, Terrain.EMPTY, level);
+            }
         }
     }
     }

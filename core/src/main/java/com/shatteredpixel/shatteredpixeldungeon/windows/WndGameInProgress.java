@@ -118,13 +118,14 @@ public class WndGameInProgress extends Window {
 			protected void onClick() {
 				super.onClick();
 				
-				GamesInProgress.curSlot = slot;
-				
-				Dungeon.hero = null;
-				Dungeon.daily = Dungeon.dailyReplay = false;
-				ActionIndicator.clearAction();
-				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
-				ShatteredPixelDungeon.switchScene(InterlevelScene.class);
+			GamesInProgress.curSlot = slot;
+			
+			Dungeon.hero = null;
+			// daily 상태는 InterlevelScene에서 loadGame()을 통해 저장된 값으로 복원되므로
+			// 여기서 false로 설정하지 않음 (경쟁모드 버그 수정)
+			ActionIndicator.clearAction();
+			InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+			ShatteredPixelDungeon.switchScene(InterlevelScene.class);
 			}
 		};
 		

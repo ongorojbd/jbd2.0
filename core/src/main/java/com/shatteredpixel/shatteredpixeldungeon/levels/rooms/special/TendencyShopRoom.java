@@ -99,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
@@ -379,7 +380,7 @@ public class TendencyShopRoom extends SpecialRoom {
             }
         }
 
-        switch (Random.Int(6)) {
+        switch (Random.Int(7)) {
             case 0:
                 itemsToSpawn.add(new StoneOfAugmentation());
                 break;
@@ -397,6 +398,9 @@ public class TendencyShopRoom extends SpecialRoom {
                 break;
             case 5:
                 itemsToSpawn.add(new HealingDart().quantity(1));
+                break;
+            case 6:
+                itemsToSpawn.add(new ScrollOfExtract().quantity(1));
                 break;
         }
 

@@ -31,10 +31,10 @@ import com.watabou.utils.PointF;
 public class Beam extends Image {
 	
 	private static final double A = 180 / Math.PI;
-	
-	private  float duration;
-	
-	private float timeLeft;
+
+    protected float duration;
+
+    protected float timeLeft;
 
 	private Beam(PointF s, PointF e, Effects.Type asset, float duration) {
 		super( Effects.get( asset ) );
@@ -85,6 +85,28 @@ public class Beam extends Image {
 			tint(0.90f, 0.78f, 1.0f, 1); // 연보라색
 		}
 	}
+
+    public static class SuperNovaRay extends Beam {
+        float scaleMulti;
+        public SuperNovaRay(PointF s, PointF e, float scaleMulti){
+            super(s, e, Effects.Type.DEATH_RAY, 2f);
+            this.scaleMulti = scaleMulti;
+            scale.set( scale.x, scale.y*this.scaleMulti );
+        }
+
+        @Override
+        public void update() {
+            super.update();
+
+            float p = timeLeft*this.scaleMulti / duration;
+            alpha( p );
+            scale.set( scale.x, p );
+
+            if ((timeLeft -= Game.elapsed) <= 0) {
+                killAndErase();
+            }
+        }
+    }
 
 
 	@Override

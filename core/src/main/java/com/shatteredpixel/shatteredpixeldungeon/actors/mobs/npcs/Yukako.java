@@ -29,7 +29,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
@@ -179,8 +181,12 @@ public class Yukako extends NPC {
     }
 
     public static void spawn(PrisonLevel level) {
-
-        if (Random.Int( 2 ) == 0) {
+        // 독립적인 시드 오프셋을 사용
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999996L);
+        boolean shouldSpawn = Random.Int( 2 ) == 0;
+        Random.popGenerator();
+        
+        if (shouldSpawn) {
         if (Dungeon.depth >= 9 && !Dungeon.bossLevel()) {
 
             Yukako npc = new Yukako();
@@ -191,10 +197,22 @@ public class Yukako extends NPC {
                             level.heaps.get( npc.pos ) != null ||
                             level.traps.get( npc.pos) != null ||
                             level.findMob( npc.pos ) != null ||
+                            level.map[npc.pos] == Terrain.GRASS ||
+                            level.map[npc.pos] == Terrain.HIGH_GRASS ||
+                            level.map[npc.pos] == Terrain.FURROWED_GRASS ||
                             //The imp doesn't move, so he cannot obstruct a passageway
                             !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
                             !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
             level.mobs.add( npc );
+            
+            // 풀 타일을 EMPTY로 변경하여 겹침 방지 (do-while에서 이미 제외했지만 안전을 위해)
+            if (level.map[npc.pos] == Terrain.GRASS ||
+                    level.map[npc.pos] == Terrain.HIGH_GRASS ||
+                    level.map[npc.pos] == Terrain.FURROWED_GRASS) {
+                Level.set(npc.pos, Terrain.EMPTY, level);
+            } else if (level.map[npc.pos] != Terrain.EMPTY_DECO) {
+                Level.set(npc.pos, Terrain.EMPTY, level);
+            }
         }
         }
     }

@@ -83,7 +83,7 @@ public class WndTuskAiming extends Window {
 	// 마커 관련
 	private float markerPos;
 	private float markerSpeed;
-	private float baseMarkerSpeed = 220f;
+	private float baseMarkerSpeed = 300f;
 	private boolean markerMovingRight = true;
 
 	// 2발 모드 관련
@@ -387,8 +387,10 @@ public class WndTuskAiming extends Window {
 
 	private void complete() {
 		state = GameState.COMPLETE;
-		artifact.onAllShotsComplete();
+		// 창을 먼저 닫아서 즉시 게임 화면으로 돌아가도록 함
 		hide();
+		// 창이 닫힌 후 게임 로직 처리
+		artifact.onAllShotsComplete();
 	}
 
 	@Override

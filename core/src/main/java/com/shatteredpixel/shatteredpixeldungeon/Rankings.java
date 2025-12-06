@@ -100,7 +100,14 @@ public enum Rankings {
 		}
 
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-		rec.date = format.format(new Date(Game.realTime));
+		
+		// Daily run의 경우 게임 시작 날짜를 사용, 일반 게임은 종료 날짜 사용
+		if (Dungeon.daily && !Dungeon.customSeedText.isEmpty()) {
+			// customSeedText에 게임 시작 날짜가 저장되어 있음 (yyyy-MM-dd 형식)
+			rec.date = Dungeon.customSeedText;
+		} else {
+			rec.date = format.format(new Date(Game.realTime));
+		}
 
 		rec.cause = cause instanceof Class ? (Class)cause : cause.getClass();
 		rec.win		= win;

@@ -798,6 +798,8 @@ public class Rebel extends Mob {
                 GameScene.add(jojo);
                 jojo.beckon(Dungeon.hero.pos);
 
+                Sample.INSTANCE.play(Assets.Sounds.ORA);
+
                 for (Char c : Actor.chars()) {
                     if (c instanceof Jotaro) {
                         ((Jotaro) c).jo();
@@ -934,8 +936,7 @@ public class Rebel extends Mob {
             Statistics.qualifiedForBossChallengeBadge = false;
         }
 
-        PotionOfHealing.cure(hero);
-        PotionOfHealing.heal(hero);
+        hero.HP = hero.HT;
         Buff.detach(Dungeon.hero, Doom.class);
 
         LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
@@ -943,7 +944,11 @@ public class Rebel extends Mob {
             beacon.upgrade();
         }
 
-        if (Random.Int(10) == 0) {
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        boolean shouldDropRare = Random.Int( 10 ) == 0;
+        Random.popGenerator();
+
+        if (shouldDropRare) {
             GameScene.flash(0xFFFF00);
             Dungeon.level.drop(new BossdiscH().identify(), pos).sprite.drop(pos);
             new Flare(5, 32).color(0xFFFF00, true).show(hero.sprite, 2f);

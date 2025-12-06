@@ -107,7 +107,7 @@ public class Amblance extends Mob {
         HP = HT = 999;
         defenseSkill = 999;
         EXP = 0;
-        baseSpeed = 1.5f;
+        baseSpeed = 2f;
 
         immunities.add( Blizzard.class );
         immunities.add( CorrosiveGas.class );
@@ -174,7 +174,7 @@ public class Amblance extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 150, 155 );
+        return Random.NormalIntRange( 9999, 9999 );
     }
 
     @Override
@@ -184,7 +184,7 @@ public class Amblance extends Mob {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(9995, 9999);
+        return Random.NormalIntRange(9999, 9999);
     }
 
 

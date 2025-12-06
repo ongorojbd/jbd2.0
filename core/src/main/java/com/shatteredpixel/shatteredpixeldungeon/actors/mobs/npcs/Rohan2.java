@@ -282,7 +282,12 @@ public class Rohan2 extends NPC {
     }
 
     public static void spawn(CavesLevel level) {
-        if (Random.Int( 2 ) == 0) {
+        // 독립적인 시드 오프셋을 사용하여 Challenge와 무관하게 일관된 결과 보장
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999998L);
+        boolean shouldSpawn = Random.Int( 2 ) == 0;
+        Random.popGenerator();
+        
+        if (shouldSpawn) {
             if (Dungeon.depth == 11 && !Dungeon.bossLevel()) {
 
                 Rohan2 npc = new Rohan2();
@@ -293,11 +298,19 @@ public class Rohan2 extends NPC {
                                 level.heaps.get( npc.pos ) != null ||
                                 level.traps.get( npc.pos) != null ||
                                 level.findMob( npc.pos ) != null ||
+                                level.map[npc.pos] == Terrain.GRASS ||
+                                level.map[npc.pos] == Terrain.HIGH_GRASS ||
+                                level.map[npc.pos] == Terrain.FURROWED_GRASS ||
                                 !(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
                                 !(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
                 level.mobs.add( npc );
 
-                if (npc.pos != Terrain.EMPTY_DECO) {
+                // 풀 타일을 EMPTY로 변경하여 겹침 방지 (do-while에서 이미 제외했지만 안전을 위해)
+                if (level.map[npc.pos] == Terrain.GRASS ||
+                        level.map[npc.pos] == Terrain.HIGH_GRASS ||
+                        level.map[npc.pos] == Terrain.FURROWED_GRASS) {
+                    Level.set(npc.pos, Terrain.EMPTY, level);
+                } else if (level.map[npc.pos] != Terrain.EMPTY_DECO) {
                     Level.set(npc.pos, Terrain.EMPTY, level);
                 }
             }

@@ -673,7 +673,11 @@ public class DM300 extends Mob {
 
 		Sample.INSTANCE.play( Assets.Sounds.SHEER2);
 
-		if (Random.Int( 2 ) == 0) {
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        boolean shouldDropRare1 = Random.Int( 2 ) == 0;
+        Random.popGenerator();
+
+        if (shouldDropRare1) {
 			Kawasiri Kawasiri = new Kawasiri();
 			Kawasiri.state = Kawasiri.FLEEING;
 			Kawasiri.pos = this.pos;
@@ -681,7 +685,11 @@ public class DM300 extends Mob {
 			Kawasiri.beckon(Dungeon.hero.pos);
 		}
 
-		if (Random.Int( 10 ) == 0) {
+        Random.pushGenerator(Dungeon.seedCurDepth() + 999990L);
+        boolean shouldDropRare2 = Random.Int( 10 ) == 0;
+        Random.popGenerator();
+
+        if (shouldDropRare2) {
 			GameScene.flash(0xFFFF00);
 
 			switch(Dungeon.hero.heroClass){

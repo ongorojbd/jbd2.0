@@ -23,12 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.services.rankings;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.watabou.noosa.Game;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 
 public class SupabaseRankingService extends RankingService {
@@ -125,11 +123,16 @@ public class SupabaseRankingService extends RankingService {
 		// 	return;
 		// }
 
-		// Supabase REST API: date로 필터링, score 내림차순, 상위 10개
+		// Supabase REST API: date 컬럼으로 필터링
+		// 현재 Rankings.submit()은 게임 시작 날짜를 date에 저장하므로,
+		// date 컬럼을 사용하여 조회하고 클라이언트 측에서 추가 검증
 		String url = SUPABASE_URL + "/rest/v1/daily_rankings" +
 		             "?date=eq." + date +
 		             "&order=score.desc" +
 		             "&limit=10";
+		
+		// 디버깅: 조회 날짜 로그
+		Game.reportException(new Exception("Fetching daily rankings from Supabase: date=" + date + ", url=" + url));
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
 		httpGet.setUrl(url);
@@ -149,11 +152,19 @@ public class SupabaseRankingService extends RankingService {
 					if (jsonValue.isArray()) {
 						int rank = 1;
 						for (JsonValue entry : jsonValue) {
+							String entryDate = entry.getString("date", "");
+							
+							// date 컬럼만 사용 (Rankings.submit()에서 게임 시작 날짜를 저장)
+							// 조회 날짜와 정확히 일치하는 것만 포함
+							if (!entryDate.equals(date)) {
+								continue; // 날짜가 일치하지 않으면 건너뛰기
+							}
+							
 							DailyRankingEntry rankingEntry = new DailyRankingEntry();
 							rankingEntry.rank = rank++;
 							rankingEntry.playerName = entry.getString("player_name", "Anonymous");
 							rankingEntry.score = entry.getInt("score", 0);
-							rankingEntry.date = entry.getString("date", date);
+							rankingEntry.date = entryDate;
 							rankingEntry.depth = entry.getInt("depth", 0);
 							rankingEntry.level = entry.getInt("level", 0);
 							rankingEntry.heroClass = entry.getString("hero_class", "");
