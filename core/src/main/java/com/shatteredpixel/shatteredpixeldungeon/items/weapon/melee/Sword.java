@@ -265,6 +265,47 @@ public class Sword extends MeleeWeapon {
 				break;
 		}
 	}
+    public static void t1(){
+
+        switch (Random.Int( 7 )) {
+            case 0:
+                Sample.INSTANCE.play( Assets.Sounds.JH5);
+                break;
+            case 1:
+                Sample.INSTANCE.play( Assets.Sounds.JH3);
+                break;
+            case 2:
+                Sample.INSTANCE.play( Assets.Sounds.JH4);
+                break;
+            case 3:
+                Sample.INSTANCE.play( Assets.Sounds.JH9);
+                break;
+            case 4:
+                Sample.INSTANCE.play( Assets.Sounds.JH10);
+                break;
+            case 5:
+                Sample.INSTANCE.play( Assets.Sounds.JH11);
+                break;
+            case 6:
+                Sample.INSTANCE.play( Assets.Sounds.JH12);
+                break;
+        }
+    }
+
+    public static void tp(){
+
+        switch (Random.Int( 3 )) {
+            case 0:
+                Sample.INSTANCE.play( Assets.Sounds.JH6);
+                break;
+            case 1:
+                Sample.INSTANCE.play( Assets.Sounds.JH7);
+                break;
+            case 2:
+                Sample.INSTANCE.play( Assets.Sounds.JH8);
+                break;
+        }
+    }
 
 	public static void cleaveAbility(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){
 		if (target == null) {

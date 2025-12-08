@@ -21,10 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 
 public class EnhancedArmor extends Buff {
 
@@ -34,6 +36,8 @@ public class EnhancedArmor extends Buff {
     }
 
     public static final float DURATION = 1_000_000;
+    
+    private int enhancementLevel = -1; // -1이면 Statistics.spw3 사용, 그 외에는 해당 값 사용
 
     @Override
     public int icon() {
@@ -42,7 +46,22 @@ public class EnhancedArmor extends Buff {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", Statistics.spw3);
+        int level = getEnhancementLevel();
+        return Messages.get(this, "desc", level);
+    }
+    
+    public int getEnhancementLevel() {
+        if (Dungeon.tendencylevel) {
+            return Statistics.spw3;
+        }
+        if (enhancementLevel >= 0) {
+            return enhancementLevel;
+        }
+        return Statistics.spw3;
+    }
+    
+    public void setEnhancementLevel(int level) {
+        enhancementLevel = level;
     }
 
     @Override
@@ -53,6 +72,24 @@ public class EnhancedArmor extends Buff {
     @Override
     public String toString() {
         return Messages.get(this, "name");
+    }
+    
+    private static final String ENHANCEMENT_LEVEL = "enhancement_level";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(ENHANCEMENT_LEVEL, enhancementLevel);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        if (bundle.contains(ENHANCEMENT_LEVEL)) {
+            enhancementLevel = bundle.getInt(ENHANCEMENT_LEVEL);
+        } else {
+            enhancementLevel = -1; // 기존 세이브 파일 호환성: 키가 없으면 -1 (Statistics.spw3 사용)
+        }
     }
 
 }

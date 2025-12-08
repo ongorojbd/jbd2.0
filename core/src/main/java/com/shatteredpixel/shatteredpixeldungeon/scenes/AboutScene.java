@@ -59,7 +59,7 @@ import java.util.TimeZone;
 public class AboutScene extends PixelScene {
 
     private static final float ROW_HEIGHT_MAX = 22;
-    private static final float ROW_HEIGHT_MIN = 14;
+    private static final float ROW_HEIGHT_MIN = 14; // 세로 화면은 기존 값 유지
     private static final float MAX_ROW_WIDTH = 180;
     private static final float GAP = 4;
 
@@ -108,9 +108,19 @@ public class AboutScene extends PixelScene {
         titleIcon.hardlight(0.5f, 1f, 2f); // 경쟁 모드 색깔과 동일
         IconTitle title = new IconTitle(titleIcon, "플레이어 랭킹");
         title.setSize(200, 0);
+        float titleY, titleX;
+        if (landscape()) {
+            // 가로화면: 중앙 상단에 배치
+            titleX = insets.left + (w - title.reqWidth()) / 2f;
+            titleY = insets.top + 5;
+        } else {
+            // 세로화면: 기존 위치
+            titleX = insets.left + (w - title.reqWidth()) / 2f;
+            titleY = insets.top + (20 - title.height()) / 2f;
+        }
         title.setPos(
-                insets.left + (w - title.reqWidth()) / 2f,
-                insets.top + (20 - title.height()) / 2f
+                titleX,
+                titleY
         );
         align(title);
         add(title);
@@ -130,19 +140,37 @@ public class AboutScene extends PixelScene {
 
         updateRankingsDisplay();
 
+        // 날짜 표시와 새로고침 버튼은 하단 버튼 우측에 배치하기 위해 나중에 추가
+
+        // 도움말 버튼
+        StyledButton helpBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "도움말", 7) {
+            @Override
+            protected void onClick() {
+                super.onClick();
+                ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
+                        Icons.get(Icons.INFO),
+                        "플레이어 랭킹",
+                        "오늘의 경쟁 모드 플레이어 랭킹을 확인하세요!\n\n" +
+                                "랭킹은 새로운 기록이 등록되면 실시간으로 반영되며, 기록 상세 보기도 제공됩니다.\n\n" +
+                                "점수가 높을수록 상위에 표시되며, 1~3위는 특별한 색상으로 빛납니다."
+                ));
+            }
+        };
+
+        // 개발자 소개 버튼
+        StyledButton creditsBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "개발자 정보", 7) {
+            @Override
+            protected void onClick() {
+                super.onClick();
+                ShatteredPixelDungeon.switchScene(CreditScene.class);
+            }
+        };
+
         // 날짜 표시
         RenderedTextBlock dateText = PixelScene.renderTextBlock("날짜: " + currentDate, 7);
         dateText.hardlight(0x88FFFF);
-        float dateTextX = insets.left + (w - dateText.width() - 20) / 2; // 새로고침 버튼 공간 확보
-        float dateTextY = insets.top + h - dateText.height() - 50;
-        dateText.setPos(
-                dateTextX,
-                dateTextY
-        );
-        align(dateText);
-        add(dateText);
 
-        // 새로고침 버튼 (날짜 오른쪽)
+        // 새로고침 버튼
         IconButton refreshBtn = new IconButton(Icons.get(Icons.RANDOMIZE)) {
             @Override
             protected void onClick() {
@@ -157,56 +185,90 @@ public class AboutScene extends PixelScene {
                 }
             }
         };
-        // 날짜 텍스트와 y축 중앙 정렬
-        float refreshBtnY = dateTextY + (dateText.height() - 16) / 2f;
-        refreshBtn.setRect(
-                dateTextX + dateText.width() + 4,
-                refreshBtnY,
-                16,
-                16
-        );
-        align(refreshBtn);
-        add(refreshBtn);
 
-        // 도움말 버튼 (개발자 정보 버튼 위)
-        StyledButton helpBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "도움말", 7) {
-            @Override
-            protected void onClick() {
-                super.onClick();
-                ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
-                        Icons.get(Icons.INFO),
-                        "플레이어 랭킹",
-                        "오늘의 경쟁 모드 플레이어 랭킹을 확인하세요!\n\n" +
-                                "랭킹은 새로운 기록이 등록되면 실시간으로 반영되며, 기록 상세 보기도 제공됩니다.\n\n" +
-                                "점수가 높을수록 상위에 표시되며, 1~3위는 특별한 색상으로 빛납니다."
-                ));
-            }
-        };
-        helpBtn.setRect(
-                insets.left + (w - 80) / 2,
-                insets.top + h - 45, // 도움말, 개발자 정보 위치
-                80,
-                18
-        );
-        align(helpBtn);
-        add(helpBtn);
+        if (landscape()) {
+            // 가로화면: 버튼을 가로로 나란히 배치
+            float btnWidth = 70;
+            float btnHeight = 18;
+            float btnGap = 8;
+            float totalBtnWidth = btnWidth * 2 + btnGap;
+            float btnAreaLeft = insets.left + (w - totalBtnWidth) / 2f;
+            float btnY = insets.top + h - btnHeight - 2; // 5에서 2로 줄임
 
-        // 개발자 소개 버튼 (하단 중앙)
-        StyledButton creditsBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "개발자 정보", 7) {
-            @Override
-            protected void onClick() {
-                super.onClick();
-                ShatteredPixelDungeon.switchScene(CreditScene.class);
-            }
-        };
-        creditsBtn.setRect(
-                insets.left + (w - 80) / 2,
-                insets.top + h - 25,
-                80,
-                18
-        );
-        align(creditsBtn);
-        add(creditsBtn);
+            helpBtn.setRect(
+                    btnAreaLeft,
+                    btnY,
+                    btnWidth,
+                    btnHeight
+            );
+            align(helpBtn);
+            add(helpBtn);
+
+            creditsBtn.setRect(
+                    btnAreaLeft + btnWidth + btnGap,
+                    btnY,
+                    btnWidth,
+                    btnHeight
+            );
+            align(creditsBtn);
+            add(creditsBtn);
+
+            // 날짜와 새로고침 버튼을 우측에 배치
+            float dateTextX = creditsBtn.right() + 8;
+            float dateTextY = btnY + (btnHeight - dateText.height()) / 2f;
+            dateText.setPos(dateTextX, dateTextY);
+            align(dateText);
+            add(dateText);
+
+            float refreshBtnY = dateTextY + (dateText.height() - 16) / 2f;
+            refreshBtn.setRect(
+                    dateTextX + dateText.width() + 4,
+                    refreshBtnY,
+                    16,
+                    16
+            );
+            align(refreshBtn);
+            add(refreshBtn);
+        } else {
+            // 세로화면: 기존 레이아웃 유지
+            // 날짜 표시 (기존 위치: 중앙 하단)
+            float dateTextX = insets.left + (w - dateText.width() - 20) / 2;
+            float dateTextY = insets.top + h - dateText.height() - 50;
+            dateText.setPos(dateTextX, dateTextY);
+            align(dateText);
+            add(dateText);
+
+            // 새로고침 버튼 (날짜 오른쪽)
+            float refreshBtnY = dateTextY + (dateText.height() - 16) / 2f;
+            refreshBtn.setRect(
+                    dateTextX + dateText.width() + 4,
+                    refreshBtnY,
+                    16,
+                    16
+            );
+            align(refreshBtn);
+            add(refreshBtn);
+
+            // 도움말 버튼 (기존 위치)
+            helpBtn.setRect(
+                    insets.left + (w - 80) / 2,
+                    insets.top + h - 45,
+                    80,
+                    18
+            );
+            align(helpBtn);
+            add(helpBtn);
+
+            // 개발자 정보 버튼 (기존 위치)
+            creditsBtn.setRect(
+                    insets.left + (w - 80) / 2,
+                    insets.top + h - 25,
+                    80,
+                    18
+            );
+            align(creditsBtn);
+            add(creditsBtn);
+        }
 
         ExitButton btnExit = new ExitButton();
         btnExit.setPos(Camera.main.width - btnExit.width() - insets.right, insets.top);
@@ -236,18 +298,37 @@ public class AboutScene extends PixelScene {
             // 로딩 중 메시지
             statusText = PixelScene.renderTextBlock("랭킹 데이터를 불러오는 중입니다.\n인터넷 연결이 필요합니다.", 8);
             statusText.hardlight(0x88FFFF);
+            float statusY = landscape() ? insets.top + (h - statusText.height()) / 2 - 10 : insets.top + (h - statusText.height()) / 2;
             statusText.setPos(
                     insets.left + (w - statusText.width()) / 2,
-                    insets.top + (h - statusText.height()) / 2
+                    statusY
             );
             align(statusText);
             rankingContainer.add(statusText);
         } else if (rankings.size() > 0) {
             // 각 항목에 최대한 공간 할당
-            float rowHeight = GameMath.gate(ROW_HEIGHT_MIN, (h - 120) / rankings.size(), ROW_HEIGHT_MAX);
+            float left, top, rowHeight;
+            
+            if (landscape()) {
+                // 가로화면: 하단 버튼 영역 높이 계산
+                float bottomButtonArea = 20; // 가로: 18 + 2
+                float bottomGap = 2; // 하단 버튼과의 간격
+                float availableHeight = h - 50 - bottomButtonArea - bottomGap;
+                rowHeight = GameMath.gate(ROW_HEIGHT_MIN, availableHeight / rankings.size(), ROW_HEIGHT_MAX);
 
-            float left = (w - Math.min(MAX_ROW_WIDTH, w)) / 2 + GAP;
-            float top = (h - rowHeight * rankings.size()) / 2 - 10; // 더 위로 올림
+                left = (w - Math.min(MAX_ROW_WIDTH, w)) / 2 + GAP;
+                float topOffset = 10; // 상단 여백
+                float totalRankingHeight = rowHeight * rankings.size();
+                top = insets.top + topOffset + (h - totalRankingHeight - bottomButtonArea - bottomGap - topOffset) / 2f;
+            } else {
+                // 세로화면: 기존 레이아웃 완전히 유지
+                float availableHeight = h - 120;
+                rowHeight = GameMath.gate(ROW_HEIGHT_MIN, availableHeight / rankings.size(), ROW_HEIGHT_MAX);
+
+                left = (w - Math.min(MAX_ROW_WIDTH, w)) / 2 + GAP;
+                float topOffset = 10; // 기존 상단 여백
+                top = (h - rowHeight * rankings.size()) / 2 - topOffset; // 기존 위치 유지
+            }
 
             int pos = 0;
             for (DailyRankingEntry entry : rankings) {
@@ -275,9 +356,10 @@ public class AboutScene extends PixelScene {
             }
             statusText = PixelScene.renderTextBlock(message, 8);
             statusText.hardlight(color);
+            float statusY = landscape() ? insets.top + (h - statusText.height()) / 2 - 10 : insets.top + (h - statusText.height()) / 2;
             statusText.setPos(
                     insets.left + (w - statusText.width()) / 2,
-                    insets.top + (h - statusText.height()) / 2
+                    statusY
             );
             align(statusText);
             rankingContainer.add(statusText);

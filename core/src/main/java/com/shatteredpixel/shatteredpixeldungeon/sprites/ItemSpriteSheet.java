@@ -709,11 +709,13 @@ public class ItemSpriteSheet {
     public static final int POTION_SILVER = POTIONS + 10;
     public static final int POTION_IVORY = POTIONS + 11;
     public static final int LIQUID_METAL = POTIONS + 13;
+    public static final int FORMAGGIO = POTIONS + 14;
 
     static {
         for (int i = POTIONS; i < POTIONS + 16; i++)
             assignItemRect(i, 8, 14);
         assignItemRect(LIQUID_METAL, 8, 15);
+        assignItemRect(FORMAGGIO, 10, 14);
     }
 
     private static final int EXOTIC_POTIONS = xy(1, 24);  //16 slots

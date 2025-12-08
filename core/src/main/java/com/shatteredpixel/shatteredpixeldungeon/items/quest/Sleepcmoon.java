@@ -107,7 +107,7 @@ public class Sleepcmoon extends Item {
                 }
                 Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.RED_LIGHT), 12);
             } else {
-
+                identify();
                 if (hero.buff(ShovelDigCoolDown7.class) != null) {
                     GLog.w(Messages.get(this, "not_ready"));
                 } else {

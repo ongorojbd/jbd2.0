@@ -121,18 +121,12 @@ public class Josuke8 extends NPC {
                                     CellEmitter.get(Dungeon.hero.pos).burst(Speck.factory(Speck.COIN), 12);
 
                                     if (Statistics.manga < 3) {
-                                        // 독립적인 시드 오프셋을 사용하여 같은 시드에서 일관된 결과 보장
-                                        Random.pushGenerator(Dungeon.seedCurDepth() + 999987L);
-                                        boolean shouldDropManga = Random.Int(33) == 0;
-                                        int mangaType = Random.Int(9);
-                                        Random.popGenerator();
-                                        
-                                        if (shouldDropManga) {
+                                        if (Random.Int(33) == 0) {
                                             Statistics.manga += 1;
                                             new Flare(6, 32).color(0xFFAA00, true).show(Dungeon.hero.sprite, 4f);
                                             Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
                                             GameScene.flash(0xFFCC00);
-                                            switch (mangaType) {
+                                            switch (Random.Int(9)) {
 
                                                 case 0:
                                                     Item a = new Jojo1();

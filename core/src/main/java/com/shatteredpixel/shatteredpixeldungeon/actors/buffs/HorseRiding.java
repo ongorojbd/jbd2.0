@@ -189,7 +189,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             GameScene.add(horse, 1f);
             Dungeon.level.occupyCell(horse);
 
-            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+            Sample.INSTANCE.play(Assets.Sounds.JH13);
             Sample.INSTANCE.play(Assets.Sounds.HORSE);
             CellEmitter.get(horse.pos).start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
 
@@ -292,9 +292,6 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                         if (enemy != null && enemy != hero && enemy.alignment == Char.Alignment.ENEMY) {
                             pathEnemies.add(enemy);
                         }
-                        
-                        // 경로에 이펙트 추가
-                        CellEmitter.get(c).burst(Speck.factory(Speck.DUST), 1);
                     }
                     
                     // 경로상의 적에게 데미지
@@ -316,6 +313,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                     GameScene.updateFog();
                     
                     WandOfBlastWave.BlastWave.blast(dest);
+                    Sample.INSTANCE.play(Assets.Sounds.JH13);
                     Sample.INSTANCE.play(Assets.Sounds.HORSE);
                     Invisibility.dispel();
                     hero.spendAndNext(Actor.TICK);
@@ -330,7 +328,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         
         @Override
         public String prompt() {
-            return Messages.get(HorseRiding.class, "leap_prompt", leapCharges, MAX_LEAP_CHARGES);
+            return Messages.get(HorseRiding.class, "leap_prompt");
         }
     };
 

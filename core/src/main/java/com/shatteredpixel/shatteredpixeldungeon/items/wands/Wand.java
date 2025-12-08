@@ -443,7 +443,7 @@ public abstract class Wand extends Item {
             if (Dungeon.hero != null) {
                 EnhancedWand enhancedWand = Dungeon.hero.buff(EnhancedWand.class);
                 if (enhancedWand != null) {
-                    lvl += Statistics.spw2;
+                    lvl += enhancedWand.getEnhancementLevel();
                 }
             }
 

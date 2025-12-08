@@ -95,12 +95,12 @@ public class Neotel extends Item {
         }
         if (action.equals(AC_RETURN)) {
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = 16;
+            InterlevelScene.returnDepth = 1;
             InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -2;
             Game.switchScene(InterlevelScene.class);
 
-            for (int lvl = hero.lvl; lvl < 30; lvl++) {
+            for (int lvl = hero.lvl; lvl < 12; lvl++) {
                 Potion expPotion = new PotionOfExperience();
                 expPotion.apply(hero);
             }

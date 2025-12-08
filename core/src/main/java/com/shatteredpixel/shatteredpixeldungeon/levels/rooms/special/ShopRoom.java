@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.FormaggioBottle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
@@ -305,6 +306,22 @@ public class ShopRoom extends SpecialRoom {
         Bag bag = ChooseBag(hero.belongings);
         if (bag != null) {
             itemsToSpawn.add(bag);
+        }
+
+        if (Random.Int(3) == 0) {
+            switch (Random.Int(5)) {
+                case 0:
+                case 1:
+                case 2:
+                    itemsToSpawn.add(new FormaggioBottle());
+                    break;
+                case 3:
+                    itemsToSpawn.add(FormaggioBottle.createWithP4mob());
+                    break;
+                case 4:
+                    itemsToSpawn.add(FormaggioBottle.createWithCat());
+                    break;
+            }
         }
 
         itemsToSpawn.add(new PotionOfHealing());

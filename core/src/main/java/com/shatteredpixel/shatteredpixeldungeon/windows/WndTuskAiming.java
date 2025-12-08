@@ -23,20 +23,20 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -87,7 +87,9 @@ public class WndTuskAiming extends Window {
 	// 마커 관련
 	private float markerPos;
 	private float markerSpeed;
-	private float baseMarkerSpeed = 225f;
+	private float baseMarkerSpeed = 650f;
+	// 기준 바 너비 (이 너비를 기준으로 속도가 계산됨)
+	private static final float REFERENCE_BAR_WIDTH = 200f;
 	private boolean markerMovingRight = true;
 
 	// 2발 모드 관련
@@ -137,7 +139,7 @@ public class WndTuskAiming extends Window {
 		float targetWidth, targetHeight;
 
 		if (landscape) {
-			targetWidth  = uiW * 0.25f; // 가로 모드에서 UI 너비 더 줄임WndTuskAiming
+			targetWidth  = uiW * 0.31625f; // 가로 모드에서 UI 너비 15% 더 넓힘 (0.275 * 1.15 = 0.31625)
 			targetHeight = uiH * 0.24f; // 가로 모드에서 UI 크기 줄임
 		} else {
 			// 모바일 세로 화면 → 더 낮게, 가로는 넓게
@@ -161,24 +163,26 @@ public class WndTuskAiming extends Window {
 
 		// 조준 바 X축 크기 설정
 		if (landscape) {
-			// 가로 모드: 조준 바 크기 유지를 위해 여백을 줄임
-			barWidth = WIDTH - 12;
+			// 가로 모드: 조준 바를 더 넓게 (여백을 더 줄여서)
+			barWidth = WIDTH - 6; // 8에서 6으로 줄여서 더 넓게
 		} else {
 			// 세로 모드에서는 최대화 (좌우 여백 6px 정도만)
 			barWidth = WIDTH - 12;
 		}
 		if (barWidth < 60) barWidth = 60;
 
-		// 마커 속도 (landscape 모드에 따라 기본 조정)
-		markerSpeed = landscape ? baseMarkerSpeed : baseMarkerSpeed * 1.05f;
+		// 마커 속도를 조준 바 너비에 비례하여 조정
+		// 기준 너비(REFERENCE_BAR_WIDTH) 대비 현재 barWidth의 비율로 속도 조정
+		// 바가 넓을수록 마커가 더 빠르게 움직여서 모든 디바이스에서 일관된 난이도 유지
+		float barWidthRatio = barWidth / REFERENCE_BAR_WIDTH;
+		markerSpeed = baseMarkerSpeed * barWidthRatio;
 		
 		// provoked_anger talent에 따른 조준 속도 감소
 		Hero hero = Dungeon.hero;
 		if (hero != null && hero.hasTalent(Talent.PROVOKED_ANGER)) {
 			int talentLevel = hero.pointsInTalent(Talent.PROVOKED_ANGER);
 			if (talentLevel >= 1) {
-				// 레벨 1: 10% 감소 (0.9배), 레벨 2: 20% 감소 (0.8배)
-				float speedMultiplier = 1.0f - (0.1f * talentLevel);
+                float speedMultiplier = 1.0f - (0.075f * talentLevel);
 				markerSpeed *= speedMultiplier;
 			}
 		}
@@ -214,12 +218,13 @@ public class WndTuskAiming extends Window {
 		// 이제 instruction 텍스트는 없음 → 바로 바 영역 계산
 
 		// 하단 버튼 위치 계산
-		float buttonHeight = landscape ? 14 : 18; // 가로 모드에서 버튼 크기 줄임
+		float buttonHeight = landscape ? 16 : 18; // 가로 모드에서 버튼 높이 살짝 늘림 (14 -> 16)
 		float buttonBottomMargin = landscape ? 4 : 6; // 가로 모드에서 여백 줄임
 		float buttonTop = HEIGHT - (buttonHeight + buttonBottomMargin);
 
-		// 바 + 여백 가능한 범위
-		float availableHeight = buttonTop - y - 4;
+		// 바 + 여백 가능한 범위 (세로 모드에서 여백 줄임)
+		float spacing = landscape ? 4 : 2;
+		float availableHeight = buttonTop - y - spacing;
 		if (availableHeight < 16) availableHeight = 16;
 
 		// 기본 바 높이 계산
@@ -241,7 +246,7 @@ public class WndTuskAiming extends Window {
 		createTimingBar();
 
 		// 버튼
-		float buttonWidth = landscape ? WIDTH - 40 : WIDTH - 20; // 가로 모드에서 버튼 너비 더 줄임
+		float buttonWidth = landscape ? WIDTH - 12 : WIDTH - 20; // 가로 모드에서 버튼 너비 더 넓게 (20에서 12로)
 		fireButton = new RedButton(Messages.get(this, "fire")) {
 			@Override
 			protected void onClick() {
@@ -382,7 +387,7 @@ public class WndTuskAiming extends Window {
 
 		if (ratio >= gStart && ratio <= gEnd) {
 			hitType = HIT_TYPE_PERFECT;
-			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+            Sword.tp();
 		}
 		else if ((ratio >= yStart && ratio < gStart) || (ratio > gEnd && ratio <= yEnd)) {
 			hitType = HIT_TYPE_GREAT;

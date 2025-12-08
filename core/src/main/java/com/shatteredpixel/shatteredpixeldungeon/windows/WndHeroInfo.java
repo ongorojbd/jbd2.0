@@ -207,6 +207,12 @@ public class WndHeroInfo extends WndTabbed {
 							new ItemSprite(ItemSpriteSheet.CUDGEL),
 							new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
 					break;
+//                case JOHNNY:
+//                    icons = new Image[]{ new ItemSprite(ItemSpriteSheet.ARTIFACT_TUSK1),
+//                            Icons.TARGET.get(),
+//                            new ItemSprite(ItemSpriteSheet.PICKAXE),
+//                            new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
+//                    break;
 			}
 			for (Image im : icons) {
 				add(im);

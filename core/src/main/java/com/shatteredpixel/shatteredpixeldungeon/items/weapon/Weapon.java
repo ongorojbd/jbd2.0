@@ -408,7 +408,7 @@ abstract public class Weapon extends KindOfWeapon {
 
             EnhancedWeapon weaponEmpower = hero.buff(EnhancedWeapon.class);
             if (weaponEmpower != null && isEquipped(hero)) {
-                lvl += Statistics.spw1;
+                lvl += weaponEmpower.getEnhancementLevel();
             }
         }
 

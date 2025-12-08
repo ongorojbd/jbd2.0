@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
@@ -134,12 +135,24 @@ abstract public class MissileWeapon extends Weapon {
     }
 
     //use the parent item if this has been thrown from a parent
+    @Override
     public int buffedLvl(){
+        int lvl;
         if (parent != null) {
-            return parent.buffedLvl();
+            lvl = parent.buffedLvl();
         } else {
-            return super.buffedLvl();
+            lvl = super.buffedLvl();
         }
+        
+        // EnhancedThrownWeapon 버프 적용 (장착 여부와 관계없이)
+        if (Dungeon.hero != null) {
+            EnhancedThrownWeapon thrownEmpower = Dungeon.hero.buff(EnhancedThrownWeapon.class);
+            if (thrownEmpower != null) {
+                lvl += thrownEmpower.getEnhancementLevel();
+            }
+        }
+        
+        return lvl;
     }
 
     public Item upgrade( boolean enchant ) {

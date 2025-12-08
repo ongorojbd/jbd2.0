@@ -53,10 +53,10 @@ public class BannerSprites {
 				icon.frame( icon.texture.uvRect( 240, 100, 480, 157 ) );
 				break;
 			case BOSS_SLAIN:
-				icon.frame( icon.texture.uvRect( 0, 157, 128, 192 ) );
+				icon.frame( icon.texture.uvRect( 0, 166, 101, 188 ) );
 				break;
 			case GAME_OVER:
-				icon.frame( icon.texture.uvRect( 0, 192, 128, 227 ) );
+				icon.frame( icon.texture.uvRect( 0, 194, 84, 215 ) );
 				break;
 //            X: 0~60 픽셀 (왼쪽에서 60픽셀 너비)
 //            Y: 227~265 픽셀 (위에서 265픽셀 아래부터 372픽셀 높이)

@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LightParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -60,30 +61,29 @@ public class TuskEquipmentDisc extends Artifact {
 
 	public static final String AC_SHOOT = "SHOOT";
 
-	{
-		image = ItemSpriteSheet.ARTIFACT_TUSK1;
+	    {
+		    image = ItemSpriteSheet.ARTIFACT_TUSK1;
 
-        exp = 0;
-        levelCap = 10;
-        charge = Math.min(level()+3, 10);
-		partialCharge = 0;
-		chargeCap = Math.min(level()+3, 10);
+            exp = 0;
+            levelCap = 10;
+            charge = Math.min(level()+3, 10);
+		    partialCharge = 0;
+		    chargeCap = Math.min(level()+3, 10);
 
-		defaultAction = AC_SHOOT;
-		usesTargeting = true;
+		    defaultAction = AC_SHOOT;
+		    usesTargeting = true;
 
-        unique = true;
-        bones = false;
-	}
+            unique = true;
+            bones = false;
+	    }
 
 	// Perfect 횟수 카운터 (영구 저장)
 	private int perfectCount = 0;
 
 	// 레벨업에 필요한 Perfect 횟수 (레벨별)
 	private int perfectsForLevel(int level) {
-		// 레벨 0→1: 2회, 레벨 1→2: 4회, ..., 레벨 9→10: 20회
-		return (level + 1) * 2;
-	}
+        return 3 + level * 2;
+    }
 
 	// 현재 레벨에서 얻은 Perfect 횟수
 	public int perfectsAtCurrentLevel() {
@@ -209,8 +209,8 @@ public class TuskEquipmentDisc extends Artifact {
 				return;
 			}
 
-			// 레벨 0일 때 벽 체크: 벽에 막히면 경고 메시지 표시
-			if (level() == 0) {
+			// 레벨 0~2일 때 벽 체크: 벽에 막히면 경고 메시지 표시 (레벨 3 이상부터 벽 통과 가능)
+			if (level() < 3) {
 				Ballistica beam = new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT);
 				Char chAtCollision = Actor.findChar(beam.collisionPos);
 				// 벽에 막혔거나 타겟이 collisionPos에 없으면 경고
@@ -222,6 +222,7 @@ public class TuskEquipmentDisc extends Artifact {
 
 			// 레벨 3 이상일 때 관통 기능: 경로상의 모든 적 찾기
 			if (level() >= 3) {
+                Sword.t1();
 				Ballistica beam = new Ballistica(curUser.pos, target, Ballistica.WONT_STOP);
 				piercedTargets.clear();
 				
@@ -251,6 +252,7 @@ public class TuskEquipmentDisc extends Artifact {
 				}
 			} else {
 				// 레벨 0~2일 때는 기존처럼 단일 타겟만
+                Sword.t1();
 				piercedTargets.clear();
 				GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
 			}
@@ -305,8 +307,8 @@ public class TuskEquipmentDisc extends Artifact {
 		int collisionProps = (level() >= 3) ? Ballistica.WONT_STOP : Ballistica.MAGIC_BOLT;
 		Ballistica beam = new Ballistica(hero.pos, target.pos, collisionProps);
 		
-		// 레벨 0일 때 벽에 막혔는지 확인 (WandOfMagicMissile처럼)
-		if (level() == 0) {
+		// 레벨 0~2일 때 벽에 막혔는지 확인 (레벨 3 이상부터 벽 통과 가능)
+		if (level() < 3) {
 			Char ch = Actor.findChar(beam.collisionPos);
 			// 벽에 막혔거나 타겟이 collisionPos에 없으면 데미지를 주지 않음
 			if (ch == null || ch != target) {
@@ -567,19 +569,9 @@ public class TuskEquipmentDisc extends Artifact {
 				break;
 		}
 
-		// Perfect 판정 체크 (50% 데미지 = Perfect)
-		if (damageRatio >= 0.50f) {
-			perfectCount++;
-			checkLevelUp();
-			
-			// HorseRiding leap 충전량 획득
-			if (hero != null) {
-				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding horseRiding = hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class);
-				if (horseRiding != null) {
-					horseRiding.addLeapCharge();
-				}
-			}
-		}
+		// Perfect 판정 체크는 첫 번째 적에 대해서만 수행
+		// 관통된 나머지 적들은 perfectCount에 영향을 주지 않음
+		// (미니게임은 첫 번째 적에 대해서만 실행되므로)
 	}
 
 	// 업그레이드 여부 확인 (2발 발사 가능 여부)
@@ -609,12 +601,12 @@ public class TuskEquipmentDisc extends Artifact {
 				return Random.NormalIntRange(Math.min(minDmg, maxDmg), maxDmg);
 			
 			case "great":
-				// 노랑 영역: 최소 2+level, 최대 8+2×level
-				return Random.NormalIntRange(2 + lvl, 8 + 2 * lvl);
+				// 노랑 영역: 최소 2+(level×0.75), 최대 8+(level×1.5) (레벨당 증가량 감소)
+				return Random.NormalIntRange(2 + (lvl * 3) / 4, 8 + (lvl * 3) / 2);
 			
 			case "good":
-				// 주황 영역: 최소 1+level/2, 최대 4+level (더 약하게)
-				return Random.NormalIntRange(1 + lvl/2, 4 + lvl);
+				// 주황 영역: 최소 1+level/3, 최대 4+(level×0.75) (레벨당 증가량 감소)
+				return Random.NormalIntRange(1 + lvl/3, 4 + (lvl * 3) / 4);
 			
 			case "miss":
 			default:
@@ -669,8 +661,21 @@ public class TuskEquipmentDisc extends Artifact {
 					int current = perfectsAtCurrentLevel();
 					int needed = perfectsForLevel(level());
 					int remaining = needed - current;
+					
+					// Perfect 판정 데미지 정보 계산
+					int lvl = level();
+					int perfectMaxDmg = 12 + 5 * lvl;
+					int perfectMinDmg = 7 + lvl; // BOSS/MINIBOSS 기준 최소 데미지
+					
 					desc += "\n\n" + Messages.get(this, "desc_perfect", 
-						current, needed, remaining);
+						current, needed, remaining, perfectMinDmg, perfectMaxDmg);
+				} else {
+					// 레벨이 최대일 때도 Perfect 데미지 정보 표시
+					int lvl = level();
+					int perfectMaxDmg = 12 + 5 * lvl;
+					int perfectMinDmg = 7 + lvl;
+					desc += "\n\n" + Messages.get(this, "desc_perfect_max", 
+						perfectMinDmg, perfectMaxDmg);
 				}
 			}
 		}

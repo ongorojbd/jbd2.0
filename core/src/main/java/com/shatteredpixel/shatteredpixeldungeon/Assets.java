@@ -291,6 +291,19 @@ public class Assets {
         public static final String RO3 = "sounds/ro3.mp3";
         public static final String RO4 = "sounds/ro4.mp3";
         public static final String RO5 = "sounds/ro5.mp3";
+        public static final String JH1 = "sounds/jh1.mp3";
+        public static final String JH2 = "sounds/jh2.mp3";
+        public static final String JH3 = "sounds/jh3.mp3";
+        public static final String JH4 = "sounds/jh4.mp3";
+        public static final String JH5 = "sounds/jh5.mp3";
+        public static final String JH6 = "sounds/jh6.mp3";
+        public static final String JH7 = "sounds/jh7.mp3";
+        public static final String JH8 = "sounds/jh8.mp3";
+        public static final String JH9 = "sounds/jh9.mp3";
+        public static final String JH10 = "sounds/jh10.mp3";
+        public static final String JH11 = "sounds/jh11.mp3";
+        public static final String JH12 = "sounds/jh12.mp3";
+        public static final String JH13 = "sounds/jh13.mp3";
         public static final String YUKAK = "sounds/yukak.mp3";
         public static final String TALE = "sounds/tale.mp3";
         public static final String NITOH = "sounds/nitoh.mp3";
@@ -459,6 +472,7 @@ public class Assets {
                 KIRA1, KIRA2, KIRA3, KIRA4, KIRA5, KIRA6,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
                 MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
+                JH1, JH2, JH3, JH4, JH5, JH6, JH7, JH8, JH9, JH10, JH11, JH12, JH13,
                 D11, D12, D21, D22, D23, D24, D31, D32, D33, D34, D35, D41, D42, D43, DA1, DA2, DA3, DA4,
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, HORSE, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA, POL,
@@ -473,6 +487,7 @@ public class Assets {
         public static final String HUNTRESS = "splashes/huntress.jpg";
         public static final String DUELIST = "splashes/duelist.jpg";
         public static final String CLERIC = "splashes/cleric.jpg";
+        public static final String JOHNNY = "splashes/johnny.jpg";
         public static final String BRANDO = "splashes/brando.jpg";
 
         public static final String SEWERS = "splashes/sewers.jpg";
@@ -501,6 +516,8 @@ public class Assets {
         public static final String DUELIST2 = "sprites/duelist2.png";
         public static final String CLERIC = "sprites/cleric.png";
         public static final String CLERIC2 = "sprites/cleric2.png";
+        public static final String JOHNNY = "sprites/johnny.png";
+        public static final String JOHNNY2 = "sprites/johnny2.png";
         public static final String AVATARS = "sprites/avatars.png";
         public static final String PET = "sprites/pet.png";
         public static final String AMULET = "sprites/amulet.png";

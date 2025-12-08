@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2020 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class EnhancedWeapon extends Buff {
+public class EnhancedThrownWeapon extends Buff {
 
     {
         type = buffType.POSITIVE;
@@ -49,6 +49,16 @@ public class EnhancedWeapon extends Buff {
         int level = getEnhancementLevel();
         return Messages.get(this, "desc", level);
     }
+
+    @Override
+    public void tintIcon(Image icon) {
+        icon.hardlight(0.8f, 0.6f, 0.2f); // 노란색 (투척무기 강화)
+    }
+
+    @Override
+    public String toString() {
+        return Messages.get(this, "name");
+    }
     
     public int getEnhancementLevel() {
         if (Dungeon.tendencylevel) {
@@ -63,16 +73,6 @@ public class EnhancedWeapon extends Buff {
     public void setEnhancementLevel(int level) {
         enhancementLevel = level;
     }
-
-    @Override
-    public void tintIcon(Image icon) {
-        icon.hardlight(1, 0.5f, 0); // 주황색 (물리 공격 강화)
-    }
-
-    @Override
-    public String toString() {
-        return Messages.get(this, "name");
-    }
     
     private static final String ENHANCEMENT_LEVEL = "enhancement_level";
 
@@ -85,11 +85,8 @@ public class EnhancedWeapon extends Buff {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        if (bundle.contains(ENHANCEMENT_LEVEL)) {
-            enhancementLevel = bundle.getInt(ENHANCEMENT_LEVEL);
-        } else {
-            enhancementLevel = -1; // 기존 세이브 파일 호환성: 키가 없으면 -1 (Statistics.spw1 사용)
-        }
+        enhancementLevel = bundle.getInt(ENHANCEMENT_LEVEL);
     }
 
 }
+

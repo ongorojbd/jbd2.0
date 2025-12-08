@@ -124,7 +124,7 @@ public class v3_X_Changes {
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.KARS, 0, 0, 14, 15), "전투조류 컨텐츠 추가",
                 "- 기둥의 사내 - 카즈가 추가되었습니다.\n\n" +
                         "- 전체 층이 54층까지 확장되었습니다.\n\n" +
-                        "- 죽음의 웨딩 링의 지속시간이 1200턴에서 1600턴으로 증가했습니다.\n\n" +
+                        "- 죽음의 웨딩 링의 지속시간이 1200턴에서 2000턴으로 증가했습니다.\n\n" +
                         "- 청정의 물약으로 죽음의 웨딩 링을 해제할 수 있었던 버그가 수정되었습니다."));
 
         Image i2 = Icons.get(Icons.RANDOMIZE);

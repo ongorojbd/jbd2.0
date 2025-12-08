@@ -465,7 +465,7 @@ public class Armor extends EquipableItem {
 		if (Dungeon.hero != null) {
 			EnhancedArmor enhancedArmor = Dungeon.hero.buff(EnhancedArmor.class);
 			if (enhancedArmor != null && isEquipped(Dungeon.hero)) {
-				lvl += Statistics.spw3;
+				lvl += enhancedArmor.getEnhancementLevel();
 			}
 		}
 

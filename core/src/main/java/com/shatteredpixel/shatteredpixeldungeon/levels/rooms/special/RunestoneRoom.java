@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.FormaggioBottle;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -65,6 +66,10 @@ public class RunestoneRoom extends SpecialRoom {
 	}
 	
 	private static Item prize( Level level ) {
+		// 1/6 확률로 FormaggioBottle 생성
+		if (Random.Int(6) == 0) {
+			return new FormaggioBottle();
+		}
 
 		Item prize = level.findPrizeItem( TrinketCatalyst.class );
 		if (prize == null){

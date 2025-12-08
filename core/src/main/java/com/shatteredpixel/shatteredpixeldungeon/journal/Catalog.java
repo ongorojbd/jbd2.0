@@ -128,6 +128,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScrol
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.FormaggioBottle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
@@ -323,7 +324,7 @@ public enum Catalog {
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
 				LiquidMetal.class, ArcaneResin.class,
-				SealShard.class, BrokenStaff.class, CloakScrap.class, BrokenHilt.class, BowFragment.class, TornPage.class, Danny.class, Ram2.class, UV.class, Drago.class, Highway.class, Araki.class);
+				SealShard.class, BrokenStaff.class, CloakScrap.class, BrokenHilt.class, BowFragment.class, TornPage.class, Danny.class, Ram2.class, UV.class, Drago.class, Highway.class, FormaggioBottle.class, Araki.class);
 
 	}
 

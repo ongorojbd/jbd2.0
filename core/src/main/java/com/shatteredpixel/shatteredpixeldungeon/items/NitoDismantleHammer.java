@@ -119,18 +119,12 @@ public class NitoDismantleHammer extends Item {
                 updateQuickslot();
 
                 if (Statistics.manga < 3) {
-                    // 독립적인 시드 오프셋을 사용하여 같은 시드에서 일관된 결과 보장
-                    Random.pushGenerator(Dungeon.seedCurDepth() + 999989L);
-                    boolean shouldDropManga = Random.Int(33) == 0;
-                    int mangaType = Random.Int(9);
-                    Random.popGenerator();
-                    
-                    if (shouldDropManga) {
+                    if (Random.Int(33) == 0) {
                         Statistics.manga += 1;
                         new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 4f);
                         Sample.INSTANCE.play(Assets.Sounds.MASTERY, 0.7f, 1.2f);
                         GameScene.flash(0xFFCC00);
-                        switch (mangaType) {
+                        switch (Random.Int(9)) {
 
                             case 0:
                                 Item a = new Jojo1();
@@ -189,17 +183,11 @@ public class NitoDismantleHammer extends Item {
                 }
 
                 if (hero.belongings.getItem(Jojo8.class) != null) {
-                    // 독립적인 시드 오프셋을 사용하여 같은 시드에서 일관된 결과 보장
-                    Random.pushGenerator(Dungeon.seedCurDepth() + 999988L);
-                    boolean shouldDropItem = Random.Int(5) == 0;
-                    int itemType = Random.Int(8);
-                    Random.popGenerator();
-                    
-                    if (shouldDropItem) {
+                    if (Random.Int(5) == 0) {
                         new Flare(6, 32).color(0x9966FF, true).show(hero.sprite, 4f);
                         Sample.INSTANCE.play(Assets.Sounds.CHARMS);
                         GameScene.flash(0x80FFFFFF);
-                        switch (itemType) {
+                        switch (Random.Int(8)) {
                             case 0:
                                 Item a = new Kingt();
                                 if (a.doPickUp(Dungeon.hero)) {

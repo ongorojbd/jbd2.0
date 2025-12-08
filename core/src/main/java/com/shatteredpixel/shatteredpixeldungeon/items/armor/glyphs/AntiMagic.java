@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute3;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ArcaneBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.HolyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
@@ -124,6 +125,7 @@ public class AntiMagic extends Armor.Glyph {
         RESISTS.add(WandOfWarding.Ward.class);
 
         RESISTS.add(ChaliceOfBlood.class);
+        RESISTS.add(TuskEquipmentDisc.class);
 
         RESISTS.add(ElementalStrike.class);
         RESISTS.add(Blazing.class);
