@@ -551,15 +551,15 @@ public class SkeletonKey extends Artifact {
 
 		public int[] ironKeysNeeded, goldenKeysNeeded, crystalKeysNeeded;
 
-		{
-			revivePersists = true;
-			ironKeysNeeded = new int[26];
-			Arrays.fill(ironKeysNeeded, -1);
-			goldenKeysNeeded = new int[26];
-			Arrays.fill(goldenKeysNeeded, -1);
-			crystalKeysNeeded = new int[26];
-			Arrays.fill(crystalKeysNeeded, -1);
-		}
+	{
+		revivePersists = true;
+		ironKeysNeeded = new int[31];
+		Arrays.fill(ironKeysNeeded, -1);
+		goldenKeysNeeded = new int[31];
+		Arrays.fill(goldenKeysNeeded, -1);
+		crystalKeysNeeded = new int[31];
+		Arrays.fill(crystalKeysNeeded, -1);
+	}
 
 		public void setupKeysForDepth(){
 			ironKeysNeeded[Dungeon.depth] = 0;

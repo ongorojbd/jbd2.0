@@ -124,57 +124,59 @@ public class DArby extends NPC {
 			Sample.INSTANCE.play(Assets.Sounds.DA1);
 		}
 
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				if (Statistics.spw20 == 1) {
-					GameScene.show(new WndOptions(
-							sprite(),
-							Messages.get(DArby.class, "name"),
-							Messages.get(DArby.class, "already_played1")
-					));
-					return;
-				} else if (Statistics.spw16 == 1) {
-					GameScene.show(new WndOptions(
-							sprite(),
-							Messages.get(DArby.class, "name"),
-							Messages.get(DArby.class, "already_played2")
-					));
-					return;
-				}
-
-				GameScene.show(new WndOptions(
-						sprite(),
-						Messages.titleCase(name()),
-						Messages.get(DArby.class, "greeting"),
-						Messages.get(DArby.class, "play"),
-						Messages.get(DArby.class, "rules"),
-						Messages.get(DArby.class, "leave")
-				) {
-					@Override
-					protected void onSelect(int index) {
-						if (index == 0) {
-							// 게임 시작
-							GameScene.show(new WndCoinGame());
-							Statistics.spw16++;
-							Sample.INSTANCE.play(Assets.Sounds.DA2);
-							Music.INSTANCE.play(Assets.Music.YUUKI, true);
-						} else if (index == 1) {
-							// 규칙 설명
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					// 이미 게임을 완료한 경우 (승리 또는 패배)
+					if (Statistics.spw20 == 1 || Statistics.spw30 > 0) {
+						if (Statistics.spw20 == 1) {
 							GameScene.show(new WndOptions(
 									sprite(),
-									Messages.get(DArby.class, "rules_title"),
-									Messages.get(DArby.class, "rules_desc"),
-									Messages.get(DArby.class, "understood")
+									Messages.get(DArby.class, "name"),
+									Messages.get(DArby.class, "already_played2")
 							));
-							Sample.INSTANCE.play(Assets.Sounds.DA3);
-						} else {
-							// index == 2: 그냥 나가기
+						} else { // spw30 > 0
+							GameScene.show(new WndOptions(
+									sprite(),
+									Messages.get(DArby.class, "name"),
+									Messages.get(DArby.class, "already_played1")
+							));
 						}
+						return;
 					}
-				});
-			}
-		});
+
+					GameScene.show(new WndOptions(
+							sprite(),
+							Messages.titleCase(name()),
+							Messages.get(DArby.class, "greeting"),
+							Messages.get(DArby.class, "play"),
+							Messages.get(DArby.class, "rules"),
+							Messages.get(DArby.class, "leave")
+					) {
+						@Override
+						protected void onSelect(int index) {
+							if (index == 0) {
+								// 게임 시작
+								GameScene.show(new WndCoinGame());
+								// spw16 증가 제거 - 게임 결과가 나올 때 증가하도록 WndCoinGame에서 처리
+								Sample.INSTANCE.play(Assets.Sounds.DA2);
+								Music.INSTANCE.play(Assets.Music.YUUKI, true);
+							} else if (index == 1) {
+								// 규칙 설명
+								GameScene.show(new WndOptions(
+										sprite(),
+										Messages.get(DArby.class, "rules_title"),
+										Messages.get(DArby.class, "rules_desc"),
+										Messages.get(DArby.class, "understood")
+								));
+								Sample.INSTANCE.play(Assets.Sounds.DA3);
+							} else {
+								// index == 2: 그냥 나가기
+							}
+						}
+					});
+				}
+			});
 		return true;
 	}
 

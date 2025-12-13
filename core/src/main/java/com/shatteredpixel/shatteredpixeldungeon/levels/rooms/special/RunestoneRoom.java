@@ -68,7 +68,17 @@ public class RunestoneRoom extends SpecialRoom {
 	private static Item prize( Level level ) {
 		// 1/6 확률로 FormaggioBottle 생성
 		if (Random.Int(6) == 0) {
-			return new FormaggioBottle();
+            switch (Random.Int(5)) {
+                case 0:
+                case 1:
+                case 2:
+                    return FormaggioBottle.createWithP4mob();
+                case 3:
+                    new FormaggioBottle();
+                    return FormaggioBottle.createWithP4mob();
+                case 4:
+                    return FormaggioBottle.createWithCat();
+            }
 		}
 
 		Item prize = level.findPrizeItem( TrinketCatalyst.class );

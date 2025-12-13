@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Cat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.P4mob;
@@ -244,25 +245,15 @@ public class FormaggioBottle extends Spell {
 		// 적을 다시 배치
 		trappedMob.pos = releasePos;
 		trappedMob.HP = trappedMob.HT; // HP 복구
-		
-		// 즉시 행동하도록 설정
-		trappedMob.state = trappedMob.HUNTING;
-		trappedMob.aggro(hero); // enemy 설정 및 즉시 인식
-		
-		// 던전에 추가 (GameScene.add()는 delay를 적용하므로 직접 추가)
-		Dungeon.level.mobs.add(trappedMob);
-		GameScene.addSprite(trappedMob); // 스프라이트만 추가
-		Actor.add(trappedMob); // Actor에 직접 추가 (delay 없이)
-		
-		// 텔레포트 이펙트
-		ScrollOfTeleportation.appear(trappedMob, releasePos);
-		Dungeon.level.occupyCell(trappedMob);
-		
+        GameScene.add( trappedMob );
+        ScrollOfTeleportation.appear( trappedMob, releasePos );
+        Dungeon.level.occupyCell( trappedMob ); // 셀 점유
+        
+        // 적이 영웅을 즉시 타겟으로 인식하도록 (HUNTING 상태로 전환됨)
+		trappedMob.aggro( hero );
+
 		// 광란 버프 적용
 		Buff.affect(trappedMob, Amok.class, 20f);
-		
-		// 즉시 행동하도록 next() 호출
-		trappedMob.next();
 
 		// 이펙트
 		CellEmitter.center(releasePos).burst(Speck.factory(Speck.BONE), 10);
@@ -273,6 +264,10 @@ public class FormaggioBottle extends Spell {
 		
 		// 적 정보 초기화
 		trappedMob = null;
+		
+		// 시야 업데이트 및 영웅이 새로운 적을 인식하도록
+		Dungeon.observe();
+		hero.checkVisibleMobs();
 		
 		// 아이템 소비
 		detach(hero.belongings.backpack);

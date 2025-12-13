@@ -196,6 +196,12 @@ public class WarpBeacon extends ArmorAbility {
 				return;
 			}
 
+			// branch 0에서만 비콘 설정 가능
+			if (Dungeon.branch != 0) {
+				GLog.w( Messages.get(WarpBeacon.class, "no_set") );
+				return;
+			}
+
 			if (Dungeon.level.distance(hero.pos, target) > 4*hero.pointsInTalent(Talent.REMOTE_BEACON)){
 				GLog.w( Messages.get(WarpBeacon.class, "too_far") );
 				return;
@@ -213,7 +219,7 @@ public class WarpBeacon extends ArmorAbility {
 			WarpBeaconTracker tracker = new WarpBeaconTracker();
 			tracker.pos = target;
 			tracker.depth = Dungeon.depth;
-			tracker.branch = Dungeon.branch;
+			tracker.branch = 0; // 항상 branch 0으로 저장
 			tracker.attachTo(hero);
 
 			hero.sprite.operate(target);

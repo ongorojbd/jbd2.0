@@ -187,90 +187,31 @@ public class LabsBossLevel extends Level {
         }
     }
 
-    @Override
-    public void occupyCell(Char ch) {
+	@Override
+	public void occupyCell(Char ch) {
 
-        super.occupyCell(ch);
+		super.occupyCell(ch);
 
-        boolean isRebelAlive = false;
+		// Rebel이 이미 존재하는지 확인
+		boolean isRebelAlive = false;
+		for (int i = 0; i < Dungeon.level.length; i++) {
+			Char mob = Actor.findChar(i);
+			if (mob instanceof Rebel) {
+				isRebelAlive = true;
+				break;
+			}
+		}
 
-        for (int i = 0; i < Dungeon.level.length; i++) {
-            Char mob = Actor.findChar(i);
-            if (mob instanceof Rebel) {
-                isRebelAlive = true;
-                break;
-            }
-        }
+		// 보스가 이미 존재하거나 전투가 완료되었으면 아무것도 하지 않음
+		if (isRebelAlive || isCompleted) {
+			return;
+		}
 
-        // seal() 호출을 제거 - Rebel이 첫 피해를 받을 때 seal()이 호출되도록 함
-        // 이렇게 하면 LockedFloor가 보스 전투 시작 시점에만 생성되어 충전 문제가 해결됨
-        if (map[bottomDoor] != Terrain.LOCKED_DOOR && ch.pos < bottomDoor && ch == Dungeon.hero && !isCompleted) {
-            // 보스 등장 로직만 실행 (seal()은 제거)
-            if (!locked) {
-                //moves intelligent allies with the hero, preferring closer pos to entrance door
-                int doorPos = bottomDoor;
-                Mob.holdAllies(this, doorPos);
-                Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
-
-                Rebel boss = new Rebel();
-                boss.state = boss.WANDERING;
-                boss.pos = pointToCell(arena.center());
-                GameScene.add(boss);
-                boss.beckon(Dungeon.hero.pos);
-
-                if (heroFOV[boss.pos]) {
-                    boss.notice();
-                    boss.sprite.alpha(0);
-                    boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
-                }
-
-                set(bottomDoor, Terrain.LOCKED_DOOR);
-                GameScene.updateMap(bottomDoor);
-                Dungeon.observe();
-
-                Game.runOnRenderThread(new Callback() {
-                    @Override
-                    public void call() {
-                        Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
-                    }
-                });
-            }
-            return;
-        }
-
-        if (Dungeon.level.map[topDoor] == Terrain.LOCKED_EXIT && ch.pos < bottomDoor && ch == Dungeon.hero && !isRebelAlive) {
-            // 보스 등장 로직만 실행 (seal()은 제거)
-            if (!locked) {
-                //moves intelligent allies with the hero, preferring closer pos to entrance door
-                int doorPos = bottomDoor;
-                Mob.holdAllies(this, doorPos);
-                Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
-
-                Rebel boss = new Rebel();
-                boss.state = boss.WANDERING;
-                boss.pos = pointToCell(arena.center());
-                GameScene.add(boss);
-                boss.beckon(Dungeon.hero.pos);
-
-                if (heroFOV[boss.pos]) {
-                    boss.notice();
-                    boss.sprite.alpha(0);
-                    boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
-                }
-
-                set(bottomDoor, Terrain.LOCKED_DOOR);
-                GameScene.updateMap(bottomDoor);
-                Dungeon.observe();
-
-                Game.runOnRenderThread(new Callback() {
-                    @Override
-                    public void call() {
-                        Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
-                    }
-                });
-            }
-        }
-    }
+		// 영웅이 아레나 입구를 넘어가고, 문이 아직 잠기지 않았으며, 레벨이 잠기지 않았을 때 seal() 호출
+		if (map[bottomDoor] != Terrain.LOCKED_DOOR && ch.pos < bottomDoor && ch == Dungeon.hero && !locked) {
+			seal();
+		}
+	}
 
     @Override
     protected void createMobs() {
@@ -328,51 +269,62 @@ public class LabsBossLevel extends Level {
         return randomEmptyCell;
     }
 
-    @Override
-    public int randomRespawnCell(Char ch) {
-        int cell;
-        do {
-            cell = entrance() + PathFinder.NEIGHBOURS8[Random.Int(8)];
-        } while (!passable[cell]
-                || (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-                || Actor.findChar(cell) != null);
-        return cell;
-    }
+	@Override
+	public int randomRespawnCell(Char ch) {
+		int cell;
+		do {
+			cell = entrance() + PathFinder.NEIGHBOURS8[Random.Int(8)];
+		} while (!passable[cell]
+				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
+				|| Actor.findChar(cell) != null);
+		return cell;
+	}
 
-    @Override
-    public void seal() {
-        if (!locked) {
-            super.seal();
+	@Override
+	public void seal() {
+		if (!locked) {
+			super.seal();
 
-            //moves intelligent allies with the hero, preferring closer pos to entrance door
-            int doorPos = bottomDoor;
-            Mob.holdAllies(this, doorPos);
-            Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
+			//moves intelligent allies with the hero, preferring closer pos to entrance door
+			int doorPos = bottomDoor;
+			Mob.holdAllies(this, doorPos);
+			Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
-            Rebel boss = new Rebel();
-            boss.state = boss.WANDERING;
-            boss.pos = pointToCell(arena.center());
-            GameScene.add(boss);
-            boss.beckon(Dungeon.hero.pos);
+			// Rebel이 이미 존재하는지 확인 - 없을 경우에만 생성
+			boolean rebelExists = false;
+			for (Mob m : mobs) {
+				if (m instanceof Rebel) {
+					rebelExists = true;
+					break;
+				}
+			}
 
-            if (heroFOV[boss.pos]) {
-                boss.notice();
-                boss.sprite.alpha(0);
-                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
-            }
+			if (!rebelExists) {
+				Rebel boss = new Rebel();
+				boss.state = boss.WANDERING;
+				boss.pos = pointToCell(arena.center());
+				GameScene.add(boss);
+				boss.beckon(Dungeon.hero.pos);
 
-            set(bottomDoor, Terrain.LOCKED_DOOR);
-            GameScene.updateMap(bottomDoor);
-            Dungeon.observe();
+				if (heroFOV[boss.pos]) {
+					boss.notice();
+					boss.sprite.alpha(0);
+					boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+				}
+			}
 
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
-                }
-            });
-        }
-    }
+			set(bottomDoor, Terrain.LOCKED_DOOR);
+			GameScene.updateMap(bottomDoor);
+			Dungeon.observe();
+
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
+				}
+			});
+		}
+	}
 
     @Override
     public void unseal() {
@@ -422,22 +374,23 @@ public class LabsBossLevel extends Level {
         bundle.put(ISCOMPLETED, isCompleted);
     }
 
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        for (Mob m : mobs) {
-            if (m instanceof YogDzewa) {
-                ((YogDzewa) m).updateVisibility(this);
-            }
-        }
-        isCompleted = bundle.getBoolean(ISCOMPLETED);
-        //pre-1.3.0 saves, modifies exit transition with custom size
-        if (bundle.contains("exit")) {
-            LevelTransition exit = getTransition(LevelTransition.Type.REGULAR_EXIT);
-            exit.set(16, 1, 16, 1);
-            transitions.add(exit);
-        }
-    }
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		for (Mob m : mobs) {
+			if (m instanceof YogDzewa) {
+				((YogDzewa) m).updateVisibility(this);
+			}
+		}
+		isCompleted = bundle.getBoolean(ISCOMPLETED);
+		
+		//pre-1.3.0 saves, modifies exit transition with custom size
+		if (bundle.contains("exit")) {
+			LevelTransition exit = getTransition(LevelTransition.Type.REGULAR_EXIT);
+			exit.set(16, 1, 16, 1);
+			transitions.add(exit);
+		}
+	}
 
     @Override
     public String tileDesc(int tile) {

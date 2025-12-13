@@ -683,6 +683,7 @@ public class WndCoinGame extends Window {
 			Dungeon.hero.HTBoost += HP_CHANGE;
 			Dungeon.hero.updateHT(true); // HP도 함께 증가
 			Statistics.spw30++;
+			Statistics.spw16 = 1; // 게임 완료 표시
 
 			instructionText = PixelScene.renderTextBlock(
 					Messages.get(this, "player_wins"), 7);
@@ -701,6 +702,7 @@ public class WndCoinGame extends Window {
 			Sample.INSTANCE.play(Assets.Sounds.FALLING);
 			Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
 			Statistics.spw20++;
+			Statistics.spw16 = 1; // 게임 완료 표시
 
 			// 최대 체력 감소 (HTBoost를 사용하여 레벨업 시에도 유지)
 			Dungeon.hero.HTBoost -= HP_CHANGE;
