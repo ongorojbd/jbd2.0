@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Enrico;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Fugo;
@@ -164,7 +165,8 @@ public class CityLevel extends RegularLevel {
 	public boolean activateTransition(Hero hero, LevelTransition transition) {
 		if (transition.type == LevelTransition.Type.BRANCH_EXIT) {
 
-			if (hero.buff(AscensionChallenge.class) != null){
+			if (hero.buff(AscensionChallenge.class) != null
+					|| hero.buff(LostInventory.class) != null){
 				return false;
 			}
 
@@ -198,8 +200,9 @@ public class CityLevel extends RegularLevel {
 									crystal.storeHeroBelongings(Dungeon.hero);
 									crystal.collect();
 								}
-								Dungeon.hero.belongings.armor = new ClothArmor();
-								Dungeon.hero.belongings.armor.identify();
+								hero.belongings.armor = new ClothArmor();
+								hero.belongings.armor.identify();
+								hero.updateHT( false );
 								CityLevel.super.activateTransition(hero, transition);
 							}
 						}
