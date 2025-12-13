@@ -15,15 +15,14 @@ java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 
 task updateRoboVMProps(){
     def props = new Properties()
-    
+
     props.setProperty ('appName', appName)
-    //append .apple because com.shatteredpixel.shatteredpixeldungeon was taken =(
-    props.setProperty ('appApplePackageName', appPackageName + ".apple")
+    //append .apple because com.shatteredpixel.shatteredpixeldungeon was taken
+    props.setProperty ('appPackageName', appPackageName + ".apple")
 
     props.setProperty ('appVersionCode', appVersionCode.toString())
     props.setProperty ('appVersionName', appVersionName)
     //parse out just #.#.# from version name, this is an apple requirement
-    props.setProperty ('appShortVersionName', (appVersionName =~ /\d+\.\d+\.\d+/)[0])
 
     props.setProperty ('appMainclass', appPackageName + ".ios.IOSLauncher")
     props.setProperty ('appExecutable', "IOSLauncher")

@@ -178,6 +178,12 @@ public class v3_X_Changes {
                         "- 위험한 물건을 죠죠 포인트로 교환 시 경고문이 출력됩니다.\n" +
                         "- 역행 시 플레이어가 적을 처치했는지 확실하게 확인 가능하도록 텍스트가 수정되었습니다."));
 
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
+                "주요 사항:\n" +
+                        "- 포르마조의 병에서 풀려난 적이 아무것도 하지 않는 버그가 수정되었습니다.\n" +
+                        "- 26~30층에서 스무스 오퍼레이터즈를 사용하면 튕기는 버그가 수정되었습니다.\n" +
+                        "- 천국 DIO가 여러번 나오는 버그가 수정되었습니다."));
+
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(CharSprite.POSITIVE);
         changeInfos.add(changes);
