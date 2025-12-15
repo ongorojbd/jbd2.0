@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
@@ -50,7 +51,8 @@ public class Cat extends Mob {
 		
 		// MagicImmune 속성 - 마법 공격에 면역
 		immunities.addAll(AntiMagic.RESISTS);
-		
+		immunities.add(Amok.class);
+
 		// 기본 상태는 도망 상태
 		state = FLEEING;
 	}
