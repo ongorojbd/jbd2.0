@@ -224,6 +224,23 @@ public class FormaggioBottle extends Spell {
 		Actor.remove(enemy);
 		enemy.sprite.killAndErase();
 		
+		// 적의 상태 완전 초기화 (나중에 풀려났을 때 깨끗한 상태로 시작)
+		enemy.clearEnemy();  // enemy = null, enemySeen = false, state = WANDERING 설정
+		
+		// 모든 버프 제거 (Amok, 독, 화상 등 이전 전투의 상태 제거)
+		for (Buff buff : enemy.buffs().toArray(new Buff[0])) {
+			buff.detach();
+		}
+		
+		// target 초기화 (Reflection 사용)
+		try {
+			java.lang.reflect.Field targetField = Mob.class.getDeclaredField("target");
+			targetField.setAccessible(true);
+			targetField.setInt(enemy, -1);
+		} catch (Exception e) {
+			// 실패해도 계속 진행
+		}
+		
 		// 적을 저장
 		trappedMob = enemy;
 		
@@ -245,16 +262,34 @@ public class FormaggioBottle extends Spell {
 		// 적을 다시 배치
 		trappedMob.pos = releasePos;
 		trappedMob.HP = trappedMob.HT; // HP 복구
-        GameScene.add( trappedMob );
-        ScrollOfTeleportation.appear( trappedMob, releasePos );
-        Dungeon.level.occupyCell( trappedMob ); // 셀 점유
-        
-        // 적이 영웅을 즉시 타겟으로 인식하도록 (HUNTING 상태로 전환됨)
-		trappedMob.aggro( hero );
-
-		// 광란 버프 적용
-		Buff.affect(trappedMob, Amok.class, 20f);
-
+		
+		// 다른 소환 트랩들과 동일하게 state를 WANDERING으로 설정
+		// (GameScene.add 후 적이 자동으로 영웅을 감지하고 HUNTING 상태로 전환)
+		if (trappedMob.state != trappedMob.PASSIVE) {
+			trappedMob.state = trappedMob.WANDERING;
+		}
+		
+		// 주변에 다른 적이 있는지 확인 (Amok 적용 여부 결정)
+		boolean hasOtherEnemies = false;
+		for (Mob mob : Dungeon.level.mobs) {
+			if (mob != trappedMob && mob.alignment == Char.Alignment.ENEMY && mob.isAlive()) {
+				hasOtherEnemies = true;
+				break;
+			}
+		}
+		
+		// 다른 적이 있으면 Amok 버프 적용 (다른 적들을 공격하도록)
+		if (hasOtherEnemies) {
+			Buff.affect(trappedMob, Amok.class, 20f);
+		}
+		
+		// 이제 적을 게임에 추가
+		GameScene.add(trappedMob);
+		
+		// 시각 효과 및 셀 점유 (다른 소환 트랩과 동일한 순서)
+		ScrollOfTeleportation.appear(trappedMob, releasePos);
+		Dungeon.level.occupyCell(trappedMob);
+		
 		// 이펙트
 		CellEmitter.center(releasePos).burst(Speck.factory(Speck.BONE), 10);
 		Sample.INSTANCE.play(Assets.Sounds.SHATTER);
