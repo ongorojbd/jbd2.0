@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RadioactiveMutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Judgement;
@@ -126,6 +127,7 @@ public class AntiMagic extends Armor.Glyph {
 
         RESISTS.add(ChaliceOfBlood.class);
         RESISTS.add(TuskEquipmentDisc.class);
+        RESISTS.add(RadioactiveMutation.class);
 
         RESISTS.add(ElementalStrike.class);
         RESISTS.add(Blazing.class);

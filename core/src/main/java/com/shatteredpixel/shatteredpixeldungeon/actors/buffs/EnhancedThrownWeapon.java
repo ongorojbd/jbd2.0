@@ -38,6 +38,8 @@ public class EnhancedThrownWeapon extends Buff {
     public static final float DURATION = 1_000_000;
     
     private int enhancementLevel = -1; // -1이면 Statistics.spw1 사용, 그 외에는 해당 값 사용
+    private float temporaryDuration = -1; // -1이면 영구, 그 외에는 임시 버프
+    private float initialDuration = -1; // 초기 duration 저장 (iconFadePercent 계산용)
 
     @Override
     public int icon() {
@@ -47,7 +49,18 @@ public class EnhancedThrownWeapon extends Buff {
     @Override
     public String desc() {
         int level = getEnhancementLevel();
+        if (temporaryDuration > 0) {
+            return Messages.get(this, "desc", level) + "\n\n" + Messages.get(this, "remaining", (int)temporaryDuration);
+        }
         return Messages.get(this, "desc", level);
+    }
+    
+    @Override
+    public float iconFadePercent() {
+        if (temporaryDuration > 0 && initialDuration > 0) {
+            return Math.max(0, (initialDuration - temporaryDuration) / initialDuration);
+        }
+        return 0;
     }
 
     @Override
@@ -74,18 +87,49 @@ public class EnhancedThrownWeapon extends Buff {
         enhancementLevel = level;
     }
     
+    public void setTemporaryDuration(float duration) {
+        temporaryDuration = duration;
+        initialDuration = duration;
+    }
+    
+    @Override
+    public boolean act() {
+        if (temporaryDuration > 0) {
+            temporaryDuration--;
+            if (temporaryDuration <= 0) {
+                detach();
+            }
+        }
+        spend(TICK);
+        return true;
+    }
+    
     private static final String ENHANCEMENT_LEVEL = "enhancement_level";
+    private static final String TEMPORARY_DURATION = "temporary_duration";
+    private static final String INITIAL_DURATION = "initial_duration";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(ENHANCEMENT_LEVEL, enhancementLevel);
+        bundle.put(TEMPORARY_DURATION, temporaryDuration);
+        bundle.put(INITIAL_DURATION, initialDuration);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         enhancementLevel = bundle.getInt(ENHANCEMENT_LEVEL);
+        if (bundle.contains(TEMPORARY_DURATION)) {
+            temporaryDuration = bundle.getFloat(TEMPORARY_DURATION);
+        } else {
+            temporaryDuration = -1;
+        }
+        if (bundle.contains(INITIAL_DURATION)) {
+            initialDuration = bundle.getFloat(INITIAL_DURATION);
+        } else {
+            initialDuration = -1;
+        }
     }
 
 }

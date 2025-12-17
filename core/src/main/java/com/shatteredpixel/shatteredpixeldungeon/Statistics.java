@@ -121,6 +121,8 @@ public class Statistics {
 
     public static int manga;
 
+    public static boolean d4cEnhanced = false;
+
     public static boolean qualifiedForNoKilling = false;
     public static boolean completedWithNoKilling = false;
     public static boolean qualifiedForBossRemainsBadge = false;
@@ -299,6 +301,7 @@ public class Statistics {
     private static final String POLPOCOUNT = "polpocount";
     private static final String WAVE = "wave";
     private static final String MANGA = "manga";
+    private static final String D4C_ENHANCED = "d4cEnhanced";
     private static final String PROG_SCORE = "prog_score";
     private static final String ITEM_VAL = "item_val";
     private static final String TRES_SCORE = "tres_score";
@@ -398,6 +401,7 @@ public class Statistics {
         bundle.put(POLPOCOUNT, polpocount);
         bundle.put(WAVE, wave);
         bundle.put(MANGA, manga);
+        bundle.put(D4C_ENHANCED, d4cEnhanced);
         bundle.put(PROG_SCORE, progressScore);
         bundle.put(ITEM_VAL, heldItemValue);
         bundle.put(TRES_SCORE, treasureScore);
@@ -505,6 +509,7 @@ public class Statistics {
         polpocount = bundle.getInt(POLPOCOUNT);
         wave = bundle.getInt(WAVE);
         manga = bundle.getInt(MANGA);
+        d4cEnhanced = bundle.getBoolean(D4C_ENHANCED);
         progressScore = bundle.getInt(PROG_SCORE);
         heldItemValue = bundle.getInt(ITEM_VAL);
         treasureScore = bundle.getInt(TRES_SCORE);

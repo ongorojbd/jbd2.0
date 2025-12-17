@@ -6,9 +6,13 @@ import static com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMag
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
@@ -60,10 +64,12 @@ public class Neotel extends Item {
 
             Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);
-            Buff.affect(hero, HorseRiding.class).set();
+            Buff.affect(hero, Cripple.class, 99f);
             SPDSettings.addSpecialcoin(4);
+            hero.sprite.clearAura();
 //            Buff.affect(hero, AscensionChallenge.class);
-
+            Buff.affect(hero, D4C.class);
+            Statistics.d4cEnhanced = true;
             hero.HP = Math.min(hero.HP + 150, hero.HT);
             Buff.affect(hero, Invisibility.class, 99f);
 
@@ -95,12 +101,12 @@ public class Neotel extends Item {
         }
         if (action.equals(AC_RETURN)) {
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = 30;
+            InterlevelScene.returnDepth = 2;
             InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -2;
             Game.switchScene(InterlevelScene.class);
 
-            for (int lvl = hero.lvl; lvl < 12; lvl++) {
+            for (int lvl = hero.lvl; lvl < 30; lvl++) {
                 Potion expPotion = new PotionOfExperience();
                 expPotion.apply(hero);
             }

@@ -39,7 +39,7 @@ public class JohnnyWepon extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(3.0f*(tier+1)) +     //6 base
+		return  4*(tier+1) +     //8 base
 				lvl*Math.round(0.5f*(tier+1));  //+1 per level
 	}
 

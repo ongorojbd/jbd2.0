@@ -25,7 +25,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -35,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AmblanceSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
@@ -128,6 +131,30 @@ public class TengusMask extends Item {
                     new String[]{"죠린"},
                     new String[]{
                             Messages.get(Jolyne3.class, "s2")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
+        }  else if (way == HeroSubClass.RIDER) {
+            Buff.affect(curUser, HorseRiding.class).set();
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new BlacksmithSprite()},
+                    new String[]{"죠니"},
+                    new String[]{
+                            Messages.get(Jolyne3.class, "s3")
+                    },
+                    new byte[]{
+                            WndDialogueWithPic.IDLE
+                    }
+            );
+        }  else if (way == HeroSubClass.STANDO) {
+            Buff.affect(curUser, TacticalScope.class).set();
+            WndDialogueWithPic.dialogue(
+                    new CharSprite[]{new BlacksmithSprite()},
+                    new String[]{"죠니"},
+                    new String[]{
+                            Messages.get(Jolyne3.class, "s4")
                     },
                     new byte[]{
                             WndDialogueWithPic.IDLE

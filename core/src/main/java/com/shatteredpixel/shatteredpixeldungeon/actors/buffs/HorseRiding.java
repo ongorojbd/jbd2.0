@@ -66,6 +66,10 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         return leapCharges;
     }
     
+    public void setLeapCharges(int charges) {
+        this.leapCharges = Math.min(charges, MAX_LEAP_CHARGES);
+    }
+    
     public int getMaxLeapCharges() {
         return MAX_LEAP_CHARGES;
     }
@@ -73,6 +77,8 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
     public void set(int HP) {
         horseHT = (15+Dungeon.hero.lvl*5);
         horseHP = HP;
+        // 도약 충전량은 유지 (이미 존재하는 경우)
+        // leapCharges는 현재 값 유지
     }
 
     public void onLevelUp() {
@@ -135,7 +141,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
     @Override
     public int actionIcon() {
-        return HeroIcon.GLADIATOR;
+        return HeroIcon.RIDER_ABILITIES;
     }
 
     @Override
@@ -149,7 +155,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
     @Override
     public int indicatorColor() {
-        return 0x26058C;
+        return 0x87CEEB;
     }
 
     @Override
@@ -180,9 +186,10 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         }
 
         if (!spawnPoints.isEmpty()) {
-            // 기존 체력을 그대로 사용 (0이면 최대 체력으로)
+            // 기존 체력과 도약 충전량을 그대로 사용 (0이면 최대 체력으로)
             int spawnHP = this.horseHP > 0 ? this.horseHP : this.horseHT;
-            this.horse = new HorseAlly(hero, spawnHP);
+            int currentLeapCharges = this.leapCharges;
+            this.horse = new HorseAlly(hero, spawnHP, currentLeapCharges);
 
             horse.pos = Random.element(spawnPoints);
 
@@ -380,16 +387,18 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         private float partialCharge = 0f;
         private int heroLvl = 0;
+        private int savedLeapCharges = 0; // 도약 충전량 저장
 
         public HorseAlly() {
             super();
         }
 
-        public HorseAlly(Hero hero, int HP) {
+        public HorseAlly(Hero hero, int HP, int leapCharges) {
             this.HT = (15+hero.lvl*5);
             this.defenseSkill = (hero.lvl+4);
             this.HP = HP;
             this.heroLvl = hero.lvl;
+            this.savedLeapCharges = leapCharges;
         }
 
         @Override
@@ -418,7 +427,15 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         @Override
         public boolean interact(Char c) {
             if (c instanceof Hero) {
-                Buff.affect(c, HorseRiding.class).set(this.HP);
+                // 말 체력 설정
+                HorseRiding riding = Buff.affect(c, HorseRiding.class);
+                riding.set(this.HP);
+                
+                // 말이 저장하고 있던 도약 충전량 복원
+                riding.setLeapCharges(this.savedLeapCharges);
+                BuffIndicator.refreshHero();
+                ActionIndicator.refresh();
+                
                 Sample.INSTANCE.play(Assets.Sounds.HORSE);
                 destroy();
                 sprite.die();
@@ -466,6 +483,20 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         @Override
         public int drRoll() {
             return HorseRiding.drRoll();
+        }
+
+        private static final String SAVED_LEAP_CHARGES = "savedLeapCharges";
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(SAVED_LEAP_CHARGES, savedLeapCharges);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            savedLeapCharges = bundle.getInt(SAVED_LEAP_CHARGES);
         }
     }
 

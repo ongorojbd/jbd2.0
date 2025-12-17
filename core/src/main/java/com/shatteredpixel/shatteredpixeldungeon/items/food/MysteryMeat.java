@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -45,6 +46,12 @@ public class MysteryMeat extends Food {
 	protected void satisfy(Hero hero) {
 		super.satisfy(hero);
 		effect(hero);
+		
+		// J11 탤런트: 레벨 2일 때 허기를 완전히 회복
+		if (hero.hasTalent(Talent.J11) && hero.pointsInTalent(Talent.J11) >= 2) {
+			Hunger hunger = Buff.affect(hero, Hunger.class);
+			hunger.satisfy(Hunger.STARVING);
+		}
 	}
 
 	public int value() {
@@ -52,6 +59,12 @@ public class MysteryMeat extends Food {
 	}
 
 	public static void effect(Hero hero){
+		// J11 탤런트: 해로운 효과 발생 안함
+		if (hero.hasTalent(Talent.J11)) {
+			return; // 해로운 효과 발생 안함
+		}
+		
+		// 일반적인 효과 (J11 탤런트 없을 때)
 		switch (Random.Int( 5 )) {
 			case 0:
 				GLog.w( Messages.get(MysteryMeat.class, "hot") );

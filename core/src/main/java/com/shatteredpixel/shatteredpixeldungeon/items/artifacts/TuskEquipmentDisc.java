@@ -32,8 +32,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RadioactiveMutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -82,7 +84,7 @@ public class TuskEquipmentDisc extends Artifact {
 
 	// 레벨업에 필요한 Perfect 횟수 (레벨별)
 	private int perfectsForLevel(int level) {
-        return 3 + level * 2;
+        return 3 + level;
     }
 
 	// 현재 레벨에서 얻은 Perfect 횟수
@@ -97,7 +99,8 @@ public class TuskEquipmentDisc extends Artifact {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
-		if (isEquipped(hero) && charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
+		if ((isEquipped(hero) || hero.hasTalent(Talent.J32))
+				&& charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
 			actions.add(AC_SHOOT);
 		}
 		return actions;
@@ -112,7 +115,7 @@ public class TuskEquipmentDisc extends Artifact {
 		if (action.equals(AC_SHOOT)) {
 			curUser = hero;
 
-			if (!isEquipped(hero)) {
+			if (!isEquipped(hero) && !hero.hasTalent(Talent.J32)) {
 				GLog.i(Messages.get(Artifact.class, "need_to_equip"));
 				usesTargeting = false;
 
@@ -125,21 +128,42 @@ public class TuskEquipmentDisc extends Artifact {
 				usesTargeting = false;
 
 			} else {
+				// J32 탤런트로 착용하지 않고 사용할 때 체력 감소
+				if (!isEquipped(hero) && hero.hasTalent(Talent.J32)) {
+					int talentLevel = hero.pointsInTalent(Talent.J32);
+					float hpCostPercent;
+					if (talentLevel == 1) {
+						hpCostPercent = 0.15f; // 15%
+					} else if (talentLevel == 2) {
+						hpCostPercent = 0.10f; // 10%
+					} else { // talentLevel >= 3
+						hpCostPercent = 0.05f; // 5%
+					}
+					int hpCost = Math.max(1, (int)(hero.HT * hpCostPercent));
+					hero.damage(hpCost, this);
+                    if (!Dungeon.hero.isAlive()) {
+                        Dungeon.fail(getClass());
+                    }
+				}
+				
 				usesTargeting = true;
 				GameScene.selectCell(targeter);
 			}
 		}
 	}
 
-	// 6레벨 이상일 때 자기 자신 사용 가능 여부
+	// J24 탤런트가 있을 때 자기 자신 사용 가능 여부
 	public boolean canTargetSelf() {
-		return level() >= 6;
+		Hero hero = Dungeon.hero;
+		return hero != null && hero.hasTalent(Talent.J24);
 	}
 
 	// 자기 자신에게 사용 (Fadeleaf 효과)
 	private void useSelfEffect(Hero hero) {
-		// 충전량 소모 (2 소모)
-		charge -= 2;
+		// J24 탤런트 레벨에 따라 충전량 소모 (레벨 1: 3 소모, 레벨 2: 2 소모)
+		int talentLevel = hero.pointsInTalent(Talent.J24);
+		int chargeRequired = (talentLevel == 1) ? 3 : 2;
+		charge -= chargeRequired;
 
 		// Fadeleaf 효과 발동
 		new Fadeleaf().activate(hero);
@@ -151,8 +175,6 @@ public class TuskEquipmentDisc extends Artifact {
 
 		// 턴 소모
 		hero.spendAndNext(1f);
-
-		GLog.i(Messages.get(this, "self_use"));
 	}
 
 	// 적 선택용 CellSelector.Listener
@@ -172,13 +194,17 @@ public class TuskEquipmentDisc extends Artifact {
 			// 자기 자신을 선택한 경우
 			if (ch == curUser) {
 				if (canTargetSelf()) {
-					// 충전량이 2 이상인지 확인
-					if (charge < 2) {
+					// J24 탤런트 레벨에 따라 필요한 충전량 확인 (레벨 1: 3, 레벨 2: 2)
+					Hero hero = (Hero) curUser;
+					int talentLevel = hero.pointsInTalent(Talent.J24);
+					int chargeRequired = (talentLevel == 1) ? 3 : 2;
+					
+					if (charge < chargeRequired) {
 						GLog.i(Messages.get(this, "no_charge"));
 						return;
 					}
-					// 6레벨 이상이면 Fadeleaf 효과 발동
-					useSelfEffect((Hero) curUser);
+					// J24 탤런트가 있으면 Fadeleaf 효과 발동
+					useSelfEffect(hero);
 				} else {
 					GLog.w(Messages.get(TuskEquipmentDisc.class, "cannot_target_self"));
 				}
@@ -220,36 +246,35 @@ public class TuskEquipmentDisc extends Artifact {
 				}
 			}
 
-			// 레벨 3 이상일 때 관통 기능: 경로상의 모든 적 찾기
+			// 레벨 3 이상일 때: 벽 통과 가능, J22 탤런트가 있으면 관통 기능
 			if (level() >= 3) {
                 Sword.t1();
 				Ballistica beam = new Ballistica(curUser.pos, target, Ballistica.WONT_STOP);
 				piercedTargets.clear();
 				
-				// 경로상의 모든 적 찾기
-				for (int c : beam.subPath(1, beam.dist)) {
-					Char enemy = Actor.findChar(c);
-					if (enemy != null && enemy != curUser 
-							&& enemy instanceof Mob 
-							&& !(enemy instanceof NPC)
-							&& enemy.alignment != Char.Alignment.ALLY
-							&& enemy.alignment == Char.Alignment.ENEMY) {
-						// PASSIVE 상태의 미발견 적은 제외
-						if (enemy instanceof Mob && ((Mob) enemy).state == ((Mob) enemy).PASSIVE
-								&& !(Dungeon.level.mapped[c] || Dungeon.level.visited[c])) {
-							continue;
+				// J22 탤런트가 있을 때만 경로상의 모든 적 찾기 (선택한 타겟 제외)
+				Hero hero = (Hero) curUser;
+				if (hero.hasTalent(Talent.J22)) {
+					for (int c : beam.subPath(1, beam.dist)) {
+						Char enemy = Actor.findChar(c);
+						if (enemy != null && enemy != curUser 
+								&& enemy != ch  // 선택한 타겟은 제외
+								&& enemy instanceof Mob 
+								&& !(enemy instanceof NPC)
+								&& enemy.alignment != Char.Alignment.ALLY
+								&& enemy.alignment == Char.Alignment.ENEMY) {
+							// PASSIVE 상태의 미발견 적은 제외
+							if (enemy instanceof Mob && ((Mob) enemy).state == ((Mob) enemy).PASSIVE
+									&& !(Dungeon.level.mapped[c] || Dungeon.level.visited[c])) {
+								continue;
+							}
+							piercedTargets.add(enemy);
 						}
-						piercedTargets.add(enemy);
 					}
 				}
 				
-				// 첫 번째 적에 대해서만 미니게임 실행
-				if (!piercedTargets.isEmpty()) {
-					GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, piercedTargets.get(0)));
-				} else {
-					// 경로상에 적이 없으면 원래 타겟에 대해서만 실행
-					GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
-				}
+				// 선택한 타겟에 대해 미니게임 실행
+				GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
 			} else {
 				// 레벨 0~2일 때는 기존처럼 단일 타겟만
                 Sword.t1();
@@ -327,14 +352,15 @@ public class TuskEquipmentDisc extends Artifact {
 			}
 		}
 		
-		// 레벨 3 이상일 때 각 발사마다 관통된 적들 계산 (2발 모드 대응)
-		if (level() >= 3) {
+		// 레벨 3 이상이고 J22 탤런트가 있을 때 각 발사마다 관통된 적들 계산 (2발 모드 대응)
+		if (level() >= 3 && hero.hasTalent(Talent.J22)) {
 			piercedTargets.clear();
-			// 경로상의 모든 적 찾기
+			// 경로상의 모든 적 찾기 (선택한 타겟 제외)
 			for (int c : beam.subPath(1, beam.dist)) {
 				Char enemy = Actor.findChar(c);
-				if (enemy != null && enemy != hero 
-						&& enemy instanceof Mob 
+				if (enemy != null && enemy != hero
+						&& enemy != target  // 선택한 타겟은 제외
+						&& enemy instanceof Mob
 						&& !(enemy instanceof NPC)
 						&& enemy.alignment != Char.Alignment.ALLY
 						&& enemy.alignment == Char.Alignment.ENEMY) {
@@ -366,17 +392,22 @@ public class TuskEquipmentDisc extends Artifact {
 		target.sprite.flash();
 
         // 디버그 용도 업그레이드
-//        upgrade();
+        // upgrade();
 
 		// 데미지 적용
 		boolean wasAlive = target.isAlive();
 		target.damage(damage, this);
         Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 
-		// provoked_anger talent: 적을 처치했을 때 아드레날린 부여
+		// 레벨 10일 때 RadioactiveMutation 부여 (3턴)
+		if (level() >= 10) {
+			Buff.affect(target, RadioactiveMutation.class).set(3);
+		}
+
+		// J23: 적을 처치했을 때 아드레날린 부여
 		if (!wasAlive || !target.isAlive()) {
-			if (hero.hasTalent(Talent.PROVOKED_ANGER)) {
-				int talentLevel = hero.pointsInTalent(Talent.PROVOKED_ANGER);
+			if (hero.hasTalent(Talent.J23)) {
+				int talentLevel = hero.pointsInTalent(Talent.J23);
 				if (talentLevel >= 1) {
 					float duration = talentLevel * 4; // 1레벨: 4턴, 2레벨: 8턴
 					Buff.prolong(hero, Adrenaline.class, duration);
@@ -412,15 +443,70 @@ public class TuskEquipmentDisc extends Artifact {
 			perfectCount++;
 			checkLevelUp();
 			
+			// 레벨 6 이상일 때 Perfect 조준 시 자기 자신에게 보호막 20 부여
+			if (level() >= 6) {
+				Buff.affect(hero, Barrier.class).setShield(20);
+			}
+			
 			// HorseRiding leap 충전량 획득
 			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding horseRiding = hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class);
 			if (horseRiding != null) {
 				horseRiding.addLeapCharge();
 			}
 			
+			// TacticalScope 활성화 상태에서 Perfect 성공 시 무작위 강화 버프 부여
+			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeActive = 
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
+			if (scopeActive != null) {
+				// 5가지 버프 중 무작위로 1개 선택
+				int buffChoice = Random.Int(5);
+				
+				// J36 탤런트에 따라 duration 계산
+				float duration = 50f; // 기본 50턴
+				if (hero.hasTalent(Talent.J36)) {
+					int talentLevel = hero.pointsInTalent(Talent.J36);
+					duration = 50f + (talentLevel * 20f); // 1레벨: 70턴, 2레벨: 90턴, 3레벨: 110턴
+				}
+				
+				switch (buffChoice) {
+					case 0: // 돌가면 강화
+						Buff.prolong(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class, duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_rings"));
+						break;
+					case 1: // 물리 공격 강화
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon weapon = 
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
+						weapon.setEnhancementLevel(1);
+						weapon.setTemporaryDuration(duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_weapon"));
+						break;
+					case 2: // 브로치 강화
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor armor = 
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
+						armor.setEnhancementLevel(1);
+						armor.setTemporaryDuration(duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_armor"));
+						break;
+					case 3: // 사격 DISC 강화
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand wand = 
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
+						wand.setEnhancementLevel(1);
+						wand.setTemporaryDuration(duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_wand"));
+						break;
+					case 4: // 투척무기 강화
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon thrown = 
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
+						thrown.setEnhancementLevel(1);
+						thrown.setTemporaryDuration(duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_thrown"));
+						break;
+				}
+			}
+			
 			// improvised_projectiles talent: 정확한 공격 시 Doom 부여
-			if (hero.hasTalent(Talent.PROVOKED_ANGER)) {
-				int talentLevel = hero.pointsInTalent(Talent.PROVOKED_ANGER);
+			if (hero.hasTalent(Talent.J25)) {
+				int talentLevel = hero.pointsInTalent(Talent.J25);
 				if (talentLevel >= 1) {
 					float duration = talentLevel * 2; // 1레벨: 2턴, 2레벨: 4턴
 					Doom doom = Buff.affect(target, Doom.class);
@@ -479,14 +565,20 @@ public class TuskEquipmentDisc extends Artifact {
 
 	// 각 발사 완료 후 관통된 적들 처리 (2발 모드 대응)
 	public void processPiercedTargets() {
-		// 레벨 3 이상이고 관통된 적들이 있으면 나머지 적들도 처리
-		if (level() >= 3 && !piercedTargets.isEmpty() && lastDamage > 0) {
-			// 첫 번째 적은 이미 처리되었으므로 나머지만 처리
-			for (int i = 1; i < piercedTargets.size(); i++) {
-				Char enemy = piercedTargets.get(i);
-				if (enemy != null && enemy.isAlive() && enemy != currentTarget) {
-					// 같은 데미지와 hitType 적용
-					applyPierceDamage(enemy, lastDamage, lastHitType, lastDamageRatio);
+		Hero hero = Dungeon.hero;
+		if (hero == null) return;
+		
+		// J22 탤런트가 있을 때만 경로상의 다른 적들에게 피해 적용
+		if (!piercedTargets.isEmpty() && lastDamage > 0 && hero.hasTalent(Talent.J22)) {
+			int talentLevel = hero.pointsInTalent(Talent.J22);
+			float damageMultiplier = (talentLevel == 1) ? 0.5f : 1.0f; // 레벨 1: 50%, 레벨 2: 100%
+			
+			// 경로상의 모든 적들에게 피해 적용 (선택한 타겟은 이미 제외됨)
+			for (Char enemy : piercedTargets) {
+				if (enemy != null && enemy.isAlive()) {
+					// 탤런트 레벨에 따라 데미지 조정하여 적용
+					int adjustedDamage = Math.round(lastDamage * damageMultiplier);
+					applyPierceDamage(enemy, adjustedDamage, lastHitType, lastDamageRatio);
 				}
 			}
 		}
@@ -539,11 +631,10 @@ public class TuskEquipmentDisc extends Artifact {
 		// 데미지 적용
 		boolean wasAlive = target.isAlive();
 		target.damage(damage, this);
-		
-		// provoked_anger talent: 적을 처치했을 때 아드레날린 부여
+
 		if (!wasAlive || !target.isAlive()) {
-			if (hero.hasTalent(Talent.PROVOKED_ANGER)) {
-				int talentLevel = hero.pointsInTalent(Talent.PROVOKED_ANGER);
+			if (hero.hasTalent(Talent.J22)) {
+				int talentLevel = hero.pointsInTalent(Talent.J22);
 				if (talentLevel >= 1) {
 					float duration = talentLevel; // 1레벨: 1턴, 2레벨: 2턴
 					Buff.prolong(hero, Adrenaline.class, duration);
@@ -575,49 +666,110 @@ public class TuskEquipmentDisc extends Artifact {
 	}
 
 	// 업그레이드 여부 확인 (2발 발사 가능 여부)
-	// GLADIATOR 서브클래스인 경우에만 2발 발사 가능
+	// STANDO 서브클래스인 경우에만 2발 발사 가능
 	public boolean isUpgraded() {
 		Hero hero = Dungeon.hero;
-		return hero != null && hero.subClass == HeroSubClass.GLADIATOR;
+		return hero != null && hero.subClass == HeroSubClass.STANDO;
 	}
 
 	// 고정 데미지 계산 (강화 수치 기반)
+	// 레벨별 Perfect 데미지 (보스 기준):
+	// Lv0: 10-20, Lv1: 14-26, Lv2: 18-32, Lv3: 22-38, Lv4: 26-44
+	// Lv5: 30-50, Lv6: 34-56, Lv7: 38-62, Lv8: 42-68, Lv9: 46-74, Lv10: 50-80
+	// (STANDO 2발 모드: 각 데미지 × 0.75)
+	// (J38 탤런트: Perfect 데미지 +25%/+50%/+75%)
 	public int calculateDamage(String hitType, Char target) {
 		int lvl = level();
+		int baseDamage = 0;
 		
 		switch (hitType) {
 			case "perfect":
-				// 초록 영역: 최대 12+5×level
-				int maxDmg = 12 + 5 * lvl;
-				// 최소: BOSS/MINIBOSS가 아니면 적의 최대 체력의 절반, 아니면 7+level
+				// 초록 영역: 최소 10+4×level, 최대 20+6×level
+				int maxDmg = 20 + 6 * lvl;
+				// 최소: BOSS/MINIBOSS가 아니면 적의 최대 체력의 절반, 아니면 10+4×level
 				int minDmg;
 				if (target != null && !Char.hasProp(target, Char.Property.BOSS) 
 						&& !Char.hasProp(target, Char.Property.MINIBOSS)) {
 					minDmg = target.HT / 2;
 				} else {
-					minDmg = 7 + lvl;
+					minDmg = 10 + 4 * lvl;
 				}
 				// 최소가 최대를 넘지 않도록 보장
-				return Random.NormalIntRange(Math.min(minDmg, maxDmg), maxDmg);
+				baseDamage = Random.NormalIntRange(Math.min(minDmg, maxDmg), maxDmg);
+				
+				// J38 탤런트: Perfect 데미지 증가 (+25%/+50%/+75%)
+				Hero hero = Dungeon.hero;
+				if (hero != null && hero.hasTalent(Talent.J38)) {
+					int talentLevel = hero.pointsInTalent(Talent.J38);
+					float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
+					baseDamage = Math.round(baseDamage * (1f + damageBonus));
+				}
+				break;
 			
 			case "great":
-				// 노랑 영역: 최소 2+(level×0.75), 최대 8+(level×1.5) (레벨당 증가량 감소)
-				return Random.NormalIntRange(2 + (lvl * 3) / 4, 8 + (lvl * 3) / 2);
+				// 노랑 영역: 최소 2+(level×0.75), 최대 8+(level×1.5)
+				baseDamage = Random.NormalIntRange(2 + (lvl * 3) / 4, 8 + (lvl * 3) / 2);
+				break;
 			
 			case "good":
-				// 주황 영역: 최소 1+level/3, 최대 4+(level×0.75) (레벨당 증가량 감소)
-				return Random.NormalIntRange(1 + lvl/3, 4 + (lvl * 3) / 4);
+				// 주황 영역: 최소 1+level/3, 최대 4+(level×0.75)
+				baseDamage = Random.NormalIntRange(1 + lvl/3, 4 + (lvl * 3) / 4);
+				break;
 			
 			case "miss":
 			default:
 				// 빨강 영역: 피해량 없음
-				return 0;
+				baseDamage = 0;
+				break;
 		}
+		
+		// 2발 모드일 때 75% 데미지 적용
+		if (isUpgraded()) {
+			baseDamage = Math.round(baseDamage * 0.75f);
+		}
+		
+		return baseDamage;
 	}
 
 	@Override
 	protected ArtifactBuff passiveBuff() {
 		return new tuskRecharge();
+	}
+
+	@Override
+	public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+		if (super.doUnequip(hero, collect, single)){
+			if (!collect || !hero.hasTalent(Talent.J32)){
+				// J32 탤런트가 없으면 버프 제거
+			} else {
+				// J32 탤런트가 있으면 버프 유지
+				activate(hero);
+			}
+			return true;
+		} else
+			return false;
+	}
+
+	@Override
+	public boolean collect(com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag container) {
+		if (super.collect(container)){
+			if (container.owner instanceof Hero
+					&& passiveBuff == null
+					&& ((Hero) container.owner).hasTalent(Talent.J32)){
+				activate((Hero) container.owner);
+			}
+			return true;
+		} else{
+			return false;
+		}
+	}
+
+	@Override
+	protected void onDetach() {
+		if (passiveBuff != null){
+			passiveBuff.detach();
+			passiveBuff = null;
+		}
 	}
 
 	@Override
@@ -648,12 +800,14 @@ public class TuskEquipmentDisc extends Artifact {
 				desc += Messages.get(this, "desc_cursed");
 			} else {
                 desc += Messages.get(this, "desc_equipped");
-				
 				if (level() >= 3 && level() <= 5) {
 					desc += "\n\n" + Messages.get(this, "desc_upgraded2");
-				} else if (level() >= 6 && level() <= 8) {
+				} if (level() >= 6 && level() <= 8) {
+                    desc += "\n\n" + Messages.get(this, "desc_upgraded2");
                     desc += "\n\n" + Messages.get(this, "desc_upgraded3");
-                } else if (level() >= 9 && level() <= 10) {
+                } if (level() >= 9 && level() <= 10) {
+                    desc += "\n\n" + Messages.get(this, "desc_upgraded2");
+                    desc += "\n\n" + Messages.get(this, "desc_upgraded3");
                     desc += "\n\n" + Messages.get(this, "desc_upgraded4");
                 }
 
@@ -664,16 +818,29 @@ public class TuskEquipmentDisc extends Artifact {
 					
 					// Perfect 판정 데미지 정보 계산
 					int lvl = level();
-					int perfectMaxDmg = 12 + 5 * lvl;
-					int perfectMinDmg = 7 + lvl; // BOSS/MINIBOSS 기준 최소 데미지
+					int perfectMaxDmg = 20 + 6 * lvl;
+					int perfectMinDmg = 10 + 4 * lvl; // BOSS/MINIBOSS 기준 최소 데미지
+					
+					// 2발 모드일 때 75% 적용
+					if (isUpgraded()) {
+						perfectMaxDmg = Math.round(perfectMaxDmg * 0.75f);
+						perfectMinDmg = Math.round(perfectMinDmg * 0.75f);
+					}
 					
 					desc += "\n\n" + Messages.get(this, "desc_perfect", 
 						current, needed, remaining, perfectMinDmg, perfectMaxDmg);
 				} else {
 					// 레벨이 최대일 때도 Perfect 데미지 정보 표시
 					int lvl = level();
-					int perfectMaxDmg = 12 + 5 * lvl;
-					int perfectMinDmg = 7 + lvl;
+					int perfectMaxDmg = 20 + 6 * lvl;
+					int perfectMinDmg = 10 + 4 * lvl;
+					
+					// 2발 모드일 때 75% 적용
+					if (isUpgraded()) {
+						perfectMaxDmg = Math.round(perfectMaxDmg * 0.75f);
+						perfectMinDmg = Math.round(perfectMinDmg * 0.75f);
+					}
+					
 					desc += "\n\n" + Messages.get(this, "desc_perfect_max", 
 						perfectMinDmg, perfectMaxDmg);
 				}

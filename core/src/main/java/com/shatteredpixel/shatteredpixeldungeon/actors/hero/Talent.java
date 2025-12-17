@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -62,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -205,10 +207,27 @@ public enum Talent {
     //Power of Many T4
     BEAMING_RAY(183, 4), LIFE_LINK(184, 4), STASIS(185, 4),
 
+    //JoBro T1
+    J11(192), J12(193), J13(194), J14(195),
+    //JoBro T2
+    J21(196), J22(197), J23(198), J24(199), J25(200),
+    //JoBro T3
+    J31(201, 3), J32(202, 3),
+    //JoBro Subclass1 T3
+    J33(203, 3), J34(204, 3), J35(205, 3),
+    //JoBro Subclass2 T3
+    J36(206, 3), J37(207, 3), J38(208, 3),
+    //JoBro T4 - Ability 1
+    J41(209, 4), J42(210, 4), J43(211, 4),
+    //JoBro T4 - Ability 2
+    J44(212, 4), J45(213, 4), J46(214, 4),
+    //JoBro T4 - Ability 3
+    J47(215, 4), J48(216, 4), J49(217, 4),
+
     //universal T4
     HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
     //Ratmogrify T4
-    RATSISTANCE(215, 4), RATLOMACY(216, 4), RATFORCEMENTS(217, 4);
+    RATSISTANCE(218, 4), RATLOMACY(219, 4), RATFORCEMENTS(220, 4);
 
     public static class ImprovisedProjectileCooldown extends FlavourBuff {
         public int icon() {
@@ -239,7 +258,8 @@ public enum Talent {
     public static class WandPreservationCounter extends CounterBuff {
         {
             revivePersists = true;
-        }}
+        }
+    }
 
     ;
 
@@ -313,7 +333,8 @@ public enum Talent {
     public static class RejuvenatingStepsFurrow extends CounterBuff {
         {
             revivePersists = true;
-        }}
+        }
+    }
 
     ;
 
@@ -392,14 +413,18 @@ public enum Talent {
         public float iconFadePercent() {
             return Math.max(0, visualcooldown() / 50);
         }
-    };
+    }
 
-    public static class LiquidAgilEVATracker extends FlavourBuff{
+    ;
+
+    public static class LiquidAgilEVATracker extends FlavourBuff {
         {
             //detaches after hero acts, not after mobs act
-            actPriority = HERO_PRIO+1;
+            actPriority = HERO_PRIO + 1;
         }
-    };
+    }
+
+    ;
 
     public static class LiquidAgilACCTracker extends FlavourBuff {
         public int uses;
@@ -634,7 +659,7 @@ public enum Talent {
     public int icon() {
         if (this == HEROIC_ENERGY) {
             if (Ratmogrify.useRatroicEnergy) {
-                return 218;
+                return 221;
             }
             HeroClass cls = Dungeon.hero != null ? Dungeon.hero.heroClass : GamesInProgress.selectedClass;
             switch (cls) {
@@ -651,6 +676,8 @@ public enum Talent {
                     return 154;
                 case CLERIC:
                     return 186;
+                case JOHNNY:
+                    return 218;
             }
         } else {
             return icon;
@@ -794,21 +821,23 @@ public enum Talent {
     public static class CachedRationsDropped extends CounterBuff {
         {
             revivePersists = true;
-        }}
+        }
+    }
 
     ;
 
     public static class NatureBerriesDropped extends CounterBuff {
         {
             revivePersists = true;
-        }}
+        }
+    }
 
     ;
 
     public static void onFoodEaten(Hero hero, float foodVal, Item foodSource) {
         if (hero.hasTalent(HEARTY_MEAL)) {
             //4/6 HP healed, when hero is below 33% health (with a little rounding up)
-            if (hero.HP/(float)hero.HT < 0.334f) {
+            if (hero.HP / (float) hero.HT < 0.334f) {
                 int healing = 2 + 2 * hero.pointsInTalent(HEARTY_MEAL);
                 hero.HP = Math.min(hero.HP + healing, hero.HT);
                 hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
@@ -834,6 +863,10 @@ public enum Talent {
         if (hero.hasTalent(MYSTICAL_MEAL)) {
             //3/5 turns of recharging
             artifactChargeTurns += 1 + 2 * hero.pointsInTalent(MYSTICAL_MEAL);
+        }
+        if (hero.hasTalent(J11) && foodSource instanceof MysteryMeat) {
+            //2 turns of artifact recharging when eating mystery meat
+            artifactChargeTurns += 2;
         }
         if (hero.hasTalent(INVIGORATING_MEAL)) {
             //effectively 1/2 turns of haste
@@ -904,7 +937,7 @@ public enum Talent {
     }
 
     public static float itemIDSpeedFactor(Hero hero, Item item) {
-        float factor = 1f;
+        float factor = 1f + 0.75f*hero.pointsInTalent(J12);
 
         // Affected by both Warrior(1.75x/2.5x) and Duelist(2.5x/inst.) talents
         if (item instanceof MeleeWeapon) {
@@ -921,8 +954,8 @@ public enum Talent {
             factor *= 1f + 2.0f * hero.pointsInTalent(SCHOLARS_INTUITION);
         }
         // 3x/instant speed with Huntress talent (see MissileWeapon.proc)
-        if (item instanceof MissileWeapon){
-            factor *= 1f + 2.0f*hero.pointsInTalent(SURVIVALISTS_INTUITION);
+        if (item instanceof MissileWeapon) {
+            factor *= 1f + 2.0f * hero.pointsInTalent(SURVIVALISTS_INTUITION);
         }
         // 2x/instant for Rogue (see onItemEqupped), also id's type on equip/on pickup
         if (item instanceof Ring) {
@@ -933,10 +966,10 @@ public enum Talent {
 
     public static void onPotionUsed(Hero hero, int cell, float factor) {
         if (hero.hasTalent(LIQUID_WILLPOWER)) {
-			// 6.5/10% of max HP
-			int shieldToGive = Math.round( factor * hero.HT * (0.030f + 0.035f*hero.pointsInTalent(LIQUID_WILLPOWER)));
-			hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
-			Buff.affect(hero, Barrier.class).setShield(shieldToGive);
+            // 6.5/10% of max HP
+            int shieldToGive = Math.round(factor * hero.HT * (0.030f + 0.035f * hero.pointsInTalent(LIQUID_WILLPOWER)));
+            hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
+            Buff.affect(hero, Barrier.class).setShield(shieldToGive);
         }
         if (hero.hasTalent(LIQUID_NATURE)) {
             ArrayList<Integer> grassCells = new ArrayList<>();
@@ -1040,8 +1073,8 @@ public enum Talent {
                 && Random.Int(10) < Dungeon.hero.pointsInTalent(Talent.CLEANSE)) {
             boolean removed = false;
             for (Buff b : Dungeon.hero.buffs()) {
-				if (b.type == Buff.buffType.NEGATIVE
-						&& !(b instanceof LostInventory)) {
+                if (b.type == Buff.buffType.NEGATIVE
+                        && !(b instanceof LostInventory)) {
                     b.detach();
                     removed = true;
                 }
@@ -1069,11 +1102,11 @@ public enum Talent {
 
         if (identify) {
             if (ShardOfOblivion.passiveIDDisabled()) {
-                if (item instanceof Weapon){
+                if (item instanceof Weapon) {
                     ((Weapon) item).setIDReady();
-                } else if (item instanceof Armor){
+                } else if (item instanceof Armor) {
                     ((Armor) item).setIDReady();
-                } else if (item instanceof Ring){
+                } else if (item instanceof Ring) {
                     ((Ring) item).setIDReady();
                 }
             } else {
@@ -1093,7 +1126,7 @@ public enum Talent {
         if (hero.hasTalent(Talent.PROVOKED_ANGER)
                 && hero.buff(ProvokedAngerTracker.class) != null) {
 
-			dmg += 1 + 2*hero.pointsInTalent(Talent.PROVOKED_ANGER);
+            dmg += 1 + 2 * hero.pointsInTalent(Talent.PROVOKED_ANGER);
             hero.buff(ProvokedAngerTracker.class).detach();
         }
 
@@ -1118,6 +1151,13 @@ public enum Talent {
                 dmg += 1 + hero.pointsInTalent(FOLLOWUP_STRIKE);
                 hero.buff(FollowupStrikeTracker.class).detach();
             }
+        }
+
+        if (hero.hasTalent(Talent.J14)
+                && hero.buff(ProtectiveSlashCooldown.class) == null
+                && !level.adjacent(hero.pos, enemy.pos)) {
+            Buff.affect(hero, Barrier.class).setShield(1+2*Dungeon.hero.pointsInTalent(Talent.J14));
+            Buff.affect(hero, ProtectiveSlashCooldown.class, 10);
         }
 
         if (hero.buff(Talent.SpiritBladesTracker.class) != null
@@ -1224,7 +1264,13 @@ public enum Talent {
         }
     }
 
-    ;
+    public static class ProtectiveSlashCooldown extends FlavourBuff{
+        public int icon() { return BuffIndicator.TIME; }
+        public void tintIcon(Image icon) { icon.hardlight(0.8f, 0.8f, 0.8f); }
+        public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 10)); }
+        public String toString() { return Messages.get(this, "name"); }
+        public String desc() { return Messages.get(this, "desc", dispTurns(visualcooldown())); }
+    }
 
     public static final int MAX_TALENT_TIERS = 4;
 
@@ -1264,6 +1310,10 @@ public enum Talent {
             case CLERIC:
                 Collections.addAll(tierTalents, SATIATED_SPELLS, HOLY_INTUITION, SEARING_LIGHT, SHIELD_OF_LIGHT);
                 break;
+            // 죠니 추가
+            case JOHNNY:
+                Collections.addAll(tierTalents, J11, J12, J13, J14);
+                break;
         }
         for (Talent talent : tierTalents) {
             if (replacements.containsKey(talent)) {
@@ -1294,6 +1344,10 @@ public enum Talent {
             case CLERIC:
                 Collections.addAll(tierTalents, ENLIGHTENING_MEAL, RECALL_INSCRIPTION, SUNRAY, DIVINE_SENSE, BLESS);
                 break;
+            // 죠니 추가
+            case JOHNNY:
+                Collections.addAll(tierTalents, J21, J22, J23, J24, J25);
+                break;
         }
         for (Talent talent : tierTalents) {
             if (replacements.containsKey(talent)) {
@@ -1323,6 +1377,10 @@ public enum Talent {
                 break;
             case CLERIC:
                 Collections.addAll(tierTalents, CLEANSE, LIGHT_READING);
+                break;
+            // 죠니 추가
+            case JOHNNY:
+                Collections.addAll(tierTalents, J31, J32);
                 break;
         }
         for (Talent talent : tierTalents) {
@@ -1389,6 +1447,13 @@ public enum Talent {
             case PALADIN:
                 Collections.addAll(tierTalents, LAY_ON_HANDS, AURA_OF_PROTECTION, WALL_OF_LIGHT);
                 break;
+           // 죠니 추가
+             case RIDER:
+                 Collections.addAll(tierTalents, J33, J34, J35);
+                 break;
+             case STANDO:
+                 Collections.addAll(tierTalents, J36, J37, J38);
+                 break;
         }
         for (Talent talent : tierTalents) {
             talents.get(2).put(talent, 0);

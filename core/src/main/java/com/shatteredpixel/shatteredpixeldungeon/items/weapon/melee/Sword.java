@@ -267,7 +267,7 @@ public class Sword extends MeleeWeapon {
 	}
     public static void t1(){
 
-        switch (Random.Int( 7 )) {
+        switch (Random.Int( 8 )) {
             case 0:
                 Sample.INSTANCE.play( Assets.Sounds.JH5);
                 break;
@@ -289,20 +289,20 @@ public class Sword extends MeleeWeapon {
             case 6:
                 Sample.INSTANCE.play( Assets.Sounds.JH12);
                 break;
+            case 7:
+                Sample.INSTANCE.play( Assets.Sounds.JH8);
+                break;
         }
     }
 
     public static void tp(){
 
-        switch (Random.Int( 3 )) {
+        switch (Random.Int( 2 )) {
             case 0:
                 Sample.INSTANCE.play( Assets.Sounds.JH6);
                 break;
             case 1:
                 Sample.INSTANCE.play( Assets.Sounds.JH7);
-                break;
-            case 2:
-                Sample.INSTANCE.play( Assets.Sounds.JH8);
                 break;
         }
     }

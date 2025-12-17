@@ -371,6 +371,10 @@ public class Hero extends Char {
             strBonus += (int) Math.floor(STR * (0.03f + 0.05f * pointsInTalent(Talent.STRONGMAN)));
         }
 
+        if (isStarving()) {
+            strBonus += pointsInTalent(Talent.J21);
+        }
+
         return STR + strBonus;
     }
 
@@ -2082,6 +2086,12 @@ public class Hero extends Char {
         CapeOfThorns.Thorns thorns = buff(CapeOfThorns.Thorns.class);
         if (thorns != null) {
             damage = thorns.proc((int) damage, (src instanceof Char ? (Char) src : null), this);
+        }
+        
+        // D4C 버프: 피격 시 상태이상을 공격자에게 떠넘김
+        D4C d4c = buff(D4C.class);
+        if (d4c != null && src instanceof Char) {
+            d4c.transferDebuffsToAttacker((Char) src);
         }
 
         dmg = (int) Math.ceil(dmg * RingOfTenacity.damageMultiplier(this));

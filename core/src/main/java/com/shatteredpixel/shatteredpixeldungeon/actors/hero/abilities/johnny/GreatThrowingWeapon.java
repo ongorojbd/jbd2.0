@@ -54,11 +54,16 @@ import java.util.ArrayList;
 public class GreatThrowingWeapon extends ArmorAbility {
 
     {
-        baseChargeUse = 30f;
+        baseChargeUse = 35f;
     }
 
     @Override
     public String targetingPrompt() {
+        // GTWTracker가 있으면 두 번째 단계(이동 위치 선택)
+        if (IsGTW() != null) {
+            return Messages.get(this, "prompt2");
+        }
+        // 없으면 첫 번째 단계(회전할 대상 선택)
         return Messages.get(this, "prompt1");
     }
 
@@ -93,6 +98,7 @@ public class GreatThrowingWeapon extends ArmorAbility {
         if (IsGTW() != null){
             Buff.detach(IsGTW(), GTWTracker.class);
         }
+        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         Buff.affect(ch, GTWTracker.class, 1f);
     }
 
