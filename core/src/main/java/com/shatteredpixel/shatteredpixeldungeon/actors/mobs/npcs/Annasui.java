@@ -128,7 +128,8 @@ public class Annasui extends NPC {
                             Messages.get(Annasui.class, "3"),
                             Messages.get(Annasui.class, "4"),
                             Messages.get(Annasui.class, "5"),
-                            Messages.get(Annasui.class, "6i")
+                            Messages.get(Annasui.class, "6i"),
+                            Messages.get(Annasui.class, "7i")
                     ) {
                         @Override
                         protected void onSelect(int index) {
@@ -202,10 +203,24 @@ public class Annasui extends NPC {
                                 } else {
                                     GLog.p(Messages.get(Annasui.class, "r"));
                                 }
-                            } else {
+                            } else if (index == 5) {
                                 if (SPDSettings.getSkin6() == 0) {
                                     if (SPDSettings.getBrando() >= 3) {
                                         SPDSettings.addSkin6(1);
+                                        SPDSettings.addBrando(-3);
+                                        Emporio.retu();
+                                        GLog.p(Messages.get(Annasui.class, "g"));
+                                        Sample.INSTANCE.play(Assets.Sounds.BADGE);
+                                    } else {
+                                        GLog.p(Messages.get(Annasui.class, "nc"));
+                                    }
+                                } else {
+                                    GLog.p(Messages.get(Annasui.class, "r"));
+                                }
+                            } else {
+                                if (SPDSettings.getSkin7() == 0) {
+                                    if (SPDSettings.getBrando() >= 3) {
+                                        SPDSettings.addSkin7(1);
                                         SPDSettings.addBrando(-3);
                                         Emporio.retu();
                                         GLog.p(Messages.get(Annasui.class, "g"));

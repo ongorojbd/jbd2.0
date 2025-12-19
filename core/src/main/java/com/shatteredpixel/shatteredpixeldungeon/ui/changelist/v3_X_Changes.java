@@ -54,6 +54,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_4_Changes(changeInfos);
         add_v3_3_Changes(changeInfos);
         add_v3_2_Changes(changeInfos);
         add_v3_1_Changes(changeInfos);
@@ -74,9 +75,63 @@ public class v3_X_Changes {
                 "전투조류 던전의 베타 기간이 끝나고 정식 출시될 예정입니다!\n\n" +
                         "총 63층 예정으로, 전투조류 던전 클리어 보상도 추가 예정입니다."));
 
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "스틸 볼 런 업데이트",
-                "스틸 볼 런 애니메이션 개봉일에 맞춘 추가 업데이트가 있을 예정입니다."));
+    }
+    public static void add_v3_4_Changes(ArrayList<ChangeInfo> changeInfos) {
 
+        ChangeInfo changes = new ChangeInfo("v3.0e", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.JOHNNY, 1), "신규 캐릭터: 죠니!",
+                "_죠니가 드디어 7번째 플레이어블 캐릭터로 추가되었습니다!_\n\n" +
+                        "죠니는 터스크의 장비 DISC를 사용해서 조준 타이밍을 정교하게 맞출수록 위력이 증가하는 독특한 플레이 방식을 제공합니다."));
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.JOHNNY, 2), "죠니의 보조 직업",
+                "보조 직업은 두 번째 보스를 처치한 후에 선택할 수 있습니다.\n\n" +
+                        "_인간 찬가의 기수_: 인간 찬가의 기수는 슬로 댄서를 소환하여 탑승할 수 있으며, 황금의 회전 성공 시 도약 충전량을 얻어 빠르게 전장을 누빕니다.\n\n" +
+                        "_황금 회전의 스탠드사_: 황금 회전의 스탠드사는 터스크의 장비 DISC를 75% 위력으로 연속 2회 발사합니다. 또한 자이로의 레슨을 통해 황금의 회전을 발동하면, 전투에 도움이 되는 강화 효과를 얻습니다."));
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.JOHNNY, 6), "죠니 전용 레퀴엠 능력",
+                "레퀴엠 능력은 네 번째 보스를 처치한 후에 선택할 수 있습니다.\n\n" +
+                        "_실로 머나먼 길_: 죠니는 3x3 영역을 지정합니다. 3턴 후 터스크 ACT.4가 해당 영역에 강력한 피해를 가합니다.\n\n" +
+                        "_완전한 황금장방형_: 죠니는 지정한 위치에 3x3 범위의 황금장방형을 생성합니다. 황금장방형 안에 있으면 모든 근접 무기와 브로치가 강화됩니다.\n\n" +
+                        "_무한의 회전_: 죠니가 인접한 대상에게 무한의 회전 에너지를 부여하여, 원하는 방향으로 멀리 날려 보냅니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(
+                new Image(Assets.Sprites.DIEGO, 0, 0, 12, 15),
+                "스틸 볼 런 레이스 퀘스트 변경",
+                "천국에 도달한 DIO가 새롭게 리메이크되었습니다!\n\n" +
+                        "- 기존에 사용되던 오래된 패턴과 효과가 전면적으로 재작업되었으며, 보다 역동적이고 균형 잡힌 전투 경험을 제공하도록 개선되었습니다."
+        ));
+
+        changes.addButton(new ChangeButton(
+                new Image(Assets.Sprites.TROLL, 0, 0, 12, 15),
+                "죠니 퀘스트 변경",
+                "천국에 도달한 DIO가 새롭게 리메이크되었습니다!\n\n" +
+                        "- 기존에 사용되던 오래된 패턴과 효과가 전면적으로 재작업되었으며, 보다 역동적이고 균형 잡힌 전투 경험을 제공하도록 개선되었습니다."
+        ));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.AJA), "각성 무기 상향",
+                "일부 각성 무기의 피해량이 상향되었습니다:\n\n" +
+                        "- _에이자의 석가면_: 데미지가 45% 상향되었습니다.\n\n" +
+                        "- _핑크 다크의 소년_: 데미지가 30% 상향되었습니다.\n\n" +
+                        "- _섹스 피스톨즈_: 데미지가 15% 상향되었습니다.\n\n" +
+                        "- _스타 플라티나 더 월드의 주먹_: 데미지가 15% 상향되었습니다.\n\n" +
+                        "- _스타 플라티나 오버 헤븐의 주먹_: 데미지가 15% 상향되었습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(CharSprite.NEGATIVE);
+        changeInfos.add(changes);
     }
 
     public static void add_v3_3_Changes(ArrayList<ChangeInfo> changeInfos) {

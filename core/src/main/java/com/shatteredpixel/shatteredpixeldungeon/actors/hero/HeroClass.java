@@ -70,8 +70,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
@@ -85,8 +87,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FormaggioBottle;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr7;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr9;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -144,7 +148,7 @@ public enum HeroClass {
 
         if (DeviceCompat.isDebug()) {
             new PotionOfExperience().identify().quantity(100).collect();
-            new ScrollOfMysticalEnergy().identify().quantity(100).collect();
+            new PotionOfShroudingFog().identify().quantity(100).collect();
             new RingOfMight().identify().upgrade(999).collect();
             new RingOfEnergy().identify().upgrade(999).collect();
             new ThrowingSpike().identify().upgrade(9999).collect();
@@ -153,9 +157,7 @@ public enum HeroClass {
             new Neotel().collect();
             new TengusMask().collect();
             new KingsCrown().collect();
-            new FormaggioBottle().collect();
             new Sbr9().collect();
-            new UV().identify().quantity(100).collect();
             new WandOfDisintegration().identify().upgrade(9999).collect();
             new PotionOfHealing().identify().quantity(100).collect();
         }
@@ -451,7 +453,7 @@ public enum HeroClass {
                     return Assets.Sprites.CLERIC2;
                 } else return Assets.Sprites.CLERIC;
             case JOHNNY:
-                if (SPDSettings.getSkin6() == 1) {
+                if (SPDSettings.getSkin7() == 1) {
                     return Assets.Sprites.JOHNNY2;
                 } else return Assets.Sprites.JOHNNY;
         }
@@ -521,6 +523,8 @@ public enum HeroClass {
                 return Badges.isUnlocked(Badges.Badge.UNLOCK_DUELIST);
             case CLERIC:
                 return Badges.isUnlocked(Badges.Badge.UNLOCK_CLERIC);
+            case JOHNNY:
+                return Badges.isUnlocked(Badges.Badge.UNLOCK_JOHNNY);
         }
     }
 

@@ -1431,6 +1431,9 @@ public abstract class Level implements Bundlable {
 			} else {
 
 				int mindVisRange = 0;
+                if (((Hero) c).hasTalent(Talent.J13) && ((Hero) c).heroClass != HeroClass.JOHNNY){
+                    mindVisRange = 1+((Hero) c).pointsInTalent(Talent.J13);
+                }
 				if (((Hero) c).hasTalent(Talent.HEIGHTENED_SENSES)){
 					mindVisRange = 1+((Hero) c).pointsInTalent(Talent.HEIGHTENED_SENSES);
 				}

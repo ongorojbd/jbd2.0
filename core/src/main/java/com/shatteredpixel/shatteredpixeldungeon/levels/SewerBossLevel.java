@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.sewerboss.SewerBoss
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DvdolSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
@@ -304,6 +305,24 @@ public class SewerBossLevel extends SewerLevel {
 							}
 					);
 					break;
+                case JOHNNY:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DvdolSprite(), new GhostSprite(), new GooSprite(), new BlacksmithSprite()},
+                            new String[]{"무함마드 압둘", "무함마드 압둘", "크림", "죠니"},
+                            new String[]{
+                                    Messages.get(Goo.class, "n1"),
+                                    Messages.get(Goo.class, "n2"),
+                                    Messages.get(Goo.class, "n3"),
+                                    Messages.get(Goo.class, "n7")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.DIE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.RUN
+                            }
+                    );
+                    break;
 			}
 
 			set( entrance(), Terrain.WATER );

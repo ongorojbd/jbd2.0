@@ -50,9 +50,9 @@ import java.util.ArrayList;
 public abstract class Zombie2p extends Mob {
 
     {
-        HP = HT = 160;
-        defenseSkill = 20;
-        baseSpeed = 1.5f;
+        HP = HT = 128;
+        defenseSkill = 16;
+        baseSpeed = 1.2f;
 
         EXP = 6;
         maxLvl = 26;
@@ -117,17 +117,17 @@ public abstract class Zombie2p extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 35, 50 );
+        return Random.NormalIntRange( 28, 40 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 30;
+        return 24;
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 10);
+        return super.drRoll() + Random.NormalIntRange(0, 8);
     }
 
     public static class Zombiep1 extends Zombie2p {

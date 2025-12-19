@@ -37,9 +37,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbili
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
@@ -54,7 +56,7 @@ import java.util.ArrayList;
 public class GreatThrowingWeapon extends ArmorAbility {
 
     {
-        baseChargeUse = 35f;
+        baseChargeUse = 50f;
     }
 
     @Override
@@ -65,6 +67,11 @@ public class GreatThrowingWeapon extends ArmorAbility {
         }
         // 없으면 첫 번째 단계(회전할 대상 선택)
         return Messages.get(this, "prompt1");
+    }
+
+    @Override
+    public int icon() {
+        return HeroIcon.GREAT_THROWING_WEAPON;
     }
 
     @Override
@@ -98,6 +105,8 @@ public class GreatThrowingWeapon extends ArmorAbility {
         if (IsGTW() != null){
             Buff.detach(IsGTW(), GTWTracker.class);
         }
+
+        Sword.t1();
         Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         Buff.affect(ch, GTWTracker.class, 1f);
     }
@@ -123,6 +132,8 @@ public class GreatThrowingWeapon extends ArmorAbility {
 
         hero.busy();
         hero.sprite.zap(dest);
+        // 원래 위치를 저장 (j47 탤런트 거리 계산용)
+        final int originalPos = ch.pos;
         ch.sprite.jump(ch.pos, dest, new Callback() {
             @Override
             public void call() {
@@ -133,26 +144,18 @@ public class GreatThrowingWeapon extends ArmorAbility {
                 Dungeon.level.occupyCell(ch);
 
                 int damage = Random.NormalIntRange(5+Dungeon.depth, 10+Dungeon.depth*2);
-                if (hero.hasTalent(Talent.PROVOKED_ANGER)){
-                    if (hero.pointsInTalent(Talent.PROVOKED_ANGER) == 1){
-                        if (Dungeon.level.trueDistance(ch.pos, dest) >= 5){
-                            damage *= 1.5f;
-                        }
-                    }
-                    if (hero.pointsInTalent(Talent.PROVOKED_ANGER) == 2){
-                        if (Dungeon.level.trueDistance(ch.pos, dest) >= 4){
-                            damage *= 1.5f;
-                        }
-                    }
-                    if (hero.pointsInTalent(Talent.PROVOKED_ANGER) == 3){
-                        if (Dungeon.level.trueDistance(ch.pos, dest) >= 3){
-                            damage *= 1.5f;
-                        }
-                    }
-                    if (hero.pointsInTalent(Talent.PROVOKED_ANGER) == 4){
-                        if (Dungeon.level.trueDistance(ch.pos, dest) >= 3){
-                            damage *= 2f;
-                        }
+                if (hero.hasTalent(Talent.J47)){
+                    // 원래 위치에서 목적지까지의 거리 계산
+                    int throwDistance = (int) Dungeon.level.trueDistance(originalPos, dest);
+                    int talentLevel = hero.pointsInTalent(Talent.J47);
+                    if (talentLevel == 1 && throwDistance >= 5){
+                        damage = Math.round(damage * 1.5f);
+                    } else if (talentLevel == 2 && throwDistance >= 4){
+                        damage = Math.round(damage * 1.5f);
+                    } else if (talentLevel == 3 && throwDistance >= 3){
+                        damage = Math.round(damage * 1.5f);
+                    } else if (talentLevel == 4 && throwDistance >= 3){
+                        damage = Math.round(damage * 2f);
                     }
                 }
                 if (!Dungeon.level.pit[dest]) {
@@ -160,17 +163,17 @@ public class GreatThrowingWeapon extends ArmorAbility {
                     ch.sprite.bloodBurstA(ch.sprite.center(), damage);
                     ch.damage(damage - ch.drRoll(), hero);
 
-                    if (ch.isAlive() && hero.hasTalent(Talent.LIQUID_WILLPOWER)) {
-                        if (hero.pointsInTalent(Talent.LIQUID_WILLPOWER) == 1){
+                    if (ch.isAlive() && hero.hasTalent(Talent.J48)) {
+                        if (hero.pointsInTalent(Talent.J48) == 1){
                             Buff.affect(ch, Vertigo.class, 2f);
                         }
-                        if (hero.pointsInTalent(Talent.LIQUID_WILLPOWER) == 2){
+                        if (hero.pointsInTalent(Talent.J48) == 2){
                             Buff.affect(ch, Vertigo.class, 3f);
                         }
-                        if (hero.pointsInTalent(Talent.LIQUID_WILLPOWER) == 3){
+                        if (hero.pointsInTalent(Talent.J48) == 3){
                             Buff.affect(ch, Paralysis.class, 3f);
                         }
-                        if (hero.pointsInTalent(Talent.LIQUID_WILLPOWER) == 4){
+                        if (hero.pointsInTalent(Talent.J48) == 4){
                             Buff.affect(ch, Paralysis.class, 4f);
                         }
                     }
@@ -184,8 +187,8 @@ public class GreatThrowingWeapon extends ArmorAbility {
 
                 if (collide != null){
                     float regain = 0f;
-                    if (hero.hasTalent(Talent.SHRUG_IT_OFF)){
-                        regain = chargeUse(hero) * (0.2f * hero.pointsInTalent(Talent.SHRUG_IT_OFF));
+                    if (hero.hasTalent(Talent.J49)){
+                        regain = chargeUse(hero) * (0.2f * hero.pointsInTalent(Talent.J49));
                     }
                     armor.charge += regain;
 
@@ -216,17 +219,17 @@ public class GreatThrowingWeapon extends ArmorAbility {
                             collide.damage(damage - collide.drRoll(), hero);
 
                             if (collide.isAlive()){
-                                if (hero.hasTalent(Talent.LIQUID_WILLPOWER)) {
-                                    if (hero.pointsInTalent(Talent.LIQUID_WILLPOWER) == 1){
+                                if (hero.hasTalent(Talent.J48)) {
+                                    if (hero.pointsInTalent(Talent.J48) == 1){
                                         Buff.affect(collide, Vertigo.class, 2f);
                                     }
-                                    if (hero.pointsInTalent(Talent.LIQUID_WILLPOWER) == 2){
+                                    if (hero.pointsInTalent(Talent.J48) == 2){
                                         Buff.affect(collide, Vertigo.class, 3f);
                                     }
-                                    if (hero.pointsInTalent(Talent.LIQUID_WILLPOWER) == 3){
+                                    if (hero.pointsInTalent(Talent.J48) == 3){
                                         Buff.affect(collide, Paralysis.class, 3f);
                                     }
-                                    if (hero.pointsInTalent(Talent.LIQUID_WILLPOWER) == 4){
+                                    if (hero.pointsInTalent(Talent.J48) == 4){
                                         Buff.affect(collide, Paralysis.class, 4f);
                                     }
                                 }
@@ -296,6 +299,7 @@ public class GreatThrowingWeapon extends ArmorAbility {
 
     @Override
     public Talent[] talents() {
-        return new Talent[]{Talent.PROVOKED_ANGER, Talent.LIQUID_WILLPOWER, Talent.SHRUG_IT_OFF, Talent.HEROIC_ENERGY };
+        return new Talent[]{Talent.J47, Talent.J48, Talent.J49, Talent.HEROIC_ENERGY};
     }
+
 }

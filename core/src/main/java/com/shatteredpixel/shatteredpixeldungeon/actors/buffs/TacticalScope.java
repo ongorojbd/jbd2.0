@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -31,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
 public class TacticalScope extends Buff implements ActionIndicator.Action {
@@ -38,12 +40,13 @@ public class TacticalScope extends Buff implements ActionIndicator.Action {
     {
         type = buffType.POSITIVE;
         announced = false;
+        revivePersists = true; // 죽어도 유지
     }
 
     private int charges = 0;
     private static final int MAX_CHARGES = 1;
     private float partialCharge = 0f;
-    private static final float CHARGE_TIME = 300f; // 300턴마다 충전
+    private static final float CHARGE_TIME = 200f; // 200턴마다 충전
     private boolean usedButNotFired = false; // 사용했지만 아직 발사하지 않음
 
     // 충전된 상태로 시작
@@ -72,7 +75,7 @@ public class TacticalScope extends Buff implements ActionIndicator.Action {
             Hero hero = Dungeon.hero;
             if (hero != null && hero.hasTalent(Talent.J37)) {
                 int talentLevel = hero.pointsInTalent(Talent.J37);
-                chargeTime = CHARGE_TIME - (talentLevel * 50f); // 1레벨: 250턴, 2레벨: 200턴, 3레벨: 150턴
+                chargeTime = CHARGE_TIME - (talentLevel * 50f); // 1레벨: 150턴, 2레벨: 100턴, 3레벨: 50턴
             }
             
             if (partialCharge >= chargeTime) {
@@ -94,6 +97,8 @@ public class TacticalScope extends Buff implements ActionIndicator.Action {
 
     public void useCharge() {
         if (charges > 0) {
+            Sample.INSTANCE.play(Assets.Sounds.G1);
+
             // charges는 줄이지 않고, 플래그만 설정
             usedButNotFired = true;
             // 조준 속도 감소 버프 부여
@@ -137,7 +142,7 @@ public class TacticalScope extends Buff implements ActionIndicator.Action {
         if (charges > 0 && !usedButNotFired) {
             icon.hardlight(0, 1f, 0);
         } else {
-            icon.hardlight(1.0f, 0.6f, 0.8f);
+            icon.hardlight(0.0f, 0.6f, 0.0f);
         }
     }
 
@@ -250,16 +255,17 @@ public class TacticalScope extends Buff implements ActionIndicator.Action {
         {
             type = buffType.POSITIVE;
             announced = true;
+            revivePersists = true; // 죽어도 유지
         }
 
         @Override
         public int icon() {
-            return BuffIndicator.THROWN_WEP;
+            return BuffIndicator.TRINITY_FORM;
         }
 
         @Override
         public void tintIcon(Image icon) {
-            icon.hardlight(1.0f, 0.6f, 0.8f);
+            icon.hardlight(0.0f, 0.6f, 0.0f);
         }
 
         @Override

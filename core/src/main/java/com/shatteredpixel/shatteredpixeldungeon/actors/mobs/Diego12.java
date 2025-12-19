@@ -89,22 +89,26 @@ public class Diego12 extends Mob {
 
     private int phase = 1; // 1~5까지
     private int IgniteCooldown = 5;
-    private int TimeStopCooldown = 12;
+    private int TimeStopCooldown = 5;
     private int OverwhelmCooldown = 4;
-    private int KnifeBarrageCooldown = 8;
+    private int KnifeBarrageCooldown = 2;
     private int TimeStopChargeTime = 0;
     private boolean timeStopGameActive = false;
+    
+    // 나이프 패턴 상태
+    private ArrayList<Integer> knifeTargetCells = null;
+    private boolean knifeWarningShown = false;
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 26, 44 );
+        return Random.NormalIntRange( 26, 45 );
     }
 
     @Override
-    public int attackSkill(Char target) { return 50; }
+    public int attackSkill(Char target) { return 36; }
 
     public int drRoll() {
-        return Random.NormalIntRange(22, 32);
+        return Random.NormalIntRange(0, 20);
     }
 
     @Override
@@ -117,24 +121,15 @@ public class Diego12 extends Mob {
 
         if (phase==1 && HP < 1200) {
             phase = 2;
-            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "phase_up"));
-            Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         }
         else if (phase==2 && HP < 900) {
             phase = 3;
-            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "phase_up"));
-            Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         }
         else if (phase==3 && HP < 700) {
             phase = 4;
-            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "phase_up"));
-            Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         }
         else if (phase==4 && HP < 500) {
             phase = 5;
-            sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "final_phase"));
-            Sample.INSTANCE.play(Assets.Sounds.BOSS);
-            Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
         }
     }
 
@@ -171,7 +166,7 @@ public class Diego12 extends Mob {
     private boolean UseAbility() {
 
         // 시간 정지 - 나이프 회피 미니게임 (리메이크된 메인 패턴)
-        if (TimeStopCooldown <= 0 && phase >= 1) {
+        if (TimeStopCooldown <= 0) {
             if (TimeStopChargeTime == 0) {
                 // 1턴: 시간 정지 준비 경고
                 GLog.h(Messages.get(this, "timestop_ready"));
@@ -180,11 +175,10 @@ public class Diego12 extends Mob {
                 Sample.INSTANCE.play(Assets.Sounds.MIMIC);
                 SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
 
-                // 플레이어 주변 이펙트
-                for (int i : PathFinder.NEIGHBOURS8) {
-                    int cell = hero.pos + i;
-                    if (cell >= 0 && cell < Dungeon.level.length()) {
-                        sprite.parent.addToBack(new TargetedCell(cell, 0xFFFF00));
+                // 맵 전체에 TargetedCell 표시 (경고)
+                for (int i = 0; i < Dungeon.level.length(); i++) {
+                    if (!Dungeon.level.solid[i]) {
+                        sprite.parent.addToBack(new TargetedCell(i, 0xFF8800));
                     }
                 }
 
@@ -192,7 +186,6 @@ public class Diego12 extends Mob {
 
                 Dungeon.hero.interrupt();
                 TimeStopChargeTime++;
-                spend(1f);
                 return true;
             }
             else {
@@ -201,7 +194,6 @@ public class Diego12 extends Mob {
                 Sample.INSTANCE.play(Assets.Sounds.DIEGO);
 
                 GameScene.flash(0x80FFFF00);
-                Camera.main.shake(5, 0.5f);
 
                 // 미니게임 시작
                 timeStopGameActive = true;
@@ -214,12 +206,13 @@ public class Diego12 extends Mob {
         }
 
         // 나이프 탄막 (새로운 패턴) - phase 2부터 사용
-        else if (KnifeBarrageCooldown <= 0 && phase >= 2) {
+        else if ((KnifeBarrageCooldown <= 0 && phase >= 2) || knifeWarningShown) {
             knifeBarrageAttack();
 
-            if (phase >= 5) KnifeBarrageCooldown = Random.NormalIntRange(4, 6);
-            else if (phase >= 4) KnifeBarrageCooldown = Random.NormalIntRange(6, 8);
-            else KnifeBarrageCooldown = Random.NormalIntRange(8, 10);
+            // 경고 표시 후에만 쿨다운 리셋 (데미지 적용 완료)
+            if (!knifeWarningShown) {
+                KnifeBarrageCooldown = 2;
+            }
 
             return true;
         }
@@ -238,8 +231,7 @@ public class Diego12 extends Mob {
         else if (IgniteCooldown <= 0) {
             igniteAttack();
 
-            if (phase == 5) IgniteCooldown = Random.NormalIntRange(2, 4);
-            else IgniteCooldown = Random.NormalIntRange(10, 14);
+            IgniteCooldown = Random.NormalIntRange(8, 10);
 
             return true;
         }
@@ -271,18 +263,14 @@ public class Diego12 extends Mob {
                                 Sample.INSTANCE.play(Assets.Sounds.DIEGO2);
 
                                 // 보스에게 반격 데미지
-                                int counterDamage = Random.NormalIntRange(80, 120);
+                                int counterDamage = 50;
                                 boss.damage(counterDamage, hero);
                                 boss.sprite.showStatus(CharSprite.NEGATIVE, Integer.toString(counterDamage));
 
-                                // 보스 텔레포트 (도망)
-                                teleportAway();
-
-                                TimeStopCooldown = Random.NormalIntRange(15, 20);
-                                if (phase >= 5) TimeStopCooldown = Random.NormalIntRange(10, 14);
+                                TimeStopCooldown = 5;
                             }
                         },
-                        // 실패 콜백 - 나이프에 맞음
+                        // 실패 콜백 - 나이프에 맞음 (피해는 미니게임에서 처리됨)
                         new Callback() {
                             @Override
                             public void call() {
@@ -292,21 +280,16 @@ public class Diego12 extends Mob {
                                 Sample.INSTANCE.play(Assets.Sounds.BLAST);
                                 Sample.INSTANCE.play(Assets.Sounds.DIEGO);
 
-                                // 큰 피해
-                                int damage = Math.max(50, hero.HT / 3);
-                                if (phase >= 4) damage = Math.max(70, hero.HT * 2 / 5);
-
-                                hero.damage(damage, boss);
                                 GLog.n(Messages.get(Diego12.class, "timestop_hit"));
 
                                 CellEmitter.center(hero.pos).burst(BlastParticle.FACTORY, 15);
 
+                                // 플레이어가 죽었는지 확인
                                 if (hero == Dungeon.hero && !hero.isAlive()) {
                                     Dungeon.fail(Diego12.class);
                                 }
 
-                                TimeStopCooldown = Random.NormalIntRange(12, 16);
-                                if (phase >= 5) TimeStopCooldown = Random.NormalIntRange(8, 12);
+                                TimeStopCooldown = 5;
                             }
                         }
                 ));
@@ -316,60 +299,72 @@ public class Diego12 extends Mob {
 
     // 나이프 탄막 패턴 (새로운 패턴)
     private void knifeBarrageAttack() {
-        GLog.w(Messages.get(this, "knife_barrage"));
-        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "knife_warning"));
+        // 경고를 아직 표시하지 않았다면, 이번 턴에 경고만 표시
+        if (!knifeWarningShown) {
+            GLog.w(Messages.get(this, "knife_barrage"));
+            sprite.showStatus(CharSprite.WARNING, Messages.get(this, "knife_warning"));
 
-        Sample.INSTANCE.play(Assets.Sounds.MISS, 1.5f);
+            Sample.INSTANCE.play(Assets.Sounds.MISS, 1.5f);
 
-        // 플레이어 주변 셀에 나이프 예고
-        ArrayList<Integer> targetCells = new ArrayList<>();
+            // 플레이어 주변 셀에 나이프 예고
+            knifeTargetCells = new ArrayList<>();
+            ArrayList<Integer> availableCells = new ArrayList<>();
 
-        int range = phase >= 4 ? 2 : 1;
+            int range = phase >= 4 ? 2 : 1;
 
-        for (int dx = -range; dx <= range; dx++) {
-            for (int dy = -range; dy <= range; dy++) {
-                int cell = hero.pos + dx + dy * Dungeon.level.width();
-                if (cell >= 0 && cell < Dungeon.level.length() &&
-                        !Dungeon.level.solid[cell] && cell != pos) {
-                    targetCells.add(cell);
-                    sprite.parent.addToBack(new TargetedCell(cell, 0xFFDDDD));
-                }
-            }
-        }
+            // 범위에 따른 타겟 개수
+            // 3x3 (range=1): 6칸, 5x5 (range=2): 13칸
+            int maxTargets = range == 1 ? 6 : 13;
 
-        // 다음 턴에 데미지 적용 (현재는 경고만)
-        // 플레이어가 이동할 시간을 줌
-
-        Dungeon.hero.interrupt();
-        spend(TICK);
-
-        // 실제 데미지는 1턴 후 해당 위치에 있는 캐릭터에게
-        Actor.add(new Actor() {
-            { actPriority = VFX_PRIO; }
-
-            @Override
-            protected boolean act() {
-                for (int cell : targetCells) {
-                    CellEmitter.get(cell).burst(SparkParticle.FACTORY, 8);
-
-                    Char ch = Actor.findChar(cell);
-                    if (ch != null && ch == hero) {
-                        int dmg = Random.NormalIntRange(15, 25);
-                        if (phase >= 4) dmg = Random.NormalIntRange(20, 35);
-
-                        ch.damage(dmg, Diego12.this);
-
-                        if (ch == Dungeon.hero && !ch.isAlive()) {
-                            Dungeon.fail(Diego12.class);
-                        }
+            // 먼저 범위의 모든 가능한 칸을 수집
+            for (int dx = -range; dx <= range; dx++) {
+                for (int dy = -range; dy <= range; dy++) {
+                    int cell = hero.pos + dx + dy * Dungeon.level.width();
+                    if (cell >= 0 && cell < Dungeon.level.length() &&
+                            !Dungeon.level.solid[cell] && cell != pos) {
+                        availableCells.add(cell);
                     }
                 }
-                Sample.INSTANCE.play(Assets.Sounds.HIT_STAB, 1.2f);
-
-                Actor.remove(this);
-                return true;
             }
-        });
+
+            // 무작위로 칸 선택 (사용 가능한 칸이 적으면 전부 선택)
+            int targetCount = Math.min(maxTargets, availableCells.size());
+            Random.shuffle(availableCells);
+            
+            for (int i = 0; i < targetCount; i++) {
+                int cell = availableCells.get(i);
+                knifeTargetCells.add(cell);
+                sprite.parent.addToBack(new TargetedCell(cell, 0xFF00FF));
+            }
+
+            // 경고 표시 후 즉시 다시 호출되도록 (보스의 연속 턴)
+            Dungeon.hero.interrupt();
+            knifeWarningShown = true;
+            spend(0f);
+
+        } else {
+            // 경고 표시 후 실제 데미지 적용
+            for (int cell : knifeTargetCells) {
+                CellEmitter.get(cell).burst(SparkParticle.FACTORY, 8);
+
+                Char ch = Actor.findChar(cell);
+                if (ch != null && ch == hero) {
+                    int dmg = Random.NormalIntRange(20, 35);
+
+                    ch.damage(dmg, Diego12.this);
+
+                    if (ch == Dungeon.hero && !ch.isAlive()) {
+                        Dungeon.fail(Diego12.class);
+                    }
+                }
+            }
+            Sample.INSTANCE.play(Assets.Sounds.TONIO, 1.2f);
+
+            // 상태 초기화
+            knifeTargetCells = null;
+            knifeWarningShown = false;
+            spend(TICK);
+        }
     }
 
     // 압도 패턴 (순간이동 후 공격)
@@ -389,18 +384,11 @@ public class Diego12 extends Mob {
             ScrollOfTeleportation.appear(this, newPos);
 
             GameScene.flash(0x80FFFFFF);
-            Camera.main.shake(2, 0.3f);
 
             Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 
             sprite.showStatus(CharSprite.WARNING, Messages.get(this, "overwhelm"));
 
-            // 즉시 추가 공격
-            if (Random.Int(2) == 0 && phase >= 3) {
-                int dmg = Random.NormalIntRange(20, 30);
-                hero.damage(dmg, this);
-                Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-            }
         }
 
         spend(TICK);
@@ -438,8 +426,7 @@ public class Diego12 extends Mob {
         }
 
         Sample.INSTANCE.play(Assets.Sounds.BURNING);
-        Sample.INSTANCE.play(Assets.Sounds.SHATTER);
-        GLog.w(Messages.get(this, "ignite"));
+        sprite.showStatus(CharSprite.WARNING, Messages.get(this, "ignite"));
 
         spend(TICK);
     }
@@ -526,6 +513,8 @@ public class Diego12 extends Mob {
     private static final String SKILL3CD   = "OverwhelmCooldown";
     private static final String SKILL4CD   = "KnifeBarrageCooldown";
     private static final String TIMESTOP_GAME_ACTIVE = "timeStopGameActive";
+    private static final String KNIFE_WARNING_SHOWN = "knifeWarningShown";
+    private static final String KNIFE_TARGET_CELLS = "knifeTargetCells";
 
     @Override
     public void storeInBundle( Bundle bundle ) {
@@ -537,6 +526,14 @@ public class Diego12 extends Mob {
         bundle.put( SKILL3CD, OverwhelmCooldown );
         bundle.put( SKILL4CD, KnifeBarrageCooldown );
         bundle.put( TIMESTOP_GAME_ACTIVE, timeStopGameActive );
+        bundle.put( KNIFE_WARNING_SHOWN, knifeWarningShown );
+        if (knifeTargetCells != null) {
+            int[] cells = new int[knifeTargetCells.size()];
+            for (int i = 0; i < knifeTargetCells.size(); i++) {
+                cells[i] = knifeTargetCells.get(i);
+            }
+            bundle.put( KNIFE_TARGET_CELLS, cells );
+        }
     }
 
     @Override
@@ -549,5 +546,13 @@ public class Diego12 extends Mob {
         OverwhelmCooldown = bundle.getInt(SKILL3CD);
         KnifeBarrageCooldown = bundle.getInt(SKILL4CD);
         timeStopGameActive = bundle.getBoolean(TIMESTOP_GAME_ACTIVE);
+        knifeWarningShown = bundle.getBoolean(KNIFE_WARNING_SHOWN);
+        if (bundle.contains(KNIFE_TARGET_CELLS)) {
+            int[] cells = bundle.getIntArray(KNIFE_TARGET_CELLS);
+            knifeTargetCells = new ArrayList<>();
+            for (int cell : cells) {
+                knifeTargetCells.add(cell);
+            }
+        }
     }
 }

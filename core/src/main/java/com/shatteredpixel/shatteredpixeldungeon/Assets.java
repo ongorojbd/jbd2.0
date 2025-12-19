@@ -291,8 +291,6 @@ public class Assets {
         public static final String RO3 = "sounds/ro3.mp3";
         public static final String RO4 = "sounds/ro4.mp3";
         public static final String RO5 = "sounds/ro5.mp3";
-        public static final String JH1 = "sounds/jh1.mp3";
-        public static final String JH2 = "sounds/jh2.mp3";
         public static final String JH3 = "sounds/jh3.mp3";
         public static final String JH4 = "sounds/jh4.mp3";
         public static final String JH5 = "sounds/jh5.mp3";
@@ -372,6 +370,20 @@ public class Assets {
         public static final String JONNY = "sounds/jonny.mp3";
         public static final String JONNY2 = "sounds/jonny2.mp3";
         public static final String JONNY3 = "sounds/jonny3.mp3";
+
+        public static final String G1 = "sounds/g1.mp3";
+        public static final String G2 = "sounds/g2.mp3";
+        public static final String G3 = "sounds/g3.mp3";
+        public static final String G4 = "sounds/g4.mp3";
+        public static final String G5 = "sounds/g5.mp3";
+        public static final String G6 = "sounds/g6.mp3";
+        public static final String G7 = "sounds/g7.mp3";
+        public static final String G8 = "sounds/g8.mp3";
+        public static final String G9 = "sounds/g9.mp3";
+        public static final String G10 = "sounds/g10.mp3";
+        public static final String G11 = "sounds/g11.mp3";
+        public static final String G12 = "sounds/g12.mp3";
+        public static final String G13 = "sounds/g13.mp3";
         public static final String SO1 = "sounds/so1.mp3";
         public static final String SO2 = "sounds/so2.mp3";
         public static final String EVO1 = "sounds/evo1.mp3";
@@ -472,9 +484,10 @@ public class Assets {
                 KIRA1, KIRA2, KIRA3, KIRA4, KIRA5, KIRA6,
                 GIORNO1, GIORNO2, GIORNO3, GIORNO4, GIORNO5, GIORNO6,
                 MISTA1, MISTA2, MISTA3, MISTA4, MISTA5, MISTA6,
-                JH1, JH2, JH3, JH4, JH5, JH6, JH7, JH8, JH9, JH10, JH11, JH12, JH13,
+                JH3, JH4, JH5, JH6, JH7, JH8, JH9, JH10, JH11, JH12, JH13,
                 D11, D12, D21, D22, D23, D24, D31, D32, D33, D34, D35, D41, D42, D43, DA1, DA2, DA3, DA4,
-                RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, HORSE, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3, JONNY, JONNY2, JONNY3, SO1, SO2, EVO1, EVO2, EVO3,
+                RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, HORSE, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3,
+                JONNY, JONNY2, JONNY3, G1, G2, G3, G4, G5, G6, G7, G8, G9, G10, G11, G12, G13, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA, POL,
                 JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5, JT6, JT7
         };

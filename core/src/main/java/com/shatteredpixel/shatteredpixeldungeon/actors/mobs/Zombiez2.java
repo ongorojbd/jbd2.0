@@ -39,9 +39,9 @@ public class Zombiez2 extends Mob {
     {
         spriteClass = ZombiezSprite.class;
 
-        HP = HT = 130;
-        defenseSkill = 20;
-        baseSpeed = 1.5f;
+        HP = HT = 104;
+        defenseSkill = 16;
+        baseSpeed = 1.2f;
         EXP = 6;
         maxLvl = 26;
         properties.add(Property.UNDEAD);
@@ -55,17 +55,17 @@ public class Zombiez2 extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 35, 40 );
+        return Random.NormalIntRange( 28, 32 );
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return 30;
+        return 24;
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 10);
+        return super.drRoll() + Random.NormalIntRange(0, 8);
     }
 
     @Override

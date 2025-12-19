@@ -161,7 +161,7 @@ public class CavesLevel extends RegularLevel {
 									Messages.get(Blacksmith.class, "lost_pick"))
 							);
 						} else {
-							Sample.INSTANCE.play(Assets.Sounds.JONNY);
+							Sample.INSTANCE.play(Assets.Sounds.G2);
 							GameScene.show( new WndOptions( new BlacksmithSprite(),
 									Messages.titleCase(Messages.get(Blacksmith.class, "name")),
 									Messages.get(Blacksmith.class, "quest_start_prompt"),

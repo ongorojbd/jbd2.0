@@ -60,8 +60,8 @@ public class AJA extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  4*(tier) +                	//20 + 4
-                lvl*(tier-1);
+        return  Math.round(4*(tier) * 1.45f) +                	//29 (45% 상향)
+                Math.round(lvl*(tier-1) * 1.45f);              //6*lvl (45% 상향)
     }
 
     private void Heal(Char attacker) {

@@ -71,14 +71,16 @@ public class Badges {
         MASTERY_HUNTRESS,
         MASTERY_DUELIST,
         MASTERY_CLERIC,
+        MASTERY_JOHNNY,
         FOUND_RATMOGRIFY,
 
         //bronze
         UNLOCK_MAGE(1),
         UNLOCK_ROGUE(2),
-        UNLOCK_HUNTRESS(3),
         UNLOCK_DUELIST(4),
+        UNLOCK_HUNTRESS(3),
         UNLOCK_CLERIC(5),
+        UNLOCK_JOHNNY(0),
         MONSTERS_SLAIN_1(6),
         MONSTERS_SLAIN_2(7),
         GOLD_COLLECTED_1(8),
@@ -1114,6 +1116,9 @@ public class Badges {
             case CLERIC:
                 badge = Badge.MASTERY_CLERIC;
                 break;
+            case JOHNNY:
+                badge = Badge.MASTERY_JOHNNY;
+                break;
         }
 
         unlock(badge);
@@ -1121,6 +1126,12 @@ public class Badges {
 
     public static void validateRatmogrify() {
         unlock(Badge.FOUND_RATMOGRIFY);
+    }
+
+    public static void validateJohnnyUnlock() {
+        if (!isUnlocked(Badge.UNLOCK_JOHNNY)) {
+            displayBadge(Badge.UNLOCK_JOHNNY);
+        }
     }
 
     public static void validateMageUnlock() {

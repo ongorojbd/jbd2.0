@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ReachIncrease;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
@@ -607,6 +608,9 @@ abstract public class Weapon extends KindOfWeapon {
             if (attacker.buff(Talent.StrikingWaveTracker.class) != null
                     && ((Hero) attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4) {
                 multi += 0.2f;
+            }
+            if (hero.hasTalent(Talent.J22) && hero.heroClass != HeroClass.JOHNNY) {
+                multi += 0.1f * hero.pointsInTalent(Talent.J22);
             }
 
             return multi;

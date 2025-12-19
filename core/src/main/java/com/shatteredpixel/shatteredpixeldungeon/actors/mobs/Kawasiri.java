@@ -206,6 +206,7 @@ public class Kawasiri extends Mob {
                 case MAGE:
                 case HUNTRESS:
                 case CLERIC:
+                case JOHNNY:
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new KousakuSprite(), new KousakuSprite()},
                             new String[]{"카와지리 코사쿠", "카와지리 코사쿠"},

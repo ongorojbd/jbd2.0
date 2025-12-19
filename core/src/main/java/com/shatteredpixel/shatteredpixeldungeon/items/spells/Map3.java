@@ -172,6 +172,18 @@ public class Map3 extends Spell {
                     );
                     Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
                     break;
+                case JOHNNY:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DiegoSprite()},
+                            new String[]{"디에고 브란도"},
+                            new String[]{
+                                    Messages.get(Diego.class, "7")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
             }
 
             for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {

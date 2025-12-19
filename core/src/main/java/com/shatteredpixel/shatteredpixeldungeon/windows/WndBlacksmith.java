@@ -69,7 +69,7 @@ public class WndBlacksmith extends Window {
 		titlebar.setRect( 0, 0, width, 0 );
 		add( titlebar );
 
-		Sample.INSTANCE.play(Assets.Sounds.JONNY2);
+		Sample.INSTANCE.play(Assets.Sounds.G2);
 
 		RenderedTextBlock message = PixelScene.renderTextBlock( Messages.get(this, "prompt", Blacksmith.Quest.favor), 6 );
 		message.maxWidth( width );
@@ -267,7 +267,7 @@ public class WndBlacksmith extends Window {
 						second = btnItem1.item();
 					}
 
-					Sample.INSTANCE.play( Assets.Sounds.EVOKE );
+					Sample.INSTANCE.play( Assets.Sounds.G4 );
 					ScrollOfUpgrade.upgrade( Dungeon.hero );
 					Item.evoke( Dungeon.hero );
 
@@ -398,7 +398,7 @@ public class WndBlacksmith extends Window {
 
 				WndBlacksmith.this.hide();
 
-				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				Sample.INSTANCE.play(Assets.Sounds.G4);
 				Item.evoke( Dungeon.hero );
 
 				if (!Blacksmith.Quest.rewardsAvailable()){
@@ -438,7 +438,7 @@ public class WndBlacksmith extends Window {
 
 				WndBlacksmith.this.hide();
 
-				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				Sample.INSTANCE.play(Assets.Sounds.G4);
 				ScrollOfUpgrade.upgrade( Dungeon.hero );
 				Item.evoke( Dungeon.hero );
 
@@ -523,7 +523,7 @@ public class WndBlacksmith extends Window {
 						}
 
 						item.identify(false);
-						Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+						Sample.INSTANCE.play(Assets.Sounds.G4);
 						Item.evoke( Dungeon.hero );
 						if (item.doPickUp( Dungeon.hero )) {
 							GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", item.name())) );

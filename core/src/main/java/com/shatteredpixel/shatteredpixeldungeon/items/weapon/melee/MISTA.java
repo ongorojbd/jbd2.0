@@ -82,8 +82,8 @@ public class MISTA extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return 3 * (tier + 1) +    //15+3
-                lvl * (tier - 1);
+        return Math.round(3 * (tier + 1) * 1.15f) +    //21 (15% 상향)
+                Math.round(lvl * (tier - 1) * 1.15f);  //5*lvl (15% 상향)
     }
 
     private int starpower = 0;

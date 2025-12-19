@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WellFed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Amblance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bmore;
@@ -74,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.FdolTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
@@ -157,16 +159,31 @@ public class Sbr7 extends Spell {
 
             if (!spawnPoints.isEmpty()){
 
-                WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new PucciSprite()},
-                        new String[]{"퍼니 발렌타인"},
-                        new String[]{
-                                Messages.get(Pucci12.class, "4")
-                        },
-                        new byte[]{
-                                WndDialogueWithPic.IDLE
-                        }
-                );
+                if (hero.heroClass == HeroClass.JOHNNY) {
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new PucciSprite(), new BlacksmithSprite()},
+                            new String[]{"퍼니 발렌타인", "죠니"},
+                            new String[]{
+                                    Messages.get(Pucci12.class, "9"),
+                                    Messages.get(Pucci12.class, "10")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.RUN
+                            }
+                    );
+                } else {
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new PucciSprite()},
+                            new String[]{"퍼니 발렌타인"},
+                            new String[]{
+                                    Messages.get(Pucci12.class, "4")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                }
 
                 Pucci12 elemental = new Pucci12();
                 GameScene.add( elemental );

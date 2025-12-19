@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HighdioSprite;
@@ -686,6 +687,20 @@ public class YogDzewa extends Mob {
 						}
 				);
 				break;
+            case JOHNNY:
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new YogSprite(), new BlacksmithSprite()},
+                        new String[]{"DIO", "죠니"},
+                        new String[]{
+                                Messages.get(YogDzewa.class, "defeated"),
+                                Messages.get(YogDzewa.class, "d7")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.DIE,
+                                WndDialogueWithPic.RUN
+                        }
+                );
+                break;
         }
 
         Sample.INSTANCE.play(Assets.Sounds.NANI);
@@ -781,6 +796,20 @@ public class YogDzewa extends Mob {
                             new byte[]{
                                     WndDialogueWithPic.IDLE,
                                     WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case JOHNNY:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new DioDialogSprite(), new BlacksmithSprite()},
+                            new String[]{"DIO", "죠니"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "n13"),
+                                    Messages.get(YogDzewa.class, "n14")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.RUN
                             }
                     );
                     break;

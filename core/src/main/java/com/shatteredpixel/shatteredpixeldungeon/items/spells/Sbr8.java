@@ -88,13 +88,6 @@ public class Sbr8 extends Spell {
                 Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
             }
 
-            PortableCover pick3 = new PortableCover();
-            if (pick3.doPickUp( Dungeon.hero )) {
-                GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick3.name()) ));
-            } else {
-                Dungeon.level.drop( pick3, Dungeon.hero.pos ).sprite.drop();
-            }
-
             detach(Dungeon.hero.belongings.backpack);
 
             updateQuickslot();

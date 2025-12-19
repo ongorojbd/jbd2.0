@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.JohnnyArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.RogueArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
@@ -134,7 +135,7 @@ public class Sword extends MeleeWeapon {
 	public static void jclass(){
 
 		if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof WarriorArmor) {
-			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+			Sample.INSTANCE.play(Assets.Sounds.SPW2);
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.OVERDRIVE);
 		}
@@ -152,7 +153,7 @@ public class Sword extends MeleeWeapon {
 	public static void hclass() {
 		if (hero.heroClass == HeroClass.WARRIOR) {
 			if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof WarriorArmor) {
-				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				Sample.INSTANCE.play(Assets.Sounds.SPW3);
 			} else {
 				Sample.INSTANCE.play(Assets.Sounds.JONATHAN2);
 			}
@@ -207,24 +208,37 @@ public class Sword extends MeleeWeapon {
 	}
 
 	public static void jonathanclass(){
-
-		switch (Random.Int( 5 )) {
-			case 0:
-				Sample.INSTANCE.play( Assets.Sounds.JONATHAN4);
-				break;
-			case 1:
-				Sample.INSTANCE.play( Assets.Sounds.JONATHAN5);
-				break;
-			case 2:
-				Sample.INSTANCE.play( Assets.Sounds.JONATHAN6);
-				break;
-			case 3:
-				Sample.INSTANCE.play( Assets.Sounds.JONATHAN7);
-				break;
-			case 4:
-				Sample.INSTANCE.play( Assets.Sounds.JONATHAN8);
-				break;
-		}
+        if (SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin() == 1 && hero.belongings.armor() instanceof WarriorArmor) {
+            switch (Random.Int( 3 )) {
+                case 0:
+                    Sample.INSTANCE.play( Assets.Sounds.SPW2);
+                    break;
+                case 1:
+                    Sample.INSTANCE.play( Assets.Sounds.SPW3);
+                    break;
+                case 2:
+                    Sample.INSTANCE.play( Assets.Sounds.SPW4);
+                    break;
+            }
+        } else {
+            switch (Random.Int( 5 )) {
+                case 0:
+                    Sample.INSTANCE.play( Assets.Sounds.JONATHAN4);
+                    break;
+                case 1:
+                    Sample.INSTANCE.play( Assets.Sounds.JONATHAN5);
+                    break;
+                case 2:
+                    Sample.INSTANCE.play( Assets.Sounds.JONATHAN6);
+                    break;
+                case 3:
+                    Sample.INSTANCE.play( Assets.Sounds.JONATHAN7);
+                    break;
+                case 4:
+                    Sample.INSTANCE.play( Assets.Sounds.JONATHAN8);
+                    break;
+            }
+        }
 	}
 
 	public static void jolyneslclass(){
@@ -266,44 +280,93 @@ public class Sword extends MeleeWeapon {
 		}
 	}
     public static void t1(){
-
-        switch (Random.Int( 8 )) {
-            case 0:
-                Sample.INSTANCE.play( Assets.Sounds.JH5);
-                break;
-            case 1:
-                Sample.INSTANCE.play( Assets.Sounds.JH3);
-                break;
-            case 2:
-                Sample.INSTANCE.play( Assets.Sounds.JH4);
-                break;
-            case 3:
-                Sample.INSTANCE.play( Assets.Sounds.JH9);
-                break;
-            case 4:
-                Sample.INSTANCE.play( Assets.Sounds.JH10);
-                break;
-            case 5:
-                Sample.INSTANCE.play( Assets.Sounds.JH11);
-                break;
-            case 6:
-                Sample.INSTANCE.play( Assets.Sounds.JH12);
-                break;
-            case 7:
-                Sample.INSTANCE.play( Assets.Sounds.JH8);
-                break;
+        if (SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof JohnnyArmor) {
+            switch (Random.Int( 9 )) {
+                case 0:
+                    Sample.INSTANCE.play( Assets.Sounds.G2);
+                    break;
+                case 1:
+                    Sample.INSTANCE.play( Assets.Sounds.G3);
+                    break;
+                case 2:
+                    Sample.INSTANCE.play( Assets.Sounds.G4);
+                    break;
+                case 3:
+                    Sample.INSTANCE.play( Assets.Sounds.G5);
+                    break;
+                case 4:
+                    Sample.INSTANCE.play( Assets.Sounds.G6);
+                    break;
+                case 5:
+                    Sample.INSTANCE.play( Assets.Sounds.G7);
+                    break;
+                case 6:
+                    Sample.INSTANCE.play( Assets.Sounds.G8);
+                    break;
+                case 7:
+                    Sample.INSTANCE.play( Assets.Sounds.G9);
+                    break;
+                case 8:
+                    Sample.INSTANCE.play( Assets.Sounds.G10);
+                    break;
+            }
+        } else {
+            switch (Random.Int( 8 )) {
+                case 0:
+                    Sample.INSTANCE.play( Assets.Sounds.JH5);
+                    break;
+                case 1:
+                    Sample.INSTANCE.play( Assets.Sounds.JH3);
+                    break;
+                case 2:
+                    Sample.INSTANCE.play( Assets.Sounds.JH4);
+                    break;
+                case 3:
+                    Sample.INSTANCE.play( Assets.Sounds.JH9);
+                    break;
+                case 4:
+                    Sample.INSTANCE.play( Assets.Sounds.JH10);
+                    break;
+                case 5:
+                    Sample.INSTANCE.play( Assets.Sounds.JH11);
+                    break;
+                case 6:
+                    Sample.INSTANCE.play( Assets.Sounds.JH12);
+                    break;
+                case 7:
+                    Sample.INSTANCE.play( Assets.Sounds.JH8);
+                    break;
+            }
         }
     }
 
     public static void tp(){
+        if (SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof JohnnyArmor) {
+            switch (Random.Int( 2 )) {
+                case 0:
+                    Sample.INSTANCE.play( Assets.Sounds.G11);
+                    break;
+                case 1:
+                    Sample.INSTANCE.play( Assets.Sounds.G12);
+                    break;
+            }
+        } else {
+            switch (Random.Int( 2 )) {
+                case 0:
+                    Sample.INSTANCE.play( Assets.Sounds.JH6);
+                    break;
+                case 1:
+                    Sample.INSTANCE.play( Assets.Sounds.JH7);
+                    break;
+            }
+        }
+    }
 
-        switch (Random.Int( 2 )) {
-            case 0:
-                Sample.INSTANCE.play( Assets.Sounds.JH6);
-                break;
-            case 1:
-                Sample.INSTANCE.play( Assets.Sounds.JH7);
-                break;
+    public static void horsesound(){
+        if (SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof JohnnyArmor) {
+            Sample.INSTANCE.play( Assets.Sounds.G13);
+        } else {
+            Sample.INSTANCE.play( Assets.Sounds.JH13);
         }
     }
 

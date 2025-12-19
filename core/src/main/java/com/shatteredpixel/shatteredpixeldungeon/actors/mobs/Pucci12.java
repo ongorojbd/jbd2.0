@@ -45,9 +45,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr8;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Point;
@@ -234,7 +236,16 @@ public class Pucci12 extends Mob {
 
         GameScene.bossSlain();
         Music.INSTANCE.end();
-        yell(Messages.get(this, "defeated"));
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new PucciSprite()},
+                new String[]{"퍼니 발렌타인"},
+                new String[]{
+                        Messages.get(Pucci12.class, "defeated")
+                },
+                new byte[]{
+                        WndDialogueWithPic.IDLE
+                }
+        );
 
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
             if (mob instanceof Val12 ) {

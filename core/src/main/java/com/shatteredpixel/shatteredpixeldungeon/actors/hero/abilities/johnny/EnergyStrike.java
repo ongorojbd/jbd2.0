@@ -25,9 +25,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -39,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LightParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
@@ -60,6 +63,16 @@ public class EnergyStrike extends ArmorAbility {
 	}
 
 	@Override
+	public float chargeUse( Hero hero ) {
+		float chargeUse = super.chargeUse(hero);
+		if (hero.buff(EnergyStrikeTracker.class) != null){
+			//reduced charge use by 16%/30%/41%/50%
+			chargeUse *= Math.pow(0.84, hero.pointsInTalent(Talent.J43));
+		}
+		return chargeUse;
+	}
+
+	@Override
 	protected void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target == null) {
 			return;
@@ -71,6 +84,8 @@ public class EnergyStrike extends ArmorAbility {
 		Item.updateQuickslot();
 
 		Invisibility.dispel(hero);
+
+        Sword.t1();
 
 		// Create visual effects for 3x3 area with TargetedCell
 		for (int i : PathFinder.NEIGHBOURS9) {
@@ -86,18 +101,33 @@ public class EnergyStrike extends ArmorAbility {
 		EnergyStrikeBuff buff = Buff.affect(hero, EnergyStrikeBuff.class, 3f);
 		buff.setTargetArea(target);
 
+		// J42 탤런트: 시전 시 보호막 획득
+		if (hero.hasTalent(Talent.J42)) {
+			int shieldAmount = 20 + (hero.pointsInTalent(Talent.J42) * 10); // +1: 30, +2: 40, +3: 50, +4: 60
+			Buff.affect(hero, Barrier.class).incShield(shieldAmount);
+		}
+
+		// J43 탤런트: 시전 후 3턴 동안 버프 부여 (다음 시전 시 충전량 감소)
+		if (hero.buff(EnergyStrikeTracker.class) != null){
+			hero.buff(EnergyStrikeTracker.class).detach();
+		} else {
+			if (hero.hasTalent(Talent.J43)) {
+				Buff.affect(hero, EnergyStrikeTracker.class, 3f);
+			}
+		}
+
 		hero.spendAndNext(1f);
 	}
 
 	@Override
 	public int icon() {
-		return HeroIcon.NONE;
+		return HeroIcon.ENERGY_STRIKE;
 	}
 
-	@Override
-	public Talent[] talents() {
-		return new Talent[0];
-	}
+    @Override
+    public Talent[] talents() {
+        return new Talent[]{Talent.J41, Talent.J42, Talent.J43, Talent.HEROIC_ENERGY};
+    }
 
 	public static class EnergyStrikeBuff extends FlavourBuff {
 
@@ -168,6 +198,12 @@ public class EnergyStrike extends ArmorAbility {
 								dmg = Math.round(target.HT * 0.8f);
 							}
 							target.damage(dmg, new EnergyBolt());
+							
+							// J41 탤런트: 피격된 대상에게 마비 부여
+							if (hero.hasTalent(Talent.J41)) {
+								int paralysisTurns = hero.pointsInTalent(Talent.J41) * 4; // +1: 4턴, +2: 8턴, +3: 12턴, +4: 16턴
+								Buff.prolong(target, Paralysis.class, paralysisTurns);
+							}
 						}
 						
 						// Also deal damage to hero if they're in the area
@@ -217,6 +253,8 @@ public class EnergyStrike extends ArmorAbility {
 
 	public static class EnergyBolt {
 	}
+
+	public static class EnergyStrikeTracker extends FlavourBuff{};
 
 }
 

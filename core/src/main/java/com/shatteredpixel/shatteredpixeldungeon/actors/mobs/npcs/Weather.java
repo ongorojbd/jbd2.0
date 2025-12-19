@@ -172,6 +172,14 @@ public class Weather extends NPC {
                                         GLog.p(Messages.get(Annasui.class, "we"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;
+                                case JOHNNY:
+                                    if (SPDSettings.getSkin7() == 1) {
+                                        SPDSettings.addSkin7(1);
+                                        Emporio.retu();
+                                    } else if (SPDSettings.getSkin7() == 2)
+                                        GLog.p(Messages.get(Annasui.class, "we"));
+                                    else GLog.p(Messages.get(Annasui.class, "x"));
+                                    break;
                             }
 
                         } else if (index == 1) {
@@ -221,6 +229,14 @@ public class Weather extends NPC {
                                         SPDSettings.addSkin6(-1);
                                         Emporio.retu();
                                     } else if (SPDSettings.getSkin6() == 1)
+                                        GLog.p(Messages.get(Annasui.class, "al"));
+                                    else GLog.p(Messages.get(Annasui.class, "x"));
+                                    break;
+                                case JOHNNY:
+                                    if (SPDSettings.getSkin7() == 2) {
+                                        SPDSettings.addSkin7(-1);
+                                        Emporio.retu();
+                                    } else if (SPDSettings.getSkin7() == 1)
                                         GLog.p(Messages.get(Annasui.class, "al"));
                                     else GLog.p(Messages.get(Annasui.class, "x"));
                                     break;

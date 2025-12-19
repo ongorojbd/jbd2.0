@@ -35,11 +35,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RadioactiveMutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
@@ -56,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -69,7 +72,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -214,7 +220,7 @@ public enum Talent {
     //JoBro T3
     J31(201, 3), J32(202, 3),
     //JoBro Subclass1 T3
-    J33(203, 3), J34(204, 3), J35(205, 3),
+    J33(203, 3), J35(204, 3), J34(205, 3),
     //JoBro Subclass2 T3
     J36(206, 3), J37(207, 3), J38(208, 3),
     //JoBro T4 - Ability 1
@@ -227,7 +233,7 @@ public enum Talent {
     //universal T4
     HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
     //Ratmogrify T4
-    RATSISTANCE(218, 4), RATLOMACY(219, 4), RATFORCEMENTS(220, 4);
+    RATSISTANCE(247, 4), RATLOMACY(248, 4), RATFORCEMENTS(249, 4);
 
     public static class ImprovisedProjectileCooldown extends FlavourBuff {
         public int icon() {
@@ -659,7 +665,7 @@ public enum Talent {
     public int icon() {
         if (this == HEROIC_ENERGY) {
             if (Ratmogrify.useRatroicEnergy) {
-                return 221;
+                return 250;
             }
             HeroClass cls = Dungeon.hero != null ? Dungeon.hero.heroClass : GamesInProgress.selectedClass;
             switch (cls) {
@@ -710,6 +716,41 @@ public enum Talent {
     }
 
     public static void onTalentUpgraded(Hero hero, Talent talent) {
+
+        if (talent == J31){
+            switch (hero.pointsInTalent(Talent.J31)) {
+                case 0: default:
+                    break;
+                case 1:
+                    Item gold = new Gold().quantity(1500);
+                    if (gold.doPickUp( Dungeon.hero )) {
+                        GLog.i( Messages.get(Dungeon.hero, "you_now_have", gold.name() ));
+                        hero.spend(-1);
+                    } else {
+                        level.drop( gold, Dungeon.hero.pos ).sprite.drop();
+                    }
+                    break;
+                case 2:
+                    Item enchantment = new ScrollOfEnchantment().identify();
+                    if (enchantment.doPickUp( Dungeon.hero )) {
+                        GLog.i( Messages.get(Dungeon.hero, "you_now_have", enchantment.name() ));
+                        hero.spend(-1);
+                    } else {
+                        level.drop( enchantment, Dungeon.hero.pos ).sprite.drop();
+                    }
+                    break;
+                case 3:
+                    MagicalInfusion magicalInfusion = new MagicalInfusion();
+                    if (magicalInfusion.doPickUp( Dungeon.hero )) {
+                        GLog.i( Messages.get(Dungeon.hero, "you_now_have", magicalInfusion.name() ));
+                        hero.spend(-1);
+                    } else {
+                        level.drop( magicalInfusion, Dungeon.hero.pos ).sprite.drop();
+                    }
+                    break;
+            }
+        }
+
         //for metamorphosis
         if (talent == IRON_WILL && hero.heroClass != HeroClass.WARRIOR) {
             Buff.affect(hero, BrokenSeal.WarriorShield.class);
@@ -1157,7 +1198,7 @@ public enum Talent {
                 && hero.buff(ProtectiveSlashCooldown.class) == null
                 && !level.adjacent(hero.pos, enemy.pos)) {
             Buff.affect(hero, Barrier.class).setShield(1+2*Dungeon.hero.pointsInTalent(Talent.J14));
-            Buff.affect(hero, ProtectiveSlashCooldown.class, 10);
+            Buff.affect(hero, ProtectiveSlashCooldown.class, 8);
         }
 
         if (hero.buff(Talent.SpiritBladesTracker.class) != null
@@ -1183,6 +1224,15 @@ public enum Talent {
             } else if (hero.buff(DeadlyFollowupTracker.class) != null
                     && hero.buff(DeadlyFollowupTracker.class).object == enemy.id()) {
                 dmg = Math.round(dmg * (1.0f + .1f * hero.pointsInTalent(DEADLY_FOLLOWUP)));
+            }
+        }
+
+        if (hero.hasTalent(Talent.J25) && hero.heroClass != HeroClass.JOHNNY && enemy.buff(Doom.class) == null) {
+            int talentLevel = hero.pointsInTalent(Talent.J25);
+            float duration = talentLevel * 2; // 1레벨: 2턴, 2레벨: 4턴
+            if (Random.Float() < 0.03f) {
+                Doom doom = Buff.affect(enemy, Doom.class);
+                doom.setDuration(duration);
             }
         }
 
@@ -1266,7 +1316,7 @@ public enum Talent {
 
     public static class ProtectiveSlashCooldown extends FlavourBuff{
         public int icon() { return BuffIndicator.TIME; }
-        public void tintIcon(Image icon) { icon.hardlight(0.8f, 0.8f, 0.8f); }
+        public void tintIcon(Image icon) { icon.hardlight(0.5f, 0.8f, 1.0f); }
         public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 10)); }
         public String toString() { return Messages.get(this, "name"); }
         public String desc() { return Messages.get(this, "desc", dispTurns(visualcooldown())); }
@@ -1449,7 +1499,7 @@ public enum Talent {
                 break;
            // 죠니 추가
              case RIDER:
-                 Collections.addAll(tierTalents, J33, J34, J35);
+                 Collections.addAll(tierTalents, J33, J35, J34);
                  break;
              case STANDO:
                  Collections.addAll(tierTalents, J36, J37, J38);

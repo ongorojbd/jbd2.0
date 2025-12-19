@@ -25,22 +25,26 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego12;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego21;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pucci12;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CivilSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiegonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.audio.Music;
@@ -93,16 +97,32 @@ public class Sbr9 extends Spell {
             GameScene.flash(0x990000);
             Music.INSTANCE.play(Assets.Music.CIV, true);
             GLog.p(Messages.get(Civil.class, "39"));
-            WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new DiegonSprite()},
-                    new String[]{"디에고 브란도"},
-                    new String[]{
-                            Messages.get(Diego12.class, "hi")
-                    },
-                    new byte[]{
-                            WndDialogueWithPic.IDLE
-                    }
-            );
+
+            if (hero.heroClass == HeroClass.JOHNNY) {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new BlacksmithSprite(), new DiegonSprite()},
+                        new String[]{"죠니", "디에고 브란도"},
+                        new String[]{
+                                Messages.get(Diego12.class, "9"),
+                                Messages.get(Diego12.class, "10")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.RUN,
+                                WndDialogueWithPic.IDLE
+                        }
+                );
+            } else {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new DiegonSprite()},
+                        new String[]{"디에고 브란도"},
+                        new String[]{
+                                Messages.get(Diego12.class, "hi")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE
+                        }
+                );
+            }
 
             for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
                 int p = hero.pos + PathFinder.NEIGHBOURS8[i];

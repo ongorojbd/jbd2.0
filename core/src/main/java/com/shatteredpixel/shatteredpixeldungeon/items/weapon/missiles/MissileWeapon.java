@@ -150,6 +150,12 @@ abstract public class MissileWeapon extends Weapon {
             if (thrownEmpower != null) {
                 lvl += thrownEmpower.getEnhancementLevel();
             }
+            
+            // J34 탤런트: 기마 상태에서 투척 무기 +1 강화
+            if (Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class) != null
+                    && Dungeon.hero.hasTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.J34)) {
+                lvl += 1;
+            }
         }
         
         return lvl;
@@ -227,6 +233,16 @@ abstract public class MissileWeapon extends Weapon {
         float accFactor = super.accuracyFactor(owner, target);
 
         accFactor *= adjacentAccFactor(owner, target);
+
+        // J34 탤런트 레벨 2+: 기마 상태에서 명중률 +35%
+        if (owner instanceof Hero) {
+            Hero hero = (Hero) owner;
+            if (hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class) != null 
+                && hero.hasTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.J34) 
+                && hero.pointsInTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.J34) >= 2) {
+                accFactor *= 1.35f;
+            }
+        }
 
         return accFactor;
     }

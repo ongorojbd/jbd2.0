@@ -44,7 +44,7 @@ public class D4C extends Buff {
         if (on) {
             // Statistics.d4cEnhanced가 true면 강화된 아우라
             if (Statistics.d4cEnhanced) {
-                target.sprite.aura( 0xFF0099, 6 ); // 더 강력한 보라색 아우라, 더 큰 크기
+                target.sprite.aura( 0xFF9900, 6 ); // 더 강력한 아우라, 더 큰 크기
             } else {
                 target.sprite.aura( 0xFF9900, 4 ); // 기본 주황색 아우라
             }
@@ -142,10 +142,10 @@ public class D4C extends Buff {
         }
         
         // 무력화
-        Amok amok = target.buff(Amok.class);
-        if (amok != null) {
-            Buff.affect(attacker, Amok.class, amok.cooldown());
-            amok.detach();
+        Hex hex = target.buff(Hex.class);
+        if (hex != null) {
+            Buff.affect(attacker, Hex.class, hex.cooldown());
+            hex.detach();
             transferred = true;
         }
         
@@ -202,6 +202,14 @@ public class D4C extends Buff {
         if (blind != null) {
             Buff.affect(attacker, Blindness.class, blind.cooldown());
             blind.detach();
+            transferred = true;
+        }
+
+        // 마비
+        Paralysis paralysis = target.buff(Paralysis.class);
+        if (paralysis != null) {
+            Buff.affect(attacker, Paralysis.class, paralysis.cooldown());
+            paralysis.detach();
             transferred = true;
         }
         

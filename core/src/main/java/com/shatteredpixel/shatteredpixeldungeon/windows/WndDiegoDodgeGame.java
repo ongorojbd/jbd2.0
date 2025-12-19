@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -31,10 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.tweeners.AlphaTweener;
-import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -70,12 +68,18 @@ public class WndDiegoDodgeGame extends Window {
     private ArrayList<Knife> knives = new ArrayList<>();
     private float knifeSpawnTimer = 0;
     private float knifeSpawnInterval = 0.8f; // 기본 스폰 간격
-    private float knifeSpeed = 100f;         // 나이프 속도
+    private float knifeSpeed = 130f;         // 나이프 속도
 
     // 게임 시간 관련
     private static final float GAME_DURATION = 5.0f; // 5초
     private float gameTimer = 0;
-    private boolean playerHit = false;
+
+    // 무적 시간 (연속 피격 방지)
+    private float invincibilityTimer = 0;
+    private static final float INVINCIBILITY_DURATION = 0.8f;
+
+    // 피격 횟수 추적 (완벽한 회피 체크용)
+    private int hitCount = 0;
 
     // 난이도 (phase에 따라)
     private int difficulty;
@@ -83,7 +87,6 @@ public class WndDiegoDodgeGame extends Window {
     // UI 요소
     private RenderedTextBlock titleText;
     private RenderedTextBlock timerText;
-    private RenderedTextBlock resultText;
 
     private ColorBlock gameAreaBackground;
     private ColorBlock gameAreaBorder;
@@ -108,7 +111,7 @@ public class WndDiegoDodgeGame extends Window {
     }
 
     private GameState state = GameState.COUNTDOWN;
-    private float countdownTimer = 1.5f; // 1.5초 카운트다운
+    private float countdownTimer = 0.5f; // 0.5초 카운트다운
 
     // 콜백 (결과 전달용)
     private Callback onSuccess;
@@ -116,42 +119,47 @@ public class WndDiegoDodgeGame extends Window {
 
     // 나이프 클래스 (내부)
     private class Knife {
-        ColorBlock visual;
-        ColorBlock glow; // 발광 효과
+        ColorBlock knifeBlock;  // 나이프 전체 (하나의 막대기)
+
         float x, y;
         float velocityY;
-        float velocityX;  // 약간의 X방향 이동
+        float velocityX;
         boolean active = true;
-        float rotation = 0; // 회전 각도
+        float rotation = 0;
 
         Knife(float startX, float startY, float vY, float vX) {
             this.x = startX;
             this.y = startY;
             this.velocityY = vY;
             this.velocityX = vX;
+            this.rotation = Random.Float(360f); // 랜덤 초기 회전
 
-            // 나이프 본체 (날카로운 느낌)
-            visual = new ColorBlock(6, 14, 0xFFDDDDFF);
-            visual.x = gameAreaLeft + x;
-            visual.y = gameAreaTop + y;
-            add(visual);
+            // 나이프 전체를 하나의 막대기로 (은색 그라데이션 느낌)
+            knifeBlock = new ColorBlock(4, 18, 0xFFBBBBBB);
+            add(knifeBlock);
 
-            // 발광 효과
-            glow = new ColorBlock(10, 18, 0x44AAAAFF);
-            glow.x = gameAreaLeft + x - 2;
-            glow.y = gameAreaTop + y - 2;
-            add(glow);
+            updatePosition();
+        }
+
+        void updatePosition() {
+            float centerX = gameAreaLeft + x;
+            float centerY = gameAreaTop + y;
+
+            // 나이프 중심에 위치
+            knifeBlock.x = centerX - 2;
+            knifeBlock.y = centerY - 9;
         }
 
         void update(float elapsed) {
             y += velocityY * elapsed;
             x += velocityX * elapsed;
 
+            // 회전 (적당한 속도로 회전)
+            rotation += 360f * elapsed * 1.0f;
+            if (rotation > 360f) rotation -= 360f;
+
             // 위치 업데이트
-            visual.x = gameAreaLeft + x - 3;
-            visual.y = gameAreaTop + y;
-            glow.x = gameAreaLeft + x - 5;
-            glow.y = gameAreaTop + y - 2;
+            updatePosition();
 
             // 게임 영역 밖으로 나가면 비활성화
             if (y > gameAreaHeight + 20) {
@@ -160,33 +168,31 @@ public class WndDiegoDodgeGame extends Window {
         }
 
         void destroy() {
-            if (visual != null) {
-                visual.destroy();
-                remove(visual);
-            }
-            if (glow != null) {
-                glow.destroy();
-                remove(glow);
+            if (knifeBlock != null) {
+                knifeBlock.destroy();
+                remove(knifeBlock);
             }
         }
 
-        // 충돌 검사
+        // 충돌 검사 (회전하는 나이프에 맞춰 원형 충돌 박스 사용)
         boolean checkCollision(float px, float py, float pw, float ph) {
-            float knifeLeft = x - 3;
-            float knifeRight = x + 3;
-            float knifeTop = y;
-            float knifeBottom = y + 14;
+            // 나이프 중심점
+            float knifeCenterX = x;
+            float knifeCenterY = y;
+            float knifeRadius = 6f; // 나이프 반지름 (단순화되어 약간 줄임)
 
-            float playerLeft = px;
-            float playerRight = px + pw;
-            float playerTop = py;
-            float playerBottom = py + ph;
+            // 플레이어 중심점
+            float playerCenterX = px + pw / 2;
+            float playerCenterY = py + ph / 2;
+            float playerRadius = Math.min(pw, ph) / 2;
 
-            // 충돌 판정 (약간의 여유)
-            return knifeRight > playerLeft + 2 &&
-                    knifeLeft < playerRight - 2 &&
-                    knifeBottom > playerTop + 2 &&
-                    knifeTop < playerBottom - 2;
+            // 원형 충돌 검사 (두 중심점 사이 거리)
+            float dx = knifeCenterX - playerCenterX;
+            float dy = knifeCenterY - playerCenterY;
+            float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+            // 두 반지름의 합보다 가까우면 충돌
+            return distance < (knifeRadius + playerRadius - 2); // 약간의 여유
         }
     }
 
@@ -230,35 +236,10 @@ public class WndDiegoDodgeGame extends Window {
     }
 
     private void adjustDifficulty() {
-        // Phase에 따라 난이도 조절
-        switch (difficulty) {
-            case 1:
-                knifeSpawnInterval = 0.9f;
-                knifeSpeed = 90f;
-                playerSpeed = 130f;
-                break;
-            case 2:
-                knifeSpawnInterval = 0.75f;
-                knifeSpeed = 100f;
-                playerSpeed = 125f;
-                break;
-            case 3:
-                knifeSpawnInterval = 0.6f;
-                knifeSpeed = 110f;
-                playerSpeed = 120f;
-                break;
-            case 4:
-                knifeSpawnInterval = 0.5f;
-                knifeSpeed = 120f;
-                playerSpeed = 115f;
-                break;
-            case 5:
-            default:
-                knifeSpawnInterval = 0.4f;
-                knifeSpeed = 135f;
-                playerSpeed = 110f;
-                break;
-        }
+        // 모든 페이즈에서 동일한 난이도 (난이도 3 수준)
+        knifeSpawnInterval = 0.25f;  // 나이프 스폰 간격
+        knifeSpeed = 130f;  // 나이프 속도
+        playerSpeed = 140f;  // 플레이어 속도
     }
 
     private void setupUI() {
@@ -295,10 +276,10 @@ public class WndDiegoDodgeGame extends Window {
         // 플레이어 외곽선 (먼저 추가해서 뒤에 표시)
         float playerY = gameAreaHeight - PLAYER_HEIGHT - 5;
 
-        playerBorderTop = new ColorBlock(PLAYER_WIDTH + 2, 2, 0xFF00FFFF);
-        playerBorderBottom = new ColorBlock(PLAYER_WIDTH + 2, 2, 0xFF00FFFF);
-        playerBorderLeft = new ColorBlock(2, PLAYER_HEIGHT + 2, 0xFF00FFFF);
-        playerBorderRight = new ColorBlock(2, PLAYER_HEIGHT + 2, 0xFF00FFFF);
+        playerBorderTop = new ColorBlock(PLAYER_WIDTH + 1, 1, 0xFF00FFFF);
+        playerBorderBottom = new ColorBlock(PLAYER_WIDTH + 1, 1, 0xFF00FFFF);
+        playerBorderLeft = new ColorBlock(1, PLAYER_HEIGHT + 1, 0xFF00FFFF);
+        playerBorderRight = new ColorBlock(1, PLAYER_HEIGHT + 1, 0xFF00FFFF);
         add(playerBorderTop);
         add(playerBorderBottom);
         add(playerBorderLeft);
@@ -363,17 +344,17 @@ public class WndDiegoDodgeGame extends Window {
         float px = gameAreaLeft + playerX;
         float py = gameAreaTop + playerY;
 
-        playerBorderTop.x = px - 1;
+        playerBorderTop.x = px - 0.5f;
         playerBorderTop.y = py - 1;
 
-        playerBorderBottom.x = px - 1;
-        playerBorderBottom.y = py + PLAYER_HEIGHT - 1;
+        playerBorderBottom.x = px - 0.5f;
+        playerBorderBottom.y = py + PLAYER_HEIGHT;
 
         playerBorderLeft.x = px - 1;
-        playerBorderLeft.y = py - 1;
+        playerBorderLeft.y = py - 0.5f;
 
-        playerBorderRight.x = px + PLAYER_WIDTH - 1;
-        playerBorderRight.y = py - 1;
+        playerBorderRight.x = px + PLAYER_WIDTH;
+        playerBorderRight.y = py - 0.5f;
     }
 
     private void spawnKnife() {
@@ -394,22 +375,44 @@ public class WndDiegoDodgeGame extends Window {
     }
 
     private void checkCollisions() {
+        // 무적 시간 중이면 충돌 체크 안 함
+        if (invincibilityTimer > 0) {
+            return;
+        }
+
         float playerY = gameAreaHeight - PLAYER_HEIGHT - 5;
 
         for (Knife knife : knives) {
             if (knife.active && knife.checkCollision(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-                playerHit = true;
                 knife.active = false;
+
+                // 실제 플레이어에게 피해 (최대 체력의 15%)
+                int hpCost = Math.max(1, (int)(Dungeon.hero.HT * 0.15f));
+                Dungeon.hero.damage(hpCost, this);
+                if (!Dungeon.hero.isAlive()) {
+                    Dungeon.fail(getClass());
+                }
+
+                // 피격 횟수 증가
+                hitCount++;
 
                 // 피격 이펙트
                 Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                Camera.main.shake(8, 0.5f);
-                GameScene.flash(0xFFFF0000);
+                Camera.main.shake(5, 0.3f);
+                GameScene.flash(0x80FF0000);
 
-                // 플레이어 색상 변경 (피격 표시)
-                player.color(0xFFFF4444);
+                // 무적 시간 설정
+                invincibilityTimer = INVINCIBILITY_DURATION;
 
-                onGameFail();
+                // 플레이어가 죽으면 게임 실패
+                if (!Dungeon.hero.isAlive()) {
+                    player.color(0xFFFF0000);
+                    onGameFail();
+                } else {
+                    // 아직 살아있으면 경고 색상으로 깜빡임
+                    player.color(0xFFFF8844);
+                }
+
                 break;
             }
         }
@@ -524,8 +527,8 @@ public class WndDiegoDodgeGame extends Window {
 
             int countdown = (int) Math.ceil(countdownTimer);
             if (countdown > 0) {
-                timerText.text(String.valueOf(countdown));
-                timerText.hardlight(0xFFFF88);
+                // 카운트다운 숫자는 표시하지 않음
+                timerText.text("");
             } else {
                 timerText.text(Messages.get(this, "start"));
                 timerText.hardlight(0xFF44FF44);
@@ -543,6 +546,38 @@ public class WndDiegoDodgeGame extends Window {
         }
         else if (state == GameState.PLAYING) {
             gameTimer += elapsed;
+
+            // 무적 시간 감소
+            if (invincibilityTimer > 0) {
+                invincibilityTimer -= elapsed;
+
+                // 무적 시간 동안 플레이어 깜빡임 효과
+                float blinkInterval = 0.1f;
+                int blinkCycle = (int)(invincibilityTimer / blinkInterval);
+                if (blinkCycle % 2 == 0) {
+                    player.alpha(0.3f);
+                    playerBorderTop.alpha(0.3f);
+                    playerBorderBottom.alpha(0.3f);
+                    playerBorderLeft.alpha(0.3f);
+                    playerBorderRight.alpha(0.3f);
+                } else {
+                    player.alpha(1.0f);
+                    playerBorderTop.alpha(1.0f);
+                    playerBorderBottom.alpha(1.0f);
+                    playerBorderLeft.alpha(1.0f);
+                    playerBorderRight.alpha(1.0f);
+                }
+
+                // 무적 시간 종료 시 색상 복구
+                if (invincibilityTimer <= 0) {
+                    player.color(0xFF00CCCC);
+                    player.alpha(1.0f);
+                    playerBorderTop.alpha(1.0f);
+                    playerBorderBottom.alpha(1.0f);
+                    playerBorderLeft.alpha(1.0f);
+                    playerBorderRight.alpha(1.0f);
+                }
+            }
 
             // 타이머 표시 업데이트
             float remaining = GAME_DURATION - gameTimer;
@@ -604,9 +639,13 @@ public class WndDiegoDodgeGame extends Window {
             // 비활성화된 나이프 정리
             cleanupKnives();
 
-            // 게임 종료 체크
-            if (gameTimer >= GAME_DURATION && !playerHit) {
-                onGameSuccess();
+            // 게임 종료 체크 (시간 다 됐고 살아있고 한 대도 안 맞았으면 성공)
+            if (gameTimer >= GAME_DURATION && Dungeon.hero.isAlive()) {
+                if (hitCount == 0) {
+                    onGameSuccess();
+                } else {
+                    onGameFail();
+                }
             }
         }
     }
@@ -634,4 +673,3 @@ public class WndDiegoDodgeGame extends Window {
         super.destroy();
     }
 }
-

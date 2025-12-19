@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
@@ -466,6 +467,21 @@ public class DwarfKing extends Mob {
         if (!BossHealthBar.isAssigned()) {
             BossHealthBar.assignBoss(this);
             switch (Dungeon.hero.heroClass) {
+                case JOHNNY:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new KingSprite(), new BlacksmithSprite()},
+                            new String[]{"엔야 할멈", "죠니"},
+                            new String[]{
+                                    Messages.get(DwarfKing.class, "notice8"),
+                                    Messages.get(DwarfKing.class, "notice9")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.RUN
+                            }
+                    );
+                    Sample.INSTANCE.play(Assets.Sounds.ENYA);
+                    break;
                 case CLERIC:
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new KingSprite(), new JojoSprite()},

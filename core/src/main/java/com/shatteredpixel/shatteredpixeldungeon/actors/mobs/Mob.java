@@ -37,12 +37,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -916,6 +918,17 @@ public abstract class Mob extends Char {
             //50% chance to round up, 50% to round down
             if (EXP % 2 == 1) EXP += Random.Int(2);
             EXP /= 2;
+        }
+
+        if ((this.alignment != Alignment.ALLY) && (cause == hero || cause instanceof Wand || cause instanceof DirectableAlly)) {
+            if (Dungeon.hero.hasTalent(Talent.J23) && Dungeon.hero.heroClass != HeroClass.JOHNNY){
+                // J23 meta_desc: +1에서 5%, +2에서 10% 확률로 3턴의 폭주
+                int talentLevel = Dungeon.hero.pointsInTalent(Talent.J23);
+                float procChance = talentLevel * 0.05f; // +1: 5%, +2: 10%
+                if (Random.Float() < procChance) {
+                    Buff.prolong(hero, Adrenaline.class, 3f);
+                }
+            }
         }
 
         if (alignment == Alignment.ENEMY) {

@@ -382,7 +382,7 @@ public class ItemSpriteSheet {
         assignItemRect(SHURIKEN, 11, 12);
         assignItemRect(THROWING_CLUB, 10, 10);
 
-        assignItemRect(THROWING_SPEAR, 10, 10);
+        assignItemRect(THROWING_SPEAR, 13, 13);
         assignItemRect(BOLAS, 15, 13);
         assignItemRect(KUNAI, 15, 15);
 
@@ -391,7 +391,7 @@ public class ItemSpriteSheet {
         assignItemRect(BOOMERANG, 14, 14);
 
         assignItemRect(TRIDENT, 13, 9);
-        assignItemRect(THROWING_HAMMER, 10, 10);
+        assignItemRect(THROWING_HAMMER, 13, 13);
         assignItemRect(FORCE_CUBE, 11, 12);
     }
 
@@ -428,8 +428,8 @@ public class ItemSpriteSheet {
     public static final int ARMOR_HUNTRESS = ARMOR + 8;
     public static final int ARMOR_DUELIST = ARMOR + 9;
     public static final int ARMOR_CLERIC = ARMOR+10;
-    public static final int MAP0 = ARMOR + 11;
-    public static final int HIGHWAY = ARMOR + 12;
+    public static final int ARMOR_JOHNNY = ARMOR + 11;
+    public static final int MAP0 = ARMOR + 12;
     public static final int MAP1 = ARMOR + 13;
     public static final int MAP2 = ARMOR + 14;
     public static final int MAP3 = ARMOR + 15;
@@ -446,8 +446,8 @@ public class ItemSpriteSheet {
         assignItemRect(ARMOR_HUNTRESS, 13, 13);
         assignItemRect(ARMOR_DUELIST, 16, 16);
         assignItemRect(ARMOR_CLERIC, 14, 13);
+        assignItemRect(ARMOR_JOHNNY, 15, 15);
         assignItemRect(MAP0, 12, 16);
-        assignItemRect(HIGHWAY, 16, 16);
         assignItemRect(MAP1, 12, 16);
         assignItemRect(MAP2, 12, 16);
         assignItemRect(MAP3, 12, 16);
@@ -827,6 +827,7 @@ public class ItemSpriteSheet {
     public static final int SUPPLY_RATION = FOOD + 12;
     public static final int P1 = FOOD + 13;
     public static final int P2 = FOOD + 14;
+    public static final int HIGHWAY = FOOD + 15;
 
     static {
         assignItemRect(MEAT, 13, 13);
@@ -844,6 +845,7 @@ public class ItemSpriteSheet {
         assignItemRect(SUPPLY_RATION, 13, 14);
         assignItemRect(P1, 14, 15);
         assignItemRect(P2, 14, 15);
+        assignItemRect(HIGHWAY, 16, 16);
     }
 
     private static final int HOLIDAY_FOOD = xy(1, 29);  //16 slots
@@ -857,6 +859,7 @@ public class ItemSpriteSheet {
     public static final int VANILLA_CAKE = HOLIDAY_FOOD + 7;
     public static final int CANDY_CANE = HOLIDAY_FOOD + 8;
     public static final int SPARKLING_POTION = HOLIDAY_FOOD + 9;
+    public static final int RACE = HOLIDAY_FOOD + 10;
 
     static {
         assignItemRect(STEAMED_FISH, 16, 12);
@@ -869,6 +872,7 @@ public class ItemSpriteSheet {
         assignItemRect(VANILLA_CAKE, 15, 11);
         assignItemRect(CANDY_CANE, 15, 16);
         assignItemRect(SPARKLING_POTION, 16, 15);
+        assignItemRect(RACE, 16, 13);
     }
 
     private static final int QUEST = xy(1, 30);  //16 slots
@@ -926,7 +930,7 @@ public class ItemSpriteSheet {
     public static final int CM = BAGS + 14;
 
     static {
-        assignItemRect(WATERSKIN, 14, 15);
+        assignItemRect(WATERSKIN, 12, 14);
         assignItemRect(BACKPACK, 16, 16);
         assignItemRect(POUCH, 15, 14);
         assignItemRect(HOLDER, 16, 13);

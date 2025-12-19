@@ -22,11 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.johnny;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -34,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PinkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
@@ -47,7 +51,7 @@ import java.util.ArrayList;
 public class BlessArena extends ArmorAbility {
 
 	{
-		baseChargeUse = 35f;
+		baseChargeUse = 25f;
 	}
 
 	@Override
@@ -66,29 +70,32 @@ public class BlessArena extends ArmorAbility {
 		armor.charge -= chargeUse(hero);
 		Item.updateQuickslot();
 
+        Sword.tp();
+
 		// Create arena buff
 		BlessArenaBuff buff = Buff.affect(hero, BlessArenaBuff.class);
-		buff.setup(target);
+		buff.setup(target, hero);
 
 		hero.spendAndNext(1f);
 	}
 
 	@Override
 	public int icon() {
-		return HeroIcon.NONE;
+		return HeroIcon.BLESS_ARENA;
 	}
 
-	@Override
-	public Talent[] talents() {
-		return new Talent[0];
-	}
+    @Override
+    public Talent[] talents() {
+        return new Talent[]{Talent.J44, Talent.J45, Talent.J46, Talent.HEROIC_ENERGY};
+    }
 
 	public static class BlessArenaBuff extends Buff {
 
 		private ArrayList<Integer> arenaPositions = new ArrayList<>();
 		private ArrayList<Emitter> arenaEmitters = new ArrayList<>();
 
-		private static final float DURATION = 10f;
+		private static final float BASE_DURATION = 10f;
+		private float duration = BASE_DURATION;
 		int left = 0;
 
 		{
@@ -108,7 +115,7 @@ public class BlessArena extends ArmorAbility {
 
 		@Override
 		public float iconFadePercent() {
-			return Math.max(0, (DURATION - left) / DURATION);
+			return Math.max(0, (duration - left) / duration);
 		}
 
 		@Override
@@ -121,14 +128,38 @@ public class BlessArena extends ArmorAbility {
 			return Messages.get(this, "desc", left);
 		}
 
-		public void setup(int pos) {
-			// 3x3 범위 설정
+		public void setup(int pos, Hero hero) {
 			arenaPositions.clear();
-			for (int i : PathFinder.NEIGHBOURS9) {
-				int cell = pos + i;
-				if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
-					arenaPositions.add(cell);
+			
+			// J46 +4: 5x5 범위, 그 외: 3x3 범위
+			boolean is5x5 = hero != null && hero.hasTalent(Talent.J46) && hero.pointsInTalent(Talent.J46) >= 4;
+			
+			if (is5x5) {
+				// 5x5 범위 설정
+				for (int dx = -2; dx <= 2; dx++) {
+					for (int dy = -2; dy <= 2; dy++) {
+						int cell = pos + dx + dy * Dungeon.level.width();
+						if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
+							arenaPositions.add(cell);
+						}
+					}
 				}
+			} else {
+				// 3x3 범위 설정
+				for (int i : PathFinder.NEIGHBOURS9) {
+					int cell = pos + i;
+					if (cell >= 0 && cell < Dungeon.level.length() && !Dungeon.level.solid[cell]) {
+						arenaPositions.add(cell);
+					}
+				}
+			}
+
+			// J44 탤런트: 지속 시간 증가 (10 + talentLevel * 5)
+			if (hero != null && hero.hasTalent(Talent.J44)) {
+				int talentLevel = hero.pointsInTalent(Talent.J44);
+				duration = BASE_DURATION + (talentLevel * 5f); // +1: 15턴, +2: 20턴, +3: 25턴, +4: 30턴
+			} else {
+				duration = BASE_DURATION;
 			}
 
 			if (target != null) {
@@ -136,27 +167,51 @@ public class BlessArena extends ArmorAbility {
 				fx(true);
 			}
 
-			left = (int) DURATION;
+			left = (int) duration;
 		}
 
 		@Override
 		public boolean act() {
-			// 영웅이 Arena 안에 있으면 Enhanced 버프들 부여 (강화 수치 1로 설정)
-			if (target instanceof Hero && arenaPositions.contains(target.pos)) {
-				EnhancedWeapon weaponBuff = Buff.affect(target, EnhancedWeapon.class);
-				weaponBuff.setEnhancementLevel(1);
-				EnhancedArmor armorBuff = Buff.affect(target, EnhancedArmor.class);
-				armorBuff.setEnhancementLevel(1);
-				EnhancedWand wandBuff = Buff.affect(target, EnhancedWand.class);
-				wandBuff.setEnhancementLevel(1);
-				EnhancedThrownWeapon thrownBuff = Buff.affect(target, EnhancedThrownWeapon.class);
-				thrownBuff.setEnhancementLevel(1);
-			} else {
+			Hero hero = target instanceof Hero ? (Hero) target : null;
+			
+			// 영웅이 Arena 안에 있으면 Enhanced 버프들 부여
+			if (hero != null && arenaPositions.contains(hero.pos)) {
+				// J45 탤런트: 강화 수치 증가 (1 + talentLevel)
+				int enhancementLevel = 1;
+				if (hero.hasTalent(Talent.J45)) {
+					enhancementLevel = 1 + hero.pointsInTalent(Talent.J45); // +1: 2, +2: 3, +3: 4, +4: 5
+				}
+				
+				EnhancedWeapon weaponBuff = Buff.affect(hero, EnhancedWeapon.class);
+				weaponBuff.setEnhancementLevel(enhancementLevel);
+				EnhancedArmor armorBuff = Buff.affect(hero, EnhancedArmor.class);
+				armorBuff.setEnhancementLevel(enhancementLevel);
+			} else if (hero != null) {
 				// Arena 밖으로 나가면 Enhanced 버프들만 제거 (Arena는 유지)
-				Buff.detach(target, EnhancedWeapon.class);
-				Buff.detach(target, EnhancedArmor.class);
-				Buff.detach(target, EnhancedWand.class);
-				Buff.detach(target, EnhancedThrownWeapon.class);
+				Buff.detach(hero, EnhancedWeapon.class);
+				Buff.detach(hero, EnhancedArmor.class);
+			}
+
+			// J46 탤런트: Arena 안에 있는 적들에게 디버프 부여
+			if (hero != null && hero.hasTalent(Talent.J46)) {
+				int talentLevel = hero.pointsInTalent(Talent.J46);
+				for (int cell : arenaPositions) {
+					Char ch = Actor.findChar(cell);
+					if (ch != null && ch != hero && ch.alignment == Char.Alignment.ENEMY) {
+						// +1: 불구
+						if (talentLevel >= 1) {
+							Buff.prolong(ch, Cripple.class, Cripple.DURATION);
+						}
+						// +2: 실명
+						if (talentLevel >= 2) {
+							Buff.prolong(ch, Blindness.class, Blindness.DURATION);
+						}
+						// +3: 무력화
+						if (talentLevel >= 3) {
+							Buff.prolong(ch, Hex.class, Hex.DURATION);
+						}
+					}
+				}
 			}
 
 			// Arena는 밖으로 나가도 계속 유지됨 (제거하지 않음)
@@ -165,10 +220,10 @@ public class BlessArena extends ArmorAbility {
 			BuffIndicator.refreshHero();
 			if (left <= 0) {
 				// 시간이 끝나면 Enhanced 버프들도 제거
-				Buff.detach(target, EnhancedWeapon.class);
-				Buff.detach(target, EnhancedArmor.class);
-				Buff.detach(target, EnhancedWand.class);
-				Buff.detach(target, EnhancedThrownWeapon.class);
+				if (hero != null) {
+					Buff.detach(hero, EnhancedWeapon.class);
+					Buff.detach(hero, EnhancedArmor.class);
+				}
 				detach();
 			}
 
@@ -182,8 +237,6 @@ public class BlessArena extends ArmorAbility {
 			if (target != null) {
 				Buff.detach(target, EnhancedWeapon.class);
 				Buff.detach(target, EnhancedArmor.class);
-				Buff.detach(target, EnhancedWand.class);
-				Buff.detach(target, EnhancedThrownWeapon.class);
 			}
 			super.detach();
 		}
@@ -206,6 +259,7 @@ public class BlessArena extends ArmorAbility {
 
 		private static final String ARENA_POSITIONS = "arena_positions";
 		private static final String LEFT = "left";
+		private static final String DURATION = "duration";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
@@ -218,6 +272,7 @@ public class BlessArena extends ArmorAbility {
 			bundle.put(ARENA_POSITIONS, values);
 
 			bundle.put(LEFT, left);
+			bundle.put(DURATION, duration);
 		}
 
 		@Override
@@ -233,6 +288,11 @@ public class BlessArena extends ArmorAbility {
 			}
 
 			left = bundle.getInt(LEFT);
+			if (bundle.contains(DURATION)) {
+				duration = bundle.getFloat(DURATION);
+			} else {
+				duration = BASE_DURATION;
+			}
 		}
 	}
 

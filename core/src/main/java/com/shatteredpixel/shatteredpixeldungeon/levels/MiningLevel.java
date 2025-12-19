@@ -256,7 +256,7 @@ public class MiningLevel extends CavesLevel {
 			String warnText;
 			DarkGold gold = hero.belongings.getItem(DarkGold.class);
 			int goldAmount = gold == null ? 0 : gold.quantity();
-			Sample.INSTANCE.play(Assets.Sounds.JONNY);
+			Sample.INSTANCE.play(Assets.Sounds.G2);
 			if (goldAmount < 10){
 				warnText = Messages.get(Blacksmith.class, "exit_warn_none");
 			} else if (goldAmount < 20){

@@ -31,12 +31,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Danny;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Danny2;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.BlacksmithRoom;
@@ -93,7 +92,7 @@ public class Blacksmith extends NPC {
 
 			String msg1 = "";
 			String msg2 = "";
-			Sample.INSTANCE.play(Assets.Sounds.JONNY);
+			Sample.INSTANCE.play(Assets.Sounds.G2);
 			switch (Dungeon.hero.heroClass){
 				case WARRIOR:   msg1 += Messages.get(Blacksmith.this, "intro_quest_warrior"); break;
 				case MAGE:      msg1 += Messages.get(Blacksmith.this, "intro_quest_mage"); break;
@@ -101,6 +100,7 @@ public class Blacksmith extends NPC {
 				case HUNTRESS:  msg1 += Messages.get(Blacksmith.this, "intro_quest_huntress"); break;
 				case DUELIST:   msg1 += Messages.get(Blacksmith.this, "intro_quest_duelist"); break;
 				case CLERIC:    msg1 += Messages.get(Blacksmith.this, "intro_quest_cleric"); break;
+                case JOHNNY:    msg1 += Messages.get(Blacksmith.this, "intro_quest_johnny"); break;
 			}
 
 			msg1 += "\n\n" + Messages.get(Blacksmith.this, "intro_quest_start");
@@ -141,7 +141,7 @@ public class Blacksmith extends NPC {
 			});
 
 		} else if (!Quest.completed) {
-			Sample.INSTANCE.play(Assets.Sounds.JONNY);
+			Sample.INSTANCE.play(Assets.Sounds.G2);
 			String msg = Messages.get(this, "reminder") + "\n\n";
 			switch (Quest.type){
 				case Quest.CRYSTAL: msg += Messages.get(Blacksmith.this, "reminder_crystal"); break;
@@ -164,11 +164,11 @@ public class Blacksmith extends NPC {
 			});
 
 		} else {
-			Sample.INSTANCE.play(Assets.Sounds.JONNY2);
-			Danny danny = Dungeon.hero.belongings.getItem(Danny.class);
-			if(danny != null){
+			Sample.INSTANCE.play(Assets.Sounds.G2);
+			Danny2 danny2 = Dungeon.hero.belongings.getItem(Danny2.class);
+			if(danny2 != null){
 				tell( Messages.get(this, "danny") );
-				danny.detach(Dungeon.hero.belongings.backpack);
+                danny2.detach(Dungeon.hero.belongings.backpack);
 				Araki handAxe = new Araki();
 				if (handAxe.doPickUp( Dungeon.hero )) {
 					GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", handAxe.name()) ));

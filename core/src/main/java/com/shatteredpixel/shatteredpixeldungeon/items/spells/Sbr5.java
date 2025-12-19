@@ -69,7 +69,7 @@ public class Sbr5 extends Spell {
 
     @Override
     public String status() {
-        if (this.isIdentified()) return Statistics.thrownAttacks+ "/" + 50;
+        if (this.isIdentified()) return Statistics.thrownAttacks+ "/" + 25;
         else return null;}
 
     @Override
@@ -77,7 +77,7 @@ public class Sbr5 extends Spell {
 
         ArrayList<Integer> spawnPoints = new ArrayList<>();
 
-        if (Statistics.thrownAttacks >= 50){
+        if (Statistics.thrownAttacks >= 25){
             Sample.INSTANCE.play(Assets.Sounds.CHARMS);
             GameScene.flash(0xFFCC00);
 

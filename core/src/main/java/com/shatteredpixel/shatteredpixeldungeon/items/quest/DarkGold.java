@@ -27,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class DarkGold extends Item {
 	
 	{
-		image = ItemSpriteSheet.ORE;
+		image = ItemSpriteSheet.RACE;
 		
 		stackable = true;
 		unique = true;

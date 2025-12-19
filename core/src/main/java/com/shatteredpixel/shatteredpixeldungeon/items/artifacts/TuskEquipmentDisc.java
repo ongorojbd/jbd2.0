@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -55,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTuskAiming;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -248,7 +251,11 @@ public class TuskEquipmentDisc extends Artifact {
 
 			// 레벨 3 이상일 때: 벽 통과 가능, J22 탤런트가 있으면 관통 기능
 			if (level() >= 3) {
-                Sword.t1();
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeActive =
+                        hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
+                if (scopeActive != null) {
+                    Sample.INSTANCE.play(Assets.Sounds.JONNY3);
+                } else Sword.t1();
 				Ballistica beam = new Ballistica(curUser.pos, target, Ballistica.WONT_STOP);
 				piercedTargets.clear();
 				
@@ -277,7 +284,11 @@ public class TuskEquipmentDisc extends Artifact {
 				GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
 			} else {
 				// 레벨 0~2일 때는 기존처럼 단일 타겟만
-                Sword.t1();
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeActive =
+                        hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
+                if (scopeActive != null) {
+                    Sample.INSTANCE.play(Assets.Sounds.JONNY3);
+                } else Sword.t1();
 				piercedTargets.clear();
 				GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
 			}
@@ -465,7 +476,13 @@ public class TuskEquipmentDisc extends Artifact {
 				float duration = 50f; // 기본 50턴
 				if (hero.hasTalent(Talent.J36)) {
 					int talentLevel = hero.pointsInTalent(Talent.J36);
-					duration = 50f + (talentLevel * 20f); // 1레벨: 70턴, 2레벨: 90턴, 3레벨: 110턴
+					if (talentLevel == 1) {
+						duration = 80f; // 1레벨: 80턴
+					} else if (talentLevel == 2) {
+						duration = 110f; // 2레벨: 110턴
+					} else { // talentLevel == 3
+						duration = 130f; // 3레벨: 130턴
+					}
 				}
 				
 				switch (buffChoice) {
@@ -599,8 +616,23 @@ public class TuskEquipmentDisc extends Artifact {
 		Talent.onArtifactUsed(hero);
 		updateQuickslot();
 
+		// J34 탤런트 레벨 3: 기마 상태에서 턴을 소모하지 않음
+		boolean skipTurnCost = false;
+		if (hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class) != null
+				&& hero.hasTalent(Talent.J34)
+				&& hero.pointsInTalent(Talent.J34) >= 3) {
+			skipTurnCost = true;
+			
+			// 꽂힌 투척 무기 즉시 회수
+			collectThrownWeapons(hero);
+		}
+
 		// 턴 소모
-		hero.spendAndNext(1f);
+		if (skipTurnCost) {
+			hero.next(); // 턴 소모 없이 다음 행동
+		} else {
+			hero.spendAndNext(1f); // 일반적으로 1턴 소모
+		}
 
 		// 아티팩트 proc
 		if (currentTarget != null) {
@@ -614,6 +646,32 @@ public class TuskEquipmentDisc extends Artifact {
 		lastDamage = 0;
 		lastHitType = "";
 		lastDamageRatio = 0f;
+	}
+
+	// J34 탤런트 레벨 3: 적에게 꽂힌 투척 무기 즉시 회수 (TelekineticGrab 방식)
+	private void collectThrownWeapons(Hero hero) {
+		// 히어로 주변 8칸 범위 내의 적들로부터 꽂힌 투척 무기 회수
+		for (int i : PathFinder.NEIGHBOURS8) {
+			int cell = hero.pos + i;
+			if (cell >= 0 && cell < Dungeon.level.length()) {
+				Char ch = Actor.findChar(cell);
+				// 적이 있고 PinCushion 버프(꽂힌 투척 무기)가 있는 경우
+				if (ch != null && ch.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion.class) != null) {
+					while (ch.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion.class) != null) {
+						Item item = ch.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion.class).grabOne();
+						
+						// TelekineticGrab과 동일한 방식으로 회수
+						if (item.doPickUp(hero, ch.pos)) {
+							// 성공적으로 회수됨
+						} else {
+							// 회수 실패 시 적의 위치에 떨어뜨림
+							Dungeon.level.drop(item, ch.pos).sprite.drop();
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	// 관통된 적에게 데미지 적용 (이펙트 포함)
@@ -794,7 +852,7 @@ public class TuskEquipmentDisc extends Artifact {
 	public String desc() {
 		String desc = super.desc();
 
-		if (isEquipped(Dungeon.hero)) {
+		if (isEquipped(hero)) {
 			desc += "\n\n";
 			if (cursed) {
 				desc += Messages.get(this, "desc_cursed");
@@ -821,6 +879,15 @@ public class TuskEquipmentDisc extends Artifact {
 					int perfectMaxDmg = 20 + 6 * lvl;
 					int perfectMinDmg = 10 + 4 * lvl; // BOSS/MINIBOSS 기준 최소 데미지
 					
+					// J38 탤런트: Perfect 데미지 증가 적용
+					Hero hero = Dungeon.hero;
+					if (hero != null && hero.hasTalent(Talent.J38)) {
+						int talentLevel = hero.pointsInTalent(Talent.J38);
+						float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
+						perfectMaxDmg = Math.round(perfectMaxDmg * (1f + damageBonus));
+						perfectMinDmg = Math.round(perfectMinDmg * (1f + damageBonus));
+					}
+					
 					// 2발 모드일 때 75% 적용
 					if (isUpgraded()) {
 						perfectMaxDmg = Math.round(perfectMaxDmg * 0.75f);
@@ -834,6 +901,15 @@ public class TuskEquipmentDisc extends Artifact {
 					int lvl = level();
 					int perfectMaxDmg = 20 + 6 * lvl;
 					int perfectMinDmg = 10 + 4 * lvl;
+					
+					// J38 탤런트: Perfect 데미지 증가 적용
+					Hero hero = Dungeon.hero;
+					if (hero != null && hero.hasTalent(Talent.J38)) {
+						int talentLevel = hero.pointsInTalent(Talent.J38);
+						float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
+						perfectMaxDmg = Math.round(perfectMaxDmg * (1f + damageBonus));
+						perfectMinDmg = Math.round(perfectMinDmg * (1f + damageBonus));
+					}
 					
 					// 2발 모드일 때 75% 적용
 					if (isUpgraded()) {

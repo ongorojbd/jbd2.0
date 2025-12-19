@@ -37,15 +37,15 @@ public class BlacksmithSprite extends MobSprite {
 		super();
 		
 		texture( Assets.Sprites.TROLL );
-		
-		TextureFilm frames = new TextureFilm( texture, 9, 15 );
 
-		idle = new Animation( 1, true );
-		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
-		
-		run = new Animation( 20, true );
-		run.frames( frames, 0 );
-		
+        TextureFilm frames = new TextureFilm( texture, 12, 15 );
+
+        idle = new Animation( 1, true );
+        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
+
+        run = new Animation( 1, true );
+        run.frames( frames, 2, 2, 2, 3, 2, 2, 3, 3 );
+
 		die = new Animation( 20, false );
 		die.frames( frames, 0 );
 		

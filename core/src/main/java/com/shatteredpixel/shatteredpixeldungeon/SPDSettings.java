@@ -64,6 +64,7 @@ public class SPDSettings extends GameSettings {
 	public static final String SKIN4 = "skin4";
 	public static final String SKIN5 = "skin5";
 	public static final String SKIN6 = "skin6";
+	public static final String SKIN7 = "skin7";
 
 	public static final String DIO = "dio";
 
@@ -83,12 +84,14 @@ public class SPDSettings extends GameSettings {
 	public static void addSkin4(int value) { put(SKIN4, getInt(SKIN4, 0) + value); }
 	public static void addSkin5(int value) { put(SKIN5, getInt(SKIN5, 0) + value); }
 	public static void addSkin6(int value) { put(SKIN6, getInt(SKIN6, 0) + value); }
+	public static void addSkin7(int value) { put(SKIN7, getInt(SKIN7, 0) + value); }
 	public static int getSkin() { return getInt(SKIN, 0); }
 	public static int getSkin2() { return getInt(SKIN2, 0); }
 	public static int getSkin3() { return getInt(SKIN3, 0); }
 	public static int getSkin4() { return getInt(SKIN4, 0); }
 	public static int getSkin5() { return getInt(SKIN5, 0); }
 	public static int getSkin6() { return getInt(SKIN6, 0); }
+	public static int getSkin7() { return getInt(SKIN7, 0); }
 
 	public static void addDio(int value) { put(DIO, getInt(DIO, 0) + value); }
 	public static int getDio() { return getInt(DIO, 0); }

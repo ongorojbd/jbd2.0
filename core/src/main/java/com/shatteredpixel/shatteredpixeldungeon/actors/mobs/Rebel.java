@@ -414,6 +414,22 @@ public class Rebel extends Mob {
                             }
                     );
                     break;
+                case JOHNNY:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new RebelSprite(), new RebelSprite(), new RebelSprite()},
+                            new String[]{"천국 DIO", "천국 DIO", "천국 DIO"},
+                            new String[]{
+                                    Messages.get(Rebel.class, "t1"),
+                                    Messages.get(Rebel.class, "c7"),
+                                    Messages.get(Rebel.class, "t2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
             }
 
             Sample.INSTANCE.play(Assets.Sounds.OH2);

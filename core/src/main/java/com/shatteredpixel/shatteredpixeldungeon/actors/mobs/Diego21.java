@@ -25,9 +25,11 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
@@ -103,14 +105,11 @@ public class Diego21 extends Mob {
 
         Camera.main.shake(20, 2f);
 
-        PortableCover2 pick = new PortableCover2();
-        if (pick.doPickUp( Dungeon.hero )) {
-            GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name()) ));
-        } else {
-            Dungeon.level.drop( pick, Dungeon.hero.pos ).sprite.drop();
-        }
+        Statistics.d4cEnhanced = true;
+        Buff.detach(hero, D4C.class);
+        Buff.affect(hero, D4C.class);
 
-        GLog.h(Messages.get(Diego12.class, "6"));
+        GLog.p(Messages.get(Diego12.class, "7"));
         WndDialogueWithPic.dialogue(
                 new CharSprite[]{new DiegonSprite()},
                 new String[]{"디에고 브란도"},

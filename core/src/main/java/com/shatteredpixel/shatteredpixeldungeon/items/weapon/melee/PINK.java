@@ -52,8 +52,8 @@ public class PINK extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return 4 * (tier) +            //12 base
-                lvl * (tier - 1);        //+3 per level
+        return Math.round(4 * (tier) * 1.30f) +            //26 (30% 상향)
+                Math.round(lvl * (tier - 1) * 1.30f);        //5*lvl (30% 상향)
     }
 
     private void MindBrack(Hero hero) {

@@ -145,7 +145,7 @@ public class TengusMask extends Item {
                             Messages.get(Jolyne3.class, "s3")
                     },
                     new byte[]{
-                            WndDialogueWithPic.IDLE
+                            WndDialogueWithPic.RUN
                     }
             );
         }  else if (way == HeroSubClass.STANDO) {
@@ -157,7 +157,7 @@ public class TengusMask extends Item {
                             Messages.get(Jolyne3.class, "s4")
                     },
                     new byte[]{
-                            WndDialogueWithPic.IDLE
+                            WndDialogueWithPic.RUN
                     }
             );
         }

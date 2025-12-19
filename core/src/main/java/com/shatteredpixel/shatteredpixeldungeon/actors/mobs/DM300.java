@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
@@ -448,6 +449,22 @@ public class DM300 extends Mob {
 					);
 					Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
 					break;
+                case JOHNNY:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new KiraSprite(), new BlacksmithSprite(), new BlacksmithSprite()},
+                            new String[]{"키라 요시카게", "죠니", "죠니"},
+                            new String[]{
+                                    Messages.get(DM300.class, "n8"),
+                                    Messages.get(DM300.class, "n9"),
+                                    Messages.get(DM300.class, "n10")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.RUN,
+                                    WndDialogueWithPic.RUN
+                            }
+                    );
+                    break;
 			}
 			for (Char ch : Actor.chars()){
 				if (ch instanceof DriedRose.GhostHero){

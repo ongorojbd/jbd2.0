@@ -46,8 +46,8 @@ public class Spheaven extends MeleeWeapon{
 
     @Override
     public int max(int lvl) {
-        return  4*(tier+1) +    //15+3
-                lvl*(tier);
+        return  Math.round(4*(tier+1) * 1.15f) +    //28 (15% 상향)
+                Math.round(lvl*(tier) * 1.15f);     //6*lvl (15% 상향)
     }
 
     @Override

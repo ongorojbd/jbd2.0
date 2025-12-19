@@ -7,11 +7,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -113,15 +116,25 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             //The lower the hero's HP, the more bleed and the less upfront damage.
             //Hero has a 50% chance to bleed out at 66% HP, and begins to risk instant-death at 25%
             int bleedAmt = Math.round(target.HT / (6f + (6f*(target.HP/(float)target.HT))) * dmgMulti);
-            int fallDmg = Math.round(Math.max( target.HP / 2, Random.NormalIntRange( target.HP / 2, target.HT / 4 ))*dmgMulti);
+            int fallDmg = Math.round(Math.max( target.HP / 2, Random.NormalIntRange( target.HP / 2, target.HT / 4 )) * dmgMulti * 0.7f); // 즉시 피해 30% 감소
             Buff.affect( target, Bleeding.class).set( bleedAmt, RideFall.class);
             target.damage( fallDmg, new RideFall() );
-            Buff.affect(target, RidingCooldown.class, 300f);
+            Buff.affect(target, RidingCooldown.class, 200f);
         }
     }
 
     public static int drRoll() {
-        return Random.NormalIntRange(2, 16); //기본 방어력: 2~16
+        int baseDR = Random.NormalIntRange(2, 16); //기본 방어력: 2~16
+        
+        // J33 탤런트: 슬로 댄서 방어력 증가
+        if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.J33)) {
+            int talentLevel = Dungeon.hero.pointsInTalent(Talent.J33);
+            int minBonus = talentLevel; // 1, 2, 3
+            int maxBonus = talentLevel * 6; // 6, 12, 18
+            baseDR += Random.NormalIntRange(minBonus, maxBonus);
+        }
+        
+        return baseDR;
     }
 
     @Override
@@ -196,7 +209,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             GameScene.add(horse, 1f);
             Dungeon.level.occupyCell(horse);
 
-            Sample.INSTANCE.play(Assets.Sounds.JH13);
+            Sword.horsesound();
             Sample.INSTANCE.play(Assets.Sounds.HORSE);
             CellEmitter.get(horse.pos).start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
 
@@ -301,10 +314,10 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                         }
                     }
                     
-                    // 경로상의 적에게 데미지
+                    // 경로상의 적에게 고정 데미지 (4~16)
                     for (Char enemy : pathEnemies) {
                         if (enemy.isAlive()) {
-                            int dmg = Random.NormalIntRange(hero.damageRoll() / 2, hero.damageRoll());
+                            int dmg = Random.NormalIntRange(4, 16);
                             dmg -= enemy.drRoll();
                             dmg = Math.max(0, dmg);
                             if (dmg > 0) {
@@ -320,8 +333,36 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                     GameScene.updateFog();
                     
                     WandOfBlastWave.BlastWave.blast(dest);
-                    Sample.INSTANCE.play(Assets.Sounds.JH13);
+                    Sword.horsesound();
                     Sample.INSTANCE.play(Assets.Sounds.HORSE);
+                    
+                    // J33 탤런트: 도약 착지 시 근접한 적들을 밀어내기
+                    if (hero.hasTalent(Talent.J33)) {
+                        int talentLevel = hero.pointsInTalent(Talent.J33);
+                        int pushDistance = 1 + talentLevel; // 2, 3, 4 타일
+                        
+                        for (int i : PathFinder.NEIGHBOURS8) {
+                            Char ch = Actor.findChar(dest + i);
+                            if (ch != null && ch.alignment == Char.Alignment.ENEMY) {
+                                Ballistica trajectory = new Ballistica(ch.pos, ch.pos + i, Ballistica.MAGIC_BOLT);
+                                int pushDest = trajectory.collisionPos;
+                                
+                                // 밀어내기 거리 계산
+                                for (int push = 0; push < pushDistance - 1; push++) {
+                                    trajectory = new Ballistica(pushDest, pushDest + i, Ballistica.MAGIC_BOLT);
+                                    pushDest = trajectory.collisionPos;
+                                }
+                                
+                                if (pushDest != ch.pos) {
+                                    Actor.add(new Pushing(ch, ch.pos, pushDest));
+                                    ch.pos = pushDest;
+                                    Dungeon.level.occupyCell(ch);
+                                    ch.sprite.place(ch.pos);
+                                }
+                            }
+                        }
+                    }
+                    
                     Invisibility.dispel();
                     hero.spendAndNext(Actor.TICK);
                     
@@ -445,7 +486,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         @Override
         public void die(Object cause) {
-            Buff.affect(Dungeon.hero, RidingCooldown.class, 300f);
+            Buff.affect(Dungeon.hero, RidingCooldown.class, 200f);
             super.die(cause);
         }
 
@@ -464,6 +505,11 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             defenseSkill = (hero.lvl+4);
             HT = (15+hero.lvl*5);
             this.heroLvl = hero.lvl;
+        }
+
+        @Override
+        public String description() {
+            return Messages.get(this, "desc", HP, HT);
         }
 
         @Override
@@ -513,9 +559,10 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         {
             type = buffType.NEUTRAL;
             announced = false;
+            revivePersists = true; // 죽어도 유지
         }
 
-        public static final float DURATION = 300f;
+        public static final float DURATION = 200f;
 
         @Override
         public int icon() {
@@ -540,7 +587,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         @Override
         public String desc() {
-            return Messages.get(this, "desc", dispTurns());
+            return Messages.get(this, "desc", (int)Math.ceil(visualcooldown()));
         }
     }
 }

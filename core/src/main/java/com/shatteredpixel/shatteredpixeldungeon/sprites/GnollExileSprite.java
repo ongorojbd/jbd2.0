@@ -37,7 +37,7 @@ public class GnollExileSprite extends MobSprite {
 		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 
 		run = new Animation( 9, true );
-		run.frames( frames, 0, 2, 0, 0, 3);
+		run.frames( frames, 0, 1, 0, 3);
 
 		attack = new Animation( 12, false );
 		attack.frames( frames, 4, 5, 6, 0 );

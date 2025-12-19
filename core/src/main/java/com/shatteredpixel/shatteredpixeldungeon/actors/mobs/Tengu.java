@@ -377,6 +377,7 @@ public class Tengu extends Mob {
 				switch(Dungeon.hero.heroClass){
 					case WARRIOR:
 					case ROGUE:
+                    case JOHNNY:
 						WndDialogueWithPic.dialogue(
 								new CharSprite[]{new DoppioDialogSprite(), new TenguSprite()},
 								new String[]{"도피오", "디아볼로"},
