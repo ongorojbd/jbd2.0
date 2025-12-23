@@ -45,10 +45,11 @@ public class Sai extends MeleeWeapon {
 
 	private int HealCount = 0;
 
-	@Override
-	public int max(int lvl) {
-		return  5*(tier) - 2 +   //14 + 4
-				lvl*(tier); }
+    @Override
+    public int max(int lvl) {
+        return  Math.round(2.5f*(tier+1)) +     //10 base, down from 20
+                lvl*Math.round(0.5f*(tier+1));  //+2 per level, down from +4
+    }
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {

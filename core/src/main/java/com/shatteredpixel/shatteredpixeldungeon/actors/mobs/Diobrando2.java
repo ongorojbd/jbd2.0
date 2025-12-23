@@ -391,6 +391,8 @@ public class Diobrando2 extends Mob {
 
         Statistics.duwang3 = 999;
 
+        Dungeon.level.unseal();
+
         Badges.validateBrandokill();
 
         Dungeon.level.drop( new Diocoffin(), hero.pos ).sprite.drop( hero.pos );

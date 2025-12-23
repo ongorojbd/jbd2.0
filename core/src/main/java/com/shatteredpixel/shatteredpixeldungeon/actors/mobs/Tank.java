@@ -43,9 +43,9 @@ public class Tank extends Mob {
 	{
 		spriteClass = TankSprite.class;
 
-		HP = HT = 190;
+		HP = HT = 165;
 		defenseSkill = 15;
-		baseSpeed = 3f;
+		baseSpeed = 2f;
 
 		EXP = 15;
 		maxLvl = 30;
@@ -55,18 +55,20 @@ public class Tank extends Mob {
 	}
 	int damageTaken = 0;
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 35, 50 );
-	}
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 30, 45 );
+    }
 
-	@Override
-	public int attackSkill( Char target ) {
-		return 40;
-	}
+    @Override
+    public int attackSkill( Char target ) {
+        return 35;
+    }
 
-	@Override
-	public int drRoll() { return Random.NormalIntRange(0, 5);}
+    @Override
+    public int drRoll() {
+        return Random.NormalIntRange(5, 10);
+    }
 
 	@Override
 	public int attackProc( Char hero, int damage ) {

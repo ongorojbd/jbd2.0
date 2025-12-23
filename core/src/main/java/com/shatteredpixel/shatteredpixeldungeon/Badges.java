@@ -1128,12 +1128,6 @@ public class Badges {
         unlock(Badge.FOUND_RATMOGRIFY);
     }
 
-    public static void validateJohnnyUnlock() {
-        if (!isUnlocked(Badge.UNLOCK_JOHNNY)) {
-            displayBadge(Badge.UNLOCK_JOHNNY);
-        }
-    }
-
     public static void validateMageUnlock() {
         if (Statistics.upgradesUsed >= 1 && !isUnlocked(Badge.UNLOCK_MAGE)) {
             displayBadge(Badge.UNLOCK_MAGE);
@@ -1174,6 +1168,13 @@ public class Badges {
             displayBadge( Badge.UNLOCK_CLERIC );
         }
     }
+
+    public static void validateJohnnyUnlock() {
+        if (!isUnlocked(Badge.UNLOCK_JOHNNY)) {
+            displayBadge(Badge.UNLOCK_JOHNNY);
+        }
+    }
+
 
     public static void validateMasteryCombo(int n) {
         if (!local.contains(Badge.MASTERY_COMBO) && n == 10) {

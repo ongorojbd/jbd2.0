@@ -34,10 +34,10 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -53,18 +53,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diobrando;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Lisa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Val;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WamuuFirst;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.jojo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Lisa;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -89,11 +91,15 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel2;
 import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneBossLevel;
@@ -112,8 +118,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -124,8 +132,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LisaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.NewSantantaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Pucci4Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Pucci6Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ScorpioSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.So2Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SoldierSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Speedwagon2Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhsnakeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
@@ -204,8 +217,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Locale;
 
 public class GameScene extends PixelScene {
@@ -300,7 +313,7 @@ public class GameScene extends PixelScene {
 
         RectF insets = getCommonInsets();
         //we want to check if large is the same as blocking here
-        float largeInsetTop = Game.platform.getSafeInsets(PlatformSupport.INSET_LRG).scale(1f/defaultZoom).top;
+        float largeInsetTop = Game.platform.getSafeInsets(PlatformSupport.INSET_LRG).scale(1f / defaultZoom).top;
         scene = this;
 
         terrain = new Group();
@@ -433,12 +446,12 @@ public class GameScene extends PixelScene {
 
         //display cutouts can obstruct various UI elements, so we need to adjust for that sometimes
         float heroPaneExtraWidth = insets.left;
-        float menuBarMaxLeft = uiCamera.width-insets.right-MenuPane.WIDTH;
+        float menuBarMaxLeft = uiCamera.width - insets.right - MenuPane.WIDTH;
         int hpBarMaxWidth = 50; //default max width
         float[] buffBarRowLimits = new float[9];
         float[] buffBarRowAdjusts = new float[9];
 
-        if (largeInsetTop == 0 && insets.top > 0){
+        if (largeInsetTop == 0 && insets.top > 0) {
             //smaller non-notch cutouts are of varying size and may obstruct various UI elements
             // some are small hole punches, some are huge dynamic islands
             RectF cutout = Game.platform.getDisplayCutout().scale(1f / defaultZoom);
@@ -446,7 +459,7 @@ public class GameScene extends PixelScene {
             if (cutout.top < 30
                     && cutout.left < 20
                     && cutout.right > 12) {
-                heroPaneExtraWidth = Math.max(heroPaneExtraWidth, cutout.right-12);
+                heroPaneExtraWidth = Math.max(heroPaneExtraWidth, cutout.right - 12);
                 //make sure we have space to actually move it though
                 heroPaneExtraWidth = Math.min(heroPaneExtraWidth, uiCamera.width - PixelScene.MIN_WIDTH_P);
             }
@@ -456,7 +469,7 @@ public class GameScene extends PixelScene {
                     && cutout.right > menuBarMaxLeft) {
                 menuBarMaxLeft = Math.min(menuBarMaxLeft, cutout.left - MenuPane.WIDTH);
                 //make sure we have space to actually move it though
-                menuBarMaxLeft = Math.max(menuBarMaxLeft, PixelScene.MIN_WIDTH_P-MenuPane.WIDTH);
+                menuBarMaxLeft = Math.max(menuBarMaxLeft, PixelScene.MIN_WIDTH_P - MenuPane.WIDTH);
             }
             //if the cutout is positioned to obstruct the HP bar
             else if (cutout.left < 78
@@ -474,8 +487,8 @@ public class GameScene extends PixelScene {
                 int i = 1;
                 int rowTop = 11;
                 //in most cases this just obstructs one row, but dynamic island can block more =S
-                while (cutout.bottom > rowTop){
-                    if (i == 1 || cutout.bottom > rowTop+2 ) { //always shorten first row
+                while (cutout.bottom > rowTop) {
+                    if (i == 1 || cutout.bottom > rowTop + 2) { //always shorten first row
                         //subtract starting position, add a bit back to allow slight overlap
                         buffBarRowLimits[i] = cutout.left - 32 + 3;
                     } else {
@@ -490,17 +503,17 @@ public class GameScene extends PixelScene {
         }
 
         float screentop = largeInsetTop;
-        if (screentop == 0 && uiSize == 0){
+        if (screentop == 0 && uiSize == 0) {
             screentop--; //on mobile UI, if we render in fullscreen, clip the top 1px;
         }
 
         menu = new MenuPane();
         menu.camera = uiCamera;
-        menu.setPos( menuBarMaxLeft, screentop);
+        menu.setPos(menuBarMaxLeft, screentop);
         add(menu);
 
         float extraRight = uiCamera.width - (menuBarMaxLeft + MenuPane.WIDTH);
-        if (extraRight > 0){
+        if (extraRight > 0) {
             SkinnedBlock bar = new SkinnedBlock(extraRight, 20, TextureCache.createSolid(0x88000000));
             bar.x = uiCamera.width - extraRight;
             bar.camera = uiCamera;
@@ -517,7 +530,7 @@ public class GameScene extends PixelScene {
         StatusPane.hpBarMaxWidth = hpBarMaxWidth;
         StatusPane.buffBarRowMaxWidths = buffBarRowLimits;
         StatusPane.buffBarRowAdjusts = buffBarRowAdjusts;
-        status.setRect(insets.left, uiSize > 0 ? uiCamera.height-39-insets.bottom : screentop, uiCamera.width - insets.left - insets.right, 0 );
+        status.setRect(insets.left, uiSize > 0 ? uiCamera.height - 39 - insets.bottom : screentop, uiCamera.width - insets.left - insets.right, 0);
         add(status);
 
         if (uiSize < 2 && largeInsetTop != 0) {
@@ -532,11 +545,11 @@ public class GameScene extends PixelScene {
 
         boss = new BossHealthBar();
         boss.camera = uiCamera;
-        boss.setPos( (uiCamera.width - boss.width())/2, screentop + (landscape() ? 7 : 26));
-        if (buffBarRowLimits[2] != 0){
+        boss.setPos((uiCamera.width - boss.width()) / 2, screentop + (landscape() ? 7 : 26));
+        if (buffBarRowLimits[2] != 0) {
             //if we potentially have a 3rd buff bar row, lower by 7px
             boss.setPos(boss.left(), boss.top() + 7);
-        } else if (buffBarRowAdjusts[2] != 0){
+        } else if (buffBarRowAdjusts[2] != 0) {
             //
             boss.setPos(boss.left(), boss.top() + buffBarRowAdjusts[2]);
         }
@@ -577,12 +590,12 @@ public class GameScene extends PixelScene {
             inventory.setPos(uiCamera.width - inventory.width() - insets.right, uiCamera.height - inventory.height() - insets.bottom);
             add(inventory);
 
-            toolbar.setRect( insets.left, uiCamera.height - toolbar.height() - inventory.height() - insets.bottom, uiCamera.width - insets.right, toolbar.height() );
+            toolbar.setRect(insets.left, uiCamera.height - toolbar.height() - inventory.height() - insets.bottom, uiCamera.width - insets.right, toolbar.height());
         } else {
-            toolbar.setRect( insets.left, uiCamera.height - toolbar.height() - insets.bottom, uiCamera.width - insets.right, toolbar.height() );
+            toolbar.setRect(insets.left, uiCamera.height - toolbar.height() - insets.bottom, uiCamera.width - insets.right, toolbar.height());
         }
 
-        if (insets.bottom > 0){
+        if (insets.bottom > 0) {
             SkinnedBlock bar = new SkinnedBlock(uiCamera.width, insets.bottom, TextureCache.createSolid(0x88000000));
             bar.camera = uiCamera;
             bar.y = uiCamera.height - insets.bottom;
@@ -599,7 +612,7 @@ public class GameScene extends PixelScene {
                 new Flare(5, 16).color(0xFFFF00, true).show(hero, 4f);
                 break;
             case RETURN:
-                if (Dungeon.level.pit[Dungeon.hero.pos] && !Dungeon.hero.flying){
+                if (Dungeon.level.pit[Dungeon.hero.pos] && !Dungeon.hero.flying) {
                     //delay this so falling into the chasm processes properly
                     ShatteredPixelDungeon.runOnRenderThread(new Callback() {
                         @Override
@@ -638,7 +651,7 @@ public class GameScene extends PixelScene {
                     add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
                     Statistics.duwang3 = 3;
                 }
-                if (Dungeon.level instanceof HumanVillageBossLevel2) {
+                if (Dungeon.level instanceof HumanVillageBossLevel2 && !Statistics.johnnyquest) {
 
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new JojoSprite(), new JosukeDialogSprite(), new JojoSprite(), new JosukeDialogSprite()},
@@ -688,8 +701,111 @@ public class GameScene extends PixelScene {
                     GLog.p(Messages.get(Jolynemap.class, "n"));
 
                 }
-                if (Dungeon.level instanceof TempleLastLevel) {
+                if (Dungeon.level instanceof TempleLastLevel && !Statistics.johnnyquest) {
                     add(new WndStory(Messages.get(this, "temple") + "\n\n" + Messages.get(this, "temple2")).setDelays(0.4f, 0.4f));
+                }
+                if (Dungeon.level instanceof DiobossLevel && Statistics.johnnyquest) {
+                    add(new WndStory(Messages.get(this, "p1") + "\n\n" + Messages.get(this, "p2")).setDelays(0.4f, 0.4f));
+                    GLog.p(Messages.get(Jolyne.class, "s1"));
+                }
+                if (Dungeon.level instanceof ArenaBossLevel && Statistics.johnnyquest) {
+                    GLog.p(Messages.get(Jolyne.class, "s2"));
+                }
+                if (Dungeon.level instanceof HallsBossLevel && Statistics.johnnyquest) {
+                    GLog.p(Messages.get(Jolyne.class, "s3"));
+                }
+                if (Dungeon.level instanceof CavesBossLevel && Statistics.johnnyquest) {
+                    GLog.p(Messages.get(Jolyne.class, "s4"));
+                }
+                if (Dungeon.level instanceof TempleLastLevel && Statistics.johnnyquest) {
+                    Sample.INSTANCE.play(Assets.Sounds.DIAVOLO3);
+                    switch (Dungeon.hero.heroClass) {
+                        case WARRIOR:
+                        case ROGUE:
+                        case JOHNNY:
+                            WndDialogueWithPic.dialogue(
+                                    new CharSprite[]{new DoppioDialogSprite(), new TenguSprite()},
+                                    new String[]{"도피오", "디아볼로"},
+                                    new String[]{
+                                            Messages.get(Tengu.class, "notice1"),
+                                            Messages.get(Tengu.class, "notice2")
+                                    },
+                                    new byte[]{
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE
+                                    }
+                            );
+                            break;
+                        case CLERIC:
+                            WndDialogueWithPic.dialogue(
+                                    new CharSprite[]{new DoppioDialogSprite(), new TenguSprite(), new JojoSprite()},
+                                    new String[]{"도피오", "디아볼로", "죠린"},
+                                    new String[]{
+                                            Messages.get(Tengu.class, "notice1"),
+                                            Messages.get(Tengu.class, "notice2"),
+                                            Messages.get(Tengu.class, "notice4")
+                                    },
+                                    new byte[]{
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE
+                                    }
+                            );
+                            break;
+                        case MAGE:
+                            WndDialogueWithPic.dialogue(
+                                    new CharSprite[]{new TrapperSprite(), new DoppioDialogSprite(), new TenguSprite()},
+                                    new String[]{"죠셉", "도피오", "디아볼로"},
+                                    new String[]{
+                                            Messages.get(Val.class, "v3"),
+                                            Messages.get(Val.class, "v4"),
+                                            Messages.get(Val.class, "v5"),
+                                    },
+                                    new byte[]{
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE
+                                    }
+                            );
+                            break;
+                        case HUNTRESS:
+                            WndDialogueWithPic.dialogue(
+                                    new CharSprite[]{new DoppioDialogSprite(), new TenguSprite(), new SoldierSprite()},
+                                    new String[]{"도피오", "디아볼로", "죠르노"},
+                                    new String[]{
+                                            Messages.get(Tengu.class, "notice_gotcha3"),
+                                            Messages.get(Tengu.class, "notice_gotcha4"),
+                                            Messages.get(Tengu.class, "notice_gotcha6"),
+                                    },
+                                    new byte[]{
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE
+                                    }
+                            );
+                            break;
+                        case DUELIST:
+                            WndDialogueWithPic.dialogue(
+                                    new CharSprite[]{new DoppioDialogSprite(), new TenguSprite(), new JosukeDialogSprite()},
+                                    new String[]{"도피오", "디아볼로", "죠스케"},
+                                    new String[]{
+                                            Messages.get(Tengu.class, "notice3"),
+                                            Messages.get(Tengu.class, "notice_gotcha5"),
+                                            Messages.get(Val.class, "9"),
+                                    },
+                                    new byte[]{
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE,
+                                            WndDialogueWithPic.IDLE
+                                    }
+                            );
+                            Buff.affect(Dungeon.hero, Adrenaline.class, 1f);
+                            break;
+                    }
+                    GLog.p(Messages.get(Jolyne.class, "s5"));
+                }
+                if (Dungeon.level instanceof HumanVillageBossLevel && Statistics.johnnyquest) {
+                    GLog.p(Messages.get(Jolyne.class, "s6"));
                 }
                 if (Dungeon.level instanceof Dio2bossLevel) {
                     add(new WndStory(Messages.get(this, "diolevel") + "\n\n" + Messages.get(this, "diolevel2")).setDelays(0.4f, 0.4f));
@@ -965,6 +1081,83 @@ public class GameScene extends PixelScene {
 
                             }
                     );
+                } else if (Dungeon.level instanceof HallsLevel && Dungeon.depth == 21 && !isUnlocked(Badges.Badge.UNLOCK_JOHNNY) && Badges.isUnlocked(Badges.Badge.VICTORY) && Statistics.deepestFloor == 21 && Statistics.spw36 == 0) {
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new Pucci6Sprite(), new Pucci6Sprite(), new Pucci6Sprite()},
+                            new String[]{"엔리코 푸치", "엔리코 푸치", "엔리코 푸치"},
+                            new String[]{
+                                    Messages.get(Jolyne.class, "p1"),
+                                    Messages.get(Jolyne.class, "p2"),
+                                    Messages.get(Jolyne.class, "p3")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.RUN,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    Statistics.spw36++;
+                } else if (Dungeon.level instanceof HallsLevel && Dungeon.depth == 22 && !isUnlocked(Badges.Badge.UNLOCK_JOHNNY) && Badges.isUnlocked(Badges.Badge.VICTORY) && Statistics.deepestFloor == 22 && Statistics.spw36 == 1) {
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new Pucci6Sprite(), new Pucci6Sprite()},
+                            new String[]{"엔리코 푸치", "엔리코 푸치"},
+                            new String[]{
+                                    Messages.get(Jolyne.class, "p4"),
+                                    Messages.get(Jolyne.class, "p6")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    Statistics.spw36++;
+                } else if (Dungeon.level instanceof HallsLevel && Dungeon.depth == 23 && !isUnlocked(Badges.Badge.UNLOCK_JOHNNY) && Badges.isUnlocked(Badges.Badge.VICTORY) && Statistics.deepestFloor == 23 && Statistics.spw36 == 2) {
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new Pucci6Sprite(), new Pucci6Sprite(), new Pucci6Sprite()},
+                            new String[]{"엔리코 푸치", "엔리코 푸치", "엔리코 푸치"},
+                            new String[]{
+                                    Messages.get(Jolyne.class, "p7"),
+                                    Messages.get(Jolyne.class, "p8"),
+                                    Messages.get(Jolyne.class, "p9")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    Statistics.spw36++;
+                } else if (Dungeon.level instanceof HallsLevel && Dungeon.depth == 24 && !isUnlocked(Badges.Badge.UNLOCK_JOHNNY) && Badges.isUnlocked(Badges.Badge.VICTORY) && Statistics.deepestFloor == 24 && Statistics.spw36 == 3) {
+                    GameScene.show(
+                            new WndOptions(new Pucci6Sprite(),
+                                    Messages.get(Jolyne.class, "n8"),
+                                    Messages.get(Jolyne.class, "n9"),
+                                    Messages.get(Jolyne.class, "n10"),
+                                    Messages.get(Jolyne.class, "n11")
+                            ) {
+                                @Override
+                                protected void onSelect(int index) {
+                                    if (index == 0) {
+                                        InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                        InterlevelScene.returnDepth = 26;
+                                        InterlevelScene.returnBranch = 1;
+                                        InterlevelScene.returnPos = -2;
+                                        Game.switchScene(InterlevelScene.class);
+                                        Statistics.johnnyquest = true;
+                                    } else if (index == 1) {
+
+                                    }
+                                }
+
+                                @Override
+                                public void onBackPressed() {
+                                    //do nothing
+                                }
+
+                            }
+                    );
+                    Statistics.spw36++;
+
                 } else if (Dungeon.level instanceof ShipbossLevel && Dungeon.depth == 6) {
                     Sample.INSTANCE.play(Assets.Sounds.SPW5);
                     GLog.n(Messages.get(Diobrando.class, "t7"));
@@ -1098,6 +1291,7 @@ public class GameScene extends PixelScene {
                         case MAGE:
                         case HUNTRESS:
                         case DUELIST:
+                        case JOHNNY:
                             WndDialogueWithPic.dialogue(
                                     new CharSprite[]{new Pucci4Sprite()},
                                     new String[]{"엔리코 푸치"},
@@ -1257,10 +1451,10 @@ public class GameScene extends PixelScene {
         }
 
         if (!invVisible) toggleInvPane();
-        
+
         // 게임 로드 시 Rebel의 타이밍 게임이 진행 중이었으면 창 표시
         Rebel.checkPendingTimingGame();
-        
+
         fadeIn();
 
         //re-show WndResurrect if needed
@@ -1481,7 +1675,7 @@ public class GameScene extends PixelScene {
 
         //adjust spacing for elements based on display cutouts
         // We use ALL here as some elements can be a fair but up the side of the screen
-        RectF insets = Game.platform.getSafeInsets( PlatformSupport.INSET_ALL );
+        RectF insets = Game.platform.getSafeInsets(PlatformSupport.INSET_ALL);
         insets = insets.scale(1f / uiCamera.zoom);
 
         boolean tagsOnLeft = SPDSettings.flipTags();
@@ -1547,21 +1741,21 @@ public class GameScene extends PixelScene {
         customWalls.add(visual.create());
     }
 
-    private void addHeapSprite( Heap heap ) {
+    private void addHeapSprite(Heap heap) {
         ItemSprite sprite = heap.sprite = (ItemSprite) heaps.recycle(ItemSprite.class);
         sprite.revive();
         sprite.link(heap);
         heaps.add(sprite);
     }
 
-    private void addDiscardedSprite( Heap heap ) {
+    private void addDiscardedSprite(Heap heap) {
         heap.sprite = (DiscardedItemSprite) heaps.recycle(DiscardedItemSprite.class);
         heap.sprite.revive();
         heap.sprite.link(heap);
         heaps.add(heap.sprite);
     }
 
-    private void addBlobSprite( final Blob gas ) {
+    private void addBlobSprite(final Blob gas) {
         if (gas.emitter == null) {
             gases.add(new BlobEmitter(gas));
         }
@@ -1659,7 +1853,7 @@ public class GameScene extends PixelScene {
     }
 
     public static void add(Mob mob) {
-        add( mob, 0);
+        add(mob, 0);
     }
 
     public static void addSprite(Mob mob) {
@@ -1669,7 +1863,7 @@ public class GameScene extends PixelScene {
     public static void add(Mob mob, float delay) {
         Dungeon.level.mobs.add(mob);
         //mobs added on partial turns wait until next full turn to act
-        delay = (float)Math.ceil(Actor.now() + delay) - Actor.now();
+        delay = (float) Math.ceil(Actor.now() + delay) - Actor.now();
         if (scene != null) {
             scene.addMobSprite(mob);
             Actor.addDelayed(mob, delay);
@@ -1900,6 +2094,18 @@ public class GameScene extends PixelScene {
         return false;
     }
 
+    public static boolean showingTuskAiming() {
+        if (scene == null) return false;
+
+        for (Gizmo g : scene.members) {
+            if (g instanceof com.shatteredpixel.shatteredpixeldungeon.windows.WndTuskAiming) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static boolean interfaceBlockingHero() {
         if (scene == null) return false;
 
@@ -1913,6 +2119,11 @@ public class GameScene extends PixelScene {
     }
 
     public static void toggleInvPane() {
+        // WndTuskAiming이 열려있으면 인벤토리 열기 불가
+        if (showingTuskAiming()) {
+            return;
+        }
+
         if (scene != null && scene.inventory != null) {
             if (scene.inventory.visible) {
                 scene.inventory.visible = scene.inventory.active = invVisible = false;
@@ -2100,7 +2311,7 @@ public class GameScene extends PixelScene {
 
     public static void roadroller() {
         if (scene == null) return;
-        
+
         Banner roadroller = new Banner(BannerSprites.get(BannerSprites.Type.SELECT_YOUR_HERO));
         roadroller.show(0x00000000, 0.6f, 1f);
         scene.showBanner(roadroller);
@@ -2140,6 +2351,11 @@ public class GameScene extends PixelScene {
     }
 
     public static WndBag selectItem(WndBag.ItemSelector listener) {
+        // WndTuskAiming이 열려있으면 아이템 선택 불가
+        if (showingTuskAiming()) {
+            return null;
+        }
+
         cancel();
 
         if (scene != null) {

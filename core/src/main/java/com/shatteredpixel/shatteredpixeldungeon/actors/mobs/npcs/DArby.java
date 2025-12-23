@@ -156,7 +156,8 @@ public class DArby extends NPC {
 					@Override
 					protected void onSelect(int index) {
 						if (index == 0) {
-							// 게임 시작
+							// 게임 시작 - 새 게임이므로 상태 초기화
+							WndCoinGame.startNewGame();
 							GameScene.show(new WndCoinGame());
 								// spw16 증가 제거 - 게임 결과가 나올 때 증가하도록 WndCoinGame에서 처리
 							Sample.INSTANCE.play(Assets.Sounds.DA2);

@@ -108,6 +108,28 @@ public class Beam extends Image {
         }
     }
 
+    public static class SuperNovaPerfectRay extends Beam {
+        float scaleMulti;
+        public SuperNovaPerfectRay(PointF s, PointF e, float scaleMulti){
+            super(s, e, Effects.Type.GOLDEN_RAY, 2f);
+            this.scaleMulti = scaleMulti;
+            scale.set( scale.x, scale.y*this.scaleMulti );
+        }
+
+        @Override
+        public void update() {
+            super.update();
+
+            float p = timeLeft*this.scaleMulti / duration;
+            alpha( p );
+            scale.set( scale.x, p );
+
+            if ((timeLeft -= Game.elapsed) <= 0) {
+                killAndErase();
+            }
+        }
+    }
+
 
 	@Override
 	public void update() {

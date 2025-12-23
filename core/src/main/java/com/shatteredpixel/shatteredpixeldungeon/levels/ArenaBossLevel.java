@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KS1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewKarslight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tboss;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wamuu;
@@ -307,8 +309,20 @@ public class ArenaBossLevel extends Level {
                 boss.sprite.alpha(0);
                 boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
             }
-        } else if (Dungeon.depth == 27) {
+        } else if (Dungeon.depth == 27 && !Statistics.johnnyquest) {
             WamuuFirst boss = new WamuuFirst();
+            boss.pos = 15 + WIDTH * 10;
+            boss.state = boss.WANDERING;
+            GameScene.add(boss);
+            boss.beckon(Dungeon.hero.pos);
+
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha(0);
+                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+            }
+        } else if (Dungeon.depth == 27) {
+            NewKarslight boss = new NewKarslight();
             boss.pos = 15 + WIDTH * 10;
             boss.state = boss.WANDERING;
             GameScene.add(boss);

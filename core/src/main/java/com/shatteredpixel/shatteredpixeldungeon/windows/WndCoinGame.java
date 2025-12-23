@@ -48,6 +48,9 @@ public class WndCoinGame extends Window {
 	private static int savedSelectedCoins = 0; // 선택한 동전 수 저장
 	private static boolean savedTurnActionDone = false; // 현재 턴에서 액션을 완료했는지
 	private static boolean gameInProgress = false;
+	private static boolean gameCompleted = false; // 게임 종료 여부 (재시작 방지용)
+	private static boolean savedPlayerWon = false; // 게임 종료 시 승패 결과 저장
+	private static boolean rewardsApplied = false; // 보상/패널티 적용 여부 (중복 적용 방지)
 
 	// 반응형 크기 설정
 	private int WIDTH;
@@ -153,6 +156,14 @@ public class WndCoinGame extends Window {
 		}
 
 		resize(WIDTH, HEIGHT);
+
+		// 게임이 이미 종료된 경우 게임 오버 화면 표시
+		if (gameCompleted) {
+			setupMainUI();
+			state = GameState.GAME_OVER;
+			showGameOver(savedPlayerWon, true); // true = 복원 모드 (보상 재적용 안 함)
+			return;
+		}
 
 		// 저장된 게임 상태 복원
 		if (gameInProgress) {
@@ -275,6 +286,15 @@ public class WndCoinGame extends Window {
 		savedSelectedCoins = 0;
 		savedTurnActionDone = false;
 		gameInProgress = false;
+		gameCompleted = false; // resetGameState() 호출 시 초기화되지만, showGameOver()에서 다시 true로 설정됨
+	}
+	
+	// 새 게임 시작 시 호출 (DArby와 상호작용 시)
+	public static void startNewGame() {
+		resetGameState();
+		gameCompleted = false;
+		savedPlayerWon = false;
+		rewardsApplied = false;
 	}
 
 	private void setupMainUI() {
@@ -671,19 +691,48 @@ public class WndCoinGame extends Window {
 	}
 
 	private void showGameOver(boolean playerWon) {
+		showGameOver(playerWon, false);
+	}
+	
+	private void showGameOver(boolean playerWon, boolean isRestore) {
 		state = GameState.GAME_OVER;
 		clearActionUI();
 		
-		// 게임 종료 시 저장 상태 초기화
+		// 게임 종료 상태 저장 (재시작 방지용)
+		gameCompleted = true;
+		savedPlayerWon = playerWon;
+		
+		// 게임 종료 시 저장 상태 초기화 (단, gameCompleted는 유지)
 		resetGameState();
+		gameCompleted = true; // resetGameState()에서 false로 설정되므로 다시 true로 설정
+
+		// 보상/패널티는 한 번만 적용 (복원 모드가 아니고 아직 적용되지 않은 경우만)
+		if (!isRestore && !rewardsApplied) {
+			rewardsApplied = true;
+			
+			if (playerWon) {
+				// 최대 체력 증가 (HTBoost를 사용하여 레벨업 시에도 유지)
+				Dungeon.hero.HTBoost += HP_CHANGE;
+				Dungeon.hero.updateHT(true); // HP도 함께 증가
+				Statistics.spw30++;
+				Statistics.spw16 = 1; // 게임 완료 표시
+			} else {
+				Sample.INSTANCE.play(Assets.Sounds.FALLING);
+				Statistics.spw20++;
+				Statistics.spw16 = 1; // 게임 완료 표시
+
+				// 최대 체력 감소 (HTBoost를 사용하여 레벨업 시에도 유지)
+				Dungeon.hero.HTBoost -= HP_CHANGE;
+				Dungeon.hero.updateHT(false); // HP는 증가시키지 않음
+				// HT가 1 미만이 되지 않도록 보장
+				if (Dungeon.hero.HT < 1) {
+					Dungeon.hero.HT = 1;
+				}
+				Dungeon.hero.HP = Math.min(Dungeon.hero.HP, Dungeon.hero.HT);
+			}
+		}
 
 		if (playerWon) {
-			
-			// 최대 체력 증가 (HTBoost를 사용하여 레벨업 시에도 유지)
-			Dungeon.hero.HTBoost += HP_CHANGE;
-			Dungeon.hero.updateHT(true); // HP도 함께 증가
-			Statistics.spw30++;
-			Statistics.spw16 = 1; // 게임 완료 표시
 
 			instructionText = PixelScene.renderTextBlock(
 					Messages.get(this, "player_wins"), 7);
@@ -691,7 +740,9 @@ public class WndCoinGame extends Window {
 			instructionText.setPos((WIDTH - instructionText.width()) / 2, buttonAreaY);
 			add(instructionText);
 
-			Music.INSTANCE.play(Assets.Music.JONATHAN, true);
+			if (!isRestore) {
+				Music.INSTANCE.play(Assets.Music.JONATHAN, true);
+			}
 
 			RenderedTextBlock rewardText = PixelScene.renderTextBlock(
 					Messages.get(this, "hp_up", HP_CHANGE), 6);
@@ -699,19 +750,10 @@ public class WndCoinGame extends Window {
 			rewardText.setPos((WIDTH - rewardText.width()) / 2, buttonAreaY + 12);
 			add(rewardText);
 		} else {
-			Sample.INSTANCE.play(Assets.Sounds.FALLING);
-			Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
-			Statistics.spw20++;
-			Statistics.spw16 = 1; // 게임 완료 표시
-
-			// 최대 체력 감소 (HTBoost를 사용하여 레벨업 시에도 유지)
-			Dungeon.hero.HTBoost -= HP_CHANGE;
-			Dungeon.hero.updateHT(false); // HP는 증가시키지 않음
-			// HT가 1 미만이 되지 않도록 보장
-			if (Dungeon.hero.HT < 1) {
-				Dungeon.hero.HT = 1;
+			if (!isRestore) {
+				Sample.INSTANCE.play(Assets.Sounds.FALLING);
+				Music.INSTANCE.play(Assets.Music.TENDENCY3, true);
 			}
-			Dungeon.hero.HP = Math.min(Dungeon.hero.HP, Dungeon.hero.HT);
 
 			instructionText = PixelScene.renderTextBlock(
 					Messages.get(this, "darby_wins"), 7);

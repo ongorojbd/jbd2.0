@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Heavyw;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
@@ -65,7 +66,9 @@ public class ScrollOfPolymorph extends Spell {
         for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
             if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
                 if (!mob.properties().contains(Char.Property.BOSS)
-                        && !mob.properties().contains(Char.Property.MINIBOSS) && !(mob instanceof Keicho)){
+                        && !mob.properties().contains(Char.Property.MINIBOSS) 
+                        && !(mob instanceof NPC) 
+                        && !(mob instanceof Keicho)){
                     Heavyw Heavyw = new Heavyw();
                     Heavyw.pos = mob.pos;
 

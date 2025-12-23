@@ -308,20 +308,8 @@ public class ShopRoom extends SpecialRoom {
             itemsToSpawn.add(bag);
         }
 
-        if (Random.Int(3) == 0) {
-            switch (Random.Int(5)) {
-                case 0:
-                case 1:
-                case 2:
-                    itemsToSpawn.add(new FormaggioBottle());
-                    break;
-                case 3:
-                    itemsToSpawn.add(FormaggioBottle.createWithP4mob());
-                    break;
-                case 4:
-                    itemsToSpawn.add(FormaggioBottle.createWithCat());
-                    break;
-            }
+        if (Random.Int(5) == 0) {
+            itemsToSpawn.add(new FormaggioBottle());
         }
 
         itemsToSpawn.add(new PotionOfHealing());

@@ -68,7 +68,7 @@ public class v3_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
-                "3.0e에서 제공될 주요 콘텐츠 변경사항은 오시리스신 퀘스트 개편입니다.\n\n" +
+                "추후 제공될 주요 콘텐츠 변경사항은 오시리스신 퀘스트 개편입니다.\n\n" +
                         "이 새로운 퀘스트는 독특한 플레이 스타일로 진행될 것입니다."));
 
         changes.addButton(new ChangeButton(new Image(new WillcSprite()), "전투조류 출시",
@@ -105,16 +105,28 @@ public class v3_X_Changes {
 
         changes.addButton(new ChangeButton(
                 new Image(Assets.Sprites.DIEGO, 0, 0, 12, 15),
-                "스틸 볼 런 레이스 퀘스트 변경",
-                "천국에 도달한 DIO가 새롭게 리메이크되었습니다!\n\n" +
-                        "- 기존에 사용되던 오래된 패턴과 효과가 전면적으로 재작업되었으며, 보다 역동적이고 균형 잡힌 전투 경험을 제공하도록 개선되었습니다."
+                "디에고 브란도(평행세계) 리워크",
+                "디에고 브란도(평행세계)의 패턴이 새롭게 리워크되었습니다."
         ));
 
         changes.addButton(new ChangeButton(
                 new Image(Assets.Sprites.TROLL, 0, 0, 12, 15),
                 "죠니 퀘스트 변경",
-                "천국에 도달한 DIO가 새롭게 리메이크되었습니다!\n\n" +
-                        "- 기존에 사용되던 오래된 패턴과 효과가 전면적으로 재작업되었으며, 보다 역동적이고 균형 잡힌 전투 경험을 제공하도록 개선되었습니다."
+                "기존 죠니의 퀘스트를 자이로 체펠리에게 받을 수 있도록 변경되었습니다."
+        ));
+
+        changes.addButton(new ChangeButton(
+                new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION),
+                "고 비욘드의 사격 DISC 리워크",
+                "소프트&웨트 고 비욘드의 사격 DISC가 완전히 리워크되었습니다!\n\n" +
+                        "- 이제 고 비욘드를 여러개 소환하는 대신 1개만 소환합니다.\n" +
+                        "- 고 비욘드의 피해량은 소프트&웨트 고 비욘드의 사격 DISC의 강화에 비례해서 강해집니다.\n" +
+                        "- 고 비욘드가 적을 공격하면 2턴의 방어 해제를 부여합니다."
+        ));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP0),
+                "스틸 볼 런 레이스 지도 9th 보상 변경",
+                "스틸 볼 런 레이스 지도 9th의 보상이\nD4C-러브 트레인-을 강화하는 형식으로 변경되었습니다!"
         ));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
@@ -132,6 +144,9 @@ public class v3_X_Changes {
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(CharSprite.NEGATIVE);
         changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP0), "스틸 볼 런 레이스",
+                "스틸 볼 런 레이스 지도 5th의 조건이\n기존 투척 무기 50회 공격에서 25회로 변경되었습니다."));
     }
 
     public static void add_v3_3_Changes(ArrayList<ChangeInfo> changeInfos) {
@@ -231,13 +246,10 @@ public class v3_X_Changes {
                         "- 보우건이 다트에 얼마의 피해를 추가하는지 확인할 수 있게 되었습니다.\n" +
                         "- 폴포의 용액 제조 에너지가 4 -> 2로 감소, 죠죠 포인트로 교환 시 에너지 제공량이 12 -> 8로 감소합니다.\n" +
                         "- 위험한 물건을 죠죠 포인트로 교환 시 경고문이 출력됩니다.\n" +
-                        "- 역행 시 플레이어가 적을 처치했는지 확실하게 확인 가능하도록 텍스트가 수정되었습니다."));
-
-        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
-                "주요 사항:\n" +
                         "- 포르마조의 병에서 풀려난 적이 아무것도 하지 않는 버그가 수정되었습니다.\n" +
                         "- 26~30층에서 스무스 오퍼레이터즈를 사용하면 튕기는 버그가 수정되었습니다.\n" +
-                        "- 천국 DIO가 여러번 나오는 버그가 수정되었습니다."));
+                        "- 천국 DIO가 여러번 나오는 버그가 수정되었습니다.\n" +
+                        "- 역행 시 플레이어가 적을 처치했는지 확실하게 확인 가능하도록 텍스트가 수정되었습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(CharSprite.POSITIVE);

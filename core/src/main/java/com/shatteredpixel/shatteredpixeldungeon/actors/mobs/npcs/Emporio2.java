@@ -100,8 +100,30 @@ public class Emporio2 extends NPC {
             return true;
         }
 
-        {
-
+        if (Statistics.johnnyquest) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndOptions(
+                            sprite(),
+                            Messages.titleCase(name()),
+                            Messages.get(Emporio.class, "32"),
+                            Messages.get(Emporio.class, "6")
+                    ){
+                        @Override
+                        protected void onSelect(int index) {
+                            if (index == 0){
+                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
+                                InterlevelScene.returnBranch = 1;
+                                InterlevelScene.returnPos = -2;
+                                Game.switchScene(InterlevelScene.class);
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
@@ -115,11 +137,11 @@ public class Emporio2 extends NPC {
                         @Override
                         protected void onSelect(int index) {
                             if (index == 0){
-                                    InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                                    InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
-                                    InterlevelScene.returnBranch = 1;
-                                    InterlevelScene.returnPos = -2;
-                                    Game.switchScene(InterlevelScene.class);
+                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
+                                InterlevelScene.returnBranch = 1;
+                                InterlevelScene.returnPos = -2;
+                                Game.switchScene(InterlevelScene.class);
                             } else {
                                 InterlevelScene.mode = InterlevelScene.Mode.RETURN;
                                 InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
@@ -131,8 +153,8 @@ public class Emporio2 extends NPC {
                     });
                 }
             });
-
         }
+
         return true;
     }
 

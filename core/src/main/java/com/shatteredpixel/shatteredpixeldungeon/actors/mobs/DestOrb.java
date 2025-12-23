@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DestOrbSprite;
 import com.watabou.utils.Random;
@@ -48,9 +49,13 @@ public class DestOrb extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 25, 30 );
-    }
+        if (Statistics.johnnyquest) {
+            return Random.NormalIntRange( 25, 35 );
+        } else {
+            return Random.NormalIntRange( 20, 25 );
+        }
 
+    }
 
     @Override
     public int attackSkill( Char target ) {

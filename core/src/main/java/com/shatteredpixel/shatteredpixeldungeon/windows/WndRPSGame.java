@@ -486,7 +486,7 @@ public class WndRPSGame extends Window {
 
 		if (playerWon) {
 			// 승리 보상
-			Sample.INSTANCE.play(Assets.Sounds.BOSS);
+			Sample.INSTANCE.play(Assets.Sounds.TALE);
 
 			instructionText.text(Messages.get(this, "victory"));
 			instructionText.hardlight(0x44FF44);

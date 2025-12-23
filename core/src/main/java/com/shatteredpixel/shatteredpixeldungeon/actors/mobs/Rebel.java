@@ -713,7 +713,7 @@ public class Rebel extends Mob {
             barrierCooldown = 2;
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new RebelSprite(), new PucciSprite(), new RebelSprite()},
-                    new String[]{"천국 DIO", "퍼니 발렌타인", "천국 DIO"},
+                    new String[]{"천국 DIO", "퍼니 밸런타인", "천국 DIO"},
                     new String[]{
                             Messages.get(Rebel.class, "telling_3"),
                             Messages.get(Rebel.class, "telling_4"),
@@ -932,6 +932,8 @@ public class Rebel extends Mob {
 
         super.die(cause);
         SPDSettings.addSpecialcoin(6);
+
+        Statistics.diospawned = false;
 
         Dungeon.level.unseal();
 

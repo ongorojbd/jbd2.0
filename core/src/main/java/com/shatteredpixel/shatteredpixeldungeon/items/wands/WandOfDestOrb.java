@@ -23,19 +23,19 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Soft;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscD;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
-import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SoftTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -62,17 +62,76 @@ public class WandOfDestOrb extends Wand {
     private boolean freeCharge = false;
 
     @Override
+    public void execute(Hero hero, String action) {
+        super.execute(hero, action);
+        
+        if (action.equals(AC_ZAP)) {
+            curUser = hero;
+            curItem = this;
+            GameScene.selectCell(adjacentTargeter);
+        }
+    }
+    
+    private CellSelector.Listener adjacentTargeter = new CellSelector.Listener() {
+        @Override
+        public void onSelect(Integer target) {
+            if (target == null) {
+                return;
+            }
+            
+            // 바로 한 칸 근처에 있는 위치만 선택 가능
+            if (!Dungeon.level.adjacent(curUser.pos, target)) {
+                GLog.w(Messages.get(WandOfDestOrb.this, "too_far"));
+                return;
+            }
+            
+            // 해당 위치에 다른 캐릭터가 있으면 안됨
+            if (Actor.findChar(target) != null) {
+                GLog.w(Messages.get(WandOfDestOrb.this, "cell_occupied"));
+                return;
+            }
+            
+            // 통과 불가능한 위치면 안됨
+            if (Dungeon.level.solid[target] || Dungeon.level.avoid[target]) {
+                GLog.w(Messages.get(WandOfDestOrb.this, "invalid_cell"));
+                return;
+            }
+            
+            if (curCharges == 0) {
+                GLog.w(Messages.get(Wand.class, "fizzles"));
+                return;
+            }
+            
+            curUser.sprite.zap(target);
+            Ballistica beam = new Ballistica(curUser.pos, target, collisionProperties);
+            onZap(beam);
+            
+            curCharges--;
+            updateQuickslot();
+            curUser.spendAndNext(1f);
+        }
+        
+        @Override
+        public String prompt() {
+            return Messages.get(WandOfDestOrb.class, "prompt");
+        }
+    };
+
+    @Override
     public void onZap(Ballistica beam) {
-        new SoftTrap().set(curUser.pos).activate();
-        if (this.level() > 3) {
-            new SoftTrap().set(curUser.pos).activate();
-        }
-        if (this.level() > 6) {
-            new SoftTrap().set(curUser.pos).activate();
-        }
-        if (this.level() > 15) {
-            new SoftTrap().set(curUser.pos).activate();
-        }
+        // Calculate damage based on WandOfLightning damage * 1.2
+        WandOfLightning lightningWand = new WandOfLightning();
+        int minDamage = Math.round(lightningWand.min(buffedLvl()) * 1.2f);
+        int maxDamage = Math.round(lightningWand.max(buffedLvl()) * 1.2f);
+        
+        int spawnPos = beam.collisionPos;
+        
+        Soft soft = new Soft();
+        soft.setDamageRange(minDamage, maxDamage);
+        soft.pos = spawnPos;
+        soft.state = soft.HUNTING;
+        GameScene.add(soft);
+        soft.beckon(Dungeon.hero.pos);
     }
 
     @Override

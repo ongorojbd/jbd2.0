@@ -35,6 +35,18 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.ExitRoom;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
+import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
@@ -86,15 +98,186 @@ public class Dio2Level extends RegularLevel {
     }
 
     @Override
-    protected ArrayList<Room> initRooms() {
-        ArrayList<Room> rooms = super.initRooms();
+    protected boolean build() {
+        boolean result = super.build();
 
-        return rooms;
+        // 모든 잠긴 문을 열림 상태로 변경
+        if (result && rooms != null) {
+            for (Room r : rooms) {
+                for (Room n : r.connected.keySet()) {
+                    Room.Door door = r.connected.get(n);
+                    if (door != null) {
+                        // LOCKED 또는 CRYSTAL 문을 UNLOCKED로 변경
+                        if (door.type == Room.Door.Type.LOCKED || door.type == Room.Door.Type.CRYSTAL) {
+                            door.type = Room.Door.Type.UNLOCKED;
+                            // 맵의 지형도 변경
+                            int doorCell = door.x + door.y * width();
+                            if (map[doorCell] == Terrain.LOCKED_DOOR || map[doorCell] == Terrain.CRYSTAL_DOOR) {
+                                map[doorCell] = Terrain.DOOR;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 맵 전체에서 잠긴 문 찾아서 열기
+            for (int i = 0; i < length(); i++) {
+                if (map[i] == Terrain.LOCKED_DOOR || map[i] == Terrain.CRYSTAL_DOOR) {
+                    map[i] = Terrain.DOOR;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    protected ArrayList<Room> initRooms() {
+        ArrayList<Room> initRooms = new ArrayList<>();
+        initRooms.add(roomEntrance = EntranceRoom.createEntrance());
+        initRooms.add(roomExit = ExitRoom.createExit());
+
+        // 일반 방만 생성 (특수 방과 비밀 방 제외)
+        int standards = standardRooms(feeling == Feeling.LARGE);
+        if (feeling == Feeling.LARGE) {
+            standards = (int) Math.ceil(standards * 1.5f);
+        }
+        standards *= 3; // Dio2Level은 일반 방을 3배로 생성
+        for (int i = 0; i < standards; i++) {
+            StandardRoom s;
+            do {
+                s = StandardRoom.createRoom();
+            } while (!s.setSizeCat(standards - i));
+            i += s.sizeFactor() - 1;
+            initRooms.add(s);
+        }
+
+        // 상점도 제외 (열쇠가 필요할 수 있으므로)
+        // if (Dungeon.shopOnLevel())
+        //     initRooms.add(new ShopRoom());
+
+        // 특수 방 생성하지 않음
+        // int specials = specialRooms(feeling == Feeling.LARGE);
+        // ...
+
+        // 비밀 방도 생성하지 않음
+        // int secrets = SecretRoom.secretsForFloor(Dungeon.depth);
+        // ...
+
+        return initRooms;
     }
 
     @Override
     protected void createMobs() {
         super.createMobs();
+    }
+
+    @Override
+    public void addItemToSpawn(Item item) {
+        // Dio2Level에서는 열쇠를 스폰하지 않음
+        if (item != null && !(item instanceof Key)) {
+            super.addItemToSpawn(item);
+        }
+    }
+
+    @Override
+    protected void createItems() {
+        // drops 3/4/5 items 60%/30%/10% of the time
+        int nItems = 3 + Random.chances(new float[]{6, 3, 1});
+
+        if (feeling == Feeling.LARGE) {
+            nItems += 2;
+        }
+
+        for (int i = 0; i < nItems; i++) {
+
+            Item toDrop = Generator.random();
+            if (toDrop == null) continue;
+
+            int cell = randomDropCell();
+            if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+                map[cell] = Terrain.GRASS;
+                losBlocking[cell] = false;
+            }
+
+            Heap.Type type = null;
+            switch (Random.Int(20)) {
+                case 0:
+                    type = Heap.Type.SKELETON;
+                    break;
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    //base mimic chance is 1/20, regular chest is 4/20
+                    // so each +1x mimic spawn rate converts to a 25% chance here
+                    if (Random.Float() < (MimicTooth.mimicChanceMultiplier() - 1f) / 4f && findMob(cell) == null) {
+                        mobs.add(Mimic.spawnAt(cell, toDrop));
+                        continue;
+                    }
+
+                    type = Heap.Type.CHEST;
+                    break;
+                case 5:
+                    if (Dungeon.depth > 1 && findMob(cell) == null) {
+                        mobs.add(Mimic.spawnAt(cell, toDrop));
+                        continue;
+                    }
+                    type = Heap.Type.CHEST;
+                    break;
+                default:
+                    type = Heap.Type.HEAP;
+                    break;
+            }
+
+            // Dio2Level에서는 잠긴 상자와 열쇠를 생성하지 않음
+            if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
+                    (toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0)) {
+
+                float mimicChance = 1 / 10f * MimicTooth.mimicChanceMultiplier();
+                if (Dungeon.depth > 1 && Random.Float() < mimicChance && findMob(cell) == null) {
+                    mobs.add(Mimic.spawnAt(cell, GoldenMimic.class, toDrop));
+                } else {
+                    // 일반 상자로 생성 (잠긴 상자 아님)
+                    Heap dropped = drop(toDrop, cell);
+                    if (heaps.get(cell) == dropped) {
+                        dropped.type = Heap.Type.CHEST; // LOCKED_CHEST 대신 CHEST 사용
+                        // 열쇠 생성하지 않음
+                    }
+                }
+            } else {
+                Heap dropped = drop(toDrop, cell);
+                dropped.type = type;
+                if (type == Heap.Type.SKELETON) {
+                    dropped.setHauntedIfCursed();
+                }
+            }
+
+        }
+
+        // itemsToSpawn 처리 (열쇠는 제외하고, TrinketCatalyst도 잠긴 상자로 만들지 않음)
+        ArrayList<Item> itemsToProcess = new ArrayList<>(itemsToSpawn);
+        itemsToSpawn.clear(); // 원본 리스트 비우기
+
+        for (Item item : itemsToProcess) {
+            // 열쇠는 스킵
+            if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.keys.Key) {
+                continue;
+            }
+
+            int cell = randomDropCell();
+            if (item instanceof TrinketCatalyst) {
+                // 일반 상자로 생성 (잠긴 상자 아님)
+                drop(item, cell).type = Heap.Type.CHEST; // LOCKED_CHEST 대신 CHEST 사용
+                // 열쇠 생성하지 않음
+            } else {
+                drop(item, cell).type = Heap.Type.HEAP;
+            }
+            if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+                map[cell] = Terrain.GRASS;
+                losBlocking[cell] = false;
+            }
+        }
     }
 
     @Override
@@ -106,9 +289,8 @@ public class Dio2Level extends RegularLevel {
 
     @Override
     protected int specialRooms(boolean forceMax) {
-        if (forceMax) return 3;
-        //1 to 3, average 2.0
-        return 1+Random.chances(new float[]{1, 3, 1});
+        // Dio2Level에서는 특수 방을 생성하지 않음
+        return 0;
     }
 
     @Override

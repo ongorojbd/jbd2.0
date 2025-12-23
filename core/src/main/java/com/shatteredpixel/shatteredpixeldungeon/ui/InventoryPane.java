@@ -492,6 +492,11 @@ public class InventoryPane extends Component {
 
 		@Override
 		protected void onClick() {
+			// WndTuskAiming이 열려있으면 사용 불가
+			if (GameScene.showingTuskAiming()) {
+				return;
+			}
+			
 			if (lastBag != item && !lastBag.contains(item) && !item.isEquipped(Dungeon.hero)){
 				updateInventory();
 				return;

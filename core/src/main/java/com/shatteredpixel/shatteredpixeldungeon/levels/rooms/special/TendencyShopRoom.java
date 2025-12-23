@@ -331,7 +331,7 @@ public class TendencyShopRoom extends SpecialRoom {
                         ScrollOfForesight.class,        // 도피오의 기억 DISC
                         ScrollOfMetamorphosis.class,    // 츠지 아야의 기억 DISC
                         ScrollOfMysticalEnergy.class,   // 포코로코의 기억 DISC
-                        ScrollOfPrismaticImage.class,   // 퍼니 발렌타인의 기억 DISC
+                        ScrollOfPrismaticImage.class,   // 퍼니 밸런타인의 기억 DISC
                         ScrollOfPsionicBlast.class      // 카와지리 코사쿠의 기억 DISC
                 };
                 try {

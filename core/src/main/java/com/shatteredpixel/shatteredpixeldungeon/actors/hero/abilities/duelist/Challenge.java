@@ -258,7 +258,6 @@ public class Challenge extends ArmorAbility {
 			super.detach();
 			if (target != Dungeon.hero){
 				if (!target.isAlive() || target.alignment == Dungeon.hero.alignment){
-					Sample.INSTANCE.play(Assets.Sounds.BOSS);
 
 					if (Dungeon.hero.hasTalent(Talent.INVIGORATING_VICTORY)){
 						DuelParticipant heroBuff = Dungeon.hero.buff(DuelParticipant.class);

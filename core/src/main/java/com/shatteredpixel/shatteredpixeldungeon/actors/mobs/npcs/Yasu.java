@@ -112,7 +112,7 @@ public class Yasu extends NPC {
         Statistics.duwang2 = 1;
         Statistics.duwang3 = 0;
         } else {
-            if (Statistics.duwang3 >= 5) {
+            if (Statistics.duwang3 >= 3) {
                 yell( Messages.get(this, "2") );
 
                 Item pick = Random.oneOf(

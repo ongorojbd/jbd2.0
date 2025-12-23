@@ -588,6 +588,12 @@ public abstract class Level implements Bundlable {
 			return false;
 		}
 
+		// johnnyquest가 true이면 계단 이동 차단
+		if (Statistics.johnnyquest) {
+			GLog.w("계단을 이용할 수 없습니다.");
+			return false;
+		}
+
 		beforeTransition();
 		InterlevelScene.curTransition = transition;
 		if (transition.type == LevelTransition.Type.REGULAR_EXIT

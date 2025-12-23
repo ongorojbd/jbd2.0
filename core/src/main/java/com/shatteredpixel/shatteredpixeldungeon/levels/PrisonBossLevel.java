@@ -616,7 +616,11 @@ public class PrisonBossLevel extends Level {
 		do {
 			pos = randomPrisonCellPos();
 		} while (solid[pos]);
-		drop(new IronKey(10), pos);
+        if (Statistics.johnnyquest) {
+            drop(new IronKey(29), pos);
+        } else {
+            drop(new IronKey(10), pos);
+        }
 	}
 
 	@Override

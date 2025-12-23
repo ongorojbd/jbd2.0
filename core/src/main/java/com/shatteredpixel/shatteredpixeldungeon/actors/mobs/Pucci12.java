@@ -136,10 +136,7 @@ public class Pucci12 extends Mob {
         summonCooldown--;
         amCooldown--;
 
-
-
         if (summonCooldown <= 0 && Dungeon.level instanceof CityBossLevel) {
-
 
                 Val12 Val12 = new Val12();
                 Val12.state = Val12.HUNTING;
@@ -238,7 +235,7 @@ public class Pucci12 extends Mob {
         Music.INSTANCE.end();
         WndDialogueWithPic.dialogue(
                 new CharSprite[]{new PucciSprite()},
-                new String[]{"퍼니 발렌타인"},
+                new String[]{"퍼니 밸런타인"},
                 new String[]{
                         Messages.get(Pucci12.class, "defeated")
                 },

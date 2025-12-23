@@ -74,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
@@ -283,6 +284,7 @@ public abstract class Recipe {
     private static Recipe[] threeIngredientRecipes = new Recipe[]{
             new Potion.SeedToPotion(),
             new StewedMeat.threeMeat(),
+            new Shr.Recipe(),
             new AJA.Recipe(),
             new MeatPie.Recipe()
     };

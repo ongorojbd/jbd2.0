@@ -25,23 +25,25 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DestOrbSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class Soft extends NPC {
 
+    private int customMinDamage = -1;
+    private int customMaxDamage = -1;
+    private int attackTargetPos = -1;
+
     {
         spriteClass = DestOrbSprite.class;
 
-        HP = HT = 7;
+        HP = HT = 80;
         defenseSkill = 999999999;
 
         EXP = 0;
@@ -60,13 +62,34 @@ public class Soft extends NPC {
 
     }
 
+    public void setDamageRange(int min, int max) {
+        customMinDamage = min;
+        customMaxDamage = max;
+    }
+
     @Override
     public int attackSkill(Char target) {
         return INFINITE_ACCURACY;
     }
 
     @Override
+    public int damageRoll() {
+        // Use the same damage as explosion for consistency
+        if (customMinDamage >= 0 && customMaxDamage >= 0) {
+            return Random.NormalIntRange(customMinDamage, customMaxDamage);
+        } else {
+            return Random.NormalIntRange(Dungeon.depth, Dungeon.depth*2);
+        }
+    }
+
+    @Override
     public int attackProc(Char enemy, int damage) {
+        // Apply 2 turns of Daze to the enemy
+        Buff.prolong(enemy, Daze.class, 2f);
+        
+        // Save the attack target position to exclude it from explosion damage
+        // (since it already received attack damage)
+        attackTargetPos = enemy.pos;
         this.die(null);
         return damage;
     }
@@ -74,7 +97,7 @@ public class Soft extends NPC {
 
     @Override
     public void move( int step, boolean travelling) {
-        damage(1, this);
+        damage(10, this);
         super.move( step, travelling);
     }
 
@@ -85,31 +108,65 @@ public class Soft extends NPC {
 
         if (cause == Chasm.class) return;
 
-        boolean heroKilled = false;
         for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-            Char ch = findChar( pos + PathFinder.NEIGHBOURS8[i] );
+            int targetPos = pos + PathFinder.NEIGHBOURS8[i];
+            // Skip the attack target position to avoid double damage
+            if (targetPos == attackTargetPos) {
+                continue;
+            }
+            Char ch = findChar( targetPos );
             if (ch != null && ch.isAlive()) {
-                int damage = Random.NormalIntRange(Dungeon.depth, Dungeon.depth*2);
-                damage = Math.max( 0,  damage - (ch.drRoll() + ch.drRoll()) );
-                ch.damage( damage, this );
-                if (ch == Dungeon.hero && !ch.isAlive()) {
-                    heroKilled = true;
+                // Do not damage hero
+                if (ch == Dungeon.hero) {
+                    continue;
                 }
+                // Use explosion damage source for AntiMagic compatibility
+                int damage;
+                if (customMinDamage >= 0 && customMaxDamage >= 0) {
+                    // Use custom damage range from wand
+                    damage = Random.NormalIntRange(customMinDamage, customMaxDamage);
+                } else {
+                    // Use default depth-based damage
+                    damage = Random.NormalIntRange(Dungeon.depth, Dungeon.depth*2);
+                }
+                damage = Math.max( 0,  damage - (ch.drRoll() + ch.drRoll()) );
+                ch.damage( damage, ExplosionDamage.class );
+                // Apply 2 turns of Daze to enemies hit by explosion
+                Buff.prolong(ch, Daze.class, 2f);
             }
         }
+        // Reset attack target position after explosion
+        attackTargetPos = -1;
 
         if (Dungeon.level.heroFOV[pos]) {
             Sample.INSTANCE.play( Assets.Sounds.BLAST );
-        }
-
-        if (heroKilled) {
-            Dungeon.fail( getClass() );
-            GLog.n( Messages.get(this, "explo_kill") );
         }
     }
 
     @Override
     public int drRoll() {
         return Random.NormalIntRange(999999999, 999999999);
+    }
+
+    // Inner class for explosion damage source (for AntiMagic compatibility)
+    public static class ExplosionDamage {
+        // This class is used as a damage source identifier for AntiMagic
+    }
+
+    private static final String CUSTOM_MIN_DAMAGE = "custom_min_damage";
+    private static final String CUSTOM_MAX_DAMAGE = "custom_max_damage";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(CUSTOM_MIN_DAMAGE, customMinDamage);
+        bundle.put(CUSTOM_MAX_DAMAGE, customMaxDamage);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        customMinDamage = bundle.getInt(CUSTOM_MIN_DAMAGE);
+        customMaxDamage = bundle.getInt(CUSTOM_MAX_DAMAGE);
     }
 }

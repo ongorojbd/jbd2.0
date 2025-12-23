@@ -90,7 +90,8 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
     }
 
     public void healHorse(int amount) {
-        this.horseHP = Math.min(HorseRiding.this.horseHP + amount, HorseRiding.this.horseHT);;
+        this.horseHP = Math.min(HorseRiding.this.horseHP + amount, HorseRiding.this.horseHT);
+        ActionIndicator.refresh();
     }
 
     @Override
@@ -107,11 +108,13 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         damage -= drRoll();
         damage = Math.max(damage, 0); //최소 0
         horseHP -= damage;
+        ActionIndicator.refresh();
         if (horseHP <= 0) {
             detach();
             PixelScene.shake( 2, 1f );
             GLog.n(Messages.get(this, "fall"));
             float dmgMulti = 1;
+            Sample.INSTANCE.play(Assets.Sounds.HORSE);
 
             //The lower the hero's HP, the more bleed and the less upfront damage.
             //Hero has a 50% chance to bleed out at 66% HP, and begins to risk instant-death at 25%
@@ -159,11 +162,75 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
     @Override
     public Visual secondaryVisual() {
-        BitmapText txt = new BitmapText(PixelScene.pixelFont);
-        txt.text(leapCharges + "/" + MAX_LEAP_CHARGES);
-        txt.hardlight(CharSprite.POSITIVE);
-        txt.measure();
-        return txt;
+        // 말의 체력 표시 (위쪽) - 현재 체력만 표시
+        BitmapText hpText = new BitmapText(PixelScene.pixelFont);
+        hpText.text(Integer.toString(horseHP));
+        hpText.hardlight(CharSprite.NEUTRAL);
+        hpText.measure();
+        
+        // 도약 충전량 표시 (아래쪽)
+        BitmapText chargeText = new BitmapText(PixelScene.pixelFont);
+        chargeText.text(leapCharges + "/" + MAX_LEAP_CHARGES);
+        chargeText.hardlight(CharSprite.POSITIVE);
+        chargeText.measure();
+        
+        // 두 텍스트를 포함하는 Visual 그룹 생성
+        return new HorseRidingVisual(hpText, chargeText);
+    }
+    
+    // 두 개의 BitmapText를 세로로 배치하는 커스텀 Visual 클래스
+    private static class HorseRidingVisual extends Visual {
+        private BitmapText hpText;
+        private BitmapText chargeText;
+        
+        public HorseRidingVisual(BitmapText hpText, BitmapText chargeText) {
+            super(0, 0, Math.max(hpText.width(), chargeText.width()), 
+                  hpText.height() + chargeText.height() + 1);
+            this.hpText = hpText;
+            this.chargeText = chargeText;
+        }
+        
+        @Override
+        public void update() {
+            super.update();
+            // 자식 요소들의 위치와 camera를 부모에 맞게 업데이트
+            if (hpText != null) {
+                hpText.x = this.x + this.width - hpText.width();
+                hpText.y = this.y;
+                hpText.camera = this.camera;
+                hpText.update();
+            }
+            if (chargeText != null) {
+                chargeText.x = this.x + this.width - chargeText.width();
+                chargeText.y = this.y + hpText.height() + 1;
+                chargeText.camera = this.camera;
+                chargeText.update();
+            }
+        }
+        
+        @Override
+        public void draw() {
+            super.draw();
+            if (hpText != null && hpText.exists && hpText.visible) {
+                hpText.draw();
+            }
+            if (chargeText != null && chargeText.exists && chargeText.visible) {
+                chargeText.draw();
+            }
+        }
+        
+        @Override
+        public void destroy() {
+            super.destroy();
+            if (hpText != null) {
+                hpText.destroy();
+                hpText = null;
+            }
+            if (chargeText != null) {
+                chargeText.destroy();
+                chargeText = null;
+            }
+        }
     }
 
     @Override
@@ -314,10 +381,12 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                         }
                     }
                     
-                    // 경로상의 적에게 고정 데미지 (4~16)
+                    // 경로상의 적에게 데미지 (플레이어 레벨의 2배~3배)
                     for (Char enemy : pathEnemies) {
                         if (enemy.isAlive()) {
-                            int dmg = Random.NormalIntRange(4, 16);
+                            int minDmg = hero.lvl * 2;
+                            int maxDmg = hero.lvl * 3;
+                            int dmg = Random.NormalIntRange(minDmg, maxDmg);
                             dmg -= enemy.drRoll();
                             dmg = Math.max(0, dmg);
                             if (dmg > 0) {
@@ -487,6 +556,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         @Override
         public void die(Object cause) {
             Buff.affect(Dungeon.hero, RidingCooldown.class, 200f);
+            Sample.INSTANCE.play(Assets.Sounds.HORSE);
             super.die(cause);
         }
 
@@ -582,6 +652,9 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         @Override
         public void detach() {
             Buff.affect(target, HorseRiding.class).set();
+            Sample.INSTANCE.play(Assets.Sounds.HORSE);
+            GLog.p( Messages.get(HorseRiding.class, "sd") );
+            CellEmitter.get(hero.pos).start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
             super.detach();
         }
 

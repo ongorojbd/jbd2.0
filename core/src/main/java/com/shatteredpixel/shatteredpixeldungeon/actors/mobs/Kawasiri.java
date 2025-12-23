@@ -349,7 +349,7 @@ public class Kawasiri extends Mob {
 
         if (Phase >= 6 && HP < 52) {
             state = FLEEING;
-            baseSpeed = 1.1f;
+            baseSpeed = 1.5f;
         }
 
 

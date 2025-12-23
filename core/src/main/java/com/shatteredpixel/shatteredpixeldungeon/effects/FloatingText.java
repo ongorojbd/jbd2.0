@@ -91,7 +91,7 @@ public class FloatingText extends RenderedTextBlock {
 	public static int BLEEDING  = 10;
 	public static int TOXIC     = 11;
 	public static int CORROSION = 12;
-	public static int POISON    = 11;
+	public static int POISON    = 13;
 	public static int OOZE      = 14;
 	public static int DEFERRED  = 15;
 	public static int CORRUPTION= 16;

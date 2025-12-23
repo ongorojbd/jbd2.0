@@ -71,7 +71,7 @@ public class Kingt extends Spell {
     protected void onCast(Hero hero) {
 
 
-        switch (Random.Int(39)){
+        switch (Random.Int(40)){
             case 0:
                 Item a = new Sbr3();
                 Dungeon.level.drop(a, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
@@ -272,8 +272,13 @@ public class Kingt extends Spell {
                 Dungeon.level.drop(qwe2, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
                 GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", qwe2.name()) ));
                 break;
-
+            case 40:
+                Item shr = new Shr().quantity(2);
+                Dungeon.level.drop(shr, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+                GLog.p( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have2", shr.name()) ));
+                break;
         }
+
         new Flare(6, 32).color(0xFFAA00, true).show(hero.sprite, 3.7f);
         Sample.INSTANCE.play(Assets.Sounds.CHARMS, 1f, 3f);
         GameScene.flash(0x80FFFFFF);

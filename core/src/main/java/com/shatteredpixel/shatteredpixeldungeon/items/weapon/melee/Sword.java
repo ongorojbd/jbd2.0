@@ -340,6 +340,14 @@ public class Sword extends MeleeWeapon {
         }
     }
 
+    public static void t2(){
+        if (SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof JohnnyArmor) {
+            Sample.INSTANCE.play( Assets.Sounds.G7);
+        } else {
+            Sample.INSTANCE.play(Assets.Sounds.JONNY3);
+        }
+    }
+
     public static void tp(){
         if (SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof JohnnyArmor) {
             switch (Random.Int( 2 )) {

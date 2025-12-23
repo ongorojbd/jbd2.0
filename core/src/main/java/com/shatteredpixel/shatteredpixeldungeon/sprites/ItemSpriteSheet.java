@@ -225,6 +225,7 @@ public class ItemSpriteSheet {
     public static final int NOISEMAKER = BOMBS + 9;
     public static final int ARCANE_BOMB = BOMBS + 10;
     public static final int SHRAPNEL_BOMB = BOMBS + 11;
+    public static final int SHR_BOMB = BOMBS + 12;
 
     static {
         assignItemRect(BOMB, 12, 12);
@@ -239,6 +240,7 @@ public class ItemSpriteSheet {
         assignItemRect(NOISEMAKER, 12, 12);
         assignItemRect(ARCANE_BOMB, 12, 12);
         assignItemRect(SHRAPNEL_BOMB, 12, 12);
+        assignItemRect(SHR_BOMB, 15, 12);
     }
 
 
@@ -625,7 +627,7 @@ public class ItemSpriteSheet {
         assignItemRect(MIMIC_TOOTH, 14, 14);
         assignItemRect(WONDROUS_RESIN, 16, 16);
         assignItemRect(EYE_OF_NEWT, 16, 16);
-        assignItemRect(SALT_CUBE, 16, 15);
+        assignItemRect(SALT_CUBE, 13, 16);
         assignItemRect(BLOOD_VIAL, 14, 14);
         assignItemRect(OBLIVION_SHARD, 15, 11);
         assignItemRect(CHAOTIC_CENSER, 15, 15);

@@ -24,10 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Jolyne2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NewEmporio;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -50,10 +52,12 @@ public class HumanVillageBossLevel2 extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.HALLS_1, Assets.Music.HALLS_2, Assets.Music.HALLS_2},
-                new float[]{1, 1, 0.5f},
-                false);
+        if (!Statistics.johnnyquest) {
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.HALLS_1, Assets.Music.HALLS_2, Assets.Music.HALLS_2},
+                    new float[]{1, 1, 0.5f},
+                    false);
+        }
     }
 
     private static int WIDTH = 23;
@@ -63,12 +67,22 @@ public class HumanVillageBossLevel2 extends Level {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_TENDENCY;
+        if (!Statistics.johnnyquest) {
+            return Assets.Environment.TILES_TENDENCY;
+        } else return Assets.Environment.TILES_SEWERS;
     }
 
     @Override
     public String waterTex() {
-        return Assets.Environment.WATER_CITY;
+        if (!Statistics.johnnyquest) {
+            return Assets.Environment.WATER_CITY;
+        } else return Assets.Environment.WATER_SEWERS;
+    }
+
+    @Override
+    public void occupyCell(Char ch) {
+        if (Statistics.johnnyquest) seal();
+        super.occupyCell(ch);
     }
 
     @Override
@@ -80,11 +94,17 @@ public class HumanVillageBossLevel2 extends Level {
 
         map[entrance] = Terrain.ENTRANCE;
 
-        buildLevel();
+        if (!Statistics.johnnyquest) {
+            Jolyne2 npc = new Jolyne2();
+            npc.pos = 13 * width() + 11;
+            mobs.add( npc );
+        } else {
+            NewEmporio npc = new NewEmporio();
+            npc.pos = 13 * width() + 11;
+            mobs.add( npc );
+        }
 
-        Jolyne2 npc = new Jolyne2();
-        npc.pos = 13 * width() + 11;
-        mobs.add( npc );
+        buildLevel();
 
         return true;
     }

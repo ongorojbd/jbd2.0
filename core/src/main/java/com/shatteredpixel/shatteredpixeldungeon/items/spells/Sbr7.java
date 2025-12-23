@@ -162,7 +162,7 @@ public class Sbr7 extends Spell {
                 if (hero.heroClass == HeroClass.JOHNNY) {
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new PucciSprite(), new BlacksmithSprite()},
-                            new String[]{"퍼니 발렌타인", "죠니"},
+                            new String[]{"퍼니 밸런타인", "죠니"},
                             new String[]{
                                     Messages.get(Pucci12.class, "9"),
                                     Messages.get(Pucci12.class, "10")
@@ -175,7 +175,7 @@ public class Sbr7 extends Spell {
                 } else {
                     WndDialogueWithPic.dialogue(
                             new CharSprite[]{new PucciSprite()},
-                            new String[]{"퍼니 발렌타인"},
+                            new String[]{"퍼니 밸런타인"},
                             new String[]{
                                     Messages.get(Pucci12.class, "4")
                             },

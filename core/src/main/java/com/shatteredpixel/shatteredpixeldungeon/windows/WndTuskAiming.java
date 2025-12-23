@@ -21,11 +21,15 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -392,6 +396,8 @@ public class WndTuskAiming extends Window {
 		if (ratio >= gStart && ratio <= gEnd) {
 			hitType = HIT_TYPE_PERFECT;
             Sword.tp();
+            CellEmitter.get( hero.pos ).start( Speck.factory( Speck.TUSK_LIGHT ), 0.2f, 3 );
+            Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 		}
 		else if ((ratio >= yStart && ratio < gStart) || (ratio > gEnd && ratio <= yEnd)) {
 			hitType = HIT_TYPE_GREAT;

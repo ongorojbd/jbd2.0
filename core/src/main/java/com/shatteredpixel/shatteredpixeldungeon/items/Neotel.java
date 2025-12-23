@@ -64,12 +64,8 @@ public class Neotel extends Item {
 
             Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 99f);
             Buff.affect(hero, Awareness.class, 99f);
-            Buff.affect(hero, Cripple.class, 99f);
             SPDSettings.addSpecialcoin(4);
-            hero.sprite.clearAura();
 //            Buff.affect(hero, AscensionChallenge.class);
-            Buff.affect(hero, D4C.class);
-            Statistics.d4cEnhanced = true;
             hero.HP = Math.min(hero.HP + 150, hero.HT);
             Buff.affect(hero, Invisibility.class, 99f);
 
@@ -101,10 +97,12 @@ public class Neotel extends Item {
         }
         if (action.equals(AC_RETURN)) {
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = 30;
+            InterlevelScene.returnDepth = 23;
             InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -2;
             Game.switchScene(InterlevelScene.class);
+
+            Statistics.spw36 = 3;
 
             for (int lvl = hero.lvl; lvl < 30; lvl++) {
                 Potion expPotion = new PotionOfExperience();

@@ -57,11 +57,10 @@ public class Researcher extends Mob {
 
 	public Item item;
 
-
 	{
 		spriteClass = ResearcherSprite.class;
 
-		HP = HT = 165;
+		HP = HT = 145;
 		defenseSkill = 15;
 
 		EXP = 15;
@@ -71,20 +70,20 @@ public class Researcher extends Mob {
 		lootChance = 0.1f;
 	}
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 37, 50 );
-	}
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 30, 45 );
+    }
 
-	@Override
-	public int attackSkill( Char target ) {
-		return 49;
-	}
+    @Override
+    public int attackSkill( Char target ) {
+        return 35;
+    }
 
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
-	}
+    @Override
+    public int drRoll() {
+        return Random.NormalIntRange(5, 10);
+    }
 
 
 	@Override

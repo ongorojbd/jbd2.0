@@ -1198,7 +1198,7 @@ public enum Talent {
                 && hero.buff(ProtectiveSlashCooldown.class) == null
                 && !level.adjacent(hero.pos, enemy.pos)) {
             Buff.affect(hero, Barrier.class).setShield(1+2*Dungeon.hero.pointsInTalent(Talent.J14));
-            Buff.affect(hero, ProtectiveSlashCooldown.class, 8);
+            Buff.affect(hero, ProtectiveSlashCooldown.class, 10);
         }
 
         if (hero.buff(Talent.SpiritBladesTracker.class) != null

@@ -81,6 +81,7 @@ public class TacticalScope extends Buff implements ActionIndicator.Action {
             if (partialCharge >= chargeTime) {
                 charges++;
                 partialCharge = 0f;
+                Sample.INSTANCE.play(Assets.Sounds.G2);
                 GLog.p(Messages.get(this, "charged"));
                 ActionIndicator.setAction(this);
                 BuffIndicator.refreshHero();

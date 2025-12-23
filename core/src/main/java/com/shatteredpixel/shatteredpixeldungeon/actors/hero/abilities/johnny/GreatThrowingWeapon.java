@@ -56,7 +56,7 @@ import java.util.ArrayList;
 public class GreatThrowingWeapon extends ArmorAbility {
 
     {
-        baseChargeUse = 50f;
+        baseChargeUse = 35f;
     }
 
     @Override
@@ -98,6 +98,12 @@ public class GreatThrowingWeapon extends ArmorAbility {
         }
 
         if (ch == hero || ch instanceof NPC){
+            GLog.w(Messages.get(this, "invalid_gtw"));
+            return;
+        }
+
+        // Property.IMMOVABLE인 적에게는 사용할 수 없음
+        if (Char.hasProp(ch, Char.Property.IMMOVABLE)){
             GLog.w(Messages.get(this, "invalid_gtw"));
             return;
         }

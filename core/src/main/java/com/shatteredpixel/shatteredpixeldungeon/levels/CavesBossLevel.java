@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewKawasiri;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Pylon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -339,17 +340,25 @@ public class CavesBossLevel extends Level {
         GameScene.updateMap(entrance);
         Dungeon.observe();
 
-        CellEmitter.get(entrance).start(Speck.factory(Speck.ROCK), 0.07f, 10);
-        PixelScene.shake(3, 0.7f);
-        Sample.INSTANCE.play(Assets.Sounds.ROCKS);
+        if (Statistics.johnnyquest) {
+            NewKawasiri boss = new NewKawasiri();
+            boss.state = boss.WANDERING;
+            do {
+                boss.pos = pointToCell(Random.element(mainArena.getPoints()));
+            } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
+            GameScene.add(boss);
+        } else {
+            CellEmitter.get(entrance).start(Speck.factory(Speck.ROCK), 0.07f, 10);
+            PixelScene.shake(3, 0.7f);
+            Sample.INSTANCE.play(Assets.Sounds.ROCKS);
 
-        DM300 boss = new DM300();
-        boss.state = boss.WANDERING;
-        do {
-            boss.pos = pointToCell(Random.element(mainArena.getPoints()));
-        } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
-        GameScene.add(boss);
-
+            DM300 boss = new DM300();
+            boss.state = boss.WANDERING;
+            do {
+                boss.pos = pointToCell(Random.element(mainArena.getPoints()));
+            } while (!openSpace[boss.pos] || map[boss.pos] == Terrain.EMPTY_SP || Actor.findChar(boss.pos) != null);
+            GameScene.add(boss);
+        }
         Game.runOnRenderThread(new Callback() {
             @Override
             public void call() {

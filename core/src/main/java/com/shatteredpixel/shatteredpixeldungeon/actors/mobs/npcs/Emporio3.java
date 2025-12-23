@@ -21,43 +21,22 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GravityChaosTracker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beast;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kawasiri;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yukakomob;
-import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.AnnasuiSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.YukakoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBlacksmith;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoArmorAbility;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Music;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class Emporio3 extends NPC {
 
@@ -67,8 +46,66 @@ public class Emporio3 extends NPC {
         properties.add(Property.IMMOVABLE);
     }
 
+    // GravityChaosTracker 쿨다운
+    private int gravityCD = 9999;
+    private boolean beastDied = false;  // Beast가 죽었는지 확인하는 플래그
+
+    private static final String GRAVITY_CD = "gravity_cd";
+    private static final String BEAST_DIED = "beast_died";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(GRAVITY_CD, gravityCD);
+        bundle.put(BEAST_DIED, beastDied);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        gravityCD = bundle.getInt(GRAVITY_CD);
+        beastDied = bundle.getBoolean(BEAST_DIED);
+    }
+
     @Override
     protected boolean act() {
+        // Beast가 살아있는지 확인
+        boolean beastAlive = false;
+        if (Dungeon.level != null) {
+            for (Mob mob : Dungeon.level.mobs) {
+                if (mob instanceof Beast && mob.isAlive()) {
+                    beastAlive = true;
+                    break;
+                }
+            }
+        }
+
+        // Beast가 죽었는지 확인 (beastAlive가 false이고 이전에 살아있었다면 죽은 것)
+        if (!beastAlive && !beastDied) {
+            beastDied = true;
+            gravityCD = 6;
+        }
+
+        // Beast가 살아있으면 GravityChaosTracker를 사용하지 않음
+        if (beastAlive) {
+            return super.act();
+        }
+
+        // Beast가 죽은 후에만 GravityChaosTracker 사용
+        if (beastDied) {
+            // 쿨다운 감소
+            if (gravityCD > 0) gravityCD--;
+
+            if (gravityCD <= 0 && Dungeon.hero != null) {
+                Buff.affect(hero, LockedFloor.class);
+                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                InterlevelScene.returnDepth = 5;
+                InterlevelScene.returnBranch = 1;
+                InterlevelScene.returnPos = -2;
+                Game.switchScene(InterlevelScene.class);
+            }
+        }
+
         return super.act();
     }
 

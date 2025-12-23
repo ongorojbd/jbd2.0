@@ -254,7 +254,7 @@ public class TuskEquipmentDisc extends Artifact {
                 com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeActive =
                         hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
                 if (scopeActive != null) {
-                    Sample.INSTANCE.play(Assets.Sounds.JONNY3);
+                    Sword.t2();
                 } else Sword.t1();
 				Ballistica beam = new Ballistica(curUser.pos, target, Ballistica.WONT_STOP);
 				piercedTargets.clear();
@@ -287,7 +287,7 @@ public class TuskEquipmentDisc extends Artifact {
                 com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeActive =
                         hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
                 if (scopeActive != null) {
-                    Sample.INSTANCE.play(Assets.Sounds.JONNY3);
+                    Sword.t2();
                 } else Sword.t1();
 				piercedTargets.clear();
 				GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
@@ -353,11 +353,20 @@ public class TuskEquipmentDisc extends Artifact {
 					CellEmitter.center(c).burst(LightParticle.BURST, 8);
 				}
 				int cell = beam.path.get(Math.min(beam.dist, beam.path.size() - 1));
-				hero.sprite.parent.add(new Beam.SuperNovaRay(
-					hero.sprite.center(),
-					DungeonTilemap.raisedTileCenterToWorld(cell),
-					2
-				));
+				// Perfect 판정일 때 SuperNovaPerfectRay 사용
+				if (hitType.equals("perfect")) {
+					hero.sprite.parent.add(new Beam.SuperNovaPerfectRay(
+						hero.sprite.center(),
+						DungeonTilemap.raisedTileCenterToWorld(cell),
+						2
+					));
+				} else {
+					hero.sprite.parent.add(new Beam.SuperNovaRay(
+						hero.sprite.center(),
+						DungeonTilemap.raisedTileCenterToWorld(cell),
+						2
+					));
+				}
 				Dungeon.level.pressCell(beam.collisionPos);
 				return false; // 데미지 없이 종료
 			}
@@ -391,12 +400,21 @@ public class TuskEquipmentDisc extends Artifact {
 		}
 
 		// 3. SuperNovaRay 빔 이펙트 (두께 2)
+		// Perfect 판정일 때 SuperNovaPerfectRay 사용
 		int cell = beam.path.get(Math.min(beam.dist, beam.path.size() - 1));
-		hero.sprite.parent.add(new Beam.SuperNovaRay(
-			hero.sprite.center(),
-			DungeonTilemap.raisedTileCenterToWorld(cell),
-			2
-		));
+		if (hitType.equals("perfect")) {
+			hero.sprite.parent.add(new Beam.SuperNovaPerfectRay(
+				hero.sprite.center(),
+				DungeonTilemap.raisedTileCenterToWorld(cell),
+				2
+			));
+		} else {
+			hero.sprite.parent.add(new Beam.SuperNovaRay(
+				hero.sprite.center(),
+				DungeonTilemap.raisedTileCenterToWorld(cell),
+				2
+			));
+		}
 
 		// 4. 타겟에 파티클 및 플래시 효과
 		target.sprite.centerEmitter().burst(LightParticle.BURST, 8);
@@ -691,8 +709,8 @@ public class TuskEquipmentDisc extends Artifact {
 		target.damage(damage, this);
 
 		if (!wasAlive || !target.isAlive()) {
-			if (hero.hasTalent(Talent.J22)) {
-				int talentLevel = hero.pointsInTalent(Talent.J22);
+			if (hero.hasTalent(Talent.J23)) {
+				int talentLevel = hero.pointsInTalent(Talent.J23);
 				if (talentLevel >= 1) {
 					float duration = talentLevel; // 1레벨: 1턴, 2레벨: 2턴
 					Buff.prolong(hero, Adrenaline.class, duration);
@@ -731,28 +749,37 @@ public class TuskEquipmentDisc extends Artifact {
 	}
 
 	// 고정 데미지 계산 (강화 수치 기반)
-	// 레벨별 Perfect 데미지 (보스 기준):
-	// Lv0: 10-20, Lv1: 14-26, Lv2: 18-32, Lv3: 22-38, Lv4: 26-44
-	// Lv5: 30-50, Lv6: 34-56, Lv7: 38-62, Lv8: 42-68, Lv9: 46-74, Lv10: 50-80
-	// (STANDO 2발 모드: 각 데미지 × 0.75)
-	// (J38 탤런트: Perfect 데미지 +25%/+50%/+75%)
+	// 
+	// [Perfect 판정] 초록 영역: 최소 7+4×level, 최대 14+5×level
+	// 레벨별 Perfect 데미지 범위:
+	//   Lv0: 7-14,  Lv1: 11-19,  Lv2: 15-24,  Lv3: 19-29,  Lv4: 23-34
+	//   Lv5: 27-39, Lv6: 31-44,  Lv7: 35-49,  Lv8: 39-54,  Lv9: 43-59, Lv10: 47-64
+	// 
+	// [Great 판정] 노랑 영역: 최소 2+(level×0.75), 최대 8+(level×1.5)
+	// 레벨별 Great 데미지 범위:
+	//   Lv0: 2-8,   Lv1: 2-9,    Lv2: 3-11,   Lv3: 4-12,   Lv4: 5-14
+	//   Lv5: 5-15,  Lv6: 6-17,   Lv7: 7-18,   Lv8: 8-20,   Lv9: 8-21,  Lv10: 9-23
+	// 
+	// [Good 판정] 주황 영역: 최소 1+level/3, 최대 4+(level×0.75)
+	// 레벨별 Good 데미지 범위:
+	//   Lv0: 1-4,   Lv1: 1-4,    Lv2: 1-5,    Lv3: 2-6,    Lv4: 2-7
+	//   Lv5: 2-7,   Lv6: 3-8,    Lv7: 3-9,    Lv8: 3-10,   Lv9: 4-10,   Lv10: 4-11
+	// 
+	// [Miss 판정] 빨강 영역: 피해량 0
+	// 
+	// 보너스 적용 순서:
+	//   1. 기본 데미지 범위에서 랜덤 생성
+	//   2. Perfect만 J38 탤런트 적용 (+25%/+50%/+75%)
+	//   3. STANDO 2발 모드일 경우 모든 데미지 × 0.75
 	public int calculateDamage(String hitType, Char target) {
 		int lvl = level();
 		int baseDamage = 0;
 		
 		switch (hitType) {
 			case "perfect":
-				// 초록 영역: 최소 10+4×level, 최대 20+6×level
-				int maxDmg = 20 + 6 * lvl;
-				// 최소: BOSS/MINIBOSS가 아니면 적의 최대 체력의 절반, 아니면 10+4×level
-				int minDmg;
-				if (target != null && !Char.hasProp(target, Char.Property.BOSS) 
-						&& !Char.hasProp(target, Char.Property.MINIBOSS)) {
-					minDmg = target.HT / 2;
-				} else {
-					minDmg = 10 + 4 * lvl;
-				}
-				// 최소가 최대를 넘지 않도록 보장
+				// 초록 영역: 최소 7+4×level, 최대 14+5×level
+				int maxDmg = 14 + 5 * lvl;
+				int minDmg = 7 + 4 * lvl;
 				baseDamage = Random.NormalIntRange(Math.min(minDmg, maxDmg), maxDmg);
 				
 				// J38 탤런트: Perfect 데미지 증가 (+25%/+50%/+75%)
@@ -781,7 +808,7 @@ public class TuskEquipmentDisc extends Artifact {
 				break;
 		}
 		
-		// 2발 모드일 때 75% 데미지 적용
+		// STANDO 2발 모드일 때 75% 데미지 적용 (모든 판정에 적용)
 		if (isUpgraded()) {
 			baseDamage = Math.round(baseDamage * 0.75f);
 		}
@@ -874,51 +901,62 @@ public class TuskEquipmentDisc extends Artifact {
 					int needed = perfectsForLevel(level());
 					int remaining = needed - current;
 					
-					// Perfect 판정 데미지 정보 계산
+					// Perfect 판정 데미지 정보 계산 (calculateDamage와 동일한 순서로 계산)
 					int lvl = level();
-					int perfectMaxDmg = 20 + 6 * lvl;
-					int perfectMinDmg = 10 + 4 * lvl; // BOSS/MINIBOSS 기준 최소 데미지
+					// 최소/최대 데미지: 7+4×level ~ 14+5×level
+					int perfectMaxDmg = 14 + 5 * lvl;
+					int perfectMinDmg = 7 + 4 * lvl;
 					
-					// J38 탤런트: Perfect 데미지 증가 적용
+					// calculateDamage와 동일하게: 먼저 랜덤 범위를 계산한 후, 배수를 적용
+					// 최소값이 최대값을 넘지 않도록 보장
+					int baseMinDmg = Math.min(perfectMinDmg, perfectMaxDmg);
+					int baseMaxDmg = perfectMaxDmg;
+					
+					// J38 탤런트: Perfect 데미지 증가 적용 (+25%/+50%/+75%)
 					Hero hero = Dungeon.hero;
 					if (hero != null && hero.hasTalent(Talent.J38)) {
 						int talentLevel = hero.pointsInTalent(Talent.J38);
 						float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
-						perfectMaxDmg = Math.round(perfectMaxDmg * (1f + damageBonus));
-						perfectMinDmg = Math.round(perfectMinDmg * (1f + damageBonus));
+						baseMinDmg = Math.round(baseMinDmg * (1f + damageBonus));
+						baseMaxDmg = Math.round(baseMaxDmg * (1f + damageBonus));
 					}
 					
 					// 2발 모드일 때 75% 적용
 					if (isUpgraded()) {
-						perfectMaxDmg = Math.round(perfectMaxDmg * 0.75f);
-						perfectMinDmg = Math.round(perfectMinDmg * 0.75f);
+						baseMinDmg = Math.round(baseMinDmg * 0.75f);
+						baseMaxDmg = Math.round(baseMaxDmg * 0.75f);
 					}
 					
 					desc += "\n\n" + Messages.get(this, "desc_perfect", 
-						current, needed, remaining, perfectMinDmg, perfectMaxDmg);
+						current, needed, remaining, baseMinDmg, baseMaxDmg);
 				} else {
 					// 레벨이 최대일 때도 Perfect 데미지 정보 표시
 					int lvl = level();
-					int perfectMaxDmg = 20 + 6 * lvl;
-					int perfectMinDmg = 10 + 4 * lvl;
+					// 최소/최대 데미지: 7+4×level ~ 14+5×level
+					int perfectMaxDmg = 14 + 5 * lvl;
+					int perfectMinDmg = 7 + 4 * lvl;
 					
-					// J38 탤런트: Perfect 데미지 증가 적용
+					// calculateDamage와 동일하게: 먼저 랜덤 범위를 계산한 후, 배수를 적용
+					int baseMinDmg = Math.min(perfectMinDmg, perfectMaxDmg);
+					int baseMaxDmg = perfectMaxDmg;
+					
+					// J38 탤런트: Perfect 데미지 증가 적용 (+25%/+50%/+75%)
 					Hero hero = Dungeon.hero;
 					if (hero != null && hero.hasTalent(Talent.J38)) {
 						int talentLevel = hero.pointsInTalent(Talent.J38);
 						float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
-						perfectMaxDmg = Math.round(perfectMaxDmg * (1f + damageBonus));
-						perfectMinDmg = Math.round(perfectMinDmg * (1f + damageBonus));
+						baseMinDmg = Math.round(baseMinDmg * (1f + damageBonus));
+						baseMaxDmg = Math.round(baseMaxDmg * (1f + damageBonus));
 					}
 					
 					// 2발 모드일 때 75% 적용
 					if (isUpgraded()) {
-						perfectMaxDmg = Math.round(perfectMaxDmg * 0.75f);
-						perfectMinDmg = Math.round(perfectMinDmg * 0.75f);
+						baseMinDmg = Math.round(baseMinDmg * 0.75f);
+						baseMaxDmg = Math.round(baseMaxDmg * 0.75f);
 					}
 					
 					desc += "\n\n" + Messages.get(this, "desc_perfect_max", 
-						perfectMinDmg, perfectMaxDmg);
+						baseMinDmg, baseMaxDmg);
 				}
 			}
 		}

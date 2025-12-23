@@ -122,6 +122,8 @@ public class Statistics {
     public static int manga;
 
     public static boolean d4cEnhanced = false;
+    public static boolean johnnyquest = false;
+    public static boolean diospawned = false;
 
     public static boolean qualifiedForNoKilling = false;
     public static boolean completedWithNoKilling = false;
@@ -235,6 +237,9 @@ public class Statistics {
         diokilled = false;
         polpoQuest = false;
         tendencyMode = false;
+        d4cEnhanced = false;
+        johnnyquest = false;
+        diospawned = false;
 
     }
 
@@ -302,6 +307,8 @@ public class Statistics {
     private static final String WAVE = "wave";
     private static final String MANGA = "manga";
     private static final String D4C_ENHANCED = "d4cEnhanced";
+    private static final String JOHNNY_QUEST = "johnnyQuest";
+    private static final String DIO_SPAWNED = "dioSpawned";
     private static final String PROG_SCORE = "prog_score";
     private static final String ITEM_VAL = "item_val";
     private static final String TRES_SCORE = "tres_score";
@@ -402,6 +409,8 @@ public class Statistics {
         bundle.put(WAVE, wave);
         bundle.put(MANGA, manga);
         bundle.put(D4C_ENHANCED, d4cEnhanced);
+        bundle.put(JOHNNY_QUEST, johnnyquest);
+        bundle.put(DIO_SPAWNED, diospawned);
         bundle.put(PROG_SCORE, progressScore);
         bundle.put(ITEM_VAL, heldItemValue);
         bundle.put(TRES_SCORE, treasureScore);
@@ -510,6 +519,8 @@ public class Statistics {
         wave = bundle.getInt(WAVE);
         manga = bundle.getInt(MANGA);
         d4cEnhanced = bundle.getBoolean(D4C_ENHANCED);
+        johnnyquest = bundle.getBoolean(JOHNNY_QUEST);
+        diospawned = bundle.getBoolean(DIO_SPAWNED);
         progressScore = bundle.getInt(PROG_SCORE);
         heldItemValue = bundle.getInt(ITEM_VAL);
         treasureScore = bundle.getInt(TRES_SCORE);

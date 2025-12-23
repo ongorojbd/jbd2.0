@@ -36,6 +36,7 @@ public class Effects {
 		DEATH_RAY,
 		LIGHT_RAY,
 		HEALTH_RAY,
+		GOLDEN_RAY,
 		THUNDERBOLT
 	}
 	
@@ -70,6 +71,9 @@ public class Effects {
 			case HEALTH_RAY:
 				icon.frame(icon.texture.uvRect(16, 30, 32, 38));
 				break;
+            case GOLDEN_RAY:
+                icon.frame(icon.texture.uvRect(16, 38, 32, 44));
+                break;
         }
 		return icon;
 	}

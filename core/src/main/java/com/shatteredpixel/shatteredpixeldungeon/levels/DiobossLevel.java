@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diobrando;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewDiobrando;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -226,16 +227,30 @@ public class DiobossLevel extends Level {
         Mob.holdAllies(this, doorPos);
         Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
-        Diobrando boss = new Diobrando();
-        boss.state = boss.WANDERING;
-        boss.pos = pointToCell(arena.center());
-        GameScene.add( boss );
-        boss.beckon(Dungeon.hero.pos);
+        if (Statistics.johnnyquest) {
+            NewDiobrando boss = new NewDiobrando();
+            boss.state = boss.WANDERING;
+            boss.pos = pointToCell(arena.center());
+            GameScene.add( boss );
+            boss.beckon(Dungeon.hero.pos);
 
-        if (heroFOV[boss.pos]) {
-            boss.notice();
-            boss.sprite.alpha( 0 );
-            boss.sprite.parent.add( new AlphaTweener( boss.sprite, 1, 0.1f ) );
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha( 0 );
+                boss.sprite.parent.add( new AlphaTweener( boss.sprite, 1, 0.1f ) );
+            }
+        } else {
+            Diobrando boss = new Diobrando();
+            boss.state = boss.WANDERING;
+            boss.pos = pointToCell(arena.center());
+            GameScene.add( boss );
+            boss.beckon(Dungeon.hero.pos);
+
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha( 0 );
+                boss.sprite.parent.add( new AlphaTweener( boss.sprite, 1, 0.1f ) );
+            }
         }
 
         set(bottomDoor, Terrain.LOCKED_DOOR);

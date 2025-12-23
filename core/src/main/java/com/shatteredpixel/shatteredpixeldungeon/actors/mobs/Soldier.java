@@ -33,7 +33,7 @@ public class Soldier extends Mob {
 	{
 		spriteClass = SoldierSprite.class;
 
-		HP = HT = 175;
+		HP = HT = 145;
 		defenseSkill = 15;
 
 		EXP = 15;
@@ -43,20 +43,20 @@ public class Soldier extends Mob {
 		lootChance = 0.1f;
 	}
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 30, 43 );
-	}
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 26, 40 );
+    }
 
-	@Override
-	public int attackSkill( Char target ) {
-		return 40;
-	}
+    @Override
+    public int attackSkill( Char target ) {
+        return 35;
+    }
 
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
-	}
+    @Override
+    public int drRoll() {
+        return Random.NormalIntRange(5, 10);
+    }
 
 	@Override
 	protected boolean canAttack( Char enemy ) {

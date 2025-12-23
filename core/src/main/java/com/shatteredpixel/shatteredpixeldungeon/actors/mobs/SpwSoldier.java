@@ -47,7 +47,7 @@ public class SpwSoldier extends Mob implements Callback {
 
     {
         spriteClass = SpwSoldierSprite.class;
-        HP = HT = (2 + level) * 8;
+        HP = HT = (2 + level) * 6;
         EXP = 0;
 
         viewDistance = 5;
@@ -59,9 +59,9 @@ public class SpwSoldier extends Mob implements Callback {
     @Override
     public int damageRoll() {
         if (alignment == Alignment.NEUTRAL) {
-            return Random.NormalIntRange(2 + 2 * level, 2 + 2 * level);
+            return Math.round((2 + 2 * level) * 0.8f);
         } else {
-            return Random.NormalIntRange(1 + level, 2 + 2 * level);
+            return Random.NormalIntRange(Math.round((1 + level) * 0.8f), Math.round((2 + 2 * level) * 0.8f));
         }
     }
 
@@ -124,7 +124,7 @@ public class SpwSoldier extends Mob implements Callback {
         Char enemy = this.enemy;
         if (hit(this, enemy, true)) {
 
-            int dmg = Random.NormalIntRange(2 + 2 * level, 2 + 2 * level);
+            int dmg = Math.round((2 + 2 * level) * 0.8f);
 
             CellEmitter.center(enemy.pos).burst(BlastParticle.FACTORY, 15);
             CellEmitter.center(enemy.pos).burst(SmokeParticle.FACTORY, 4);

@@ -81,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr2;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfPolymorph;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
@@ -366,6 +367,8 @@ public class QuickRecipe extends Component {
 					result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
 					i++;
 				}
+				result.add(null);
+                result.add(new QuickRecipe(new Shr.Recipe()));
 				return result;
 			case 6:
 				result.add(new QuickRecipe(new Sbr1.Recipe()));

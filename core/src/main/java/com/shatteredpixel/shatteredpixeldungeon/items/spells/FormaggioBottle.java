@@ -25,16 +25,21 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Cat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego12;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.P4mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WO;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -258,57 +263,46 @@ public class FormaggioBottle extends Spell {
 		if (trappedMob == null) {
 			return;
 		}
+
+		// 이전 Mob의 HP 정보 저장 (새 Mob에 복사하기 위해)
+		int savedHP = trappedMob.HP;
+		int savedHT = trappedMob.HT;
+
+		// 저장된 Mob의 클래스를 가져와서 새로 생성 (버그 방지)
+		Class<? extends Mob> mobClass = (Class<? extends Mob>) trappedMob.getClass();
+		Mob newMob = Reflection.newInstance(mobClass);
 		
-		// 적을 다시 배치
-		trappedMob.pos = releasePos;
-		trappedMob.HP = trappedMob.HT; // HP 복구
-		
-		// 다른 소환 트랩들과 동일하게 state를 WANDERING으로 설정
-		// (GameScene.add 후 적이 자동으로 영웅을 감지하고 HUNTING 상태로 전환)
-		if (trappedMob.state != trappedMob.PASSIVE) {
-			trappedMob.state = trappedMob.WANDERING;
+		if (newMob == null) {
+			GLog.w(Messages.get(this, "release_failed"));
+			return;
 		}
-		
-		// 주변에 다른 적이 있는지 확인 (Amok 적용 여부 결정)
-		boolean hasOtherEnemies = false;
-		for (Mob mob : Dungeon.level.mobs) {
-			if (mob != trappedMob && mob.alignment == Char.Alignment.ENEMY && mob.isAlive()) {
-				hasOtherEnemies = true;
-				break;
-			}
-		}
-		
-		// 다른 적이 있으면 Amok 버프 적용 (다른 적들을 공격하도록)
-		if (hasOtherEnemies) {
-			Buff.affect(trappedMob, Amok.class, 20f);
-		}
-		
-		// 이제 적을 게임에 추가
-		GameScene.add(trappedMob);
-		
-		// 시각 효과 및 셀 점유 (다른 소환 트랩과 동일한 순서)
-		ScrollOfTeleportation.appear(trappedMob, releasePos);
-		Dungeon.level.occupyCell(trappedMob);
-		
+
+		// 이전 Mob의 HP 정보를 새 Mob에 복사
+		newMob.HT = savedHT;
+		newMob.HP = savedHP;
+
+		// 새 Mob 설정
+		newMob.state = newMob.HUNTING;
+		newMob.pos = releasePos;
+		GameScene.add(newMob);
+		newMob.beckon(Dungeon.hero.pos);
+
+        Buff.affect(newMob, Amok.class, 30f);
+
 		// 이펙트
 		CellEmitter.center(releasePos).burst(Speck.factory(Speck.BONE), 10);
 		Sample.INSTANCE.play(Assets.Sounds.SHATTER);
 		Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 
-		GLog.p(Messages.get(this, "released", trappedMob.name()));
+		GLog.p(Messages.get(this, "released", newMob.name()));
 		
 		// 적 정보 초기화
 		trappedMob = null;
-		
-		// 시야 업데이트 및 영웅이 새로운 적을 인식하도록
-		Dungeon.observe();
-		hero.checkVisibleMobs();
-		
+
 		// 아이템 소비
 		detach(hero.belongings.backpack);
 		updateQuickslot();
 		Invisibility.dispel();
-		hero.spendAndNext(1f);
 		Catalog.countUse(this.getClass());
 		if (Random.Float() < talentChance) {
 			Talent.onScrollUsed(hero, hero.pos, talentFactor, this.getClass());

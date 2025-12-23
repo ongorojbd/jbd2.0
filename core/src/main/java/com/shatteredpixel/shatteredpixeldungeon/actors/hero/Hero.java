@@ -151,7 +151,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Danny;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Danny2;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
@@ -1438,7 +1437,7 @@ public class Hero extends Char {
 
                             PixelScene.shake(0.5f, 0.5f);
                             CellEmitter.center(action.dst).burst(Speck.factory(Speck.STAR), 7);
-                            Sample.INSTANCE.play(Assets.Sounds.G3);
+                            Sample.INSTANCE.play(Assets.Sounds.MINE);
                             Level.set(action.dst, Terrain.EMPTY_DECO);
 
                             //mining gold doesn't break crystals

@@ -465,6 +465,9 @@ public class Dungeon {
                 case 3:
                     level = new HumanVillageBossLevel();
                     break;
+                case 5:
+                    level = new HumanVillageBossLevel2();
+                    break;
                 case 11:
                 case 12:
                 case 13:
@@ -488,6 +491,18 @@ public class Dungeon {
                     break;
                 case 23:
                     level = new Dio2bossLevel();
+                    break;
+                case 26:
+                    level = new DiobossLevel();
+                    break;
+                case 27:
+                    level = new ArenaBossLevel();
+                    break;
+                case 28:
+                    level = new CavesBossLevel();
+                    break;
+                case 29:
+                    level = new TempleLastLevel();
                     break;
                 default:
                     level = new DeadEndLevel();
@@ -585,7 +600,7 @@ public class Dungeon {
                 || Dungeon.level instanceof ArenaBossLevel
                 || (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)) {
             return false;
-        }
+        } else if (Statistics.johnnyquest) return false;
         return true;
     }
 

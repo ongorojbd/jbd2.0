@@ -25,6 +25,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
@@ -109,18 +110,18 @@ public class Amblance extends Mob {
         EXP = 0;
         baseSpeed = 2f;
 
-        immunities.add( Blizzard.class );
-        immunities.add( CorrosiveGas.class );
-        immunities.add( Electricity.class );
-        immunities.add( Fire.class );
-        immunities.add( Freezing.class );
-        immunities.add( Inferno.class );
-        immunities.add( ParalyticGas.class );
-        immunities.add( StenchGas.class );
-        immunities.add( StormCloud.class );
-        immunities.add( ToxicGas.class );
+        immunities.add(Blizzard.class);
+        immunities.add(CorrosiveGas.class);
+        immunities.add(Electricity.class);
+        immunities.add(Fire.class);
+        immunities.add(Freezing.class);
+        immunities.add(Inferno.class);
+        immunities.add(ParalyticGas.class);
+        immunities.add(StenchGas.class);
+        immunities.add(StormCloud.class);
+        immunities.add(ToxicGas.class);
         immunities.addAll(AntiMagic.RESISTS);
-        immunities.add(Sleep.class );
+        immunities.add(Sleep.class);
     }
 
     private boolean seenBefore = false;
@@ -128,7 +129,7 @@ public class Amblance extends Mob {
     @Override
     protected boolean act() {
 
-        if (Dungeon.level.heroFOV[pos]){
+        if (Dungeon.level.heroFOV[pos]) {
             Bestiary.setSeen(getClass());
         }
 
@@ -145,9 +146,17 @@ public class Amblance extends Mob {
             );
         }
 
-        for (Char c : Actor.chars()){
-            if (c instanceof Kawasiri){
-                this.beckon(c.pos);
+        if (!Statistics.johnnyquest) {
+            for (Char c : Actor.chars()) {
+                if (c instanceof Kawasiri) {
+                    this.beckon(c.pos);
+                }
+            }
+        } else {
+            for (Char c : Actor.chars()) {
+                if (c instanceof NewKawasiri) {
+                    this.beckon(c.pos);
+                }
             }
         }
 
@@ -158,7 +167,7 @@ public class Amblance extends Mob {
     @Override
     public int attackProc(Char enemy, int damage) {
 
-        if (enemy instanceof Diego ){
+        if (enemy instanceof Diego) {
 
             GLog.n(Messages.get(Diego.class, "m"));
 
@@ -174,11 +183,11 @@ public class Amblance extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 9999, 9999 );
+        return Random.NormalIntRange(99999, 99999);
     }
 
     @Override
-    public int attackSkill( Char target ) {
+    public int attackSkill(Char target) {
         return 9999;
     }
 

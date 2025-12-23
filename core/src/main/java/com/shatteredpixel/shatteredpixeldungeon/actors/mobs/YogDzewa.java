@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DioDialogSprite;
@@ -559,6 +560,129 @@ public class YogDzewa extends Mob {
     @Override
     public void die(Object cause) {
 
+        if (Statistics.johnnyquest) {
+            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+            InterlevelScene.returnDepth = 28;
+            InterlevelScene.returnBranch = 1;
+            InterlevelScene.returnPos = -2;
+            Game.switchScene(InterlevelScene.class);
+        } else {
+            GameScene.bossSlain();
+
+            Random.pushGenerator(Dungeon.seedCurDepth() + 999981L);
+            boolean shouldDropRare = Random.Int( 10 ) == 0;
+            Random.popGenerator();
+
+            if (shouldDropRare) {
+                GameScene.flash(0xFFFF00);
+                Dungeon.level.drop(new BossdiscF().identify(), pos).sprite.drop(pos);
+                new Flare(5, 32).color(0xFF00FF, true).show(hero.sprite, 2f);
+                Sample.INSTANCE.play(Assets.Sounds.BADGE);
+                GLog.p(Messages.get(Kawasiri.class, "rare"));
+            }
+
+            switch (Dungeon.hero.heroClass) {
+                case WARRIOR:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new YogSprite(), new SupressionSprite()},
+                            new String[]{"DIO", "죠나단"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "defeated"),
+                                    Messages.get(YogDzewa.class, "d1")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.DIE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case MAGE:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new YogSprite(), new TrapperSprite()},
+                            new String[]{"DIO", "죠셉"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "defeated"),
+                                    Messages.get(YogDzewa.class, "d2")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.DIE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case ROGUE:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new YogSprite(), new TankSprite()},
+                            new String[]{"DIO", "죠타로"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "defeated"),
+                                    Messages.get(YogDzewa.class, "d3")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.DIE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case DUELIST:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new YogSprite(), new ResearcherSprite()},
+                            new String[]{"DIO", "죠스케"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "defeated"),
+                                    Messages.get(YogDzewa.class, "d4")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.DIE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case HUNTRESS:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new YogSprite(), new SoldierSprite()},
+                            new String[]{"DIO", "죠르노"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "defeated"),
+                                    Messages.get(YogDzewa.class, "d5")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.DIE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case CLERIC:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new YogSprite(), new JojoSprite()},
+                            new String[]{"DIO", "죠린"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "defeated"),
+                                    Messages.get(YogDzewa.class, "d6")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.DIE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
+                    break;
+                case JOHNNY:
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new YogSprite(), new BlacksmithSprite()},
+                            new String[]{"DIO", "죠니"},
+                            new String[]{
+                                    Messages.get(YogDzewa.class, "defeated"),
+                                    Messages.get(YogDzewa.class, "d7")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.DIE,
+                                    WndDialogueWithPic.RUN
+                            }
+                    );
+                    break;
+            }
+        }
+
         Bestiary.skipCountingEncounters = true;
         for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
             if (mob instanceof Larva || mob instanceof YogRipper || mob instanceof YogEye || mob instanceof YogScorpio) {
@@ -568,8 +692,6 @@ public class YogDzewa extends Mob {
         Bestiary.skipCountingEncounters = false;
 
         updateVisibility(Dungeon.level);
-
-        GameScene.bossSlain();
 
         if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && Statistics.spawnersAlive == 4) {
             Badges.validateBossChallengeCompleted();
@@ -586,121 +708,8 @@ public class YogDzewa extends Mob {
 
         Statistics.zombiecount = 2;
 
-        Random.pushGenerator(Dungeon.seedCurDepth() + 999981L);
-        boolean shouldDropRare = Random.Int( 10 ) == 0;
-        Random.popGenerator();
-
-        if (shouldDropRare) {
-            GameScene.flash(0xFFFF00);
-            Dungeon.level.drop(new BossdiscF().identify(), pos).sprite.drop(pos);
-            new Flare(5, 32).color(0xFF00FF, true).show(hero.sprite, 2f);
-            Sample.INSTANCE.play(Assets.Sounds.BADGE);
-            GLog.p(Messages.get(Kawasiri.class, "rare"));
-        }
-
         if (Badges.isUnlocked(Badges.Badge.VICTORY) && !Dungeon.isChallenged(Challenges.EOH)) {
             Dungeon.level.drop(new Castleintro().identify(), pos).sprite.drop(pos);
-        }
-
-        switch (Dungeon.hero.heroClass) {
-            case WARRIOR:
-                WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new YogSprite(), new SupressionSprite()},
-                        new String[]{"DIO", "죠나단"},
-                        new String[]{
-                                Messages.get(YogDzewa.class, "defeated"),
-                                Messages.get(YogDzewa.class, "d1")
-                        },
-                        new byte[]{
-                                WndDialogueWithPic.DIE,
-                                WndDialogueWithPic.IDLE
-                        }
-                );
-                break;
-            case MAGE:
-                WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new YogSprite(), new TrapperSprite()},
-                        new String[]{"DIO", "죠셉"},
-                        new String[]{
-                                Messages.get(YogDzewa.class, "defeated"),
-                                Messages.get(YogDzewa.class, "d2")
-                        },
-                        new byte[]{
-                                WndDialogueWithPic.DIE,
-                                WndDialogueWithPic.IDLE
-                        }
-                );
-                break;
-            case ROGUE:
-                WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new YogSprite(), new TankSprite()},
-                        new String[]{"DIO", "죠타로"},
-                        new String[]{
-                                Messages.get(YogDzewa.class, "defeated"),
-                                Messages.get(YogDzewa.class, "d3")
-                        },
-                        new byte[]{
-                                WndDialogueWithPic.DIE,
-                                WndDialogueWithPic.IDLE
-                        }
-                );
-                break;
-            case DUELIST:
-                WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new YogSprite(), new ResearcherSprite()},
-                        new String[]{"DIO", "죠스케"},
-                        new String[]{
-                                Messages.get(YogDzewa.class, "defeated"),
-                                Messages.get(YogDzewa.class, "d4")
-                        },
-                        new byte[]{
-                                WndDialogueWithPic.DIE,
-                                WndDialogueWithPic.IDLE
-                        }
-                );
-                break;
-            case HUNTRESS:
-                WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new YogSprite(), new SoldierSprite()},
-                        new String[]{"DIO", "죠르노"},
-                        new String[]{
-                                Messages.get(YogDzewa.class, "defeated"),
-                                Messages.get(YogDzewa.class, "d5")
-                        },
-                        new byte[]{
-                                WndDialogueWithPic.DIE,
-                                WndDialogueWithPic.IDLE
-                        }
-                );
-                break;
-			case CLERIC:
-				WndDialogueWithPic.dialogue(
-						new CharSprite[]{new YogSprite(), new JojoSprite()},
-						new String[]{"DIO", "죠린"},
-						new String[]{
-								Messages.get(YogDzewa.class, "defeated"),
-								Messages.get(YogDzewa.class, "d6")
-						},
-						new byte[]{
-								WndDialogueWithPic.DIE,
-								WndDialogueWithPic.IDLE
-						}
-				);
-				break;
-            case JOHNNY:
-                WndDialogueWithPic.dialogue(
-                        new CharSprite[]{new YogSprite(), new BlacksmithSprite()},
-                        new String[]{"DIO", "죠니"},
-                        new String[]{
-                                Messages.get(YogDzewa.class, "defeated"),
-                                Messages.get(YogDzewa.class, "d7")
-                        },
-                        new byte[]{
-                                WndDialogueWithPic.DIE,
-                                WndDialogueWithPic.RUN
-                        }
-                );
-                break;
         }
 
         Sample.INSTANCE.play(Assets.Sounds.NANI);

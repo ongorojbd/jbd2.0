@@ -57,7 +57,7 @@ public class Medic extends Mob {
 	{
 		spriteClass = TrapperSprite.class;
 
-		HP = HT = 195;
+		HP = HT = 165;
 		defenseSkill = 20;
 
 		EXP = 15;
@@ -69,17 +69,17 @@ public class Medic extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 30, 40 );
+		return Random.NormalIntRange( 26, 40 );
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 40;
+		return 45;
 	}
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return Random.NormalIntRange(5, 10);
 	}
 
 	private boolean hasbolas = true;

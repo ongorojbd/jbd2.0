@@ -51,7 +51,7 @@ public class Supression extends Mob {
 	{
 		spriteClass = SupressionSprite.class;
 
-		HP = HT = 195;
+		HP = HT = 165;
 		defenseSkill = 15;
 		HUNTING = new Supression.Hunting();
 
@@ -66,18 +66,18 @@ public class Supression extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 35, 50 );
+		return Random.NormalIntRange( 30, 45 );
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 40;
+		return 35;
 	}
 
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
-	}
+    @Override
+    public int drRoll() {
+        return Random.NormalIntRange(5, 10);
+    }
 
 	private static final String LAST_ENEMY_POS = "last_enemy_pos";
 	private static final String LEAP_POS = "leap_pos";

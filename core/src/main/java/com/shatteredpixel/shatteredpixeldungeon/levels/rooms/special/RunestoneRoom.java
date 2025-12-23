@@ -67,7 +67,7 @@ public class RunestoneRoom extends SpecialRoom {
 	
 	private static Item prize( Level level ) {
 		// 1/6 확률로 FormaggioBottle 생성
-		if (Random.Int(6) == 0) {
+		if (Random.Int(8) == 0) {
             switch (Random.Int(5)) {
                 case 0:
                 case 1:

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.El
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Btank;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Soft;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyLance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
@@ -150,6 +151,8 @@ public class AntiMagic extends Armor.Glyph {
         RESISTS.add(WO.WODamage.class);
         RESISTS.add(YogFist.BrightFist.LightBeam.class);
         RESISTS.add(YogFist.DarkFist.DarkBolt.class);
+        RESISTS.add(Soft.class);
+        RESISTS.add(Soft.ExplosionDamage.class);
     }
 
     @Override

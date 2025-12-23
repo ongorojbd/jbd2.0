@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -31,6 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsolg;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcopter;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Btank;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewKarslight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewPucci4;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Keicho;
 import com.shatteredpixel.shatteredpixeldungeon.items.Bcomdisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -52,9 +55,11 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -70,10 +75,17 @@ public class TempleLastLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.PRISON_TENSE},
-                new float[]{1},
-                false);
+        if (Statistics.johnnyquest) {
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.PRISON_BOSS},
+                    new float[]{1},
+                    false);
+        } else {
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.PRISON_TENSE},
+                    new float[]{1},
+                    false);
+        }
     }
 
     private static int WIDTH = 31;
@@ -95,28 +107,36 @@ public class TempleLastLevel extends Level {
     protected boolean build() {
         setSize(WIDTH, HEIGHT);
 
-        transitions.add(new LevelTransition(this, 15 + WIDTH*15, LevelTransition.Type.BRANCH_ENTRANCE, Dungeon.depth, 0, LevelTransition.Type.BRANCH_EXIT));
+        transitions.add(new LevelTransition(this, 15 + WIDTH * 15, LevelTransition.Type.BRANCH_ENTRANCE, Dungeon.depth, 0, LevelTransition.Type.BRANCH_EXIT));
 
-        Keicho npc = new Keicho();
-		npc.pos = 6 * width() + 15;
-		mobs.add( npc );
+        if (Statistics.johnnyquest) {
 
-        Bcomsolg npc2 = new Bcomsolg();
-        npc2.pos = 2 * width() + 2;
-        mobs.add( npc2 );
+            NewPucci4 npc = new NewPucci4();
+            npc.pos = 12 * width() + 15;
+            npc.state = npc.HUNTING;
+            mobs.add(npc);
 
-        Bcomsolg npc3 = new Bcomsolg();
-        npc3.pos = 2 * width() + 28;
-        mobs.add( npc3 );
+        } else {
+            Keicho npc = new Keicho();
+            npc.pos = 6 * width() + 15;
+            mobs.add(npc);
 
-        Bcomsolg npc4 = new Bcomsolg();
-        npc4.pos = 28 * width() + 2;
-        mobs.add( npc4 );
+            Bcomsolg npc2 = new Bcomsolg();
+            npc2.pos = 2 * width() + 2;
+            mobs.add(npc2);
 
-        Bcomsolg npc5 = new Bcomsolg();
-        npc5.pos = 28 * width() + 28;
-        mobs.add( npc5 );
+            Bcomsolg npc3 = new Bcomsolg();
+            npc3.pos = 2 * width() + 28;
+            mobs.add(npc3);
 
+            Bcomsolg npc4 = new Bcomsolg();
+            npc4.pos = 28 * width() + 2;
+            mobs.add(npc4);
+
+            Bcomsolg npc5 = new Bcomsolg();
+            npc5.pos = 28 * width() + 28;
+            mobs.add(npc5);
+        }
 
         buildLevel();
         return true;
@@ -171,20 +191,21 @@ public class TempleLastLevel extends Level {
             W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W
     };
 
-    private void buildLevel(){
-        int pos = 0 + 0*width();
+    private void buildLevel() {
+        int pos = 0 + 0 * width();
         short[] levelTiles = level;
         ArrayList<Integer> spawnerPos = new ArrayList<>();
 
         for (short levelTile : levelTiles) {
             if (levelTile != n) map[pos] = levelTile;
 
-            if (map[pos] == T) {
-                map[pos] = Terrain.TRAP;
-                Trap t = new BcomTrap().reveal();
-                setTrap(t, pos);
+            if (!Statistics.johnnyquest) {
+                if (map[pos] == T) {
+                    map[pos] = Terrain.TRAP;
+                    Trap t = new BcomTrap().reveal();
+                    setTrap(t, pos);
+                }
             }
-
             pos++;
         }
 
@@ -208,7 +229,9 @@ public class TempleLastLevel extends Level {
 
         );
 
-        drop( new Bcomdisc(), 15+WIDTH*2).type = Heap.Type.CHEST;
+        if (!Statistics.johnnyquest) {
+            drop(new Bcomdisc(), 15 + WIDTH * 2).type = Heap.Type.CHEST;
+        }
 
         Random.pushGenerator(Random.Long());
         ArrayList<Item> bonesItems = Bones.get();
@@ -227,36 +250,41 @@ public class TempleLastLevel extends Level {
     public boolean activateTransition(Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.BRANCH_ENTRANCE) {
 
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.MAP0),
-                            Messages.titleCase(Messages.get(Bmap.class, "name")),
-                            Messages.get(Bmap.class, "1"),
-                            Messages.get(Bmap.class, "yes"),
-                            Messages.get(Bmap.class, "no")){
-                        @Override
-                        protected void onSelect(int index) {
-                            if (index == 0){
-                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                                InterlevelScene.returnDepth = 22;
-                                InterlevelScene.returnBranch = 0;
-                                InterlevelScene.returnPos = -1;
-                                Game.switchScene(InterlevelScene.class);
-                            }
-                        }
-                    } );
-                }
-            });
-            return false;
+            if (Statistics.johnnyquest) {
+                GLog.w("계단을 이용할 수 없습니다.");
+                return false;
+            } else {
 
+                Game.runOnRenderThread(new Callback() {
+                    @Override
+                    public void call() {
+                        GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.MAP0),
+                                Messages.titleCase(Messages.get(Bmap.class, "name")),
+                                Messages.get(Bmap.class, "1"),
+                                Messages.get(Bmap.class, "yes"),
+                                Messages.get(Bmap.class, "no")) {
+                            @Override
+                            protected void onSelect(int index) {
+                                if (index == 0) {
+                                    InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                    InterlevelScene.returnDepth = 22;
+                                    InterlevelScene.returnBranch = 0;
+                                    InterlevelScene.returnPos = -1;
+                                    Game.switchScene(InterlevelScene.class);
+                                }
+                            }
+                        });
+                    }
+                });
+                return false;
+            }
         } else {
             return super.activateTransition(hero, transition);
         }
     }
 
     @Override
-    public int randomRespawnCell( Char ch ) {
+    public int randomRespawnCell(Char ch) {
         int cell;
         do {
             cell = entrance() + PathFinder.NEIGHBOURS8[Random.Int(8)];

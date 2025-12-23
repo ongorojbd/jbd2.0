@@ -260,6 +260,17 @@ public class AscensionChallenge extends Buff {
 
 	private boolean stacksLowered = false;
 
+	//allows external classes to increment stacks (e.g. for boss fights)
+	public void incrementStacks(float amount){
+		stacks += amount;
+		BuffIndicator.refreshHero();
+	}
+
+	//allows external classes to get current stacks value
+	public float getStacks(){
+		return stacks;
+	}
+
 	public void onLevelSwitch(){
 		if (Dungeon.depth < Statistics.highestAscent){
 			Statistics.highestAscent = Dungeon.depth;

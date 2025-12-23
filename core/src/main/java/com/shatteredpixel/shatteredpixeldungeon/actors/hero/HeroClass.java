@@ -61,8 +61,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
@@ -75,6 +77,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -89,9 +93,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FormaggioBottle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr7;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Sbr9;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -146,21 +153,23 @@ public enum HeroClass {
 
         new ScrollOfIdentify().identify();
 
-        if (DeviceCompat.isDebug()) {
+
             new PotionOfExperience().identify().quantity(100).collect();
-            new PotionOfShroudingFog().identify().quantity(100).collect();
+            new UV().identify().quantity(100).collect();
             new RingOfMight().identify().upgrade(999).collect();
             new RingOfEnergy().identify().upgrade(999).collect();
-            new ThrowingSpike().identify().upgrade(9999).collect();
             new RingOfAccuracy().identify().upgrade(999).collect();
             new PlateArmor().identify().upgrade(999).collect();
+            new Shr().identify().quantity(100).collect();
+            new Ankh().identify().collect();
+            new ScrollOfUpgrade().identify().quantity(100).collect();
             new Neotel().collect();
             new TengusMask().collect();
             new KingsCrown().collect();
-            new Sbr9().collect();
+            new Pickaxe().collect();
             new WandOfDisintegration().identify().upgrade(9999).collect();
             new PotionOfHealing().identify().quantity(100).collect();
-        }
+        
 
         switch (this) {
             case WARRIOR:

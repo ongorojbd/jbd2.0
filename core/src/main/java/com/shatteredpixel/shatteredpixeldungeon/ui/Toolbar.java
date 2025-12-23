@@ -323,6 +323,11 @@ public class Toolbar extends Component {
 
 			@Override
 			protected void onClick() {
+				// WndTuskAiming이 열려있으면 인벤토리 열기 불가
+				if (GameScene.showingTuskAiming()) {
+					return;
+				}
+				
 				if (Dungeon.hero != null && (Dungeon.hero.ready || !Dungeon.hero.isAlive())) {
 					if (SPDSettings.interfaceSize() == 2) {
 						GameScene.toggleInvPane();
@@ -351,6 +356,11 @@ public class Toolbar extends Component {
 			
 			@Override
 			protected boolean onLongClick() {
+				// WndTuskAiming이 열려있으면 퀵 인벤토리 열기 불가
+				if (GameScene.showingTuskAiming()) {
+					return true;
+				}
+				
 				GameScene.show(new WndQuickBag(null));
 				return true;
 			}
@@ -393,6 +403,11 @@ public class Toolbar extends Component {
 		add(new Button(){
 			@Override
 			protected void onClick() {
+				// WndTuskAiming이 열려있으면 인벤토리 선택 불가
+				if (GameScene.showingTuskAiming()) {
+					return;
+				}
+				
 				if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel()) {
 					ArrayList<Bag> bags = Dungeon.hero.belongings.getBags();
 					String[] names = new String[bags.size()];

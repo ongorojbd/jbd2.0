@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
@@ -191,17 +192,8 @@ public class LabsBossLevel extends Level {
         // 영웅이 아레나 영역(bottomDoor보다 위쪽)에 진입하고, 문이 아직 잠기지 않았으며, 레벨이 잠기지 않았을 때 seal() 호출
         // CityBossLevel과 동일한 패턴: 조건 체크를 super.occupyCell() 호출 전에 수행
         if (ch == Dungeon.hero && !isCompleted && map[bottomDoor] != Terrain.LOCKED_DOOR && !locked) {
-            // Rebel이 이미 존재하는지 확인
-            boolean isRebelAlive = false;
-            for (Mob m : mobs) {
-                if (m instanceof Rebel) {
-                    isRebelAlive = true;
-                    break;
-                }
-            }
-
             // 보스가 아직 존재하지 않고, 영웅이 아레나 영역에 진입한 경우에만 seal() 호출
-            if (!isRebelAlive && ch.pos < bottomDoor) {
+            if (!Statistics.diospawned && ch.pos < bottomDoor) {
                 seal();
             }
         }
@@ -287,15 +279,7 @@ public class LabsBossLevel extends Level {
             Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
             // Rebel이 이미 존재하는지 확인 - 없을 경우에만 생성
-            boolean rebelExists = false;
-            for (Mob m : mobs) {
-                if (m instanceof Rebel) {
-                    rebelExists = true;
-                    break;
-                }
-            }
-
-            if (!rebelExists) {
+            if (!Statistics.diospawned) {
                 Rebel boss = new Rebel();
                 boss.state = boss.WANDERING;
                 boss.pos = pointToCell(arena.center());
@@ -307,6 +291,8 @@ public class LabsBossLevel extends Level {
                     boss.sprite.alpha(0);
                     boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
                 }
+
+                Statistics.diospawned = true;
             }
 
             set(bottomDoor, Terrain.LOCKED_DOOR);

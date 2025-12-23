@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Wgas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -41,12 +42,9 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Fadeleaf;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Pucci4Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Music;
@@ -62,7 +60,7 @@ import java.util.ArrayList;
 public class Beast extends Mob {
 
     {
-        HP = HT = 1000;
+        HP = HT = 1200;
 
         EXP = 0;
         maxLvl = 30;
@@ -79,25 +77,25 @@ public class Beast extends Mob {
         HUNTING = new Hunting();
     }
 
-    public int  Phase = 0;
+    public int Phase = 0;
 
     private int leapPos = -1;
     private float leapCooldown = 3;
 
     private int lastEnemyPos = -1;
+    
+    // Made in Heaven: 시간 가속에 따른 무한 가속을 위한 변수
+    private float mihAccelerationTime = 0f;
 
     @Override
     public int damageRoll() {
-        int dmg;
-        dmg = Random.NormalIntRange( 25, 45 );
-        return dmg;
+        return Random.NormalIntRange( 25, 45 );
     }
 
     @Override
     public int attackSkill( Char target ) {
         return 45;
     }
-
 
     @Override
     public void damage(int dmg, Object src) {
@@ -115,7 +113,7 @@ public class Beast extends Mob {
 
         super.damage(dmg, src);
 
-        if (Phase==0 && HP < 450) {
+        if (Phase==0 && HP < 600) {
             Phase = 1;
             GameScene.flash( 0xFFCCFF );
             new Fadeleaf().activate(this);
@@ -133,18 +131,39 @@ public class Beast extends Mob {
         }
         else if (Phase==1 && HP < 151) {
             Phase = 2;
-            WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new EmporioSprite(), new Pucci4Sprite()},
-                    new String[]{"엠포리오", "엔리코 푸치"},
-                    new String[]{
-                            Messages.get(Beast.class, "n6"),
-                            Messages.get(Beast.class, "n7")
-                    },
-                    new byte[]{
-                            WndDialogueWithPic.IDLE,
-                            WndDialogueWithPic.IDLE
-                    }
-            );
+            if (Statistics.johnnyquest) {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new EmporioSprite(), new Pucci4Sprite(), new Pucci4Sprite(), new Pucci4Sprite(), new Pucci4Sprite()},
+                        new String[]{"엠포리오", "엔리코 푸치", "엔리코 푸치",  "엔리코 푸치", "엔리코 푸치"},
+                        new String[]{
+                                Messages.get(Beast.class, "n6"),
+                                Messages.get(Beast.class, "n7"),
+                                Messages.get(Beast.class, "n71"),
+                                Messages.get(Beast.class, "n72"),
+                                Messages.get(Beast.class, "n73")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE
+                        }
+                );
+            } else {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new EmporioSprite(), new Pucci4Sprite()},
+                        new String[]{"엠포리오", "엔리코 푸치"},
+                        new String[]{
+                                Messages.get(Beast.class, "n6"),
+                                Messages.get(Beast.class, "n7")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE
+                        }
+                );
+            }
             Music.INSTANCE.play(Assets.Music.DIOLOWHP, true);
         }
     }
@@ -162,7 +181,6 @@ public class Beast extends Mob {
         if (Phase == 0) {
 
             AiState lastState = state;
-            boolean result = super.act();
             if (leapCooldown > 0) leapCooldown--;
 
             //if state changed from wandering to hunting, we haven't acted yet, don't update.
@@ -178,6 +196,7 @@ public class Beast extends Mob {
 
         if (Phase == 2) {
             state = FLEEING;
+            // 시간 가속 중이 아닐 때만 속도 감소
             baseSpeed = 0.8f;
         }
 
@@ -192,10 +211,10 @@ public class Beast extends Mob {
     protected boolean canAttack(Char enemy) {
         return super.canAttack(enemy);
     }
-    private Boolean hasadjacent;
+
     @Override
     public int attackProc(Char enemy, int damage) {
-        hasadjacent=false;
+
         damage = super.attackProc(enemy, damage);
 
         if (Random.Int(2) == 0) {
@@ -205,11 +224,7 @@ public class Beast extends Mob {
                 summonRats(Random.Int(2, 5));
             }
             else {
-                Ballistica route = new Ballistica(this.pos, target, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
-                int cell = route.collisionPos;
-
                 for (int i : PathFinder.NEIGHBOURS8) {
-                    hasadjacent = true;
                     Char mob = Actor.findChar(this.pos + i);
                     if (mob != null) {
                         if (mob.pos == this.pos + i) {
@@ -235,7 +250,6 @@ public class Beast extends Mob {
                 if (Actor.findChar(p) == null && Dungeon.level.passable[p]) {
                     respawnPoints.add(p);
                 }
-                int index = Random.index(respawnPoints);
             }
 
             if (respawnPoints.size() > 0) {
@@ -250,18 +264,21 @@ public class Beast extends Mob {
                     mob = new RipperDemon();
                 }
 
-
                 mob.pos = Random.element(respawnPoints);
                 GameScene.add(mob, 1);
                 mob.state = mob.HUNTING;
+                Buff.affect(mob, Adrenaline.class, 30f);
                 Dungeon.level.occupyCell(mob);
             }
-
 
             amount--;
         }
 
+    }
 
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(0, 15);
     }
 
     @Override
@@ -273,10 +290,11 @@ public class Beast extends Mob {
     @Override
     protected boolean getFurther(int target) {
 
-
         return super.getFurther(target);
     }
+
     private static final String PHASE   = "Phase";
+    private static final String MIH_ACCEL_TIME = "mihAccelTime";
 
     @Override
     public void die(Object cause) {
@@ -284,7 +302,10 @@ public class Beast extends Mob {
         super.die(cause);
         Sample.INSTANCE.play(Assets.Sounds.P2);
 
-        Dungeon.level.unseal();
+        if (!Statistics.johnnyquest) {
+            Dungeon.level.unseal();
+        }
+
         Music.INSTANCE.end();
 
         GameScene.bossSlain();
@@ -324,6 +345,7 @@ public class Beast extends Mob {
 
         super.storeInBundle(bundle);
         bundle.put( PHASE, Phase );
+        bundle.put( MIH_ACCEL_TIME, mihAccelerationTime );
 
     }
 
@@ -332,6 +354,7 @@ public class Beast extends Mob {
 
         super.restoreFromBundle(bundle);
         Phase = bundle.getInt(PHASE);
+        mihAccelerationTime = bundle.getFloat(MIH_ACCEL_TIME);
     }
 
     private class Fleeing extends Mob.Fleeing {
@@ -503,8 +526,6 @@ public class Beast extends Mob {
             else return super.act(enemyInFOV, justAlerted);
 
         }
-
-
 
     }
 }

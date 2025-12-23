@@ -54,7 +54,7 @@ public class Speedwagon2 extends NPC {
     @Override
     protected boolean act() {
 
-        if (Statistics.zombiecount > 15 && wagoncount) {
+        if (Statistics.zombiecount > 12 && wagoncount) {
             set(bottomDoor2, Terrain.DOOR);
             GameScene.updateMap(bottomDoor2);
             Sample.INSTANCE.play(Assets.Sounds.UNLOCK);

@@ -98,12 +98,13 @@ public class EnergyStrike extends ArmorAbility {
 		Sample.INSTANCE.play(Assets.Sounds.BURNING);
 
 		// Create delayed damage buff
-		EnergyStrikeBuff buff = Buff.affect(hero, EnergyStrikeBuff.class, 3f);
+		// Buff.append를 사용하여 여러 타겟을 동시에 유지할 수 있도록 함
+		EnergyStrikeBuff buff = Buff.append(hero, EnergyStrikeBuff.class, 3f);
 		buff.setTargetArea(target);
 
 		// J42 탤런트: 시전 시 보호막 획득
 		if (hero.hasTalent(Talent.J42)) {
-			int shieldAmount = 20 + (hero.pointsInTalent(Talent.J42) * 10); // +1: 30, +2: 40, +3: 50, +4: 60
+			int shieldAmount = hero.pointsInTalent(Talent.J42) * 15; // +1: 15, +2: 30, +3: 45, +4: 60
 			Buff.affect(hero, Barrier.class).incShield(shieldAmount);
 		}
 

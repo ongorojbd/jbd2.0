@@ -74,6 +74,10 @@ public class Bag extends Item implements Iterable<Item> {
 		super.execute( hero, action );
 
 		if (action.equals( AC_OPEN ) && !items.isEmpty()) {
+			// WndTuskAiming이 열려있으면 퀵 인벤토리 열기 불가
+			if (GameScene.showingTuskAiming()) {
+				return;
+			}
 			
 			GameScene.show( new WndQuickBag( this ) );
 			
