@@ -153,24 +153,6 @@ public enum HeroClass {
 
         new ScrollOfIdentify().identify();
 
-
-            new PotionOfExperience().identify().quantity(100).collect();
-            new UV().identify().quantity(100).collect();
-            new RingOfMight().identify().upgrade(999).collect();
-            new RingOfEnergy().identify().upgrade(999).collect();
-            new RingOfAccuracy().identify().upgrade(999).collect();
-            new PlateArmor().identify().upgrade(999).collect();
-            new Shr().identify().quantity(100).collect();
-            new Ankh().identify().collect();
-            new ScrollOfUpgrade().identify().quantity(100).collect();
-            new Neotel().collect();
-            new TengusMask().collect();
-            new KingsCrown().collect();
-            new Pickaxe().collect();
-            new WandOfDisintegration().identify().upgrade(9999).collect();
-            new PotionOfHealing().identify().quantity(100).collect();
-        
-
         switch (this) {
             case WARRIOR:
                 initWarrior(hero);
