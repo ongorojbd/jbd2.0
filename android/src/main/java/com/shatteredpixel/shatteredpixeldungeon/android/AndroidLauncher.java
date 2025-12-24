@@ -53,6 +53,10 @@ import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 
+import com.google.android.gms.games.PlayGamesSdk;
+import com.google.android.gms.games.PlayGames;
+import com.google.android.gms.games.GamesSignInClient;
+
 public class AndroidLauncher extends AndroidApplication {
 	
 	public static AndroidApplication instance;
@@ -63,6 +67,9 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Initialize Play Games Services SDK
+		PlayGamesSdk.initialize(this);
 
 		try {
 			GdxNativesLoader.load();
@@ -143,8 +150,40 @@ public class AndroidLauncher extends AndroidApplication {
 
 		Button.longClick = ViewConfiguration.getLongPressTimeout()/1000f;
 		
+		// Check Play Games Services authentication
+		checkPlayGamesSignIn();
+		
 		initialize(new ShatteredPixelDungeon(support), config);
 		
+	}
+
+	/**
+	 * Checks if the user is authenticated with Play Games Services
+	 * and attempts to sign in if not authenticated.
+	 */
+	private void checkPlayGamesSignIn() {
+		GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(this);
+		
+		gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
+			boolean isAuthenticated =
+				(isAuthenticatedTask.isSuccessful() &&
+				 isAuthenticatedTask.getResult().isAuthenticated());
+
+			if (isAuthenticated) {
+				// User is authenticated, get player ID
+				PlayGames.getPlayersClient(this).getCurrentPlayer().addOnCompleteListener(playerTask -> {
+					if (playerTask.isSuccessful() && playerTask.getResult() != null) {
+						String playerId = playerTask.getResult().getPlayerId();
+						// TODO: Use playerId for game services (achievements, leaderboards, etc.)
+						// Note: Do not store playerId on your backend as it can be manipulated
+					}
+				});
+			} else {
+				// User is not authenticated, attempt to sign in
+				// This will show the sign-in UI if needed
+				gamesSignInClient.signIn();
+			}
+		});
 	}
 
 	@Override

@@ -26,6 +26,8 @@
 		android:allowBackup="true"
 		android:fullBackupOnly="true"
 		android:backupAgent=".AndroidBackupHandler">
+		<meta-data android:name="com.google.android.gms.games.APP_ID"
+			android:value="@string/game_services_project_id" />
 		<activity
 			android:name=".AndroidLauncher"
 			android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
