@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -68,8 +69,11 @@ public class Pasty extends Food {
 			case LUNAR_NEW_YEAR:
 				image = ItemSpriteSheet.STEAMED_FISH;
 				break;
+            case STEEL_BALL_RUN:
+                image = ItemSpriteSheet.RAINBOW_POTION;
+                break;
 			case CHUSEOK:
-				image = ItemSpriteSheet.SHATTERED_CAKE; // temporary: reuse egg sprite as songpyeon placeholder
+				image = ItemSpriteSheet.SHATTERED_CAKE;
 				break;
 			case APRIL_FOOLS:
 				image = ItemSpriteSheet.CHOC_AMULET;
@@ -105,6 +109,13 @@ public class Pasty extends Food {
 					Dungeon.level.drop(left, hero.pos).sprite.drop();
 				}
 				break;
+            case STEEL_BALL_RUN:
+                //gives 10% of level in exp, min of 2
+                int expToGive = Math.max(2, hero.maxExp()/10);
+                hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(expToGive), FloatingText.EXPERIENCE);
+                hero.earnExp(expToGive, PotionOfExperience.class);
+                Sample.INSTANCE.play( Assets.Sounds.LULLABY );
+                break;
 			case CHUSEOK:
 				// 송편: 포만감은 기본과 동일. 추가 효과: 축복 5턴 + 아티팩트 충전 1턴, 작은 치유
 				Buff.affect( hero, Bless.class, 5f );
@@ -168,6 +179,8 @@ public class Pasty extends Food {
 				return super.name();
 			case LUNAR_NEW_YEAR:
 				return Messages.get(this, "fish_name");
+            case STEEL_BALL_RUN:
+                return Messages.get(this, "rainbow_name");
 			case CHUSEOK:
 				return Messages.get(this, "songpyeon_name");
 			case APRIL_FOOLS:
@@ -188,6 +201,8 @@ public class Pasty extends Food {
 				return super.desc();
 			case LUNAR_NEW_YEAR:
 				return Messages.get(this, "fish_desc");
+            case STEEL_BALL_RUN:
+                return Messages.get(this, "rainbow_desc");
 			case CHUSEOK:
 				return Messages.get(this, "songpyeon_desc");
 			case APRIL_FOOLS:

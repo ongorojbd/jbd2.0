@@ -167,8 +167,8 @@ public class WndTuskAiming extends Window {
 
 		// 마커 속도를 시간 기반으로 계산 (한 번 왕복하는데 baseCycleTime초 소요)
 		// 왕복 거리 = barWidth * 2
-		// BASE_CYCLE_TIME을 0.5f, 0.6f, 0.7f 중 무작위로 선택
-		baseCycleTime = Random.oneOf(0.5f, 0.6f, 0.7f);
+		// TuskEquipmentDisc에서 저장된 속도 가져오기 (처음 한 번만 랜덤 결정)
+		baseCycleTime = artifact.getAimingCycleTime();
 		float cycleTime = baseCycleTime;
 		
 		// provoked_anger talent에 따른 조준 속도 감소 (사이클 타임 증가)
@@ -503,7 +503,16 @@ public class WndTuskAiming extends Window {
 			}
 		}
 		
-		// 창 닫기
+		// 창을 먼저 닫아서 즉시 게임 화면으로 돌아가도록 함
 		hide();
+		// 취소 시에도 상태 리셋 (버그 방지: isFirstShot 리셋)
+		// 발사가 있었으면 완료 처리 (턴 소모 포함), 없었으면 상태만 리셋
+		if (currentShot > 0) {
+			// 이미 발사가 있었으면 완료 처리 (턴 소모 포함)
+			artifact.onAllShotsComplete();
+		} else {
+			// 발사가 없었으면 상태만 리셋 (턴 소모 없음)
+			artifact.resetShotState();
+		}
 	}
 }

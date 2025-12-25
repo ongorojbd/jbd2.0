@@ -318,6 +318,11 @@ public class TuskEquipmentDisc extends Artifact {
 	// 첫 발사 여부 추적
 	private boolean isFirstShot = true;
 
+	// 조준 속도 (0.5f, 0.6f, 0.7f 중 하나, 발사 세션 단위로 무작위 결정)
+	// -1이면 아직 결정되지 않음 (다음 창 열 때 무작위 결정)
+	// 발사 완료 전까지는 같은 값 유지, 발사 완료 후 리셋
+	private float aimingCycleTime = -1f;
+
 	// 현재 타겟 저장 (미니게임에서 사용)
 	private Char currentTarget = null;
 
@@ -670,6 +675,13 @@ public class TuskEquipmentDisc extends Artifact {
 		}
 
 		// 첫 발사 플래그 및 타겟 리셋
+		resetShotState();
+		// 발사 완료 후 속도 리셋 (다음 발사 세션에서 다시 무작위 결정)
+		aimingCycleTime = -1f;
+	}
+
+	// 발사 상태 리셋 (턴 소모 없이 상태만 리셋)
+	public void resetShotState() {
 		isFirstShot = true;
 		currentTarget = null;
 		piercedTargets.clear();
@@ -758,6 +770,17 @@ public class TuskEquipmentDisc extends Artifact {
 	public boolean isUpgraded() {
 		Hero hero = Dungeon.hero;
 		return hero != null && hero.subClass == HeroSubClass.STANDO;
+	}
+
+	// 조준 속도 가져오기 (발사 세션 단위로 무작위 결정)
+	// 발사 세션이 진행 중이면 같은 속도 유지, 새 세션이면 무작위 결정
+	public float getAimingCycleTime() {
+		if (aimingCycleTime < 0) {
+			// 발사 세션이 시작되지 않았으면 무작위로 결정
+			aimingCycleTime = Random.oneOf(0.5f, 0.6f, 0.7f);
+		}
+		// 이미 결정된 값이 있으면 그대로 반환 (창을 닫고 다시 열어도 같은 속도 유지)
+		return aimingCycleTime;
 	}
 
 	// 고정 데미지 계산 (강화 수치 기반)
@@ -1012,12 +1035,15 @@ public class TuskEquipmentDisc extends Artifact {
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(PERFECT_COUNT, perfectCount);
+		// aimingCycleTime은 발사 세션 단위 임시 값이므로 저장하지 않음
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		perfectCount = bundle.getInt(PERFECT_COUNT);
+		// aimingCycleTime은 발사 세션 단위 임시 값이므로 복원하지 않음 (항상 -1로 시작)
+		aimingCycleTime = -1f;
 		
 		// 레벨에 따라 이미지 설정 (SandalsOfNature.java 참조)
 		int lvl = level();

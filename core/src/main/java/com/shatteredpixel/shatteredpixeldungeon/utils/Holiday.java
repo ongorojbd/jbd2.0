@@ -29,20 +29,21 @@ public enum Holiday {
 	NONE,
 
 	LUNAR_NEW_YEAR,         //Varies, sometime in late Jan to Late Feb              (7 days)
+	STEEL_BALL_RUN,         //Mar 12th to Mar 19th (2026 premiere)                  (7 days)
 	APRIL_FOOLS,            //April 1st, can override easter                        (1 day)
 	EASTER,                 //Varies, sometime in Late Mar to Late Apr              (6-7 days)
 	//Nothing in May
 	PRIDE,                  //Jun 24th to Jun 30th                                  (7 days)
 	//Nothing in Jul
 	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th                                    (7 days)
-	CHUSEOK,                //Around late Sep to early Oct                          (5-9 days)
+	CHUSEOK,                //Oct 2nd to Oct 12th                                   (11 days)
 	HALLOWEEN,              //Oct 24th to Oct 31st                                  (7 days)
 	//Nothing in Nov
 	PD_BIRTHDAY,            //Dec 1st to Dec 7th                                    (7 days)
 	WINTER_HOLIDAYS,        //Dec 15th to Dec 26th                                  (12 days)
 	NEW_YEARS;              //Dec 27th to Jan 2nd                                   (7 days)
 
-	//total of 61-62 festive days each year, mainly concentrated in Late Oct to Early Feb
+	//total of 68-69 festive days each year, mainly concentrated in Late Oct to Early Feb
 
 	//we cache the holiday here so that holiday logic doesn't suddenly shut off mid-game
 	//this gets cleared on game launch (of course), and whenever leaving a game scene
@@ -65,6 +66,13 @@ public enum Holiday {
 		if (isLunarNewYear(cal.get(Calendar.YEAR),
 				cal.get(Calendar.DAY_OF_YEAR))){
 			return LUNAR_NEW_YEAR;
+		}
+
+		//Steel Ball Run Premiere
+		if (cal.get(Calendar.MONTH) == Calendar.MARCH
+				&& cal.get(Calendar.DAY_OF_MONTH) >= 12
+				&& cal.get(Calendar.DAY_OF_MONTH) <= 19){
+			return STEEL_BALL_RUN;
 		}
 
 		//April Fools
@@ -92,7 +100,7 @@ public enum Holiday {
 			return SHATTEREDPD_BIRTHDAY;
 		}
 
-		//Chuseok: Oct 2nd to Oct 12th
+		//Chuseok
 		if (cal.get(Calendar.MONTH) == Calendar.OCTOBER
 				&& cal.get(Calendar.DAY_OF_MONTH) >= 2
 				&& cal.get(Calendar.DAY_OF_MONTH) <= 12){
