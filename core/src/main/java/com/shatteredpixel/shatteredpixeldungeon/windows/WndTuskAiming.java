@@ -21,15 +21,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -90,8 +86,8 @@ public class WndTuskAiming extends Window {
 	// 마커 관련
 	private float markerPos;
 	private float markerSpeed;
-	// 한 번 왕복하는데 걸리는 시간 (초 단위)
-	private static final float BASE_CYCLE_TIME = 0.6f;
+	// 한 번 왕복하는데 걸리는 시간 (초 단위) - 0.5f, 0.6f, 0.7f 중 무작위
+	private float baseCycleTime;
 	private boolean markerMovingRight = true;
 
 	// 2발 모드 관련
@@ -119,11 +115,7 @@ public class WndTuskAiming extends Window {
 	public WndTuskAiming(TuskEquipmentDisc artifact, Char target) {
 		super();
 
-		if (blocker != null) {
-			remove(blocker);
-			blocker.destroy();
-			blocker = null;
-		}
+		// blocker는 유지하여 바깥 클릭 시 취소 가능하도록 함
 
 		this.artifact = artifact;
 		this.target = target;
@@ -173,9 +165,11 @@ public class WndTuskAiming extends Window {
 		}
 		if (barWidth < 60) barWidth = 60;
 
-		// 마커 속도를 시간 기반으로 계산 (한 번 왕복하는데 BASE_CYCLE_TIME초 소요)
+		// 마커 속도를 시간 기반으로 계산 (한 번 왕복하는데 baseCycleTime초 소요)
 		// 왕복 거리 = barWidth * 2
-		float cycleTime = BASE_CYCLE_TIME;
+		// BASE_CYCLE_TIME을 0.5f, 0.6f, 0.7f 중 무작위로 선택
+		baseCycleTime = Random.oneOf(0.5f, 0.6f, 0.7f);
+		float cycleTime = baseCycleTime;
 		
 		// provoked_anger talent에 따른 조준 속도 감소 (사이클 타임 증가)
 		Hero hero = Dungeon.hero;
@@ -396,8 +390,6 @@ public class WndTuskAiming extends Window {
 		if (ratio >= gStart && ratio <= gEnd) {
 			hitType = HIT_TYPE_PERFECT;
             Sword.tp();
-            CellEmitter.get( hero.pos ).start( Speck.factory( Speck.TUSK_LIGHT ), 0.2f, 3 );
-            Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 		}
 		else if ((ratio >= yStart && ratio < gStart) || (ratio > gEnd && ratio <= yEnd)) {
 			hitType = HIT_TYPE_GREAT;
@@ -487,7 +479,31 @@ public class WndTuskAiming extends Window {
 		if (state == GameState.COMPLETE) {
 			super.onBackPressed();
 		} else {
-			hide();
+			// 조준 중 취소 처리
+			cancel();
 		}
+	}
+	
+	private void cancel() {
+		// 조준 취소 처리
+		fireButton.enable(false);
+		
+		// TacticalScope 버프 제거 및 쿨타임 시작
+		Hero hero = Dungeon.hero;
+		if (hero != null) {
+			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeBuff = 
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
+			if (scopeBuff != null) {
+				scopeBuff.detach();
+				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope scope = 
+					hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.class);
+				if (scope != null) {
+					scope.resetCharge();
+				}
+			}
+		}
+		
+		// 창 닫기
+		hide();
 	}
 }

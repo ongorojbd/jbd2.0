@@ -55,10 +55,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.Neotel;
 import com.shatteredpixel.shatteredpixeldungeon.items.NitoDismantleHammer;
+import com.shatteredpixel.shatteredpixeldungeon.items.Teleporter;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
@@ -75,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShroudingFog;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
@@ -82,6 +85,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
@@ -152,6 +156,18 @@ public enum HeroClass {
         waterskin.collect();
 
         new ScrollOfIdentify().identify();
+
+        if (DeviceCompat.isDebug()) {
+            new RingOfMight().identify().upgrade(9999).collect();
+            new RingOfEnergy().identify().upgrade(9999).collect();
+            new RingOfAccuracy().identify().upgrade(9999).collect();
+            new PlateArmor().identify().upgrade(9999).collect();
+            new WandOfDisintegration().identify().upgrade(9999).collect();
+            new PotionOfHealing().identify().upgrade(9999).collect();
+            new ScrollOfMetamorphosis().identify().quantity(120).collect();
+            new Neotel().identify().collect();
+            new Ankh().identify().collect();
+        }
 
         switch (this) {
             case WARRIOR:

@@ -1127,7 +1127,7 @@ public class GameScene extends PixelScene {
                             }
                     );
                     Statistics.spw36++;
-                } else if (Dungeon.level instanceof HallsLevel && Dungeon.depth == 24 && !isUnlocked(Badges.Badge.UNLOCK_JOHNNY) && Badges.isUnlocked(Badges.Badge.VICTORY) && Statistics.deepestFloor == 24 && Statistics.spw36 == 3) {
+                } else if (Dungeon.level instanceof HallsLevel && Dungeon.depth == 24 && !isUnlocked(Badges.Badge.UNLOCK_JOHNNY) && Badges.isUnlocked(Badges.Badge.VICTORY) && Statistics.deepestFloor == 24) {
                     GameScene.show(
                             new WndOptions(new Pucci6Sprite(),
                                     Messages.get(Jolyne.class, "n8"),
@@ -1156,7 +1156,6 @@ public class GameScene extends PixelScene {
 
                             }
                     );
-                    Statistics.spw36++;
 
                 } else if (Dungeon.level instanceof ShipbossLevel && Dungeon.depth == 6) {
                     Sample.INSTANCE.play(Assets.Sounds.SPW5);

@@ -40,6 +40,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RadioactiveMutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LightParticle;
@@ -87,6 +89,10 @@ public class TuskEquipmentDisc extends Artifact {
 
 	// 레벨업에 필요한 Perfect 횟수 (레벨별)
 	private int perfectsForLevel(int level) {
+        // 5레벨부터는 perfect 횟수가 1씩 더 필요 (기존 1에서 2로 증가)
+        if (level >= 5) {
+            return 3 + level + 1; // 4 + level
+        }
         return 3 + level;
     }
 
@@ -223,6 +229,12 @@ public class TuskEquipmentDisc extends Artifact {
 			// 적(Mob)이 아닌 경우 조준 불가
 			if (!(ch instanceof Mob)) {
 				GLog.w(Messages.get(TuskEquipmentDisc.class, "not_enemy"));
+				return;
+			}
+
+			// GnollGeomancer와 CrystalSpire는 조준 불가
+			if (ch instanceof GnollGeomancer || ch instanceof CrystalSpire) {
+				GLog.w(Messages.get(TuskEquipmentDisc.class, "cannot_target_enemy"));
 				return;
 			}
 

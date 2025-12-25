@@ -81,7 +81,7 @@ public class Emporio3 extends NPC {
         }
 
         // Beast가 죽었는지 확인 (beastAlive가 false이고 이전에 살아있었다면 죽은 것)
-        if (!beastAlive && !beastDied) {
+        if (!beastAlive && !beastDied && Statistics.johnnyquest) {
             beastDied = true;
             gravityCD = 6;
         }
@@ -91,18 +91,20 @@ public class Emporio3 extends NPC {
             return super.act();
         }
 
-        // Beast가 죽은 후에만 GravityChaosTracker 사용
-        if (beastDied) {
-            // 쿨다운 감소
-            if (gravityCD > 0) gravityCD--;
+        if (Statistics.johnnyquest) {
+            // Beast가 죽은 후에만 GravityChaosTracker 사용
+            if (beastDied) {
+                // 쿨다운 감소
+                if (gravityCD > 0) gravityCD--;
 
-            if (gravityCD <= 0 && Dungeon.hero != null) {
-                Buff.affect(hero, LockedFloor.class);
-                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                InterlevelScene.returnDepth = 5;
-                InterlevelScene.returnBranch = 1;
-                InterlevelScene.returnPos = -2;
-                Game.switchScene(InterlevelScene.class);
+                if (gravityCD <= 0 && Dungeon.hero != null) {
+                    Buff.affect(hero, LockedFloor.class);
+                    InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                    InterlevelScene.returnDepth = 5;
+                    InterlevelScene.returnBranch = 1;
+                    InterlevelScene.returnPos = -2;
+                    Game.switchScene(InterlevelScene.class);
+                }
             }
         }
 

@@ -190,10 +190,11 @@ public class LabsBossLevel extends Level {
     @Override
     public void occupyCell(Char ch) {
         // 영웅이 아레나 영역(bottomDoor보다 위쪽)에 진입하고, 문이 아직 잠기지 않았으며, 레벨이 잠기지 않았을 때 seal() 호출
-        // CityBossLevel과 동일한 패턴: 조건 체크를 super.occupyCell() 호출 전에 수행
-        if (ch == Dungeon.hero && !isCompleted && map[bottomDoor] != Terrain.LOCKED_DOOR && !locked) {
+        // CityBossLevel과 동일한 패턴: map[topDoor] 상태로 완료 여부 확인 (Ankh 부활 후 재스폰 가능)
+        if (ch == Dungeon.hero && map[bottomDoor] != Terrain.LOCKED_DOOR 
+                && map[topDoor] == Terrain.LOCKED_EXIT && !locked) {
             // 보스가 아직 존재하지 않고, 영웅이 아레나 영역에 진입한 경우에만 seal() 호출
-            if (!Statistics.diospawned && ch.pos < bottomDoor) {
+            if (getRebel() == null && ch.pos < bottomDoor) {
                 seal();
             }
         }
@@ -268,6 +269,13 @@ public class LabsBossLevel extends Level {
         return cell;
     }
 
+    private Mob getRebel() {
+        for (Mob m : mobs) {
+            if (m instanceof Rebel) return m;
+        }
+        return null;
+    }
+
     @Override
     public void seal() {
         if (!locked) {
@@ -279,7 +287,8 @@ public class LabsBossLevel extends Level {
             Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 
             // Rebel이 이미 존재하는지 확인 - 없을 경우에만 생성
-            if (!Statistics.diospawned) {
+            // CityBossLevel 패턴: 전역 플래그 대신 현재 레벨에 보스가 존재하는지 확인
+            if (getRebel() == null) {
                 Rebel boss = new Rebel();
                 boss.state = boss.WANDERING;
                 boss.pos = pointToCell(arena.center());
