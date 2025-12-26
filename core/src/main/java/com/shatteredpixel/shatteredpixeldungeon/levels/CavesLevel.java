@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kars;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Rohan2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TsujiAya;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -102,6 +103,7 @@ public class CavesLevel extends RegularLevel {
 	@Override
 	protected void createItems() {
 		Rohan2.spawn(this);
+		TsujiAya.spawn(this);
 		Yasu.spawn(this);
 		Kars.spawn(this);
 		super.createItems();

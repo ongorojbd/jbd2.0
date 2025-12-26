@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TsujiAya;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Ripple;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -149,6 +150,7 @@ public class SewerLevel extends RegularLevel {
     protected void createMobs() {
         Ghost.Quest.spawn(this, roomExit);
         Bdth.spawn(this);
+        TsujiAya.spawn(this);
         super.createMobs();
     }
 

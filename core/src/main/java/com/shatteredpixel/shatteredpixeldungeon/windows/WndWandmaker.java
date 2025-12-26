@@ -120,7 +120,11 @@ public class WndWandmaker extends Window {
 
 		questItem.detach( Dungeon.hero.belongings.backpack );
 
-		if (Random.Int( 4 ) == 0) {
+        Random.pushGenerator(Dungeon.seedCurDepth());
+        boolean shouldSpawn = Random.Int(4) == 0;
+        Random.popGenerator();
+
+        if (shouldSpawn) {
 			Whitesnake Kawasiri = new Whitesnake();
 			Kawasiri.pos = wandmaker.pos;
 			GameScene.add(Kawasiri);

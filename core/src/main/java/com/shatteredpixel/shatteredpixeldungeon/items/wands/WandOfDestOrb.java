@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -40,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -119,12 +121,21 @@ public class WandOfDestOrb extends Wand {
 
     @Override
     public void onZap(Ballistica beam) {
+
+        identify();
+        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+
         // Calculate damage based on WandOfLightning damage * 1.2
         WandOfLightning lightningWand = new WandOfLightning();
         int minDamage = Math.round(lightningWand.min(buffedLvl()) * 1.2f);
         int maxDamage = Math.round(lightningWand.max(buffedLvl()) * 1.2f);
         
         int spawnPos = beam.collisionPos;
+        
+        // Prevent multiple Softs from being spawned at the same position
+        if (Actor.findChar(spawnPos) != null) {
+            return;
+        }
         
         Soft soft = new Soft();
         soft.setDamageRange(minDamage, maxDamage);
@@ -160,11 +171,15 @@ public class WandOfDestOrb extends Wand {
     @Override
     public String statsDesc() {
         if (Dungeon.hero != null) {
-        int selfDMG = Math.round(Dungeon.hero.HT * 0.05f);
+            // Calculate Soft's damage range based on WandOfLightning * 1.2
+            WandOfLightning lightningWand = new WandOfLightning();
+            int softMinDamage = Math.round(lightningWand.min(levelKnown ? buffedLvl() : 0) * 1.2f);
+            int softMaxDamage = Math.round(lightningWand.max(levelKnown ? buffedLvl() : 0) * 1.2f);
+            
             if (levelKnown)
-                return Messages.get(this, "stats_desc", selfDMG, selfDMG + 3 * buffedLvl(), 5 + buffedLvl(), 3 + buffedLvl() / 2, 6 + buffedLvl());
+                return Messages.get(this, "stats_desc", softMinDamage, softMaxDamage);
             else
-                return Messages.get(this, "stats_desc", selfDMG, selfDMG, 5, 3, 6);
+                return Messages.get(this, "stats_desc", softMinDamage, softMaxDamage);
         } else return Messages.get(this, "desc2");
     }
 

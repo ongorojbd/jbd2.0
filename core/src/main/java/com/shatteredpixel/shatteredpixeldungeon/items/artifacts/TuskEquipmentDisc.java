@@ -785,10 +785,10 @@ public class TuskEquipmentDisc extends Artifact {
 
 	// 고정 데미지 계산 (강화 수치 기반)
 	// 
-	// [Perfect 판정] 초록 영역: 최소 7+4×level, 최대 14+5×level
+	// [Perfect 판정] 초록 영역: 최소 6+3×level, 최대 11+4×level (20% 감소)
 	// 레벨별 Perfect 데미지 범위:
-	//   Lv0: 7-14,  Lv1: 11-19,  Lv2: 15-24,  Lv3: 19-29,  Lv4: 23-34
-	//   Lv5: 27-39, Lv6: 31-44,  Lv7: 35-49,  Lv8: 39-54,  Lv9: 43-59, Lv10: 47-64
+	//   Lv0: 6-11,  Lv1: 9-15,  Lv2: 12-19,  Lv3: 15-23,  Lv4: 18-27
+	//   Lv5: 21-31, Lv6: 24-35, Lv7: 27-39,  Lv8: 30-43,  Lv9: 33-47, Lv10: 36-51
 	// 
 	// [Great 판정] 노랑 영역: 최소 2+(level×0.75), 최대 8+(level×1.5)
 	// 레벨별 Great 데미지 범위:
@@ -812,9 +812,9 @@ public class TuskEquipmentDisc extends Artifact {
 		
 		switch (hitType) {
 			case "perfect":
-				// 초록 영역: 최소 7+4×level, 최대 14+5×level
-				int maxDmg = 14 + 5 * lvl;
-				int minDmg = 7 + 4 * lvl;
+				// 초록 영역: 최소 6+3×level, 최대 11+4×level (20% 감소)
+				int maxDmg = Math.round((14 + 5 * lvl) * 0.8f);
+				int minDmg = Math.round((7 + 4 * lvl) * 0.8f);
 				baseDamage = Random.NormalIntRange(Math.min(minDmg, maxDmg), maxDmg);
 				
 				// J38 탤런트: Perfect 데미지 증가 (+25%/+50%/+75%)
@@ -938,9 +938,9 @@ public class TuskEquipmentDisc extends Artifact {
 					
 					// Perfect 판정 데미지 정보 계산 (calculateDamage와 동일한 순서로 계산)
 					int lvl = level();
-					// 최소/최대 데미지: 7+4×level ~ 14+5×level
-					int perfectMaxDmg = 14 + 5 * lvl;
-					int perfectMinDmg = 7 + 4 * lvl;
+					// 최소/최대 데미지: 6+3×level ~ 11+4×level (20% 감소)
+					int perfectMaxDmg = Math.round((14 + 5 * lvl) * 0.8f);
+					int perfectMinDmg = Math.round((7 + 4 * lvl) * 0.8f);
 					
 					// calculateDamage와 동일하게: 먼저 랜덤 범위를 계산한 후, 배수를 적용
 					// 최소값이 최대값을 넘지 않도록 보장
@@ -967,9 +967,9 @@ public class TuskEquipmentDisc extends Artifact {
 				} else {
 					// 레벨이 최대일 때도 Perfect 데미지 정보 표시
 					int lvl = level();
-					// 최소/최대 데미지: 7+4×level ~ 14+5×level
-					int perfectMaxDmg = 14 + 5 * lvl;
-					int perfectMinDmg = 7 + 4 * lvl;
+					// 최소/최대 데미지: 6+3×level ~ 11+4×level (20% 감소)
+					int perfectMaxDmg = Math.round((14 + 5 * lvl) * 0.8f);
+					int perfectMinDmg = Math.round((7 + 4 * lvl) * 0.8f);
 					
 					// calculateDamage와 동일하게: 먼저 랜덤 범위를 계산한 후, 배수를 적용
 					int baseMinDmg = Math.min(perfectMinDmg, perfectMaxDmg);

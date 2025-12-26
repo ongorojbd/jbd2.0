@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.food;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -47,10 +49,15 @@ public class MysteryMeat extends Food {
 		super.satisfy(hero);
 		effect(hero);
 		
-		// J11 탤런트: 레벨 2일 때 허기를 완전히 회복
+		// J11 탤런트: 레벨 2일 때 창부풍 스파게티의 허기 회복량만큼 회복
 		if (hero.hasTalent(Talent.J11) && hero.pointsInTalent(Talent.J11) >= 2) {
-			Hunger hunger = Buff.affect(hero, Hunger.class);
-			hunger.satisfy(Hunger.STARVING);
+			// Food 클래스의 기본 energy 값 (창부풍 스파게티의 허기 회복량)
+			float foodVal = Hunger.HUNGRY;
+			// NO_FOOD 챌린지 패널티 적용
+			if (Dungeon.isChallenged(Challenges.NO_FOOD)) {
+				foodVal /= 3f;
+			}
+			Buff.affect(hero, Hunger.class).satisfy(foodVal);
 		}
 	}
 

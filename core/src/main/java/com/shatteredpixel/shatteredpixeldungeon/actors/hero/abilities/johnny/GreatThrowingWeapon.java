@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -108,6 +109,12 @@ public class GreatThrowingWeapon extends ArmorAbility {
             return;
         }
 
+        // BOSS나 MINIBOSS에게는 사용할 수 없음
+        if (Char.hasProp(ch, Char.Property.BOSS) || Char.hasProp(ch, Char.Property.MINIBOSS)){
+            GLog.w(Messages.get(this, "invalid_gtw"));
+            return;
+        }
+
         if (IsGTW() != null){
             Buff.detach(IsGTW(), GTWTracker.class);
         }
@@ -140,19 +147,53 @@ public class GreatThrowingWeapon extends ArmorAbility {
         hero.sprite.zap(dest);
         // 원래 위치를 저장 (j47 탤런트 거리 계산용)
         final int originalPos = ch.pos;
-        ch.sprite.jump(ch.pos, dest, new Callback() {
+        // 경로를 계산하고 벽에 부딪히면 멈춤 (플레이어는 통과)
+        Ballistica trajectory = new Ballistica(ch.pos, dest, Ballistica.STOP_SOLID);
+        // 경로상에서 플레이어를 통과하고 벽이나 다른 적에서 멈춤
+        int actualDest = dest;
+        int prevCell = ch.pos; // 이전 타일 추적
+        for (int cell : trajectory.path) {
+            if (cell == dest) {
+                actualDest = dest;
+                break;
+            }
+            Char charAt = Actor.findChar(cell);
+            // 플레이어는 통과
+            if (charAt == hero) {
+                prevCell = cell; // 플레이어 위치도 이전 타일로 기록
+                continue;
+            }
+            // 벽에 부딪히면 벽 바로 전 타일에서 멈춤
+            if (Dungeon.level.solid[cell] && Dungeon.level.losBlocking[cell]) {
+                actualDest = prevCell; // 벽 바로 전 타일
+                break;
+            }
+            // 다른 적을 만나면 멈춤
+            if (charAt != null && charAt != ch) {
+                actualDest = cell;
+                break;
+            }
+            prevCell = cell; // 통과 가능한 타일이면 이전 타일로 기록
+        }
+        final int finalDest = actualDest;
+        
+        ch.sprite.jump(ch.pos, finalDest, new Callback() {
             @Override
             public void call() {
-                Char collide = Actor.findChar(dest);
+                Char collide = Actor.findChar(finalDest);
+                // 플레이어는 통과하므로 collide에서 제외
+                if (collide == hero) {
+                    collide = null;
+                }
                 boolean ignite = ch.buff(Burning.class) != null;
 
-                ch.move(dest);
+                ch.move(finalDest);
                 Dungeon.level.occupyCell(ch);
 
                 int damage = Random.NormalIntRange(5+Dungeon.depth, 10+Dungeon.depth*2);
                 if (hero.hasTalent(Talent.J47)){
-                    // 원래 위치에서 목적지까지의 거리 계산
-                    int throwDistance = (int) Dungeon.level.trueDistance(originalPos, dest);
+                    // 원래 위치에서 실제 도달 지점까지의 거리 계산
+                    int throwDistance = (int) Dungeon.level.trueDistance(originalPos, finalDest);
                     int talentLevel = hero.pointsInTalent(Talent.J47);
                     if (talentLevel == 1 && throwDistance >= 5){
                         damage = Math.round(damage * 1.5f);
@@ -164,7 +205,7 @@ public class GreatThrowingWeapon extends ArmorAbility {
                         damage = Math.round(damage * 2f);
                     }
                 }
-                if (!Dungeon.level.pit[dest]) {
+                if (!Dungeon.level.pit[finalDest]) {
                     ch.sprite.flash();
                     ch.sprite.bloodBurstA(ch.sprite.center(), damage);
                     ch.damage(damage - ch.drRoll(), hero);
@@ -200,7 +241,7 @@ public class GreatThrowingWeapon extends ArmorAbility {
 
                     ArrayList<Integer> candidates = new ArrayList<>();
                     for (int n : PathFinder.NEIGHBOURS8) {
-                        int bounce = dest + n;
+                        int bounce = finalDest + n;
                         if (!Dungeon.level.solid[bounce] && Actor.findChar( bounce ) == null
                                 && (!Char.hasProp(collide, Char.Property.LARGE)
                                 || Dungeon.level.openSpace[bounce])) {

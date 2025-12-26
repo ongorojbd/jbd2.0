@@ -631,6 +631,7 @@ public class Assets {
         public static final String PUCCI = "sprites/pucci.png";
         public static final String PUCCI4 = "sprites/pucci4.png";
         public static final String PUCCI6 = "sprites/pucci6.png";
+        public static final String TSUJI_AYA = "sprites/tusi.png";
         public static final String KOUSAKU = "sprites/kousaku.png";
         public static final String JOJO = "sprites/jojo.png";
         public static final String TONIO = "sprites/tonio.png";

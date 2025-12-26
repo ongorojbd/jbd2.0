@@ -414,12 +414,16 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                             Char ch = Actor.findChar(dest + i);
                             if (ch != null && ch.alignment == Char.Alignment.ENEMY) {
                                 Ballistica trajectory = new Ballistica(ch.pos, ch.pos + i, Ballistica.MAGIC_BOLT);
-                                int pushDest = trajectory.collisionPos;
+                                int pushDest = ch.pos;
                                 
-                                // 밀어내기 거리 계산
-                                for (int push = 0; push < pushDistance - 1; push++) {
-                                    trajectory = new Ballistica(pushDest, pushDest + i, Ballistica.MAGIC_BOLT);
-                                    pushDest = trajectory.collisionPos;
+                                // 밀어내기 거리 계산 (trajectory.path 사용)
+                                for (int push = 0; push < pushDistance && trajectory.path.size() > push + 1; push++) {
+                                    int next = trajectory.path.get(push + 1);
+                                    if (Dungeon.level.solid[next] || Actor.findChar(next) != null) {
+                                        // 벽이나 다른 캐릭터에 부딪히면 중단
+                                        break;
+                                    }
+                                    pushDest = next;
                                 }
                                 
                                 if (pushDest != ch.pos) {
