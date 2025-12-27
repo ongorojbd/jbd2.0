@@ -718,7 +718,13 @@ public enum Talent {
     public static void onTalentUpgraded(Hero hero, Talent talent) {
 
         if (talent == J31){
-            switch (hero.pointsInTalent(Talent.J31)) {
+            int currentLevel = hero.pointsInTalent(Talent.J31);
+            // 이미 보상을 받은 레벨이면 중복 지급 방지
+            if (currentLevel <= hero.j31RewardLevel) {
+                return;
+            }
+            
+            switch (currentLevel) {
                 case 0: default:
                     break;
                 case 1:
@@ -729,6 +735,7 @@ public enum Talent {
                     } else {
                         level.drop( gold, Dungeon.hero.pos ).sprite.drop();
                     }
+                    hero.j31RewardLevel = 1;
                     break;
                 case 2:
                     Item enchantment = new ScrollOfEnchantment().identify();
@@ -738,6 +745,7 @@ public enum Talent {
                     } else {
                         level.drop( enchantment, Dungeon.hero.pos ).sprite.drop();
                     }
+                    hero.j31RewardLevel = 2;
                     break;
                 case 3:
                     MagicalInfusion magicalInfusion = new MagicalInfusion();
@@ -747,6 +755,7 @@ public enum Talent {
                     } else {
                         level.drop( magicalInfusion, Dungeon.hero.pos ).sprite.drop();
                     }
+                    hero.j31RewardLevel = 3;
                     break;
             }
         }

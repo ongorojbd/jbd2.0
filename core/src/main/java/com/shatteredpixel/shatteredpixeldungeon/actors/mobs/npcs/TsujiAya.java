@@ -233,7 +233,7 @@ public class TsujiAya extends NPC {
     public static void spawn(PrisonLevel level) {
         // 독립적인 시드 오프셋을 사용
         Random.pushGenerator(Dungeon.seedCurDepth());
-        boolean shouldSpawn = Random.Int(5) == 0;
+        boolean shouldSpawn = Random.Int(6) == 0;
         Random.popGenerator();
 
         if (shouldSpawn) {
@@ -269,7 +269,7 @@ public class TsujiAya extends NPC {
     public static void spawn(CavesLevel level) {
         // 독립적인 시드 오프셋을 사용
         Random.pushGenerator(Dungeon.seedCurDepth());
-        boolean shouldSpawn = Random.Int(5) == 0;
+        boolean shouldSpawn = Random.Int(6) == 0;
         Random.popGenerator();
 
         if (shouldSpawn) {

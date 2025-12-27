@@ -264,6 +264,9 @@ public class Hero extends Char {
     public ArmorAbility armorAbility = null;
     public ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
     public LinkedHashMap<Talent, Talent> metamorphedTalents = new LinkedHashMap<>();
+    
+    // J31 탤런트 보상 추적 (이미 받은 레벨)
+    public int j31RewardLevel = 0;
 
     private int attackSkill = 10;
     private int defenseSkill = 5;
@@ -371,6 +374,7 @@ public class Hero extends Char {
     private static final String HTBOOST = "htboost";
 
     private static final String ATTACKCOUNT = "AttackCount";
+    private static final String J31_REWARD_LEVEL = "j31RewardLevel";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -393,6 +397,7 @@ public class Hero extends Char {
         bundle.put(HTBOOST, HTBoost);
         bundle.put(ATTACKCOUNT, attackCount);
         bundle.put("defenseCount", defenseCount);
+        bundle.put(J31_REWARD_LEVEL, j31RewardLevel);
 
         belongings.storeInBundle(bundle);
     }
@@ -418,6 +423,11 @@ public class Hero extends Char {
         STR = bundle.getInt(STRENGTH);
         attackCount = bundle.getInt(ATTACKCOUNT);
         defenseCount = bundle.getInt("defenseCount");
+        if (bundle.contains(J31_REWARD_LEVEL)) {
+            j31RewardLevel = bundle.getInt(J31_REWARD_LEVEL);
+        } else {
+            j31RewardLevel = 0;
+        }
 
         belongings.restoreFromBundle(bundle);
         

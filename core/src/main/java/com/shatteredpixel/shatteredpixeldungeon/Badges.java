@@ -132,6 +132,7 @@ public class Badges {
         BOSS_SLAIN_1_HUNTRESS,
         BOSS_SLAIN_1_DUELIST,
         BOSS_SLAIN_1_CLERIC,
+        BOSS_SLAIN_1_JOHNNY,
         BOSS_SLAIN_1_ALL_CLASSES(54, BadgeType.GLOBAL),
         RESEARCHER_2(55, BadgeType.JOURNAL),
         GAMES_PLAYED_2(56, BadgeType.GLOBAL),
@@ -186,6 +187,7 @@ public class Badges {
         VICTORY_HUNTRESS,
         VICTORY_DUELIST,
         VICTORY_CLERIC,
+        VICTORY_JOHNNY,
         VICTORY_ALL_CLASSES         ( 103, BadgeType.GLOBAL ),
         DEATH_FROM_ALL              ( 104, BadgeType.GLOBAL ),
         BOSS_SLAIN_3_GLADIATOR,
@@ -200,6 +202,8 @@ public class Badges {
         BOSS_SLAIN_3_MONK,
         BOSS_SLAIN_3_PRIEST,
         BOSS_SLAIN_3_PALADIN,
+        BOSS_SLAIN_3_RIDER,
+        BOSS_SLAIN_3_STANDO,
         BOSS_SLAIN_3_ALL_SUBCLASSES ( 105, BadgeType.GLOBAL ),
         BOSS_CHALLENGE_3            ( 106 ),
         BOSS_CHALLENGE_4            ( 107 ),
@@ -215,6 +219,7 @@ public class Badges {
         TENDENCYBADGE_ROGUE,
         TENDENCYBADGE_HUNTRESS,
         TENDENCYBADGE_CLERIC,
+        TENDENCYBADGE_JOHNNY,
         TENDENCYBADGE_ALL_CLASSES(112),
 
         // 일일 도전 (경쟁 모드) 클리어 배지
@@ -237,6 +242,7 @@ public class Badges {
         YORIHIMES_ROGUE,
         YORIHIMES_HUNTRESS,
         YORIHIMES_CLERIC,
+        YORIHIMES_JOHNNY,
         YORIHIMES_ALL_CLASSES(28),
         OVERHEAVEN(27),
 
@@ -248,6 +254,7 @@ public class Badges {
         BRANDOKILL_ROGUE,
         BRANDOKILL_HUNTRESS,
         BRANDOKILL_CLERIC,
+        BRANDOKILL_JOHNNY,
         BRANDOKILL_ALL_CLASSES(29),
 
         ;
@@ -932,6 +939,7 @@ public class Badges {
         firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
         firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
         firstBossClassBadges.put(HeroClass.CLERIC, Badge.BOSS_SLAIN_1_CLERIC);
+        firstBossClassBadges.put(HeroClass.JOHNNY, Badge.BOSS_SLAIN_1_JOHNNY);
     }
 
     private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -943,6 +951,7 @@ public class Badges {
         victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
         victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
         victoryClassBadges.put(HeroClass.CLERIC, Badge.VICTORY_CLERIC);
+        victoryClassBadges.put(HeroClass.JOHNNY, Badge.VICTORY_JOHNNY);
     }
 
     private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -960,6 +969,8 @@ public class Badges {
         thirdBossSubclassBadges.put(HeroSubClass.MONK, Badge.BOSS_SLAIN_3_MONK);
         thirdBossSubclassBadges.put(HeroSubClass.PRIEST, Badge.BOSS_SLAIN_3_PRIEST);
         thirdBossSubclassBadges.put(HeroSubClass.PALADIN, Badge.BOSS_SLAIN_3_PALADIN);
+        thirdBossSubclassBadges.put(HeroSubClass.RIDER, Badge.BOSS_SLAIN_3_RIDER);
+        thirdBossSubclassBadges.put(HeroSubClass.STANDO, Badge.BOSS_SLAIN_3_STANDO);
     }
 
     private static LinkedHashMap<HeroClass, Badge> dioClassBadges = new LinkedHashMap<>();
@@ -971,6 +982,7 @@ public class Badges {
         dioClassBadges.put(HeroClass.DUELIST, Badge.YORIHIMES_DUELIST);
         dioClassBadges.put(HeroClass.HUNTRESS, Badge.YORIHIMES_HUNTRESS);
         dioClassBadges.put(HeroClass.CLERIC, Badge.YORIHIMES_CLERIC);
+        dioClassBadges.put(HeroClass.JOHNNY, Badge.YORIHIMES_JOHNNY);
     }
 
     private static LinkedHashMap<HeroClass, Badge> dioClassBadges2 = new LinkedHashMap<>();
@@ -982,6 +994,7 @@ public class Badges {
         dioClassBadges2.put(HeroClass.DUELIST, Badge.BRANDOKILL_DUELIST);
         dioClassBadges2.put(HeroClass.HUNTRESS, Badge.BRANDOKILL_HUNTRESS);
         dioClassBadges2.put(HeroClass.CLERIC, Badge.BRANDOKILL_CLERIC);
+        dioClassBadges2.put(HeroClass.JOHNNY, Badge.BRANDOKILL_JOHNNY);
     }
 
     private static LinkedHashMap<HeroClass, Badge> dioClassBadges3 = new LinkedHashMap<>();
@@ -993,6 +1006,7 @@ public class Badges {
         dioClassBadges3.put(HeroClass.DUELIST, Badge.TENDENCYBADGE_DUELIST);
         dioClassBadges3.put(HeroClass.HUNTRESS, Badge.TENDENCYBADGE_HUNTRESS);
         dioClassBadges3.put(HeroClass.CLERIC, Badge.TENDENCYBADGE_CLERIC);
+        dioClassBadges3.put(HeroClass.JOHNNY, Badge.TENDENCYBADGE_JOHNNY);
     }
 
     public static void validateBossSlain() {
