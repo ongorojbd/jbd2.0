@@ -110,10 +110,10 @@ public class Diego extends Mob {
     @Override
     public void damage(int dmg, Object src) {
 
-        if (dmg >= 50){
+        if (dmg >= 100){
             //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
             // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
-            dmg = 50;
+            dmg = 100;
         }
 
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {

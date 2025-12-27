@@ -239,13 +239,20 @@ public class GreatThrowingWeapon extends ArmorAbility {
                     }
                     armor.charge += regain;
 
+                    // BOSS나 MINIBOSS는 위치 변경 불가
+                    boolean canMoveCollide = !Char.hasProp(collide, Char.Property.BOSS) 
+                            && !Char.hasProp(collide, Char.Property.MINIBOSS)
+                            && !Char.hasProp(collide, Char.Property.IMMOVABLE);
+
                     ArrayList<Integer> candidates = new ArrayList<>();
-                    for (int n : PathFinder.NEIGHBOURS8) {
-                        int bounce = finalDest + n;
-                        if (!Dungeon.level.solid[bounce] && Actor.findChar( bounce ) == null
-                                && (!Char.hasProp(collide, Char.Property.LARGE)
-                                || Dungeon.level.openSpace[bounce])) {
-                            candidates.add( bounce );
+                    if (canMoveCollide) {
+                        for (int n : PathFinder.NEIGHBOURS8) {
+                            int bounce = finalDest + n;
+                            if (!Dungeon.level.solid[bounce] && Actor.findChar( bounce ) == null
+                                    && (!Char.hasProp(collide, Char.Property.LARGE)
+                                    || Dungeon.level.openSpace[bounce])) {
+                                candidates.add( bounce );
+                            }
                         }
                     }
                     Random.shuffle(candidates);
@@ -255,7 +262,35 @@ public class GreatThrowingWeapon extends ArmorAbility {
                         Buff.detach(ch, GTWTracker.class);
                     }
 
-                    if (!candidates.isEmpty()){
+                    // BOSS나 MINIBOSS는 위치 변경 없이 데미지만 적용
+                    if (!canMoveCollide) {
+                        if (!Dungeon.level.pit[collide.pos]) {
+                            collide.sprite.flash();
+                            collide.sprite.bloodBurstA(collide.sprite.center(), damage);
+                            collide.damage(damage - collide.drRoll(), hero);
+
+                            if (collide.isAlive()){
+                                if (hero.hasTalent(Talent.J48)) {
+                                    if (hero.pointsInTalent(Talent.J48) == 1){
+                                        Buff.affect(collide, Vertigo.class, 2f);
+                                    }
+                                    if (hero.pointsInTalent(Talent.J48) == 2){
+                                        Buff.affect(collide, Vertigo.class, 3f);
+                                    }
+                                    if (hero.pointsInTalent(Talent.J48) == 3){
+                                        Buff.affect(collide, Paralysis.class, 3f);
+                                    }
+                                    if (hero.pointsInTalent(Talent.J48) == 4){
+                                        Buff.affect(collide, Paralysis.class, 4f);
+                                    }
+                                }
+                                if (ignite) collide.buff(Burning.class).reignite(collide);
+                            }
+
+                            Sample.INSTANCE.play(Assets.Sounds.HIT_CRUSH);
+                            Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                        }
+                    } else if (!candidates.isEmpty()){
                         Actor.addDelayed( new Pushing( toPush, toPush.pos, candidates.get(0) ), -1 );
 
                         collide.pos = candidates.get(0);
@@ -333,13 +368,18 @@ public class GreatThrowingWeapon extends ArmorAbility {
             return Messages.get(this, "desc");
         }
         @Override public boolean attachTo( Char target ){
-            target.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "msg1"));
+            // sprite가 null일 수 있으므로 체크 (게임 저장/복원 시)
+            if (target.sprite != null) {
+                target.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "msg1"));
+            }
             pos = target.pos;
             return super.attachTo(target);
         }
         @Override public void detach(){
-            if (pos == target.pos)
-                target.sprite.showStatus(CharSprite.NEGATIVE,Messages.get(this, "msg2"));
+            // sprite가 null일 수 있으므로 체크 (게임 저장/복원 시)
+            if (target.sprite != null && pos == target.pos) {
+                target.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "msg2"));
+            }
             super.detach();
         }
     };
