@@ -183,6 +183,13 @@ public class WndDialogueWithPic extends Window {
         timer.scheduleTask(new Timer.Task() {
             @Override
             public void run() {
+                // Window가 닫혔거나 destroy된 경우 타이머 중지
+                if (!exists || parent == null) {
+                    typing = false;
+                    timer.stop();
+                    timer.clear();
+                    return;
+                }
                 if (typing) nextLetter(text);
                 WndDialogueWithPic.this.update();
             }
@@ -190,6 +197,20 @@ public class WndDialogueWithPic extends Window {
     }
 
     private void nextLetter(String text) {
+        // Window가 닫혔거나 destroy된 경우 처리 중단
+        if (!exists || parent == null || tf == null) {
+            typing = false;
+            timer.stop();
+            timer.clear();
+            return;
+        }
+        // letterNum이 text 길이를 초과하지 않도록 체크
+        if (letterNum >= text.length()) {
+            typing = false;
+            timer.stop();
+            timer.clear();
+            return;
+        }
         curText += text.charAt(letterNum);
         tf.text(curText);
         letterNum++;

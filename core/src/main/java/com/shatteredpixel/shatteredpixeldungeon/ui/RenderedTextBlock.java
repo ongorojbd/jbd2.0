@@ -112,6 +112,10 @@ public class RenderedTextBlock extends Component {
 	private synchronized void build(){
 		if (tokens == null) return;
 		
+		// Group이 destroy되었거나 존재하지 않으면 빌드하지 않음
+		// members가 null이면 Group.destroy()가 호출된 상태
+		if (!exists || members == null) return;
+		
 		clear();
 		words = new ArrayList<>();
 		boolean highlighting = false;
@@ -133,7 +137,10 @@ public class RenderedTextBlock extends Component {
 				word.scale.set(zoom);
 				
 				words.add(word);
-				add(word);
+				// members가 null이 아니고 exists가 true일 때만 add
+				if (members != null && exists) {
+					add(word);
+				}
 				
 				if (height < word.height()) height = word.height();
 			}
