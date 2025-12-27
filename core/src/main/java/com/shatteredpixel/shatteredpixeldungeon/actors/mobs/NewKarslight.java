@@ -55,8 +55,7 @@ public class NewKarslight extends Mob {
         // placeholder sprite; replace when custom sprite is available
         spriteClass = KarsSprite.class;
 
-        // Beast 수준의 강화된 스펙
-        HP = HT = 800;
+        HP = HT = 750;
         defenseSkill = 23;
 
         EXP = 50;
@@ -229,7 +228,7 @@ public class NewKarslight extends Mob {
             Char ch = Actor.findChar(c);
             if (ch != null && ch.alignment != alignment) {
                 // 강화된 블레이드 넷 데미지
-                int dmg = Random.NormalIntRange(25, 35);
+                int dmg = Random.NormalIntRange(15, 30);
                 ch.damage(dmg, this);
                 if (Random.Int(2) == 0) Buff.affect(ch, Bleeding.class).set(0.3f * dmg);
                 Buff.affect(ch, Hex.class, 2f);
@@ -279,7 +278,7 @@ public class NewKarslight extends Mob {
                 CellEmitter.get(destination).burst(Speck.factory(Speck.ROCK), 8);
                 
                 // 강화된 벽 충돌 추가 데미지
-                int wallDmg = Random.NormalIntRange(25, 35) + (phase >= 1 ? 10 : 0);
+                int wallDmg = Random.NormalIntRange(20, 35) + (phase >= 1 ? 10 : 0);
                 enemy.damage(wallDmg, this);
                 GLog.w(Messages.get(KarsLight.class, "wall_hit"));
 
