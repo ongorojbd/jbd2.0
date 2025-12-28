@@ -122,7 +122,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             int fallDmg = Math.round(Math.max( target.HP / 2, Random.NormalIntRange( target.HP / 2, target.HT / 4 )) * dmgMulti * 0.7f); // 즉시 피해 30% 감소
             Buff.affect( target, Bleeding.class).set( bleedAmt, RideFall.class);
             target.damage( fallDmg, new RideFall() );
-            Buff.affect(target, RidingCooldown.class, 200f);
+            Buff.affect(target, RidingCooldown.class, 150f);
         }
     }
 
@@ -559,7 +559,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         @Override
         public void die(Object cause) {
-            Buff.affect(Dungeon.hero, RidingCooldown.class, 200f);
+            Buff.affect(Dungeon.hero, RidingCooldown.class, 150f);
             Sample.INSTANCE.play(Assets.Sounds.HORSE);
             super.die(cause);
         }
@@ -636,7 +636,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             revivePersists = true; // 죽어도 유지
         }
 
-        public static final float DURATION = 200f;
+        public static final float DURATION = 150f;
 
         @Override
         public int icon() {

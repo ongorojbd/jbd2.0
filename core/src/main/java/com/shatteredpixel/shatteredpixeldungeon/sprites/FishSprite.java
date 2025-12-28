@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.TextureFilm;
 
 public class FishSprite extends MobSprite {
@@ -29,24 +31,42 @@ public class FishSprite extends MobSprite {
     public FishSprite() {
         super();
 
-        texture(Assets.Sprites.FISH);
+        renderShadow = false;
+        perspectiveRaise = 0.2f;
 
-        TextureFilm frames = new TextureFilm(texture, 16, 16);
+        texture( Assets.Sprites.FISH );
 
-        idle = new Animation( 1, true );
-        idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
+        TextureFilm frames = new TextureFilm( texture, 12, 16 );
 
-        run = new Animation(15, true);
-        run.frames(frames, 0, 1, 2, 1, 0);
+        idle = new Animation( 8, true );
+        idle.frames( frames, 0, 1, 2, 1 );
 
-        attack = new Animation(20, false);
-        attack.frames(frames, 3, 4, 5, 6);
+        run = new Animation( 20, true );
+        run.frames( frames, 0, 1, 2, 1 );
 
-        die = new Animation(15, false);
-        die.frames(frames, 7, 8);
+        attack = new Animation( 20, false );
+        attack.frames( frames, 3, 4, 5, 6, 7, 8, 9, 10, 11 );
 
-        play(idle);
+        die = new Animation( 4, false );
+        die.frames( frames, 12, 13, 14 );
 
+        play( idle );
+
+        scale.set(1.2f);
     }
 
+    @Override
+    public void link(Char ch) {
+        super.link(ch);
+        renderShadow = false;
+    }
+
+    @Override
+    public void onComplete( Animation anim ) {
+        super.onComplete( anim );
+
+        if (anim == attack) {
+            GameScene.ripple( ch.pos );
+        }
+    }
 }

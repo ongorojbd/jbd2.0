@@ -282,12 +282,17 @@ public class FormaggioBottle extends Spell {
 		newMob.HP = savedHP;
 
 		// 새 Mob 설정
-		newMob.state = newMob.HUNTING;
+        if (!(newMob instanceof Cat)) {
+            newMob.state = newMob.HUNTING;
+        }
+
 		newMob.pos = releasePos;
 		GameScene.add(newMob);
-		newMob.beckon(Dungeon.hero.pos);
 
-        Buff.affect(newMob, Amok.class, 30f);
+        if (!(newMob instanceof Cat)) {
+            newMob.beckon(Dungeon.hero.pos);
+            Buff.affect(newMob, Amok.class, 30f);
+        }
 
 		// 이펙트
 		CellEmitter.center(releasePos).burst(Speck.factory(Speck.BONE), 10);
@@ -322,7 +327,6 @@ public class FormaggioBottle extends Spell {
 	public static FormaggioBottle createWithCat() {
 		FormaggioBottle bottle = new FormaggioBottle();
 		bottle.trappedMob = new Cat();
-		bottle.trappedMob.pos = -1;
 		return bottle;
 	}
 	
@@ -330,7 +334,6 @@ public class FormaggioBottle extends Spell {
 	public static FormaggioBottle createWithP4mob() {
 		FormaggioBottle bottle = new FormaggioBottle();
 		bottle.trappedMob = new P4mob();
-		bottle.trappedMob.pos = -1;
 		return bottle;
 	}
 	

@@ -47,6 +47,8 @@ public class SquirrelSprite extends MobSprite {
 
         play(idle);
 
+        scale.set(0.85f);
+
     }
 
 }

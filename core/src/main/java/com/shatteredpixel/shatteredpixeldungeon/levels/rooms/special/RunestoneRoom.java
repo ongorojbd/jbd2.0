@@ -72,9 +72,8 @@ public class RunestoneRoom extends SpecialRoom {
                 case 0:
                 case 1:
                 case 2:
-                    return FormaggioBottle.createWithP4mob();
-                case 3:
                     new FormaggioBottle();
+                case 3:
                     return FormaggioBottle.createWithP4mob();
                 case 4:
                     return FormaggioBottle.createWithCat();

@@ -526,32 +526,48 @@ public class TuskEquipmentDisc extends Artifact {
 						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_rings"));
 						break;
 					case 1: // 물리 공격 강화
-						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon weapon = 
-							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
-						weapon.setEnhancementLevel(1);
-						weapon.setTemporaryDuration(duration);
-						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_weapon"));
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon existingWeapon = 
+							hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
+						if (existingWeapon == null || !existingWeapon.isPermanent()) {
+							com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon weapon = 
+								Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
+							weapon.setEnhancementLevel(1);
+							weapon.setTemporaryDuration(duration);
+							GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_weapon"));
+						}
 						break;
 					case 2: // 브로치 강화
-						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor armor = 
-							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
-						armor.setEnhancementLevel(1);
-						armor.setTemporaryDuration(duration);
-						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_armor"));
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor existingArmor = 
+							hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
+						if (existingArmor == null || !existingArmor.isPermanent()) {
+							com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor armor = 
+								Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
+							armor.setEnhancementLevel(1);
+							armor.setTemporaryDuration(duration);
+							GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_armor"));
+						}
 						break;
 					case 3: // 사격 DISC 강화
-						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand wand = 
-							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
-						wand.setEnhancementLevel(1);
-						wand.setTemporaryDuration(duration);
-						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_wand"));
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand existingWand = 
+							hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
+						if (existingWand == null || !existingWand.isPermanent()) {
+							com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand wand = 
+								Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
+							wand.setEnhancementLevel(1);
+							wand.setTemporaryDuration(duration);
+							GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_wand"));
+						}
 						break;
 					case 4: // 투척무기 강화
-						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon thrown = 
-							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
-						thrown.setEnhancementLevel(1);
-						thrown.setTemporaryDuration(duration);
-						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_thrown"));
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon existingThrown = 
+							hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
+						if (existingThrown == null || !existingThrown.isPermanent()) {
+							com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon thrown = 
+								Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
+							thrown.setEnhancementLevel(1);
+							thrown.setTemporaryDuration(duration);
+							GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_thrown"));
+						}
 						break;
 				}
 			}
@@ -896,18 +912,18 @@ public class TuskEquipmentDisc extends Artifact {
 	public void charge(Hero target, float amount) {
 		if (cursed || target.buff(MagicImmune.class) != null) return;
 
-		if (charge < chargeCap) {
-			partialCharge += 0.25f * amount;
-			while (partialCharge >= 1f) {
-				charge++;
-				partialCharge--;
+			if (charge < chargeCap) {
+				partialCharge += 0.25f * amount * 0.75f;
+				while (partialCharge >= 1f) {
+					charge++;
+					partialCharge--;
+				}
+				if (charge >= chargeCap){
+					partialCharge = 0;
+					charge = chargeCap;
+				}
+				updateQuickslot();
 			}
-			if (charge >= chargeCap){
-				partialCharge = 0;
-				charge = chargeCap;
-			}
-			updateQuickslot();
-		}
 	}
 
 	@Override
@@ -1008,7 +1024,7 @@ public class TuskEquipmentDisc extends Artifact {
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
-					float chargeToGain = (1f / turnsToCharge);
+					float chargeToGain = (1f / turnsToCharge) * 0.75f;
 					partialCharge += chargeToGain;
 				}
 

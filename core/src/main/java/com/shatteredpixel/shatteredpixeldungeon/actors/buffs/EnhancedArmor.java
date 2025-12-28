@@ -82,6 +82,10 @@ public class EnhancedArmor extends Buff {
         initialDuration = duration;
     }
     
+    public boolean isPermanent() {
+        return temporaryDuration < 0;
+    }
+    
     @Override
     public boolean act() {
         if (temporaryDuration > 0) {
