@@ -197,7 +197,7 @@ public class TsujiAya extends NPC {
     public static void spawn(SewerLevel level) {
         // 독립적인 시드 오프셋을 사용
         Random.pushGenerator(Dungeon.seedCurDepth());
-        boolean shouldSpawn = Random.Int(10) == 0;
+        boolean shouldSpawn = Random.Int(12) == 0;
         Random.popGenerator();
 
         if (shouldSpawn) {
