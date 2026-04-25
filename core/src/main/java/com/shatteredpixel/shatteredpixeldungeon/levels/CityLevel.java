@@ -187,7 +187,7 @@ public class CityLevel extends RegularLevel {
 									if (b instanceof Wand.Charger
 											|| b instanceof Artifact.ArtifactBuff
 											|| b instanceof Ring.RingBuff
-											|| b instanceof MeleeWeapon.Charger
+											//not melee charger, Duelist should retain her charge count
 											|| b instanceof ClassArmor.Charger){
 										b.detach();
 									}

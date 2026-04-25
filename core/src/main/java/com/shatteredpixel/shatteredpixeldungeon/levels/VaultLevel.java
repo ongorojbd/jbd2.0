@@ -21,209 +21,160 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.VaultFlameTraps;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
+import com.shatteredpixel.shatteredpixeldungeon.levels.builders.GridBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.RegionDecoLineRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.SegmentedRoom;
-import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Point;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.AlternatingTrapsRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultCircleRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultCrossRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultEnemyCenterRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultEntranceRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultFinalRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultLasersRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultLongRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultQuadrantsRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultRingRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultRingsRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultSimpleEnemyTreasureRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
 
-public class VaultLevel extends Level { //for now
-
-	{
-		color1 = 0x4b6636;
-		color2 = 0xf2f2f2;
-	}
+public class VaultLevel extends CityLevel {
 
     @Override
-    public void playLevelMusic() {
-        Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.EMPO},
-                new float[]{1},
-                false);
+    protected ArrayList<Room> initRooms() {
+        ArrayList<Room> initRooms = new ArrayList<>();
+
+        initRooms.add(roomEntrance = new VaultEntranceRoom());
+
+        for (int i = 0; i < 2; i++){
+            initRooms.add(new VaultRingRoom());
+            initRooms.add(new VaultCircleRoom());
+            initRooms.add(new VaultCrossRoom());
+            initRooms.add(new VaultQuadrantsRoom());
+            initRooms.add(new VaultEnemyCenterRoom());
+            initRooms.add(new VaultRingsRoom());
+            initRooms.add(new VaultSimpleEnemyTreasureRoom());
+            initRooms.add(new AlternatingTrapsRoom());
+            initRooms.add(new VaultLasersRoom());
+        }
+
+        initRooms.add(new VaultLongRoom());
+        initRooms.add(new VaultLongRoom());
+
+        initRooms.add(new VaultFinalRoom());
+        return initRooms;
     }
 
-	@Override
-	public String tilesTex() {
-		return Assets.Environment.TILES_CITY;
-	}
+    @Override
+    protected Builder builder() {
+        return new GridBuilder();
+    }
 
-	@Override
-	public String waterTex() {
-		return Assets.Environment.WATER_CITY;
-	}
+    @Override
+    protected int nTraps() {
+        return 0;
+    }
 
-	@Override
-	protected boolean build() {
-		setSize(34, 34);
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        //walking onto transitions does nothing, need to use crystal
+        return false;
+    }
 
-		ArrayList<Room> rooms = new ArrayList<>();
+    @Override
+    public Mob createMob() {
+        return null;
+    }
 
-		Room finalRoom = null;
-		Room entryRoom = null;
+    @Override
+    protected void createMobs() {
+    }
 
-		for (int x = 0; x < 4; x++){
-			for (int y = 0; y < 4; y++){
+    public Actor addRespawner() {
+        return null;
+    }
 
-				if (x == 3 && y <= 1){
-					if (y == 1) {
-						continue;
-					} else {
-						Room r = new RegionDecoLineRoom();
-						r.set(1+8*x, 1+8*y, 9+8*x, 17);
-						rooms.add(r);
-						finalRoom = r;
-						continue;
-					}
-				}
+    @Override
+    protected void createItems() {
+        for (int i = 0; i < 20; i++){
+            Item item = Generator.randomUsingDefaults(Random.oneOf(
+                    Generator.Category.WEAPON, Generator.Category.WEAPON, Generator.Category.WEAPON,
+                    Generator.Category.ARMOR,
+                    Generator.Category.WAND,
+                    Generator.Category.RING));
+            //regrowth is disallowed as it can be used to farm HP regen
+            if (item instanceof WandOfRegrowth){
+                continue;
+            }
+            if (item.cursed){
+                item.cursed = false;
+                if (item instanceof MeleeWeapon && ((MeleeWeapon) item).hasCurseEnchant()){
+                    ((MeleeWeapon) item).enchant(null);
+                } else if (item instanceof Armor && ((Armor) item).hasCurseGlyph()){
+                    ((Armor) item).inscribe(null);
+                }
+            }
+            //not true ID, prevents extra info about rings leaking to main game
+            item.levelKnown = item.cursedKnown = true;
+            addItemToSpawn(item);
+        }
 
-				if (x == 0 && y == 3){
-					Room r = new EmptyRoom();
-					r.set(1+8*x, 1+8*y, 9+8*x, 9+8*y);
-					rooms.add(r);
-					entryRoom = r;
-				} else {
-					Room r = new SegmentedRoom();
-					r.set(1+8*x, 1+8*y, 9+8*x, 9+8*y);
-					rooms.add(r);
-				}
-			}
-		}
+        //copypasta from super.createItems
+        for (Item item : itemsToSpawn) {
+            int cell = randomDropCell();
+            drop( item, cell ).type = Heap.Type.HEAP;
+            if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+                map[cell] = Terrain.GRASS;
+                losBlocking[cell] = false;
+            }
+        }
+    }
 
-		//builder.findneighbnours
-		Room[] ra = rooms.toArray( new Room[0] );
-		for (int i=0; i < ra.length-1; i++) {
-			for (int j=i+1; j < ra.length; j++) {
-				ra[i].addNeigbour( ra[j] );
-			}
-		}
+    @Override
+    public int randomRespawnCell( Char ch ) {
+        return entrance()-width();
+    }
 
-		for (Room n : rooms){
-			for (Room p : n.neigbours){
-				if (p.height() > 10){
-					continue;
-				}
-				if (n.height() > 10){
-					if (n.canConnect(p)){
-						if (n.bottom == p.top){
-							n.connect(p);
-						}
-					}
-				} else if (n.canConnect(p)) {
-					n.connect(p);
-				}
-			}
-		}
+    public static class VaultFlameTrap extends Trap {
 
-		//Painter.placedoors
-		for (Room r : rooms){
-			for (Room n : r.connected.keySet()) {
-				Room.Door door = r.connected.get( n );
-				if (door == null) {
+        {
+            color = BLACK;
+            shape = DOTS;
 
-					Rect i = r.intersect( n );
-					ArrayList<Point> doorSpots = new ArrayList<>();
-					for (Point p : i.getPoints()){
-						if (r.canConnect(p) && n.canConnect(p))
-							doorSpots.add(p);
-					}
-					if (doorSpots.isEmpty()){
-						ShatteredPixelDungeon.reportException(
-								new RuntimeException("Could not place a door! " +
-										"r=" + r.getClass().getSimpleName() +
-										" n=" + n.getClass().getSimpleName()));
-						continue;
-					}
-					door = new Room.Door(Random.element(doorSpots));
+            canBeHidden = false;
+            active = false;
+        }
 
-					r.connected.put( n, door );
-					n.connected.put( r, door );
-				}
-			}
-		}
+        @Override
+        public void activate() {
+            //does nothing, this trap is just decoration and is always deactivated
+        }
 
-		for (Room n : rooms){
-			n.paint(this);
-			if (n instanceof RegionDecoLineRoom){
-				Painter.fill(this, n, 1, Terrain.EMPTY_SP);
-				Painter.fill(this, n.left+1, n.top+1, 7, 1, Terrain.REGION_DECO_ALT);
-				Painter.fill(this, n.left+1, n.top+1, 1, 14, Terrain.REGION_DECO_ALT);
-				Painter.fill(this, n.right-1, n.top+1, 1, 14, Terrain.REGION_DECO_ALT);
-			}
-			for (Point door : n.connected.values()){
-				Painter.set(this, door, Terrain.DOOR);
-			}
-		}
+        public static void setupTrap(Level level, int cell, int initialDelay, int cooldown){
+            VaultFlameTraps traps = Blob.seed(0, 0, VaultFlameTraps.class, level);
+            traps.initialCooldowns[cell] = cooldown;
+            traps.cooldowns[cell] = initialDelay;
+            level.setTrap(new VaultLevel.VaultFlameTrap().reveal(), cell);
+            Painter.set(level, cell, Terrain.INACTIVE_TRAP);
+        }
 
-		entrance = pointToCell(entryRoom.random());
-		transitions.add(new LevelTransition(this,
-				entrance,
-				LevelTransition.Type.BRANCH_ENTRANCE,
-				Dungeon.depth,
-				0,
-				LevelTransition.Type.BRANCH_EXIT));
+    }
 
-		rooms.remove(entryRoom);
-		rooms.remove(finalRoom);
-
-		// DArby NPC를 Final Room 위측 중앙에 배치
-		if (finalRoom != null) {
-			// Final Room의 중앙 X 좌표 계산
-			int finalRoomCenterX = (finalRoom.left + finalRoom.right) / 2;
-			// 위쪽에서 약간 아래로 (장식 영역을 피하기 위해 top+3)
-			int finalRoomTopY = finalRoom.top + 3;
-			// pos = y * width() + x 형식으로 계산
-			int darbyPos = finalRoomTopY * width() + finalRoomCenterX;
-			DArby So2 = new DArby();
-			So2.pos = darbyPos;
-			mobs.add(So2);
-		}
-
-		// 아이템 생성 비활성화
-
-		return true;
-	}
-
-	@Override
-	public boolean activateTransition(Hero hero, LevelTransition transition) {
-		//walking onto transitions does nothing, need to use crystal
-		return false;
-	}
-
-	@Override
-	public Mob createMob() {
-		return null;
-	}
-
-	@Override
-	protected void createMobs() {
-	}
-
-	public Actor addRespawner() {
-		return null;
-	}
-
-	@Override
-	protected void createItems() {
-		// 아이템 생성 비활성화
-	}
-
-	@Override
-	public int randomRespawnCell( Char ch ) {
-		return entrance()-width();
-	}
 }

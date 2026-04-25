@@ -37,9 +37,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ShadowBox;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
-import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
@@ -856,6 +856,11 @@ public class InterlevelScene extends PixelScene {
             int pos = level.randomRespawnCell(null);
             if (pos == -1) pos = level.entrance();
             level.drop(new LostBackpack(), pos);
+
+            //need to reset key replacement tracking as well
+            if (Dungeon.hero.buff(SkeletonKey.KeyReplacementTracker.class) != null){
+                Dungeon.hero.buff(SkeletonKey.KeyReplacementTracker.class).clearDepth();
+            }
 
         } else {
             level = Dungeon.level;
