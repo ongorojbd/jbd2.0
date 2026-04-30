@@ -54,6 +54,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_5_Changes(changeInfos);
         add_v3_4_Changes(changeInfos);
         add_v3_3_Changes(changeInfos);
         add_v3_2_Changes(changeInfos);
@@ -68,14 +69,60 @@ public class v3_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
-                "추후 제공될 주요 콘텐츠 변경사항은 오시리스신 퀘스트 개편입니다.\n\n" +
-                        "이 새로운 퀘스트는 독특한 플레이 스타일로 진행될 것입니다."));
-
-        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "전투조류 출시",
-                "전투조류 던전의 베타 기간이 끝나고 정식 출시될 예정입니다!\n\n" +
-                        "총 63층 예정으로, 전투조류 던전 클리어 보상도 추가 예정입니다."));
-
+                        "다음 주요 업데이트는 오시리스신 퀘스트 변경으로, 기존과 차별화된 독특한 퀘스트 방식이 될 예정입니다."));
     }
+
+    public static void add_v3_5_Changes(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("v3.0f", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "신규 던전 '전투조류' 출시!",
+                "새로운 던전 _전투조류_가 정식 업데이트되었습니다!\n\n" +
+                        "전투조류는 기존과 다른 독립적인 방식으로 진행되며, 게임 클리어 후 영웅 선택 화면의 전용 아이콘을 클릭해 입장할 수 있습니다. " +
+                        "베타 버전에서 발전된 신규 시스템과 게임 방식이 준비되어 있으니 꼭 도전해 보세요!"));
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "전투조류 포인트 상점",
+                        "전투조류 던전을 클리어하면 획득할 수 있는 신규 재화인 _전투조류 포인트_가 추가되었습니다!\n\n" +
+                        "전투조류 포인트로 엠포리오의 방에 추가된 _에르메스_에게 _잔재 선택권_ 또는 _만화책 선택권_을 구매할 수 있습니다.\n\n" +
+                        "전투조류 포인트를 사용해서 _신규 보조 직업_을 선택할 수 있습니다.\n\n"));
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "신규 보조 직업",
+                        "죠죠의 기묘한 던전에 처음으로 도입하는, 모든 캐릭터가 선택 가능한 공용 보조 직업인 _완전생물_이 추가되었습니다!\n\n" +
+                        "스탠드 구현의 화살 사용 시 _2 전투조류 포인트_를 소모하여 선택할 수 있습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "보조 직업 전용 특성 추가",
+                        "승률이 저조한 보조 직업들을 위한 전용 _신규 특성_이 추가되었습니다!\n\n" +
+                        "용기의 파문전사 신규 특성(1종), 죠린 보조 직업 신규 특성(3종)을 통해 더욱 다양한 전략을 세울 수 있습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "용기의 파문전사",
+                        "신규 특성 _파문의 흐름_이 추가되었습니다.\n\n" +
+                        "이제 파문 에너지를 보다 능동적으로 쌓고 관리하며 전투를 주도할 수 있습니다."));
+
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "의지의 스탠드사 / 결착의 스탠드사",
+                        "신규 공용 특성 _끈을 이용한 방어_, _돌의 바다_, _수놓기_가 추가되었습니다.\n\n" +
+                        "죠린이 상황에 맞춰 유연하게 대처할 수 있도록 생존력과 유틸리티를 보강했습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(CharSprite.NEGATIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "죠니",
+                        "'실로 머나먼 길' 시전 중 공격 상쇄 특성으로 보호막을 무한정 쌓을 수 없도록 수정되었습니다.\n\n" +
+                        "또한, 터스크 장비 DISC 업그레이드에 필요한 황금의 회전 요구량이 증가했습니다."));
+    }
+
     public static void add_v3_4_Changes(ArrayList<ChangeInfo> changeInfos) {
 
         ChangeInfo changes = new ChangeInfo("v3.0e", true, "");
@@ -263,7 +310,7 @@ public class v3_X_Changes {
                         "- 투쟁심 특성의 정확도가 +1/2/3에서 -30/-10/+10% -> -25/0/+25%이 됩니다."));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMAHAWK), "투척 무기 상향",
-                        "- 자철석으로 가져올 아이템이 즉시 회수 가능한 아이템(렉킹 볼, 황금의 회전의 철구 등)일 경우 시전에 턴을 소모하지 않습니다.\n\n" +
+                "- 자철석으로 가져올 아이템이 즉시 회수 가능한 아이템(렉킹 볼, 황금의 회전의 철구 등)일 경우 시전에 턴을 소모하지 않습니다.\n\n" +
                         "- DIO의 나이프의 출혈 피해량이 딜 비례가 아닌 독자적인 범위를 가지도록 변경됩니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
@@ -271,7 +318,7 @@ public class v3_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOLAS), "투척 무기 하향",
-                        "- 크래커 볼리의 피해량이 6-9 -> 4-9로 감소되었습니다. 강화 시 피해량은 +1-2 -> +0-2로 변경되었습니다.\n\n" +
+                "- 크래커 볼리의 피해량이 6-9 -> 4-9로 감소되었습니다. 강화 시 피해량은 +1-2 -> +0-2로 변경되었습니다.\n\n" +
                         "- 노토리어스 B.I.G이 돌아올 때 필요한 턴이 4턴에서 5턴으로 증가합니다."));
     }
 
