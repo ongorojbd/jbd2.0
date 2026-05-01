@@ -48,7 +48,7 @@ public class Spw48 extends Item {
     }
 
     public static int chance(int level) {
-        return Math.round(75f * Math.max(1, Math.min(8, level)) / 8f);
+        return Math.max(1, Math.min(8, level)) * 8;
     }
 
     private static boolean isConsumable(Item item) {

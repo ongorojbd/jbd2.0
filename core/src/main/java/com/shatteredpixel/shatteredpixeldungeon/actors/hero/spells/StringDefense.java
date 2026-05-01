@@ -38,13 +38,11 @@ public class StringDefense extends ClericSpell {
 
 	@Override
 	public int icon() {
-		return HeroIcon.COMBO;
+		return HeroIcon.JOLYNE_NEW1;
 	}
 
 	@Override
-	public float chargeUse(Hero hero) {
-		return 5 - hero.pointsInTalent(Talent.JOLYNE_NEW1);
-	}
+	public float chargeUse(Hero hero) { return 4 - hero.pointsInTalent(Talent.JOLYNE_NEW1); }
 
 	@Override
 	public boolean canCast(Hero hero) {

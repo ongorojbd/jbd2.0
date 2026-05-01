@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,6 +85,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw43;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw44;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw45;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw47;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw50;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw51;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw52;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
@@ -107,6 +110,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
@@ -116,6 +121,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachineg
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JohnnyWepon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -124,6 +130,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSt
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
 import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
@@ -167,17 +174,20 @@ public enum HeroClass {
             new RingOfMight().identify().upgrade(9999).collect();
             new RingOfEnergy().identify().upgrade(9999).collect();
             new RingOfAccuracy().identify().upgrade(9999).collect();
+            new Sickle().identify().upgrade(5).collect();
             new PlateArmor().identify().upgrade(9999).collect();
-            new WandOfDisintegration().identify().upgrade(9).collect();
             new WandOfCorruption().identify().upgrade(9).collect();
+            new WandOfCorruption().identify().upgrade(9).collect();
+            new WandOfFireblast().identify().upgrade(9).collect();
+            new WandOfFrost().identify().upgrade(9).collect();
             new PotionOfHealing().identify().quantity(9999).collect();
             new PotionOfMindVision().identify().quantity(9999).collect();
             new UV().identify().quantity(120).collect();
-            new ScrollOfDread().quantity(120).collect();
-            new Spw().quantity(120).collect();
             new Neotel().identify().collect();
             new TengusMask().identify().collect();
             new KingsCrown().identify().collect();
+            new Blindweed.Seed().identify().quantity(20).collect();
+            new Sorrowmoss.Seed().quantity(20).collect();
         }
 
         switch (this) {

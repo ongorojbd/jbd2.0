@@ -2074,6 +2074,11 @@ public class Hero extends Char {
             return;
         }
 
+        //TODO hero cannot take damage in the vault tester area
+        if (Dungeon.depth > 15 && Dungeon.branch == 1){
+            dmg = 0;
+        }
+
         if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
             interrupt();
         }

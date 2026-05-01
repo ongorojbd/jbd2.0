@@ -13,6 +13,7 @@ public class Spw51 extends Item {
 
     {
         image = ItemSpriteSheet.WILD_ENERGY;
+        icon = ItemSpriteSheet.Icons.RING_ENERGY;
 
         stackable = true;
         levelKnown = true;

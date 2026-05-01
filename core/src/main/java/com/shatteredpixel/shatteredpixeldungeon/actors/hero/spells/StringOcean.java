@@ -56,7 +56,7 @@ public class StringOcean extends TargetedClericSpell {
 
 	@Override
 	public int icon() {
-		return HeroIcon.SPIRIT_FORM;
+		return HeroIcon.JOLYNE_NEW2;
 	}
 
 	@Override
@@ -109,7 +109,6 @@ public class StringOcean extends TargetedClericSpell {
 
 		if (success) {
 			Sword.stonefreeclass();
-			Sample.INSTANCE.play(Assets.Sounds.CHAINS);
 			Sample.INSTANCE.play(Assets.Sounds.MISS);
 		}
 	}
@@ -139,7 +138,7 @@ public class StringOcean extends TargetedClericSpell {
 		final int pulledPos = bestPos;
 
 		hero.busy();
-		hero.sprite.parent.add(new Chains(hero.sprite.center(), enemy.sprite.center(), Effects.Type.ETHEREAL_CHAIN, new Callback() {
+		hero.sprite.parent.add(new Chains(hero.sprite.center(), enemy.sprite.center(), Effects.Type.JOLYNE_CHAIN, new Callback() {
 			@Override
 			public void call() {
 				Actor.add(new Pushing(enemy, enemy.pos, pulledPos, new Callback() {
@@ -176,7 +175,7 @@ public class StringOcean extends TargetedClericSpell {
 		final int newHeroPos = chain.collisionPos;
 
 		hero.busy();
-		hero.sprite.parent.add(new Chains(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(newHeroPos), Effects.Type.ETHEREAL_CHAIN, new Callback() {
+		hero.sprite.parent.add(new Chains(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(newHeroPos), Effects.Type.JOLYNE_CHAIN, new Callback() {
 			@Override
 			public void call() {
 				Actor.add(new Pushing(hero, hero.pos, newHeroPos, new Callback() {
@@ -204,7 +203,7 @@ public class StringOcean extends TargetedClericSpell {
 		}
 
 		hero.busy();
-		hero.sprite.parent.add(new Chains(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(chain.collisionPos), Effects.Type.ETHEREAL_CHAIN, new Callback() {
+		hero.sprite.parent.add(new Chains(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(chain.collisionPos), Effects.Type.JOLYNE_CHAIN, new Callback() {
 			@Override
 			public void call() {
 				Item item = heap.peek();
@@ -229,7 +228,7 @@ public class StringOcean extends TargetedClericSpell {
 
 	private static boolean chainTrap(HolyTome tome, Ballistica chain, final Hero hero) {
 		hero.busy();
-		hero.sprite.parent.add(new Chains(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(chain.collisionPos), Effects.Type.ETHEREAL_CHAIN, new Callback() {
+		hero.sprite.parent.add(new Chains(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(chain.collisionPos), Effects.Type.JOLYNE_CHAIN, new Callback() {
 			@Override
 			public void call() {
 				Dungeon.level.pressCell(chain.collisionPos);

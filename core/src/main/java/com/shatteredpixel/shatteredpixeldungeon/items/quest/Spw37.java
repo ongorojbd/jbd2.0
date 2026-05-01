@@ -12,7 +12,7 @@ public class Spw37 extends Item {
     public static final String AC_LIGHT = "LIGHT";
 
     {
-        image = ItemSpriteSheet.RING_DIAMOND;
+        image = ItemSpriteSheet.RUNIC_BLADE;
         icon = ItemSpriteSheet.Icons.RING_ARCANA;
 
         stackable = true;

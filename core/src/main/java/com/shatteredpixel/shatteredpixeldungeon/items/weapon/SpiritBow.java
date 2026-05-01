@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.HuntressArmor;
@@ -309,7 +310,17 @@ public class SpiritBow extends Weapon {
 			setID = 0;
 		}
 
-		@Override
+        @Override
+        public ArrayList<String> actions(Hero hero) {
+            return new ArrayList<>();
+        }
+
+        @Override
+        public String defaultAction() {
+            return null;
+        }
+
+        @Override
 		public int defaultQuantity() {
 			return 1;
 		}
@@ -382,6 +393,11 @@ public class SpiritBow extends Weapon {
 				if (sniperSpecial && SpiritBow.this.augment != Augment.SPEED) sniperSpecial = false;
 			}
 		}
+
+        @Override
+        public Item split(int amount) {
+            return null;
+        }
 
 		@Override
 		public void throwSound() {

@@ -39,7 +39,7 @@ public class StringStitching extends ClericSpell {
 
 	@Override
 	public int icon() {
-		return HeroIcon.SHIELD_OF_LIGHT;
+		return HeroIcon.JOLYNE_NEW3;
 	}
 
 	@Override

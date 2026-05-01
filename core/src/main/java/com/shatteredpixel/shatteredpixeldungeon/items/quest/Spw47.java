@@ -19,7 +19,8 @@ public class Spw47 extends Item {
     public static final String AC_LIGHT = "LIGHT";
 
     {
-        image = ItemSpriteSheet.RUNIC_BLADE;
+        image = ItemSpriteSheet.RAPIER;
+        icon = ItemSpriteSheet.Icons.RING_MIGHT;
 
         stackable = true;
         levelKnown = true;

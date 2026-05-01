@@ -355,7 +355,6 @@ public class Esidisi extends Mob {
                         dmg = Math.round(dmg * 0.25f);
                     }
                     ch.damage(dmg, this);
-                    Buff.affect(ch, Bleeding.class).set(0.3f * dmg);
                     Buff.affect(ch, Burning.class).reignite(ch, 3f);
                     if (ch == Dungeon.hero && !ch.isAlive()) Dungeon.fail(getClass());
                 }

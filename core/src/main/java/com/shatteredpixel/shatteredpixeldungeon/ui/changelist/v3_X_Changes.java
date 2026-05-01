@@ -91,7 +91,7 @@ public class v3_X_Changes {
         changes.addButton(new ChangeButton(new Image(new WillcSprite()), "전투조류 정식 출시!",
                 "새로운 던전 _전투조류_가 정식 업데이트되었습니다!\n\n" +
                         "전투조류는 기존과 다른 독립적인 방식으로 진행되며, 게임 클리어 후 영웅 선택 화면의 전용 아이콘을 클릭해 입장할 수 있습니다.\n\n" +
-                        "베타 버전에서 발전된 신규 시스템과 게임 방식이 준비되어 있으니 꼭 도전해 보세요!"));
+                        "발전된 신규 시스템과 게임 방식이 준비되어 있으니 꼭 도전해 보세요!"));
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EVOLUTION), "전투조류 포인트",
                 "전투조류 던전을 클리어하면 획득할 수 있는 신규 재화인 _전투조류 포인트_가 추가되었습니다!\n\n" +
                         "전투조류 포인트로 엠포리오의 방에 있는 에르메스에게 _잔재 선택권_ 또는 _만화책 선택권_을 구매할 수 있습니다.\n\n" +
@@ -111,12 +111,12 @@ public class v3_X_Changes {
         changes.hardlight(CharSprite.POSITIVE);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new Image(new SupressionSprite()), "용기의 파문전사",
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 1), "용기의 파문전사",
                 "신규 특성 _파문의 흐름_이 추가되었습니다.\n\n" +
                         "이제 파문 에너지를 보다 능동적으로 쌓고 관리하며 전투를 주도할 수 있습니다."));
 
-        changes.addButton(new ChangeButton(new Image(new JojoSprite()), "죠린 보조 직업",
-                "신규 공용 특성 _끈을 이용한 방어_, _돌의 바다_, _수놓기_가 추가되었습니다.\n\n" +
+        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 1), "죠린 보조 직업",
+                "신규 특성 _끈을 이용한 방어_, _돌의 바다_, _수놓기_가 추가되었습니다.\n\n" +
                         "죠린이 상황에 맞춰 유연하게 대응할 수 있도록 개선하고, 특성 선택의 폭을 넓혔습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
@@ -125,7 +125,7 @@ public class v3_X_Changes {
 
         changes.addButton(new ChangeButton(new Image(new JohnnySprite()), "죠니",
                 "'실로 머나먼 길' 시전 중 공격 상쇄 특성으로 보호막을 무한정 쌓을 수 없도록 수정되었습니다.\n\n" +
-                        "터스크 장비 DISC의 충전 속도가 -35% 감소됩니다."));
+                        "터스크 장비 DISC의 충전 속도가 -35% 감소합니다."));
     }
 
     public static void add_v3_4_Changes(ArrayList<ChangeInfo> changeInfos) {

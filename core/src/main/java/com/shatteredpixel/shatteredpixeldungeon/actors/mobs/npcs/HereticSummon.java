@@ -255,17 +255,17 @@ public abstract class HereticSummon extends NPC {
 	private static float damageMultiplier() {
 		switch (summonTalentPoints(Talent.CURSED_CLAW)) {
 			case 1: return 0.75f;
-			case 2: return 0.70f;
-			case 3: return 0.65f;
+			case 2: return 0.60f;
+			case 3: return 0.55f;
 			default: return 1f;
 		}
 	}
 
 	private static float healthMultiplier() {
 		switch (summonTalentPoints(Talent.CURSED_CLAW)) {
-			case 1: return 0.50f;
-			case 2: return 0.40f;
-			case 3: return 0.30f;
+            case 1: return 0.75f;
+            case 2: return 0.60f;
+            case 3: return 0.55f;
 			default: return 1f;
 		}
 	}

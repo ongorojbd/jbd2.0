@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,6 +106,9 @@ public class HeroIcon extends Image {
 	public static final int BEAMING_RAY     = 64;
 	public static final int LIFE_LINK       = 65;
 	public static final int STASIS          = 66;
+	public static final int JOLYNE_NEW1     = 67;
+	public static final int JOLYNE_NEW2     = 68;
+	public static final int JOLYNE_NEW3     = 69;
 
 	//all cleric spells have a separate icon with no background for the action indicator
 	public static final int SPELL_ACTION_OFFSET      = 32;

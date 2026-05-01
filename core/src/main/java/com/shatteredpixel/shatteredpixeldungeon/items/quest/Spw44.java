@@ -13,6 +13,7 @@ public class Spw44 extends Item {
 
     {
         image = ItemSpriteSheet.GAUNTLETS;
+        icon = ItemSpriteSheet.Icons.RING_FUROR;
 
         stackable = true;
         levelKnown = true;

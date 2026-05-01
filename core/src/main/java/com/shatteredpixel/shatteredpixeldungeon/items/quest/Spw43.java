@@ -13,6 +13,7 @@ public class Spw43 extends Item {
 
     {
         image = ItemSpriteSheet.BATTLE_AXE;
+        icon = ItemSpriteSheet.Icons.RING_ACCURACY;
 
         stackable = true;
         levelKnown = true;

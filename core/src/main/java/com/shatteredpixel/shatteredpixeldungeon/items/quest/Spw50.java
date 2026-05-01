@@ -101,7 +101,7 @@ public class Spw50 extends Item {
     }
 
     private static int bonusPercent(int level) {
-        return 12 + Math.max(1, Math.min(8, level)) * 6;
+        return Math.max(1, Math.min(8, level)) * 12;
     }
 
     private static int damageReductionPercent(int level) {

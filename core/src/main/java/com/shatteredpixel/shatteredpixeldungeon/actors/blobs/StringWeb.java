@@ -47,12 +47,12 @@ public class StringWeb extends Web {
 		}
 
 		int points = Dungeon.hero.pointsInTalent(Talent.JOLYNE_NEW3);
-		Buff.prolong(ch, Roots.class, Roots.DURATION);
+		Buff.prolong(ch, Cripple.class, 5f);
 		if (points >= 2) {
-			Buff.prolong(ch, Hex.class, Roots.DURATION);
+			Buff.prolong(ch, Roots.class, 5f);
 		}
 		if (points >= 3) {
-			Buff.affect(ch, Bleeding.class).set(30);
+            Buff.prolong(ch, Hex.class, 5f);
 		}
 	}
 

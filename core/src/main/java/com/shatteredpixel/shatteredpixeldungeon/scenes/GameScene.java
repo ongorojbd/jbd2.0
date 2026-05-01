@@ -2106,7 +2106,7 @@ public class GameScene extends PixelScene {
                 if (lastOffset != null) {
                     offsetToInherit = lastOffset;
                 }
-                if (offsetToInherit != null) {
+                if (offsetToInherit != null && !offsetToInherit.isZero()) {
                     wnd.offset(offsetToInherit);
                     wnd.boundOffsetWithMargin(3);
                 }
@@ -2419,6 +2419,8 @@ public class GameScene extends PixelScene {
 
     @Override
     public synchronized void saveWindows() {
+        if (members == null) return;
+
         super.saveWindows();
         if (scene != null && scene.inventory != null && scene.inventory.getSelector() != null){
             savedSelector = scene.inventory.getSelector();

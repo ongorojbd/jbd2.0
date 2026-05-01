@@ -48,6 +48,6 @@ public class Spw49 extends Item {
     }
 
     public static int chance(int level) {
-        return Math.round(90f * Math.max(1, Math.min(8, level)) / 8f);
+        return Math.max(1, Math.min(8, level)) * 8;
     }
 }

@@ -114,7 +114,7 @@ public class CreditScene extends PixelScene {
 
 		CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
 				"Link",
-				Icons.KRISTJAN.get(),
+				Icons.LUMINE.get(),
 				"공식 카톡방",
 				"url",
 				"https://open.kakao.com/o/gC7ZgGjd");
