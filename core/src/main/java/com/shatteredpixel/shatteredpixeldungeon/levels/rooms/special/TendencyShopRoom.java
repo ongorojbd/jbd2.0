@@ -631,48 +631,4 @@ public class TendencyShopRoom extends SpecialRoom {
         return itemsToSpawn;
     }
 
-    protected static Bag ChooseBag(Belongings pack) {
-
-        //generate a hashmap of all valid bags.
-        HashMap<Bag, Integer> bags = new HashMap<>();
-        if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) bags.put(new VelvetPouch(), 1);
-        if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) bags.put(new ScrollHolder(), 0);
-        if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) bags.put(new PotionBandolier(), 0);
-        if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped()) bags.put(new MagicalHolster(), 0);
-
-        if (bags.isEmpty()) return null;
-
-        //count up items in the main bag
-        for (Item item : pack.backpack.items) {
-            for (Bag bag : bags.keySet()) {
-                if (bag.canHold(item)) {
-                    bags.put(bag, bags.get(bag) + 1);
-                }
-            }
-        }
-
-        //find which bag will result in most inventory savings, drop that.
-        Bag bestBag = null;
-        for (Bag bag : bags.keySet()) {
-            if (bestBag == null) {
-                bestBag = bag;
-            } else if (bags.get(bag) > bags.get(bestBag)) {
-                bestBag = bag;
-            }
-        }
-
-        if (bestBag instanceof VelvetPouch) {
-            Dungeon.LimitedDrops.VELVET_POUCH.drop();
-        } else if (bestBag instanceof ScrollHolder) {
-            Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
-        } else if (bestBag instanceof PotionBandolier) {
-            Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
-        } else if (bestBag instanceof MagicalHolster) {
-            Dungeon.LimitedDrops.MAGICAL_HOLSTER.drop();
-        }
-
-        return bestBag;
-
-    }
-
 }

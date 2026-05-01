@@ -75,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw10;
@@ -85,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw43;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw44;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw45;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw47;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw49;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw50;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw51;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw52;
@@ -105,6 +107,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDread;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Evolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
@@ -170,25 +173,6 @@ public enum HeroClass {
 
         new ScrollOfIdentify().identify();
 
-        if (DeviceCompat.isDebug()) {
-            new RingOfMight().identify().upgrade(9999).collect();
-            new RingOfEnergy().identify().upgrade(9999).collect();
-            new RingOfAccuracy().identify().upgrade(9999).collect();
-            new Sickle().identify().upgrade(5).collect();
-            new PlateArmor().identify().upgrade(9999).collect();
-            new WandOfCorruption().identify().upgrade(9).collect();
-            new WandOfCorruption().identify().upgrade(9).collect();
-            new WandOfFireblast().identify().upgrade(9).collect();
-            new WandOfFrost().identify().upgrade(9).collect();
-            new PotionOfHealing().identify().quantity(9999).collect();
-            new PotionOfMindVision().identify().quantity(9999).collect();
-            new UV().identify().quantity(120).collect();
-            new Neotel().identify().collect();
-            new TengusMask().identify().collect();
-            new KingsCrown().identify().collect();
-            new Blindweed.Seed().identify().quantity(20).collect();
-            new Sorrowmoss.Seed().quantity(20).collect();
-        }
 
         switch (this) {
             case WARRIOR:
