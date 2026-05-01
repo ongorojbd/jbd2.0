@@ -26,6 +26,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.TendencyMap;
 // import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 // import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -100,11 +102,16 @@ public class ArenaLevel extends RegularLevel {
     {
         color1 = 0x48763c;
         color2 = 0x48763c;
+        suppressSpwPrize = Dungeon.tendencylevel && Statistics.tendencyMapNode == TendencyMap.SHOP;
+        doubleSpwPrize = Dungeon.tendencylevel && Statistics.tendencyMapNode == TendencyMap.ELITE;
         // Random trial selection for Arena depths 28-35 (inclusive)
-        if (Dungeon.tendencylevel && Dungeon.depth >= 28 && Dungeon.depth < 35) {
+        if (Dungeon.tendencylevel
+                && Statistics.tendencyMapNode == TendencyMap.ELITE) {
+            trialType = 6;
+        } else if (Dungeon.tendencylevel && Dungeon.depth >= 28 && Dungeon.depth < 35) {
             // 사용 가능한 시련 목록:
-            // 1 어둠, 2 함정, 3 대형, 6 챔피언, 7 허약, 8 취약, 9 절름발이
-            int[] trials = new int[]{1, 2, 3, 6, 7, 8, 9};
+            // 1 어둠, 2 함정, 6 챔피언, 7 허약, 8 취약, 9 절름발이
+            int[] trials = new int[]{1, 2, 7, 8, 9};
             trialType = trials[Random.Int(trials.length)];
 
             switch (trialType) {
@@ -236,6 +243,14 @@ public class ArenaLevel extends RegularLevel {
         if (feeling == Feeling.LARGE){
             mobs = (int)Math.ceil(mobs * 2f);
         }
+        if (Dungeon.tendencylevel) {
+            if (Statistics.tendencyMapNode == TendencyMap.ELITE
+                    || Statistics.tendencyMapNode == TendencyMap.EVENT) {
+                mobs = (int)Math.ceil(mobs * 2.25f);
+            } else if (Statistics.tendencyMapNode == TendencyMap.REST || Statistics.tendencyMapNode == TendencyMap.SHOP) {
+                mobs = Math.max(2, (int)Math.ceil(mobs * 0.6f));
+            }
+        }
         return (int) (mobs/1.5f);
     }
 
@@ -255,7 +270,7 @@ public class ArenaLevel extends RegularLevel {
         ArrayList<Room> initRooms = new ArrayList<>();
         initRooms.add ( roomEntrance = new com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom());
 
-        if (Dungeon.depth % 2 == 0) initRooms.add( new TendencyShopRoom());
+        if (Statistics.tendencyMapNode == TendencyMap.SHOP) initRooms.add( new TendencyShopRoom());
 
         initRooms.add( roomExit = new SewerBossExitRoom2());
 
@@ -290,16 +305,15 @@ public class ArenaLevel extends RegularLevel {
         super.create();
 
         // 추가 패널티 적용 처리 (hazard 제거, 함정 공개 지연 제거)
-        if (Dungeon.tendencylevel && Dungeon.depth >= 28 && Dungeon.depth <= 35) {
+        if (Dungeon.tendencylevel
+                && (Dungeon.depth >= 28 && Dungeon.depth <= 35
+                || Statistics.tendencyMapNode == TendencyMap.ELITE
+                || Statistics.tendencyMapNode == TendencyMap.EVENT)) {
             if (trialType == 5) {
                 // legacy path (not used)
             } else if (trialType == 6) {
-                // 챔피언의 위협: 일부 기존 몹에게 챔피언 버프 부여 (전갈과 분리)
-                int champions = 2 + Random.Int(3); // 2~4마리 정도로 증가
                 for (Mob m : mobs.toArray(new Mob[0])) {
-                    if (champions <= 0) break;
                     if (m.alignment == com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ENEMY && m.buff(ChampionEnemy.class) == null) {
-                        // 강제 챔피언화: 무작위 챔피언 버프 직접 부여
                         Class<? extends ChampionEnemy> buffCls;
                         switch (Random.Int(6)){
                             case 0: default:    buffCls = ChampionEnemy.Blazing.class;      break;
@@ -310,7 +324,6 @@ public class ArenaLevel extends RegularLevel {
                             case 5:             buffCls = ChampionEnemy.Growing.class;      break;
                         }
                         Buff.affect(m, buffCls);
-                        champions--;
                     }
                 }
             } else if (trialType == 7) {
@@ -338,9 +351,6 @@ public class ArenaLevel extends RegularLevel {
                     break;
                 case 3:
                     GLog.p("파문 수행: 전투 - 적이 더 많이 등장합니다.");
-                    break;
-                case 6:
-                    GLog.p("파문 수행: 강화 - 일부 적이 강화됩니다.");
                     break;
                 case 7:
                     GLog.p("파문 수행: 약화 - 공격력 저하가 (이 층에서만) 적용됩니다.");
@@ -426,9 +436,9 @@ public class ArenaLevel extends RegularLevel {
     public String tileName( int tile ) {
         switch (tile) {
             case Terrain.WATER:
-                return Messages.get(Level.class, "water_name");
+                return Messages.get(ArenaLevel.class, "water_name");
             case Terrain.HIGH_GRASS:
-                return Messages.get(Level.class, "high_grass_name");
+                return Messages.get(ArenaLevel.class, "high_grass_name");
             default:
                 return super.tileName( tile );
         }
@@ -438,19 +448,19 @@ public class ArenaLevel extends RegularLevel {
     public String tileDesc(int tile) {
         switch (tile) {
             case Terrain.ENTRANCE:
-                return Messages.get(Level.class, "entrance_desc");
+                return Messages.get(ArenaLevel.class, "entrance_desc");
             case Terrain.EXIT:
-                return Messages.get(Level.class, "exit_desc");
+                return Messages.get(ArenaLevel.class, "exit_desc");
             case Terrain.WALL_DECO:
             case Terrain.EMPTY_DECO:
-                return Messages.get(Level.class, "deco_desc");
+                return Messages.get(ArenaLevel.class, "deco_desc");
             case Terrain.EMPTY_SP:
-                return Messages.get(Level.class, "sp_desc");
+                return Messages.get(ArenaLevel.class, "sp_desc");
             case Terrain.STATUE:
             case Terrain.STATUE_SP:
-                return Messages.get(Level.class, "statue_desc");
+                return Messages.get(ArenaLevel.class, "statue_desc");
             case Terrain.BOOKSHELF:
-                return Messages.get(Level.class, "bookshelf_desc");
+                return Messages.get(ArenaLevel.class, "bookshelf_desc");
             default:
                 return super.tileDesc( tile );
         }

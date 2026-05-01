@@ -99,6 +99,11 @@ public class SurfaceScene extends PixelScene {
                     new String[]{Assets.Music.JONATHAN},
                     new float[]{1},
                     false);
+        } else if (Dungeon.tendencylevel) {
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.SEWERS_2},
+                    new float[]{1},
+                    false);
         } else {
             Music.INSTANCE.playTracks(
                     new String[]{Assets.Music.THEME_2},

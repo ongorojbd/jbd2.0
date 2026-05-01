@@ -90,6 +90,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.AdvancedEvolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Evolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
@@ -100,6 +101,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
@@ -368,6 +370,10 @@ public class TendencyShopRoom extends SpecialRoom {
                 break;
         }
 
+        if (Random.Int(3) == 0) {
+            itemsToSpawn.add(new Shr());
+        }
+
         // 추가 소모품 (랜덤)
         if (Random.Int(2) == 0) {
             switch (Random.Int(2)) {
@@ -450,11 +456,15 @@ public class TendencyShopRoom extends SpecialRoom {
         itemsToSpawn.add(TippedDart.randomTipped(2));
 
         // 깊이별 특별 아이템
-        if (Dungeon.depth % 2 == 0) itemsToSpawn.add(new PotionOfHealing().identify());
-        if (Dungeon.depth % 2 == 0) itemsToSpawn.add(Generator.randomMissile());
-        if (Dungeon.depth % 6 == 0) itemsToSpawn.add(new MagicalInfusion().identify());
-        if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new ScrollOfRemoveCurse().identify());
-        if (Dungeon.depth % 4 == 0) itemsToSpawn.add(new PotionOfStrength().identify());
+        itemsToSpawn.add(new PotionOfHealing().identify());
+        itemsToSpawn.add(Generator.randomMissile());
+
+        if (Random.Int(2) == 0) {
+            itemsToSpawn.add(new MagicalInfusion().identify());
+        }
+
+        itemsToSpawn.add(new ScrollOfRemoveCurse().identify());
+        itemsToSpawn.add(new PotionOfStrength().identify());
 
         // 희귀 아이템 (하나만 선택)
         Item rare;
@@ -546,6 +556,10 @@ public class TendencyShopRoom extends SpecialRoom {
                 break;
         }
 
+        if (Random.Int(2) == 0) {
+            itemsToSpawn.add(new Evolution());
+        }
+
         if (Random.Int(8) == 0) {
             itemsToSpawn.add(new UV());
         }
@@ -583,14 +597,6 @@ public class TendencyShopRoom extends SpecialRoom {
             }
             additionalRare.identify();
             itemsToSpawn.add(additionalRare);
-        }
-
-        // 가방 (특정 깊이에서만)
-        if (Dungeon.depth % 10 == 0) {
-            Bag bag = ChooseBag(hero.belongings);
-            if (bag != null) {
-                itemsToSpawn.add(bag);
-            }
         }
 
         // TimekeepersHourglass 관련 아이템

@@ -198,8 +198,8 @@ public enum Bestiary {
 
         TENDENCY.addEntities(ZombieTwo.class, ZombieThree.class, ZombieBrute.class, ZombieBrute2.class, Tboss.class, ZombieSoldier.class, Niku.class, Abomination.class, VampireTest.class, Santana.class,
                 Vampire.class, ZombieBrute3.class, Vampire2.class, ZombieTank.class, WamuuFirst.class, VampireSoldier.class, VampireSoldier2.class, Abomination2.class, VampireSoldier3.class, Esidisi.class,
-                Wired.class, VampireHorse.class, VampireSoldierNew.class, VampireChariot.class, Wamuu.class, KS1.class, KS2.class, KS3.class, KS4.class, KarsLight.class,
-                TendencyShopkeeper.class, GSoldier.class, SpwSoldier.class, Sturo.class, TendencyTank.class, CaesarZeppeli.class, Lisa.class);
+                Wired.class, VampireHorse.class, VampireSoldierNew.class, VampireChariot.class, Wamuu.class, KS1.class, KS2.class, KS3.class, KS4.class, KarsLight.class, U1.class, U2.class, U3.class, U4.class, KarsUltimate.class,
+                TendencyShopkeeper.class, GSoldier.class, SpwSoldier.class, Sturo.class, TendencyTank.class, CaesarZeppeli.class, Lisa.class, Bt1.class, Bt2.class);
 
         QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class, Manhatan2.class,
                 Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,

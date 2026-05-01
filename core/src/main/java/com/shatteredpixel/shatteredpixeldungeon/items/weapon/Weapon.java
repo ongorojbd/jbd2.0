@@ -48,6 +48,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw44;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw50;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
@@ -333,6 +335,10 @@ abstract public class Weapon extends KindOfWeapon {
 
     protected float speedMultiplier(Char owner) {
         float multi = RingOfFuror.attackSpeedMultiplier(owner);
+        if (owner instanceof Hero) {
+            multi *= Spw44.attackSpeedMultiplier();
+            multi *= Spw50.attackSpeedMultiplier((Hero) owner);
+        }
 
         if (owner.buff(Scimitar.SwordDance.class) != null) {
             multi += 0.6f;

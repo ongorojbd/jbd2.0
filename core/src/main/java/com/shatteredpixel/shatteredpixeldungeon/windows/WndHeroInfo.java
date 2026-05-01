@@ -300,7 +300,13 @@ public class WndHeroInfo extends WndTabbed {
 			message = PixelScene.renderTextBlock(Messages.get(WndHeroInfo.class, "subclasses_msg"), 6);
 			add(message);
 
-			HeroSubClass[] subClasses = cls.subClasses();
+			ArrayList<HeroSubClass> visibleSubClasses = new ArrayList<>();
+			for (HeroSubClass subClass : cls.subClasses()) {
+				if (subClass != HeroSubClass.SUMMONER) {
+					visibleSubClasses.add(subClass);
+				}
+			}
+			HeroSubClass[] subClasses = visibleSubClasses.toArray(new HeroSubClass[0]);
 
 			subClsDescs = new RenderedTextBlock[subClasses.length];
 			subClsInfos = new IconButton[subClasses.length];

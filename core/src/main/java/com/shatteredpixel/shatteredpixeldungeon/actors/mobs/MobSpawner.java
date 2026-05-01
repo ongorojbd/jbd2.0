@@ -522,6 +522,24 @@ public class MobSpawner extends Actor {
                 return new ArrayList<>(Arrays.asList(KS4.class));
             case 54:
                 return new ArrayList<>(Arrays.asList(KS4.class));
+            case 55:
+                return new ArrayList<>(Arrays.asList(U1.class));
+            case 56:
+                return new ArrayList<>(Arrays.asList(U1.class, U2.class));
+            case 57:
+                return new ArrayList<>(Arrays.asList(U2.class, U2.class));
+            case 58:
+                return new ArrayList<>(Arrays.asList(U1.class, U2.class, U3.class));
+            case 59:
+                return new ArrayList<>(Arrays.asList(U1.class, U2.class, U3.class, U3.class));
+            case 60:
+                return new ArrayList<>(Arrays.asList(U1.class, U2.class, U3.class, U4.class));
+            case 61:
+                return new ArrayList<>(Arrays.asList(U3.class, U4.class));
+            case 62:
+                return new ArrayList<>(Arrays.asList(U4.class));
+            case 63:
+                return new ArrayList<>(Arrays.asList(U4.class));
         }
     }
 

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -51,7 +52,8 @@ public enum HeroSubClass {
 	PALADIN(HeroIcon.PALADIN),
 
     RIDER(HeroIcon.RIDER),
-    STANDO(HeroIcon.STANDO);
+    STANDO(HeroIcon.STANDO),
+	SUMMONER(HeroIcon.SUMMONER);
 	int icon;
 
 	HeroSubClass(int icon){
@@ -63,6 +65,9 @@ public enum HeroSubClass {
 	}
 
 	public String shortDesc() {
+		if (this == SUMMONER && SPDSettings.getToken() < 2) {
+			return Messages.get(this, name()+"_hidden_short_desc");
+		}
 		return Messages.get(this, name()+"_short_desc");
 	}
 

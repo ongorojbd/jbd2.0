@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -36,8 +37,11 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class WndChooseSubclass extends Window {
 	
@@ -68,7 +72,7 @@ public class WndChooseSubclass extends Window {
 						super.onSelect(index);
 						if (index == 0){
 							WndChooseSubclass.this.hide();
-							HeroSubClass cls = Random.oneOf(hero.heroClass.subClasses());
+							HeroSubClass cls = Random.oneOf(availableSubClasses(hero));
 							tome.choose(cls);
 							GameScene.show(new WndInfoSubclass(hero.heroClass, cls));
 						}
@@ -103,6 +107,10 @@ public class WndChooseSubclass extends Window {
 			RedButton btnCls = new RedButton( subCls.shortDesc(), 6 ) {
 				@Override
 				protected void onClick() {
+					if (!canChoose(subCls)) {
+						GLog.n(Messages.get(WndChooseSubclass.this, "not_enough_token"));
+						return;
+					}
 					GameScene.show(new WndOptions(new HeroIcon(subCls),
 							Messages.titleCase(subCls.title()),
 							Messages.get(WndChooseSubclass.this, "are_you_sure"),
@@ -126,14 +134,16 @@ public class WndChooseSubclass extends Window {
 			btnCls.setRect( 0, pos, WIDTH-20, btnCls.reqHeight()+2);
 			add( btnCls );
 
-			IconButton clsInfo = new IconButton(Icons.get(Icons.INFO)){
-				@Override
-				protected void onClick() {
-					GameScene.show(new WndInfoSubclass(Dungeon.hero.heroClass, subCls));
-				}
-			};
-			clsInfo.setRect(WIDTH-20, btnCls.top() + (btnCls.height()-20)/2, 20, 20);
-			add(clsInfo);
+			if (canChoose(subCls)) {
+				IconButton clsInfo = new IconButton(Icons.get(Icons.INFO)){
+					@Override
+					protected void onClick() {
+						GameScene.show(new WndInfoSubclass(Dungeon.hero.heroClass, subCls));
+					}
+				};
+				clsInfo.setRect(WIDTH-20, btnCls.top() + (btnCls.height()-20)/2, 20, 20);
+				add(clsInfo);
+			}
 
 			pos = btnCls.bottom() + GAP;
 		}
@@ -148,5 +158,19 @@ public class WndChooseSubclass extends Window {
 		add( btnCancel );
 		
 		resize( WIDTH, (int)btnCancel.bottom() );
+	}
+
+	private static boolean canChoose(HeroSubClass subCls) {
+		return subCls != HeroSubClass.SUMMONER || SPDSettings.getToken() >= 2;
+	}
+
+	private static HeroSubClass[] availableSubClasses(Hero hero) {
+		ArrayList<HeroSubClass> result = new ArrayList<>();
+		for (HeroSubClass subCls : hero.heroClass.subClasses()) {
+			if (canChoose(subCls)) {
+				result.add(subCls);
+			}
+		}
+		return result.toArray(new HeroSubClass[0]);
 	}
 }

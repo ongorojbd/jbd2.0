@@ -32,18 +32,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Cat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Civil;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego12;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.P4mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombie;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GuardianTrap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -140,7 +144,7 @@ public class FormaggioBottle extends Spell {
 			Mob mob = (Mob) ch;
 			
 			// Mimic 종류는 가둘 수 없음
-			if (mob instanceof Mimic) {
+			if (mob instanceof Mimic || mob instanceof Statue) {
 				GLog.w(Messages.get(FormaggioBottle.this, "no_mimic"));
 				return;
 			}

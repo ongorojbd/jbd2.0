@@ -22,9 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.P4mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 public class KS3Sprite extends MobSprite {
 
@@ -57,6 +61,31 @@ public class KS3Sprite extends MobSprite {
             emitter().burst( ShadowParticle.UP, 12 );
         }
         super.play( anim );
+    }
+
+    public void zap( int cell ) {
+
+        super.zap( cell );
+
+        MagicMissile.boltFromChar( parent,
+                MagicMissile.FIRE,
+                this,
+                cell,
+                new Callback() {
+                    @Override
+                    public void call() {
+                        ((P4mob)ch).onZapComplete();
+                    }
+                } );
+        Sample.INSTANCE.play( Assets.Sounds.BLAST, 1f, 0.85f );
+    }
+
+    @Override
+    public void onComplete( Animation anim ) {
+        if (anim == zap) {
+            idle();
+        }
+        super.onComplete( anim );
     }
 
 }

@@ -80,6 +80,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TendencyItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jolynemap;
@@ -113,6 +116,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyTreasureLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -127,6 +131,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EsidisiSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JosukeDialogSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
@@ -138,6 +143,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ScorpioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.So2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SoldierSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Speedwagon2Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SturoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TenguSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
@@ -836,6 +842,15 @@ public class GameScene extends PixelScene {
                     );
 
                     Item pick = new TendencyItem();
+                    Item scrollHolder = new ScrollHolder();
+                    scrollHolder.doPickUp(Dungeon.hero);
+
+                    Item potionBandolier = new PotionBandolier();
+                    potionBandolier.doPickUp(Dungeon.hero);
+
+                    Item magicalHolster = new MagicalHolster();
+                    magicalHolster.doPickUp(Dungeon.hero);
+
                     if (pick.doPickUp(Dungeon.hero)) {
                         GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", pick.name())));
                     } else {
@@ -984,6 +999,20 @@ public class GameScene extends PixelScene {
 
                     GLog.p(Messages.get(CaesarZeppeli.class, "t15"));
 
+                } else if (Dungeon.tendencylevel && Dungeon.depth == 55) {
+
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new SturoSprite(), new Speedwagon2Sprite()},
+                            new String[]{"슈트로하임", "스피드왜건"},
+                            new String[]{
+                                    Messages.get(CaesarZeppeli.class, "t16"),
+                                    Messages.get(CaesarZeppeli.class, "t17")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
+                    );
                 } else if (Dungeon.level instanceof DioLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     Dungeon.challenges = 0;
@@ -1163,6 +1192,8 @@ public class GameScene extends PixelScene {
                     Sample.INSTANCE.play(Assets.Sounds.SPW5);
                     GLog.n(Messages.get(Diobrando.class, "t7"));
                     add(new WndStory(Messages.get(this, "ship_title") + "\n\n" + Messages.get(this, "ship_window")).setDelays(0.4f, 0.4f));
+                } else if (Dungeon.level instanceof TendencyTreasureLevel) {
+                    ((TendencyTreasureLevel) Dungeon.level).showTreasureEvent();
                 } else if (Dungeon.level instanceof TendencyLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
@@ -2324,6 +2355,14 @@ public class GameScene extends PixelScene {
         Banner heavendio = new Banner(BannerSprites.get(BannerSprites.Type.HEAVEN_DIO));
         heavendio.show(0x00000000, 0.6f, 1f);
         scene.showBanner(heavendio);
+    }
+
+    public static void kars() {
+        if (scene == null) return;
+
+        Banner kars = new Banner(BannerSprites.get(BannerSprites.Type.KARS));
+        kars.show(0x00000000, 0.6f, 3f);
+        scene.showBanner(kars);
     }
 
     public static void handleCell(int cell) {

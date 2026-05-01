@@ -35,6 +35,7 @@ public class BannerSprites {
 		GAME_OVER,
 		SELECT_YOUR_HERO,
 		HEAVEN_DIO,
+		KARS
 	}
 
 	public static Image get( Type type ) {
@@ -65,6 +66,9 @@ public class BannerSprites {
 				break;
             case HEAVEN_DIO:
                 icon.frame( icon.texture.uvRect( 0, 377, 100, 458 ) );
+                break;
+            case KARS:
+                icon.frame( icon.texture.uvRect( 0, 464, 136, 544 ) );
                 break;
 		}
 		return icon;

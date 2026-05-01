@@ -278,7 +278,7 @@ public class Rebel extends Mob {
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(5, 25);
+        return Random.NormalIntRange(5, 20);
     }
 
     @Override

@@ -48,6 +48,13 @@ public class Spw22 extends Item {
     }
 
     @Override
+    public String info() {
+        int reach = Statistics.spw22;
+        int hpLoss = maxHealthPenalty();
+        return Messages.get(this, "desc", reach, hpLoss);
+    }
+
+    @Override
     public boolean isUpgradable() {
         return true;
     }
@@ -55,6 +62,10 @@ public class Spw22 extends Item {
     @Override
     public boolean isIdentified() {
         return true;
+    }
+
+    public static int maxHealthPenalty() {
+        return Statistics.spw22 * 2;
     }
 
 } 

@@ -29,11 +29,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 // import com.shatteredpixel.shatteredpixeldungeon.SPDSettings; // unused
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.TendencyMap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StringWeb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
@@ -106,6 +108,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TendencyMapScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -115,6 +118,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
@@ -189,6 +193,8 @@ public abstract class Level implements Bundlable {
 	
 	// 전투조류 보상이 이미 드롭되었는지 확인하는 플래그
 	public boolean combatRewardDropped = false;
+	public boolean suppressSpwPrize = false;
+	public boolean doubleSpwPrize = false;
 
 	public HashSet<Mob> mobs;
 	public SparseArray<Heap> heaps;
@@ -214,6 +220,8 @@ public abstract class Level implements Bundlable {
 	private static final String MAPPED		= "mapped";
 	private static final String TRANSITIONS	= "transitions";
 	private static final String LOCKED      = "locked";
+	private static final String SUPPRESS_SPW_PRIZE = "suppress_spw_prize";
+	private static final String DOUBLE_SPW_PRIZE = "double_spw_prize";
 	private static final String HEAPS		= "heaps";
 	private static final String PLANTS		= "plants";
 	private static final String TRAPS       = "traps";
@@ -407,6 +415,8 @@ public abstract class Level implements Bundlable {
 		}
 
 		locked      = bundle.getBoolean( LOCKED );
+		suppressSpwPrize = bundle.getBoolean( SUPPRESS_SPW_PRIZE );
+		doubleSpwPrize = bundle.getBoolean( DOUBLE_SPW_PRIZE );
 		
 		Collection<Bundlable> collection = bundle.getCollection( HEAPS );
 		for (Bundlable h : collection) {
@@ -485,6 +495,8 @@ public abstract class Level implements Bundlable {
 		bundle.put( MAPPED, mapped );
 		bundle.put( TRANSITIONS, transitions );
 		bundle.put( LOCKED, locked );
+		bundle.put( SUPPRESS_SPW_PRIZE, suppressSpwPrize );
+		bundle.put( DOUBLE_SPW_PRIZE, doubleSpwPrize );
 		bundle.put( HEAPS, heaps.valueList() );
 		bundle.put( PLANTS, plants.valueList() );
 		bundle.put( TRAPS, traps.valueList() );
@@ -591,6 +603,19 @@ public abstract class Level implements Bundlable {
 		// johnnyquest가 true이면 계단 이동 차단
 		if (Statistics.johnnyquest) {
 			GLog.w("계단을 이용할 수 없습니다.");
+			return false;
+		}
+
+		if (Dungeon.tendencylevel
+				&& transition.type == LevelTransition.Type.REGULAR_EXIT
+				&& Statistics.tendencyMapNode == TendencyMap.NONE) {
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					TendencyMapScene.curTransition = transition;
+					Game.switchScene(TendencyMapScene.class);
+				}
+			});
 			return false;
 		}
 
@@ -1175,6 +1200,11 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public void occupyCell( Char ch ){
+		if (Blob.volumeAt(ch.pos, StringWeb.class) > 0){
+			blobs.get(StringWeb.class).clear(ch.pos);
+			StringWeb.affectChar( ch );
+		}
+
 		if (!ch.isImmune(Web.class) && Blob.volumeAt(ch.pos, Web.class) > 0){
 			blobs.get(Web.class).clear(ch.pos);
 			Web.affectChar( ch );
@@ -1319,6 +1349,9 @@ public abstract class Level implements Bundlable {
 
 		if (hard && Blob.volumeAt(cell, Web.class) > 0){
 			blobs.get(Web.class).clear(cell);
+		}
+		if (hard && Blob.volumeAt(cell, StringWeb.class) > 0){
+			blobs.get(StringWeb.class).clear(cell);
 		}
 	}
 

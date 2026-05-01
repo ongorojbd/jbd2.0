@@ -36,6 +36,8 @@ public class Abomination2 extends Mob {
 		HP = HT = 150;
 		defenseSkill = 15;
 
+        viewDistance = 6;
+
 		EXP = 12;
 		maxLvl = 22;
 

@@ -209,7 +209,7 @@ public class TendencyShopkeeper extends NPC {
     public static int sellPrice(Item item) {
         // 아이템별로 다른 가격 설정 - Tendency 모드에 맞게 조정
         if (item instanceof Scroll) {
-            return 40; // 스크롤은 중간 가격
+            return 30; // 스크롤은 중간 가격
         } else if (item instanceof Runestone) {
             return 25; // 룬석은 저렴
         } else if (item instanceof Ram2 || item instanceof Food) {
@@ -223,13 +223,13 @@ public class TendencyShopkeeper extends NPC {
         } else if (item instanceof Highway) {
             return 10; // 고속도로는 매우 저렴
         } else if (item instanceof MeleeWeapon) {
-            return 100; // 무기는 비싸게
+            return 60; // 무기는 비싸게
         } else if (item instanceof Armor) {
-            return 100; // 방어구는 비싸게
+            return 60; // 방어구는 비싸게
         } else if (item instanceof Wand) {
-            return 100; // 지팡이는 매우 비싸게
+            return 50; // 지팡이는 매우 비싸게
         } else if (item instanceof UV) {
-            return 100; // 자외선 조사장치는 매우 비싸게
+            return 80; // 자외선 조사장치는 매우 비싸게
         } else if (item instanceof Artifact) {
             return 100; // 아티팩트는 가장 비싸게
         } else {

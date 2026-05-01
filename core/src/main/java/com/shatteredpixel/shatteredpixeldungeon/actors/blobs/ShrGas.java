@@ -48,8 +48,11 @@ public class ShrGas extends Blob implements Hero.Doom {
                 cell = i + j*Dungeon.level.width();
                 if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
                     if (!ch.isImmune(this.getClass())) {
-
-                        ch.damage(damage, this);
+                        if (Dungeon.tendencylevel) {
+                            ch.damage(1, this);
+                        } else {
+                            ch.damage(damage, this);
+                        }
                     }
                 }
             }

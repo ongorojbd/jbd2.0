@@ -110,7 +110,7 @@ public class VampireTest extends Mob {
         
         // 공격 시 출혈 효과 추가
         if (Random.Int(5) == 0) {
-            Buff.affect(enemy, Bleeding.class).set(0.5f * damage);
+            Buff.affect(enemy, Bleeding.class).set(0.25f * damage);
             CellEmitter.center(this.pos).burst(BloodParticle.BURST, 3);
         }
         

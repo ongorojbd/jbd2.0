@@ -31,7 +31,7 @@ public class ZombieBrute extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(1 + attackpower, 4 + attackpower);
+        return Random.NormalIntRange(1 + attackpower, 3 + attackpower);
     }
 
     @Override

@@ -709,6 +709,8 @@ public class Assets {
         public static final String TBOSS = "sprites/tboss.png";
         public static final String SPWSOLDIER = "sprites/spwsoldier.png";
         public static final String GSOLDIER = "sprites/gsoldier.png";
+        public static final String BT = "sprites/bt.png";
+        public static final String HERETIC_SUMMON = "sprites/heretic_summon.png";
         public static final String ZOMBIEBRUTE = "sprites/zombiebrute.png";
         public static final String ZOMBIEBRUTE2 = "sprites/zombiebrute2.png";
         public static final String ZOMBIEBRUTE3 = "sprites/zombiebrute3.png";

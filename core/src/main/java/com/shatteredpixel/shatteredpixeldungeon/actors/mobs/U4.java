@@ -21,70 +21,81 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TentacleSprite;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class U4 extends Mob {
 
-	{
-		spriteClass = TentacleSprite.class;
+    {
+        spriteClass = TentacleSprite.class;
 
-		HP = HT = 20;
-		defenseSkill = 6;
+        HP = HT = 250;
+        defenseSkill = 30;
 
-		EXP = 4;
-		maxLvl = 10;
-	}
+        EXP = 20;
+        maxLvl = 30;
 
-	private int abilityCooldown = 0;
+        properties.add(Property.UNDEAD);
+        properties.add(Property.DEMONIC);
+    }
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange(3, 8);
-	}
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 50, 60 );
+    }
+    @Override
+    public int attackSkill( Char target ) {
+        return 45;
+    }
 
-	@Override
-	public int attackSkill(Char target) {
-		return 14;
-	}
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(5, 20);
+    }
 
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 3);
-	}
+    // 3칸 이내 시야가 트이면 공격 가능 (촉수 도달 범위)
+    @Override
+    protected boolean canAttack(Char enemy) {
+        return Dungeon.level.distance(pos, enemy.pos) <= 3
+                && new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
+    }
 
-	@Override
-	protected boolean act() {
-		abilityCooldown--;
-		return super.act();
-	}
+    // 탄성 있는 근육 조직 - 피해를 즉시 받지 않고 지연시켜 조금씩 받음
+    @Override
+    public void damage(int dmg, Object src) {
+        if (!isInvulnerable(src.getClass()) && !(src instanceof Viscosity.DeferedDamage)) {
+            dmg = Math.round(dmg * resist(src.getClass()));
+            if (dmg >= 0) {
+                Buff.affect(this, Viscosity.DeferedDamage.class).extend(dmg);
+                sprite.showStatus(CharSprite.WARNING, Messages.get(Viscosity.class, "deferred", dmg));
+            }
+        } else {
+            super.damage(dmg, src);
+        }
+    }
 
-	@Override
-	public int attackProc(Char enemy, int damage) {
-		damage = super.attackProc(enemy, damage);
-		// 관통 공격 능력 (쿨다운 3턴, 원거리 공격 시)
-		if (abilityCooldown <= 0 && enemy != null && !Dungeon.level.adjacent(pos, enemy.pos)) {
-			Ballistica attack = new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE);
-			for (int i = 1; i < attack.dist; i++) {
-				int cell = attack.path.get(i);
-				Char ch = Actor.findChar(cell);
-				if (ch != null && ch != enemy && ch.alignment != alignment) {
-					// 경로상의 다른 적에게도 데미지
-					int dmg = damageRoll();
-					dmg = Math.round(dmg * 0.5f); // 50% 데미지
-					ch.damage(dmg, this);
-					if (ch.sprite != null) {
-						ch.sprite.flash();
-					}
-				}
-			}
-			abilityCooldown = 3;
-		}
-		return damage;
-	}
+    @Override
+    public void die(Object cause) {
+
+        super.die(cause);
+
+        if (Random.Int( 3 ) == 0) {
+            Dungeon.level.drop( new Gold().quantity(Random.IntRange(45, 55)), pos ).sprite.drop();
+        }
+
+        if (Dungeon.level.heroFOV[pos]) {
+            Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        }
+
+    }
 }
-

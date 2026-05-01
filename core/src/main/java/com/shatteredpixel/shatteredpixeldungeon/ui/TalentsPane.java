@@ -317,15 +317,24 @@ public class TalentsPane extends ScrollPane {
 				random.setRect(width - 16, y-2, 16, 14);
 			}
 
-			float gap = (width - buttons.size()*TalentButton.WIDTH)/(buttons.size()+1);
+			int buttonsPerRow = buttons.size() > 5 ? 4 : buttons.size();
+			float gap = (width - buttonsPerRow*TalentButton.WIDTH)/(buttonsPerRow+1);
 			left = x + gap;
-			for (TalentButton btn : buttons){
-				btn.setPos(left, title.bottom() + 4);
+			float top = title.bottom() + 4;
+			for (int i = 0; i < buttons.size(); i++){
+				TalentButton btn = buttons.get(i);
+				if (i > 0 && i % buttonsPerRow == 0){
+					int rowButtons = Math.min(buttonsPerRow, buttons.size() - i);
+					gap = (width - rowButtons*TalentButton.WIDTH)/(rowButtons+1);
+					left = x + gap;
+					top += TalentButton.HEIGHT + 2;
+				}
+				btn.setPos(left, top);
 				PixelScene.align(btn);
 				left += btn.width() + gap;
 			}
 
-			height = buttons.get(0).bottom() - y;
+			height = buttons.get(buttons.size()-1).bottom() - y;
 
 		}
 

@@ -58,23 +58,39 @@ import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfParalyticGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Cen;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw1;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw10;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw35;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw4;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw42;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw43;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw44;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw45;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw47;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.UV;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -82,9 +98,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImag
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.FormaggioBottle;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDread;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Evolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
@@ -92,27 +112,30 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachinegun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JohnnyWepon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.watabou.utils.DeviceCompat;
 
 public enum HeroClass {
 
     //영웅 순서 바꾸고 싶으면 여길 바꾸면 된다.
-    WARRIOR(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR),
-    MAGE(HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK),
-    ROGUE(HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER),
-    DUELIST(HeroSubClass.CHAMPION, HeroSubClass.MONK),
-    HUNTRESS(HeroSubClass.SNIPER, HeroSubClass.WARDEN),
-    CLERIC(HeroSubClass.PRIEST, HeroSubClass.PALADIN),
-    JOHNNY(HeroSubClass.RIDER, HeroSubClass.STANDO);
+    WARRIOR(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR, HeroSubClass.SUMMONER),
+    MAGE(HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK, HeroSubClass.SUMMONER),
+    ROGUE(HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER, HeroSubClass.SUMMONER),
+    DUELIST(HeroSubClass.CHAMPION, HeroSubClass.MONK, HeroSubClass.SUMMONER),
+    HUNTRESS(HeroSubClass.SNIPER, HeroSubClass.WARDEN, HeroSubClass.SUMMONER),
+    CLERIC(HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.SUMMONER),
+    JOHNNY(HeroSubClass.RIDER, HeroSubClass.STANDO, HeroSubClass.SUMMONER);
 
     private HeroSubClass[] subClasses;
 
@@ -145,14 +168,16 @@ public enum HeroClass {
             new RingOfEnergy().identify().upgrade(9999).collect();
             new RingOfAccuracy().identify().upgrade(9999).collect();
             new PlateArmor().identify().upgrade(9999).collect();
-            new WandOfDisintegration().identify().upgrade(9999).collect();
+            new WandOfDisintegration().identify().upgrade(9).collect();
+            new WandOfCorruption().identify().upgrade(9).collect();
             new PotionOfHealing().identify().quantity(9999).collect();
-            new ScrollOfMetamorphosis().identify().quantity(120).collect();
+            new PotionOfMindVision().identify().quantity(9999).collect();
+            new UV().identify().quantity(120).collect();
+            new ScrollOfDread().quantity(120).collect();
+            new Spw().quantity(120).collect();
             new Neotel().identify().collect();
             new TengusMask().identify().collect();
             new KingsCrown().identify().collect();
-            new ScaleArmor().identify().collect();
-            new WandOfDestOrb().collect();
         }
 
         switch (this) {

@@ -127,7 +127,7 @@ public class WndCoinGame extends Window {
 	private boolean processingClick = false;
 
 	// 보상 관련 (최대 체력 변화)
-	private static final int HP_CHANGE = 20;
+	private static final int HP_CHANGE = 10;
 
 	public WndCoinGame() {
 		super();

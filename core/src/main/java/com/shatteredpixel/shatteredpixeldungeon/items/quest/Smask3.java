@@ -19,7 +19,7 @@ public class Smask3 extends Item {
 //    public static final String AC_BOSS	= "BOSS";
 
     {
-        image = ItemSpriteSheet.SMASK;
+        image = ItemSpriteSheet.AJA;
 
         stackable = true;
 
@@ -43,7 +43,7 @@ public class Smask3 extends Item {
             Dungeon.win( Amulet.class );
             Dungeon.deleteGame( GamesInProgress.curSlot, true );
             Game.switchScene( SurfaceScene.class );
-            SPDSettings.addSpecialcoin(1);
+            SPDSettings.addToken(2);
         }
 
 //        if (action.equals( AC_BOSS )) {

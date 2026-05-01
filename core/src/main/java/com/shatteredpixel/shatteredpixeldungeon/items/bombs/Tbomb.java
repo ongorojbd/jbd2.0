@@ -124,7 +124,7 @@ public class Tbomb extends Bomb {
                 if (thrownByGSoldier) {
                     dmg = 20;
                 } else {
-                int base = Random.NormalIntRange(4 + Dungeon.scalingDepth(), 12 + 3 * Dungeon.scalingDepth());
+                int base = Random.NormalIntRange(3 + Dungeon.scalingDepth() * 3 / 4, 9 + Dungeon.scalingDepth() * 9 / 4);
 
                 if (Dungeon.hero.buff(Kawasiribuff.class) != null) {
                     base = base * 3 / 2;
@@ -132,7 +132,7 @@ public class Tbomb extends Bomb {
 
                 float scaled = base;
                 if (Statistics.spw6 > 0) {
-                    scaled *= Math.pow(1.5f, Statistics.spw6);
+                    scaled *= (float) Math.pow(1.35f, Statistics.spw6);
                 }
 
                 int depthBonus = Dungeon.depth / 4;

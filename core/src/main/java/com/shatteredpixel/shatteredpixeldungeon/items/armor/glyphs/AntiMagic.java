@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpwSoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Teq;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.U3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Vitaminc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
@@ -153,6 +154,7 @@ public class AntiMagic extends Armor.Glyph {
         RESISTS.add(YogFist.DarkFist.DarkBolt.class);
         RESISTS.add(Soft.class);
         RESISTS.add(Soft.ExplosionDamage.class);
+        RESISTS.add(U3.PoisonBolt.class);
     }
 
     @Override

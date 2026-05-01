@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SkyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -703,6 +704,8 @@ public class Wamuu extends Mob {
                         WndDialogueWithPic.IDLE
                 }
         );
+
+        Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
 
         Dungeon.level.unseal();
 

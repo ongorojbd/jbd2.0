@@ -92,7 +92,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyEventLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyRestLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyTreasureLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -346,6 +349,9 @@ public class Dungeon {
         if (tendencylevel) { // 전투조류
 
             if (Dungeon.depth % 9 == 0) level = new ArenaBossLevel();
+            else if (Statistics.tendencyMapNode == TendencyMap.REST) level = new TendencyRestLevel();
+            else if (Statistics.tendencyMapNode == TendencyMap.TREASURE) level = new TendencyTreasureLevel();
+            else if (Statistics.tendencyMapNode == TendencyMap.EVENT) level = new TendencyEventLevel();
             else level = new ArenaLevel();
 
         } else if (branch == 0) {
@@ -1264,4 +1270,3 @@ public class Dungeon {
     }
 
 }
-

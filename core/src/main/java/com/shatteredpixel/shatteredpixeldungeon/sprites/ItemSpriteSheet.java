@@ -448,7 +448,7 @@ public class ItemSpriteSheet {
         assignItemRect(ARMOR_HUNTRESS, 13, 13);
         assignItemRect(ARMOR_DUELIST, 16, 16);
         assignItemRect(ARMOR_CLERIC, 14, 13);
-        assignItemRect(ARMOR_JOHNNY, 15, 15);
+        assignItemRect(ARMOR_JOHNNY, 16, 16);
         assignItemRect(MAP0, 12, 16);
         assignItemRect(MAP1, 12, 16);
         assignItemRect(MAP2, 12, 16);
@@ -959,6 +959,7 @@ public class ItemSpriteSheet {
     public static final int HALLS_PAGE = DOCUMENTS + 6;
     public static final int FRIEND = DOCUMENTS + 7;
     public static final int BABY = DOCUMENTS + 8;
+    public static final int EVOLUTION = DOCUMENTS + 10;
 
     static {
         assignItemRect(GUIDE_PAGE, 8, 8);
@@ -969,7 +970,8 @@ public class ItemSpriteSheet {
         assignItemRect(CITY_PAGE, 8, 8);
         assignItemRect(HALLS_PAGE, 8, 8);
         assignItemRect(FRIEND, 14, 14);
-        assignItemRect(BABY, 14, 14);
+        assignItemRect(BABY, 14, 13);
+        assignItemRect(EVOLUTION, 14, 13);
     }
 
     //for smaller 8x8 icons that often accompany an item sprite

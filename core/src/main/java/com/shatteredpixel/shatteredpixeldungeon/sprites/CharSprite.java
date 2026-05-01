@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TorchHalo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HamonPartice;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -85,7 +86,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 	public enum State {
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, HEARTS, GLOWING, AURA
+		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, HEARTS, GLOWING, AURA, KARS
 	}
 	
 	public Animation idle;
@@ -105,7 +106,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Emitter levitation;
 	protected Emitter healing;
 	protected Emitter hearts;
-	
+	protected Emitter kars;
+
 	protected IceBlock iceBlock;
 	protected DarkBlock darkBlock;
 	protected GlowBlock glowBlock;
@@ -468,6 +470,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					aura.show(this, 0);
 				}
 				break;
+            case KARS:
+                if (kars != null) kars.killAndErase();
+                kars = emitter();
+                kars.pour( RainbowParticle.BURST, 0.025f );
+                break;
 		}
 	}
 
@@ -572,6 +579,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					aura = null;
 				}
 				break;
+            case KARS:
+                if (kars != null) {
+                    kars.on = false;
+                    kars = null;
+                }
+                break;
 		}
 	}
 	
@@ -637,6 +650,9 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		if (glowBlock != null){
 			glowBlock.visible =visible;
 		}
+        if (kars != null) {
+            kars.visible = visible;
+        }
 
 		if (sleeping) {
 			showSleep();

@@ -21,97 +21,86 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SquirrelSprite;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class U1 extends Mob {
 
-	{
-		spriteClass = SquirrelSprite.class;
+    {
+        spriteClass = SquirrelSprite.class;
 
-		HP = HT = 15;
-		defenseSkill = 5;
+        HP = HT = 260;
+        defenseSkill = 30;
 
-		EXP = 3;
-		maxLvl = 10;
+        EXP = 20;
+        maxLvl = 30;
 
-		baseSpeed = 1.5f; // 빠른 이동 속도
-	}
+        baseSpeed = 1.5f; // 빠른 이동 속도
 
-	private boolean berserkMode = false;
-	private int consecutiveAttacks = 0;
+        properties.add(Property.UNDEAD);
+        properties.add(Property.DEMONIC);
+    }
 
-	@Override
-	public int damageRoll() {
-		int baseDamage = Random.NormalIntRange(2, 6);
-		// 광분 모드: HP가 낮을수록 데미지 증가
-		if (berserkMode) {
-			float hpRatio = 1f - (HP / (float) HT);
-			baseDamage = Math.round(baseDamage * (1f + hpRatio * 1.5f)); // 최대 2.5배
-		}
-		return baseDamage;
-	}
+    private boolean berserkMode = false;
 
-	@Override
-	public int attackSkill(Char target) {
-		int skill = 10;
-		// 광분 모드: 명중률 증가
-		if (berserkMode) {
-			skill += 5;
-		}
-		return skill;
-	}
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 50, 60 );
+    }
+    @Override
+    public int attackSkill( Char target ) {
+        return 45;
+    }
 
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 2);
-	}
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(5, 20);
+    }
 
-	@Override
-	protected boolean act() {
-		// HP가 절반 이하면 광분 모드 활성화
-		if (HP <= HT / 2 && !berserkMode) {
-			berserkMode = true;
-			if (Dungeon.level.heroFOV[pos]) {
-				sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "berserk"));
-			}
-			// 광분 모드에서 아드레날린 부여 (공격 속도 증가)
-			Buff.affect(this, Adrenaline.class, 10f);
-		}
-		return super.act();
-	}
+    @Override
+    protected boolean act() {
+        // HP가 절반 이하면 광분 모드 활성화
+        if (HP <= HT / 2 && !berserkMode) {
+            berserkMode = true;
 
-	@Override
-	public int attackProc(Char enemy, int damage) {
-		damage = super.attackProc(enemy, damage);
-		
-		// 광분 모드에서 연속 공격 가능 (50% 확률)
-		if (berserkMode && Random.Float() < 0.5f && enemy.isAlive() && consecutiveAttacks < 2) {
-			consecutiveAttacks++;
-			spend(-0.3f); // 다음 공격을 빠르게
-			attack(enemy);
-			consecutiveAttacks = 0;
-		} else {
-			consecutiveAttacks = 0;
-		}
-		
-		return damage;
-	}
+            // 광분 모드에서 아드레날린 부여 (공격 속도 증가)
+            Buff.affect(this, Adrenaline.class, 10f);
+        }
+        return super.act();
+    }
 
-	@Override
-	public float attackDelay() {
-		float delay = super.attackDelay();
-		// 광분 모드: 공격 속도 증가
-		if (berserkMode) {
-			delay *= 0.6f; // 40% 빠른 공격
-		}
-		return delay;
-	}
+    @Override
+    public int attackProc( Char enemy, int damage ) {
+        damage = super.attackProc( enemy, damage );
+        if (Random.Int( 3 ) == 0) {
+            Buff.affect(enemy, Bleeding.class ).set(5);
+        }
+
+        return damage;
+    }
+
+    @Override
+    public void die(Object cause) {
+
+        super.die(cause);
+
+        if (Random.Int( 3 ) == 0) {
+            Dungeon.level.drop( new Gold().quantity(Random.IntRange(45, 55)), pos ).sprite.drop();
+        }
+
+        if (Dungeon.level.heroFOV[pos]) {
+            Sample.INSTANCE.play(Assets.Sounds.SP, 1f, 3.3f);
+            Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        }
+
+    }
 }
 

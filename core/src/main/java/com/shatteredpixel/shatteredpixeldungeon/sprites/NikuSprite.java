@@ -22,15 +22,21 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpwSoldier;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 public class NikuSprite extends MobSprite {
+
+    private int cellToAttack;
 
     public NikuSprite() {
         super();
@@ -48,6 +54,8 @@ public class NikuSprite extends MobSprite {
         attack = new Animation( 12, false );
         attack.frames( frames, 2, 15, 2 );
 
+        zap = attack.clone();
+
         die = new Animation( 10, false );
         die.frames( frames, 12, 13, 14 );
 
@@ -61,6 +69,37 @@ public class NikuSprite extends MobSprite {
             emitter().burst( ShadowParticle.UP, 12 );
         }
         super.play( anim );
+    }
+
+    @Override
+    public void attack( int cell ) {
+        if (!Dungeon.level.adjacent( cell, ch.pos )) {
+
+            cellToAttack = cell;
+            turnTo( ch.pos , cell );
+            play( zap );
+
+        } else {
+
+            super.attack( cell );
+
+        }
+    }
+
+    @Override
+    public void onComplete( Animation anim ) {
+        if (anim == zap) {
+            idle();
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+            MagicMissile.boltFromChar(parent, MagicMissile.RAINBOW, this, cellToAttack, new Callback() {
+                @Override
+                public void call() {
+                    ch.onAttackComplete();
+                }
+            } );
+        } else {
+            super.onComplete( anim );
+        }
     }
 
 }

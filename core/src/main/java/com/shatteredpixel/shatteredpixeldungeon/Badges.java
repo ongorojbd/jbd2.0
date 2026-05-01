@@ -211,16 +211,16 @@ public class Badges {
         GAMES_PLAYED_4              ( 109, BadgeType.GLOBAL ),
         HIGH_SCORE_4                ( 110 ),
         CHAMPION_1                  ( 111 ),
-        TENDENCYBADGE                  ( 112 ),
+        KARSKILL                  ( 112 ),
 
-        TENDENCYBADGE_WARRIOR,
-        TENDENCYBADGE_MAGE,
-        TENDENCYBADGE_DUELIST,
-        TENDENCYBADGE_ROGUE,
-        TENDENCYBADGE_HUNTRESS,
-        TENDENCYBADGE_CLERIC,
-        TENDENCYBADGE_JOHNNY,
-        TENDENCYBADGE_ALL_CLASSES(112),
+        KARSKILL_WARRIOR,
+        KARSKILL_MAGE,
+        KARSKILL_DUELIST,
+        KARSKILL_ROGUE,
+        KARSKILL_HUNTRESS,
+        KARSKILL_CLERIC,
+        KARSKILL_JOHNNY,
+        KARSKILL_ALL_CLASSES(114),
 
         // 일일 도전 (경쟁 모드) 클리어 배지
         DAILY_VICTORY(113),
@@ -901,10 +901,9 @@ public class Badges {
         displayBadge(badge);
     }
 
-    public static void validateTendency() {
+    public static void validateKarsKill() {
 
-
-        Badge badge = Badge.TENDENCYBADGE;
+        Badge badge = Badge.KARSKILL;
         local.add(badge);
         displayBadge(badge);
 
@@ -921,7 +920,7 @@ public class Badges {
             }
         }
         if (allUnlocked) {
-            badge = Badge.TENDENCYBADGE_ALL_CLASSES;
+            badge = Badge.KARSKILL_ALL_CLASSES;
             if (!isUnlocked(badge)) {
                 displayBadge(badge);
             }
@@ -1000,13 +999,13 @@ public class Badges {
     private static LinkedHashMap<HeroClass, Badge> dioClassBadges3 = new LinkedHashMap<>();
 
     static {
-        dioClassBadges3.put(HeroClass.WARRIOR, Badge.TENDENCYBADGE_WARRIOR);
-        dioClassBadges3.put(HeroClass.MAGE, Badge.TENDENCYBADGE_MAGE);
-        dioClassBadges3.put(HeroClass.ROGUE, Badge.TENDENCYBADGE_ROGUE);
-        dioClassBadges3.put(HeroClass.DUELIST, Badge.TENDENCYBADGE_DUELIST);
-        dioClassBadges3.put(HeroClass.HUNTRESS, Badge.TENDENCYBADGE_HUNTRESS);
-        dioClassBadges3.put(HeroClass.CLERIC, Badge.TENDENCYBADGE_CLERIC);
-        dioClassBadges3.put(HeroClass.JOHNNY, Badge.TENDENCYBADGE_JOHNNY);
+        dioClassBadges3.put(HeroClass.WARRIOR, Badge.KARSKILL_WARRIOR);
+        dioClassBadges3.put(HeroClass.MAGE, Badge.KARSKILL_MAGE);
+        dioClassBadges3.put(HeroClass.ROGUE, Badge.KARSKILL_ROGUE);
+        dioClassBadges3.put(HeroClass.DUELIST, Badge.KARSKILL_DUELIST);
+        dioClassBadges3.put(HeroClass.HUNTRESS, Badge.KARSKILL_HUNTRESS);
+        dioClassBadges3.put(HeroClass.CLERIC, Badge.KARSKILL_CLERIC);
+        dioClassBadges3.put(HeroClass.JOHNNY, Badge.KARSKILL_JOHNNY);
     }
 
     public static void validateBossSlain() {
@@ -1460,7 +1459,7 @@ public class Badges {
             {Badge.VICTORY, Badge.YORIHIMES},
             {Badge.CHAMPION_1, Badge.OVERHEAVEN},
             {Badge.BRANDOKILL, Badge.BRANDOKILL_ALL_CLASSES},
-            {Badge.TENDENCYBADGE, Badge.TENDENCYBADGE_ALL_CLASSES},
+            {Badge.KARSKILL, Badge.KARSKILL_ALL_CLASSES},
             {Badge.HAPPY_END,    Badge.PACIFIST_ASCENT},
             {Badge.VICTORY,      Badge.TAKING_THE_MICK}
     };
@@ -1477,7 +1476,7 @@ public class Badges {
             {Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
             {Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
             {Badge.BRANDOKILL, Badge.BRANDOKILL_ALL_CLASSES},
-            {Badge.TENDENCYBADGE, Badge.TENDENCYBADGE_ALL_CLASSES},
+            {Badge.KARSKILL, Badge.KARSKILL_ALL_CLASSES},
             {Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
             {Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
             {Badge.ALL_WANDS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
@@ -1622,7 +1621,7 @@ public class Badges {
 
             return result;
 
-        } else if (badge == Badge.TENDENCYBADGE_ALL_CLASSES) {
+        } else if (badge == Badge.KARSKILL_ALL_CLASSES) {
 
             for (HeroClass cls : HeroClass.values()) {
                 result += "\n";

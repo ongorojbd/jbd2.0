@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
@@ -44,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 
@@ -108,6 +110,11 @@ public class TengusMask extends Item {
         curUser.busy();
 
         curUser.subClass = way;
+        if (way == HeroSubClass.SUMMONER) {
+            GameScene.kars();
+            SPDSettings.addToken(-2);
+            Music.INSTANCE.play(Assets.Music.TENDENCY2, true);
+        }
         Talent.initSubclassTalents(curUser);
 
         if (way == HeroSubClass.ASSASSIN && curUser.invisible > 0) {

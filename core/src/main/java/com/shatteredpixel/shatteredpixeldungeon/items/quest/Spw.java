@@ -53,6 +53,18 @@ import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw37;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw38;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw39;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw40;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw41;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw42;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw43;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw44;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw45;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw46;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw47;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw48;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw49;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw50;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw51;
+import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw52;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw6;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw7;
 import static com.shatteredpixel.shatteredpixeldungeon.Statistics.spw9;
@@ -77,12 +89,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Tbomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -243,9 +253,22 @@ public class Spw extends Item {
         private static final int ITEM_TYPE_SPW38 = 37;
         private static final int ITEM_TYPE_SPW39 = 38;
         private static final int ITEM_TYPE_SPW40 = 39;
+        private static final int ITEM_TYPE_SPW41 = 40;
+        private static final int ITEM_TYPE_SPW42 = 41;
+        private static final int ITEM_TYPE_SPW43 = 42;
+        private static final int ITEM_TYPE_SPW44 = 43;
+        private static final int ITEM_TYPE_SPW45 = 44;
+        private static final int ITEM_TYPE_SPW46 = 45;
+        private static final int ITEM_TYPE_SPW47 = 46;
+        private static final int ITEM_TYPE_SPW48 = 47;
+        private static final int ITEM_TYPE_SPW49 = 48;
+        private static final int ITEM_TYPE_SPW50 = 49;
+        private static final int ITEM_TYPE_SPW51 = 50;
+        private static final int ITEM_TYPE_SPW52 = 51;
 
         // 가능한 아이템 타입의 총 개수
-        private static final int TOTAL_ITEM_TYPES = 40;
+        private static final int TOTAL_ITEM_TYPES = 52;
+        private static final int TEST_REWARD_START = ITEM_TYPE_SPW1;
 
         public WndSpw(Spw spw) {
             IconTitle titlebar = createTitleBar(spw);
@@ -295,7 +318,7 @@ public class Spw extends Item {
         private void generateRolledItems(Spw spw) {
             // 먼저 사용 가능한 모든 아이템들을 수집
             ArrayList<Item> availableItems = new ArrayList<>();
-            for (int i = 0; i < TOTAL_ITEM_TYPES; i++) {
+            for (int i = TEST_REWARD_START; i < TOTAL_ITEM_TYPES; i++) {
                 Item newItem = createItemByType(i);
                 if (newItem != null && isItemAvailable(newItem)) {
                     availableItems.add(newItem);
@@ -347,7 +370,7 @@ public class Spw extends Item {
             int maxAttempts = TOTAL_ITEM_TYPES * 5;
 
             while (attempts < maxAttempts) {
-                int randomItem = Random.Int(TOTAL_ITEM_TYPES);
+                int randomItem = TEST_REWARD_START + Random.Int(TOTAL_ITEM_TYPES - TEST_REWARD_START);
 
                 // Skip items that have reached their maximum count
                 if (!shouldSkipItem(randomItem)) {
@@ -427,6 +450,30 @@ public class Spw extends Item {
                     return spw39 > MAX_SPW_COUNT;
                 case ITEM_TYPE_SPW40:
                     return spw40 > MAX_SPW_COUNT;
+                case ITEM_TYPE_SPW41:
+                    return spw41 >= 8;
+                case ITEM_TYPE_SPW42:
+                    return spw42 >= 8;
+                case ITEM_TYPE_SPW43:
+                    return spw43 >= 8;
+                case ITEM_TYPE_SPW44:
+                    return spw44 >= 8;
+                case ITEM_TYPE_SPW45:
+                    return spw45 >= 8;
+                case ITEM_TYPE_SPW46:
+                    return spw46 >= 8;
+                case ITEM_TYPE_SPW47:
+                    return spw47 >= 8;
+                case ITEM_TYPE_SPW48:
+                    return spw48 >= 8;
+                case ITEM_TYPE_SPW49:
+                    return spw49 >= 8;
+                case ITEM_TYPE_SPW50:
+                    return spw50 >= 8;
+                case ITEM_TYPE_SPW51:
+                    return spw51 >= 8;
+                case ITEM_TYPE_SPW52:
+                    return spw52 >= 8;
                 default:
                     return false;
             }
@@ -517,6 +564,30 @@ public class Spw extends Item {
                     return new Spw39();
                 case ITEM_TYPE_SPW40:
                     return new Spw40();
+                case ITEM_TYPE_SPW41:
+                    return new Spw41();
+                case ITEM_TYPE_SPW42:
+                    return new Spw42();
+                case ITEM_TYPE_SPW43:
+                    return new Spw43();
+                case ITEM_TYPE_SPW44:
+                    return new Spw44();
+                case ITEM_TYPE_SPW45:
+                    return new Spw45();
+                case ITEM_TYPE_SPW46:
+                    return new Spw46();
+                case ITEM_TYPE_SPW47:
+                    return new Spw47();
+                case ITEM_TYPE_SPW48:
+                    return new Spw48();
+                case ITEM_TYPE_SPW49:
+                    return new Spw49();
+                case ITEM_TYPE_SPW50:
+                    return new Spw50();
+                case ITEM_TYPE_SPW51:
+                    return new Spw51();
+                case ITEM_TYPE_SPW52:
+                    return new Spw52();
                 default:
                     return null;
             }
@@ -588,7 +659,19 @@ public class Spw extends Item {
                     (item instanceof Spw37 && spw37 > MAX_SPW_COUNT) ||
                     (item instanceof Spw38 && spw38 > MAX_SPW_COUNT) ||
                     (item instanceof Spw39 && spw39 > MAX_SPW_COUNT) ||
-                    (item instanceof Spw40 && spw40 > MAX_SPW_COUNT));
+                    (item instanceof Spw40 && spw40 > MAX_SPW_COUNT) ||
+                    (item instanceof Spw41 && spw41 >= 8) ||
+                    (item instanceof Spw42 && spw42 >= 8) ||
+                    (item instanceof Spw43 && spw43 >= 8) ||
+                    (item instanceof Spw44 && spw44 >= 8) ||
+                    (item instanceof Spw45 && spw45 >= 8) ||
+                    (item instanceof Spw46 && spw46 >= 8) ||
+                    (item instanceof Spw47 && spw47 >= 8) ||
+                    (item instanceof Spw48 && spw48 >= 8) ||
+                    (item instanceof Spw49 && spw49 >= 8) ||
+                    (item instanceof Spw50 && spw50 >= 8) ||
+                    (item instanceof Spw51 && spw51 >= 8) ||
+                    (item instanceof Spw52 && spw52 >= 8));
         }
 
         /**
@@ -688,7 +771,7 @@ public class Spw extends Item {
                 } else if (item instanceof Spw3) {
                     handleSpw3Effect();
                 } else if (item instanceof Spw4) {
-                    handleSpw4Effect();
+                    spw4++;
                 } else if (item instanceof Spw5) {
                     handleSpw5Effect();
                 } else if (item instanceof Spw6) {
@@ -758,7 +841,7 @@ public class Spw extends Item {
                     Buff.affect(hero, TrialOfPillars.class);
                     GLog.w(Messages.get(Spw.class, "spw35_start"));
                 } else if (item instanceof Spw37) {
-                    handleSpw37Effect();
+                    spw37++;
                 } else if (item instanceof Spw38) {
                     Item potion = new PotionOfExperience();
                     potion.identify().quantity(2);
@@ -767,6 +850,31 @@ public class Spw extends Item {
                     spw39++;
                 } else if (item instanceof Spw40) {
                     spw40++;
+                } else if (item instanceof Spw41) {
+                    spw41++;
+                } else if (item instanceof Spw42) {
+                    spw42++;
+                } else if (item instanceof Spw43) {
+                    spw43++;
+                } else if (item instanceof Spw44) {
+                    spw44++;
+                } else if (item instanceof Spw45) {
+                    spw45++;
+                    hero.updateHT(false);
+                } else if (item instanceof Spw46) {
+                    spw46++;
+                } else if (item instanceof Spw47) {
+                    spw47++;
+                } else if (item instanceof Spw48) {
+                    spw48++;
+                } else if (item instanceof Spw49) {
+                    spw49++;
+                } else if (item instanceof Spw50) {
+                    spw50++;
+                } else if (item instanceof Spw51) {
+                    spw51++;
+                } else if (item instanceof Spw52) {
+                    spw52++;
                 } else {
                     handleGenericItem(item);
                 }
@@ -792,19 +900,6 @@ public class Spw extends Item {
                     Buff.affect(hero, EnhancedArmor.class);
                 }
                 spw3++;
-            }
-
-            private void handleSpw4Effect() {
-                if (spw4 == 0) {
-                    Item ring = new RingOfSharpshooting();
-                    ring.identify();
-                    pickOrDropItem(ring);
-                    spw4++;
-                } else if (spw4 >= 1 && Dungeon.hero.belongings.getItem(RingOfSharpshooting.class) != null) {
-                    Spw4.Spw4Ability();
-                } else {
-                    GLog.i(Messages.get(Spw.class, "spw4"));
-                }
             }
 
             private void handleSpw5Effect() {
@@ -868,20 +963,6 @@ public class Spw extends Item {
                 pickOrDropItem(uv);
             }
 
-            private void handleSpw37Effect() {
-                if (spw37 == 0) {
-                    Item ring = new RingOfArcana();
-                    ring.identify();
-                    pickOrDropItem(ring);
-                    spw37++;
-                } else if (spw37 >= 1 && Dungeon.hero.belongings.getItem(RingOfArcana.class) != null) {
-                    Spw37.Spw37Ability();
-                } else {
-                    GLog.i(Messages.get(Spw.class, "spw37"));
-                }
-            }
-
-
             private void handleGenericItem(Item item) {
                 // 아이템을 인벤토리에 추가하지 않고 능력만 발동
                 // 현재는 기본적인 통계 증가만 적용
@@ -918,15 +999,6 @@ public class Spw extends Item {
                 } else if (item instanceof Spw36) {
                     spw36++;
                 } else if (item instanceof Spw37) {
-                    // Grant RingOfArcana first time, then upgrade it on repeats
-                    RingOfArcana ring = Dungeon.hero.belongings.getItem(RingOfArcana.class);
-                    if (ring == null) {
-                        RingOfArcana newRing = new RingOfArcana();
-                        newRing.identify();
-                        pickOrDropItem(newRing);
-                    } else {
-                        ring.upgrade();
-                    }
                     spw37++;
                 } else if (item instanceof Spw38) {
                     spw38++;
@@ -937,6 +1009,31 @@ public class Spw extends Item {
                     spw39++;
                 } else if (item instanceof Spw40) {
                     spw40++;
+                } else if (item instanceof Spw41) {
+                    spw41++;
+                } else if (item instanceof Spw42) {
+                    spw42++;
+                } else if (item instanceof Spw43) {
+                    spw43++;
+                } else if (item instanceof Spw44) {
+                    spw44++;
+                } else if (item instanceof Spw45) {
+                    spw45++;
+                    hero.updateHT(false);
+                } else if (item instanceof Spw46) {
+                    spw46++;
+                } else if (item instanceof Spw47) {
+                    spw47++;
+                } else if (item instanceof Spw48) {
+                    spw48++;
+                } else if (item instanceof Spw49) {
+                    spw49++;
+                } else if (item instanceof Spw50) {
+                    spw50++;
+                } else if (item instanceof Spw51) {
+                    spw51++;
+                } else if (item instanceof Spw52) {
+                    spw52++;
                 }
             }
         }

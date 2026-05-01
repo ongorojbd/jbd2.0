@@ -23,10 +23,12 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -66,6 +68,19 @@ public class WaterOfHealth extends WellWater {
 			hero.HP = hero.HT;
 			hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
 			hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(hero.HT), FloatingText.HEALING);
+		}
+
+		if (Dungeon.tendencylevel) {
+			for (Mob ally : Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (ally.isAlive() && ally.alignment == Char.Alignment.ALLY) {
+					PotionOfHealing.cure(ally);
+					ally.HP = ally.HT;
+					if (ally.sprite != null) {
+						ally.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
+						ally.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(ally.HT), FloatingText.HEALING);
+					}
+				}
+			}
 		}
 		
 		CellEmitter.get( hero.pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );

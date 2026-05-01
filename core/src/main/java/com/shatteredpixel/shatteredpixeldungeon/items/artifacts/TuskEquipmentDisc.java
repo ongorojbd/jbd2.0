@@ -913,7 +913,7 @@ public class TuskEquipmentDisc extends Artifact {
 		if (cursed || target.buff(MagicImmune.class) != null) return;
 
 			if (charge < chargeCap) {
-				partialCharge += 0.25f * amount * 0.75f;
+				partialCharge += 0.25f * amount * 0.5f;
 				while (partialCharge >= 1f) {
 					charge++;
 					partialCharge--;
@@ -1024,7 +1024,7 @@ public class TuskEquipmentDisc extends Artifact {
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
-					float chargeToGain = (1f / turnsToCharge) * 0.75f;
+					float chargeToGain = (1f / turnsToCharge) * 0.5f;
 					partialCharge += chargeToGain;
 				}
 

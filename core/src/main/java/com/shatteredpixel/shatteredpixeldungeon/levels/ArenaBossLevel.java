@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FakeKars;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KS1;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsUltimate;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.NewKarslight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
@@ -369,6 +370,20 @@ public class ArenaBossLevel extends Level {
                 boss.sprite.alpha(0);
                 boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
             }
+        } else if (Dungeon.depth == 63) {
+            GameScene.kars();
+
+            KarsUltimate boss = new KarsUltimate();
+            boss.pos = 15 + WIDTH * 10;
+            boss.state = boss.WANDERING;
+            GameScene.add(boss);
+            boss.beckon(Dungeon.hero.pos);
+
+            if (heroFOV[boss.pos]) {
+                boss.notice();
+                boss.sprite.alpha(0);
+                boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+            }
         }
 
         GameScene.updateMap(bottomDoor);
@@ -438,15 +453,7 @@ public class ArenaBossLevel extends Level {
                 }
             }
 
-            KS1 ks1 = new KS1() {
-                @Override
-                public void die(Object cause) {
-                    super.die(cause);
-                    if (Dungeon.level instanceof ArenaBossLevel) {
-                        ((ArenaBossLevel) Dungeon.level).onZombieDeath();
-                    }
-                }
-            };
+            ArenaBossKS1 ks1 = new ArenaBossKS1();
             ks1.pos = spawnPos;
             ks1.state = ks1.HUNTING;
             GameScene.add(ks1);
@@ -513,6 +520,16 @@ public class ArenaBossLevel extends Level {
             return false;
         } else {
             return super.activateTransition(hero, transition);
+        }
+    }
+
+    public static class ArenaBossKS1 extends KS1 {
+        @Override
+        public void die(Object cause) {
+            super.die(cause);
+            if (Dungeon.level instanceof ArenaBossLevel) {
+                ((ArenaBossLevel) Dungeon.level).onZombieDeath();
+            }
         }
     }
 

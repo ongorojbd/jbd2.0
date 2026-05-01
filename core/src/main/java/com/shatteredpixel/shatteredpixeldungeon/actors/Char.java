@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -93,7 +94,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BeamingRay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ShieldOfLight;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
@@ -101,6 +104,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
@@ -113,15 +117,23 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diobrando2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpwSoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Zombiet;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.HereticSummon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PoisonParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -131,6 +143,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw50;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw52;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -170,6 +184,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -255,7 +270,8 @@ public abstract class Char extends Actor {
         } else if (c instanceof Hero
                 && alignment == Alignment.ALLY
                 && !hasProp(this, Property.IMMOVABLE)
-                && Dungeon.level.distance(pos, c.pos) <= 2 * hero.pointsInTalent(Talent.ALLY_WARP)) {
+                && (Dungeon.level.distance(pos, c.pos) <= 2 * hero.pointsInTalent(Talent.ALLY_WARP)
+                || this instanceof HereticSummon && Dungeon.level.distance(pos, c.pos) <= 2 * hero.pointsInTalent(Talent.FIEND_WARP))) {
             return true;
         } else {
             return false;
@@ -288,9 +304,13 @@ public abstract class Char extends Actor {
         }
 
         //warp instantly with allies in this case
-        if (c == hero && hero.hasTalent(Talent.ALLY_WARP)) {
+        if (c == hero && (hero.hasTalent(Talent.ALLY_WARP) || this instanceof HereticSummon && hero.hasTalent(Talent.FIEND_WARP))) {
             PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
             if (PathFinder.distance[pos] == Integer.MAX_VALUE) {
+                return true;
+            }
+            if (paralysed > 0 || c.paralysed > 0 || rooted || c.rooted
+                    || buff(Vertigo.class) != null || c.buff(Vertigo.class) != null) {
                 return true;
             }
             pos = newPos;
@@ -894,6 +914,10 @@ public abstract class Char extends Actor {
         //temporarily assign to a float to avoid rounding a bunch
         float damage = dmg;
 
+        if (this == Dungeon.hero) {
+            damage *= Spw50.damageTakenMultiplier(Dungeon.hero);
+        }
+
         //if dmg is from a character we already reduced it in Char.attack
         if (!(src instanceof Char)) {
             if (hero.alignment == alignment
@@ -1083,12 +1107,85 @@ public abstract class Char extends Actor {
             sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(dmg + shielded), icon);
         }
 
+        if (this == Dungeon.hero && HP <= 0 && HereticSummon.sacrificeForPact()) {
+            HP = 1;
+        }
+
         if (HP < 0) HP = 0;
 
         if (!isAlive()) {
+            summonFiendFromCorpse();
             die(src);
         } else if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null) {
             DeathMark.processFearTheReaper(this);
+        }
+    }
+
+    private void summonFiendFromCorpse() {
+        int summonPos = pos;
+        int summonHT = HT;
+        if (alignment == hero.alignment
+                || !Dungeon.hero.isAlive()
+                || !Dungeon.level.heroFOV[summonPos]
+                || Dungeon.hero.subClass != HeroSubClass.SUMMONER) {
+            return;
+        }
+
+        if (HereticSummon.activeSummons().size() >= HereticSummon.maxSummons()) return;
+
+        HereticSummon summon = null;
+
+        if (buff(Burning.class) != null) {
+            summon = new HereticSummon.FireSummon();
+        } else if (buff(Bleeding.class) != null) {
+            summon = new HereticSummon.BloodSummon();
+        } else if (buff(Poison.class) != null || buff(Corrosion.class) != null || buff(Ooze.class) != null) {
+            summon = new HereticSummon.PoisonSummon();
+        } else if (buff(Chill.class) != null || buff(Frost.class) != null) {
+            summon = new HereticSummon.FrostSummon();
+            summon.cantzap();
+        } else if (buff(Doom.class) != null || buff(Terror.class) != null) {
+            summon = new HereticSummon.ArcaneSummon();
+        } else if (buff(Cripple.class) != null || paralysed > 0 || buff(Blindness.class) != null) {
+            summon = new HereticSummon.EarthSummon();
+            summon.cantzap();
+        } else if (buff(Weakness.class) != null || buff(Vulnerable.class) != null || buff(Hex.class) != null || buff(Daze.class) != null) {
+            summon = new HereticSummon.DarkSummon();
+        }
+
+        if (summon == null) return;
+
+        new Flare(6, 32).color(0x00FF00, true).show(hero.sprite, 1f);
+        hero.sprite.showStatus(CharSprite.POSITIVE, "[생명 창조]");
+        summon.pos = summonPos;
+        summon.summon(summonHT);
+        GameScene.add(summon);
+        summon.sprite.alpha(0);
+        summon.sprite.parent.add(new AlphaTweener(summon.sprite, 1, 0.5f));
+        showFiendSummonParticles(summon, summonPos);
+
+        Sample.INSTANCE.play( Assets.Sounds.FF);
+    }
+
+    private void showFiendSummonParticles(HereticSummon summon, int summonPos) {
+        hero.sprite.emitter().burst( RainbowParticle.BURST, 12 );
+
+        for (int i : PathFinder.NEIGHBOURS9) {
+            if (summon instanceof HereticSummon.FireSummon) {
+                CellEmitter.get(summonPos + i).burst(FlameParticle.FACTORY, 10);
+            } else if (summon instanceof HereticSummon.BloodSummon) {
+                CellEmitter.get(summonPos + i).burst(BloodParticle.FACTORY, 10);
+            } else if (summon instanceof HereticSummon.PoisonSummon) {
+                CellEmitter.get(summonPos + i).burst(PoisonParticle.SPLASH, 10);
+            } else if (summon instanceof HereticSummon.FrostSummon) {
+                CellEmitter.get(summonPos + i).burst(MagicMissile.MagicParticle.FACTORY, 10);
+            } else if (summon instanceof HereticSummon.ArcaneSummon) {
+                CellEmitter.get(summonPos + i).burst(PurpleParticle.BURST, 10);
+            } else if (summon instanceof HereticSummon.EarthSummon) {
+                CellEmitter.get(summonPos + i).burst(MagicMissile.EarthParticle.FACTORY, 10);
+            } else if (summon instanceof HereticSummon.DarkSummon) {
+                CellEmitter.get(summonPos + i).burst(ShadowParticle.CURSE, 10);
+            }
         }
     }
 
@@ -1386,7 +1483,7 @@ public abstract class Char extends Actor {
                 result *= 0.5f;
             }
         }
-        return result * RingOfElements.resist(this, effect);
+        return result * RingOfElements.resist(this, effect) * Spw52.resistMultiplier(effect);
     }
 
     protected final HashSet<Class> immunities = new HashSet<>();

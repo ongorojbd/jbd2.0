@@ -41,11 +41,13 @@ public class WndInfoSubclass extends WndTitledMessage {
 		Talent.initClassTalents(cls, talentList);
 		Talent.initSubclassTalents(subCls, talentList);
 
-		TalentsPane.TalentTierPane talentPane = new TalentsPane.TalentTierPane(talentList.get(2), 3, TalentButton.Mode.INFO);
-		talentPane.title.text( Messages.titleCase(Messages.get(WndHeroInfo.class, "talents")));
-		talentPane.setRect(0, height + 5, width, talentPane.height());
-		add(talentPane);
-		resize(width, (int) talentPane.bottom());
+		if (talentList.size() > 2 && !talentList.get(2).isEmpty()) {
+			TalentsPane.TalentTierPane talentPane = new TalentsPane.TalentTierPane(talentList.get(2), 3, TalentButton.Mode.INFO);
+			talentPane.title.text( Messages.titleCase(Messages.get(WndHeroInfo.class, "talents")));
+			talentPane.setRect(0, height + 5, width, talentPane.height());
+			add(talentPane);
+			resize(width, (int) talentPane.bottom());
+		}
 
 	}
 

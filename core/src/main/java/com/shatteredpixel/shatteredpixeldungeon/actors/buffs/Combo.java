@@ -329,6 +329,17 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				});
 				detach();
 				return false;
+			} else if (target instanceof Hero && enemy != null && enemy.isAlive()) {
+				Hero hero = (Hero) target;
+				target.sprite.attack(enemy.pos, new Callback() {
+					@Override
+					public void call() {
+						hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY);
+						next();
+					}
+				});
+				detach();
+				return false;
 			} else {
 				detach();
 				return true;

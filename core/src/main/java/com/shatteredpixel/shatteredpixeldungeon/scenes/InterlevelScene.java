@@ -748,10 +748,13 @@ public class InterlevelScene extends PixelScene {
                 level = Dungeon.newLevel();
             }
 
-            LevelTransition destTransition = level.getTransition(curTransition.destType);
-            curTransition = null;
-            Dungeon.switchLevel(level, destTransition.cell());
-        }
+			LevelTransition destTransition = level.getTransition(curTransition.destType);
+			curTransition = null;
+			Dungeon.switchLevel(level, destTransition.cell());
+			if (Dungeon.tendencylevel) {
+				Statistics.tendencyMapNode = com.shatteredpixel.shatteredpixeldungeon.TendencyMap.NONE;
+			}
+		}
 
     }
 

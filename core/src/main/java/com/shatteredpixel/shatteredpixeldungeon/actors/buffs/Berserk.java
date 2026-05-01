@@ -245,6 +245,17 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		}
 	}
 
+	public void gainEnergy(float percent){
+		if (state != State.NORMAL) return;
+		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+		power = Math.min(maxPower, power + percent);
+		BuffIndicator.refreshHero();
+		powerLossBuffer = 3;
+		if (power >= 1f){
+			ActionIndicator.setAction(this);
+		}
+	}
+
 	public void recover(float percent){
 		if (state == State.RECOVERING && levelRecovery > 0){
 			levelRecovery -= percent;

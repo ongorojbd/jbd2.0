@@ -431,8 +431,6 @@ public class Santana extends Mob {
         Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
         Dungeon.level.drop( new TengusMask(), pos ).sprite.drop( pos );
 
-        Badges.validateTendency();
-
         GameScene.bossSlain();
 
         Music.INSTANCE.end();

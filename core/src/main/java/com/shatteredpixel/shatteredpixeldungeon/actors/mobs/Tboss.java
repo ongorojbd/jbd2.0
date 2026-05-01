@@ -507,7 +507,6 @@ public class Tboss extends Mob {
         );
 
         Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
-        Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
 
         GameScene.bossSlain();
 

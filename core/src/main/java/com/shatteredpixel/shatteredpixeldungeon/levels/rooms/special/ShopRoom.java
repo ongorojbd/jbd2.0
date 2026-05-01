@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Evolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FormaggioBottle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Highway;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
@@ -420,6 +421,10 @@ public class ShopRoom extends SpecialRoom {
 
         if (Random.Int(20) == 0) {
             itemsToSpawn.add(new Cen());
+        }
+
+        if (Random.Int(20) == 0) {
+            itemsToSpawn.add(new Evolution());
         }
 
         if (Random.Int(40) == 0) {

@@ -22,9 +22,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 public class ButterflySprite extends MobSprite {
+
+    private int cellToAttack;
 
     public ButterflySprite() {
         super();
@@ -45,11 +52,47 @@ public class ButterflySprite extends MobSprite {
         die = new Animation( 4, false );
         die.frames( frames, 4, 5, 6 );
 
+        zap = attack.clone();
+
         play( idle );
+
+        scale.set(0.85f);
     }
 
     @Override
     public int blood() {
         return 0xffaa00;
     }
+
+    @Override
+    public void attack( int cell ) {
+        if (!Dungeon.level.adjacent( cell, ch.pos )) {
+
+            cellToAttack = cell;
+            turnTo( ch.pos , cell );
+            play( zap );
+
+        } else {
+
+            super.attack( cell );
+
+        }
+    }
+
+    @Override
+    public void onComplete( Animation anim ) {
+        if (anim == zap) {
+            idle();
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+            MagicMissile.boltFromChar(parent, MagicMissile.POISON, this, cellToAttack, new Callback() {
+                        @Override
+                        public void call() {
+                            ch.onAttackComplete();
+                        }
+                    } );
+        } else {
+            super.onComplete( anim );
+        }
+    }
+
 }

@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
@@ -118,7 +119,8 @@ public enum Talent {
     //Warrior T3
     HOLD_FAST(9, 3), STRONGMAN(10, 3),
     //Berserker T3
-    ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3),
+    ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3), JONATHAN_NEW1(27, 3),
+
     //Gladiator T3
     CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3),
     //Heroic Leap T4
@@ -202,6 +204,7 @@ public enum Talent {
     ENLIGHTENING_MEAL(164), RECALL_INSCRIPTION(165), SUNRAY(166), DIVINE_SENSE(167), BLESS(168),
     //Cleric T3
     CLEANSE(169, 3), LIGHT_READING(170, 3),
+    JOLYNE_NEW1(187, 3), JOLYNE_NEW2(188, 3), JOLYNE_NEW3(189, 3),
     //Priest T3
     HOLY_LANCE(171, 3), HALLOWED_GROUND(172, 3), MNEMONIC_PRAYER(173, 3),
     //Paladin T3
@@ -230,8 +233,12 @@ public enum Talent {
     //JoBro T4 - Ability 3
     J47(215, 4), J48(216, 4), J49(217, 4),
 
+    //universal T3
+    FIEND_WARP(251, 3), PACT_OF_KNOT(252, 3), CURSED_CLAW(253, 3),
+
     //universal T4
     HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
+
     //Ratmogrify T4
     RATSISTANCE(247, 4), RATLOMACY(248, 4), RATFORCEMENTS(249, 4);
 
@@ -1251,6 +1258,14 @@ public enum Talent {
             }
         }
 
+        if (hero.hasTalent(Talent.JONATHAN_NEW1)
+                && enemy instanceof Mob
+                && enemy.buff(JonathanNew1Tracker.class) == null) {
+            Buff.affect(enemy, JonathanNew1Tracker.class);
+            Berserk berserk = Buff.affect(hero, Berserk.class);
+            berserk.gainEnergy(0.05f * hero.pointsInTalent(Talent.JONATHAN_NEW1));
+        }
+
         return dmg;
     }
 
@@ -1293,6 +1308,9 @@ public enum Talent {
     public static class SuckerPunchTracker extends Buff {
     }
 
+    public static class JonathanNew1Tracker extends Buff {
+    }
+
     ;
 
     public static class FollowupStrikeTracker extends FlavourBuff {
@@ -1333,6 +1351,14 @@ public enum Talent {
         public int icon() { return BuffIndicator.TIME; }
         public void tintIcon(Image icon) { icon.hardlight(0.5f, 0.8f, 1.0f); }
         public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 10)); }
+        public String toString() { return Messages.get(this, "name"); }
+        public String desc() { return Messages.get(this, "desc", dispTurns(visualcooldown())); }
+    }
+
+    public static class PactOfKnotCooldown extends FlavourBuff {
+        public int icon() { return BuffIndicator.TIME; }
+        public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.4f, 0.9f); }
+        public float iconFadePercent() { return Math.max(0, visualcooldown() / 100); }
         public String toString() { return Messages.get(this, "name"); }
         public String desc() { return Messages.get(this, "desc", dispTurns(visualcooldown())); }
     }
@@ -1441,7 +1467,7 @@ public enum Talent {
                 Collections.addAll(tierTalents, PRECISE_ASSAULT, DEADLY_FOLLOWUP);
                 break;
             case CLERIC:
-                Collections.addAll(tierTalents, CLEANSE, LIGHT_READING);
+                Collections.addAll(tierTalents, CLEANSE, LIGHT_READING, JOLYNE_NEW1, JOLYNE_NEW2, JOLYNE_NEW3);
                 break;
             // 죠니 추가
             case JOHNNY:
@@ -1477,7 +1503,7 @@ public enum Talent {
         switch (cls) {
             case BERSERKER:
             default:
-                Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST);
+                Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, JONATHAN_NEW1);
                 break;
             case GLADIATOR:
                 Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO);
@@ -1519,6 +1545,8 @@ public enum Talent {
              case STANDO:
                  Collections.addAll(tierTalents, J36, J37, J38);
                  break;
+            case SUMMONER:
+                 Collections.addAll(tierTalents, FIEND_WARP, PACT_OF_KNOT, CURSED_CLAW);
         }
         for (Talent talent : tierTalents) {
             talents.get(2).put(talent, 0);

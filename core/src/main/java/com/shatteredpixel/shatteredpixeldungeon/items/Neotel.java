@@ -97,10 +97,11 @@ public class Neotel extends Item {
         }
         if (action.equals(AC_RETURN)) {
             InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = 30;
+            InterlevelScene.returnDepth = 54;
             InterlevelScene.returnBranch = 0;
             InterlevelScene.returnPos = -2;
             Game.switchScene(InterlevelScene.class);
+            SPDSettings.addToken(2);
 
             Statistics.spw36 = 3;
 

@@ -3,13 +3,11 @@
  */
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
@@ -23,7 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -418,7 +416,7 @@ public class KarsLight extends Mob {
 
         WndDialogueWithPic.dialogue(
                 new CharSprite[]{new KarsSprite(), new SturoSprite(), new GSoldierSprite(), new SturoSprite(), new Lisa3Sprite(), new Speedwagon2Sprite(), new SturoSprite(), new UltimateSprite(), new UltimateSprite(), new Speedwagon2Sprite() },
-                new String[]{"카즈", "슈트로하임", "독일 군인", "슈트로하임", "카즈", "스피드왜건", "슈트로하임", "완전생물 카즈", "완전생물 카즈", "스피드왜건"},
+                new String[]{"카즈", "슈트로하임", "독일 군인", "슈트로하임", "카즈", "스피드왜건", "슈트로하임", "카즈", "카즈", "스피드왜건"},
                 new String[]{
                         Messages.get(KarsLight.class, "t6"),
                         Messages.get(KarsLight.class, "t7"),
@@ -445,13 +443,16 @@ public class KarsLight extends Mob {
                 }
         );
 
-        Music.INSTANCE.play(Assets.Music.TENDENCY3, false);
-
-        Dungeon.level.drop(new Smask3(), pos).sprite.drop(pos);
-
         GameScene.bossSlain();
 
+        Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
+
+        Music.INSTANCE.end();
+
+        Dungeon.level.unseal();
+
     }
+
 }
 
 

@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.watabou.noosa.TextureFilm;
 
 public class TentacleSprite extends MobSprite {
@@ -46,5 +48,14 @@ public class TentacleSprite extends MobSprite {
         die.frames( frames, 11, 12, 13, 14, 15, 16 );
 
         play( idle );
+    }
+
+    @Override
+    public void play( Animation anim ) {
+        if (anim == die) {
+            emitter().burst( FlameParticle.FACTORY, 20);
+            emitter().burst( ShadowParticle.UP, 12 );
+        }
+        super.play( anim );
     }
 }

@@ -55,7 +55,7 @@ public class ZombieBrute2 extends Mob {
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 4);
+        return super.drRoll() + Random.NormalIntRange(0, 2);
     }
 
     @Override

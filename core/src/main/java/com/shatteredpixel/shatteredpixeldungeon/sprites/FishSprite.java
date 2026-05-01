@@ -22,51 +22,95 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.U2;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ChallengeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
 
 public class FishSprite extends MobSprite {
 
+    public Animation dash;
+    
     public FishSprite() {
         super();
 
-        renderShadow = false;
-        perspectiveRaise = 0.2f;
-
         texture( Assets.Sprites.FISH );
 
-        TextureFilm frames = new TextureFilm( texture, 12, 16 );
+        TextureFilm frames = new TextureFilm( texture, 20, 23 );
 
         idle = new Animation( 8, true );
-        idle.frames( frames, 0, 1, 2, 1 );
+        idle.frames( frames, 0, 1, 2, 3, 4, 5 );
 
-        run = new Animation( 20, true );
-        run.frames( frames, 0, 1, 2, 1 );
+        run = new Animation( 12, true );
+        run.frames( frames, 6, 7, 8, 9 );
 
-        attack = new Animation( 20, false );
-        attack.frames( frames, 3, 4, 5, 6, 7, 8, 9, 10, 11 );
+        dash = new Animation( 20, true );
+        dash.frames( frames, 6, 7, 8, 9 );
 
-        die = new Animation( 4, false );
-        die.frames( frames, 12, 13, 14 );
+        attack = new Animation( 15, false );
+        attack.frames( frames, 10, 11, 12, 13, 14, 0);
+
+        die = new Animation( 8, false );
+        die.frames( frames, 15, 16, 17, 18, 19 );
 
         play( idle );
 
-        scale.set(1.2f);
+        scale.set(0.75f);
+    }
+
+    public void DashATile( int cell ) {
+
+        PixelScene.shake(0.8f, 0.125f);
+
+        //If doing the final step, make sure the golem doesnt overlap with any other actor
+        if (((U2)ch).counter == ((U2)ch).route.dist) ((U2)ch).PushAway(cell);
+
+
+        jump(ch.pos, cell, 0f, 0.125f, new com.watabou.utils.Callback() {
+            @Override
+            public void call() {
+                if (Dungeon.level.map[ch.pos] == Terrain.OPEN_DOOR) {
+                    Door.leave(ch.pos);
+                }
+
+                CellEmitter.get(ch.pos).burst(ChallengeParticle.FACTORY, 2);
+
+                if (Actor.findChar(cell) != null && !(Actor.findChar(cell) instanceof U2)) {
+                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                }
+
+                ch.pos = cell;
+                Dungeon.level.occupyCell(ch);
+
+                jump(ch.pos, ch.pos, 0f, 0.1f, new com.watabou.utils.Callback() {
+                    @Override
+                    public void call() {
+
+                        ((U2)ch).DashTile();
+
+                    }
+                });
+            }
+        });
+
+        play( dash );
+
     }
 
     @Override
-    public void link(Char ch) {
-        super.link(ch);
-        renderShadow = false;
-    }
-
-    @Override
-    public void onComplete( Animation anim ) {
-        super.onComplete( anim );
-
-        if (anim == attack) {
-            GameScene.ripple( ch.pos );
+    public void play( Animation anim ) {
+        if (anim == die) {
+            emitter().burst( FlameParticle.FACTORY, 20);
+            emitter().burst( ShadowParticle.UP, 12 );
         }
+        super.play( anim );
     }
 }

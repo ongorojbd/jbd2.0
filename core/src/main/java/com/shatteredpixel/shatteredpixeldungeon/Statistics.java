@@ -112,6 +112,18 @@ public class Statistics {
     public static int spw38;
     public static int spw39;
     public static int spw40;
+    public static int spw41;
+    public static int spw42;
+    public static int spw43;
+    public static int spw44;
+    public static int spw45;
+    public static int spw46;
+    public static int spw47;
+    public static int spw48;
+    public static int spw49;
+    public static int spw50;
+    public static int spw51;
+    public static int spw52;
     public static int cizah;
     public static int diocount;
     public static int zombiecount;
@@ -137,6 +149,12 @@ public class Statistics {
     public static boolean polpoQuest = false;
     public static boolean diokilled = false;
     public static boolean tendencyMode = false;
+    public static int tendencyMapNode = TendencyMap.NONE;
+    public static int tendencyMapPath = -1;
+    public static int tendencyMapVersion = 0;
+    public static int[] tendencyMapCounts;
+    public static int[] tendencyMapTypes;
+    public static int[] tendencyMapLinks;
 
     public static void reset() {
 
@@ -217,6 +235,18 @@ public class Statistics {
         spw38 = 0;
         spw39 = 0;
         spw40 = 0;
+        spw41 = 0;
+        spw42 = 0;
+        spw43 = 0;
+        spw44 = 0;
+        spw45 = 0;
+        spw46 = 0;
+        spw47 = 0;
+        spw48 = 0;
+        spw49 = 0;
+        spw50 = 0;
+        spw51 = 0;
+        spw52 = 0;
         cizah= 0;
         diocount = 0;
         zombiecount = 0;
@@ -237,6 +267,12 @@ public class Statistics {
         diokilled = false;
         polpoQuest = false;
         tendencyMode = false;
+        tendencyMapNode = TendencyMap.NONE;
+        tendencyMapPath = -1;
+        tendencyMapVersion = 0;
+        tendencyMapCounts = null;
+        tendencyMapTypes = null;
+        tendencyMapLinks = null;
         d4cEnhanced = false;
         johnnyquest = false;
         diospawned = false;
@@ -300,6 +336,18 @@ public class Statistics {
     private static final String SPW38 = "spw38";
     private static final String SPW39 = "spw39";
     private static final String SPW40 = "spw40";
+    private static final String SPW41 = "spw41";
+    private static final String SPW42 = "spw42";
+    private static final String SPW43 = "spw43";
+    private static final String SPW44 = "spw44";
+    private static final String SPW45 = "spw45";
+    private static final String SPW46 = "spw46";
+    private static final String SPW47 = "spw47";
+    private static final String SPW48 = "spw48";
+    private static final String SPW49 = "spw49";
+    private static final String SPW50 = "spw50";
+    private static final String SPW51 = "spw51";
+    private static final String SPW52 = "spw52";
     private static final String CIZAH = "cizah";
     private static final String DIOCOUNT = "diocount";
     private static final String ZOMBIECOUNT = "zombiecount";
@@ -342,6 +390,12 @@ public class Statistics {
     private static final String DIOKILLED = "diokilled";
     private static final String POLPOQUEST = "polpoQuest";
     private static final String TENDENCY_MODE = "tendencyMode";
+    private static final String TENDENCY_MAP_NODE = "tendencyMapNode";
+    private static final String TENDENCY_MAP_PATH = "tendencyMapPath";
+    private static final String TENDENCY_MAP_VERSION = "tendencyMapVersion";
+    private static final String TENDENCY_MAP_COUNTS = "tendencyMapCounts";
+    private static final String TENDENCY_MAP_TYPES = "tendencyMapTypes";
+    private static final String TENDENCY_MAP_LINKS = "tendencyMapLinks";
 
     public static void storeInBundle(Bundle bundle) {
         bundle.put(GOLD, goldCollected);
@@ -402,6 +456,18 @@ public class Statistics {
         bundle.put(SPW38, spw38);
         bundle.put(SPW39, spw39);
         bundle.put(SPW40, spw40);
+        bundle.put(SPW41, spw41);
+        bundle.put(SPW42, spw42);
+        bundle.put(SPW43, spw43);
+        bundle.put(SPW44, spw44);
+        bundle.put(SPW45, spw45);
+        bundle.put(SPW46, spw46);
+        bundle.put(SPW47, spw47);
+        bundle.put(SPW48, spw48);
+        bundle.put(SPW49, spw49);
+        bundle.put(SPW50, spw50);
+        bundle.put(SPW51, spw51);
+        bundle.put(SPW52, spw52);
         bundle.put(CIZAH, cizah);
         bundle.put(DIOCOUNT, diocount);
         bundle.put(ZOMBIECOUNT, zombiecount);
@@ -447,6 +513,12 @@ public class Statistics {
         bundle.put(DIOKILLED, diokilled);
         bundle.put(POLPOQUEST, polpoQuest);
         bundle.put(TENDENCY_MODE, tendencyMode);
+        bundle.put(TENDENCY_MAP_NODE, tendencyMapNode);
+        bundle.put(TENDENCY_MAP_PATH, tendencyMapPath);
+        bundle.put(TENDENCY_MAP_VERSION, tendencyMapVersion);
+        if (tendencyMapCounts != null) bundle.put(TENDENCY_MAP_COUNTS, tendencyMapCounts);
+        if (tendencyMapTypes != null) bundle.put(TENDENCY_MAP_TYPES, tendencyMapTypes);
+        if (tendencyMapLinks != null) bundle.put(TENDENCY_MAP_LINKS, tendencyMapLinks);
     }
 
     public static void restoreFromBundle(Bundle bundle) {
@@ -512,6 +584,18 @@ public class Statistics {
         spw38 = bundle.getInt(SPW38);
         spw39 = bundle.getInt(SPW39);
         spw40 = bundle.getInt(SPW40);
+        spw41 = bundle.getInt(SPW41);
+        spw42 = bundle.getInt(SPW42);
+        spw43 = bundle.getInt(SPW43);
+        spw44 = bundle.getInt(SPW44);
+        spw45 = bundle.getInt(SPW45);
+        spw46 = bundle.getInt(SPW46);
+        spw47 = bundle.getInt(SPW47);
+        spw48 = bundle.getInt(SPW48);
+        spw49 = bundle.getInt(SPW49);
+        spw50 = bundle.getInt(SPW50);
+        spw51 = bundle.getInt(SPW51);
+        spw52 = bundle.getInt(SPW52);
         cizah = bundle.getInt(CIZAH);
         diocount = bundle.getInt(DIOCOUNT);
         zombiecount = bundle.getInt(ZOMBIECOUNT);
@@ -566,6 +650,12 @@ public class Statistics {
         diokilled = bundle.getBoolean(DIOKILLED);
         polpoQuest = bundle.getBoolean(POLPOQUEST);
         tendencyMode = bundle.getBoolean(TENDENCY_MODE);
+        tendencyMapNode = bundle.getInt(TENDENCY_MAP_NODE);
+        tendencyMapPath = bundle.getInt(TENDENCY_MAP_PATH);
+        tendencyMapVersion = bundle.getInt(TENDENCY_MAP_VERSION);
+        tendencyMapCounts = bundle.contains(TENDENCY_MAP_COUNTS) ? bundle.getIntArray(TENDENCY_MAP_COUNTS) : null;
+        tendencyMapTypes = bundle.contains(TENDENCY_MAP_TYPES) ? bundle.getIntArray(TENDENCY_MAP_TYPES) : null;
+        tendencyMapLinks = bundle.contains(TENDENCY_MAP_LINKS) ? bundle.getIntArray(TENDENCY_MAP_LINKS) : null;
     }
 
     public static void preview(GamesInProgress.Info info, Bundle bundle) {

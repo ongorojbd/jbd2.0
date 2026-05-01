@@ -160,6 +160,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw42;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw43;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw44;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw22;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw45;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw46;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw47;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw49;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw50;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw52;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -334,6 +344,8 @@ public class Hero extends Char {
         if (buff(ElixirOfMight.HTBoost.class) != null) {
             HT += buff(ElixirOfMight.HTBoost.class).boost();
         }
+
+        HT = Math.max(1, HT - Spw45.maxHealthPenalty() - Spw22.maxHealthPenalty());
 
         if (boostHP) {
             HP += Math.max(HT - curHT, 0);
@@ -598,7 +610,7 @@ public class Hero extends Char {
         KindOfWeapon wep = belongings.attackingWeapon();
 
         float accuracy = 1;
-        accuracy *= RingOfAccuracy.accuracyMultiplier(this);
+        accuracy *= RingOfAccuracy.accuracyMultiplier(this) * Spw43.accuracyMultiplier();
 
         if (!(wep instanceof MissileWeapon)) {
             if ((hasTalent(Talent.PRECISE_ASSAULT) || hasTalent(Talent.LIQUID_AGILITY))
@@ -692,7 +704,7 @@ public class Hero extends Char {
 
         float evasion = defenseSkill;
 
-        evasion *= RingOfEvasion.evasionMultiplier(this);
+        evasion *= RingOfEvasion.evasionMultiplier(this) * Spw43.evasionMultiplier() * Spw50.evasionMultiplier(this);
 
         if (buff(Talent.LiquidAgilEVATracker.class) != null) {
             if (pointsInTalent(Talent.LIQUID_AGILITY) == 1) {
@@ -839,7 +851,7 @@ public class Hero extends Char {
 
         float speed = super.speed();
 
-        speed *= RingOfHaste.speedMultiplier(this);
+        speed *= RingOfHaste.speedMultiplier(this) * Spw42.speedMultiplier() * Spw50.speedMultiplier(this);
 
         if (belongings.armor() != null) {
             speed = belongings.armor().speedFactor(this, speed);
@@ -930,7 +942,7 @@ public class Hero extends Char {
             //Normally putting furor speed on unarmed attacks would be unnecessary
             //But there's going to be that one guy who gets a furor+force ring combo
             //This is for that one guy, you shall get your fists of fury!
-            float speed = RingOfFuror.attackSpeedMultiplier(this);
+            float speed = RingOfFuror.attackSpeedMultiplier(this) * Spw44.attackSpeedMultiplier() * Spw50.attackSpeedMultiplier(this);
 
             //ditto for furor + sword dance!
             if (buff(Scimitar.SwordDance.class) != null) {
@@ -989,6 +1001,8 @@ public class Hero extends Char {
             }
         }
         checkVisibleMobs();
+        Spw46.updateRipples(this);
+        Spw50.rollForFloor(this);
         BuffIndicator.refreshHero();
         BuffIndicator.refreshBoss();
 
@@ -1611,6 +1625,7 @@ public class Hero extends Char {
         if (hasTalent(Talent.PATIENT_STRIKE)) {
             Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
         }
+        Spw47.prepare(this);
         if (!fullRest) {
             if (sprite != null) {
                 sprite.showStatus(CharSprite.DEFAULT, Messages.get(this, "wait"));
@@ -1635,6 +1650,10 @@ public class Hero extends Char {
         }
 
         damage = Talent.onAttackProc(this, enemy, damage);
+        damage = Spw47.proc(this, damage);
+        damage = Math.round(damage * Spw50.damageMultiplier(this));
+        damage = Spw49.proc(this, damage);
+        damage = Spw46.proc(this, enemy, damage);
 
         if (wep != null) {
             damage = wep.proc(this, enemy, damage);
@@ -2098,7 +2117,7 @@ public class Hero extends Char {
             d4c.transferDebuffsToAttacker((Char) src);
         }
 
-        dmg = (int) Math.ceil(dmg * RingOfTenacity.damageMultiplier(this));
+        dmg = (int) Math.ceil(dmg * RingOfTenacity.damageMultiplier(this) * Spw52.tenacityMultiplier(this));
 
         if (buff(Talent.WarriorFoodImmunity.class) != null) {
             if (pointsInTalent(Talent.IRON_STOMACH) == 1) damage /= 4f;
@@ -2108,7 +2127,7 @@ public class Hero extends Char {
         dmg = Math.round(damage);
 
         //we ceil this one to avoid letting the player easily take 0 dmg from tenacity early
-        dmg = (int) Math.ceil(dmg * RingOfTenacity.damageMultiplier(this));
+        dmg = (int) Math.ceil(dmg * RingOfTenacity.damageMultiplier(this) * Spw52.tenacityMultiplier(this));
 
         int preHP = HP + shielding();
         if (src instanceof Hunger) preHP -= shielding();

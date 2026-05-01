@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.TendencyMap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
@@ -65,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.HereticSummon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -72,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -98,6 +101,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSta
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStormClouds;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw41;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -962,6 +966,7 @@ public abstract class Mob extends Char {
             if (hero.belongings.getItem(Jojo3.class) != null) {
                 hero.HP = Math.min(hero.HP + 2, hero.HT);
             }
+            Spw41.healAllies();
 
         }
 
@@ -1002,7 +1007,14 @@ public abstract class Mob extends Char {
             }
             if (!mobsAlive && Dungeon.level.entrance == 0 && !Dungeon.level.combatRewardDropped){
                 Dungeon.level.combatRewardDropped = true;
-                spwPrize(pos);
+                if (!Dungeon.level.suppressSpwPrize) {
+                    spwPrize(pos);
+                    if (Dungeon.level.doubleSpwPrize) {
+                        Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
+                    }
+                } else {
+                    Dungeon.level.drop(new Gold().quantity(100), pos).sprite.drop(pos);
+                }
                 Dungeon.level.drop(new WornKey(Dungeon.depth), pos).sprite.drop();
                 Dungeon.level.unseal();
 
@@ -1582,7 +1594,10 @@ public abstract class Mob extends Char {
         heldAllies.clear();
         for (Mob mob : level.mobs.toArray(new Mob[0])) {
             //preserve directable allies or empowered intelligent allies no matter where they are
-            if (mob instanceof DirectableAlly
+            if (mob instanceof HereticSummon) {
+                level.mobs.remove(mob);
+                heldAllies.add(mob);
+            } else if (mob instanceof DirectableAlly
                     || (mob.intelligentAlly && PowerOfMany.getPoweredAlly() == mob)) {
                 if (mob instanceof DirectableAlly) {
                     ((DirectableAlly) mob).clearDefensingPos();

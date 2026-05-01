@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.So3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Annasui;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Com;
@@ -125,10 +126,10 @@ public class EmporioLevel extends Level {
         So1.pos = 3 * width() + 3;
         mobs.add( So1 );
 
-        if (DeviceCompat.isDebug()) {
-            So3 So3 = new So3();
-            So3.pos = 5 * width() + 8;
-            mobs.add(So3);
+        if (Dungeon.customSeedText.isEmpty()) {
+            So2 So2 = new So2();
+            So2.pos = 5 * width() + 8;
+            mobs.add(So2);
         }
 
         Com npcc = new Com();

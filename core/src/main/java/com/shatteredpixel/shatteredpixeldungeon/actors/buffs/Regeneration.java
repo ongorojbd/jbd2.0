@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw45;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
@@ -65,6 +66,11 @@ public class Regeneration extends Buff {
 					} else if (Dungeon.hero.buff(SpiritForm.SpiritFormBuff.class) != null
 							&& Dungeon.hero.buff(SpiritForm.SpiritFormBuff.class).artifact() instanceof ChaliceOfBlood) {
 						chaliceLevel = SpiritForm.artifactLevel();
+					}
+					int pactLevel = Spw45.chaliceLevel();
+					if (pactLevel != -1) {
+						chaliceCursed = false;
+						chaliceLevel = Math.max(chaliceLevel, pactLevel);
 					}
 				}
 

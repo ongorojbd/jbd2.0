@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,81 +21,212 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ChallengeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FishSprite;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class U2 extends Mob {
 
-	{
-		spriteClass = FishSprite.class;
+    {
+        spriteClass = FishSprite.class;
 
-		baseSpeed = 2f;
+        HP = HT = 260;
+        defenseSkill = 30;
 
-		EXP = 3;
-		maxLvl = 10;
+        EXP = 20;
+        maxLvl = 30;
 
-		SLEEPING = new Sleeping();
-		WANDERING = new Wandering();
-		HUNTING = new Hunting();
+        flying = true;
+        properties.add(Property.UNDEAD);
+        properties.add(Property.DEMONIC);
+    }
 
-		state = SLEEPING;
-	}
+    @Override
+    public int damageRoll() {
+        return Random.NormalIntRange( 50, 60 );
+    }
+    @Override
+    public int attackSkill( Char target ) {
+        return 45;
+    }
 
-	private int consecutiveAttacks = 0;
+    @Override
+    public int drRoll() {
+        return super.drRoll() + Random.NormalIntRange(5, 20);
+    }
 
-	public U2() {
-		super();
+    public int DashActive = 0;
 
-		HP = HT = 15 + Dungeon.depth * 3;
-		defenseSkill = 8 + Dungeon.depth * 2;
-	}
+    public Ballistica route;
 
-	@Override
-	protected boolean act() {
-		// 물 밖에서도 생존 가능 (dieOnLand 제거)
-		return super.act();
-	}
+    public int counter = 0;
 
-	@Override
-	public int damageRoll() {
-		int baseDamage = Random.NormalIntRange(Dungeon.depth + 2, 4 + Dungeon.depth * 2);
-		// 물에 있으면 데미지 증가
-		if (Dungeon.level.water[pos]) {
-			baseDamage = Math.round(baseDamage * 1.5f);
-		}
-		return baseDamage;
-	}
+    @Override
+    protected boolean act() {
 
-	@Override
-	public int attackSkill(Char target) {
-		int skill = 12 + Dungeon.depth * 2;
-		// 물에 있으면 명중률 증가
-		if (Dungeon.level.water[pos]) {
-			skill += 5;
-		}
-		return skill;
-	}
+        if (DashActive == 1)
+        {
+            Sample.INSTANCE.play(Assets.Sounds.TONIO3);
+            this.sprite.showStatus(CharSprite.WARNING, Messages.get(this, "charged"));
+            DashActive = 2;
+            spend(1f);
+            return true;
+        }
+        else if (DashActive == 2)
+        {
+            counter = 0;
 
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, Dungeon.depth);
-	}
+            route = new Ballistica(this.pos, enemy.pos, Ballistica.STOP_SOLID );
 
-	@Override
-	public int attackProc(Char enemy, int damage) {
-		damage = super.attackProc(enemy, damage);
-		// 연속 공격 가능 (30% 확률)
-		if (Random.Float() < 0.3f && enemy.isAlive() && consecutiveAttacks < 1) {
-			consecutiveAttacks++;
-			spend(-0.5f); // 다음 공격을 빠르게
-			attack(enemy);
-			consecutiveAttacks = 0;
-		} else {
-			consecutiveAttacks = 0;
-		}
-		return damage;
-	}
+            DashTile();
+
+            DashActive = 0;
+            return false;
+        }
+        else return super.act();
+
+    }
+
+    public void DashTile()
+    {
+        if (counter <= route.dist)
+        {
+            if (Dungeon.level.map[pos] == Terrain.CHASM) {
+                next();
+                return;
+            }
+
+            ((FishSprite)sprite).DashATile(route.path.get(counter));
+            counter++;
+        }
+        else {
+            for (int i = 0; i < com.watabou.utils.PathFinder.NEIGHBOURS8.length; i++) {
+                PixelScene.shake(1.1f, 0.3f);
+                CellEmitter.get(pos + com.watabou.utils.PathFinder.NEIGHBOURS8[i]).burst(ChallengeParticle.FACTORY, 5);
+
+                Char ch = Actor.findChar( pos + com.watabou.utils.PathFinder.NEIGHBOURS8[i] );
+                SpellSprite.show(this, SpellSprite.FOOD);
+                Sample.INSTANCE.play(Assets.Sounds.EAT);
+
+                if (ch != null && ch.isAlive()) {
+                    int finalDmg = damageRoll();
+                    finalDmg = Math.max(0, finalDmg - ch.drRoll());
+                    ch.damage(Math.round(finalDmg * 1.2f), this);
+                }
+
+            }
+            spend(2f);
+            next();
+        }
+
+    }
+
+    private int DashesPerformed = 0;
+
+    @Override
+    public void damage(int dmg, Object src) {
+        if (HP - dmg < HT * 0.75f && HP > HT * 0.75f && DashesPerformed == 0) {
+            DashActive = 1;
+            DashesPerformed++;
+        }
+        if (HP - dmg < HT * 0.5f && HP > HT * 0.5f&& DashesPerformed == 1 && DashActive == 0) {
+            DashActive = 1;
+            DashesPerformed++;
+        }
+        if (HP - dmg < HT * 0.25f && HP > HT * 0.25f && DashesPerformed == 2 && DashActive == 0) {
+            DashActive = 1;
+            DashesPerformed++;
+        }
+
+        //if (DashActive == 1) dmg = 0;
+
+        super.damage(dmg, src);
+    }
+
+
+    private final String DASHACTIVE = "dashactive";
+
+    private final String DASHAMOUNT = "dashamount";
+
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(DASHACTIVE, DashActive);
+        bundle.put(DASHAMOUNT, DashesPerformed);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        DashActive = bundle.getInt(DASHACTIVE);
+        DashesPerformed = bundle.getInt(DASHAMOUNT);
+    }
+
+    public void PushAway(int pos)
+    {
+
+        if (Actor.findChar(pos) != null) {
+
+            int pushPos = pos;
+            for (int c : PathFinder.NEIGHBOURS8) {
+                if (findChar(pos + c) == null
+                        && Dungeon.level.passable[pos + c]
+                        && (Dungeon.level.openSpace[pos + c] || !hasProp(findChar(pos), Property.LARGE))
+                        && Dungeon.level.trueDistance(pos, pos + c) > Dungeon.level.trueDistance(pos, pushPos)) {
+                    pushPos = pos + c;
+                }
+            }
+
+
+            //push enemy, or wait a turn if there is no valid pushing position
+            if (pushPos != pos) {
+                Char ch = findChar(pos);
+                Actor.add(new Pushing(ch, ch.pos, pushPos));
+
+                ch.pos = pushPos;
+                Dungeon.level.occupyCell(ch);
+
+
+            }
+        }
+
+
+    }
+
+    @Override
+    public void die(Object cause) {
+
+        super.die(cause);
+
+        if (Random.Int( 3 ) == 0) {
+            Dungeon.level.drop( new Gold().quantity(Random.IntRange(45, 55)), pos ).sprite.drop();
+        }
+
+        if (Dungeon.level.heroFOV[pos]) {
+            Sample.INSTANCE.play(Assets.Sounds.BONES);
+            Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        }
+
+    }
+
 }
-

@@ -29,7 +29,7 @@ public class Abomination2Sprite extends MobSprite {
         die = new Animation(12, false);
         die.frames(frames, 10, 11, 12, 13);
 
-        zap = new Animation(4, true);
+        zap = new Animation(12, true);
         zap.frames(frames, 1, 9, 8);
 
         play(idle);

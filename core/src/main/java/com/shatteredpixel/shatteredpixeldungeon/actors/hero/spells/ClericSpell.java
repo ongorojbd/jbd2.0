@@ -168,6 +168,15 @@ public abstract class ClericSpell {
 			if (cleric.hasTalent(Talent.WALL_OF_LIGHT)){
 				spells.add(WallOfLight.INSTANCE);
 			}
+			if (cleric.hasTalent(Talent.JOLYNE_NEW1)){
+				spells.add(StringDefense.INSTANCE);
+			}
+			if (cleric.hasTalent(Talent.JOLYNE_NEW2)){
+				spells.add(StringOcean.INSTANCE);
+			}
+			if (cleric.hasTalent(Talent.JOLYNE_NEW3)){
+				spells.add(StringStitching.INSTANCE);
+			}
 
 		} else if (tier == 4){
 
@@ -223,6 +232,9 @@ public abstract class ClericSpell {
 		spells.add(LayOnHands.INSTANCE);
 		spells.add(AuraOfProtection.INSTANCE);
 		spells.add(WallOfLight.INSTANCE);
+		spells.add(StringDefense.INSTANCE);
+		spells.add(StringOcean.INSTANCE);
+		spells.add(StringStitching.INSTANCE);
 		spells.add(HolyLance.INSTANCE);
 		spells.add(HallowedGround.INSTANCE);
 		spells.add(MnemonicPrayer.INSTANCE);

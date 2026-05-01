@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw4;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -65,11 +66,11 @@ public class RingOfSharpshooting extends Ring {
 	}
 	
 	public static int levelDamageBonus( Char target ){
-		return getBuffedBonus(target, RingOfSharpshooting.Aim.class);
+		return getBuffedBonus(target, RingOfSharpshooting.Aim.class) + Spw4.levelDamageBonus();
 	}
 	
 	public static float durabilityMultiplier( Char target ){
-		return (float)(Math.pow(1.2, getBonus(target, Aim.class)));
+		return (float)(Math.pow(1.2, getBonus(target, Aim.class))) * Spw4.durabilityMultiplier();
 	}
 
 	public class Aim extends RingBuff {

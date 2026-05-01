@@ -102,10 +102,15 @@ public class EnergyStrike extends ArmorAbility {
 		EnergyStrikeBuff buff = Buff.append(hero, EnergyStrikeBuff.class, 3f);
 		buff.setTargetArea(target);
 
-		// J42 탤런트: 시전 시 보호막 획득
+		// J42 탤런트: 시전 시 보호막 획득 (최대치 초과 중첩 방지)
 		if (hero.hasTalent(Talent.J42)) {
-			int shieldAmount = hero.pointsInTalent(Talent.J42) * 15; // +1: 15, +2: 30, +3: 45, +4: 60
-			Buff.affect(hero, Barrier.class).incShield(shieldAmount);
+			int maxShield = hero.pointsInTalent(Talent.J42) * 15; // +1: 15, +2: 30, +3: 45, +4: 60
+			Barrier existing = hero.buff(Barrier.class);
+			int currentShield = existing != null ? (int) existing.shielding() : 0;
+			int toAdd = maxShield - currentShield;
+			if (toAdd > 0) {
+				Buff.affect(hero, Barrier.class).incShield(toAdd);
+			}
 		}
 
 		// J43 탤런트: 시전 후 3턴 동안 버프 부여 (다음 시전 시 충전량 감소)

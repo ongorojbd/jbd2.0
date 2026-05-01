@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM201Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.UltimateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
@@ -44,7 +45,7 @@ import java.util.HashSet;
 
 public class Kars extends Mob {
     {
-        spriteClass = DM201Sprite.class;
+        spriteClass = UltimateSprite.class;
 
         HP = HT = 100;
         defenseSkill = 12;

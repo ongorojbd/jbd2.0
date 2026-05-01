@@ -26,12 +26,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DArbySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DannySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HermitCrabSprite;
@@ -39,7 +41,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JohnnySprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RollerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SkeletonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -54,6 +60,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_5_Changes(changeInfos);
         add_v3_4_Changes(changeInfos);
         add_v3_3_Changes(changeInfos);
         add_v3_2_Changes(changeInfos);
@@ -68,14 +75,59 @@ public class v3_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
-                "추후 제공될 주요 콘텐츠 변경사항은 오시리스신 퀘스트 개편입니다.\n\n" +
-                        "이 새로운 퀘스트는 독특한 플레이 스타일로 진행될 것입니다."));
-
-        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "전투조류 출시",
-                "전투조류 던전의 베타 기간이 끝나고 정식 출시될 예정입니다!\n\n" +
-                        "총 63층 예정으로, 전투조류 던전 클리어 보상도 추가 예정입니다."));
-
+                "다음 주요 업데이트는 오시리스신 퀘스트 변경으로, 기존과 차별화된 독특한 퀘스트 방식이 될 예정입니다."));
     }
+
+    public static void add_v3_5_Changes(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("v3.0f", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "전투조류 정식 출시!",
+                "새로운 던전 _전투조류_가 정식 업데이트되었습니다!\n\n" +
+                        "전투조류는 기존과 다른 독립적인 방식으로 진행되며, 게임 클리어 후 영웅 선택 화면의 전용 아이콘을 클릭해 입장할 수 있습니다.\n\n" +
+                        "베타 버전에서 발전된 신규 시스템과 게임 방식이 준비되어 있으니 꼭 도전해 보세요!"));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EVOLUTION), "전투조류 포인트",
+                "전투조류 던전을 클리어하면 획득할 수 있는 신규 재화인 _전투조류 포인트_가 추가되었습니다!\n\n" +
+                        "전투조류 포인트로 엠포리오의 방에 있는 에르메스에게 _잔재 선택권_ 또는 _만화책 선택권_을 구매할 수 있습니다.\n\n" +
+                        "에르메스는 경쟁 모드에서는 등장하지 않습니다."));
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.PACT_OF_KNOT), "신규 보조 직업: 완전생물",
+                "모든 캐릭터가 선택 가능한 공용 보조 직업인 _완전생물_이 추가되었습니다!\n\n" +
+                        "스탠드 구현의 화살 사용 시 _2 전투조류 포인트_를 소모하여 선택할 수 있습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new SkeletonSprite()), "행드맨",
+                "만약 홀 호스가 소환한 행드맨이 공격 불가능한 위치에 있을 경우, 즉시 공격이 가능한 위치로 순간이동하게 됩니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new SupressionSprite()), "용기의 파문전사",
+                "신규 특성 _파문의 흐름_이 추가되었습니다.\n\n" +
+                        "이제 파문 에너지를 보다 능동적으로 쌓고 관리하며 전투를 주도할 수 있습니다."));
+
+        changes.addButton(new ChangeButton(new Image(new JojoSprite()), "죠린 보조 직업",
+                "신규 공용 특성 _끈을 이용한 방어_, _돌의 바다_, _수놓기_가 추가되었습니다.\n\n" +
+                        "죠린이 상황에 맞춰 유연하게 대응할 수 있도록 개선하고, 특성 선택의 폭을 넓혔습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(CharSprite.NEGATIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new JohnnySprite()), "죠니",
+                "'실로 머나먼 길' 시전 중 공격 상쇄 특성으로 보호막을 무한정 쌓을 수 없도록 수정되었습니다.\n\n" +
+                        "터스크 장비 DISC의 충전 속도가 -35% 감소됩니다."));
+    }
+
     public static void add_v3_4_Changes(ArrayList<ChangeInfo> changeInfos) {
 
         ChangeInfo changes = new ChangeInfo("v3.0e", true, "");
@@ -263,7 +315,7 @@ public class v3_X_Changes {
                         "- 투쟁심 특성의 정확도가 +1/2/3에서 -30/-10/+10% -> -25/0/+25%이 됩니다."));
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMAHAWK), "투척 무기 상향",
-                        "- 자철석으로 가져올 아이템이 즉시 회수 가능한 아이템(렉킹 볼, 황금의 회전의 철구 등)일 경우 시전에 턴을 소모하지 않습니다.\n\n" +
+                "- 자철석으로 가져올 아이템이 즉시 회수 가능한 아이템(렉킹 볼, 황금의 회전의 철구 등)일 경우 시전에 턴을 소모하지 않습니다.\n\n" +
                         "- DIO의 나이프의 출혈 피해량이 딜 비례가 아닌 독자적인 범위를 가지도록 변경됩니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
@@ -271,7 +323,7 @@ public class v3_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOLAS), "투척 무기 하향",
-                        "- 크래커 볼리의 피해량이 6-9 -> 4-9로 감소되었습니다. 강화 시 피해량은 +1-2 -> +0-2로 변경되었습니다.\n\n" +
+                "- 크래커 볼리의 피해량이 6-9 -> 4-9로 감소되었습니다. 강화 시 피해량은 +1-2 -> +0-2로 변경되었습니다.\n\n" +
                         "- 노토리어스 B.I.G이 돌아올 때 필요한 턴이 4턴에서 5턴으로 증가합니다."));
     }
 

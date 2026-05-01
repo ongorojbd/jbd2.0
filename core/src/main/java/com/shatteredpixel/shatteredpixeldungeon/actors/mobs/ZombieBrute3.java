@@ -23,6 +23,8 @@ public class ZombieBrute3 extends Mob {
         HP = HT = 70;
         defenseSkill = 12;
 
+        viewDistance = 5;
+
         EXP = 8;
         maxLvl = 16;
         properties.add(Property.UNDEAD);
