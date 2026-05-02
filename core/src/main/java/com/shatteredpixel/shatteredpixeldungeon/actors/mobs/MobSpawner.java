@@ -471,6 +471,7 @@ public class MobSpawner extends Actor {
                         VampireSoldier.class, VampireSoldier3.class, Abomination2.class,
                         VampireSoldier3.class));
             case 35:
+            case 36:
                 return new ArrayList<>(Arrays.asList(
                         VampireSoldier2.class, VampireSoldier2.class,
                         VampireSoldier3.class, VampireSoldier3.class, Abomination2.class,

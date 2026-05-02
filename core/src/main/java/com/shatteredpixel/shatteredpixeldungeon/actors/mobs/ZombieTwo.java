@@ -57,6 +57,8 @@ public class ZombieTwo extends Mob {
         HP = HT = 8;
         defenseSkill = 2;
 
+        EXP = 2;
+
         maxLvl = 5;
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);

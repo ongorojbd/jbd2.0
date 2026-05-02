@@ -159,13 +159,13 @@ public class Com extends NPC {
                         } else if (index == 2) {
                             tell(Messages.get(Com.class, "e", SPDSettings.getDio()));
                         } else if (index == 3) {
-                            if (SPDSettings.getSpecialcoin() >= 1) {
+                            if (SPDSettings.getSpecialcoin() > 0) {
                                 ShatteredPixelDungeon.switchScene(SeedFindScene.class);
                             }  else {
                                 GLog.p(Messages.get(Annasui.class, "sid"));
                             }
                         } else {
-                            if (SPDSettings.getSpecialcoin() >= 1) {
+                            if (SPDSettings.getSpecialcoin() > 0) {
                                 ShatteredPixelDungeon.switchScene( SeedAnalysisScene.class );
                             }  else {
                                 GLog.p(Messages.get(Annasui.class, "sid"));

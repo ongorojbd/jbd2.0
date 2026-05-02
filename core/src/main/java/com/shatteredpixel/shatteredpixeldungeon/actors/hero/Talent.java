@@ -235,6 +235,7 @@ public enum Talent {
 
     //universal T3
     FIEND_WARP(251, 3), PACT_OF_KNOT(252, 3), CURSED_CLAW(253, 3),
+    INVOKER_1(219, 3), INVOKER_2(220, 3), INVOKER_3(221, 3),
 
     //universal T4
     HEROIC_ENERGY(26, 4), //See icon() and title() for special logic for this one
@@ -1547,6 +1548,10 @@ public enum Talent {
                  break;
             case SUMMONER:
                  Collections.addAll(tierTalents, FIEND_WARP, PACT_OF_KNOT, CURSED_CLAW);
+                 break;
+             case INVOKER:
+                 Collections.addAll(tierTalents, INVOKER_3, INVOKER_2, INVOKER_1);
+                 break;
         }
         for (Talent talent : tierTalents) {
             talents.get(2).put(talent, 0);

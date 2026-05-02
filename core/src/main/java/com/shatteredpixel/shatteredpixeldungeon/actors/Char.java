@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Dominion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.PoisonGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ShrGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -1094,7 +1095,7 @@ public abstract class Char extends Actor {
             if (src instanceof Bleeding || src instanceof Diavolo) icon = FloatingText.BLEEDING;
             if (src instanceof ToxicGas) icon = FloatingText.TOXIC;
             if (src instanceof Corrosion) icon = FloatingText.CORROSION;
-            if (src instanceof Poison || src instanceof Dominion) icon = FloatingText.POISON;
+            if (src instanceof Poison || src instanceof Dominion || src instanceof PoisonGas) icon = FloatingText.POISON;
             if (src instanceof Ooze) icon = FloatingText.OOZE;
             if (src instanceof Viscosity.DeferedDamage) icon = FloatingText.DEFERRED;
             if (src instanceof Corruption) icon = FloatingText.CORRUPTION;

@@ -25,8 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvokerEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -115,6 +117,13 @@ public class TengusMask extends Item {
             SPDSettings.addToken(-2);
             Music.INSTANCE.play(Assets.Music.TENDENCY2, true);
         }
+
+        if (way == HeroSubClass.INVOKER) {
+            SPDSettings.addSpecialcoin(-5);
+            GameScene.heavendio();
+            Music.INSTANCE.play(Assets.Music.LABS_BOSS, true);
+        }
+
         Talent.initSubclassTalents(curUser);
 
         if (way == HeroSubClass.ASSASSIN && curUser.invisible > 0) {
@@ -155,7 +164,21 @@ public class TengusMask extends Item {
                             WndDialogueWithPic.RUN
                     }
             );
-        }  else if (way == HeroSubClass.STANDO) {
+        } else if (way == HeroSubClass.INVOKER) {
+            InvokerEnergy.energy = 0;
+            Buff.affect(curUser, InvokerEnergy.class);
+            // 3개 오브를 인벤토리에 지급하고 퀵슬롯에 등록
+            InvokerOrb.QuasOrb  quas  = new InvokerOrb.QuasOrb();
+            InvokerOrb.WexOrb   wex   = new InvokerOrb.WexOrb();
+            InvokerOrb.ExortOrb exort = new InvokerOrb.ExortOrb();
+            quas.collect();
+            wex.collect();
+            exort.collect();
+            // 1·2·3번 퀵슬롯(인덱스 0·1·2)에 Q→W→E 고정 등록
+            Dungeon.quickslot.setSlot(2, quas);
+            Dungeon.quickslot.setSlot(1, wex);
+            Dungeon.quickslot.setSlot(0, exort);
+        } else if (way == HeroSubClass.STANDO) {
             Buff.affect(curUser, TacticalScope.class).set();
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new BlacksmithSprite()},

@@ -960,6 +960,10 @@ public class ItemSpriteSheet {
     public static final int FRIEND = DOCUMENTS + 7;
     public static final int BABY = DOCUMENTS + 8;
     public static final int EVOLUTION = DOCUMENTS + 10;
+    public static final int H1 = DOCUMENTS + 11;
+    public static final int H2 = DOCUMENTS + 12;
+    public static final int H3 = DOCUMENTS + 13;
+    public static final int HS = DOCUMENTS + 14;
 
     static {
         assignItemRect(GUIDE_PAGE, 8, 8);
@@ -972,6 +976,10 @@ public class ItemSpriteSheet {
         assignItemRect(FRIEND, 14, 14);
         assignItemRect(BABY, 14, 13);
         assignItemRect(EVOLUTION, 14, 13);
+        assignItemRect(H1, 16, 16);
+        assignItemRect(H2, 16, 16);
+        assignItemRect(H3, 16, 16);
+        assignItemRect(HS, 16, 16);
     }
 
     //for smaller 8x8 icons that often accompany an item sprite

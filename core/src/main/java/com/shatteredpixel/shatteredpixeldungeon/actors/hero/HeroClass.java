@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
@@ -80,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw1;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw10;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw35;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw36;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw4;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw42;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw43;
@@ -139,13 +141,13 @@ import com.watabou.utils.DeviceCompat;
 public enum HeroClass {
 
     //영웅 순서 바꾸고 싶으면 여길 바꾸면 된다.
-    WARRIOR(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR, HeroSubClass.SUMMONER),
-    MAGE(HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK, HeroSubClass.SUMMONER),
-    ROGUE(HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER, HeroSubClass.SUMMONER),
-    DUELIST(HeroSubClass.CHAMPION, HeroSubClass.MONK, HeroSubClass.SUMMONER),
-    HUNTRESS(HeroSubClass.SNIPER, HeroSubClass.WARDEN, HeroSubClass.SUMMONER),
-    CLERIC(HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.SUMMONER),
-    JOHNNY(HeroSubClass.RIDER, HeroSubClass.STANDO, HeroSubClass.SUMMONER);
+    WARRIOR(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR, HeroSubClass.SUMMONER, HeroSubClass.INVOKER),
+    MAGE(HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK, HeroSubClass.SUMMONER, HeroSubClass.INVOKER),
+    ROGUE(HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER, HeroSubClass.SUMMONER, HeroSubClass.INVOKER),
+    DUELIST(HeroSubClass.CHAMPION, HeroSubClass.MONK, HeroSubClass.SUMMONER, HeroSubClass.INVOKER),
+    HUNTRESS(HeroSubClass.SNIPER, HeroSubClass.WARDEN, HeroSubClass.SUMMONER, HeroSubClass.INVOKER),
+    CLERIC(HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.SUMMONER, HeroSubClass.INVOKER),
+    JOHNNY(HeroSubClass.RIDER, HeroSubClass.STANDO, HeroSubClass.SUMMONER, HeroSubClass.INVOKER);
 
     private HeroSubClass[] subClasses;
 
@@ -172,7 +174,6 @@ public enum HeroClass {
         waterskin.collect();
 
         new ScrollOfIdentify().identify();
-
 
         switch (this) {
             case WARRIOR:

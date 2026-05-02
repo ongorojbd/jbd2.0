@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvokerEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RadioactiveMutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
@@ -53,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute3;
+import com.shatteredpixel.shatteredpixeldungeon.items.InvokerOrb;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
@@ -155,6 +157,8 @@ public class AntiMagic extends Armor.Glyph {
         RESISTS.add(Soft.class);
         RESISTS.add(Soft.ExplosionDamage.class);
         RESISTS.add(U3.PoisonBolt.class);
+        RESISTS.add(InvokerOrb.DarkBolt.class);
+        RESISTS.add(InvokerEnergy.QweDamage.class);
     }
 
     @Override

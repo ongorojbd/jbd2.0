@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
@@ -64,11 +65,12 @@ public class EnhancedWeapon extends Buff {
     }
     
     public int getEnhancementLevel() {
-        if (Dungeon.tendencylevel) {
-            return Statistics.spw1;
-        }
+        // 명시적으로 설정된 값은 tendencylevel 여부에 관계없이 우선 사용
         if (enhancementLevel >= 0) {
             return enhancementLevel;
+        }
+        if (Dungeon.tendencylevel) {
+            return Statistics.spw1;
         }
         return Statistics.spw1;
     }
@@ -92,6 +94,7 @@ public class EnhancedWeapon extends Buff {
             temporaryDuration--;
             if (temporaryDuration <= 0) {
                 detach();
+                Item.updateQuickslot();
             }
         }
         spend(TICK);

@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -98,7 +99,10 @@ public class v3_X_Changes {
                         "에르메스는 경쟁 모드에서는 등장하지 않습니다."));
         changes.addButton(new ChangeButton(new TalentIcon(Talent.PACT_OF_KNOT), "신규 보조 직업: 완전생물",
                 "모든 캐릭터가 선택 가능한 공용 보조 직업인 _완전생물_이 추가되었습니다!\n\n" +
-                        "스탠드 구현의 화살 사용 시 _2 전투조류 포인트_를 소모하여 선택할 수 있습니다."));
+                        "완전생물은 스탠드 구현의 화살 사용 시,\n_2 전투조류 포인트_를 소모하여 선택할 수 있습니다."));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HS), "신규 보조 직업: 천국에 도달한 자",
+                "모든 캐릭터가 선택 가능한 공용 보조 직업인 _천국에 도달한 자_가 추가되었습니다!\n\n" +
+                        "천국에 도달한 자는 스탠드 구현의 화살 사용 시, _2 클리어 포인트_를 소모하여 선택할 수 있습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);

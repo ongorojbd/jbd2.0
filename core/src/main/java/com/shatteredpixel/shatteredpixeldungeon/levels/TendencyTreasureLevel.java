@@ -456,9 +456,9 @@ public class TendencyTreasureLevel extends Level {
 				protected void onSelect(int index) {
 					eventResolved = true;
 					if (index == 0) {
-						giveItem(new ElixirOfWeaponEnhance().quantity(3).identify());
+						giveItem(new ElixirOfWeaponEnhance().quantity(5).identify());
 					} else {
-						giveItem(new ElixirOfWeaponUpgrade().quantity(3).identify());
+						giveItem(new ElixirOfWeaponUpgrade().quantity(5).identify());
 					}
 				}
 

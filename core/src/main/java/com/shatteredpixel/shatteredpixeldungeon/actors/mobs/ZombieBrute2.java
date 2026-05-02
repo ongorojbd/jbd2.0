@@ -35,7 +35,7 @@ public class ZombieBrute2 extends Mob {
         HP = HT = 20;
         defenseSkill = 6;
 
-        EXP = 5;
+        EXP = 6;
         maxLvl = 10;
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);

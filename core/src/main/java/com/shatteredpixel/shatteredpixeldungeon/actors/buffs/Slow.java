@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
@@ -32,6 +33,12 @@ public class Slow extends FlavourBuff {
 	}
 
 	public static final float DURATION = 10f;
+
+	@Override
+	public void fx(boolean on) {
+		if (on) target.sprite.add(CharSprite.State.KARS);
+		else target.sprite.remove(CharSprite.State.KARS);
+	}
 
 	@Override
 	public int icon() {

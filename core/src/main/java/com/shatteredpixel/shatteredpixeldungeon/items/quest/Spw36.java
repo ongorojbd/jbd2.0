@@ -30,7 +30,7 @@ public class Spw36 extends Item {
 
     @Override
     public String desc() {
-        int chance = 20 + spw36 * 10;
+        int chance = 10 + spw36 * 10;
         return "보상을 받을 때마다, 무작위 강화 물약을 _" +chance + "%_ 확률로 획득할 수 있습니다.\n\n이 효과를 선택할 때마다 확률이 +_10%_만큼 더 증가합니다.";
     }
 }

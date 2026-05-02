@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvokerEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
@@ -917,6 +918,9 @@ public abstract class Mob extends Char {
                 if (hero.subClass == HeroSubClass.MONK) {
                     Buff.affect(hero, MonkEnergy.class).gainEnergy(this);
                 }
+                if (hero.subClass == HeroSubClass.INVOKER) {
+                    Buff.affect(hero, InvokerEnergy.class).gainEnergy(this);
+                }
             }
         }
     }
@@ -1031,7 +1035,7 @@ public abstract class Mob extends Char {
 
                 // SPW36: 보급 - 전투 보상 시 무작위 강화 물약 추가 드랍 (10% * spw36)
                 if (Statistics.spw36 > 0) {
-                    int supplyChance = Math.min(100, 20 + spw36 * 10);
+                    int supplyChance = Math.min(100, 10 + spw36 * 10);
                     if (Random.Int(100) < supplyChance) {
                         Class<?>[] specialPotions = {
                                 // 엘릭서들

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -108,7 +109,15 @@ public class WndChooseSubclass extends Window {
 				@Override
 				protected void onClick() {
 					if (!canChoose(subCls)) {
-						GLog.n(Messages.get(WndChooseSubclass.this, "not_enough_token"));
+						if (subCls == HeroSubClass.INVOKER) {
+							if (!Badges.isUnlocked(Badges.Badge.YORIHIMES)) {
+								GLog.n(Messages.get(WndChooseSubclass.this, "not_enough_badge_invoker"));
+							} else {
+								GLog.n(Messages.get(WndChooseSubclass.this, "not_enough_coin_invoker"));
+							}
+						} else {
+							GLog.n(Messages.get(WndChooseSubclass.this, "not_enough_token"));
+						}
 						return;
 					}
 					GameScene.show(new WndOptions(new HeroIcon(subCls),
@@ -161,6 +170,9 @@ public class WndChooseSubclass extends Window {
 	}
 
 	private static boolean canChoose(HeroSubClass subCls) {
+		if (subCls == HeroSubClass.INVOKER) {
+			return Badges.isUnlocked(Badges.Badge.YORIHIMES) && SPDSettings.getSpecialcoin() >= 5;
+		}
 		return subCls != HeroSubClass.SUMMONER || SPDSettings.getToken() >= 2;
 	}
 
