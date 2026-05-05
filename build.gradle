@@ -14,7 +14,7 @@ allprojects {
         appName = '죠기던'
         appPackageName = 'com.shatteredpixel.shatteredpixeldungeon7'
 
-        appVersionCode = 922
+        appVersionCode = 925
         appVersionName = '3.0f'
 
         appJavaCompatibility = JavaVersion.VERSION_11

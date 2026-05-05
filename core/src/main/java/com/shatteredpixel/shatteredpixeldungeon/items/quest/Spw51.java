@@ -32,9 +32,9 @@ public class Spw51 extends Item {
 
     @Override
     public String info() {
-        int nextLevel = Math.max(1, Statistics.spw51 + 1);
-        int current = bonusPercent(chargeMultiplier(nextLevel));
-        int increment = bonusPercent(chargeMultiplier(nextLevel + 1)) - bonusPercent(chargeMultiplier(nextLevel));
+        int current = bonusPercent(chargeMultiplier(Statistics.spw51));
+        int nextLevel = Math.min(8, Statistics.spw51 + 1);
+        int increment = bonusPercent(chargeMultiplier(nextLevel)) - current;
         return Messages.get(this, "desc", current, increment);
     }
 

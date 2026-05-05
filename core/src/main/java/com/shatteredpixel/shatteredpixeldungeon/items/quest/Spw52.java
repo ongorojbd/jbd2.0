@@ -33,11 +33,11 @@ public class Spw52 extends Item {
 
     @Override
     public String info() {
-        int nextLevel = Math.max(1, Statistics.spw52 + 1);
-        int tenacityIncrement = tenacityPercent(nextLevel + 1) - tenacityPercent(nextLevel);
-        int elementsIncrement = elementsPercent(nextLevel + 1) - elementsPercent(nextLevel);
+        int nextLevel = Math.min(8, Statistics.spw52 + 1);
+        int tenacityIncrement = tenacityPercent(nextLevel) - tenacityPercent(Statistics.spw52);
+        int elementsIncrement = elementsPercent(nextLevel) - elementsPercent(Statistics.spw52);
         return Messages.get(this, "desc",
-                tenacityPercent(nextLevel), elementsPercent(nextLevel),
+                tenacityPercent(Statistics.spw52), elementsPercent(Statistics.spw52),
                 tenacityIncrement, elementsIncrement);
     }
 

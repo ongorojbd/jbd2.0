@@ -32,9 +32,9 @@ public class Spw37 extends Item {
 
     @Override
     public String info() {
-        int nextLevel = Math.max(1, Statistics.spw37 + 1);
-        int current = bonusPercent(enchantMultiplier(nextLevel));
-        int increment = bonusPercent(enchantMultiplier(nextLevel + 1)) - bonusPercent(enchantMultiplier(nextLevel));
+        int current = bonusPercent(enchantMultiplier(Statistics.spw37));
+        int nextLevel = Math.min(8, Statistics.spw37 + 1);
+        int increment = bonusPercent(enchantMultiplier(nextLevel)) - current;
         return Messages.get(this, "desc", current, increment);
     }
 

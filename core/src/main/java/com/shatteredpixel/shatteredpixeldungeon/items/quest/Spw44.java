@@ -32,9 +32,9 @@ public class Spw44 extends Item {
 
     @Override
     public String info() {
-        int nextLevel = Math.max(1, Statistics.spw44 + 1);
-        int current = bonusPercent(attackSpeedMultiplier(nextLevel));
-        int increment = bonusPercent(attackSpeedMultiplier(nextLevel + 1)) - bonusPercent(attackSpeedMultiplier(nextLevel));
+        int current = bonusPercent(attackSpeedMultiplier(Statistics.spw44));
+        int nextLevel = Math.min(8, Statistics.spw44 + 1);
+        int increment = bonusPercent(attackSpeedMultiplier(nextLevel)) - current;
         return Messages.get(this, "desc", current, increment);
     }
 
