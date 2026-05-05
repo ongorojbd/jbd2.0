@@ -171,9 +171,23 @@ public class TengusMask extends Item {
             InvokerOrb.QuasOrb  quas  = new InvokerOrb.QuasOrb();
             InvokerOrb.WexOrb   wex   = new InvokerOrb.WexOrb();
             InvokerOrb.ExortOrb exort = new InvokerOrb.ExortOrb();
-            quas.collect();
-            wex.collect();
-            exort.collect();
+
+            if (quas.doPickUp(Dungeon.hero)) {
+
+            } else {
+                Dungeon.level.drop(quas, Dungeon.hero.pos).sprite.drop();
+            }
+
+            if (wex.doPickUp(Dungeon.hero)) {
+            } else {
+                Dungeon.level.drop(wex, Dungeon.hero.pos).sprite.drop();
+            }
+
+            if (exort.doPickUp(Dungeon.hero)) {
+            } else {
+                Dungeon.level.drop(exort, Dungeon.hero.pos).sprite.drop();
+            }
+
             // 1·2·3번 퀵슬롯(인덱스 0·1·2)에 Q→W→E 고정 등록
             Dungeon.quickslot.setSlot(2, quas);
             Dungeon.quickslot.setSlot(1, wex);

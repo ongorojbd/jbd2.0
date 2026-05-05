@@ -302,7 +302,7 @@ public class WndHeroInfo extends WndTabbed {
 
 			ArrayList<HeroSubClass> visibleSubClasses = new ArrayList<>();
 			for (HeroSubClass subClass : cls.subClasses()) {
-				if (subClass != HeroSubClass.SUMMONER) {
+				if (subClass != HeroSubClass.SUMMONER && subClass != HeroSubClass.INVOKER) {
 					visibleSubClasses.add(subClass);
 				}
 			}

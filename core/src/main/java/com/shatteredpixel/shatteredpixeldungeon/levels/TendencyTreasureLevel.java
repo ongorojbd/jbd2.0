@@ -95,7 +95,7 @@ public class TendencyTreasureLevel extends Level {
 
     private static final String EVENT_TYPE = "treasure_event_type";
     private static final String EVENT_RESOLVED = "treasure_event_resolved";
-	private int eventType = Random.Int(13);
+	private int eventType = 6;
     private boolean eventResolved;
 
     {

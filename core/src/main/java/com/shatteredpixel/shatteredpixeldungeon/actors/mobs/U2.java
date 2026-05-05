@@ -93,6 +93,11 @@ public class U2 extends Mob {
         }
         else if (DashActive == 2)
         {
+            if (enemy == null || !enemy.isAlive()) {
+                DashActive = 0;
+                return super.act();
+            }
+
             counter = 0;
 
             route = new Ballistica(this.pos, enemy.pos, Ballistica.STOP_SOLID );

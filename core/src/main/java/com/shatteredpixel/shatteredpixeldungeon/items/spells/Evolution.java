@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
@@ -53,7 +54,13 @@ public class Evolution extends InventorySpell {
     @Override
     protected boolean usableOnItem(Item item) {
         if (item instanceof MeleeWeapon) return true;
-        return item instanceof Armor && ((Armor) item).tier < 5;
+        if (item instanceof Armor) {
+            Armor armor = (Armor) item;
+            if (armor instanceof ClassArmor) return false;
+            if (armor.checkSeal() != null) return false;
+            return armor.tier < 5;
+        }
+        return false;
     }
 
     @Override

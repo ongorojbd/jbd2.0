@@ -124,6 +124,8 @@ public class P2mob extends Mob {
                     }
                 }
 
+                if (respawnPoints.isEmpty()) return damage;
+
                 int index = Random.index(respawnPoints);
 
                 MirrorImage mob = new MirrorImage();

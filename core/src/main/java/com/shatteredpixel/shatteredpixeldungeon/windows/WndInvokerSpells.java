@@ -53,7 +53,7 @@ public class WndInvokerSpells extends Window {
 
         // ── 현재 상태 (에너지 / 충전)
         String stateText =
-                "_에너지:_ " + (int) buff.energy + " / " + buff.energyCap() +
+                "_영혼 에너지:_ " + (int) buff.energy + " / " + buff.energyCap() +
                 "    _파츠:_ Q:" + buff.quasCharges +
                 " W:" + buff.wexCharges +
                 " E:" + buff.exortCharges;

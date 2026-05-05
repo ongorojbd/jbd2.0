@@ -284,7 +284,7 @@ public class GreatThrowingWeapon extends ArmorAbility {
                                         Buff.affect(collide, Paralysis.class, 4f);
                                     }
                                 }
-                                if (ignite) collide.buff(Burning.class).reignite(collide);
+                                if (ignite) Buff.affect(collide, Burning.class).reignite(collide);
                             }
 
                             Sample.INSTANCE.play(Assets.Sounds.HIT_CRUSH);
@@ -315,7 +315,7 @@ public class GreatThrowingWeapon extends ArmorAbility {
                                         Buff.affect(collide, Paralysis.class, 4f);
                                     }
                                 }
-                                if (ignite) collide.buff(Burning.class).reignite(collide);
+                                if (ignite) Buff.affect(collide, Burning.class).reignite(collide);
                             }
 
                             Sample.INSTANCE.play(Assets.Sounds.HIT_CRUSH);

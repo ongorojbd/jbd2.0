@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -108,6 +109,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDread;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Evolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
@@ -124,6 +126,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyMachinegun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.JohnnyWepon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MISTA;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
@@ -174,6 +177,22 @@ public enum HeroClass {
         waterskin.collect();
 
         new ScrollOfIdentify().identify();
+
+        if (DeviceCompat.isDebug()) {
+            new RingOfMight().identify().upgrade(9999).collect();
+            new RingOfEnergy().identify().upgrade(9999).collect();
+            new RingOfAccuracy().identify().upgrade(9999).collect();
+            new PlateArmor().identify().upgrade(9999).collect();
+            new WandOfDisintegration().identify().upgrade(9999).collect();
+            new PotionOfHealing().identify().quantity(9999).collect();
+            new PotionOfMindVision().identify().quantity(9999).collect();
+            new UV().identify().quantity(9999).collect();
+            new Neotel().identify().collect();
+            new ScrollOfMysticalEnergy().identify().collect();
+            new MasterThievesArmband().identify().collect();
+            new TengusMask().identify().collect();
+            new KingsCrown().identify().collect();
+        }
 
         switch (this) {
             case WARRIOR:

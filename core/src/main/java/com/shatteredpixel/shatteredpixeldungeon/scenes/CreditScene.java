@@ -101,9 +101,8 @@ public class CreditScene extends PixelScene {
 		// 중앙 정렬을 위한 오프셋
 		final int OFFSET = 10;
 
-		//*** 죠죠의 기묘한 던전 ***
 		CreditsBlock shpx = new CreditsBlock(true, Window.TITLE_COLOR,
-				"죠죠의 기묘한 던전",
+				"죠기던",
 				Icons.SHPX.get(),
 				"Developed by: _Ongoro_\nBased on SPD's open source",
 				" ",
