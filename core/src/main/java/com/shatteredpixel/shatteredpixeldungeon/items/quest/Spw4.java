@@ -32,11 +32,11 @@ public class Spw4 extends Item {
 
     @Override
     public String info() {
-        int currentDamage = Math.min(8, Statistics.spw4);
-        int currentDurability = bonusPercent(durabilityMultiplier(Statistics.spw4));
-        int nextLevel = Math.min(8, Statistics.spw4 + 1);
-        int durabilityIncrement = bonusPercent(durabilityMultiplier(nextLevel)) - currentDurability;
-        return Messages.get(this, "desc", currentDamage, currentDurability, durabilityIncrement);
+        int nextLevel = Math.max(1, Statistics.spw4 + 1);
+        int currentDurability = bonusPercent(durabilityMultiplier(nextLevel));
+        int incrementBase = Math.min(7, nextLevel);
+        int durabilityIncrement = bonusPercent(durabilityMultiplier(incrementBase + 1)) - bonusPercent(durabilityMultiplier(incrementBase));
+        return Messages.get(this, "desc", nextLevel, currentDurability, durabilityIncrement);
     }
 
     public static int levelDamageBonus() {

@@ -32,11 +32,12 @@ public class Spw43 extends Item {
 
     @Override
     public String info() {
-        int accCurrent  = bonusPercent(accuracyMultiplier(Statistics.spw43));
-        int evaCurrent  = bonusPercent(evasionMultiplier(Statistics.spw43));
-        int nextLevel = Math.min(8, Statistics.spw43 + 1);
-        int accIncrement = bonusPercent(accuracyMultiplier(nextLevel)) - accCurrent;
-        int evaIncrement = bonusPercent(evasionMultiplier(nextLevel)) - evaCurrent;
+        int nextLevel = Math.max(1, Statistics.spw43 + 1);
+        int accCurrent  = bonusPercent(accuracyMultiplier(nextLevel));
+        int evaCurrent  = bonusPercent(evasionMultiplier(nextLevel));
+        int incrementBase = Math.min(7, nextLevel);
+        int accIncrement = bonusPercent(accuracyMultiplier(incrementBase + 1)) - bonusPercent(accuracyMultiplier(incrementBase));
+        int evaIncrement = bonusPercent(evasionMultiplier(incrementBase + 1)) - bonusPercent(evasionMultiplier(incrementBase));
         return Messages.get(this, "desc", accCurrent, evaCurrent, accIncrement, evaIncrement);
     }
 

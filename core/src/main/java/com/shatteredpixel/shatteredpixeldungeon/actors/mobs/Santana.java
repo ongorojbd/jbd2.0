@@ -234,12 +234,12 @@ public class Santana extends Mob {
 
                     Char target = Actor.findChar(targetPos);
                     if (target != null && target.alignment != alignment) {
-                        int damage = Random.NormalIntRange(15, 20);
+                        int damage = Random.NormalIntRange(12, 16);
                         target.damage(damage, this);
                         if (!target.isAlive() && target == Dungeon.hero) {
                             Dungeon.fail(getClass());
                         }
-                        Buff.affect(target, Bleeding.class).set(0.5f * damage);
+                        Buff.affect(target, Bleeding.class).set(0.25f * damage);
                         target.sprite.flash();
                     }
                 }
@@ -261,12 +261,12 @@ public class Santana extends Mob {
                     
                     Char target = Actor.findChar(targetPos);
                     if (target != null && target.alignment != alignment) {
-                        int damage = Random.NormalIntRange(15, 20);
+                        int damage = Random.NormalIntRange(12, 16);
                         target.damage(damage, this);
                         if (!target.isAlive() && target == Dungeon.hero) {
                             Dungeon.fail(getClass());
                         }
-                        Buff.affect(target, Bleeding.class).set(0.5f * damage);
+                        Buff.affect(target, Bleeding.class).set(0.25f * damage);
                         target.sprite.flash();
                     }
                 }
