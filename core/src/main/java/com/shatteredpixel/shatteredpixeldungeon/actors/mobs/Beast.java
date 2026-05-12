@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Wgas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -89,7 +90,9 @@ public class Beast extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange( 25, 45 );
+        if (Statistics.johnnyquest) {
+            return Random.NormalIntRange( 10, 30 );
+        } else return Random.NormalIntRange( 25, 45 );
     }
 
     @Override
@@ -218,10 +221,14 @@ public class Beast extends Mob {
         damage = super.attackProc(enemy, damage);
 
         if (Random.Int(2) == 0) {
-            Buff.affect(enemy, Bleeding.class).set(damage/0.75f);
+            if (!Statistics.johnnyquest) {
+                Buff.affect(enemy, Bleeding.class).set(damage / 0.75f);
+            }
             if (Phase == 0) {
                 state = FLEEING;
-                summonRats(Random.Int(2, 5));
+                if (!AscensionChallenge.qualifiedForPacifist()) {
+                    summonRats(Random.Int(2, 5));
+                }
             }
             else {
                 for (int i : PathFinder.NEIGHBOURS8) {
@@ -278,7 +285,11 @@ public class Beast extends Mob {
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 15);
+        if (Statistics.johnnyquest) {
+            return super.drRoll() + Random.NormalIntRange(0, 2);
+        } else {
+            return super.drRoll() + Random.NormalIntRange(0, 15);
+        }
     }
 
     @Override

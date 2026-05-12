@@ -199,7 +199,6 @@ public enum HeroClass {
             new CurseInfusion().identify().collect();
             new PotionOfHealing().identify().quantity(9999).collect();
             new PotionOfMindVision().identify().quantity(9999).collect();
-            new PotionOfExperience().identify().quantity(9999).collect();
             new UV().identify().quantity(9999).collect();
             new Pasty().collect();
             new Neotel().identify().collect();
