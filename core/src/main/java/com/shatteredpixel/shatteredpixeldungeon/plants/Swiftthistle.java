@@ -29,6 +29,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -115,6 +118,10 @@ public class Swiftthistle extends Plant {
 			left = 5f;
 		}
 
+		public void twelveTurns() {
+			left = 12f;
+		}
+
 		public void threeTurns() {
 			left = 3f;
 		}
@@ -125,6 +132,11 @@ public class Swiftthistle extends Plant {
 		}
 		
 		public void processTime(float time){
+			CloakOfShadows.cloakTimeBubble cloakBubble = target.buff(CloakOfShadows.cloakTimeBubble.class);
+			if (cloakBubble != null) {
+				cloakBubble.processTime(time);
+			}
+
 			left -= time;
 
 			//use 1/1,000 to account for rounding errors
@@ -183,9 +195,18 @@ public class Swiftthistle extends Plant {
 		
 		@Override
 		public void detach(){
+			CloakOfShadows.cloakTimeBubble cloakBubble = target == null ? null : target.buff(CloakOfShadows.cloakTimeBubble.class);
+			if (cloakBubble != null) {
+				cloakBubble.onTimeBubbleDetached();
+			}
 			super.detach();
 			triggerPresses();
 			target.next();
+			if (target instanceof Hero
+					&& ((Hero) target).hasTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.J52)
+					&& target.buff(TimekeepersHourglass.timeFreeze.class) == null) {
+				MissileWeapon.castAfterTimeFreeze();
+			}
 		}
 
 		@Override

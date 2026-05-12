@@ -67,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
@@ -603,6 +604,14 @@ public abstract class Level implements Bundlable {
 		// johnnyquest가 true이면 계단 이동 차단
 		if (Statistics.johnnyquest) {
 			GLog.w("계단을 이용할 수 없습니다.");
+			return false;
+		}
+
+		if (Dungeon.tendencylevel
+				&& (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+				|| transition.type == LevelTransition.Type.BRANCH_ENTRANCE
+				|| transition.destDepth < Dungeon.depth)) {
+			GLog.w(Messages.get(hero, "tendency2"));
 			return false;
 		}
 
@@ -1544,6 +1553,7 @@ public abstract class Level implements Bundlable {
 				if (m instanceof WandOfWarding.Ward
 						|| m instanceof WandOfRegrowth.Lotus
 						|| m instanceof SpeedWagon
+						|| m instanceof SpeedWagon3
 						|| m instanceof Jolyne3
 						|| m instanceof Tendency
 						|| m instanceof SpiritHawk.HawkAlly

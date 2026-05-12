@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HamonAmplification;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvokerEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
@@ -159,6 +160,7 @@ public class AntiMagic extends Armor.Glyph {
         RESISTS.add(U3.PoisonBolt.class);
         RESISTS.add(InvokerOrb.DarkBolt.class);
         RESISTS.add(InvokerEnergy.QweDamage.class);
+        RESISTS.add(HamonAmplification.DarkBolt.class);
     }
 
     @Override

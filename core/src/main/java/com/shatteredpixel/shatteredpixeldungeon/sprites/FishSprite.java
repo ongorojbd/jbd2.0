@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.U2;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ChallengeParticle;
@@ -83,8 +84,17 @@ public class FishSprite extends MobSprite {
 
                 CellEmitter.get(ch.pos).burst(ChallengeParticle.FACTORY, 2);
 
-                if (Actor.findChar(cell) != null && !(Actor.findChar(cell) instanceof U2)) {
+                Char collided = Actor.findChar(cell);
+                if (collided != null && !(collided instanceof U2)) {
                     Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                    if (collided.alignment != ch.alignment) {
+                        int dmg = ((U2) ch).damageRoll();
+                        dmg = Math.max(0, dmg - collided.drRoll());
+                        collided.damage(Math.round(dmg * 1.2f), ch);
+                        if (!collided.isAlive() && collided == Dungeon.hero) {
+                            Dungeon.fail(ch.getClass());
+                        }
+                    }
                 }
 
                 ch.pos = cell;

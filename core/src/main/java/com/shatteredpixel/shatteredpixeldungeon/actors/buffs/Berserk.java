@@ -45,6 +45,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Random;
 
+import java.util.LinkedHashMap;
+
 public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 
 	{
@@ -64,6 +66,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 
 	private static final int TURN_RECOVERY_START = 100;
 	private int turnRecovery;
+	private float recoveryMultiplier = 1f;
 
 	public int powerLossBuffer = 0;
 	private float power = 0;
@@ -71,6 +74,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	private static final String STATE = "state";
 	private static final String LEVEL_RECOVERY = "levelrecovery";
 	private static final String TURN_RECOVERY = "turn_recovery";
+	private static final String RECOVERY_MULTIPLIER = "recovery_multiplier";
 	private static final String POWER = "power";
 	private static final String POWER_BUFFER = "power_buffer";
 
@@ -82,6 +86,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		bundle.put(POWER_BUFFER, powerLossBuffer);
 		bundle.put(LEVEL_RECOVERY, levelRecovery);
 		bundle.put(TURN_RECOVERY, turnRecovery);
+		bundle.put(RECOVERY_MULTIPLIER, recoveryMultiplier);
 	}
 
 	@Override
@@ -93,6 +98,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		powerLossBuffer = bundle.getInt(POWER_BUFFER);
 		levelRecovery = bundle.getFloat(LEVEL_RECOVERY);
 		turnRecovery = bundle.getInt(TURN_RECOVERY);
+		recoveryMultiplier = bundle.contains(RECOVERY_MULTIPLIER) ? bundle.getFloat(RECOVERY_MULTIPLIER) : 1f;
 
 		if (power >= 1f && state == State.NORMAL){
 			ActionIndicator.setAction(this);
@@ -112,22 +118,11 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 				ShieldBuff.processDamage(target, (int)dmg, this);
 
 				if (target.shielding() <= 0){
-					state = State.RECOVERING;
-					power = 0f;
-					BuffIndicator.refreshHero();
-					if (!target.isAlive()){
-						target.die(this);
-						if (!target.isAlive()) Dungeon.fail(this);
-					}
+					startRecovering();
 				}
 
 			} else {
-				state = State.RECOVERING;
-				power = 0f;
-				if (!target.isAlive()){
-					target.die(this);
-					if (!target.isAlive()) Dungeon.fail(this);
-				}
+				startRecovering();
 
 			}
 		} else if (state == State.NORMAL) {
@@ -147,6 +142,9 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 				}
 			}
 		} else if (state == State.RECOVERING && levelRecovery == 0 && Regeneration.regenOn()){
+			if (target instanceof Hero && ((Hero) target).hasTalent(Talent.J51)) {
+				turnRecovery = Math.min(turnRecovery, deathlessFuryJ51Cooldown((Hero) target));
+			}
 			turnRecovery--;
 			if (turnRecovery <= 0){
 				turnRecovery = 0;
@@ -161,7 +159,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	public void detach() {
 		super.detach();
 		if (state == State.BERSERK) {
-			state = State.RECOVERING;
+			startRecovering();
 		}
 		ActionIndicator.clearAction(this);
 	}
@@ -192,13 +190,9 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		Sword.jclass();
 		GameScene.flash(0xFFFF66);
 
-		if (target.HP > 0) {
-			turnRecovery = TURN_RECOVERY_START;
-			levelRecovery = 0;
-		} else {
-			levelRecovery = LEVEL_RECOVER_START - ((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY);
-			turnRecovery = 0;
-		}
+		recoveryMultiplier = power > 1f ? 2f - power : 1f;
+		turnRecovery = 0;
+		levelRecovery = 0;
 
 		int shieldAmount = currentShieldBoost();
 		setShield(shieldAmount);
@@ -214,8 +208,6 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		//Endless rage effect on shield and cooldown
 		if (power > 1f){
 			shieldMultiplier *= power;
-			levelRecovery *= 2f - power;
-			turnRecovery *= 2f - power;
 		}
 
 		int baseShield = 8;
@@ -233,11 +225,40 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		}
 		return baseShield*3;
 	}
+
+	private void startRecovering() {
+		if (state != State.BERSERK) {
+			return;
+		}
+
+		Hero hero = (Hero) target;
+		if (hero.hasTalent(Talent.J51) && hero.hasTalent(Talent.DEATHLESS_FURY)) {
+			levelRecovery = 0;
+			turnRecovery = Math.max(1, Math.round(deathlessFuryJ51Cooldown(hero) * recoveryMultiplier));
+		} else if (target.HP > 0) {
+			levelRecovery = 0;
+			turnRecovery = Math.max(1, Math.round(TURN_RECOVERY_START * recoveryMultiplier));
+		} else {
+				levelRecovery = Math.max(0, (LEVEL_RECOVER_START - hero.pointsInTalent(Talent.DEATHLESS_FURY)) * recoveryMultiplier);
+				turnRecovery = 0;
+		}
+
+		state = State.RECOVERING;
+		power = 0f;
+		recoveryMultiplier = 1f;
+		BuffIndicator.refreshHero();
+		if (!target.isAlive()){
+			target.die(this);
+			if (!target.isAlive()) Dungeon.fail(this);
+		}
+	}
 	
 	public void damage(int damage){
 		if (state != State.NORMAL) return;
 		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
-		power = Math.min(maxPower, power + (damage/(float)target.HT)/4f );
+		float gain = (damage/(float)target.HT)/4f;
+		if (((Hero)target).hasTalent(Talent.J51)) gain *= 2f;
+		power = Math.min(maxPower, power + gain);
 		BuffIndicator.refreshHero(); //show new power immediately
 		powerLossBuffer = 3; //2 turns until rage starts dropping
 		if (power >= 1f){
@@ -248,6 +269,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	public void gainEnergy(float percent){
 		if (state != State.NORMAL) return;
 		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+		if (((Hero)target).hasTalent(Talent.J51)) percent *= 2f;
 		power = Math.min(maxPower, power + percent);
 		BuffIndicator.refreshHero();
 		powerLossBuffer = 3;
@@ -336,9 +358,39 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 				if (levelRecovery > 0) {
 					return levelRecovery/(LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
 				} else {
-					return turnRecovery/(float)TURN_RECOVERY_START;
+					return turnRecovery/(float)maxTurnRecovery();
 				}
 		}
+	}
+
+	private int maxTurnRecovery() {
+		if (target instanceof Hero && ((Hero) target).hasTalent(Talent.J51)) {
+			return deathlessFuryJ51Cooldown((Hero) target);
+		}
+		return TURN_RECOVERY_START;
+	}
+
+	private int deathlessFuryJ51Cooldown(Hero hero) {
+		switch (deathlessFuryPoints(hero)) {
+			case 1:
+				return 200;
+			case 2:
+				return 150;
+			case 3:
+			default:
+				return 100;
+		}
+	}
+
+	private int deathlessFuryPoints(Hero hero) {
+		int points = hero.pointsInTalent(Talent.DEATHLESS_FURY);
+		for (LinkedHashMap<Talent, Integer> tier : hero.talents) {
+			Integer tierPoints = tier.get(Talent.DEATHLESS_FURY);
+			if (tierPoints != null) {
+				points = Math.max(points, tierPoints);
+			}
+		}
+		return points;
 	}
 
 	public String iconTextDisplay(){

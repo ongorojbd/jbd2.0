@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.items.P2;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -37,6 +38,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Doom {
 
@@ -80,8 +82,8 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
     public void set(int HP) {
         horseHT = (15+Dungeon.hero.lvl*5);
         horseHP = HP;
-        // 도약 충전량은 유지 (이미 존재하는 경우)
-        // leapCharges는 현재 값 유지
+        // ?꾩빟 異⑹쟾?됱? ?좎? (?대? 議댁옱?섎뒗 寃쎌슦)
+        // leapCharges???꾩옱 媛??좎?
     }
 
     public void onLevelUp() {
@@ -106,7 +108,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
     public void onDamage(int damage) {
         damage -= drRoll();
-        damage = Math.max(damage, 0); //최소 0
+        damage = Math.max(damage, 0); //理쒖냼 0
         horseHP -= damage;
         ActionIndicator.refresh();
         if (horseHP <= 0) {
@@ -119,7 +121,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             //The lower the hero's HP, the more bleed and the less upfront damage.
             //Hero has a 50% chance to bleed out at 66% HP, and begins to risk instant-death at 25%
             int bleedAmt = Math.round(target.HT / (6f + (6f*(target.HP/(float)target.HT))) * dmgMulti);
-            int fallDmg = Math.round(Math.max( target.HP / 2, Random.NormalIntRange( target.HP / 2, target.HT / 4 )) * dmgMulti * 0.7f); // 즉시 피해 30% 감소
+            int fallDmg = Math.round(Math.max( target.HP / 2, Random.NormalIntRange( target.HP / 2, target.HT / 4 )) * dmgMulti * 0.7f); // 利됱떆 ?쇳빐 30% 媛먯냼
             Buff.affect( target, Bleeding.class).set( bleedAmt, RideFall.class);
             target.damage( fallDmg, new RideFall() );
             Buff.affect(target, RidingCooldown.class, 150f);
@@ -127,14 +129,18 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
     }
 
     public static int drRoll() {
-        int baseDR = Random.NormalIntRange(2, 16); //기본 방어력: 2~16
+        int baseDR = Random.NormalIntRange(2, 16); //湲곕낯 諛⑹뼱?? 2~16
         
-        // J33 탤런트: 슬로 댄서 방어력 증가
+        // J33 ?ㅻ윴?? ?щ줈 ?꾩꽌 諛⑹뼱??利앷?
         if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.J33)) {
             int talentLevel = Dungeon.hero.pointsInTalent(Talent.J33);
             int minBonus = talentLevel; // 1, 2, 3
             int maxBonus = talentLevel * 6; // 6, 12, 18
             baseDR += Random.NormalIntRange(minBonus, maxBonus);
+        }
+
+        if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.J53)) {
+            baseDR *= 2;
         }
         
         return baseDR;
@@ -162,23 +168,22 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
     @Override
     public Visual secondaryVisual() {
-        // 말의 체력 표시 (위쪽) - 현재 체력만 표시
+        // 留먯쓽 泥대젰 ?쒖떆 (?꾩そ) - ?꾩옱 泥대젰留??쒖떆
         BitmapText hpText = new BitmapText(PixelScene.pixelFont);
         hpText.text(Integer.toString(horseHP));
         hpText.hardlight(CharSprite.NEUTRAL);
         hpText.measure();
         
-        // 도약 충전량 표시 (아래쪽)
+        // ?꾩빟 異⑹쟾???쒖떆 (?꾨옒履?
         BitmapText chargeText = new BitmapText(PixelScene.pixelFont);
         chargeText.text(leapCharges + "/" + MAX_LEAP_CHARGES);
         chargeText.hardlight(CharSprite.POSITIVE);
         chargeText.measure();
         
-        // 두 텍스트를 포함하는 Visual 그룹 생성
+        // ???띿뒪?몃? ?ы븿?섎뒗 Visual 洹몃９ ?앹꽦
         return new HorseRidingVisual(hpText, chargeText);
     }
     
-    // 두 개의 BitmapText를 세로로 배치하는 커스텀 Visual 클래스
     private static class HorseRidingVisual extends Visual {
         private BitmapText hpText;
         private BitmapText chargeText;
@@ -193,7 +198,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         @Override
         public void update() {
             super.update();
-            // 자식 요소들의 위치와 camera를 부모에 맞게 업데이트
+            // ?먯떇 ?붿냼?ㅼ쓽 ?꾩튂? camera瑜?遺紐⑥뿉 留욊쾶 ?낅뜲?댄듃
             if (hpText != null) {
                 hpText.x = this.x + this.width - hpText.width();
                 hpText.y = this.y;
@@ -266,7 +271,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         }
 
         if (!spawnPoints.isEmpty()) {
-            // 기존 체력과 도약 충전량을 그대로 사용 (0이면 최대 체력으로)
+            // 湲곗〈 泥대젰怨??꾩빟 異⑹쟾?됱쓣 洹몃?濡??ъ슜 (0?대㈃ 理쒕? 泥대젰?쇰줈)
             int spawnHP = this.horseHP > 0 ? this.horseHP : this.horseHT;
             int currentLeapCharges = this.leapCharges;
             this.horse = new HorseAlly(hero, spawnHP, currentLeapCharges);
@@ -289,6 +294,157 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             GLog.i( Messages.get(this, "no_space") );
     }
 
+    private void j53AutoDash(Hero hero) {
+        if (leapCharges <= 0) {
+            GLog.w(Messages.get(HorseRiding.class, "no_leap_charge"));
+            return;
+        }
+
+        Char nearest = null;
+        float nearDist = Float.MAX_VALUE;
+        for (Char ch : Dungeon.level.mobs) {
+            if (ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC) continue;
+            if (ch.isAlive() && ch.alignment == Char.Alignment.ENEMY && Dungeon.level.heroFOV[ch.pos]) {
+                float dist = Dungeon.level.trueDistance(hero.pos, ch.pos);
+                if (dist < nearDist) {
+                    nearDist = dist;
+                    nearest = ch;
+                }
+            }
+        }
+
+        if (nearest == null) {
+            GLog.w(Messages.get(P2.class, "no_target"));
+            return;
+        }
+
+        PathFinder.Path pathToEnemy = Dungeon.findPath(hero, nearest.pos,
+                Dungeon.level.passable, Dungeon.level.heroFOV, false);
+
+        if (pathToEnemy == null || pathToEnemy.isEmpty()) {
+            GLog.w(Messages.get(P2.class, "no_path"));
+            return;
+        }
+
+        Integer[] segment = pathToEnemy.toArray(new Integer[0]);
+        int enemyCell = segment[segment.length - 1];
+        int prevCell = segment.length >= 2 ? segment[segment.length - 2] : hero.pos;
+        int w = Dungeon.level.width();
+        int dCol = Integer.signum((enemyCell % w) - (prevCell % w));
+        int dRow = Integer.signum((enemyCell / w) - (prevCell / w));
+        int extendDir = dRow * w + dCol;
+
+        ArrayList<Integer> combined = new ArrayList<>(Arrays.asList(segment));
+        int extendTarget = enemyCell + extendDir;
+        if (extendDir != 0 && extendTarget >= 0 && extendTarget < Dungeon.level.length()) {
+            Ballistica extension = new Ballistica(enemyCell, extendTarget, Ballistica.STOP_SOLID);
+            for (int i = 1; i <= extension.dist; i++) {
+                combined.add(extension.path.get(i));
+            }
+        }
+
+        leapCharges--;
+        BuffIndicator.refreshHero();
+        ActionIndicator.refresh();
+        Sample.INSTANCE.play(Assets.Sounds.HORSE);
+
+        hero.busy();
+        j53DashStep(hero, combined.toArray(new Integer[0]), 0);
+    }
+
+    private void j53TargetedDash(Hero hero, int target) {
+        if (leapCharges <= 0) {
+            GLog.w(Messages.get(HorseRiding.class, "no_leap_charge"));
+            return;
+        }
+
+        Char selected = Actor.findChar(target);
+        if (selected == null || selected == hero || selected.alignment != Char.Alignment.ENEMY || !Dungeon.level.heroFOV[selected.pos]) {
+            GLog.w(Messages.get(P2.class, "no_target"));
+            return;
+        }
+
+        PathFinder.Path pathToEnemy = Dungeon.findPath(hero, selected.pos,
+                Dungeon.level.passable, Dungeon.level.heroFOV, false);
+
+        if (pathToEnemy == null || pathToEnemy.isEmpty()) {
+            GLog.w(Messages.get(P2.class, "no_path"));
+            return;
+        }
+
+        Integer[] segment = pathToEnemy.toArray(new Integer[0]);
+        int enemyCell = segment[segment.length - 1];
+        int prevCell = segment.length >= 2 ? segment[segment.length - 2] : hero.pos;
+        int w = Dungeon.level.width();
+        int dCol = Integer.signum((enemyCell % w) - (prevCell % w));
+        int dRow = Integer.signum((enemyCell / w) - (prevCell / w));
+        int extendDir = dRow * w + dCol;
+
+        ArrayList<Integer> combined = new ArrayList<>(Arrays.asList(segment));
+        int extendTarget = enemyCell + extendDir;
+        if (extendDir != 0 && extendTarget >= 0 && extendTarget < Dungeon.level.length()) {
+            Ballistica extension = new Ballistica(enemyCell, extendTarget, Ballistica.STOP_SOLID);
+            for (int i = 1; i <= extension.dist; i++) {
+                combined.add(extension.path.get(i));
+            }
+        }
+
+        leapCharges--;
+        BuffIndicator.refreshHero();
+        ActionIndicator.refresh();
+        Sample.INSTANCE.play(Assets.Sounds.HORSE);
+
+        hero.busy();
+        j53DashStep(hero, combined.toArray(new Integer[0]), 0);
+    }
+
+    private void j53DashStep(final Hero hero, final Integer[] pathArr, final int counter) {
+        if (counter < pathArr.length) {
+            final int cell = pathArr[counter];
+
+            PixelScene.shake(0.8f, 0.125f);
+            hero.sprite.jump(hero.pos, cell, 0f, 0.07f, new Callback() {
+                @Override
+                public void call() {
+                    if (Dungeon.level.map[hero.pos] == Terrain.OPEN_DOOR) {
+                        com.shatteredpixel.shatteredpixeldungeon.levels.features.Door.leave(hero.pos);
+                    }
+
+                    CellEmitter.get(hero.pos).start(Speck.factory(Speck.JET), 0.01f, 2);
+                    Char ch = Actor.findChar(cell);
+                    if (ch != null && ch != hero && ch.alignment == Char.Alignment.ENEMY) {
+                        Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+                        int dmg = Math.round(hero.damageRoll() * 3f);
+                        dmg = Math.max(0, dmg - ch.drRoll());
+                        if (dmg > 0) {
+                            ch.damage(dmg, hero);
+                            ch.sprite.flash();
+                        }
+                    }
+
+                    hero.pos = cell;
+                    Dungeon.level.occupyCell(hero);
+
+                    hero.sprite.jump(hero.pos, hero.pos, 0f, 0.04f, new Callback() {
+                        @Override
+                        public void call() {
+                            j53DashStep(hero, pathArr, counter + 1);
+                        }
+                    });
+                }
+            });
+        } else {
+            PixelScene.shake(1.1f, 0.3f);
+            WandOfBlastWave.BlastWave.blast(hero.pos);
+            Buff.prolong(hero, Paralysis.class, 2f);
+            Invisibility.dispel();
+            Dungeon.observe();
+            GameScene.updateFog();
+            hero.checkVisibleMobs();
+            hero.spendAndNext(Actor.TICK);
+        }
+    }
+
     private CellSelector.Listener leapSelector = new CellSelector.Listener() {
         @Override
         public void onSelect(Integer target) {
@@ -301,25 +457,30 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                 return;
             }
             
-            // 자기 자신에게 도약하면 말 소환 (충전량 소모 없음, 충전량 체크도 없음)
+            // ?먭린 ?먯떊?먭쾶 ?꾩빟?섎㈃ 留??뚰솚 (異⑹쟾???뚮え ?놁쓬, 異⑹쟾??泥댄겕???놁쓬)
             if (target == hero.pos) {
                 spawnHorse();
                 return;
             }
             
-            // 충전량 체크 (자기 자신이 아닌 경우에만)
+            // 異⑹쟾??泥댄겕 (?먭린 ?먯떊???꾨땶 寃쎌슦?먮쭔)
             if (leapCharges <= 0) {
                 GLog.w(Messages.get(HorseRiding.class, "no_leap_charge"));
                 return;
             }
             
-            // 충전량 체크 (자기 자신이 아닌 경우에만)
+            // 異⑹쟾??泥댄겕 (?먭린 ?먯떊???꾨땶 寃쎌슦?먮쭔)
             if (leapCharges <= 0) {
                 GLog.w(Messages.get(HorseRiding.class, "no_leap_charge"));
                 return;
             }
             
-            // 최대 5칸 거리 제한
+            // 理쒕? 5移?嫄곕━ ?쒗븳
+            if (hero.hasTalent(Talent.J53)) {
+                j53TargetedDash(hero, target);
+                return;
+            }
+
             int dist = Dungeon.level.distance(hero.pos, target);
             if (dist > 5) {
                 GLog.w(Messages.get(HorseRiding.class, "too_far"));
@@ -329,7 +490,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             Ballistica route = new Ballistica(hero.pos, target, Ballistica.STOP_TARGET | Ballistica.STOP_SOLID);
             int cell = route.collisionPos;
             
-            // 다른 캐릭터가 있는 셀에는 도약할 수 없음
+            // ?ㅻⅨ 罹먮┃?곌? ?덈뒗 ??먮뒗 ?꾩빟?????놁쓬
             int backTrace = route.dist - 1;
             while (Actor.findChar(cell) != null && cell != hero.pos) {
                 if (backTrace < 0) {
@@ -340,13 +501,13 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                 backTrace--;
             }
             
-            // 도약할 수 없는 지형인지 확인
+            // ?꾩빟?????녿뒗 吏?뺤씤吏 ?뺤씤
             if (!Dungeon.level.passable[cell] && !(hero.flying && Dungeon.level.avoid[cell])) {
                 GLog.w(Messages.get(HorseRiding.class, "blocked"));
                 return;
             }
             
-            // 목표 장소에 TargetedCell 표시
+            // 紐⑺몴 ?μ냼??TargetedCell ?쒖떆
             if (hero.sprite != null && hero.sprite.parent != null) {
                 hero.sprite.parent.addToBack(new TargetedCell(cell, 0xFF00FF));
             }
@@ -355,33 +516,31 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
             final Ballistica finalRoute = route;
             hero.busy();
             
-            // 도약 이펙트
-            hero.sprite.emitter().start(Speck.factory(Speck.JET), 0.01f, Math.round(4 + 2*Dungeon.level.trueDistance(hero.pos, cell)));
+            // ?꾩빟 ?댄럺??            hero.sprite.emitter().start(Speck.factory(Speck.JET), 0.01f, Math.round(4 + 2*Dungeon.level.trueDistance(hero.pos, cell)));
             
-            // 도약 속도를 빠르게 (기본 duration의 절반)
+            // ?꾩빟 ?띾룄瑜?鍮좊Ⅴ寃?(湲곕낯 duration???덈컲)
             float distance = Math.max(1f, Dungeon.level.trueDistance(hero.pos, cell));
             float height = distance * 2;
-            float duration = distance * 0.05f; // 기본 0.1f에서 0.05f로 줄여서 2배 빠르게
-            
+            float duration = distance * 0.05f; // 湲곕낯 0.1f?먯꽌 0.05f濡?以꾩뿬??2諛?鍮좊Ⅴ寃?            
             hero.sprite.jump(hero.pos, cell, height, duration, new Callback() {
                 @Override
                 public void call() {
-                    // 경로상의 셀 처리 (지형 압박, 적 데미지)
+                    // 寃쎈줈?곸쓽 ? 泥섎━ (吏???뺣컯, ???곕?吏)
                     ArrayList<Char> pathEnemies = new ArrayList<>();
                     for (int c : finalRoute.subPath(1, finalRoute.dist)) {
-                        // 지형 압박
+                        // 吏???뺣컯
                         if (!hero.flying) {
                             Dungeon.level.pressCell(c);
                         }
                         
-                        // 경로상의 적 찾기
+                        // 寃쎈줈?곸쓽 ??李얘린
                         Char enemy = Actor.findChar(c);
                         if (enemy != null && enemy != hero && enemy.alignment == Char.Alignment.ENEMY) {
                             pathEnemies.add(enemy);
                         }
                     }
                     
-                    // 경로상의 적에게 데미지 (플레이어 레벨의 2배~3배)
+                    // 寃쎈줈?곸쓽 ?곸뿉寃??곕?吏 (?뚮젅?댁뼱 ?덈꺼??2諛?3諛?
                     for (Char enemy : pathEnemies) {
                         if (enemy.isAlive()) {
                             int minDmg = hero.lvl * 2;
@@ -405,22 +564,20 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                     Sword.horsesound();
                     Sample.INSTANCE.play(Assets.Sounds.HORSE);
                     
-                    // J33 탤런트: 도약 착지 시 근접한 적들을 밀어내기
                     if (hero.hasTalent(Talent.J33)) {
                         int talentLevel = hero.pointsInTalent(Talent.J33);
-                        int pushDistance = 1 + talentLevel; // 2, 3, 4 타일
-                        
+                        int pushDistance = 1 + talentLevel; // 2, 3, 4 ???                        
                         for (int i : PathFinder.NEIGHBOURS8) {
                             Char ch = Actor.findChar(dest + i);
                             if (ch != null && ch.alignment == Char.Alignment.ENEMY) {
                                 Ballistica trajectory = new Ballistica(ch.pos, ch.pos + i, Ballistica.MAGIC_BOLT);
                                 int pushDest = ch.pos;
                                 
-                                // 밀어내기 거리 계산 (trajectory.path 사용)
+                                // 諛?대궡湲?嫄곕━ 怨꾩궛 (trajectory.path ?ъ슜)
                                 for (int push = 0; push < pushDistance && trajectory.path.size() > push + 1; push++) {
                                     int next = trajectory.path.get(push + 1);
                                     if (Dungeon.level.solid[next] || Actor.findChar(next) != null) {
-                                        // 벽이나 다른 캐릭터에 부딪히면 중단
+                                        // 踰쎌씠???ㅻⅨ 罹먮┃?곗뿉 遺?ろ엳硫?以묐떒
                                         break;
                                     }
                                     pushDest = next;
@@ -439,7 +596,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
                     Invisibility.dispel();
                     hero.spendAndNext(Actor.TICK);
                     
-                    // 충전량 소모
+                    // 異⑹쟾???뚮え
                     leapCharges--;
                     BuffIndicator.refreshHero();
                     ActionIndicator.refresh();
@@ -481,7 +638,6 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         } else {
             leapCharges = 0;
         }
-        // 말 체력이 0이거나 최대 체력이 0이면 초기화
         if (horseHT == 0 || horseHP == 0) {
             set();
         }
@@ -501,8 +657,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
 
         private float partialCharge = 0f;
         private int heroLvl = 0;
-        private int savedLeapCharges = 0; // 도약 충전량 저장
-
+        private int savedLeapCharges = 0; // ?꾩빟 異⑹쟾?????
         public HorseAlly() {
             super();
         }
@@ -518,13 +673,17 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         @Override
         protected boolean act() {
             if (this.HP < this.HT && Regeneration.regenOn()) {
-                partialCharge += 0.1f;
+                int beforeHeal = this.HP;
+                partialCharge += 0.2f;
                 if (Dungeon.level.map[this.pos] == Terrain.GRASS) {
-                    partialCharge += 0.4f; //풀 위에 있으면 회복 속도 5배
+                    partialCharge += 0.8f;
                 }
                 while (partialCharge > 1) {
-                    this.HP++;
+                    this.HP = Math.min(this.HP + 1, this.HT);
                     partialCharge--;
+                }
+                if (this.HP > beforeHeal && this.sprite != null) {
+                    Buff.affect(this, HorseHealingFX.class, 1.1f);
                 }
             } else {
                 partialCharge = 0;
@@ -541,11 +700,11 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         @Override
         public boolean interact(Char c) {
             if (c instanceof Hero) {
-                // 말 체력 설정
+                // 留?泥대젰 ?ㅼ젙
                 HorseRiding riding = Buff.affect(c, HorseRiding.class);
                 riding.set(this.HP);
                 
-                // 말이 저장하고 있던 도약 충전량 복원
+                // 留먯씠 ??ν븯怨??덈뜕 ?꾩빟 異⑹쟾??蹂듭썝
                 riding.setLeapCharges(this.savedLeapCharges);
                 BuffIndicator.refreshHero();
                 ActionIndicator.refresh();
@@ -620,6 +779,21 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         }
     }
 
+    public static class HorseHealingFX extends FlavourBuff {
+
+        @Override
+        public void fx(boolean on) {
+            if (target == null || target.sprite == null) {
+                return;
+            }
+            if (on) {
+                target.sprite.add(CharSprite.State.HEALING);
+            } else {
+                target.sprite.remove(CharSprite.State.HEALING);
+            }
+        }
+    }
+
     public static class RideFall implements Hero.Doom {
         @Override
         public void onDeath() {
@@ -633,7 +807,7 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         {
             type = buffType.NEUTRAL;
             announced = false;
-            revivePersists = true; // 죽어도 유지
+            revivePersists = true; // 二쎌뼱???좎?
         }
 
         public static final float DURATION = 150f;

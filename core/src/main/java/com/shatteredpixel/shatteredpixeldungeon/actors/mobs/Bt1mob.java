@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Spw;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Bt1Sprite;
 import com.watabou.utils.Random;
 
@@ -89,6 +90,8 @@ public class Bt1mob extends Mob {
     public void die(Object cause) {
 
         super.die(cause);
+
+		Bestiary.setSeen(Bt1.class);
 
         Dungeon.level.drop(new Spw().identify(), pos).sprite.drop(pos);
 

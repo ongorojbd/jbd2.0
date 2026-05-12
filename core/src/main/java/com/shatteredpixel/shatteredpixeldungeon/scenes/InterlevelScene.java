@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.input.KeyEvent;
@@ -132,10 +133,10 @@ public class InterlevelScene extends PixelScene {
     }
 
     @Override
-    public void create() {
-        super.create();
+	public void create() {
+		super.create();
 
-        String loadingAsset;
+		String loadingAsset;
         int loadingDepth;
         fadeTime = NORM_FADE;
 
@@ -346,10 +347,18 @@ public class InterlevelScene extends PixelScene {
                 insets.left + w - loadingText.width() - 12,
                 insets.top + h - loadingText.height() - 6
         );
-        align(loadingText);
-        add(loadingText);
+		align(loadingText);
+		add(loadingText);
 
-        if (mode == Mode.DESCEND && lastRegion <= 6 && !DeviceCompat.isDebug() && SPDSettings.getDio() == 0 && !tendencylevel) {
+		if (blockedTendencyAscent()) {
+			GLog.w(Messages.get(Dungeon.hero, "tendency2"));
+			phase = Phase.FADE_OUT;
+			timeLeft = 0;
+			waitingTime = 0;
+			return;
+		}
+
+		if (mode == Mode.DESCEND && lastRegion <= 6 && !DeviceCompat.isDebug() && SPDSettings.getDio() == 0 && !tendencylevel) {
             if (Dungeon.hero == null || (loadingDepth > Statistics.deepestFloor && loadingDepth % 5 == 1)) {
                 String messageText;
                 if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) { // 전투조류
@@ -538,6 +547,12 @@ public class InterlevelScene extends PixelScene {
             thread.start();
         }
         waitingTime = 0f;
+    }
+
+    private static boolean blockedTendencyAscent() {
+        if (!tendencylevel || Dungeon.hero == null) return false;
+        if (mode == Mode.ASCEND) return true;
+        return mode == Mode.RETURN && returnDepth < Dungeon.depth;
     }
 
     private int dots = 0;

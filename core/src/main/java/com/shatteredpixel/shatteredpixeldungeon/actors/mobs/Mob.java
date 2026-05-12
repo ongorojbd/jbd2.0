@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
@@ -300,7 +301,8 @@ public abstract class Mob extends Char {
 
         enemy = chooseEnemy();
 
-        boolean enemyInFOV = enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
+        boolean enemyInFOV = enemy != null && enemy.isAlive() && fieldOfView[enemy.pos]
+                && (enemy.invisible <= 0 || isJ56VisibleHero(enemy));
 
         //prevents action, but still updates enemy seen status
         if (buff(Feint.AfterImage.FeintConfusion.class) != null) {
@@ -403,7 +405,7 @@ public abstract class Mob extends Char {
 
                     if (enemies.isEmpty()) {
                         //try to find the hero third
-                        if (fieldOfView[hero.pos] && hero.invisible <= 0) {
+                        if (fieldOfView[hero.pos] && (hero.invisible <= 0 || isJ56VisibleHero(hero))) {
                             enemies.add(hero);
                         }
                     }
@@ -430,7 +432,7 @@ public abstract class Mob extends Char {
                         enemies.add(mob);
 
                 //and look for the hero
-                if (fieldOfView[hero.pos] && hero.invisible <= 0) {
+                if (fieldOfView[hero.pos] && (hero.invisible <= 0 || isJ56VisibleHero(hero))) {
                     enemies.add(hero);
                 }
 
@@ -802,7 +804,7 @@ public abstract class Mob extends Char {
             if (restoration > 0) {
                 Buff.affect(hero, Hunger.class).affectHunger(restoration * hero.pointsInTalent(Talent.SOUL_EATER) / 3f);
 
-                if (hero.HP < hero.HT) {
+                if (!hero.hasTalent(Talent.J64) && hero.HP < hero.HT) {
                     int heal = (int) Math.ceil(restoration * 0.4f);
                     hero.HP = Math.min(hero.HT, hero.HP + heal);
                     hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
@@ -823,9 +825,21 @@ public abstract class Mob extends Char {
     }
 
     public boolean surprisedBy(Char enemy, boolean attacking) {
+        if (enemy == hero
+                && hero.hasTalent(Talent.J56)
+                && hero.buff(Swiftthistle.TimeBubble.class) != null
+                && (!attacking || enemy.canSurpriseAttack())) {
+            return true;
+        }
         return enemy == hero
-                && (enemy.invisible > 0 || !enemySeen || (fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !fieldOfView[enemy.pos]))
+                && (enemy.invisible > 0
+                || !enemySeen
+                || (fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !fieldOfView[enemy.pos]))
                 && (!attacking || enemy.canSurpriseAttack());
+    }
+
+    protected boolean isJ56VisibleHero(Char ch) {
+        return ch == hero && hero.hasTalent(Talent.J56);
     }
 
     //whether the hero should interact with the mob (true) or attack it (false)
@@ -954,6 +968,15 @@ public abstract class Mob extends Char {
             rollToDropLoot();
 
             if (cause == hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment) {
+
+                Talent.J56InvisibleAttackTracker j56InvisibleAttack = hero.buff(Talent.J56InvisibleAttackTracker.class);
+                if (hero.hasTalent(Talent.J56)
+                        && (hero.buff(CloakOfShadows.cloakStealth.class) != null
+                        || (j56InvisibleAttack != null && j56InvisibleAttack.object == id()))) {
+                    Buff.affect(hero, Talent.J56TimeStopTriggerTracker.class, 1f);
+                    Buff.affect(hero, Swiftthistle.TimeBubble.class).twelveTurns();
+                    if (j56InvisibleAttack != null) j56InvisibleAttack.detach();
+                }
 
                 if (hero.hasTalent(Talent.LETHAL_MOMENTUM)
                         && Random.Float() < 0.34f + 0.33f * hero.pointsInTalent(Talent.LETHAL_MOMENTUM)) {
@@ -1606,6 +1629,12 @@ public abstract class Mob extends Char {
                 if (mob instanceof DirectableAlly) {
                     ((DirectableAlly) mob).clearDefensingPos();
                 }
+                level.mobs.remove(mob);
+                heldAllies.add(mob);
+
+            } else if (Dungeon.tendencylevel
+                    && mob.alignment == Alignment.ALLY
+                    && mob.intelligentAlly) {
                 level.mobs.remove(mob);
                 heldAllies.add(mob);
 

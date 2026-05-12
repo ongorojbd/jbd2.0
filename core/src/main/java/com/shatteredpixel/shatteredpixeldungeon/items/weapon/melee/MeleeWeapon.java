@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -67,6 +68,8 @@ import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -237,6 +240,48 @@ public class MeleeWeapon extends Weapon {
 			charger.gainCharge(hero.pointsInTalent(Talent.COUNTER_ABILITY)*0.375f);
 			hero.buff(Talent.CounterAbilityTacker.class).detach();
 		}
+		if (hero.hasTalent(Talent.J60) && hero.belongings.weapon() == this){
+			transformJ60MainWeapon(hero);
+		}
+	}
+
+	private void transformJ60MainWeapon(Hero hero) {
+		if (tier < 1 || tier > Generator.wepTiers.length) {
+			return;
+		}
+
+		Generator.Category category = Generator.wepTiers[tier - 1];
+		ArrayList<Class<?>> candidates = new ArrayList<>();
+		for (int i = 0; i < category.classes.length; i++) {
+			if (category.classes[i] != getClass()
+					&& MeleeWeapon.class.isAssignableFrom(category.classes[i])
+					&& (category.defaultProbs == null || category.defaultProbs[i] > 0)) {
+				candidates.add(category.classes[i]);
+			}
+		}
+		if (candidates.isEmpty()) {
+			return;
+		}
+
+		MeleeWeapon replacement = (MeleeWeapon) Reflection.newInstance(Random.element(candidates));
+		replacement.level(trueLevel());
+		replacement.levelKnown = levelKnown;
+		replacement.cursed = cursed;
+		replacement.cursedKnown = cursedKnown;
+		replacement.enchantment = enchantment;
+		replacement.enchantHardened = enchantHardened;
+		replacement.curseInfusionBonus = curseInfusionBonus;
+		replacement.masteryPotionBonus = masteryPotionBonus;
+		replacement.augment = augment;
+
+		int quickslot = Dungeon.quickslot.getSlot(this);
+		Dungeon.quickslot.clearItem(this);
+		hero.belongings.weapon = replacement;
+		replacement.activate(hero);
+		if (quickslot != -1) {
+			Dungeon.quickslot.setSlot(quickslot, replacement);
+		}
+		updateQuickslot();
 	}
 
 	public static void onAbilityKill( Hero hero, Char killed ){
@@ -440,6 +485,9 @@ public class MeleeWeapon extends Weapon {
 					//40 to 30 turns per charge for champion
 					if (Dungeon.hero.subClass == HeroSubClass.CHAMPION){
 						chargeToGain *= 1.5f;
+					}
+					if (Dungeon.hero.hasTalent(Talent.J60)){
+						chargeToGain *= 1.15f;
 					}
 
 					//50% slower charge gain with brawler's stance enabled, even if buff is inactive

@@ -313,7 +313,7 @@ public class TendencyTreasureLevel extends Level {
 						GLog.p(Messages.get(Jolyne.class, "treasure_reminiscence_bless"));
 					} else {
 						Barrier barrier = Buff.affect(Dungeon.hero, Barrier.class);
-						barrier.incShield(1000);
+						barrier.incShield(500);
 						GLog.p(Messages.get(Jolyne.class, "treasure_reminiscence_shield"));
 					}
 				}
@@ -400,14 +400,14 @@ public class TendencyTreasureLevel extends Level {
 				protected void onSelect(int index) {
 					eventResolved = true;
 					if (index == 0) {
-						Statistics.spw29 += 2;
+						Statistics.spw29 += 1;
 
 						ShovelDigCoolDown8 cd = Dungeon.hero.buff(ShovelDigCoolDown8.class);
 						if (cd != null) {
 							float remaining = cd.cooldown();
 							Buff.detach(Dungeon.hero, ShovelDigCoolDown8.class);
-							if (remaining > 40f) {
-								Buff.affect(Dungeon.hero, ShovelDigCoolDown8.class, remaining - 40f);
+							if (remaining > 20f) {
+								Buff.affect(Dungeon.hero, ShovelDigCoolDown8.class, remaining - 20f);
 							}
 						}
 

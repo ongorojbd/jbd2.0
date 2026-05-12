@@ -81,6 +81,11 @@ public class EnhancedWand extends Buff {
         temporaryDuration = duration;
         initialDuration = duration;
     }
+
+    public void setPermanent() {
+        temporaryDuration = -1;
+        initialDuration = -1;
+    }
     
     public boolean isPermanent() {
         return temporaryDuration < 0;

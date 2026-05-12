@@ -125,6 +125,7 @@ public class HeroIcon extends Image {
 	public static final int RIDER_ABILITIES  = 111;
 	public static final int STANDO_ABILITIES  = 112;
 	public static final int INVOKER_ABILITIES  = 113;
+	public static final int HAMON_ABILITIES  = 114;
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );

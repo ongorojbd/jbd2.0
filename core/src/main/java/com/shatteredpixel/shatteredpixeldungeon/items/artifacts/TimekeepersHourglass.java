@@ -432,6 +432,11 @@ public class TimekeepersHourglass extends Artifact {
 			activeBuff = null;
 			triggerPresses();
 			target.next();
+			if (Dungeon.hero != null
+					&& Dungeon.hero.hasTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.J52)
+					&& Dungeon.hero.buff(Swiftthistle.TimeBubble.class) == null) {
+				MissileWeapon.castAfterTimeFreeze();
+			}
 		}
 
 		@Override

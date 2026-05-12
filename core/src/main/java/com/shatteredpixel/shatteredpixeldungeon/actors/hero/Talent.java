@@ -38,9 +38,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HamonAmplification;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RadioactiveMutation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -52,7 +56,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbili
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.RecallInscription;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.KarsUltimate;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon3;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -61,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
@@ -69,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Diomap3;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
@@ -87,15 +96,23 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier2;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife5;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SturoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.UltimateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -119,10 +136,10 @@ public enum Talent {
     //Warrior T3
     HOLD_FAST(9, 3), STRONGMAN(10, 3),
     //Berserker T3
-    ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3), JONATHAN_NEW1(27, 3),
+    ENDLESS_RAGE(11, 3), DEATHLESS_FURY(12, 3), ENRAGED_CATALYST(13, 3), JONATHAN_NEW1(27, 3), J51(224, 1),
 
     //Gladiator T3
-    CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3),
+    CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), J63(224, 1),
     //Heroic Leap T4
     BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4),
     //Shockwave T4
@@ -137,9 +154,9 @@ public enum Talent {
     //Mage T3
     DESPERATE_POWER(41, 3), ALLY_WARP(42, 3),
     //Battlemage T3
-    EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3),
+    EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), J61(224, 1),
     //Warlock T3
-    SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3),
+    SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3), J64(224, 1),
     //Elemental Blast T4
     BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4),
     //Wild Magic T4
@@ -154,9 +171,9 @@ public enum Talent {
     //Rogue T3
     ENHANCED_RINGS(73, 3), LIGHT_CLOAK(74, 3),
     //Assassin T3
-    ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3),
+    ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3), J56(224, 1),
     //Freerunner T3
-    EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3),
+    EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), J52(224, 1),
     //Smoke Bomb T4
     HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4),
     //Death Mark T4
@@ -171,9 +188,9 @@ public enum Talent {
     //Huntress T3
     POINT_BLANK(105, 3), SEER_SHOT(106, 3),
     //Sniper T3
-    FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3),
+    FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), J55(224, 1),
     //Warden T3
-    SHIELDING_DEW(112, 3), DURABLE_TIPS(110, 3), BARKSKIN(111, 3),
+    SHIELDING_DEW(112, 3), DURABLE_TIPS(110, 3), BARKSKIN(111, 3), J62(224, 1),
     //Spectral Blades T4
     FAN_OF_BLADES(113, 4), PROJECTING_BLADES(114, 4), SPIRIT_BLADES(115, 4),
     //Natures Power T4
@@ -188,7 +205,7 @@ public enum Talent {
     //Duelist T3
     PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3),
     //Champion T3
-    VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3),
+    VARIED_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3), J57(224, 1), J60(224, 1),
     //Monk T3
     UNENCUMBERED_SPIRIT(142, 3), MONASTIC_VIGOR(143, 3), COMBINED_ENERGY(144, 3),
     //Challenge T4
@@ -206,9 +223,9 @@ public enum Talent {
     CLEANSE(169, 3), LIGHT_READING(170, 3),
     JOLYNE_NEW1(187, 3), JOLYNE_NEW2(188, 3), JOLYNE_NEW3(189, 3),
     //Priest T3
-    HOLY_LANCE(171, 3), HALLOWED_GROUND(172, 3), MNEMONIC_PRAYER(173, 3),
+    HOLY_LANCE(171, 3), HALLOWED_GROUND(172, 3), MNEMONIC_PRAYER(173, 3), J54(224, 1),
     //Paladin T3
-    LAY_ON_HANDS(174, 3), AURA_OF_PROTECTION(175, 3), WALL_OF_LIGHT(176, 3),
+    LAY_ON_HANDS(174, 3), AURA_OF_PROTECTION(175, 3), WALL_OF_LIGHT(176, 3), J65(224, 1),
     //Ascended Form T4
     DIVINE_INTERVENTION(177, 4), JUDGEMENT(178, 4), FLASH(179, 4),
     //Trinity T4
@@ -223,9 +240,9 @@ public enum Talent {
     //JoBro T3
     J31(201, 3), J32(202, 3),
     //JoBro Subclass1 T3
-    J33(203, 3), J35(204, 3), J34(205, 3),
+    J33(203, 3), J35(204, 3), J34(205, 3), J53(224, 1),
     //JoBro Subclass2 T3
-    J36(206, 3), J37(207, 3), J38(208, 3),
+    J36(206, 3), J37(207, 3), J38(208, 3), J59(224, 1),
     //JoBro T4 - Ability 1
     J41(209, 4), J42(210, 4), J43(211, 4),
     //JoBro T4 - Ability 2
@@ -492,6 +509,125 @@ public enum Talent {
 
     ;
 
+    public static class OraRushCooldown extends FlavourBuff {
+
+        public static final float DURATION = 25f;
+
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        public void tintIcon(Image icon) {
+            icon.hardlight(0.65f, 0f, 0.15f);
+        }
+
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+
+    }
+
+    ;
+
+    public static class J57RecoveryTracker extends Buff {
+
+        private static final int DURATION = 35;
+
+        private int left = DURATION;
+
+        {
+            type = buffType.POSITIVE;
+            announced = true;
+        }
+
+        public void resetTimer() {
+            left = DURATION;
+        }
+
+        @Override
+        public boolean act() {
+            left--;
+            if (left <= 0) {
+                Buff.detach(target, EnhancedThrownWeapon.class);
+                Buff.prolong(target, Paralysis.class, 5f);
+                detach();
+                return true;
+            }
+            spend(TICK);
+            return true;
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0.35f, 0.75f, 0.95f);
+        }
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, 1f - (left / (float) DURATION));
+        }
+
+        @Override
+        public String toString() {
+            return Messages.get(this, "name");
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", left);
+        }
+
+        private static final String LEFT = "left";
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(LEFT, left);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            left = bundle.getInt(LEFT);
+        }
+    }
+
+    ;
+
+    public static class J56InvisibleAttackTracker extends FlavourBuff {
+        public int object;
+
+        public void set(int object) {
+            this.object = object;
+        }
+
+        private static final String OBJECT = "object";
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(OBJECT, object);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            object = bundle.getInt(OBJECT);
+        }
+    }
+
+    ;
+
+    public static class J56TimeStopTriggerTracker extends FlavourBuff {
+    }
+
+    ;
+
     public static class SwiftEquipCooldown extends FlavourBuff {
         public boolean secondUse;
 
@@ -714,6 +850,12 @@ public enum Talent {
     }
 
     public String desc(boolean metamorphed) {
+        if (this == DEATHLESS_FURY && Dungeon.hero != null && Dungeon.hero.hasTalent(J51)) {
+            String j51Desc = Messages.get(this, name() + ".desc_j51");
+            if (!j51Desc.equals(Messages.NO_TEXT_FOUND)) {
+                return j51Desc;
+            }
+        }
         if (metamorphed) {
             String metaDesc = Messages.get(this, name() + ".meta_desc");
             if (!metaDesc.equals(Messages.NO_TEXT_FOUND)) {
@@ -724,6 +866,127 @@ public enum Talent {
     }
 
     public static void onTalentUpgraded(Hero hero, Talent talent) {
+
+        if (talent == J51 && hero.pointsInTalent(J51) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+            hero.updateHT(false);
+            hero.HP = Math.min(hero.HP, hero.HT);
+        }
+
+        if (talent == J52 && hero.pointsInTalent(J52) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+            Item throwingknife5 = new ThrowingKnife5().identify();
+            if (throwingknife5.doPickUp(hero)) {
+                GLog.i(Messages.get(hero, "you_now_have", throwingknife5.name()));
+                hero.spend(-1);
+            } else {
+                level.drop(throwingknife5, hero.pos).sprite.drop();
+            }
+        }
+
+        if (talent == J62 && hero.pointsInTalent(J62) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+        }
+
+        if (talent == J63 && hero.pointsInTalent(J63) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+        }
+
+        if (talent == J53 && hero.pointsInTalent(J53) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+        }
+
+        if (talent == J54 && hero.pointsInTalent(J54) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+        }
+
+        if (talent == J55 && hero.pointsInTalent(J55) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+        }
+
+        if (talent == J56 && hero.pointsInTalent(J56) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+        }
+
+        if (talent == J57 && hero.pointsInTalent(J57) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+
+            Item spikes = new ThrowingSpike().quantity(2).identify();
+            if (spikes.doPickUp(hero)) {
+                GLog.i(Messages.get(hero, "you_now_have", spikes.name()));
+                hero.spend(-1);
+            } else {
+                level.drop(spikes, hero.pos).sprite.drop();
+            }
+            Item liquidMetal = new LiquidMetal().quantity(600).identify();
+            if (liquidMetal.doPickUp(hero)) {
+                GLog.i(Messages.get(hero, "you_now_have", liquidMetal.name()));
+                hero.spend(-1);
+            } else {
+                level.drop(liquidMetal, hero.pos).sprite.drop();
+            }
+        }
+
+        if (talent == J59 && hero.pointsInTalent(J59) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+        }
+
+        if (talent == J60 && hero.pointsInTalent(J60) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+
+            Item awakenedRapier = new Rapier2().identify();
+            if (awakenedRapier.doPickUp(hero)) {
+                GLog.i(Messages.get(hero, "you_now_have", awakenedRapier.name()));
+                hero.spend(-1);
+            } else {
+                level.drop(awakenedRapier, hero.pos).sprite.drop();
+            }
+        }
+
+        if (talent == J61 && hero.pointsInTalent(J61) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+
+            EnhancedWand enhancedWand = Buff.affect(hero, EnhancedWand.class);
+            enhancedWand.setEnhancementLevel(3);
+            enhancedWand.setPermanent();
+        }
+
+        if (talent == J64 && hero.pointsInTalent(J64) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+            Buff.affect(hero, HamonAmplification.class);
+        }
+
+        if (talent == J65 && hero.pointsInTalent(J65) == 1) {
+            Sample.INSTANCE.play(Assets.Sounds.BLAST, 2, Random.Float(0.33f, 0.66f));
+            Camera.main.shake(31, 1f);
+            GameScene.flash(0xFFCC66);
+        }
 
         if (talent == J31){
             int currentLevel = hero.pointsInTalent(Talent.J31);
@@ -874,6 +1137,12 @@ public enum Talent {
         if (talent == SPIRIT_FORM) {
             Dungeon.hero.updateHT(false);
         }
+    }
+
+    public static void onJ57ThrowingSpikeRecovered(Hero hero) {
+        EnhancedThrownWeapon enhancement = Buff.affect(hero, EnhancedThrownWeapon.class);
+        enhancement.setEnhancementLevel(enhancement.getEnhancementLevel() + 1);
+        Buff.affect(hero, J57RecoveryTracker.class).resetTimer();
     }
 
     public static class CachedRationsDropped extends CounterBuff {
@@ -1504,47 +1773,47 @@ public enum Talent {
         switch (cls) {
             case BERSERKER:
             default:
-                Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, JONATHAN_NEW1);
+                Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, JONATHAN_NEW1, J51);
                 break;
             case GLADIATOR:
-                Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO);
+                Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, J63);
                 break;
             case BATTLEMAGE:
-                Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE);
+                Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, J61);
                 break;
             case WARLOCK:
-                Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS);
+                Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, J64);
                 break;
             case ASSASSIN:
-                Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, BOUNTY_HUNTER);
+                Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, BOUNTY_HUNTER, J56);
                 break;
             case FREERUNNER:
-                Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH);
+                Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, J52);
                 break;
             case SNIPER:
-                Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES);
+                Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, J55);
                 break;
             case WARDEN:
-                Collections.addAll(tierTalents, SHIELDING_DEW, DURABLE_TIPS, BARKSKIN);
+                Collections.addAll(tierTalents, SHIELDING_DEW, DURABLE_TIPS, BARKSKIN, J62);
                 break;
             case CHAMPION:
-                Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY);
+                Collections.addAll(tierTalents, VARIED_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, J60);
                 break;
             case MONK:
-                Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY);
+                Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY, J57);
                 break;
             case PRIEST:
-                Collections.addAll(tierTalents, HOLY_LANCE, HALLOWED_GROUND, MNEMONIC_PRAYER);
+                Collections.addAll(tierTalents, HOLY_LANCE, HALLOWED_GROUND, MNEMONIC_PRAYER, J54);
                 break;
             case PALADIN:
-                Collections.addAll(tierTalents, LAY_ON_HANDS, AURA_OF_PROTECTION, WALL_OF_LIGHT);
+                Collections.addAll(tierTalents, LAY_ON_HANDS, AURA_OF_PROTECTION, WALL_OF_LIGHT, J65);
                 break;
            // 죠니 추가
              case RIDER:
-                 Collections.addAll(tierTalents, J33, J35, J34);
+                 Collections.addAll(tierTalents, J33, J35, J34, J53);
                  break;
              case STANDO:
-                 Collections.addAll(tierTalents, J36, J37, J38);
+                 Collections.addAll(tierTalents, J36, J37, J38, J59);
                  break;
             case SUMMONER:
                  Collections.addAll(tierTalents, FIEND_WARP, PACT_OF_KNOT, CURSED_CLAW);

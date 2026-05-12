@@ -45,6 +45,14 @@ public abstract class ClericSpell {
 		return 1;
 	}
 
+	public float effectiveChargeUse( Hero hero ){
+		float chargeUse = chargeUse(hero);
+		if (hero != null && (hero.hasTalent(Talent.J54) || hero.hasTalent(Talent.J65))) {
+			return hero.hasTalent(Talent.J54) && chargeUse == 0 ? 0 : 1;
+		}
+		return chargeUse;
+	}
+
 	public boolean canCast( Hero hero ){
 		return true;
 	}
@@ -54,11 +62,11 @@ public abstract class ClericSpell {
 	}
 
 	public String shortDesc(){
-		return Messages.get(this, "short_desc") + " " + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "short_desc") + " " + Messages.get(this, "charge_cost", (int)effectiveChargeUse(Dungeon.hero));
 	}
 
 	public String desc(){
-		return Messages.get(this, "desc") + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc") + "\n\n" + Messages.get(this, "charge_cost", (int)effectiveChargeUse(Dungeon.hero));
 	}
 
 	public boolean usesTargeting(){
@@ -84,21 +92,24 @@ public abstract class ClericSpell {
 			}
 			hero.buff(Talent.SatiatedSpellsTracker.class).detach();
 		}
-		tome.spendCharge(chargeUse(hero));
+		float chargesUsed = effectiveChargeUse(hero);
+		tome.spendCharge(chargesUsed);
 		Talent.onArtifactUsed(hero);
 		if (hero.subClass == HeroSubClass.PALADIN){
 			if (this != HolyWeapon.INSTANCE && hero.buff(HolyWeapon.HolyWepBuff.class) != null){
-				hero.buff(HolyWeapon.HolyWepBuff.class).extend(10*chargeUse(hero));
+				hero.buff(HolyWeapon.HolyWepBuff.class).extend(10*chargesUsed);
 			}
 			if (this != HolyWard.INSTANCE && hero.buff(HolyWard.HolyArmBuff.class) != null){
-				hero.buff(HolyWard.HolyArmBuff.class).extend(10*chargeUse(hero));
+				hero.buff(HolyWard.HolyArmBuff.class).extend(10*chargesUsed);
 			}
 		}
 
 		if (hero.buff(AscendedForm.AscendBuff.class) != null){
 			hero.buff(AscendedForm.AscendBuff.class).spellCasts++;
-			hero.buff(AscendedForm.AscendBuff.class).incShield((int)(10*chargeUse(hero)));
+			hero.buff(AscendedForm.AscendBuff.class).incShield((int)(10*chargesUsed));
 		}
+
+		tome.onSpellCast(this, hero);
 	}
 
 	public static ArrayList<ClericSpell> getSpellList(Hero cleric, int tier){

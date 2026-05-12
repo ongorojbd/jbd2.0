@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
@@ -57,6 +58,18 @@ public class Pasty extends Food {
 		energy = Hunger.STARVING;
 
 		bones = true;
+	}
+
+	@Override
+	public void execute(Hero hero, String action) {
+		super.execute(hero, action);
+		if (action.equals(AC_EAT) && Holiday.getCurrentHoliday() == Holiday.MAY_EVENT && Random.Int(7) == 0) {
+			Pasty returned = new Pasty();
+			if (!returned.collect()) {
+				Dungeon.level.drop(returned, hero.pos).sprite.drop();
+			}
+			GLog.p(Messages.get(this, "cake_bonus"));
+		}
 	}
 
 	@Override
@@ -75,10 +88,13 @@ public class Pasty extends Food {
 			case CHUSEOK:
 				image = ItemSpriteSheet.SHATTERED_CAKE;
 				break;
-			case APRIL_FOOLS:
-				image = ItemSpriteSheet.CHOC_AMULET;
-				break;
-			case EASTER:
+		case APRIL_FOOLS:
+			image = ItemSpriteSheet.CHOC_AMULET;
+			break;
+		case MAY_EVENT:
+			image = ItemSpriteSheet.VANILLA_CAKE;
+			break;
+		case EASTER:
 				image = ItemSpriteSheet.EASTER_EGG;
 				break;
 			case HALLOWEEN:
@@ -154,10 +170,10 @@ public class Pasty extends Food {
 				}
 
 				break;
-			case EASTER:
-				ArtifactRecharge.chargeArtifacts(hero, 2f);
-				ScrollOfRecharging.charge( hero );
-				break;
+		case EASTER:
+			ArtifactRecharge.chargeArtifacts(hero, 2f);
+			ScrollOfRecharging.charge( hero );
+			break;
 			case HALLOWEEN:
 				//heals for 5% max hp, min of 3
 				int toHeal = Math.max(3, hero.HT/20);
@@ -183,9 +199,11 @@ public class Pasty extends Food {
                 return Messages.get(this, "rainbow_name");
 			case CHUSEOK:
 				return Messages.get(this, "songpyeon_name");
-			case APRIL_FOOLS:
-				return Messages.get(this, "amulet_name");
-			case EASTER:
+		case APRIL_FOOLS:
+			return Messages.get(this, "amulet_name");
+		case MAY_EVENT:
+			return Messages.get(this, "cake_name");
+		case EASTER:
 				return Messages.get(this, "egg_name");
 			case HALLOWEEN:
 				return Messages.get(this, "pie_name");
@@ -205,9 +223,11 @@ public class Pasty extends Food {
                 return Messages.get(this, "rainbow_desc");
 			case CHUSEOK:
 				return Messages.get(this, "songpyeon_desc");
-			case APRIL_FOOLS:
-				return Messages.get(this, "amulet_desc");
-			case EASTER:
+		case APRIL_FOOLS:
+			return Messages.get(this, "amulet_desc");
+		case MAY_EVENT:
+			return Messages.get(this, "cake_desc");
+		case EASTER:
 				return Messages.get(this, "egg_desc");
 			case HALLOWEEN:
 				return Messages.get(this, "pie_desc");

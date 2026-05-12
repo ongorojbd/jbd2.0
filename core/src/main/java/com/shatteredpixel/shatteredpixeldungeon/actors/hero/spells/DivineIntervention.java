@@ -91,7 +91,7 @@ public class DivineIntervention extends ClericSpell {
 	public String desc() {
 		int shield = 100 + 50*Dungeon.hero.pointsInTalent(Talent.DIVINE_INTERVENTION);
 		int leftBonus = 2+Dungeon.hero.pointsInTalent(Talent.DIVINE_INTERVENTION);
-		return Messages.get(this, "desc", shield, leftBonus) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", shield, leftBonus) + "\n\n" + Messages.get(this, "charge_cost", (int)effectiveChargeUse(Dungeon.hero));
 	}
 
 	public static class DivineShield extends ShieldBuff{

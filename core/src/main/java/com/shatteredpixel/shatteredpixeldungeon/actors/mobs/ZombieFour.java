@@ -55,6 +55,7 @@ public class ZombieFour extends Mob {
         maxLvl = 25;
         properties.add(Property.UNDEAD);
         properties.add(Property.DEMONIC);
+        properties.add(Property.MINIBOSS);
     }
 
     public ZombieFour() {
@@ -109,7 +110,6 @@ public class ZombieFour extends Mob {
         Statistics.duwang3++;
         spw4++;
 
-
         Item prize = Random.oneOf(
                 new Kingt().quantity(1),
                 new StoneOfAdvanceguard().quantity(1),
@@ -121,7 +121,7 @@ public class ZombieFour extends Mob {
                 new Kingc().quantity(1)
         );
 
-        if (Random.Int(2) == 0) {
+        if (Random.Int(3) == 0) {
             Dungeon.level.drop(prize, pos).sprite.drop(pos);
         }
 

@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bt2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpwSoldier;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -49,8 +50,7 @@ public class TendencyEventLevel extends Level {
 
     private static final int[] ENEMY_POSITIONS = {
             14 + 5 * WIDTH,
-            22 + 19 * WIDTH,
-            14 + 23 * WIDTH,
+            22 + 9 * WIDTH,
             6 + 9 * WIDTH
     };
 
@@ -149,9 +149,11 @@ public class TendencyEventLevel extends Level {
             GLog.p("SPW재단 특별과학 전투대: \"자외선 조사 장치 가동 확인!\"");
         } else if (roll == 2) {
             ally = new Bt1();
+            Bestiary.setSeen(Bt1.class);
             GLog.p("로긴즈: \"자, 좀 더 기운차게 덤벼봐! 심심하지 않게 말이야.\"");
         } else {
             ally = new Bt2();
+            Bestiary.setSeen(Bt2.class);
             GLog.p("메시나: \"흠, 이 정도라면.. 가볍게 몸풀기 정도로 딱 적당하겠군.\"");
         }
         ally.pos = ALLY;

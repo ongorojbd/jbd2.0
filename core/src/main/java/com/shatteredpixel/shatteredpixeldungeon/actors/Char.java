@@ -77,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Speed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
@@ -573,7 +574,13 @@ public abstract class Char extends Actor {
             if (buff(FireImbue.class) != null) buff(FireImbue.class).proc(enemy);
             if (buff(FrostImbue.class) != null) buff(FrostImbue.class).proc(enemy);
             if (buff(ThunderImbue.class) != null) buff(ThunderImbue.class).proc(enemy, (int)dmg);
-
+            if (this == Dungeon.hero
+                    && Dungeon.hero.hasTalent(Talent.J64)
+                    && enemy.buff(SoulMark.class) != null
+                    && !enemy.isImmune(Electricity.class)) {
+                enemy.damage(2, new Electricity());
+                ThunderImbue.thunderEffect(enemy.sprite);
+            }
             if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)) {
                 enemy.HP = 0;
                 if (enemy.buff(Brute.BruteRage.class) != null) {
@@ -683,6 +690,14 @@ public abstract class Char extends Actor {
 
         //invisible chars always hit (for the hero this is surprise attacking)
         if (attacker.invisible > 0 && attacker.canSurpriseAttack()) {
+            acuStat = INFINITE_ACCURACY;
+        }
+
+        if (!magic
+                && attacker == Dungeon.hero
+                && Dungeon.hero.hasTalent(Talent.J56)
+                && Dungeon.hero.buff(Swiftthistle.TimeBubble.class) != null
+                && attacker.canSurpriseAttack()) {
             acuStat = INFINITE_ACCURACY;
         }
 

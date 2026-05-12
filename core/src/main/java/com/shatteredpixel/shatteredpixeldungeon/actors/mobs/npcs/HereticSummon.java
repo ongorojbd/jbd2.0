@@ -478,7 +478,7 @@ public abstract class HereticSummon extends NPC {
 	public static class FrostSummon extends HereticSummon {
 
 		{
-			spriteClass = KS3Sprite.class;
+			spriteClass = TentacleSprite.class;
 			properties.add( Property.ICY );
 			harmfulBuffs.add( Burning.class );
 		}

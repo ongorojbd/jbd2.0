@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -890,6 +891,8 @@ public class HeroSelectScene extends PixelScene {
                                     Dungeon.dailyReplay = false;
                                 Dungeon.hero = null;
                                 Dungeon.daily = true;
+                                Ranking.checkForRankings(Ranking.currentDailyDate());
+                                Ranking.checkForMonthlyRankings();
                                 Dungeon.initSeed();
                                 ActionIndicator.clearAction();
                                 InterlevelScene.mode = InterlevelScene.Mode.DESCEND;

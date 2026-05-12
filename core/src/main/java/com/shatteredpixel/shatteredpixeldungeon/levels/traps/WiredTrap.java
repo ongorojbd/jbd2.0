@@ -38,6 +38,11 @@ public class WiredTrap extends Trap {
     @Override
     public void activate() {
 
+        if (Dungeon.tendencylevel) {
+            GLog.w(Messages.get(Dungeon.hero, "tendency2"));
+            return;
+        }
+
         if (!Dungeon.interfloorTeleportAllowed()) {
 
             GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );

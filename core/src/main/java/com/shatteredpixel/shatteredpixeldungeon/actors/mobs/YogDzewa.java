@@ -569,6 +569,7 @@ public class YogDzewa extends Mob {
             Game.switchScene(InterlevelScene.class);
         } else {
             GameScene.bossSlain();
+            Badges.validateArrowChoiceBossSlain();
 
             Random.pushGenerator(Dungeon.seedCurDepth() + 999981L);
             boolean shouldDropRare = Random.Int( 10 ) == 0;

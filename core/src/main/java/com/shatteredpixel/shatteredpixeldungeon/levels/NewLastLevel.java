@@ -30,6 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Val;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Josuke8;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Valentine;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -75,6 +78,10 @@ public class NewLastLevel extends Level {
 	protected boolean build() {
 		setSize(WIDTH, HEIGHT);
 		transitions.add(new LevelTransition(this, 4 + (30)*9, LevelTransition.Type.REGULAR_ENTRANCE));
+
+		Valentine npc = new Valentine();
+		npc.pos = 2 * width() + 4;
+		mobs.add(npc);
 
 		//entrance room
 		buildLevel();

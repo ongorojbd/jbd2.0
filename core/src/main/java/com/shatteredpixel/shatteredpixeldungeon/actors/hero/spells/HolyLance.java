@@ -62,14 +62,15 @@ public class HolyLance extends TargetedClericSpell {
 	public String desc() {
 		int min = 15 + 15*Dungeon.hero.pointsInTalent(Talent.HOLY_LANCE);
 		int max = Math.round(27.5f + 27.5f*Dungeon.hero.pointsInTalent(Talent.HOLY_LANCE));
-		return Messages.get(this, "desc", min, max) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", min, max) + "\n\n" + Messages.get(this, "charge_cost", (int)effectiveChargeUse(Dungeon.hero));
 	}
 
 	@Override
 	public boolean canCast(Hero hero) {
 		return super.canCast(hero)
 				&& hero.hasTalent(Talent.HOLY_LANCE)
-				&& hero.buff(LanceCooldown.class) == null;
+				&& (hero.hasTalent(Talent.J54)
+				|| hero.buff(LanceCooldown.class) == null);
 	}
 
 	@Override
@@ -130,7 +131,9 @@ public class HolyLance extends TargetedClericSpell {
 									enemy.sprite.burst(0xFFFFFFFF, 10);
 									hero.spendAndNext(1f);
 									onSpellCast(tome, hero);
-									FlavourBuff.affect(hero, LanceCooldown.class, 30f);
+									if (!hero.hasTalent(Talent.J54)) {
+										FlavourBuff.affect(hero, LanceCooldown.class, 30f);
+									}
 								}
 							});
 		} else {
@@ -145,7 +148,9 @@ public class HolyLance extends TargetedClericSpell {
 									Dungeon.level.pressCell(aim.collisionPos);
 									hero.spendAndNext(1f);
 									onSpellCast(tome, hero);
-									FlavourBuff.affect(hero, LanceCooldown.class, 30f);
+									if (!hero.hasTalent(Talent.J54)) {
+										FlavourBuff.affect(hero, LanceCooldown.class, 30f);
+									}
 								}
 							});
 		}

@@ -39,6 +39,11 @@ public class ScrollOfPassage extends ExoticScroll {
 	@Override
 	public void doRead() {
 
+		if (Dungeon.tendencylevel) {
+			GLog.w( Messages.get(Dungeon.hero, "tendency2") );
+			return;
+		}
+
 		detach(curUser.belongings.backpack);
 		identify();
 		readAnimation();

@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -94,11 +95,22 @@ public class CloakOfShadows extends Artifact {
 
 		if (action.equals( AC_STEALTH )) {
 
+			if (activeBuff instanceof cloakTimeBubble && hero.buff(Swiftthistle.TimeBubble.class) == null) {
+				activeBuff.detach();
+				activeBuff = null;
+			}
+
 			if (activeBuff == null){
 				if (!isEquipped(hero) && !hero.hasTalent(Talent.LIGHT_CLOAK)) GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 				else if (cursed)       GLog.i( Messages.get(this, "cursed") );
 				else if (charge <= 0)  GLog.i( Messages.get(this, "no_charge") );
 				else {
+					boolean j52TimeBubble = hero.hasTalent(Talent.J52);
+					if (j52TimeBubble) {
+						activeBuff = new cloakTimeBubble();
+						activeBuff.attachTo(hero);
+					}
+
 					hero.spend( 1f );
 					hero.busy();
 					Sample.INSTANCE.play(Assets.Sounds.MELD);
@@ -109,8 +121,10 @@ public class CloakOfShadows extends Artifact {
 						Sample.INSTANCE.play(Assets.Sounds.PLATINUM);
 					}
 
-					activeBuff = activeBuff();
-					activeBuff.attachTo(hero);
+					if (!j52TimeBubble) {
+						activeBuff = activeBuff();
+						activeBuff.attachTo(hero);
+					}
 					Talent.onArtifactUsed(Dungeon.hero);
 					hero.sprite.operate(hero.pos);
 				}
@@ -219,18 +233,22 @@ public class CloakOfShadows extends Artifact {
 
 	private static final String STEALTHED = "stealthed";
 	private static final String BUFF = "buff";
+	private static final String TIME_BUBBLE_BUFF = "timeBubbleBuff";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);
-		if (activeBuff != null) bundle.put(BUFF, activeBuff);
+		if (activeBuff != null) {
+			bundle.put(BUFF, activeBuff);
+			bundle.put(TIME_BUBBLE_BUFF, activeBuff instanceof cloakTimeBubble);
+		}
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
 		if (bundle.contains(BUFF)){
-			activeBuff = new cloakStealth();
+			activeBuff = bundle.getBoolean(TIME_BUBBLE_BUFF) ? new cloakTimeBubble() : new cloakStealth();
 			activeBuff.restoreFromBundle(bundle.getBundle(BUFF));
 		}
 	}
@@ -409,6 +427,145 @@ public class CloakOfShadows extends Artifact {
 			super.restoreFromBundle(bundle);
 			
 			turnsToCost = bundle.getInt( TURNSTOCOST );
+		}
+	}
+
+	public class cloakTimeBubble extends ArtifactBuff{
+
+		{
+			type = buffType.POSITIVE;
+		}
+
+		float turnsToCost = 0;
+		private boolean detachingTimeBubble = false;
+
+		@Override
+		public int icon() {
+			return BuffIndicator.NONE;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(1f, 1f, 0);
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return (4f - turnsToCost) / 4f;
+		}
+
+		@Override
+		public String iconTextDisplay() {
+			return Integer.toString((int)(turnsToCost + 0.001f));
+		}
+
+		@Override
+		public String desc() {
+			Swiftthistle.TimeBubble bubble = target == null ? null : target.buff(Swiftthistle.TimeBubble.class);
+			if (bubble != null) {
+				return bubble.desc();
+			}
+			return Messages.get(cloakStealth.class, "desc", turnsToCost);
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			if (super.attachTo(target)) {
+				Buff.affect(target, Swiftthistle.TimeBubble.class).reset(Math.max(1, charge * 4));
+				charge = Math.max(0, charge - 1);
+				if (target instanceof Hero) {
+					gainExp((Hero) target);
+				}
+				turnsToCost = 4;
+				updateQuickslot();
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public void processTime(float time) {
+			turnsToCost -= time;
+
+			while (turnsToCost < -0.001f){
+				if (charge <= 0) {
+					charge = 0;
+					detach();
+					break;
+				} else {
+					charge--;
+					Swiftthistle.TimeBubble bubble = target.buff(Swiftthistle.TimeBubble.class);
+					if (bubble != null) {
+						bubble.bufftime((charge + 1) * 4f + 1f);
+					}
+					if (target instanceof Hero) {
+						gainExp((Hero) target);
+					}
+					turnsToCost = 4;
+				}
+				updateQuickslot();
+			}
+		}
+
+		private void gainExp(Hero hero) {
+			int lvlDiffFromTarget = hero.lvl - (1+level()*2);
+			if (level() >= 7){
+				lvlDiffFromTarget -= level()-6;
+			}
+			if (lvlDiffFromTarget >= 0){
+				exp += Math.round(10f * Math.pow(1.1f, lvlDiffFromTarget));
+			} else {
+				exp += Math.round(10f * Math.pow(0.75f, -lvlDiffFromTarget));
+			}
+
+			if (exp >= (level() + 1) * 50 && level() < levelCap) {
+				upgrade();
+				Catalog.countUse(CloakOfShadows.class);
+				exp -= level() * 50;
+				GLog.p(Messages.get(cloakStealth.class, "levelup"));
+			}
+		}
+
+		@Override
+		public boolean act(){
+			spend(TICK);
+			return true;
+		}
+
+		@Override
+		public void detach() {
+			detachingTimeBubble = true;
+			activeBuff = null;
+			Swiftthistle.TimeBubble bubble = target == null ? null : target.buff(Swiftthistle.TimeBubble.class);
+			if (bubble != null) {
+				bubble.detach();
+			}
+			updateQuickslot();
+			super.detach();
+			detachingTimeBubble = false;
+		}
+
+		public void onTimeBubbleDetached() {
+			if (detachingTimeBubble) {
+				return;
+			}
+			activeBuff = null;
+			updateQuickslot();
+			super.detach();
+		}
+
+		private static final String TURNSTOCOST = "turnsToCost";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(TURNSTOCOST, turnsToCost);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			turnsToCost = bundle.getFloat(TURNSTOCOST);
 		}
 	}
 }

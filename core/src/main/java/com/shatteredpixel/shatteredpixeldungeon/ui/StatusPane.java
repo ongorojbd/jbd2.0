@@ -26,8 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CircleArc;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -49,6 +51,7 @@ public class StatusPane extends Component {
 
 	private NinePatch bg;
 	private Image avatar;
+	private Emitter arrowChoiceAura;
 	private Button heroInfo;
 	public static float talentBlink;
 	private float warning;
@@ -374,6 +377,7 @@ public class StatusPane extends Component {
 		}
 
 		counter.setSweep((1f - Actor.now()%1f)%1f);
+		updateArrowChoiceAura();
 	}
 
 
@@ -403,6 +407,38 @@ public class StatusPane extends Component {
 		emitter.revive();
 		emitter.pos( avatar.center() );
 		emitter.burst( Speck.factory( Speck.STAR ), 12 );
+	}
+
+	private void updateArrowChoiceAura() {
+		if (hasArrowChoiceTalent()) {
+			if (arrowChoiceAura == null) {
+				arrowChoiceAura = (Emitter)recycle(Emitter.class);
+				arrowChoiceAura.revive();
+				arrowChoiceAura.pour(RainbowParticle.BURST, 0.05f);
+			}
+			arrowChoiceAura.pos(avatar.center());
+		} else if (arrowChoiceAura != null) {
+			arrowChoiceAura.on = false;
+			arrowChoiceAura = null;
+		}
+	}
+
+	private boolean hasArrowChoiceTalent() {
+		return Dungeon.hero != null
+				&& (Dungeon.hero.hasTalent(Talent.J51)
+				|| Dungeon.hero.hasTalent(Talent.J52)
+				|| Dungeon.hero.hasTalent(Talent.J53)
+				|| Dungeon.hero.hasTalent(Talent.J54)
+				|| Dungeon.hero.hasTalent(Talent.J55)
+				|| Dungeon.hero.hasTalent(Talent.J56)
+				|| Dungeon.hero.hasTalent(Talent.J57)
+				|| Dungeon.hero.hasTalent(Talent.J59)
+				|| Dungeon.hero.hasTalent(Talent.J60)
+				|| Dungeon.hero.hasTalent(Talent.J61)
+				|| Dungeon.hero.hasTalent(Talent.J62)
+				|| Dungeon.hero.hasTalent(Talent.J63)
+				|| Dungeon.hero.hasTalent(Talent.J64)
+				|| Dungeon.hero.hasTalent(Talent.J65));
 	}
 
 }

@@ -193,7 +193,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 	}
 
 	public String desc(){
-		return Messages.get(this, "desc", 2 + Dungeon.hero.pointsInTalent(Talent.MNEMONIC_PRAYER)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", 2 + Dungeon.hero.pointsInTalent(Talent.MNEMONIC_PRAYER)) + "\n\n" + Messages.get(this, "charge_cost", (int)effectiveChargeUse(Dungeon.hero));
 	}
 
 }

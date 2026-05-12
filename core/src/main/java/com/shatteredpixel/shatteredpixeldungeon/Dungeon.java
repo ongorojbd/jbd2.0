@@ -33,13 +33,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -49,15 +51,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaLevel;
@@ -84,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.NewLastLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ParallelBrawlLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PhantomLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
@@ -93,7 +94,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyEventLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyRestLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyTreasureLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
@@ -474,6 +474,9 @@ public class Dungeon {
                 case 5:
                     level = new HumanVillageBossLevel2();
                     break;
+                case 9:
+                    level = new ArenaBossLevel();
+                    break;
                 case 11:
                 case 12:
                 case 13:
@@ -509,6 +512,9 @@ public class Dungeon {
                     break;
                 case 29:
                     level = new TempleLastLevel();
+                    break;
+                case 31:
+                    level = new ParallelBrawlLevel();
                     break;
                 default:
                     level = new DeadEndLevel();
@@ -603,6 +609,7 @@ public class Dungeon {
                 || Dungeon.level instanceof Emp2Level
                 || Dungeon.level instanceof DioLevel
                 || Dungeon.level instanceof Dio2Level
+                || Dungeon.level instanceof ParallelBrawlLevel
                 || Dungeon.level instanceof ArenaBossLevel
                 || (Dungeon.hero != null && Dungeon.hero.belongings.getItem(Amulet.class) != null)) {
             return false;
@@ -843,6 +850,7 @@ public class Dungeon {
             Scroll.save(bundle);
             Potion.save(bundle);
             Ring.save(bundle);
+            MissileWeapon.saveTimeFreezeContainer(bundle);
 
             Actor.storeNextID(bundle);
 
@@ -911,6 +919,7 @@ public class Dungeon {
         Scroll.restore(bundle);
         Potion.restore(bundle);
         Ring.restore(bundle);
+        MissileWeapon.restoreTimeFreezeContainer(bundle);
 
         quickslot.restorePlaceholders(bundle);
 
@@ -1161,6 +1170,7 @@ public class Dungeon {
                     || ch instanceof WandOfRegrowth.Lotus
                     || ch instanceof SpiritHawk.HawkAlly
                     || ch instanceof SpeedWagon
+                    || ch instanceof SpeedWagon3
                     || ch instanceof Jolyne3
                     || ch instanceof Tendency
                     || ch.buff(PowerOfMany.PowerBuff.class) != null) {

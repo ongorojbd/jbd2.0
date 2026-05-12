@@ -63,7 +63,8 @@ public class StringOcean extends TargetedClericSpell {
 	public boolean canCast(Hero hero) {
 		return super.canCast(hero)
 				&& hero.hasTalent(Talent.JOLYNE_NEW2)
-				&& hero.buff(StringOceanCooldown.class) == null;
+				&& (hero.hasTalent(Talent.J54)
+				|| hero.buff(StringOceanCooldown.class) == null);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class StringOcean extends TargetedClericSpell {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", (int)cooldownDuration(Dungeon.hero)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", (int)cooldownDuration(Dungeon.hero)) + "\n\n" + Messages.get(this, "charge_cost", (int)effectiveChargeUse(Dungeon.hero));
 	}
 
 	@Override
@@ -242,7 +243,9 @@ public class StringOcean extends TargetedClericSpell {
 
 	private static void finishCast(HolyTome tome, Hero hero) {
 		INSTANCE.onSpellCast(tome, hero);
-		FlavourBuff.affect(hero, StringOceanCooldown.class, cooldownDuration(hero));
+		if (!hero.hasTalent(Talent.J54)) {
+			FlavourBuff.affect(hero, StringOceanCooldown.class, cooldownDuration(hero));
+		}
 	}
 
 	private static float cooldownDuration(Hero hero) {

@@ -40,7 +40,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.HuntressArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
@@ -53,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
@@ -92,10 +95,19 @@ public class SpiritBow extends Weapon {
 		super.execute(hero, action);
 		
 		if (action.equals(AC_SHOOT)) {
+
+			if (hero.hasTalent(Talent.J62)) {
+				GLog.w(Messages.get(this, "j62_disabled"));
+				return;
+			}
 			
 			curUser = hero;
 			curItem = this;
-			GameScene.selectCell( shooter );
+			if (hero.hasTalent(Talent.J55)) {
+				knockArrow().cast(hero, hero.pos);
+			} else {
+				GameScene.selectCell( shooter );
+			}
 			
 		}
 	}
@@ -390,7 +402,7 @@ public class SpiritBow extends Weapon {
 						Splash.at( cell, 0x99FF99, 1 );
 					}
 				}
-				if (sniperSpecial && SpiritBow.this.augment != Augment.SPEED) sniperSpecial = false;
+				if (sniperSpecial && SpiritBow.this.augment != Augment.SPEED && !j55MultiShot) sniperSpecial = false;
 			}
 		}
 
@@ -458,6 +470,97 @@ public class SpiritBow extends Weapon {
 
 		int flurryCount = -1;
 		Actor flurryActor = null;
+		boolean j55MultiShot = false;
+
+		private final float[] J55_SHOT_ANGLES = {
+				0f, 22.5f, 45f, 67.5f,
+				90f, 112.5f, 135f, 157.5f,
+				180f, 202.5f, 225f, 247.5f,
+				270f, 292.5f, 315f, 337.5f
+		};
+
+		private int throwPosAtAngle(Hero user, float angle) {
+			int width = Dungeon.level.width();
+			int height = Dungeon.level.height();
+			int x = user.pos % width;
+			int y = user.pos / width;
+			double radians = Math.toRadians(angle);
+			double dx = Math.cos(radians);
+			double dy = Math.sin(radians);
+			double xLimit = dx > 0 ? (width - 1 - x) / dx : dx < 0 ? -x / dx : Double.POSITIVE_INFINITY;
+			double yLimit = dy > 0 ? (height - 1 - y) / dy : dy < 0 ? -y / dy : Double.POSITIVE_INFINITY;
+			double distance = Math.min(xLimit, yLimit);
+			int targetX = (int)Math.round(x + dx * distance);
+			int targetY = (int)Math.round(y + dy * distance);
+			targetX = Math.max(0, Math.min(width - 1, targetX));
+			targetY = Math.max(0, Math.min(height - 1, targetY));
+
+			int targetCell = targetX + targetY * width;
+			Ballistica normal = new Ballistica(user.pos, targetCell, Ballistica.PROJECTILE);
+
+			if (SpiritBow.this.hasEnchant(Projecting.class, user)
+					&& Actor.findChar(normal.collisionPos) == null
+					&& Dungeon.level.solid[normal.collisionPos]) {
+				Ballistica projecting = new Ballistica(user.pos, targetCell, Ballistica.STOP_TARGET | Ballistica.STOP_CHARS);
+				int range = Math.round(4 * Enchantment.genericProcChanceMultiplier(user));
+				if (Dungeon.level.distance(user.pos, projecting.collisionPos)
+						<= Dungeon.level.distance(user.pos, normal.collisionPos) + range) {
+					return projecting.collisionPos;
+				}
+			}
+
+			return normal.collisionPos;
+		}
+
+		private boolean castJ55MultiShot(final Hero user, final int dst) {
+			if (!user.hasTalent(Talent.J55)) return false;
+
+			final int cell = user.pos;
+			SpiritBow.this.targetPos = cell;
+
+			user.sprite.zap(cell);
+			user.busy();
+
+			throwSound();
+
+			final float delay = castDelay(user, cell);
+			final boolean wasSniperSpecial = sniperSpecial;
+			final int[] shotsLeft = {J55_SHOT_ANGLES.length};
+			j55MultiShot = true;
+
+			for (float angle : J55_SHOT_ANGLES) {
+				final int shotCell = throwPosAtAngle(user, angle);
+				final SpiritArrow arrow = knockArrow();
+				arrow.j55MultiShot = true;
+
+				((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
+						reset(user.sprite,
+								shotCell,
+								arrow,
+								new Callback() {
+									@Override
+									public void call() {
+										curUser = user;
+										SpiritBow.this.targetPos = shotCell;
+										arrow.onThrow(shotCell);
+
+										shotsLeft[0]--;
+										if (shotsLeft[0] <= 0) {
+											j55MultiShot = false;
+											if (wasSniperSpecial) sniperSpecial = false;
+											if (user.buff(Talent.LethalMomentumTracker.class) != null) {
+												user.buff(Talent.LethalMomentumTracker.class).detach();
+												user.next();
+											} else {
+												user.spendAndNext(delay);
+											}
+										}
+									}
+								});
+			}
+
+			return true;
+		}
 
 		@Override
 		public void cast(final Hero user, final int dst) {
@@ -542,6 +645,8 @@ public class SpiritBow extends Weapon {
 								});
 				
 			} else {
+
+				if (castJ55MultiShot(user, dst)) return;
 
 				if (user.hasTalent(Talent.SEER_SHOT)
 						&& user.buff(Talent.SeerShotCooldown.class) == null){

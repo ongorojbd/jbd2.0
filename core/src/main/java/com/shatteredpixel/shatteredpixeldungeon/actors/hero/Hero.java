@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hamon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HamonAmplification;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
@@ -112,7 +113,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.AtomParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.D4CParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
@@ -185,6 +188,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willc;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -233,12 +237,14 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOraRushGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTendencyTradeItem;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.Delayer;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
@@ -347,6 +353,10 @@ public class Hero extends Char {
 
         HT = Math.max(1, HT - Spw45.maxHealthPenalty() - Spw22.maxHealthPenalty());
 
+        if (hasTalent(Talent.J51)) {
+            HT = 80;
+        }
+
         if (boostHP) {
             HP += Math.max(HT - curHT, 0);
         }
@@ -442,6 +452,10 @@ public class Hero extends Char {
         }
 
         belongings.restoreFromBundle(bundle);
+
+        if (hasTalent(Talent.J64) && buff(HamonAmplification.class) == null) {
+            Buff.affect(this, HamonAmplification.class);
+        }
         
 
     }
@@ -1649,6 +1663,12 @@ public class Hero extends Char {
             wep = belongings.attackingWeapon();
         }
 
+        if (hasTalent(Talent.J56)
+                && enemy.alignment == Alignment.ENEMY
+                && (invisible > 0 || buff(CloakOfShadows.cloakStealth.class) != null)) {
+            Buff.affect(this, Talent.J56InvisibleAttackTracker.class, 1f).set(enemy.id());
+        }
+
         damage = Talent.onAttackProc(this, enemy, damage);
         damage = Spw47.proc(this, damage);
         damage = Math.round(damage * Spw50.damageMultiplier(this));
@@ -1872,7 +1892,60 @@ public class Hero extends Char {
             default:
         }
 
+        startJ56OraRush();
+
         return damage;
+    }
+
+    private void startJ56OraRush() {
+        if (!hasTalent(Talent.J56)
+                || buff(com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle.TimeBubble.class) == null
+                || buff(Talent.OraRushCooldown.class) != null
+                || WndOraRushGame.instance != null) {
+            return;
+        }
+
+        Buff.affect(this, Talent.OraRushCooldown.class, 25f);
+        interrupt();
+
+        Sword.oraclass();
+
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                if (!isAlive() || WndOraRushGame.instance != null) return;
+
+                GameScene.show(new WndOraRushGame(new WndOraRushGame.ResultCallback() {
+                    @Override
+                    public void call(int punches, int requiredPunches) {
+                        float damageRatio = Math.min(1f, punches / (float)requiredPunches);
+                        if (damageRatio <= 0) return;
+
+                        Sword.oclass();
+                        Sample.INSTANCE.play(Assets.Sounds.BLAST);
+
+                        for (int i = 0; i < Dungeon.level.length(); i++) {
+                            if (!Dungeon.level.solid[i] && Dungeon.level.insideMap(i)) {
+                                WandOfBlastWave.BlastWave.blast(i);
+                            }
+                        }
+
+                        for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                            if (mob.alignment == Alignment.ENEMY
+                                    && mob.isAlive()
+                                    && Dungeon.level.heroFOV[mob.pos]) {
+                                int dmg = Math.max(1, Math.round(mob.HT * damageRatio));
+                                mob.damage(dmg, Hero.this);
+                                if (mob.sprite != null) {
+                                    mob.sprite.showStatus(CharSprite.NEGATIVE, Integer.toString(dmg));
+                                    mob.sprite.flash();
+                                }
+                            }
+                        }
+                    }
+                }));
+            }
+        });
     }
 
     @Override
@@ -2075,7 +2148,9 @@ public class Hero extends Char {
         }
 
         //TODO hero cannot take damage in the vault tester area
-        if (Dungeon.depth > 15 && Dungeon.branch == 1){
+        if (Dungeon.depth > 15
+                && Dungeon.branch == 1
+                && !(Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.ParallelBrawlLevel)){
             dmg = 0;
         }
 
@@ -2639,6 +2714,13 @@ public class Hero extends Char {
     public void die(Object cause) {
 
         curAction = null;
+
+        if (Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.ParallelBrawlLevel) {
+            HP = HT;
+            interrupt();
+            com.shatteredpixel.shatteredpixeldungeon.levels.ParallelBrawlLevel.returnToDepth31(this);
+            return;
+        }
 
         // If Caesar is alive, he sacrifices himself to save the hero
         if (Dungeon.level != null && Dungeon.depth < 46) {

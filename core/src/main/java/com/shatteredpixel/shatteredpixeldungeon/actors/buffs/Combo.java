@@ -29,8 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -91,6 +95,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	public void hit( Char enemy ) {
 
 		count++;
+		if (((Hero)target).hasTalent(Talent.J63)) count++;
 		comboTime = Math.max(comboTime, 5f);
 
 		if (!enemy.isAlive() || (enemy.buff(Corruption.class) != null && enemy.HP == enemy.HT)){
@@ -286,7 +291,9 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	}
 
 	public void useMove(ComboMove move){
+		j63CurseAppliedForMove = false;
 		if (move == ComboMove.PARRY){
+			applyJ63ComboCurse();
 			parryUsed = true;
 			comboTime = 5f;
 			Invisibility.dispel();
@@ -349,6 +356,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 	private static ComboMove moveBeingUsed;
 	private static int furyHitsLeft = 0;
+	private boolean j63CurseAppliedForMove = false;
 
 	private void doAttack(final Char enemy) {
 
@@ -356,6 +364,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 		boolean wasAlly = enemy.alignment == target.alignment;
 		Hero hero = (Hero) target;
+		applyJ63ComboCurse();
 
 		float dmgMulti = 1f;
 		int dmgBonus = 0;
@@ -492,6 +501,40 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			}
 		}
 
+	}
+
+	private void applyJ63ComboCurse() {
+		if (j63CurseAppliedForMove || !(target instanceof Hero)) {
+			return;
+		}
+		Hero hero = (Hero) target;
+		if (!hero.hasTalent(Talent.J63)) {
+			return;
+		}
+		j63CurseAppliedForMove = true;
+
+		KindOfWeapon weapon = hero.belongings.weapon();
+		if (weapon instanceof Weapon) {
+			Weapon.Enchantment oldCurse = ((Weapon) weapon).hasCurseEnchant() ? ((Weapon) weapon).enchantment : null;
+			((Weapon) weapon).enchant(Weapon.Enchantment.randomCurse(oldCurse == null ? null : oldCurse.getClass()));
+			weapon.cursed = true;
+			weapon.cursedKnown = true;
+			weapon.updateQuickslot();
+		}
+
+		Armor armor = hero.belongings.armor();
+		if (armor != null) {
+			Armor.Glyph oldCurse = armor.hasCurseGlyph() ? armor.glyph : null;
+			armor.inscribe(Armor.Glyph.randomCurse(oldCurse == null ? null : oldCurse.getClass()));
+			armor.cursed = true;
+			armor.cursedKnown = true;
+			armor.updateQuickslot();
+		}
+
+		Sample.INSTANCE.play(Assets.Sounds.BURNING);
+		if (hero.sprite != null) {
+			hero.sprite.emitter().burst(ShadowParticle.CURSE, 6);
+		}
 	}
 
 	private CellSelector.Listener listener = new CellSelector.Listener() {

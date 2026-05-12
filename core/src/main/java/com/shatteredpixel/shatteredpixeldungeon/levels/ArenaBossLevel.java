@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DailyChampion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Esidisi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.FakeKars;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GSoldier2;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Game;
@@ -64,6 +66,11 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class ArenaBossLevel extends Level {
+
+    public static boolean dailyChampionArenaRequested = false;
+    public static int dailyChampionReturnDepth = -1;
+    public static int dailyChampionReturnBranch = 0;
+    public static int dailyChampionReturnPos = -2;
 
     {
         color1 = 0x48763c;
@@ -131,14 +138,40 @@ public class ArenaBossLevel extends Level {
     private static final short H = Terrain.EMPTY_WELL;
 
     private boolean bossSpawned = false;
+    private boolean dailyChampionArena = false;
+    private int returnDepth = -1;
+    private int returnBranch = 0;
+    private int returnPos = -2;
     private boolean fakeKarsDefeated = false;
     private boolean zombiesSpawned = false;
     private int zombiesRemaining = 0;
 
     private static final String BOSS_SPAWNED = "boss_spawned";
+    private static final String DAILY_CHAMPION_ARENA = "daily_champion_arena";
+    private static final String RETURN_DEPTH = "return_depth";
+    private static final String RETURN_BRANCH = "return_branch";
+    private static final String RETURN_POS = "return_pos";
     private static final String FAKE_KARS_DEFEATED = "fake_kars_defeated";
     private static final String ZOMBIES_SPAWNED = "zombies_spawned";
     private static final String ZOMBIES_REMAINING = "zombies_remaining";
+
+    public ArenaBossLevel() {
+        consumeDailyChampionArenaRequest();
+    }
+
+    private void consumeDailyChampionArenaRequest() {
+        if (dailyChampionArenaRequested) {
+            dailyChampionArena = true;
+            returnDepth = dailyChampionReturnDepth;
+            returnBranch = dailyChampionReturnBranch;
+            returnPos = dailyChampionReturnPos;
+
+            dailyChampionArenaRequested = false;
+            dailyChampionReturnDepth = -1;
+            dailyChampionReturnBranch = 0;
+            dailyChampionReturnPos = -2;
+        }
+    }
 
     private static final short[] level = {
             W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
@@ -242,6 +275,10 @@ public class ArenaBossLevel extends Level {
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(BOSS_SPAWNED, bossSpawned);
+        bundle.put(DAILY_CHAMPION_ARENA, dailyChampionArena);
+        bundle.put(RETURN_DEPTH, returnDepth);
+        bundle.put(RETURN_BRANCH, returnBranch);
+        bundle.put(RETURN_POS, returnPos);
         bundle.put(FAKE_KARS_DEFEATED, fakeKarsDefeated);
         bundle.put(ZOMBIES_SPAWNED, zombiesSpawned);
         bundle.put(ZOMBIES_REMAINING, zombiesRemaining);
@@ -251,6 +288,11 @@ public class ArenaBossLevel extends Level {
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         bossSpawned = bundle.getBoolean(BOSS_SPAWNED);
+        dailyChampionArena = bundle.getBoolean(DAILY_CHAMPION_ARENA);
+        returnDepth = bundle.contains(RETURN_DEPTH) ? bundle.getInt(RETURN_DEPTH) : -1;
+        returnBranch = bundle.contains(RETURN_BRANCH) ? bundle.getInt(RETURN_BRANCH) : 0;
+        returnPos = bundle.contains(RETURN_POS) ? bundle.getInt(RETURN_POS) : -2;
+        consumeDailyChampionArenaRequest();
         fakeKarsDefeated = bundle.getBoolean(FAKE_KARS_DEFEATED);
         zombiesSpawned = bundle.getBoolean(ZOMBIES_SPAWNED);
         zombiesRemaining = bundle.getInt(ZOMBIES_REMAINING);
@@ -277,7 +319,24 @@ public class ArenaBossLevel extends Level {
 
         Dungeon.observe();
 
-        if (Dungeon.depth == 9) {
+        if (dailyChampionArena) {
+            DailyChampion boss = DailyChampion.createFromTopRanking();
+            if (boss != null) {
+                boss.pos = 15 + WIDTH * 10;
+                boss.state = boss.WANDERING;
+                GameScene.add(boss);
+                boss.beckon(Dungeon.hero.pos);
+
+                if (heroFOV[boss.pos]) {
+                    boss.notice();
+                    boss.sprite.alpha(0);
+                    boss.sprite.parent.add(new AlphaTweener(boss.sprite, 1, 0.1f));
+                }
+            } else {
+                GameScene.show(new WndMessage(Messages.get(ArenaBossLevel.class, "no_champion")));
+                unseal();
+            }
+        } else if (Dungeon.depth == 9) {
             Tboss boss = new Tboss();
             boss.pos = 15 + WIDTH * 10;
             boss.state = boss.WANDERING;
@@ -517,6 +576,13 @@ public class ArenaBossLevel extends Level {
                     GameScene.show(new WndMessage(Messages.get(hero, "tendency2")));
                 }
             });
+            return false;
+        } else if (dailyChampionArena && transition.type == LevelTransition.Type.REGULAR_EXIT && returnDepth > 0) {
+            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+            InterlevelScene.returnDepth = returnDepth;
+            InterlevelScene.returnBranch = returnBranch;
+            InterlevelScene.returnPos = returnPos;
+            Game.switchScene(InterlevelScene.class);
             return false;
         } else {
             return super.activateTransition(hero, transition);

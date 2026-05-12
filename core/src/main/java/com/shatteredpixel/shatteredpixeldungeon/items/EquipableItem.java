@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -112,7 +113,11 @@ public abstract class EquipableItem extends Item {
 
 	public static void equipCursed( Hero hero ) {
 		hero.sprite.emitter().burst( ShadowParticle.CURSE, 6 );
-		Sample.INSTANCE.play( Assets.Sounds.CURSED );
+		if (!hero.hasTalent(Talent.J63)) {
+			Sample.INSTANCE.play( Assets.Sounds.CURSED );
+		} else {
+			Sample.INSTANCE.play( Assets.Sounds.BURNING );
+		}
 	}
 
 	protected float timeToEquip( Hero hero ) {
@@ -125,7 +130,8 @@ public abstract class EquipableItem extends Item {
 
 		if (cursed
 				&& hero.buff(MagicImmune.class) == null
-				&& (!hero.belongings.lostInventory() || keptThroughLostInventory())) {
+				&& (!hero.belongings.lostInventory() || keptThroughLostInventory())
+				&& !hero.hasTalent(Talent.J63)) {
 			GLog.w(Messages.get(EquipableItem.class, "unequip_cursed"));
 			return false;
 		}

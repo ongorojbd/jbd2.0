@@ -105,7 +105,7 @@ public class ShieldOfLight extends TargetedClericSpell {
 	public String desc() {
 		int min = 1 + Dungeon.hero.pointsInTalent(Talent.SHIELD_OF_LIGHT);
 		int max = 2*min;
-		return Messages.get(this, "desc", min, max) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", min, max) + "\n\n" + Messages.get(this, "charge_cost", (int)effectiveChargeUse(Dungeon.hero));
 	}
 
 	public static class ShieldOfLightTracker extends FlavourBuff {

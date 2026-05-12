@@ -49,12 +49,7 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.RectF;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class AboutScene extends PixelScene {
 
@@ -99,9 +94,7 @@ public class AboutScene extends PixelScene {
         h -= insets.top + insets.bottom;
 
         // 날짜 선택 (오늘 날짜)
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
-        format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        currentDate = format.format(new Date(Game.realTime));
+        currentDate = Ranking.currentDailyDate();
 
         // 제목
         Image titleIcon = Icons.CALENDAR.get();

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShrSprite;
@@ -85,9 +86,11 @@ public class ShrBomb extends Mob {
         // 중심 위치 (자신의 위치)
         Char centerChar = findChar(pos);
         if (centerChar != null && centerChar.isAlive()) {
-            int damage = calculateExplosionDamage();
-            damage = Math.max(0, damage - centerChar.drRoll());
-            centerChar.damage(damage, Bomb.class);
+            if (centerChar != Dungeon.hero || Dungeon.hero.belongings.getItem(Jojo2.class) == null) {
+                int damage = calculateExplosionDamage();
+                damage = Math.max(0, damage - centerChar.drRoll());
+                centerChar.damage(damage, Bomb.class);
+            }
         }
 
         // 주변 8방향
@@ -95,11 +98,13 @@ public class ShrBomb extends Mob {
             int targetPos = pos + PathFinder.NEIGHBOURS8[i];
             Char ch = findChar(targetPos);
             if (ch != null && ch.isAlive()) {
-                int damage = calculateExplosionDamage();
-                damage = Math.max(0, damage - ch.drRoll());
-                ch.damage(damage, Bomb.class);
-                if (ch == Dungeon.hero && !ch.isAlive()) {
-                    Dungeon.fail(getClass());
+                if (ch != Dungeon.hero || Dungeon.hero.belongings.getItem(Jojo2.class) == null) {
+                    int damage = calculateExplosionDamage();
+                    damage = Math.max(0, damage - ch.drRoll());
+                    ch.damage(damage, Bomb.class);
+                    if (ch == Dungeon.hero && !ch.isAlive()) {
+                        Dungeon.fail(getClass());
+                    }
                 }
             }
             

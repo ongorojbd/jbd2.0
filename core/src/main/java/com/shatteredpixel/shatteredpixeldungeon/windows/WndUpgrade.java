@@ -370,7 +370,7 @@ public class WndUpgrade extends Window {
 		}
 
 		// various messages relating to enchantments and curses
-		if (!(upgrader instanceof MagicalInfusion)) {
+		if (!(upgrader instanceof MagicalInfusion) && !(upgrader instanceof Spw9Upgrader)) {
 
 			if ((toUpgrade instanceof Weapon && ((Weapon) toUpgrade).hasGoodEnchant())
 					|| (toUpgrade instanceof Armor && ((Armor) toUpgrade).hasGoodGlyph())) {

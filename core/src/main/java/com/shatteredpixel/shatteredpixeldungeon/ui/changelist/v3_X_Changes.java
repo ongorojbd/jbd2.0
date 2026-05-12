@@ -32,10 +32,12 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Bt2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DArbySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DannySprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GSoldierSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HermitCrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
@@ -43,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JohnnySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RollerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkeletonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
@@ -61,6 +64,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_6_Changes(changeInfos);
         add_v3_5_Changes(changeInfos);
         add_v3_4_Changes(changeInfos);
         add_v3_3_Changes(changeInfos);
@@ -77,6 +81,44 @@ public class v3_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
                 "다음 주요 업데이트는 오시리스신 퀘스트 변경으로, 기존과 차별화된 독특한 퀘스트 방식이 될 예정입니다."));
+    }
+
+    public static void add_v3_6_Changes(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("v3.0g", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.VANILLA_CAKE), "7주년 기념 업데이트",
+                "이번 업데이트는 죠죠의 기묘한 던전 출시 7주년을 기념하여 출시되었습니다.\n\n" +
+                            "지금 바로 게임 내에서 기간 한정 7주년 기념 특별 케이크를 만나보세요!"));
+        changes.addButton(new ChangeButton(new Image(new PucciSprite()), "신규 엔드 컨텐츠",
+                "천국에 도달한 DIO를 쓰러뜨린 뒤, 던전 31층에서 퍼니 밸런타인을 통해 _평행세계 난투_에 입장할 수 있습니다.\n\n" +
+                        "평행세계 난투에서는 최근 일일 랭킹 1위 기록을 바탕으로 소환된 평행세계의 플레이어들이 끝없이 등장합니다. 실제 랭커의 닉네임, 직업, 장비가 반영되며, 쓰러뜨릴수록 점점 더 강력한 상대가 나타납니다.\n\n" +
+                        "전투에서 패배하더라도 모험은 끝나지 않습니다. 한계까지 겨루고, 평행세계의 플레이어들 사이에서 자신의 힘을 시험해 보세요."));
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.J51), "보조 직업 대격변!",
+                "이번 업데이트의 메인 컨텐츠로, 파격적인\n보조 직업 전용 신규 특성 _화살의 선택_이 추가되었습니다.\n\n" +
+                        "화살의 선택 특성을 활성화하면 해당 보조 직업의 핵심 장비, 능력, 전투 방식이 크게 변화하며, 기존과는 전혀 다른 빌드와 플레이 흐름을 경험할 수 있습니다.\n\n" +
+                        "시간을 멈추고 투척 무기를 공중에 고정하거나, 능력을 무작위로 각성하거나, 황금의 회전과 파문을 새로운 방식으로 다루는 등, 화살의 선택 특성은 강력하지만, 때로는 위험한 대가를 요구합니다.\n\n" +
+                        "당신은 과연 화살의 힘을 지배할 수 있을까요?\n\n" +
+                        "화살의 선택 관련 신규 뱃지인 _선택받은 자_ 뱃지도 추가되었습니다!"));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), "버그 수정",
+                "- 전투조류 던전에서 일부 아이템/캐릭터 능력으로 위층으로 올라갈 수 있었던 버그가 수정되었습니다.\n\n" +
+                        "- 전투조류 던전에서 로긴즈 & 메시나가 도감에 등록되지 않았던 버그가 수정되었습니다.\n\n" +
+                        "- 전투조류 던전에서 일정 확률로 리사리사가 같이 동행하지 않았던 버그가 수정되었습니다.\n\n" +
+                        "- 전투조류 던전에서 범위 보상을 골라도 최대 체력이 감소하지 않았던 버그가 수정되었습니다.\n\n" +
+                        "- 전투조류 만화책을 보유하고 있어도 제 2의 폭탄으로 피해를 입을 수 있었던 버그가 수정되었습니다."));
+        changes.addButton(new ChangeButton(new Image(new GSoldierSprite()), "조우 층 변경",
+                "전투조류 던전의 조우 층에서 등장하는 적이 기존 4마리에서 3마리로 감소합니다."));
     }
 
     public static void add_v3_5_Changes(ArrayList<ChangeInfo> changeInfos) {
@@ -102,7 +144,7 @@ public class v3_X_Changes {
                         "완전생물은 스탠드 구현의 화살 사용 시,\n_2 전투조류 포인트_를 소모하여 선택할 수 있습니다."));
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HS), "신규 보조 직업: 천국에 도달한 자",
                 "모든 캐릭터가 선택 가능한 공용 보조 직업인 _천국에 도달한 자_가 추가되었습니다!\n\n" +
-                        "천국에 도달한 자는 스탠드 구현의 화살 사용 시, _2 클리어 포인트_를 소모하여 선택할 수 있습니다."));
+                        "천국에 도달한 자는 스탠드 구현의 화살 사용 시, _5 클리어 포인트_를 소모하여 선택할 수 있습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);

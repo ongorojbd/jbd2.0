@@ -99,6 +99,8 @@ public abstract class Wand extends Item {
 
     public boolean curseInfusionBonus = false;
     public int resinBonus = 0;
+    private ZapSelectionListener zapSelectionListener = null;
+    private ZapUsedListener zapUsedListener = null;
 
     private static final int USES_TO_ID = 10;
     private float usesLeftToID = USES_TO_ID;
@@ -213,30 +215,36 @@ public abstract class Wand extends Item {
     }
 
     protected void wandProc(Char target, int chargesUsed) {
-        wandProc(target, buffedLvl(), chargesUsed);
+        wandProc(target, buffedLvl(), chargesUsed, this);
     }
 
     //TODO Consider externalizing char awareness buff
     protected static void wandProc(Char target, int wandLevel, int chargesUsed) {
+        wandProc(target, wandLevel, chargesUsed, null);
+    }
+
+    protected static void wandProc(Char target, int wandLevel, int chargesUsed, Wand sourceWand) {
         if (Dungeon.hero.hasTalent(Talent.ARCANE_VISION)) {
             int dur = 5 + 5 * Dungeon.hero.pointsInTalent(Talent.ARCANE_VISION);
             Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, dur).charID = target.id();
         }
 
-        if (target != Dungeon.hero &&
+        if (target != Dungeon.hero
+                && target.alignment == Char.Alignment.ENEMY
+                && Dungeon.hero.hasTalent(Talent.J64)
+                && sourceWand != null
+                && sourceWand.cursed) {
+            SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + wandLevel);
+
+            Sample.INSTANCE.play(Assets.Sounds.BURNING);
+
+        } else if (target != Dungeon.hero &&
                 Dungeon.hero.subClass == HeroSubClass.WARLOCK &&
                 //standard 1 - 0.92^x chance, plus 7%. Starts at 15%
                 Random.Float() > (Math.pow(0.92f, (wandLevel * chargesUsed) + 1) - 0.07f)) {
             SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + wandLevel);
 
-            if (SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof MageArmor) {
-
-            } else {
-                if (Random.Int(3) == 0) {
-                    Sample.INSTANCE.play(Assets.Sounds.JOSEPH8);
-                }
-            }
-
+            Sample.INSTANCE.play(Assets.Sounds.BURNING);
         }
 
         if (Dungeon.hero.subClass == HeroSubClass.PRIEST && target.buff(GuidingLight.Illuminated.class) != null) {
@@ -568,6 +576,28 @@ public abstract class Wand extends Item {
         updateQuickslot();
 
         curUser.spendAndNext(TIME_TO_ZAP);
+
+        if (zapUsedListener != null) {
+            ZapUsedListener listener = zapUsedListener;
+            zapUsedListener = null;
+            listener.onUsed(this, curUser);
+        }
+    }
+
+    public void setZapSelectionListener(ZapSelectionListener listener) {
+        zapSelectionListener = listener;
+    }
+
+    public void setZapUsedListener(ZapUsedListener listener) {
+        zapUsedListener = listener;
+    }
+
+    public interface ZapSelectionListener {
+        Wand onSelect(Wand wand, Hero user, Integer target);
+    }
+
+    public interface ZapUsedListener {
+        void onUsed(Wand wand, Hero user);
     }
 
     @Override
@@ -694,183 +724,208 @@ public abstract class Wand extends Item {
 
         @Override
         public void onSelect(Integer target) {
+            //FIXME this safety check shouldn't be necessary
+            //it would be better to eliminate the curItem static variable.
+            Wand curWand;
+            if (curItem instanceof Wand) {
+                curWand = (Wand) Wand.curItem;
+            } else {
+                return;
+            }
 
-            if (target != null) {
+            if (target == null) {
+                curWand.zapSelectionListener = null;
+                return;
+            }
 
-                //FIXME this safety check shouldn't be necessary
-                //it would be better to eliminate the curItem static variable.
-                final Wand curWand;
-                if (curItem instanceof Wand) {
-                    curWand = (Wand) Wand.curItem;
-                } else {
-                    return;
-                }
+            Ballistica shot = new Ballistica(curUser.pos, target, curWand.collisionProperties(target));
+            int cell = shot.collisionPos;
 
-                final Ballistica shot = new Ballistica(curUser.pos, target, curWand.collisionProperties(target));
-                int cell = shot.collisionPos;
+            if (target == curUser.pos || cell == curUser.pos) {
+                curWand.zapSelectionListener = null;
+                if (target == curUser.pos && curUser.hasTalent(Talent.SHIELD_BATTERY)) {
 
-                if (target == curUser.pos || cell == curUser.pos) {
-                    if (target == curUser.pos && curUser.hasTalent(Talent.SHIELD_BATTERY)) {
-
-                        if (curUser.buff(MagicImmune.class) != null) {
-                            GLog.w(Messages.get(Wand.class, "no_magic"));
-                            return;
-                        }
-
-                        if (curWand.curCharges == 0) {
-                            GLog.w(Messages.get(Wand.class, "fizzles"));
-                            return;
-                        }
-
-                        float shield = curUser.HT * (0.04f * curWand.curCharges);
-                        if (curUser.pointsInTalent(Talent.SHIELD_BATTERY) == 2) shield *= 1.5f;
-                        Buff.affect(curUser, Barrier.class).setShield(Math.round(shield));
-                        curUser.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(Math.round(shield)), FloatingText.SHIELDING);
-                        curWand.curCharges = 0;
-                        curUser.sprite.operate(curUser.pos);
-                        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-                        ScrollOfRecharging.charge(curUser);
-                        updateQuickslot();
-                        curUser.spendAndNext(Actor.TICK);
+                    if (curUser.buff(MagicImmune.class) != null) {
+                        GLog.w(Messages.get(Wand.class, "no_magic"));
                         return;
                     }
-                    GLog.i(Messages.get(Wand.class, "self_target"));
+
+                    if (curWand.curCharges == 0) {
+                        GLog.w(Messages.get(Wand.class, "fizzles"));
+                        return;
+                    }
+
+                    float shield = curUser.HT * (0.04f * curWand.curCharges);
+                    if (curUser.pointsInTalent(Talent.SHIELD_BATTERY) == 2) shield *= 1.5f;
+                    Buff.affect(curUser, Barrier.class).setShield(Math.round(shield));
+                    curUser.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(Math.round(shield)), FloatingText.SHIELDING);
+                    curWand.curCharges = 0;
+                    curUser.sprite.operate(curUser.pos);
+                    Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+                    ScrollOfRecharging.charge(curUser);
+                    updateQuickslot();
+                    curUser.spendAndNext(Actor.TICK);
                     return;
                 }
+                GLog.i(Messages.get(Wand.class, "self_target"));
+                return;
+            }
 
-                curUser.sprite.zap(cell);
+            if (!curWand.tryToZap(curUser, target)) {
+                curWand.zapSelectionListener = null;
+                return;
+            }
 
-                //attempts to target the cell aimed at if something is there, otherwise targets the collision pos.
-                if (Actor.findChar(target) != null)
-                    QuickSlotButton.target(Actor.findChar(target));
-                else
-                    QuickSlotButton.target(Actor.findChar(cell));
+            if (curWand.zapSelectionListener != null) {
+                ZapSelectionListener listener = curWand.zapSelectionListener;
+                curWand.zapSelectionListener = null;
+                Wand replacement = listener.onSelect(curWand, curUser, target);
+                if (replacement != null) {
+                    curWand = replacement;
+                    curItem = replacement;
+                    shot = new Ballistica(curUser.pos, target, curWand.collisionProperties(target));
+                    cell = shot.collisionPos;
+                }
+            }
 
-                if (curWand.tryToZap(curUser, target)) {
+            final Wand activeWand = curWand;
+            final Ballistica finalShot = shot;
+            final int finalCell = cell;
+            final boolean j64CursedWand = curUser.hasTalent(Talent.J64) && activeWand.cursed;
 
-                    curUser.busy();
+            curUser.sprite.zap(cell);
 
-                    if (curUser.heroClass == HeroClass.MAGE && !curUser.belongings.contains(curWand)) {
+            //attempts to target the cell aimed at if something is there, otherwise targets the collision pos.
+            if (Actor.findChar(target) != null)
+                QuickSlotButton.target(Actor.findChar(target));
+            else
+                QuickSlotButton.target(Actor.findChar(cell));
 
-                        if (SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof MageArmor) {
-                            if (Random.Int(6) == 0) {
-                                switch (Random.Int(6)) {
-                                    case 0:
-                                        Sample.INSTANCE.play(Assets.Sounds.CE1);
-                                        break;
-                                    case 1:
-                                        Sample.INSTANCE.play(Assets.Sounds.CE2);
-                                        break;
-                                    case 2:
-                                        Sample.INSTANCE.play(Assets.Sounds.CE3);
-                                        break;
-                                    case 3:
-                                        Sample.INSTANCE.play(Assets.Sounds.CE4);
-                                        break;
-                                    case 4:
-                                        Sample.INSTANCE.play(Assets.Sounds.CE5);
-                                        break;
-                                    case 5:
-                                        Sample.INSTANCE.play(Assets.Sounds.CE6);
-                                        break;
-                                }
-                            }
-                        } else {
-                            if (Random.Int(6) == 0) {
-                                switch (Random.Int(6)) {
-                                    case 0:
-                                        Sample.INSTANCE.play(Assets.Sounds.JOSEPH1);
-                                        break;
-                                    case 1:
-                                        Sample.INSTANCE.play(Assets.Sounds.JOSEPH2);
-                                        break;
-                                    case 2:
-                                        Sample.INSTANCE.play(Assets.Sounds.JOSEPH3);
-                                        break;
-                                    case 3:
-                                        Sample.INSTANCE.play(Assets.Sounds.JOSEPH4);
-                                        break;
-                                    case 4:
-                                        Sample.INSTANCE.play(Assets.Sounds.JOSEPH5);
-                                        break;
-                                    case 5:
-                                        Sample.INSTANCE.play(Assets.Sounds.JOSEPH6);
-                                        break;
-                                }
-                            }
+            curUser.busy();
+
+            if (curUser.heroClass == HeroClass.MAGE && !curUser.belongings.contains(activeWand)) {
+
+                if (SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof MageArmor) {
+                    if (Random.Int(6) == 0) {
+                        switch (Random.Int(6)) {
+                            case 0:
+                                Sample.INSTANCE.play(Assets.Sounds.CE1);
+                                break;
+                            case 1:
+                                Sample.INSTANCE.play(Assets.Sounds.CE2);
+                                break;
+                            case 2:
+                                Sample.INSTANCE.play(Assets.Sounds.CE3);
+                                break;
+                            case 3:
+                                Sample.INSTANCE.play(Assets.Sounds.CE4);
+                                break;
+                            case 4:
+                                Sample.INSTANCE.play(Assets.Sounds.CE5);
+                                break;
+                            case 5:
+                                Sample.INSTANCE.play(Assets.Sounds.CE6);
+                                break;
                         }
                     }
-
-                    //backup barrier logic
-                    //This triggers before the wand zap, mostly so the barrier helps vs skeletons
-                    if (curUser.hasTalent(Talent.BACKUP_BARRIER)
-                            && curWand.curCharges == curWand.chargesPerCast()
-                            && curWand.charger != null && curWand.charger.target == curUser) {
-
-                        //regular. If hero owns wand but it isn't in belongings it must be in the staff
-                        if (curUser.heroClass == HeroClass.MAGE && !curUser.belongings.contains(curWand)) {
-                            //grants 3/5 shielding
-                            int shieldToGive = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER);
-                            Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
-                            Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
-
-                            //metamorphed. Triggers if wand is highest level hero has
-                        } else if (curUser.heroClass != HeroClass.MAGE) {
-                            boolean highest = true;
-                            for (Item i : curUser.belongings.getAllItems(Wand.class)) {
-                                if (i.level() > curWand.level()) {
-                                    highest = false;
-                                }
-                            }
-                            if (highest) {
-                                //grants 3/5 shielding
-                                int shieldToGive = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER);
-                                Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
-                                Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
-                            }
+                } else {
+                    if (Random.Int(6) == 0) {
+                        switch (Random.Int(6)) {
+                            case 0:
+                                Sample.INSTANCE.play(Assets.Sounds.JOSEPH1);
+                                break;
+                            case 1:
+                                Sample.INSTANCE.play(Assets.Sounds.JOSEPH2);
+                                break;
+                            case 2:
+                                Sample.INSTANCE.play(Assets.Sounds.JOSEPH3);
+                                break;
+                            case 3:
+                                Sample.INSTANCE.play(Assets.Sounds.JOSEPH4);
+                                break;
+                            case 4:
+                                Sample.INSTANCE.play(Assets.Sounds.JOSEPH5);
+                                break;
+                            case 5:
+                                Sample.INSTANCE.play(Assets.Sounds.JOSEPH6);
+                                break;
                         }
                     }
+                }
+            }
 
-                    if (curWand.cursed) {
-                        if (!curWand.cursedKnown) {
-                            GLog.n(Messages.get(Wand.class, "curse_discover", curWand.name()));
+            //backup barrier logic
+            //This triggers before the wand zap, mostly so the barrier helps vs skeletons
+            if (curUser.hasTalent(Talent.BACKUP_BARRIER)
+                    && activeWand.curCharges == activeWand.chargesPerCast()
+                    && activeWand.charger != null && activeWand.charger.target == curUser) {
+
+                //regular. If hero owns wand but it isn't in belongings it must be in the staff
+                if (curUser.heroClass == HeroClass.MAGE && !curUser.belongings.contains(activeWand)) {
+                    //grants 3/5 shielding
+                    int shieldToGive = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER);
+                    Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
+                    Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
+
+                    //metamorphed. Triggers if wand is highest level hero has
+                } else if (curUser.heroClass != HeroClass.MAGE) {
+                    boolean highest = true;
+                    for (Item i : curUser.belongings.getAllItems(Wand.class)) {
+                        if (i.level() > activeWand.level()) {
+                            highest = false;
                         }
-                        CursedWand.cursedZap(curWand,
-                                curUser,
-                                new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT),
-                                new Callback() {
-                                    @Override
-                                    public void call() {
-                                        curWand.wandUsed();
-                                    }
-                                });
-                    } else {
-                        curWand.fx(shot, new Callback() {
+                    }
+                    if (highest) {
+                        //grants 3/5 shielding
+                        int shieldToGive = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER);
+                        Buff.affect(Dungeon.hero, Barrier.class).setShield(shieldToGive);
+                        Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
+                    }
+                }
+            }
+
+            if (activeWand.cursed) {
+                if (!activeWand.cursedKnown) {
+                    GLog.n(Messages.get(Wand.class, "curse_discover", activeWand.name()));
+                }
+                CursedWand.cursedZap(activeWand,
+                        curUser,
+                        new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT),
+                        new Callback() {
+                            @Override
                             public void call() {
-                                curWand.onZap(shot);
-                                if (Random.Float() < WondrousResin.extraCurseEffectChance()) {
-                                    WondrousResin.forcePositive = true;
-                                    CursedWand.cursedZap(curWand,
-                                            curUser,
-                                            new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT), new Callback() {
-                                                @Override
-                                                public void call() {
-                                                    WondrousResin.forcePositive = false;
-                                                    curWand.wandUsed();
-                                                }
-                                            });
-                                } else {
-                                    curWand.wandUsed();
+                                if (j64CursedWand) {
+                                    activeWand.applyJ64SoulMark(target, finalCell);
                                 }
+                                activeWand.wandUsed();
+                                activeWand.applyJ64CurseAfterUse(curUser);
                             }
                         });
-
+            } else {
+                activeWand.fx(finalShot, new Callback() {
+                    public void call() {
+                        activeWand.onZap(finalShot);
+                        if (Random.Float() < WondrousResin.extraCurseEffectChance()) {
+                            WondrousResin.forcePositive = true;
+                            CursedWand.cursedZap(activeWand,
+                                    curUser,
+                                    new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT), new Callback() {
+                                        @Override
+                                        public void call() {
+                                            WondrousResin.forcePositive = false;
+                                            activeWand.wandUsed();
+                                            activeWand.applyJ64CurseAfterUse(curUser);
+                                        }
+                                    });
+                        } else {
+                            activeWand.wandUsed();
+                            activeWand.applyJ64CurseAfterUse(curUser);
+                        }
                     }
-                    curWand.cursedKnown = true;
-
-                }
+                });
 
             }
+            activeWand.cursedKnown = true;
         }
 
         @Override
@@ -878,6 +933,28 @@ public abstract class Wand extends Item {
             return Messages.get(Wand.class, "prompt");
         }
     };
+
+    private void applyJ64SoulMark(int target, int cell) {
+        Char ch = Actor.findChar(target);
+        if (ch == null) {
+            ch = Actor.findChar(cell);
+        }
+        if (ch != null && ch != Dungeon.hero && ch.alignment == Char.Alignment.ENEMY) {
+            SoulMark.prolong(ch, SoulMark.class, SoulMark.DURATION + buffedLvl());
+        }
+    }
+
+    private void applyJ64CurseAfterUse(Hero user) {
+        if (user != null
+                && user.hasTalent(Talent.J64)
+                && user.heroClass == HeroClass.MAGE
+                && !user.belongings.contains(this)
+                && !cursed) {
+            cursed = true;
+            cursedKnown = true;
+            updateQuickslot();
+        }
+    }
 
     public class Charger extends Buff {
 

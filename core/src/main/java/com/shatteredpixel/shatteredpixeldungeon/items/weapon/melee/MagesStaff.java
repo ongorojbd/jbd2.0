@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MageArmor;
@@ -62,12 +63,14 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
 public class MagesStaff extends MeleeWeapon {
 
     private Wand wand;
+    private Wand pendingJ61Wand;
 
     public static final String AC_IMBUE = "IMBUE";
     public static final String AC_ZAP = "ZAP";
@@ -154,10 +157,69 @@ public class MagesStaff extends MeleeWeapon {
                 return;
             }
 
-            if (cursed || hasCurseEnchant()) wand.cursed = true;
+            if (hero.hasTalent(Talent.J61)) {
+                final Wand nextWand = pendingJ61Wand;
+                wand.setZapSelectionListener(new Wand.ZapSelectionListener() {
+                    @Override
+                    public Wand onSelect(Wand oldWand, Hero user, Integer target) {
+                        if (target == null || nextWand == null) {
+                            return null;
+                        }
+                        return transformJ61Wand(user, nextWand);
+                    }
+                });
+                attachJ61UsedListener(wand);
+            }
+
+            if (cursed || hasCurseEnchant() || (hero.hasTalent(Talent.J64) && wand.cursed)) wand.cursed = true;
             else wand.cursed = false;
             wand.execute(hero, AC_ZAP);
         }
+    }
+
+    private Wand transformJ61Wand(Hero hero, Wand newWand) {
+        int curCharges = wand.curCharges;
+        float partialCharge = wand.partialCharge;
+        wand.stopCharging();
+
+        newWand.cursed = false;
+        newWand.cursedKnown = true;
+        newWand.identify();
+        wand = newWand;
+        updateWand(false);
+        wand.curCharges = Math.min(curCharges, wand.maxCharges);
+        wand.partialCharge = partialCharge;
+        applyWandChargeBuff(hero);
+        updateQuickslot();
+        if (cursed || hasCurseEnchant()) wand.cursed = true;
+        else wand.cursed = false;
+        pendingJ61Wand = null;
+        attachJ61UsedListener(wand);
+        return wand;
+    }
+
+    private Wand randomJ61Wand(Class<? extends Wand> oldWandClass) {
+        Wand newWand;
+        do {
+            int index = Random.Int(Generator.Category.WAND.classes.length);
+            newWand = (Wand) Reflection.newInstance(Generator.Category.WAND.classes[index]);
+        } while (newWand.getClass() == oldWandClass);
+        newWand.cursed = false;
+        newWand.cursedKnown = true;
+        newWand.identify();
+        return newWand;
+    }
+
+    private void attachJ61UsedListener(Wand targetWand) {
+        targetWand.setZapUsedListener(new Wand.ZapUsedListener() {
+            @Override
+            public void onUsed(Wand usedWand, Hero user) {
+                if (user != null && user.hasTalent(Talent.J61) && wand != null) {
+                    pendingJ61Wand = randomJ61Wand(wand.getClass());
+                    GLog.p(Messages.get(MagesStaff.this, "j61_transform", pendingJ61Wand.name()));
+                }
+            }
+        });
     }
 
     @Override
@@ -378,17 +440,20 @@ public class MagesStaff extends MeleeWeapon {
     }
 
     private static final String WAND = "wand";
+    private static final String PENDING_J61_WAND = "pending_j61_wand";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(WAND, wand);
+        bundle.put(PENDING_J61_WAND, pendingJ61Wand);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
         wand = (Wand) bundle.get(WAND);
+        pendingJ61Wand = (Wand) bundle.get(PENDING_J61_WAND);
         if (wand != null) {
             wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
         }

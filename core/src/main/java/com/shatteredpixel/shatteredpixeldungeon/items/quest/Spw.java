@@ -970,6 +970,7 @@ public class Spw extends Item {
                     spw20++;
                 } else if (item instanceof Spw22) {
                     spw22++;
+                    hero.updateHT(false);
                 } else if (item instanceof Spw23) {
                     spw23++;
                 } else if (item instanceof Spw24) {

@@ -65,5 +65,16 @@ public abstract class RankingService {
 	public abstract void getDailyRankings(String date, boolean useMetered, 
 	                                      RankingResultCallback callback);
 
+	/**
+	 * Get rank-1 entries for each day in [startDate, endDate]
+	 * @param startDate Date string in format "yyyy-MM-dd"
+	 * @param endDate   Date string in format "yyyy-MM-dd"
+	 * @param useMetered Whether to use metered network
+	 * @param callback Callback — returns one entry per day (the day's top scorer)
+	 */
+	public abstract void getMonthlyTopRankings(String startDate, String endDate,
+	                                           boolean useMetered,
+	                                           RankingResultCallback callback);
+
 }
 

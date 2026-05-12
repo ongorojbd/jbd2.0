@@ -467,6 +467,9 @@ public class Armor extends EquipableItem {
 			if (enhancedArmor != null && isEquipped(Dungeon.hero)) {
 				lvl += enhancedArmor.getEnhancementLevel();
 			}
+			if (isEquipped(Dungeon.hero) && Dungeon.hero.hasTalent(Talent.J63) && (cursed || hasCurseGlyph())) {
+				lvl++;
+			}
 		}
 
 		return lvl;

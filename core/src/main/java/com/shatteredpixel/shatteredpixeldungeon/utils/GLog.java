@@ -37,12 +37,14 @@ public class GLog {
 	public static final String NEW_LINE	    = "\n";
 	
 	public static Signal<String> update = new Signal<>();
+	public static boolean suppressed = false;
 
 	public static void newLine(){
 		update.dispatch( NEW_LINE );
 	}
 	
 	public static void i( String text, Object... args ) {
+		if (suppressed) return;
 		
 		if (args.length > 0) {
 			text = Messages.format( text, args );

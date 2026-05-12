@@ -60,7 +60,7 @@ public class Smite extends TargetedClericSpell {
 	public String desc() {
 		int min = 5 + Dungeon.hero.lvl/2;
 		int max = 10 + Dungeon.hero.lvl;
-		return Messages.get(this, "desc", min, max) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", min, max) + "\n\n" + Messages.get(this, "charge_cost", (int)effectiveChargeUse(Dungeon.hero));
 	}
 
 	@Override

@@ -253,6 +253,7 @@ public class ItemSpriteSheet {
     public static final int RAPIER = WEP_TIER1 + 3;
     public static final int DAGGER = WEP_TIER1 + 4;
     public static final int MAGES_STAFF = WEP_TIER1 + 5;
+    public static final int RAPIER2 = WEP_TIER1 + 6;
 
     static {
         assignItemRect(WORN_SHORTSWORD, 16, 16);
@@ -261,6 +262,7 @@ public class ItemSpriteSheet {
         assignItemRect(RAPIER, 13, 14);
         assignItemRect(DAGGER, 10, 13);
         assignItemRect(MAGES_STAFF, 15, 16);
+        assignItemRect(RAPIER2, 13, 14);
     }
 
     private static final int WEP_TIER2 = xy(9, 7);   //8 slots
@@ -627,7 +629,7 @@ public class ItemSpriteSheet {
         assignItemRect(MIMIC_TOOTH, 14, 14);
         assignItemRect(WONDROUS_RESIN, 16, 16);
         assignItemRect(EYE_OF_NEWT, 16, 16);
-        assignItemRect(SALT_CUBE, 13, 16);
+        assignItemRect(SALT_CUBE, 16, 16);
         assignItemRect(BLOOD_VIAL, 14, 14);
         assignItemRect(OBLIVION_SHARD, 15, 11);
         assignItemRect(CHAOTIC_CENSER, 15, 15);
@@ -871,7 +873,7 @@ public class ItemSpriteSheet {
         assignItemRect(RAINBOW_POTION, 16, 14);
         assignItemRect(SHATTERED_CAKE, 16, 10);
         assignItemRect(PUMPKIN_PIE, 16, 11);
-        assignItemRect(VANILLA_CAKE, 15, 11);
+        assignItemRect(VANILLA_CAKE, 16, 15);
         assignItemRect(CANDY_CANE, 15, 16);
         assignItemRect(SPARKLING_POTION, 16, 15);
         assignItemRect(RACE, 16, 13);

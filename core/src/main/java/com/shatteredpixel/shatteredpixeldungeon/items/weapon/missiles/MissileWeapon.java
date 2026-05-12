@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
@@ -48,22 +49,37 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Icecap;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
+import com.watabou.utils.Reflection;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.InventoryPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 abstract public class MissileWeapon extends Weapon {
+
+    private static final Class[] J62_HARMFUL_PLANTS = new Class[]{
+            Blindweed.class, Firebloom.class, Icecap.class, Sorrowmoss.class, Stormvine.class
+    };
 
     {
         stackable = true;
@@ -93,6 +109,11 @@ abstract public class MissileWeapon extends Weapon {
     public MissileWeapon parent;
 
     public int tier;
+
+    private static final LinkedList<Integer> timeFreezeStartCells = new LinkedList<>();
+    private static final LinkedList<Integer> timeFreezeTargetCells = new LinkedList<>();
+    private static final LinkedList<MissileWeapon> timeFreezeProjectiles = new LinkedList<>();
+    private static final LinkedList<MissileSprite> timeFreezeSprites = new LinkedList<>();
 
     protected int usesToID(){
         return 10; //half of a melee weapon
@@ -294,6 +315,102 @@ abstract public class MissileWeapon extends Weapon {
     }
 
     @Override
+    public void cast(final Hero user, final int dst) {
+        if (shouldDelayTimeFreezeProjectile(user)) {
+            if (timeFreezeStartCells.contains(user.pos)) {
+                GLog.w(Messages.get(MissileWeapon.class, "time_freeze_same_cell"));
+                QuickSlotButton.cancel();
+                InventoryPane.cancelTargeting();
+                return;
+            }
+
+            final int cell = throwPos(user, dst);
+            user.sprite.zap(cell);
+            user.busy();
+
+            throwSound();
+
+            Char enemy = Actor.findChar(cell);
+            QuickSlotButton.target(enemy);
+
+            final float delay = castDelay(user, cell);
+            curUser = user;
+            final MissileWeapon thrown = (MissileWeapon) MissileWeapon.this.detach(user.belongings.backpack);
+
+            MissileSprite sprite = (MissileSprite) user.sprite.parent.recycle(MissileSprite.class);
+            sprite.reset(user.pos, cell, thrown, new Callback() {
+                @Override
+                public void call() {
+                    if (thrown != null) thrown.onThrow(cell);
+                }
+            });
+
+            timeFreezeStartCells.add(user.pos);
+            timeFreezeTargetCells.add(cell);
+            timeFreezeProjectiles.add(thrown);
+            timeFreezeSprites.add(sprite);
+
+            user.spendAndNext(delay);
+        } else {
+            super.cast(user, dst);
+        }
+    }
+
+    public static boolean shouldDelayTimeFreezeProjectile(Hero user) {
+        return user != null
+                && user.hasTalent(Talent.J52)
+                && (user.buff(Swiftthistle.TimeBubble.class) != null
+                || user.buff(TimekeepersHourglass.timeFreeze.class) != null);
+    }
+
+    public static boolean isQueuedTimeFreezeProjectile(MissileWeapon projectile) {
+        return timeFreezeProjectiles.contains(projectile);
+    }
+
+    public static void castAfterTimeFreeze() {
+        int projectileCount = timeFreezeProjectiles.size();
+        for (int i = 0; i < projectileCount; i++) {
+            final int startCell = timeFreezeStartCells.removeFirst();
+            final int targetCell = timeFreezeTargetCells.removeFirst();
+            final MissileWeapon projectile = timeFreezeProjectiles.removeFirst();
+
+            if (Dungeon.hero != null && Dungeon.hero.sprite != null && Dungeon.hero.sprite.parent != null) {
+                ((MissileSprite) Dungeon.hero.sprite.parent.recycle(MissileSprite.class)).reset(startCell, targetCell, projectile, new Callback() {
+                    @Override
+                    public void call() {
+                        if (projectile != null) projectile.onThrow(targetCell);
+                    }
+                });
+            } else if (projectile != null) {
+                projectile.onThrow(targetCell);
+            }
+
+            if (!timeFreezeSprites.isEmpty()) {
+                timeFreezeSprites.removeFirst().killAndErase();
+            }
+        }
+    }
+
+    public static void restoreTimeFreezeSprites() {
+        if (timeFreezeProjectiles.isEmpty()
+                || Dungeon.hero == null
+                || Dungeon.hero.sprite == null
+                || Dungeon.hero.sprite.parent == null) {
+            return;
+        }
+
+        while (!timeFreezeSprites.isEmpty()) {
+            timeFreezeSprites.removeFirst().killAndErase();
+        }
+
+        for (int i = 0; i < timeFreezeProjectiles.size(); i++) {
+            MissileSprite sprite = (MissileSprite) Dungeon.hero.sprite.parent.recycle(MissileSprite.class);
+            sprite.reset(timeFreezeStartCells.get(i), timeFreezeTargetCells.get(i), timeFreezeProjectiles.get(i), null);
+            timeFreezeSprites.add(sprite);
+        }
+    }
+
+    @Override
     protected void onThrow( int cell ) {
         Char enemy = Actor.findChar( cell );
         if (enemy == null || enemy == curUser) {
@@ -349,6 +466,15 @@ abstract public class MissileWeapon extends Weapon {
         // Pickaxe effect: 5% chance to apply 3 turns of Weakness when Pickaxe is in inventory
         if (attacker == Dungeon.hero && defender.isAlive() && Dungeon.hero.belongings.getItem(Pickaxe.class) != null && (Random.Int(20) == 0)) {
                 Buff.prolong(defender, Weakness.class, 3f);
+        }
+
+        // J62: 전갈 투척(SpiritBow) 제외 투척 무기 적중 시 무작위 해로운 식물 효과 적용
+        if (attacker == Dungeon.hero && Dungeon.hero.hasTalent(Talent.J62)
+                && !(this instanceof SpiritBow.SpiritArrow)
+                && defender.isAlive() && defender.alignment == Char.Alignment.ENEMY) {
+            Plant plant = (Plant) Reflection.newInstance(Random.element(J62_HARMFUL_PLANTS));
+            plant.pos = defender.pos;
+            plant.activate(defender);
         }
 
         //handle ID progress over parent/child
@@ -751,6 +877,10 @@ abstract public class MissileWeapon extends Weapon {
     private static final String SPAWNED = "spawned";
     private static final String DURABILITY = "durability";
     private static final String EXTRA_LEFT = "extra_left";
+    private static final String TIME_FREEZE_START_CELL = "time_freeze_start_cell";
+    private static final String TIME_FREEZE_TARGET_CELL = "time_freeze_target_cell";
+    private static final String TIME_FREEZE_PROJECTILE = "time_freeze_projectile";
+    private static final String TIME_FREEZE_PROJECTILE_COUNT = "time_freeze_projectile_count";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -790,6 +920,30 @@ abstract public class MissileWeapon extends Weapon {
         spawnedForEffect = bundle.getBoolean(SPAWNED);
         durability = bundle.getFloat(DURABILITY);
         extraThrownLeft = bundle.getBoolean(EXTRA_LEFT);
+    }
+
+    public static void saveTimeFreezeContainer(Bundle bundle) {
+        int count = timeFreezeProjectiles.size();
+        bundle.put(TIME_FREEZE_PROJECTILE_COUNT, count);
+        for (Integer i = 0; i < count; i++) {
+            bundle.put(TIME_FREEZE_START_CELL + i, timeFreezeStartCells.get(i));
+            bundle.put(TIME_FREEZE_TARGET_CELL + i, timeFreezeTargetCells.get(i));
+            bundle.put(TIME_FREEZE_PROJECTILE + i, timeFreezeProjectiles.get(i));
+        }
+    }
+
+    public static void restoreTimeFreezeContainer(Bundle bundle) {
+        timeFreezeStartCells.clear();
+        timeFreezeTargetCells.clear();
+        timeFreezeProjectiles.clear();
+        timeFreezeSprites.clear();
+
+        int count = bundle.getInt(TIME_FREEZE_PROJECTILE_COUNT);
+        for (Integer i = 0; i < count; i++) {
+            timeFreezeStartCells.add(bundle.getInt(TIME_FREEZE_START_CELL + i));
+            timeFreezeTargetCells.add(bundle.getInt(TIME_FREEZE_TARGET_CELL + i));
+            timeFreezeProjectiles.add((MissileWeapon) bundle.get(TIME_FREEZE_PROJECTILE + i));
+        }
     }
 
     public static class PlaceHolder extends MissileWeapon {

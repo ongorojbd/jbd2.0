@@ -92,6 +92,9 @@ public class Invisibility extends FlavourBuff {
 		for ( Buff invis : ch.buffs( Invisibility.class )){
 			invis.detach();
 		}
+		boolean j56CloakActive = ch instanceof Hero
+				&& ((Hero) ch).hasTalent(Talent.J56)
+				&& ch.buff(CloakOfShadows.cloakStealth.class) != null;
 		CloakOfShadows.cloakStealth cloakBuff = ch.buff( CloakOfShadows.cloakStealth.class );
 		if (cloakBuff != null) {
 			cloakBuff.dispel();
@@ -109,9 +112,12 @@ public class Invisibility extends FlavourBuff {
 		}
 
 		Swiftthistle.TimeBubble bubble =  ch.buff( Swiftthistle.TimeBubble.class );
-		if (bubble != null){
+		Talent.J56TimeStopTriggerTracker j56TimeStopTrigger =
+				ch.buff(Talent.J56TimeStopTriggerTracker.class);
+		if (bubble != null && !j56CloakActive && j56TimeStopTrigger == null){
 			bubble.detach();
 		}
+		if (j56TimeStopTrigger != null) j56TimeStopTrigger.detach();
 
 		RoundShield.GuardTracker guard = ch.buff(RoundShield.GuardTracker.class);
 		if (guard != null && guard.hasBlocked){

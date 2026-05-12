@@ -22,7 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.services.rankings;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import com.watabou.noosa.Game;
 
 public class Ranking {
 
@@ -30,6 +37,12 @@ public class Ranking {
 
 	public static boolean supportsRankings(){
 		return service != null;
+	}
+
+	public static String currentDailyDate(){
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+		format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+		return format.format(new Date(Game.realTime));
 	}
 
 	private static Date lastCheck = null;
@@ -109,5 +122,49 @@ public class Ranking {
 		lastCheckedDate = null;
 	}
 
-}
+	// --- 최근 50일 날짜별 1위 캐시 ---
 
+	private static ArrayList<DailyRankingEntry> monthlyTopRankings;
+	private static Date monthlyLastCheck = null;
+	private static final long MONTHLY_CHECK_DELAY = 1000 * 60 * 10; // 10분
+
+	/** 최근 50일 날짜별 1위 목록을 비동기로 갱신합니다. */
+	public static void checkForMonthlyRankings() {
+		if (!supportsRankings()) return;
+
+		boolean shouldRefresh = monthlyLastCheck == null ||
+		                        (new Date().getTime() - monthlyLastCheck.getTime()) >= MONTHLY_CHECK_DELAY;
+		if (!shouldRefresh) return;
+
+		DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+		fmt.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"));
+		String endDate = fmt.format(cal.getTime());
+		cal.add(Calendar.DAY_OF_YEAR, -49);
+		String startDate = fmt.format(cal.getTime());
+
+		service.getMonthlyTopRankings(startDate, endDate, true, new RankingService.RankingResultCallback() {
+			@Override
+			public void onRankingReceived(ArrayList<DailyRankingEntry> entries) {
+				monthlyLastCheck = new Date();
+				monthlyTopRankings = entries;
+			}
+
+			@Override
+			public void onConnectionFailed() {
+				// 실패 시 기존 캐시 유지
+			}
+		});
+	}
+
+	public static synchronized boolean monthlyRankingsAvailable() {
+		return monthlyTopRankings != null && !monthlyTopRankings.isEmpty();
+	}
+
+	public static synchronized ArrayList<DailyRankingEntry> monthlyTopRankings() {
+		if (monthlyTopRankings == null) return new ArrayList<>();
+		return new ArrayList<>(monthlyTopRankings);
+	}
+
+}

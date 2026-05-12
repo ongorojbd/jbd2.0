@@ -91,6 +91,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
@@ -111,6 +112,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PhantomLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ParallelBrawlLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
@@ -659,6 +661,9 @@ public class GameScene extends PixelScene {
                     add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
                     Statistics.duwang3 = 3;
                 }
+                if (Dungeon.level instanceof ParallelBrawlLevel) {
+                    add(new WndStory(Messages.get(this, "parallel_brawl_title") + "\n\n" + Messages.get(this, "parallel_brawl_window")).setDelays(0.4f, 0.4f));
+                }
                 if (Dungeon.level instanceof HumanVillageBossLevel2 && !Statistics.johnnyquest) {
 
                     WndDialogueWithPic.dialogue(
@@ -1194,6 +1199,8 @@ public class GameScene extends PixelScene {
                     add(new WndStory(Messages.get(this, "ship_title") + "\n\n" + Messages.get(this, "ship_window")).setDelays(0.4f, 0.4f));
                 } else if (Dungeon.level instanceof TendencyTreasureLevel) {
                     ((TendencyTreasureLevel) Dungeon.level).showTreasureEvent();
+                } else if (Dungeon.level instanceof ParallelBrawlLevel) {
+                    add(new WndStory(Messages.get(this, "parallel_brawl_title") + "\n\n" + Messages.get(this, "parallel_brawl_window")).setDelays(0.4f, 0.4f));
                 } else if (Dungeon.level instanceof TendencyLevel && Dungeon.depth == 1 && Statistics.duwang2 == 0) {
 
                     add(new WndStory(Messages.get(this, "phantom_title") + "\n\n" + Messages.get(this, "phantom_window")).setDelays(0.4f, 0.4f));
@@ -1486,6 +1493,7 @@ public class GameScene extends PixelScene {
 
         // 게임 로드 시 Rebel의 타이밍 게임이 진행 중이었으면 창 표시
         Rebel.checkPendingTimingGame();
+        MissileWeapon.restoreTimeFreezeSprites();
 
         fadeIn();
 

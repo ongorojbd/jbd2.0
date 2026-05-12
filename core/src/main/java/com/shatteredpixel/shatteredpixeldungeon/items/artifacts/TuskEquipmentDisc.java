@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalSpire;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LightParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -55,10 +56,12 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTuskAiming;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -86,6 +89,11 @@ public class TuskEquipmentDisc extends Artifact {
 
 	// Perfect 횟수 카운터 (영구 저장)
 	private int perfectCount = 0;
+	private int j59Damage = 3;
+	private int j53UseCount = 0;
+	private static final int J59_MAX_DAMAGE = 25;
+	private static final float J59_CHARGE_COST = 0.25f;
+	private static final float J53_J59_MISSILE_SPEED = 420f;
 
 	// 레벨업에 필요한 Perfect 횟수 (레벨별)
 	private int perfectsForLevel(int level) {
@@ -106,10 +114,27 @@ public class TuskEquipmentDisc extends Artifact {
 	}
 
 	@Override
+	public String status() {
+		if (hero != null && hero.hasTalent(Talent.J59) && isIdentified() && !cursed) {
+			int scaledCharge = Math.min(chargeCap * 4, (int)Math.floor((charge + partialCharge) * 4f));
+			return Messages.format("%d/%d", scaledCharge, chargeCap * 4);
+		}
+		return super.status();
+	}
+
+	@Override
+	public int targetingPos(Hero user, int dst) {
+		if (user != null && (user.hasTalent(Talent.J59) || user.hasTalent(Talent.J53))) {
+			return dst;
+		}
+		return super.targetingPos(user, dst);
+	}
+
+	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
 		if ((isEquipped(hero) || hero.hasTalent(Talent.J32))
-				&& charge > 0 && !cursed && hero.buff(MagicImmune.class) == null) {
+				&& (charge > 0 || (hero.hasTalent(Talent.J59) && hasJ59Charge())) && !cursed && hero.buff(MagicImmune.class) == null) {
 			actions.add(AC_SHOOT);
 		}
 		return actions;
@@ -128,7 +153,7 @@ public class TuskEquipmentDisc extends Artifact {
 				GLog.i(Messages.get(Artifact.class, "need_to_equip"));
 				usesTargeting = false;
 
-			} else if (charge <= 0) {
+			} else if (charge <= 0 && (!hero.hasTalent(Talent.J59) || !hasJ59Charge())) {
 				GLog.i(Messages.get(this, "no_charge"));
 				usesTargeting = false;
 
@@ -155,6 +180,7 @@ public class TuskEquipmentDisc extends Artifact {
                     }
 				}
 				
+				ensureDirectShotQuickTarget(hero);
 				usesTargeting = true;
 				GameScene.selectCell(targeter);
 			}
@@ -193,9 +219,52 @@ public class TuskEquipmentDisc extends Artifact {
 			if (target == null) return;
 
 			Char ch = Actor.findChar(target);
+			if (ch == curUser) {
+				if (canTargetSelf()) {
+					Hero hero = (Hero) curUser;
+					int talentLevel = hero.pointsInTalent(Talent.J24);
+					int chargeRequired = (talentLevel == 1) ? 3 : 2;
+
+					if (charge < chargeRequired) {
+						GLog.i(Messages.get(TuskEquipmentDisc.class, "no_charge"));
+						return;
+					}
+					useSelfEffect(hero);
+				} else {
+					GLog.w(Messages.get(TuskEquipmentDisc.class, "cannot_target_self"));
+				}
+				return;
+			}
+
+			if (isDirectShotMode()) {
+				DirectShotAim aim = directShotAim(target);
+				piercedTargets.clear();
+				collectDirectShotPiercedTargets(aim.beam, aim.target);
+				if (aim.target != null) {
+					QuickSlotButton.target(aim.target);
+					playDirectShotSound((Hero) curUser);
+				}
+				if (((Hero) curUser).hasTalent(Talent.J59)) {
+					shootJ59(aim.target, aim.visualCell);
+				} else {
+					shootJ53(aim.target, aim.visualCell);
+				}
+				return;
+			}
 
 			// 타겟이 없는 경우
 			if (ch == null) {
+				if (((Hero) curUser).hasTalent(Talent.J59) || ((Hero) curUser).hasTalent(Talent.J53)) {
+					int collisionCell = directShotCollisionCell(target);
+					Char collisionTarget = validDirectShotTarget(collisionCell);
+					piercedTargets.clear();
+					if (((Hero) curUser).hasTalent(Talent.J59)) {
+						shootJ59(collisionTarget, collisionCell);
+					} else {
+						shootJ53(collisionTarget, collisionCell);
+					}
+					return;
+				}
 				GLog.w(Messages.get(TuskEquipmentDisc.class, "no_target"));
 				return;
 			}
@@ -245,7 +314,8 @@ public class TuskEquipmentDisc extends Artifact {
 			}
 
 			// 시야 체크
-			if (!Dungeon.level.heroFOV[target]) {
+			if (!(((Hero) curUser).hasTalent(Talent.J59) || ((Hero) curUser).hasTalent(Talent.J53))
+					&& !Dungeon.level.heroFOV[target]) {
 				GLog.w(Messages.get(TuskEquipmentDisc.class, "out_of_sight"));
 				return;
 			}
@@ -293,6 +363,13 @@ public class TuskEquipmentDisc extends Artifact {
 				}
 				
 				// 선택한 타겟에 대해 미니게임 실행
+				if (((Hero) curUser).hasTalent(Talent.J59)) {
+					shootJ59(ch);
+					return;
+				} else if (((Hero) curUser).hasTalent(Talent.J53)) {
+					shootJ53(ch);
+					return;
+				}
 				GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
 			} else {
 				// 레벨 0~2일 때는 기존처럼 단일 타겟만
@@ -302,6 +379,13 @@ public class TuskEquipmentDisc extends Artifact {
                     Sword.t2();
                 } else Sword.t1();
 				piercedTargets.clear();
+				if (((Hero) curUser).hasTalent(Talent.J59)) {
+					shootJ59(ch);
+					return;
+				} else if (((Hero) curUser).hasTalent(Talent.J53)) {
+					shootJ53(ch);
+					return;
+				}
 				GameScene.show(new WndTuskAiming(TuskEquipmentDisc.this, ch));
 			}
 		}
@@ -706,6 +790,431 @@ public class TuskEquipmentDisc extends Artifact {
 		lastDamageRatio = 0f;
 	}
 
+	// J59: direct shot without the aiming minigame.
+	private void shootJ59(Char target) {
+		shootJ59(target, target == null ? curUser.pos : target.pos);
+	}
+
+	private void shootJ59(Char target, int visualCell) {
+		if (target != null && !target.isAlive()) return;
+
+		Hero hero = Dungeon.hero;
+		if (hero == null) return;
+		if (!hasJ59Charge()) {
+			GLog.i(Messages.get(this, "no_charge"));
+			return;
+		}
+
+		currentTarget = target;
+		spendJ59Charge();
+		updateQuickslot();
+
+		com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeActive =
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
+		boolean goldenSpin = scopeActive != null || Random.Int(10) == 0;
+		int damage = Math.min(j59Damage, J59_MAX_DAMAGE);
+		if (goldenSpin) {
+			damage *= 2;
+			if (hero.hasTalent(Talent.J38)) {
+				damage = Math.round(damage * (1f + 0.25f * hero.pointsInTalent(Talent.J38)));
+			}
+		}
+
+		hero.sprite.zap(visualCell);
+		final int finalDamage = damage;
+		final boolean finalGoldenSpin = goldenSpin;
+		MagicMissile missile = MagicMissile.boltFromChar(hero.sprite.parent,
+				goldenSpin ? MagicMissile.GOLDEN_MISSILE : MagicMissile.LIGHT_MISSILE,
+				hero.sprite, visualCell, new Callback() {
+			@Override
+			public void call() {
+				completeJ59Shot(hero, target, finalDamage, finalGoldenSpin);
+			}
+		});
+		missile.setSpeed(J53_J59_MISSILE_SPEED);
+	}
+
+	private boolean hasJ59Charge() {
+		return charge + partialCharge >= J59_CHARGE_COST;
+	}
+
+	private void spendJ59Charge() {
+		partialCharge -= J59_CHARGE_COST;
+		while (partialCharge < 0f && charge > 0) {
+			charge--;
+			partialCharge += 1f;
+		}
+		if (charge <= 0 && partialCharge < 0f) {
+			charge = 0;
+			partialCharge = 0f;
+		}
+	}
+
+	private void completeJ59Shot(Hero hero, Char target, int damage, boolean goldenSpin) {
+		if (hero == null) return;
+
+		if (target != null && target.sprite != null) {
+			target.sprite.centerEmitter().burst(LightParticle.BURST, 8);
+			target.sprite.flash();
+		}
+
+		boolean targetAlive = target != null && target.isAlive();
+		if (targetAlive) {
+			target.damage(damage, this);
+			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+
+			if (level() >= 10) {
+				Buff.affect(target, RadioactiveMutation.class).set(3);
+			}
+
+			if (!target.isAlive()) {
+				j59Damage = Math.min(J59_MAX_DAMAGE, j59Damage + 1);
+				if (hero.hasTalent(Talent.J23)) {
+					int talentLevel = hero.pointsInTalent(Talent.J23);
+					if (talentLevel >= 1) {
+						Buff.prolong(hero, Adrenaline.class, talentLevel * 4);
+					}
+				}
+			}
+		}
+
+		if (!targetAlive) {
+			Sample.INSTANCE.play(Assets.Sounds.ZAP);
+			finishJ59ScopeShot(hero);
+			onAllShotsComplete();
+			return;
+		}
+
+		lastDamage = damage;
+		lastHitType = goldenSpin ? "perfect" : "great";
+		lastDamageRatio = goldenSpin ? 0.50f : 0.25f;
+
+		if (goldenSpin) {
+			perfectCount++;
+			checkLevelUp();
+			grantGoldenSpinEffects(hero, target);
+			grantJ59ScopeReward(hero);
+			GLog.p(Messages.get("windows.wndtuskaiming.perfect", damage));
+		} else {
+			GLog.h(Messages.get("windows.wndtuskaiming.great", damage));
+		}
+
+		Sample.INSTANCE.play(Assets.Sounds.HIT);
+
+		processPiercedTargets();
+		finishJ59ScopeShot(hero);
+		onAllShotsComplete();
+	}
+
+	private void shootJ53(Char target) {
+		shootJ53(target, target == null ? curUser.pos : target.pos);
+	}
+
+	private void shootJ53(Char target, int visualCell) {
+		if (target != null && !target.isAlive()) return;
+
+		Hero hero = Dungeon.hero;
+		if (hero == null) return;
+
+		currentTarget = target;
+		charge--;
+		updateQuickslot();
+
+		j53UseCount++;
+		boolean goldenSpin = j53UseCount % 3 == 0;
+		int damage = goldenSpin ? 20 : 10;
+
+		hero.sprite.zap(visualCell);
+		final int finalDamage = damage;
+		final boolean finalGoldenSpin = goldenSpin;
+		MagicMissile missile = MagicMissile.boltFromChar(hero.sprite.parent,
+				goldenSpin ? MagicMissile.GOLDEN_MISSILE : MagicMissile.LIGHT_MISSILE,
+				hero.sprite, visualCell, new Callback() {
+			@Override
+			public void call() {
+				completeJ53Shot(hero, target, finalDamage, finalGoldenSpin);
+			}
+		});
+		missile.setSpeed(J53_J59_MISSILE_SPEED);
+	}
+
+	private void completeJ53Shot(Hero hero, Char target, int damage, boolean goldenSpin) {
+		if (hero == null) return;
+
+		if (target != null && target.sprite != null) {
+			target.sprite.centerEmitter().burst(LightParticle.BURST, 8);
+			target.sprite.flash();
+		}
+
+		boolean targetAlive = target != null && target.isAlive();
+		if (targetAlive) {
+			target.damage(damage, this);
+			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+
+			if (level() >= 10) {
+				Buff.affect(target, RadioactiveMutation.class).set(3);
+			}
+
+			if (!target.isAlive() && hero.hasTalent(Talent.J23)) {
+				int talentLevel = hero.pointsInTalent(Talent.J23);
+				if (talentLevel >= 1) {
+					Buff.prolong(hero, Adrenaline.class, talentLevel * 4);
+				}
+			}
+		}
+
+		if (!targetAlive) {
+			Sample.INSTANCE.play(Assets.Sounds.ZAP);
+			finishJ59ScopeShot(hero);
+			onAllShotsComplete();
+			return;
+		}
+
+		Sample.INSTANCE.play(Assets.Sounds.HIT);
+
+		lastDamage = damage;
+		lastHitType = goldenSpin ? "perfect" : "great";
+		lastDamageRatio = goldenSpin ? 0.50f : 0.25f;
+
+		if (goldenSpin) {
+			perfectCount++;
+			checkLevelUp();
+			grantGoldenSpinEffects(hero, target);
+			grantJ59ScopeReward(hero);
+			GLog.p(Messages.get("windows.wndtuskaiming.perfect", damage));
+		} else {
+			GLog.h(Messages.get("windows.wndtuskaiming.great", damage));
+		}
+
+		processPiercedTargets();
+		finishJ59ScopeShot(hero);
+		onAllShotsComplete();
+	}
+
+	private void finishJ59ScopeShot(Hero hero) {
+		com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeBuff =
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
+		if (scopeBuff != null) {
+			scopeBuff.detach();
+			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope scope =
+					hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.class);
+			if (scope != null) {
+				scope.resetCharge();
+			}
+		}
+	}
+
+	private int directShotCollisionCell(int target) {
+		int props = level() >= 3 ? Ballistica.WONT_STOP : Ballistica.MAGIC_BOLT;
+		return new Ballistica(curUser.pos, target, props).collisionPos;
+	}
+
+	private DirectShotAim directShotAim(int target) {
+		Ballistica beam = new Ballistica(curUser.pos, target, level() >= 3 ? Ballistica.WONT_STOP : Ballistica.MAGIC_BOLT);
+		Char selectedTarget = validDirectShotTarget(target);
+		if (selectedTarget != null) {
+			return new DirectShotAim(selectedTarget, target, beam);
+		}
+
+		for (int c : beam.subPath(1, beam.dist)) {
+			Char pathTarget = validDirectShotTarget(c);
+			if (pathTarget != null) {
+				return new DirectShotAim(pathTarget, c, beam);
+			}
+		}
+
+		return new DirectShotAim(null, beam.collisionPos, beam);
+	}
+
+	private boolean isDirectShotMode() {
+		return curUser instanceof Hero && (((Hero) curUser).hasTalent(Talent.J59) || ((Hero) curUser).hasTalent(Talent.J53));
+	}
+
+	private void ensureDirectShotQuickTarget(Hero hero) {
+		if (hero == null || !(hero.hasTalent(Talent.J59) || hero.hasTalent(Talent.J53))) {
+			return;
+		}
+
+		Char lastTarget = QuickSlotButton.lastTarget;
+		if (lastTarget != null
+				&& Actor.chars().contains(lastTarget)
+				&& lastTarget.isAlive()
+				&& lastTarget.alignment == Char.Alignment.ENEMY
+				&& Dungeon.level.heroFOV[lastTarget.pos]) {
+			return;
+		}
+
+		Mob best = null;
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+			if (mob == null
+					|| !mob.isAlive()
+					|| mob.alignment != Char.Alignment.ENEMY
+					|| !Dungeon.level.heroFOV[mob.pos]
+					|| mob instanceof NPC
+					|| mob instanceof GnollGeomancer
+					|| mob instanceof CrystalSpire) {
+				continue;
+			}
+
+			if (directShotAim(mob.pos).target != mob) {
+				continue;
+			}
+
+			if (best == null || Dungeon.level.distance(hero.pos, mob.pos) < Dungeon.level.distance(hero.pos, best.pos)) {
+				best = mob;
+			}
+		}
+
+		if (best != null) {
+			QuickSlotButton.target(best);
+		}
+	}
+
+	private void collectDirectShotPiercedTargets(Ballistica beam, Char mainTarget) {
+		Hero hero = Dungeon.hero;
+		if (hero == null || beam == null || level() < 3 || !hero.hasTalent(Talent.J22)) {
+			return;
+		}
+
+		for (int c : beam.subPath(1, beam.dist)) {
+			Char enemy = validDirectShotTarget(c);
+			if (enemy == null || enemy == mainTarget || enemy == curUser || piercedTargets.contains(enemy)) {
+				continue;
+			}
+
+			if (enemy instanceof Mob && ((Mob) enemy).state == ((Mob) enemy).PASSIVE
+					&& !(Dungeon.level.mapped[c] || Dungeon.level.visited[c])) {
+				continue;
+			}
+
+			piercedTargets.add(enemy);
+		}
+	}
+
+	private void playDirectShotSound(Hero hero) {
+		com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeActive =
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
+		if (scopeActive != null) {
+			Sword.t2();
+		} else {
+			Sword.t1();
+		}
+	}
+
+	private Char validDirectShotTarget(int cell) {
+		Char ch = Actor.findChar(cell);
+		if (ch instanceof Mob
+				&& !(ch instanceof NPC)
+				&& !(ch instanceof GnollGeomancer)
+				&& !(ch instanceof CrystalSpire)
+				&& ch.alignment == Char.Alignment.ENEMY) {
+			return ch;
+		}
+		return null;
+	}
+
+	private static class DirectShotAim {
+		private final Char target;
+		private final int visualCell;
+		private final Ballistica beam;
+
+		private DirectShotAim(Char target, int visualCell, Ballistica beam) {
+			this.target = target;
+			this.visualCell = visualCell;
+			this.beam = beam;
+		}
+	}
+
+	private void grantGoldenSpinEffects(Hero hero, Char target) {
+		if (level() >= 6) {
+			Buff.affect(hero, Barrier.class).setShield(20);
+		}
+
+		com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding horseRiding =
+				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class);
+		if (horseRiding != null) {
+			horseRiding.addLeapCharge();
+		}
+
+		if (target != null && hero.hasTalent(Talent.J25)) {
+			int talentLevel = hero.pointsInTalent(Talent.J25);
+			if (talentLevel >= 1) {
+				Doom doom = Buff.affect(target, Doom.class);
+				doom.setDuration(talentLevel * 2);
+			}
+		}
+	}
+
+	// J59: Gyro's lesson reward on a confirmed golden spin.
+	private void grantJ59ScopeReward(Hero hero) {
+		if (hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class) == null) {
+			return;
+		}
+
+		float duration = 50f;
+		if (hero.hasTalent(Talent.J36)) {
+			int talentLevel = hero.pointsInTalent(Talent.J36);
+			if (talentLevel == 1) {
+				duration = 80f;
+			} else if (talentLevel == 2) {
+				duration = 110f;
+			} else {
+				duration = 130f;
+			}
+		}
+
+		switch (Random.Int(5)) {
+			case 0:
+				Buff.prolong(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class, duration);
+				GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_rings"));
+				break;
+			case 1:
+				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon existingWeapon =
+						hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
+				if (existingWeapon == null || !existingWeapon.isPermanent()) {
+					com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon weapon =
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
+					weapon.setEnhancementLevel(1);
+					weapon.setTemporaryDuration(duration);
+					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_weapon"));
+				}
+				break;
+			case 2:
+				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor existingArmor =
+						hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
+				if (existingArmor == null || !existingArmor.isPermanent()) {
+					com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor armor =
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
+					armor.setEnhancementLevel(1);
+					armor.setTemporaryDuration(duration);
+					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_armor"));
+				}
+				break;
+			case 3:
+				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand existingWand =
+						hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
+				if (existingWand == null || !existingWand.isPermanent()) {
+					com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand wand =
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
+					wand.setEnhancementLevel(1);
+					wand.setTemporaryDuration(duration);
+					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_wand"));
+				}
+				break;
+			case 4:
+				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon existingThrown =
+						hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
+				if (existingThrown == null || !existingThrown.isPermanent()) {
+					com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon thrown =
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
+					thrown.setEnhancementLevel(1);
+					thrown.setTemporaryDuration(duration);
+					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_thrown"));
+				}
+				break;
+		}
+	}
+
 	// J34 탤런트 레벨 3: 적에게 꽂힌 투척 무기 즉시 회수 (TelekineticGrab 방식)
 	private void collectThrownWeapons(Hero hero) {
 		// 히어로 주변 8칸 범위 내의 적들로부터 꽂힌 투척 무기 회수
@@ -913,7 +1422,11 @@ public class TuskEquipmentDisc extends Artifact {
 		if (cursed || target.buff(MagicImmune.class) != null) return;
 
 			if (charge < chargeCap) {
-				partialCharge += 0.25f * amount * 0.5f;
+				float chargeToGain = 0.25f * amount * 0.5f;
+				if (target.hasTalent(Talent.J53)) {
+					chargeToGain *= 1.5f;
+				}
+				partialCharge += chargeToGain;
 				while (partialCharge >= 1f) {
 					charge++;
 					partialCharge--;
@@ -1025,6 +1538,9 @@ public class TuskEquipmentDisc extends Artifact {
 					float turnsToCharge = (45 - missing);
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
 					float chargeToGain = (1f / turnsToCharge) * 0.5f;
+					if (target instanceof Hero && ((Hero) target).hasTalent(Talent.J53)) {
+						chargeToGain *= 1.5f;
+					}
 					partialCharge += chargeToGain;
 				}
 
@@ -1046,11 +1562,15 @@ public class TuskEquipmentDisc extends Artifact {
 	}
 
 	private static final String PERFECT_COUNT = "perfectCount";
+	private static final String J59_DAMAGE = "j59Damage";
+	private static final String J53_USE_COUNT = "j53UseCount";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(PERFECT_COUNT, perfectCount);
+		bundle.put(J59_DAMAGE, j59Damage);
+		bundle.put(J53_USE_COUNT, j53UseCount);
 		// aimingCycleTime은 발사 세션 단위 임시 값이므로 저장하지 않음
 	}
 
@@ -1058,6 +1578,8 @@ public class TuskEquipmentDisc extends Artifact {
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		perfectCount = bundle.getInt(PERFECT_COUNT);
+		j59Damage = bundle.contains(J59_DAMAGE) ? Math.max(3, Math.min(J59_MAX_DAMAGE, bundle.getInt(J59_DAMAGE))) : 3;
+		j53UseCount = bundle.contains(J53_USE_COUNT) ? bundle.getInt(J53_USE_COUNT) : 0;
 		// aimingCycleTime은 발사 세션 단위 임시 값이므로 복원하지 않음 (항상 -1로 시작)
 		aimingCycleTime = -1f;
 		

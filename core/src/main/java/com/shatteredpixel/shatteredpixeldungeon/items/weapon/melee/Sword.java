@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Diego;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.JohnnyArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.MageArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.RogueArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
@@ -147,6 +148,15 @@ public class Sword extends MeleeWeapon {
 			Sample.INSTANCE.play(Assets.Sounds.HAHAH);
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.ORA);
+		}
+	}
+
+	public static void oraclass(){
+
+		if (SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin3() == 1 && hero.belongings.armor() instanceof RogueArmor) {
+			Sample.INSTANCE.play(Assets.Sounds.MUDAMUDA);
+		} else {
+			Sample.INSTANCE.play(Assets.Sounds.ORAORA);
 		}
 	}
 
@@ -339,6 +349,14 @@ public class Sword extends MeleeWeapon {
             }
         }
     }
+
+	public static void seph(){
+		if (SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof MageArmor) {
+			Sample.INSTANCE.play( Assets.Sounds.CE6);
+		} else {
+			Sample.INSTANCE.play(Assets.Sounds.JOSEPH8);
+		}
+	}
 
     public static void t2(){
         if (SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin7() == 1 && hero.belongings.armor() instanceof JohnnyArmor) {

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
@@ -57,7 +58,7 @@ public class ThrowingSpike extends MissileWeapon {
     @Override
     public int max(int lvl) {
         return 8 * tier +                  //16 base, down from 20
-                (tier) * lvl;               //scaling unchanged
+                (tier == 1 ? 2*lvl : tier*lvl);              //scaling unchanged
     }
 
     boolean circleBackhit = false;
@@ -75,14 +76,14 @@ public class ThrowingSpike extends MissileWeapon {
     protected void rangedHit(Char enemy, int cell) {
         decrementDurability();
         if (durability > 0) {
-            Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
+            Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth, true);
         }
     }
 
     @Override
     protected void rangedMiss(int cell) {
         parent = null;
-        Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
+        Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth, false);
     }
 
     public static class CircleBack extends Buff {
@@ -95,14 +96,20 @@ public class ThrowingSpike extends MissileWeapon {
         private int thrownPos;
         private int returnPos;
         private int returnDepth;
+        private boolean hitEnemy;
 
         private int left;
 
         public void setup(ThrowingSpike boomerang, int thrownPos, int returnPos, int returnDepth) {
+            setup(boomerang, thrownPos, returnPos, returnDepth, false);
+        }
+
+        public void setup(ThrowingSpike boomerang, int thrownPos, int returnPos, int returnDepth, boolean hitEnemy) {
             this.boomerang = boomerang;
             this.thrownPos = thrownPos;
             this.returnPos = returnPos;
             this.returnDepth = returnDepth;
+            this.hitEnemy = hitEnemy;
             left = 2;
         }
 
@@ -148,6 +155,9 @@ public class ThrowingSpike extends MissileWeapon {
                                         if (target instanceof Hero && boomerang.doPickUp((Hero) target)) {
                                             //grabbing the boomerang takes no time
                                             ((Hero) target).spend(-TIME_TO_PICK_UP);
+                                            if (hitEnemy && ((Hero) target).hasTalent(Talent.J57)) {
+                                                Talent.onJ57ThrowingSpikeRecovered((Hero) target);
+                                            }
                                         } else {
                                             Dungeon.level.drop(boomerang, returnPos).sprite.drop();
                                         }
@@ -183,6 +193,7 @@ public class ThrowingSpike extends MissileWeapon {
         private static final String THROWN_POS = "thrown_pos";
         private static final String RETURN_POS = "return_pos";
         private static final String RETURN_DEPTH = "return_depth";
+        private static final String HIT_ENEMY = "hit_enemy";
 
         @Override
         public void storeInBundle(Bundle bundle) {
@@ -191,6 +202,7 @@ public class ThrowingSpike extends MissileWeapon {
             bundle.put(THROWN_POS, thrownPos);
             bundle.put(RETURN_POS, returnPos);
             bundle.put(RETURN_DEPTH, returnDepth);
+            bundle.put(HIT_ENEMY, hitEnemy);
         }
 
         @Override
@@ -200,6 +212,7 @@ public class ThrowingSpike extends MissileWeapon {
             thrownPos = bundle.getInt(THROWN_POS);
             returnPos = bundle.getInt(RETURN_POS);
             returnDepth = bundle.getInt(RETURN_DEPTH);
+            hitEnemy = bundle.getBoolean(HIT_ENEMY);
         }
     }
 

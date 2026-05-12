@@ -33,8 +33,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoome
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.JotaroKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife5;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident;
@@ -51,6 +53,7 @@ import java.util.HashMap;
 public class MissileSprite extends ItemSprite implements Tweener.Listener {
 
 	private static final float SPEED	= 240f;
+	private static final float TIME_FREEZE_SPEED = 0f;
 	
 	private Callback callback;
 	
@@ -94,6 +97,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 	static {
 		ANGULAR_SPEEDS.put(Dart.class,          0);
 		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
+		ANGULAR_SPEEDS.put(ThrowingKnife5.class, 0);
 		ANGULAR_SPEEDS.put(JotaroKnife.class, 0);
 		ANGULAR_SPEEDS.put(ThrowingSpike.class, 0);
 		ANGULAR_SPEEDS.put(FishingSpear.class,  0);
@@ -144,6 +148,9 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 				break;
 			}
 		}
+		if (isJ52TimeFrozen(item)) {
+			angularSpeed = 0;
+		}
 		
 		angle = 135 - (float)(Math.atan2( d.x, d.y ) / 3.1415926 * 180);
 		
@@ -165,6 +172,9 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		}
 		
 		float speed = SPEED;
+		if (isJ52TimeFrozen(item)) {
+			speed = TIME_FREEZE_SPEED;
+		}
 		if (item instanceof Dart
 				&& (Dungeon.hero.belongings.weapon() instanceof Crossbow
 				|| Dungeon.hero.belongings.secondWep() instanceof Crossbow)){
@@ -183,6 +193,13 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
 		tweener.listener = this;
 		parent.add( tweener );
+	}
+
+	private boolean isJ52TimeFrozen(Item item) {
+		return Dungeon.hero != null
+				&& item instanceof MissileWeapon
+				&& (MissileWeapon.shouldDelayTimeFreezeProjectile(Dungeon.hero)
+				|| MissileWeapon.isQueuedTimeFreezeProjectile((MissileWeapon) item));
 	}
 
 	@Override

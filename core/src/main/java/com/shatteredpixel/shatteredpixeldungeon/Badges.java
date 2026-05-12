@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
@@ -205,6 +206,21 @@ public class Badges {
         BOSS_SLAIN_3_RIDER,
         BOSS_SLAIN_3_STANDO,
         BOSS_SLAIN_3_ALL_SUBCLASSES ( 105, BadgeType.GLOBAL ),
+        ARROW_CHOICE_BERSERKER,
+        ARROW_CHOICE_GLADIATOR,
+        ARROW_CHOICE_BATTLEMAGE,
+        ARROW_CHOICE_WARLOCK,
+        ARROW_CHOICE_ASSASSIN,
+        ARROW_CHOICE_FREERUNNER,
+        ARROW_CHOICE_SNIPER,
+        ARROW_CHOICE_WARDEN,
+        ARROW_CHOICE_CHAMPION,
+        ARROW_CHOICE_MONK,
+        ARROW_CHOICE_PRIEST,
+        ARROW_CHOICE_PALADIN,
+        ARROW_CHOICE_RIDER,
+        ARROW_CHOICE_STANDO,
+        ARROW_CHOICE_ALL_SUBCLASSES ( 26, BadgeType.GLOBAL ),
         BOSS_CHALLENGE_3            ( 106 ),
         BOSS_CHALLENGE_4            ( 107 ),
         RESEARCHER_4                ( 108, BadgeType.JOURNAL ),
@@ -972,6 +988,25 @@ public class Badges {
         thirdBossSubclassBadges.put(HeroSubClass.STANDO, Badge.BOSS_SLAIN_3_STANDO);
     }
 
+    private static LinkedHashMap<HeroSubClass, Badge> arrowChoiceSubclassBadges = new LinkedHashMap<>();
+
+    static {
+        arrowChoiceSubclassBadges.put(HeroSubClass.BERSERKER, Badge.ARROW_CHOICE_BERSERKER);
+        arrowChoiceSubclassBadges.put(HeroSubClass.GLADIATOR, Badge.ARROW_CHOICE_GLADIATOR);
+        arrowChoiceSubclassBadges.put(HeroSubClass.BATTLEMAGE, Badge.ARROW_CHOICE_BATTLEMAGE);
+        arrowChoiceSubclassBadges.put(HeroSubClass.WARLOCK, Badge.ARROW_CHOICE_WARLOCK);
+        arrowChoiceSubclassBadges.put(HeroSubClass.ASSASSIN, Badge.ARROW_CHOICE_ASSASSIN);
+        arrowChoiceSubclassBadges.put(HeroSubClass.FREERUNNER, Badge.ARROW_CHOICE_FREERUNNER);
+        arrowChoiceSubclassBadges.put(HeroSubClass.SNIPER, Badge.ARROW_CHOICE_SNIPER);
+        arrowChoiceSubclassBadges.put(HeroSubClass.WARDEN, Badge.ARROW_CHOICE_WARDEN);
+        arrowChoiceSubclassBadges.put(HeroSubClass.CHAMPION, Badge.ARROW_CHOICE_CHAMPION);
+        arrowChoiceSubclassBadges.put(HeroSubClass.MONK, Badge.ARROW_CHOICE_MONK);
+        arrowChoiceSubclassBadges.put(HeroSubClass.PRIEST, Badge.ARROW_CHOICE_PRIEST);
+        arrowChoiceSubclassBadges.put(HeroSubClass.PALADIN, Badge.ARROW_CHOICE_PALADIN);
+        arrowChoiceSubclassBadges.put(HeroSubClass.RIDER, Badge.ARROW_CHOICE_RIDER);
+        arrowChoiceSubclassBadges.put(HeroSubClass.STANDO, Badge.ARROW_CHOICE_STANDO);
+    }
+
     private static LinkedHashMap<HeroClass, Badge> dioClassBadges = new LinkedHashMap<>();
 
     static {
@@ -1078,6 +1113,70 @@ public class Badges {
 
             }
 
+        }
+    }
+
+    public static void validateArrowChoiceBossSlain() {
+        if (Dungeon.depth != 25 || Dungeon.hero == null || !hasArrowChoiceTalent(Dungeon.hero.subClass)) {
+            return;
+        }
+
+        Badge badge = arrowChoiceSubclassBadges.get(Dungeon.hero.subClass);
+        if (badge == null) {
+            return;
+        }
+
+        local.add(badge);
+        unlock(badge);
+
+        boolean allUnlocked = true;
+        for (Badge b : arrowChoiceSubclassBadges.values()) {
+            if (!isUnlocked(b)) {
+                allUnlocked = false;
+                break;
+            }
+        }
+
+        if (allUnlocked) {
+            badge = Badge.ARROW_CHOICE_ALL_SUBCLASSES;
+            if (!isUnlocked(badge)) {
+                displayBadge(badge);
+            }
+        }
+    }
+
+    private static boolean hasArrowChoiceTalent(HeroSubClass subClass) {
+        switch (subClass) {
+            case BERSERKER:
+                return Dungeon.hero.hasTalent(Talent.J51);
+            case GLADIATOR:
+                return Dungeon.hero.hasTalent(Talent.J63);
+            case BATTLEMAGE:
+                return Dungeon.hero.hasTalent(Talent.J61);
+            case WARLOCK:
+                return Dungeon.hero.hasTalent(Talent.J64);
+            case ASSASSIN:
+                return Dungeon.hero.hasTalent(Talent.J56);
+            case FREERUNNER:
+                return Dungeon.hero.hasTalent(Talent.J52);
+            case SNIPER:
+                return Dungeon.hero.hasTalent(Talent.J55);
+            case WARDEN:
+                return Dungeon.hero.hasTalent(Talent.J62);
+            case CHAMPION:
+                return Dungeon.hero.hasTalent(Talent.J60);
+            case MONK:
+                return Dungeon.hero.hasTalent(Talent.J57);
+            case PRIEST:
+                return Dungeon.hero.hasTalent(Talent.J54);
+            case PALADIN:
+                return Dungeon.hero.hasTalent(Talent.J65);
+            case RIDER:
+                return Dungeon.hero.hasTalent(Talent.J53);
+            case STANDO:
+                return Dungeon.hero.hasTalent(Talent.J59);
+            default:
+                return false;
         }
     }
 
@@ -1594,6 +1693,16 @@ public class Badges {
                 if (cls == HeroSubClass.NONE) continue;
                 result += "\n";
                 if (isUnlocked(thirdBossSubclassBadges.get(cls)))
+                    result += "_" + Messages.titleCase(cls.title()) + "_";
+                else result += Messages.titleCase(cls.title());
+            }
+
+            return result;
+        } else if (badge == Badge.ARROW_CHOICE_ALL_SUBCLASSES) {
+
+            for (HeroSubClass cls : arrowChoiceSubclassBadges.keySet()) {
+                result += "\n";
+                if (isUnlocked(arrowChoiceSubclassBadges.get(cls)))
                     result += "_" + Messages.titleCase(cls.title()) + "_";
                 else result += Messages.titleCase(cls.title());
             }

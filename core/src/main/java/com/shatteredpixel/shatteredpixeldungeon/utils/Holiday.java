@@ -32,7 +32,7 @@ public enum Holiday {
 	STEEL_BALL_RUN,         //Mar 12th to Mar 19th (2026 premiere)                  (7 days)
 	APRIL_FOOLS,            //April 1st, can override easter                        (1 day)
 	EASTER,                 //Varies, sometime in Late Mar to Late Apr              (6-7 days)
-	//Nothing in May
+	MAY_EVENT,              //May 11th to May 22nd                                  (12 days)
 	PRIDE,                  //Jun 24th to Jun 30th                                  (7 days)
 	//Nothing in Jul
 	SHATTEREDPD_BIRTHDAY,   //Aug 1st to Aug 7th                                    (7 days)
@@ -86,6 +86,13 @@ public enum Holiday {
 				cal.get(Calendar.DAY_OF_YEAR),
 				cal.getActualMaximum(Calendar.DAY_OF_YEAR) == 366)){
 			return EASTER;
+		}
+
+		//May Event
+		if (cal.get(Calendar.MONTH) == Calendar.MAY
+				&& cal.get(Calendar.DAY_OF_MONTH) >= 11
+				&& cal.get(Calendar.DAY_OF_MONTH) <= 22){
+			return MAY_EVENT;
 		}
 
 		//Pride

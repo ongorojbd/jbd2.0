@@ -395,7 +395,7 @@ public class Tboss extends Mob {
                     public void call() {
 
                         if (leapVictim != null && alignment != leapVictim.alignment){
-                            Buff.affect(leapVictim, Bleeding.class).set(0.75f*damageRoll());
+                            Buff.affect(leapVictim, Bleeding.class).set(0.5f*damageRoll());
                             leapVictim.sprite.flash();
                             Sample.INSTANCE.play(Assets.Sounds.HIT);
                         }
@@ -563,7 +563,11 @@ public class Tboss extends Mob {
             if(ch instanceof SpeedWagon) {
 
             } else {
-                ch.damage(Random.NormalIntRange(20, 25), new Tboss.Blast());
+                if (ch == hero) {
+                    ch.damage(Random.NormalIntRange(20, 25), new Tboss.Blast());
+                } else {
+                    ch.damage(Random.NormalIntRange(5, 10), new Tboss.Blast());
+                }
             }
             if (Dungeon.level.heroFOV[pos]) {
                 ch.sprite.flash();

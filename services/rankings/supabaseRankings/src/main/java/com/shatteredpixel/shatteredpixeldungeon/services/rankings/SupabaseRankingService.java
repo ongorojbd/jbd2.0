@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.watabou.noosa.Game;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class SupabaseRankingService extends RankingService {
 
@@ -114,6 +115,79 @@ public class SupabaseRankingService extends RankingService {
 	}
 
 	@Override
+	public void getMonthlyTopRankings(String startDate, String endDate,
+	                                  boolean useMetered,
+	                                  RankingResultCallback callback) {
+		// 날짜 범위로 모든 기록 조회 후 날짜별 1위만 남김
+		String url = SUPABASE_URL + "/rest/v1/daily_rankings" +
+		             "?date=gte." + startDate +
+		             "&date=lte." + endDate +
+		             "&order=date.desc,score.desc" +
+		             "&limit=500";
+
+		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
+		httpGet.setUrl(url);
+		httpGet.setHeader("apikey", SUPABASE_ANON_KEY);
+		httpGet.setHeader("Authorization", "Bearer " + SUPABASE_ANON_KEY);
+
+		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
+			@Override
+			public void handleHttpResponse(Net.HttpResponse httpResponse) {
+				try {
+					String responseText = httpResponse.getResultAsString();
+					JsonReader jsonReader = new JsonReader();
+					JsonValue jsonValue = jsonReader.parse(responseText);
+
+					// 날짜별 최고 점수 1위만 보관 (날짜는 최신순, 같은 날짜에서는 score.desc 첫 등장이 1위)
+					LinkedHashMap<String, DailyRankingEntry> topByDate = new LinkedHashMap<>();
+
+					if (jsonValue.isArray()) {
+						for (JsonValue entry : jsonValue) {
+							String entryDate = entry.getString("date", "");
+							if (entryDate.isEmpty() || topByDate.containsKey(entryDate)) {
+								continue;
+							}
+							DailyRankingEntry rankingEntry = new DailyRankingEntry();
+							rankingEntry.rank = 1;
+							rankingEntry.playerName = entry.getString("player_name", "Anonymous");
+							rankingEntry.score = entry.getInt("score", 0);
+							rankingEntry.date = entryDate;
+							rankingEntry.depth = entry.getInt("depth", 0);
+							rankingEntry.level = entry.getInt("level", 0);
+							rankingEntry.heroClass = entry.getString("hero_class", "");
+							rankingEntry.armorTier = entry.getInt("armor_tier", 0);
+							rankingEntry.win = entry.getBoolean("win", false);
+							rankingEntry.ascending = entry.getBoolean("ascending", false);
+							rankingEntry.gameData = entry.getString("game_data", null);
+							topByDate.put(entryDate, rankingEntry);
+						}
+					}
+
+					DailyRankingEntry.networkFailed = false;
+					callback.onRankingReceived(new ArrayList<>(topByDate.values()));
+				} catch (Exception e) {
+					Game.reportException(e);
+					DailyRankingEntry.networkFailed = true;
+					callback.onConnectionFailed();
+				}
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				Game.reportException(t);
+				DailyRankingEntry.networkFailed = true;
+				callback.onConnectionFailed();
+			}
+
+			@Override
+			public void cancelled() {
+				DailyRankingEntry.networkFailed = true;
+				callback.onConnectionFailed();
+			}
+		});
+	}
+
+	@Override
 	public void getDailyRankings(String date, boolean useMetered, 
 	                            RankingResultCallback callback) {
 		
@@ -131,9 +205,6 @@ public class SupabaseRankingService extends RankingService {
 		             "&order=score.desc" +
 		             "&limit=10";
 		
-		// 디버깅: 조회 날짜 로그
-		Game.reportException(new Exception("Fetching daily rankings from Supabase: date=" + date + ", url=" + url));
-
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
 		httpGet.setUrl(url);
 		httpGet.setHeader("apikey", SUPABASE_ANON_KEY);
@@ -200,4 +271,3 @@ public class SupabaseRankingService extends RankingService {
 		});
 	}
 }
-
