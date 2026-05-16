@@ -85,6 +85,11 @@ public class Button extends Component {
 			}
 
 			@Override
+			protected void onDrag( PointerEvent event ) {
+				Button.this.onDrag(event);
+			}
+
+			@Override
 			protected void onHoverStart(PointerEvent event) {
 				String text = hoverText();
 				if (text != null){
@@ -171,6 +176,7 @@ public class Button extends Component {
 	
 	protected void onPointerDown() {}
 	protected void onPointerUp() {}
+	protected void onDrag(PointerEvent event) {}
 	protected void onClick() {} //left click, default key type
 	protected void onRightClick() {}
 	protected void onMiddleClick() {}

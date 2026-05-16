@@ -65,8 +65,8 @@ public class TendencyMap {
 		enforceTypeQuotas();
 
 		for (int depth = 2; depth < MAX_DEPTH; depth++) {
-			int count = count(depth);
-			int nextCount = count(depth + 1);
+			int count = rawCount(depth);
+			int nextCount = rawCount(depth + 1);
 			for (int i = 0; i < count; i++) {
 				int mask;
 				if (depth % 9 == 0) {
@@ -93,7 +93,7 @@ public class TendencyMap {
 
 	public static int[] choicesForDepth(int depth) {
 		init();
-		int count = count(depth);
+		int count = rawCount(depth);
 		int[] choices = new int[count];
 		for (int i = 0; i < count; i++) {
 			choices[i] = type(depth, i);
@@ -103,26 +103,26 @@ public class TendencyMap {
 
 	public static int count(int depth) {
 		init();
-		if (depth < 2 || depth > MAX_DEPTH) return 0;
-		return Statistics.tendencyMapCounts[depth];
+		return rawCount(depth);
 	}
 
 	public static int type(int depth, int node) {
-		if (node < 0 || node >= count(depth)) return NONE;
+		init();
+		if (node < 0 || node >= rawCount(depth)) return NONE;
 		return Statistics.tendencyMapTypes[index(depth, node)];
 	}
 
 	public static int links(int depth, int node) {
 		init();
-		if (node < 0 || node >= count(depth)) return 0;
+		if (node < 0 || node >= rawCount(depth)) return 0;
 		return Statistics.tendencyMapLinks[index(depth, node)];
 	}
 
 	public static int selectableMask(int depth) {
 		init();
-		int count = count(depth);
+		int count = rawCount(depth);
 		if (count == 0) return 0;
-		if (Dungeon.depth < 2 || Statistics.tendencyMapPath < 0 || Statistics.tendencyMapPath >= count(Dungeon.depth)) {
+		if (Dungeon.depth < 2 || Statistics.tendencyMapPath < 0 || Statistics.tendencyMapPath >= rawCount(Dungeon.depth)) {
 			return (1 << count) - 1;
 		}
 		int mask = links(Dungeon.depth, Statistics.tendencyMapPath);
@@ -333,10 +333,16 @@ public class TendencyMap {
 	}
 
 	private static boolean hasInbound(int depth, int node) {
-		for (int i = 0; i < count(depth); i++) {
+		int count = rawCount(depth);
+		for (int i = 0; i < count; i++) {
 			if ((Statistics.tendencyMapLinks[index(depth, i)] & (1 << node)) != 0) return true;
 		}
 		return false;
+	}
+
+	private static int rawCount(int depth) {
+		if (depth < 2 || depth > MAX_DEPTH || Statistics.tendencyMapCounts == null) return 0;
+		return Statistics.tendencyMapCounts[depth];
 	}
 
 	private static int index(int depth, int node) {

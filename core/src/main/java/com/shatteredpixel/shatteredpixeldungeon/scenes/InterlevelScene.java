@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ShadowBox;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
@@ -767,6 +769,9 @@ public class InterlevelScene extends PixelScene {
 			LevelTransition destTransition = level.getTransition(curTransition.destType);
 			curTransition = null;
 			Dungeon.switchLevel(level, destTransition.cell());
+			if (Dungeon.deckbuilderlevel) {
+				Statistics.deckBuilderMapNode = com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap.NONE;
+			}
 			if (Dungeon.tendencylevel) {
 				Statistics.tendencyMapNode = com.shatteredpixel.shatteredpixeldungeon.TendencyMap.NONE;
 			}
@@ -845,6 +850,23 @@ public class InterlevelScene extends PixelScene {
         GameLog.wipe();
 
         Dungeon.loadGame(GamesInProgress.curSlot);
+        if (Dungeon.deckbuilderlevel
+                && DeckBuilderRun.currentCombat != null
+                && isDeckBuilderCombatNode(Statistics.deckBuilderMapNode)) {
+            Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
+            Dungeon.switchLevel(level, Dungeon.hero.pos);
+            Game.switchScene(DeckBattleScene.class);
+            return;
+        }
+        if (Dungeon.deckbuilderlevel
+                && DeckBuilderRun.currentCombat == null
+                && Statistics.deckBuilderMapNode == DeckBuilderMap.NONE) {
+            Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
+            Dungeon.switchLevel(level, Dungeon.hero.pos);
+            DeckBuilderMapScene.curTransition = level.getTransition(com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition.Type.REGULAR_EXIT);
+            Game.switchScene(DeckBuilderMapScene.class);
+            return;
+        }
         if (Dungeon.depth == -1) {
             Dungeon.depth = Statistics.deepestFloor;
             Dungeon.switchLevel(Dungeon.loadLevel(GamesInProgress.curSlot), -1);
@@ -852,6 +874,12 @@ public class InterlevelScene extends PixelScene {
             Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
             Dungeon.switchLevel(level, Dungeon.hero.pos);
         }
+    }
+
+    private boolean isDeckBuilderCombatNode(int nodeType) {
+        return nodeType == DeckBuilderMap.COMBAT
+                || nodeType == DeckBuilderMap.ELITE
+                || nodeType == DeckBuilderMap.BOSS;
     }
 
     private void resurrect() {

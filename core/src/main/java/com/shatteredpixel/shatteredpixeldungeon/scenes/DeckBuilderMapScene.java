@@ -23,7 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
-import com.shatteredpixel.shatteredpixeldungeon.TendencyMap;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -41,15 +41,17 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.RectF;
 
-public class TendencyMapScene extends PixelScene {
+import java.io.IOException;
 
-	private static final int NODE_W = 34;
-	private static final int NODE_H = 20;
+public class DeckBuilderMapScene extends PixelScene {
+
+	private static final int NODE_W = 38;
+	private static final int NODE_H = 22;
 	private static final int CURRENT_W = 58;
-	private static final int ROW_H = 30;
+	private static final int ROW_H = 31;
 	private static final int TOP_PAD = 24;
 	private static final int BOTTOM_PAD = 80;
-	private static final int MAP_WIDTH = 170;
+	private static final int MAP_WIDTH = 300;
 
 	public static LevelTransition curTransition;
 
@@ -61,28 +63,29 @@ public class TendencyMapScene extends PixelScene {
 		inGameScene = true;
 		super.create();
 
-		TendencyMap.init();
+		DeckBuilderMap.init();
+		saveMapState();
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;
 		RectF insets = getCommonInsets();
 
-		add(new ColorBlock(w, h, 0xFF151812));
+		add(new ColorBlock(w, h, 0xFF11150F));
 
-		IconTitle title = new IconTitle(Icons.STAIRS.get(), Messages.get(WndTendencyMap.class, "title"));
+		IconTitle title = new IconTitle(Icons.STAIRS.get(), "덱빌딩 경로");
 		title.setSize(200, 0);
 		title.setPos(insets.left + (w - insets.left - insets.right - title.reqWidth()) / 2f, insets.top + 4);
 		align(title);
 		add(title);
 
-		RenderedTextBlock desc = renderTextBlock(Messages.get(WndTendencyMap.class, "desc", Dungeon.depth, curTransition == null ? Dungeon.depth + 1 : curTransition.destDepth), 6);
+		RenderedTextBlock desc = renderTextBlock("다음 층으로 향할 경로를 선택합니다.", 6);
 		desc.hardlight(0xCCCCCC);
 		desc.maxWidth(Math.min(220, w - (int)insets.left - (int)insets.right - 10));
 		desc.setPos(insets.left + (w - insets.left - insets.right - desc.width()) / 2f, title.bottom() + 3);
 		align(desc);
 		add(desc);
 
-		RenderedTextBlock legend = renderTextBlock(Messages.get(WndTendencyMap.class, "legend"), 5);
+		RenderedTextBlock legend = renderTextBlock("전투 / 엘리트 / 보상 / 휴식 / 이벤트", 5);
 		legend.hardlight(0xAAAFA4);
 		legend.maxWidth(Math.min(230, w - (int)insets.left - (int)insets.right - 10));
 		legend.setPos(insets.left + (w - insets.left - insets.right - legend.width()) / 2f, desc.bottom() + 3);
@@ -91,16 +94,18 @@ public class TendencyMapScene extends PixelScene {
 
 		float listTop = legend.bottom() + 5;
 		float listHeight = h - listTop - insets.bottom - 4;
-		int mapWidth = Math.min(MAP_WIDTH, w - (int)insets.left - (int)insets.right - 8);
+		int mapWidth = Math.min(MAP_WIDTH, w - (int)insets.left - (int)insets.right - 14);
 		int targetDepth = curTransition == null ? Dungeon.depth + 1 : curTransition.destDepth;
-		segmentEnd = ((targetDepth + 8) / 9) * 9;
-		segmentEnd = Math.min(TendencyMap.MAX_DEPTH, Math.max(9, segmentEnd));
-		segmentStart = segmentEnd == 9 ? 2 : segmentEnd - 8;
+		segmentStart = DeckBuilderMap.FIRST_DEPTH;
+		segmentEnd = DeckBuilderMap.MAX_DEPTH;
 		int contentHeight = (segmentEnd - segmentStart) * ROW_H + TOP_PAD + BOTTOM_PAD;
 
-		ScrollPane pane = new ScrollPane(new Component());
+		SmoothMapScrollPane pane = new SmoothMapScrollPane(new Component());
 		add(pane);
 		pane.setRect(insets.left + (w - insets.left - insets.right - mapWidth) / 2f, listTop, mapWidth, listHeight);
+		MapScrollBar scrollBar = new MapScrollBar(pane, contentHeight);
+		scrollBar.setRect(pane.right() + 2, listTop, 4, listHeight);
+		add(scrollBar);
 
 		Component content = pane.content();
 		content.clear();
@@ -119,6 +124,7 @@ public class TendencyMapScene extends PixelScene {
 		for (int depth = segmentStart; depth <= segmentEnd; depth++) {
 			int count = sceneCount(depth);
 			for (int node = 0; node < count; node++) {
+				if (sceneType(depth, node) == DeckBuilderMap.NONE) continue;
 				NodeButton btn = new NodeButton(depth, node);
 				btn.setRect(nodeX(node, count, mapWidth) - NODE_W / 2f, nodeY(depth) - NODE_H / 2f, NODE_W, NODE_H);
 				content.add(btn);
@@ -129,10 +135,18 @@ public class TendencyMapScene extends PixelScene {
 
 		float focusY = Dungeon.depth < segmentStart
 				? (nodeY(targetDepth) + currentY()) / 2f - listHeight / 2f
-				: nodeY(targetDepth) - listHeight / 2f;
-		pane.scrollTo(0, focusY);
+				: nodeY(Math.min(DeckBuilderMap.MAX_DEPTH, targetDepth)) - listHeight / 2f;
+		pane.jumpTo(0, focusY);
 
 		fadeIn();
+	}
+
+	private void saveMapState() {
+		try {
+			Dungeon.saveAll();
+		} catch (IOException e) {
+			Game.reportException(e);
+		}
 	}
 
 	private void addLinks(Component content, int depth, int mapWidth) {
@@ -142,8 +156,10 @@ public class TendencyMapScene extends PixelScene {
 
 		for (int node = 0; node < count; node++) {
 			int links = sceneLinks(depth, node, count, nextCount);
+			if (sceneType(depth, node) == DeckBuilderMap.NONE) continue;
 			for (int next = 0; next < nextCount; next++) {
 				if ((links & (1 << next)) == 0) continue;
+				if (sceneType(depth + 1, next) == DeckBuilderMap.NONE) continue;
 
 				float x1 = nodeX(node, count, mapWidth);
 				float y1 = nodeY(depth) - NODE_H / 2f;
@@ -153,9 +169,9 @@ public class TendencyMapScene extends PixelScene {
 				float dy = y2 - y1;
 				float len = (float)Math.sqrt(dx * dx + dy * dy);
 
-				boolean active = depth == Dungeon.depth && node == Statistics.tendencyMapPath && selectableNode(depth + 1, next);
-				ColorBlock line = new ColorBlock(len, active ? 2 : 1, active ? 0xFFB7E36A : 0xFF59604F);
-				line.am = active ? 0.85f : 0.28f;
+				boolean active = depth == Dungeon.depth && node == Statistics.deckBuilderMapPath && selectableNode(depth + 1, next);
+				ColorBlock line = new ColorBlock(len, active ? 2 : 1, active ? 0xFFD5F27A : 0xFF4E5848);
+				line.am = active ? 0.92f : 0.34f;
 				line.x = x1;
 				line.y = y1;
 				line.angle = (float)(Math.atan2(dy, dx) * 180 / Math.PI);
@@ -177,6 +193,7 @@ public class TendencyMapScene extends PixelScene {
 		int mask = (1 << count) - 1;
 		for (int node = 0; node < count; node++) {
 			if ((mask & (1 << node)) == 0) continue;
+			if (sceneType(nextDepth, node) == DeckBuilderMap.NONE) continue;
 			float x1 = mapWidth / 2f;
 			float y1 = currentY() - NODE_H / 2f;
 			float x2 = nodeX(node, count, mapWidth);
@@ -184,8 +201,8 @@ public class TendencyMapScene extends PixelScene {
 			float dx = x2 - x1;
 			float dy = y2 - y1;
 			float len = (float)Math.sqrt(dx * dx + dy * dy);
-			ColorBlock line = new ColorBlock(len, 2, 0xFFB7E36A);
-			line.am = 0.85f;
+			ColorBlock line = new ColorBlock(len, 2, 0xFFD5F27A);
+			line.am = 0.92f;
 			line.x = x1;
 			line.y = y1;
 			line.angle = (float)(Math.atan2(dy, dx) * 180 / Math.PI);
@@ -208,30 +225,28 @@ public class TendencyMapScene extends PixelScene {
 	}
 
 	private static int sceneCount(int depth) {
-		return TendencyMap.count(depth);
+		return DeckBuilderMap.count(depth);
 	}
 
 	private static int sceneType(int depth, int node) {
-		return TendencyMap.type(depth, node);
+		return DeckBuilderMap.type(depth, node);
 	}
 
 	private static int sceneLinks(int depth, int node, int count, int nextCount) {
-		return TendencyMap.links(depth, node);
+		return DeckBuilderMap.links(depth, node);
 	}
 
 	private static boolean selectableNode(int depth, int node) {
 		if (curTransition == null || depth != curTransition.destDepth) return false;
-		return TendencyMap.selectable(depth, node);
+		return DeckBuilderMap.selectable(depth, node);
 	}
 
 	private static float nodeY(int depth) {
-		int end = ((depth + 8) / 9) * 9;
-		end = Math.min(TendencyMap.MAX_DEPTH, Math.max(9, end));
-		return TOP_PAD + (end - depth) * ROW_H;
+		return TOP_PAD + (DeckBuilderMap.MAX_DEPTH - depth) * ROW_H;
 	}
 
 	private static float currentY() {
-		return TOP_PAD + 8 * ROW_H + BOTTOM_PAD / 2f;
+		return nodeY(DeckBuilderMap.FIRST_DEPTH) + ROW_H;
 	}
 
 	@Override
@@ -244,7 +259,9 @@ public class TendencyMapScene extends PixelScene {
 		private final int node;
 		private Image icon;
 		private RenderedTextBlock label;
+		private ColorBlock shadow;
 		private ColorBlock bg;
+		private ColorBlock accent;
 
 		private NodeButton(int depth, int node) {
 			this.depth = depth;
@@ -254,8 +271,14 @@ public class TendencyMapScene extends PixelScene {
 		@Override
 		protected void createChildren() {
 			super.createChildren();
-			bg = new ColorBlock(1, 1, 0xFF5A3030);
+			shadow = new ColorBlock(1, 1, 0xFF000000);
+			shadow.am = 0.38f;
+			add(shadow);
+			bg = new ColorBlock(1, 1, 0xFF30362F);
 			add(bg);
+			accent = new ColorBlock(1, 1, 0xFFFFFFFF);
+			accent.am = 0.92f;
+			add(accent);
 			icon = new Image(Icons.SKULL.get());
 			add(icon);
 			label = PixelScene.renderTextBlock("", 5);
@@ -265,31 +288,41 @@ public class TendencyMapScene extends PixelScene {
 		@Override
 		protected void layout() {
 			super.layout();
+			shadow.x = x + 2;
+			shadow.y = y + 2;
+			shadow.size(width, height);
 			bg.x = x;
 			bg.y = y;
 			bg.color(color());
 			bg.size(width, height);
-			bg.am = selectable() || current() ? 0.95f : 0.45f;
+			bg.am = selectable() || current() ? 0.98f : 0.58f;
+
+			accent.x = x;
+			accent.y = y;
+			accent.color(accentColor());
+			accent.size(3, height);
+			accent.visible = current();
 
 			icon.copy(icon());
-			icon.x = x + 2;
+			icon.x = x + 5;
 			icon.y = y + (height - icon.height()) / 2f;
 			align(icon);
 
 			label.text(labelText());
 			label.hardlight(textColor());
-			label.maxWidth((int)(width - 18));
-			label.setPos(x + 18, y + (height - label.height()) / 2f);
+			label.maxWidth((int)(width - 21));
+			label.setPos(x + 21, y + (height - label.height()) / 2f);
 			align(label);
 		}
 
 		@Override
 		protected void onClick() {
 			if (!selectable()) return;
-			Statistics.tendencyMapNode = sceneType(depth, node);
-			Statistics.tendencyMapPath = node;
+			Statistics.deckBuilderMapNode = sceneType(depth, node);
+			Statistics.deckBuilderMapPath = node;
 
 			if (deckBattleNode()) {
+				enterDeckBattle();
 				Game.switchScene(DeckBattleScene.class);
 				return;
 			}
@@ -301,7 +334,7 @@ public class TendencyMapScene extends PixelScene {
 		}
 
 		private boolean current() {
-			return depth == Dungeon.depth && node == Statistics.tendencyMapPath;
+			return depth == Dungeon.depth && node == Statistics.deckBuilderMapPath;
 		}
 
 		private boolean selectable() {
@@ -309,29 +342,66 @@ public class TendencyMapScene extends PixelScene {
 		}
 
 		private boolean deckBattleNode() {
-			if (!Dungeon.deckbuilderlevel && !Statistics.deckBuilderMode) return false;
 			int type = sceneType(depth, node);
-			return type == TendencyMap.COMBAT || type == TendencyMap.ELITE || type == TendencyMap.BOSS;
+			return type == DeckBuilderMap.COMBAT || type == DeckBuilderMap.ELITE || type == DeckBuilderMap.BOSS;
+		}
+
+		private void enterDeckBattle() {
+			try {
+				Level.beforeTransition();
+				Dungeon.saveAll();
+
+				Dungeon.depth = depth;
+				Dungeon.branch = curTransition == null ? Dungeon.branch : curTransition.destBranch;
+
+				Level level = Dungeon.levelHasBeenGenerated(Dungeon.depth, Dungeon.branch)
+						? Dungeon.loadLevel(com.shatteredpixel.shatteredpixeldungeon.GamesInProgress.curSlot)
+						: Dungeon.newLevel();
+				Dungeon.switchLevel(level, -1);
+				Dungeon.saveAll();
+			} catch (IOException e) {
+				Game.reportException(e);
+			}
 		}
 
 		private int color() {
-			if (sceneType(depth, node) == TendencyMap.BOSS) return 0xFF8A2020;
-			if (current()) return 0xFF496C9A;
-			if (selectable()) return 0xFF4F6D32;
+			if (current()) return 0xFF3E5F7A;
+			if (selectable()) return 0xFF456830;
 			switch (sceneType(depth, node)) {
-				case TendencyMap.ELITE:
-					return 0xFF6A3434;
-				case TendencyMap.SHOP:
-					return 0xFF6A5B2E;
-				case TendencyMap.TREASURE:
-					return 0xFF72592A;
-				case TendencyMap.EVENT:
-					return 0xFF40475C;
-				case TendencyMap.REST:
-					return 0xFF315B48;
-				case TendencyMap.COMBAT:
+				case DeckBuilderMap.ELITE:
+					return 0xFF5C3030;
+				case DeckBuilderMap.SHOP:
+					return 0xFF5D522E;
+				case DeckBuilderMap.TREASURE:
+					return 0xFF665328;
+				case DeckBuilderMap.EVENT:
+					return 0xFF394357;
+				case DeckBuilderMap.REST:
+					return 0xFF294D3E;
+				case DeckBuilderMap.BOSS:
+					return 0xFF7A2528;
+				case DeckBuilderMap.COMBAT:
 				default:
-					return 0xFF5E5E5E;
+					return 0xFF343A33;
+			}
+		}
+
+		private int accentColor() {
+			if (current()) return 0xFF9EC8FF;
+			switch (sceneType(depth, node)) {
+				case DeckBuilderMap.ELITE:
+				case DeckBuilderMap.BOSS:
+					return 0xFFFF7474;
+				case DeckBuilderMap.SHOP:
+				case DeckBuilderMap.TREASURE:
+					return 0xFFFFD15E;
+				case DeckBuilderMap.EVENT:
+					return 0xFF9FB6FF;
+				case DeckBuilderMap.REST:
+					return 0xFF8EE0B6;
+				case DeckBuilderMap.COMBAT:
+				default:
+					return 0xFFD5F27A;
 			}
 		}
 
@@ -340,24 +410,24 @@ public class TendencyMapScene extends PixelScene {
 		}
 
 		private String labelText() {
-			return Messages.get(WndTendencyMap.class, "node_" + TendencyMap.key(sceneType(depth, node)));
+			return Messages.get(WndTendencyMap.class, "node_" + DeckBuilderMap.key(sceneType(depth, node)));
 		}
 
 		private Image icon() {
 			switch (sceneType(depth, node)) {
-				case TendencyMap.BOSS:
+				case DeckBuilderMap.BOSS:
                     return Icons.NEWS.get();
-				case TendencyMap.ELITE:
+				case DeckBuilderMap.ELITE:
 					return Icons.SKULL.get();
-				case TendencyMap.SHOP:
+				case DeckBuilderMap.SHOP:
 					return Icons.GOLD.get();
-				case TendencyMap.TREASURE:
+				case DeckBuilderMap.TREASURE:
 					return Icons.TALENT.get();
-				case TendencyMap.EVENT:
+				case DeckBuilderMap.EVENT:
 					return Icons.INVESTIGATE.get();
-				case TendencyMap.REST:
+				case DeckBuilderMap.REST:
 					return Icons.WELL_HEALTH.get();
-				case TendencyMap.COMBAT:
+				case DeckBuilderMap.COMBAT:
 				default:
 					return Icons.SKULL.get();
 			}
@@ -388,6 +458,111 @@ public class TendencyMapScene extends PixelScene {
 			bg.am = 0.95f;
 			label.setPos(x + (width - label.width()) / 2f, y + (height - label.height()) / 2f);
 			align(label);
+		}
+	}
+
+	private static class SmoothMapScrollPane extends ScrollPane {
+
+		private float targetX;
+		private float targetY;
+		private float lastX;
+		private float lastY;
+
+		private SmoothMapScrollPane(Component content) {
+			super(content);
+		}
+
+		@Override
+		public void scrollTo(float x, float y) {
+			targetX = clampX(x);
+			targetY = clampY(y);
+		}
+
+		private void jumpTo(float x, float y) {
+			targetX = clampX(x);
+			targetY = clampY(y);
+			super.scrollTo(targetX, targetY);
+			lastX = content.camera.scroll.x;
+			lastY = content.camera.scroll.y;
+		}
+
+		@Override
+		public synchronized void update() {
+			super.update();
+			if (content.camera == null) return;
+
+			float currentX = content.camera.scroll.x;
+			float currentY = content.camera.scroll.y;
+			if (Math.abs(currentX - lastX) > 1f || Math.abs(currentY - lastY) > 1f) {
+				targetX = clampX(currentX);
+				targetY = clampY(currentY);
+			}
+
+			float nextX = currentX + (targetX - currentX) * Math.min(1f, Game.elapsed * 14f);
+			float nextY = currentY + (targetY - currentY) * Math.min(1f, Game.elapsed * 14f);
+			super.scrollTo(nextX, nextY);
+			lastX = content.camera.scroll.x;
+			lastY = content.camera.scroll.y;
+		}
+
+		private float clampX(float value) {
+			return Math.max(0, Math.min(value, Math.max(0, content.width() - width())));
+		}
+
+		private float clampY(float value) {
+			return Math.max(0, Math.min(value, Math.max(0, content.height() - height())));
+		}
+	}
+
+	private static class MapScrollBar extends Component {
+
+		private final ScrollPane pane;
+		private final float contentHeight;
+		private ColorBlock track;
+		private ColorBlock thumb;
+
+		private MapScrollBar(ScrollPane pane, float contentHeight) {
+			this.pane = pane;
+			this.contentHeight = contentHeight;
+		}
+
+		@Override
+		protected void createChildren() {
+			track = new ColorBlock(1, 1, 0xFF2D352A);
+			track.am = 0.9f;
+			add(track);
+			thumb = new ColorBlock(1, 1, 0xFFB7E36A);
+			thumb.am = 0.95f;
+			add(thumb);
+		}
+
+		@Override
+		protected void layout() {
+			track.x = x;
+			track.y = y;
+			track.size(width, height);
+			updateThumb();
+		}
+
+		@Override
+		public synchronized void update() {
+			super.update();
+			updateThumb();
+		}
+
+		private void updateThumb() {
+			if (pane == null || pane.content() == null || contentHeight <= pane.height()) {
+				visible = false;
+				return;
+			}
+			visible = true;
+			float thumbHeight = Math.max(14, height * height / contentHeight);
+			float maxScroll = Math.max(1, contentHeight - pane.height());
+			float scroll = pane.content().camera == null ? 0 : pane.content().camera.scroll.y;
+			float thumbY = y + (height - thumbHeight) * scroll / maxScroll;
+			thumb.x = x;
+			thumb.y = thumbY;
+			thumb.size(width, thumbHeight);
 		}
 	}
 }

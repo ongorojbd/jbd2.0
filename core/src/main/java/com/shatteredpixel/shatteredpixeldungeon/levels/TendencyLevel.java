@@ -56,10 +56,16 @@ public class TendencyLevel extends Level {
 
     @Override
     public void playLevelMusic() {
+        if (Dungeon.depth != 9) {
         Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.TENDENCY1},
-                new float[]{1},
-                false);
+                new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2},
+                new float[]{1, 1},
+                false); } else {
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.SEWERS_BOSS},
+                    new float[]{1},
+                    false);
+        }
     }
 
     private static int WIDTH = 31;
@@ -69,7 +75,7 @@ public class TendencyLevel extends Level {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_TENDENCY;
+        return Assets.Environment.TILES_SEWERS;
     }
 
     @Override

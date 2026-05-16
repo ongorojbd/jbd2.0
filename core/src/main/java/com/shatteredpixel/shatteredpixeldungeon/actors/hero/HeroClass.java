@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.En
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShrBomb;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
@@ -65,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
@@ -195,8 +197,7 @@ public enum HeroClass {
             new RingOfAccuracy().identify().upgrade(9999).collect();
             new PlateArmor().identify().upgrade(9999).collect();
             new WandOfDisintegration().identify().upgrade(9999).collect();
-            new WandOfDisintegration().identify().collect();
-            new CurseInfusion().identify().collect();
+            new SkeletonKey().identify().collect();
             new PotionOfHealing().identify().quantity(9999).collect();
             new PotionOfMindVision().identify().quantity(9999).collect();
             new UV().identify().quantity(9999).collect();

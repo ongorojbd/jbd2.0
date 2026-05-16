@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -44,15 +45,22 @@ public class TendencyRestLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.TENDENCY1},
-                new float[]{1},
-                false);
+        if (Dungeon.depth != 9) {
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2},
+                    new float[]{1, 1},
+                    false); } else {
+            Music.INSTANCE.playTracks(
+                    new String[]{Assets.Music.SEWERS_BOSS},
+                    new float[]{1},
+                    false);
+        }
     }
+
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_TENDENCY2;
+        return Assets.Environment.TILES_SEWERS;
     }
 
     @Override

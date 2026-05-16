@@ -109,6 +109,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.DeckBuilderMapScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TendencyMapScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
@@ -607,11 +608,24 @@ public abstract class Level implements Bundlable {
 			return false;
 		}
 
-		if (Dungeon.tendencylevel
+		if ((Dungeon.tendencylevel || Dungeon.deckbuilderlevel)
 				&& (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
 				|| transition.type == LevelTransition.Type.BRANCH_ENTRANCE
 				|| transition.destDepth < Dungeon.depth)) {
 			GLog.w(Messages.get(hero, "tendency2"));
+			return false;
+		}
+
+		if (Dungeon.deckbuilderlevel
+				&& transition.type == LevelTransition.Type.REGULAR_EXIT
+				&& Statistics.deckBuilderMapNode == com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap.NONE) {
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					DeckBuilderMapScene.curTransition = transition;
+					Game.switchScene(DeckBuilderMapScene.class);
+				}
+			});
 			return false;
 		}
 

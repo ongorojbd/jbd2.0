@@ -236,6 +236,7 @@ public class Dungeon {
 
     public static boolean diolevel;
     public static boolean tendencylevel;
+    public static boolean deckbuilderlevel;
 
     public static HashSet<Integer> chapters;
 
@@ -308,6 +309,7 @@ public class Dungeon {
         mboss19 = 1;
         diolevel = false;
         tendencylevel = false; // 항상 false로 초기화
+        deckbuilderlevel = false;
 
         gold = 0;
         energy = 0;
@@ -346,7 +348,13 @@ public class Dungeon {
 
         Level level;
 
-        if (tendencylevel) { // 전투조류
+        if (deckbuilderlevel) {
+
+            if (Statistics.deckBuilderMapNode == com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap.TREASURE) level = new TendencyTreasureLevel();
+            else if (Statistics.deckBuilderMapNode == com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap.EVENT) level = new TendencyEventLevel();
+            else level = new TendencyRestLevel();
+
+        } else if (tendencylevel) { // 전투조류
 
             if (Dungeon.depth % 9 == 0) level = new ArenaBossLevel();
             else if (Statistics.tendencyMapNode == TendencyMap.REST) level = new TendencyRestLevel();
@@ -360,6 +368,10 @@ public class Dungeon {
                     if (SPDSettings.getDio() >= 1) {
                         diolevel = true;
                         level = new DioLevel();
+                    } else if (SPDSettings.getDeckbuilder() > 0) {
+                        deckbuilderlevel = true;
+                        Statistics.deckBuilderMode = true;
+                        level = new TendencyRestLevel();
                     } else if (SPDSettings.getTendency() > 0) { // 전투조류 시작
                         tendencylevel = true;
                         level = new ArenaLevel();
@@ -776,6 +788,7 @@ public class Dungeon {
 
     private static final String DIOLEVEL = "diolevel";
     private static final String TENDENCYLEVEL = "tendencylevel";
+    private static final String DECKBUILDERLEVEL = "deckbuilderlevel";
     private static final String DROPPED = "dropped%d";
     private static final String PORTED = "ported%d";
     private static final String LEVEL = "level";
@@ -806,6 +819,7 @@ public class Dungeon {
             bundle.put(MBOSS19, mboss19);
             bundle.put(DIOLEVEL, diolevel);
             bundle.put(TENDENCYLEVEL, tendencylevel);
+            bundle.put(DECKBUILDERLEVEL, deckbuilderlevel);
 
             bundle.put(GOLD, gold);
             bundle.put(ENERGY, energy);
@@ -996,6 +1010,7 @@ public class Dungeon {
         mboss19 = bundle.getInt(MBOSS19);
         diolevel = bundle.getBoolean(DIOLEVEL);
         tendencylevel = bundle.getBoolean(TENDENCYLEVEL);
+        deckbuilderlevel = bundle.getBoolean(DECKBUILDERLEVEL);
 
         Statistics.restoreFromBundle(bundle);
         Generator.restoreFromBundle(bundle);

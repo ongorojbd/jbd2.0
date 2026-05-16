@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.SparseArray;
 import java.util.Arrays;
@@ -149,12 +150,19 @@ public class Statistics {
     public static boolean polpoQuest = false;
     public static boolean diokilled = false;
     public static boolean tendencyMode = false;
+    public static boolean deckBuilderMode = false;
     public static int tendencyMapNode = TendencyMap.NONE;
     public static int tendencyMapPath = -1;
     public static int tendencyMapVersion = 0;
     public static int[] tendencyMapCounts;
     public static int[] tendencyMapTypes;
     public static int[] tendencyMapLinks;
+    public static int deckBuilderMapNode = com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap.NONE;
+    public static int deckBuilderMapPath = -1;
+    public static int deckBuilderMapVersion = 0;
+    public static int[] deckBuilderMapCounts;
+    public static int[] deckBuilderMapTypes;
+    public static int[] deckBuilderMapLinks;
 
     public static void reset() {
 
@@ -267,12 +275,20 @@ public class Statistics {
         diokilled = false;
         polpoQuest = false;
         tendencyMode = false;
+        deckBuilderMode = false;
         tendencyMapNode = TendencyMap.NONE;
         tendencyMapPath = -1;
         tendencyMapVersion = 0;
         tendencyMapCounts = null;
         tendencyMapTypes = null;
         tendencyMapLinks = null;
+        deckBuilderMapNode = com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap.NONE;
+        deckBuilderMapPath = -1;
+        deckBuilderMapVersion = 0;
+        deckBuilderMapCounts = null;
+        deckBuilderMapTypes = null;
+        deckBuilderMapLinks = null;
+        DeckBuilderRun.reset();
         d4cEnhanced = false;
         johnnyquest = false;
         diospawned = false;
@@ -390,12 +406,19 @@ public class Statistics {
     private static final String DIOKILLED = "diokilled";
     private static final String POLPOQUEST = "polpoQuest";
     private static final String TENDENCY_MODE = "tendencyMode";
+    private static final String DECK_BUILDER_MODE = "deckBuilderMode";
     private static final String TENDENCY_MAP_NODE = "tendencyMapNode";
     private static final String TENDENCY_MAP_PATH = "tendencyMapPath";
     private static final String TENDENCY_MAP_VERSION = "tendencyMapVersion";
     private static final String TENDENCY_MAP_COUNTS = "tendencyMapCounts";
     private static final String TENDENCY_MAP_TYPES = "tendencyMapTypes";
     private static final String TENDENCY_MAP_LINKS = "tendencyMapLinks";
+    private static final String DECK_BUILDER_MAP_NODE = "deckBuilderMapNode";
+    private static final String DECK_BUILDER_MAP_PATH = "deckBuilderMapPath";
+    private static final String DECK_BUILDER_MAP_VERSION = "deckBuilderMapVersion";
+    private static final String DECK_BUILDER_MAP_COUNTS = "deckBuilderMapCounts";
+    private static final String DECK_BUILDER_MAP_TYPES = "deckBuilderMapTypes";
+    private static final String DECK_BUILDER_MAP_LINKS = "deckBuilderMapLinks";
 
     public static void storeInBundle(Bundle bundle) {
         bundle.put(GOLD, goldCollected);
@@ -513,12 +536,20 @@ public class Statistics {
         bundle.put(DIOKILLED, diokilled);
         bundle.put(POLPOQUEST, polpoQuest);
         bundle.put(TENDENCY_MODE, tendencyMode);
+        bundle.put(DECK_BUILDER_MODE, deckBuilderMode);
         bundle.put(TENDENCY_MAP_NODE, tendencyMapNode);
         bundle.put(TENDENCY_MAP_PATH, tendencyMapPath);
         bundle.put(TENDENCY_MAP_VERSION, tendencyMapVersion);
         if (tendencyMapCounts != null) bundle.put(TENDENCY_MAP_COUNTS, tendencyMapCounts);
         if (tendencyMapTypes != null) bundle.put(TENDENCY_MAP_TYPES, tendencyMapTypes);
         if (tendencyMapLinks != null) bundle.put(TENDENCY_MAP_LINKS, tendencyMapLinks);
+        bundle.put(DECK_BUILDER_MAP_NODE, deckBuilderMapNode);
+        bundle.put(DECK_BUILDER_MAP_PATH, deckBuilderMapPath);
+        bundle.put(DECK_BUILDER_MAP_VERSION, deckBuilderMapVersion);
+        if (deckBuilderMapCounts != null) bundle.put(DECK_BUILDER_MAP_COUNTS, deckBuilderMapCounts);
+        if (deckBuilderMapTypes != null) bundle.put(DECK_BUILDER_MAP_TYPES, deckBuilderMapTypes);
+        if (deckBuilderMapLinks != null) bundle.put(DECK_BUILDER_MAP_LINKS, deckBuilderMapLinks);
+        DeckBuilderRun.storeInBundle(bundle);
     }
 
     public static void restoreFromBundle(Bundle bundle) {
@@ -650,12 +681,20 @@ public class Statistics {
         diokilled = bundle.getBoolean(DIOKILLED);
         polpoQuest = bundle.getBoolean(POLPOQUEST);
         tendencyMode = bundle.getBoolean(TENDENCY_MODE);
+        deckBuilderMode = bundle.getBoolean(DECK_BUILDER_MODE);
         tendencyMapNode = bundle.getInt(TENDENCY_MAP_NODE);
         tendencyMapPath = bundle.getInt(TENDENCY_MAP_PATH);
         tendencyMapVersion = bundle.getInt(TENDENCY_MAP_VERSION);
         tendencyMapCounts = bundle.contains(TENDENCY_MAP_COUNTS) ? bundle.getIntArray(TENDENCY_MAP_COUNTS) : null;
         tendencyMapTypes = bundle.contains(TENDENCY_MAP_TYPES) ? bundle.getIntArray(TENDENCY_MAP_TYPES) : null;
         tendencyMapLinks = bundle.contains(TENDENCY_MAP_LINKS) ? bundle.getIntArray(TENDENCY_MAP_LINKS) : null;
+        deckBuilderMapNode = bundle.getInt(DECK_BUILDER_MAP_NODE);
+        deckBuilderMapPath = bundle.getInt(DECK_BUILDER_MAP_PATH);
+        deckBuilderMapVersion = bundle.getInt(DECK_BUILDER_MAP_VERSION);
+        deckBuilderMapCounts = bundle.contains(DECK_BUILDER_MAP_COUNTS) ? bundle.getIntArray(DECK_BUILDER_MAP_COUNTS) : null;
+        deckBuilderMapTypes = bundle.contains(DECK_BUILDER_MAP_TYPES) ? bundle.getIntArray(DECK_BUILDER_MAP_TYPES) : null;
+        deckBuilderMapLinks = bundle.contains(DECK_BUILDER_MAP_LINKS) ? bundle.getIntArray(DECK_BUILDER_MAP_LINKS) : null;
+        DeckBuilderRun.restoreFromBundle(bundle);
     }
 
     public static void preview(GamesInProgress.Info info, Bundle bundle) {
