@@ -314,7 +314,7 @@ public class DeckBuilderCombat {
 					int blocked = Math.min(remainingBlock, enemyDamage);
 					int damage = Math.max(0, enemyDamage - blocked);
 					remainingBlock = Math.max(0, remainingBlock - enemyDamage);
-                        lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, hit == 0 ? "[\uB300\uD559\uC0B4!]" : null));
+                        lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, hit == 0 ? "[\uB300\uD559\uC0B4!]" : null, enemyDamage > 0 && damage == 0));
 				}
 				enemy.thorns = Math.max(0, enemy.thorns - 2);
 			} else if (enemy.intent == RESULT_ATTACK_6_BLOCK_5) {
@@ -324,14 +324,14 @@ public class DeckBuilderCombat {
 				int damage = Math.max(0, enemyDamage - blocked);
 				remainingBlock = Math.max(0, remainingBlock - enemyDamage);
 				enemy.block += 5;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, "\uBC29\uC5B4\uB9C9 +5"));
+                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, "\uBC29\uC5B4\uB9C9 +5", enemyDamage > 0 && damage == 0));
 			} else {
 				int enemyDamage = enemyDamage(enemy, enemy.intent);
 				incoming += enemyDamage;
 				int blocked = Math.min(remainingBlock, enemyDamage);
 				int damage = Math.max(0, enemyDamage - blocked);
 				remainingBlock = Math.max(0, remainingBlock - enemyDamage);
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, enemy.kind == DeckEnemy.TOWER_OF_GREY && enemy.intent == 7 ? "[\uD600 \uB728\uC5B4\uB0B4\uAE30]" : null));
+                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, enemy.kind == DeckEnemy.TOWER_OF_GREY && enemy.intent == 7 ? "[\uD600 \uB728\uC5B4\uB0B4\uAE30]" : null, enemyDamage > 0 && damage == 0));
 			}
 			if (enemy.vulnerable > 0) enemy.vulnerable--;
 		}
@@ -449,16 +449,22 @@ public class DeckBuilderCombat {
 		public final int damage;
 		public final boolean slimyInject;
 		public final String label;
+		public final boolean blocked;
 
 		public EnemyAction(int enemyIndex, int damage, boolean slimyInject) {
 			this(enemyIndex, damage, slimyInject, null);
 		}
 
 		public EnemyAction(int enemyIndex, int damage, boolean slimyInject, String label) {
+			this(enemyIndex, damage, slimyInject, label, false);
+		}
+
+		public EnemyAction(int enemyIndex, int damage, boolean slimyInject, String label, boolean blocked) {
 			this.enemyIndex = enemyIndex;
 			this.damage = damage;
 			this.slimyInject = slimyInject;
 			this.label = label;
+			this.blocked = blocked;
 		}
 	}
 }

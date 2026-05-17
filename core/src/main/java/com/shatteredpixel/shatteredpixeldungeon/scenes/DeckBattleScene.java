@@ -15,6 +15,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderCombat;
@@ -94,6 +95,7 @@ public class DeckBattleScene extends PixelScene {
 	private ColorBlock playerShieldBar;
 	private RenderedTextBlock playerShieldLabel;
 	private DeckBuffButton playerStrengthBuff;
+	private DeckBuffButton playerAgeDownBuff;
 	private ColorBlock deckCounterBg;
 	private ColorBlock discardCounterBg;
 	private PointerArea deckCounterArea;
@@ -118,6 +120,7 @@ public class DeckBattleScene extends PixelScene {
 	private DeckRunHud runHud;
 	private float spriteScale;
 	private boolean rewardOpen;
+	private boolean endingRun;
 
 	@Override
 	public void create() {
@@ -225,6 +228,8 @@ public class DeckBattleScene extends PixelScene {
 		add(playerShieldLabel);
         playerStrengthBuff = new DeckBuffButton(BuffIndicator.RAGE, "공격력", "공격 카드가 주는 피해가 이 수치만큼 증가합니다.");
 		add(playerStrengthBuff);
+		playerAgeDownBuff = new DeckBuffButton(BuffIndicator.WEAKNESS, "연령 저하", "공격 카드의 피해가 30% 감소합니다.");
+		add(playerAgeDownBuff);
 
 		logText = renderTextBlock(6);
 		logText.maxWidth(w - (int)insets.left - (int)insets.right - 18);
@@ -256,10 +261,7 @@ public class DeckBattleScene extends PixelScene {
 					addEffect(new DelayedActionEffect(0.95f, new Runnable() {
 						@Override
 						public void run() {
-							DeckBuilderRun.playerHP = Math.max(1, DeckBuilderRun.playerHT / 2);
-							DeckBuilderRun.clearCombat();
-							Dungeon.level.playLevelMusic();
-							Game.switchScene(DeckBuilderMapScene.class);
+							finishRunDeath();
 						}
 					}));
 				} else {
@@ -351,10 +353,7 @@ public class DeckBattleScene extends PixelScene {
 			addEffect(new DelayedActionEffect(0.95f, new Runnable() {
 				@Override
 				public void run() {
-					DeckBuilderRun.playerHP = Math.max(1, DeckBuilderRun.playerHT / 2);
-					DeckBuilderRun.clearCombat();
-					Dungeon.level.playLevelMusic();
-					Game.switchScene(DeckBuilderMapScene.class);
+					finishRunDeath();
 				}
 			}));
 		} else {
@@ -393,6 +392,14 @@ public class DeckBattleScene extends PixelScene {
 			add(view.hpBg);
 			view.hp = new ColorBlock(1, 1, 0xFFE04F45);
 			add(view.hp);
+			view.shield = new ColorBlock(1, 1, 0xFF4A90D9);
+			view.shield.am = 0.88f;
+			view.shield.visible = false;
+			add(view.shield);
+			view.shieldLabel = renderTextBlock(6);
+			view.shieldLabel.hardlight(0xFF8EDBFF);
+			view.shieldLabel.visible = false;
+			add(view.shieldLabel);
 			view.targetMark = new ColorBlock(1, 1, 0xFFFFD66B);
 			view.targetMark.am = 0.72f;
 			add(view.targetMark);
@@ -410,8 +417,6 @@ public class DeckBattleScene extends PixelScene {
 			add(view.vulnerableBuff);
             view.strengthBuff = new DeckBuffButton(BuffIndicator.RAGE, "공격력", "공격 피해가 이 수치만큼 증가합니다.");
 			add(view.strengthBuff);
-            view.blockBuff = new DeckBuffButton(BuffIndicator.ARMOR, "방어막", "피해를 먼저 흡수합니다.");
-			add(view.blockBuff);
             view.thornsBuff = new DeckBuffButton(BuffIndicator.THORNS, "반격", "공격 카드로 공격한 대상에게 피해를 되돌립니다.");
 			add(view.thornsBuff);
 			enemyViews.add(view);
@@ -620,15 +625,22 @@ public class DeckBattleScene extends PixelScene {
 			if (!alive) {
 				view.vulnerableBuff.visible = false;
 				view.strengthBuff.visible = false;
-				view.blockBuff.visible = false;
 				view.thornsBuff.visible = false;
+				view.shield.visible = false;
+				view.shieldLabel.visible = false;
 				continue;
 			}
 			
 			view.vulnerableBuff.setStacks(view.enemy.vulnerable);
 			view.strengthBuff.setStacks(view.enemy.strength);
-			view.blockBuff.setStacks(view.enemy.block);
 			view.thornsBuff.setStacks(view.enemy.thorns);
+			view.shield.visible = view.enemy.block > 0;
+			if (view.enemy.block > 0) {
+				view.shieldLabel.text(String.valueOf(view.enemy.block));
+				view.shieldLabel.visible = true;
+			} else {
+				view.shieldLabel.visible = false;
+			}
 			
 			view.name.text(view.enemy.name + "  " + view.enemy.hp + "/" + view.enemy.ht);
 			view.name.hardlight(targeted ? Window.TITLE_COLOR : 0xFFFFFFFF);
@@ -636,6 +648,9 @@ public class DeckBattleScene extends PixelScene {
 			view.intent.hardlight(view.enemy.intent < 0 && view.enemy.intent != DeckBuilderCombat.RESULT_SLIMY_INJECT ? 0xFFFFD66B
 					: view.enemy.intent == DeckBuilderCombat.RESULT_SLIMY_INJECT ? 0xFF88FF88 : 0xFFFF5555);
 			view.hp.size(ACTOR_HP_W * view.enemy.hp / (float)view.enemy.ht, ACTOR_HP_H);
+			float hpFillWidth = view.hp.width();
+			float rawShieldW = view.enemy.block * ACTOR_HP_W / (float)Math.max(1, view.enemy.ht);
+			view.shield.size(Math.max(0, Math.min(rawShieldW, ACTOR_HP_W - hpFillWidth)), ACTOR_HP_H);
 		}
 	}
 
@@ -704,6 +719,7 @@ public class DeckBattleScene extends PixelScene {
 			playerShieldLabel.visible = false;
 		}
 		playerStrengthBuff.setStacks(combat.playerStrength + combat.playerTurnStrength);
+		playerAgeDownBuff.setStacks(combat.playerDamageReduction > 0 ? combat.playerDamageReduction : 0);
 
 		positionActorHud();
 
@@ -802,10 +818,7 @@ public class DeckBattleScene extends PixelScene {
 				@Override
 				public void run() {
 					playDeath(playerSprite);
-					DeckBuilderRun.playerHP = Math.max(1, DeckBuilderRun.playerHT / 2);
-					DeckBuilderRun.clearCombat();
-					Dungeon.level.playLevelMusic();
-					Game.switchScene(DeckBuilderMapScene.class);
+					finishRunDeath();
 				}
 			}));
 		} else if (combat.won()) {
@@ -988,8 +1001,15 @@ public class DeckBattleScene extends PixelScene {
 			playerShieldLabel.setPos(playerHpBg.x + ACTOR_HP_W + 3, playerHp.y - 1);
 		}
 		if (playerStrengthBuff.visible) {
-			playerStrengthBuff.setPos(playerHpBg.x + ACTOR_HP_W / 2f - playerStrengthBuff.width() / 2f,
-					playerStatus.top() - playerStrengthBuff.height() - 2);
+			float buffWidth = playerStrengthBuff.width() + (playerAgeDownBuff.visible ? playerAgeDownBuff.width() + 2 : 0);
+			float buffX = playerHpBg.x + ACTOR_HP_W / 2f - buffWidth / 2f;
+			playerStrengthBuff.setPos(buffX, playerStatus.top() - playerStrengthBuff.height() - 2);
+			if (playerAgeDownBuff.visible) {
+				playerAgeDownBuff.setPos(buffX + playerStrengthBuff.width() + 2, playerStrengthBuff.top());
+			}
+		} else if (playerAgeDownBuff.visible) {
+			playerAgeDownBuff.setPos(playerHpBg.x + ACTOR_HP_W / 2f - playerAgeDownBuff.width() / 2f,
+					playerStatus.top() - playerAgeDownBuff.height() - 2);
 		}
 	}
 
@@ -1013,7 +1033,6 @@ public class DeckBattleScene extends PixelScene {
 			float buffWidth = 0;
 			if (view.vulnerableBuff.visible) buffWidth += view.vulnerableBuff.width() + 2;
 			if (view.strengthBuff.visible) buffWidth += view.strengthBuff.width() + 2;
-			if (view.blockBuff.visible) buffWidth += view.blockBuff.width() + 2;
 			if (view.thornsBuff.visible) buffWidth += view.thornsBuff.width() + 2;
 			if (buffWidth > 0) {
 				buffWidth -= 2;
@@ -1027,10 +1046,6 @@ public class DeckBattleScene extends PixelScene {
 					view.strengthBuff.setPos(buffX, buffY);
 					buffX += view.strengthBuff.width() + 2;
 				}
-				if (view.blockBuff.visible) {
-					view.blockBuff.setPos(buffX, buffY);
-					buffX += view.blockBuff.width() + 2;
-				}
 				if (view.thornsBuff.visible) {
 					view.thornsBuff.setPos(buffX, buffY);
 				}
@@ -1042,6 +1057,11 @@ public class DeckBattleScene extends PixelScene {
 			view.hpBg.size(ACTOR_HP_W, ACTOR_HP_H);
 			view.hp.x = view.hpBg.x;
 			view.hp.y = view.hpBg.y;
+			view.shield.x = view.hp.x + view.hp.width();
+			view.shield.y = view.hp.y;
+			if (view.shieldLabel.visible) {
+				view.shieldLabel.setPos(view.hpBg.x + ACTOR_HP_W + 3, view.hp.y - 1);
+			}
 			
 			float intentY = view.sprite.y + view.sprite.height() + 5;
 			view.intent.setPos(cx - view.intent.width() / 2f, intentY);
@@ -1112,7 +1132,7 @@ public class DeckBattleScene extends PixelScene {
                 if (action.label != null) {
                     spawnFloatingText(action.label, enemyCenterX(view), enemyCenterY(view) - 24, 0xFFFFD66B);
                 }
-                if (action.damage <= 0) {
+                if (action.damage <= 0 && !action.blocked) {
                     continue;
                 }
                 float delay = attackOrdinal * 0.08f;
@@ -1440,7 +1460,7 @@ public class DeckBattleScene extends PixelScene {
 		int width = 170;
 		int pos = 7;
 
-		RenderedTextBlock title = renderTextBlock(card.title(card.code()), 8);
+		RenderedTextBlock title = renderTextBlock(cardDetailTitle(card, card.code()), 8);
 		title.hardlight(Window.TITLE_COLOR);
 		title.setPos((width - title.width()) / 2f, pos);
 		win.add(title);
@@ -1495,6 +1515,21 @@ public class DeckBattleScene extends PixelScene {
 		Game.switchScene(DeckBuilderMapScene.class);
 	}
 
+	private void finishRunDeath() {
+		if (endingRun) return;
+		endingRun = true;
+		combatLocked = true;
+		hideCardInfo();
+		DeckBuilderRun.playerHP = 0;
+		DeckBuilderRun.clearCombat();
+		if (Dungeon.hero != null) {
+			Dungeon.hero.HP = 0;
+			Dungeon.fail(DeckBuilderRetire.class);
+		}
+		Dungeon.deleteGame(GamesInProgress.curSlot, true);
+		Game.switchScene(RankingsScene.class);
+	}
+
 	private void showCardInfo(int cardCode) {
 		cardInfo.show(cardCode, -1);
 		addToFront(cardInfo);
@@ -1518,16 +1553,19 @@ public class DeckBattleScene extends PixelScene {
 		if (card.damage(cardCode) > 0) {
 			text += damageRulesText(card, cardCode);
 		}
-        if (card.block(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + "방어 " + card.block(cardCode);
-        if (card.draw(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + card.draw(cardCode) + "장 뽑기";
-        if (card.vulnerable(cardCode) > 0) text += (text.length() > 0 ? "\n" : "") + "피해 증폭: 받는 공격 피해가 50% 증가합니다.";
-        if (card.strength(cardCode) > 0) text += (text.length() > 0 ? "\n" : "") + "공격력: 공격 카드의 피해가 증가합니다.";
-        if (card.strength(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + "공격력 " + card.strength(cardCode) + " 얻기";
-        if (card.target == DeckCardTarget.RANDOM_ENEMY) text += (text.length() > 0 ? " / " : "") + "무작위 대상";
-        if (card.handPenalty > 0) text += (text.length() > 0 ? " / " : "") + "손패: 공격 -" + card.handPenalty;
+		if (card.block(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + "방어 " + card.block(cardCode);
+		if (card.draw(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + card.draw(cardCode) + "장 뽑기";
+		if (card.vulnerable(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + "피해 증폭 " + card.vulnerable(cardCode) + " 부여";
+		if (card.strength(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + "공격력 " + card.strength(cardCode) + " 획득";
+		if (card.target == DeckCardTarget.RANDOM_ENEMY) text += (text.length() > 0 ? " / " : "") + "무작위 대상";
+		if (card.handPenalty > 0) text += (text.length() > 0 ? " / " : "") + "손패: 공격 -" + card.handPenalty;
 		if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) text += (text.length() > 0 ? " / " : "") + DeckCardKeyword.EXHAUST.label;
 		if (card.hasKeyword(cardCode, DeckCardKeyword.RETAIN)) text += (text.length() > 0 ? " / " : "") + DeckCardKeyword.RETAIN.label;
 		return text;
+	}
+
+	private String cardDetailTitle(DeckCard card, int cardCode) {
+		return card.title(cardCode) + ": 비용 " + card.cost(cardCode);
 	}
 
 	private String damageRulesText(DeckCard card, int cardCode) {
@@ -1548,6 +1586,9 @@ public class DeckBattleScene extends PixelScene {
 
 	private String titleText() {
         return Dungeon.depth + "층";
+	}
+
+	public static class DeckBuilderRetire {
 	}
 
 	private CharSprite enemySprite(DeckEnemy kind) {
@@ -1747,11 +1788,12 @@ public class DeckBattleScene extends PixelScene {
 		private RenderedTextBlock intent;
 		private ColorBlock hpBg;
 		private ColorBlock hp;
+		private ColorBlock shield;
+		private RenderedTextBlock shieldLabel;
 		private ColorBlock targetMark;
 		private PointerArea area;
 		private DeckBuffButton vulnerableBuff;
 		private DeckBuffButton strengthBuff;
-		private DeckBuffButton blockBuff;
 		private DeckBuffButton thornsBuff;
 		private float baseX;
 		private float baseY;
@@ -2131,7 +2173,7 @@ public class DeckBattleScene extends PixelScene {
 		private void show(int cardCode, float preferredY) {
 			DeckCard card = DeckCard.byCode(cardCode);
 			visible = true;
-            title.text(card.title(cardCode) + ": 비용 " + card.cost(cardCode));
+            title.text(cardDetailTitle(card, cardCode));
             body.text(cardRulesText(card, cardCode));
 			body.maxWidth(142);
 			keywords.text(keywordText(card, cardCode));
@@ -2157,15 +2199,17 @@ public class DeckBattleScene extends PixelScene {
 
 		private String keywordText(DeckCard card, int cardCode) {
 			String text = "";
-        if (card.vulnerable(cardCode) > 0) text += (text.length() > 0 ? "\n" : "") + "피해 증폭: 받는 공격 피해가 50% 증가합니다.";
-            if (card.strength(cardCode) > 0) text += (text.length() > 0 ? "\n" : "") + "공격력: 공격 카드의 피해가 증가합니다.";
+			if (card.vulnerable(cardCode) > 0) text += "피해 증폭: 받는 공격 피해가 50% 증가합니다.";
+			if (card.strength(cardCode) > 0) text += (text.length() > 0 ? "\n" : "") + "공격력: 공격 카드의 피해가 증가합니다.";
 			for (DeckCardKeyword keyword : DeckCardKeyword.values()) {
 				if (card.hasKeyword(cardCode, keyword)) {
 					text += (text.length() > 0 ? "\n" : "") + keyword.label + ": " + keyword.description;
 				}
 			}
+			if (card.handPenalty > 0) text += (text.length() > 0 ? "\n" : "") + "방해: 손에 있으면 공격 카드 피해가 감소합니다.";
 			return text;
 		}
+
 	}
 
 	private class CardButton extends CardViewButton {
@@ -2411,7 +2455,7 @@ public class DeckBattleScene extends PixelScene {
 		cost.hardlight(enabled ? 0xFFFFD84D : 0xFF8A7A42);
 		cost.setPos(x + 4, y + 4);
 
-            title.text(card.title(cardCode) + ": 비용 " + card.cost(cardCode));
+            title.text(card.title(cardCode));
 		title.hardlight(enabled ? 0xFFFFFFFF : 0xFF8A8A8A);
 		title.maxWidth((int)width - 14);
 		title.setPos(x + 12, y + 5);

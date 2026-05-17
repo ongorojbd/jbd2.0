@@ -15,6 +15,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
@@ -30,11 +31,14 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.watabou.utils.RectF;
 
 import java.io.IOException;
 
 public class DeckRelicChoiceScene extends PixelScene {
+
+	private boolean choosing;
 
 	@Override
 	public void create() {
@@ -116,14 +120,45 @@ public class DeckRelicChoiceScene extends PixelScene {
 	}
 
 	private void choose(DeckRelic relic) {
-		if (DeckBuilderMapScene.curTransition == null && Dungeon.level != null) {
-			DeckBuilderMapScene.curTransition = Dungeon.level.getTransition(LevelTransition.Type.REGULAR_EXIT);
-		}
+		if (choosing) return;
+		choosing = true;
+
 		Sample.INSTANCE.play(Assets.Sounds.DA2);
 		DeckBuilderRun.chooseStartingRelic(relic);
+		prepareFirstMapChoice();
 		DeckBuilderMap.ensureReadyForNextChoice();
-		saveRun();
-		Game.switchScene(DeckBuilderMapScene.class);
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				Game.switchScene(DeckBuilderMapScene.class);
+			}
+		});
+	}
+
+	private void prepareFirstMapChoice() {
+		Statistics.deckBuilderMapNode = DeckBuilderMap.NONE;
+		Statistics.deckBuilderMapPath = -1;
+
+		if (Dungeon.depth < 1) {
+			Dungeon.depth = 1;
+		}
+
+		if (DeckBuilderMapScene.curTransition != null || Dungeon.level == null) {
+			return;
+		}
+
+		LevelTransition transition = Dungeon.level.getTransition(LevelTransition.Type.REGULAR_EXIT);
+		if (transition == null) {
+			int cell = Dungeon.hero == null ? Dungeon.level.entrance() : Dungeon.hero.pos;
+			transition = new LevelTransition(
+					Dungeon.level,
+					cell,
+					LevelTransition.Type.REGULAR_EXIT,
+					DeckBuilderMap.FIRST_DEPTH,
+					Dungeon.branch,
+					LevelTransition.Type.REGULAR_ENTRANCE);
+		}
+		DeckBuilderMapScene.curTransition = transition;
 	}
 
 	private void layoutRelicChoices(DeckRelic[] choices, RectF insets, int w, int h, float width, float speechBottom, boolean wide) {

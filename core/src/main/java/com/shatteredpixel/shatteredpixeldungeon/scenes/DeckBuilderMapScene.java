@@ -71,6 +71,7 @@ public class DeckBuilderMapScene extends PixelScene {
 			Game.switchScene(DeckRelicChoiceScene.class);
 			return;
 		}
+		ensureTransition();
 		DeckBuilderMap.ensureReadyForNextChoice();
 		saveMapState();
 
@@ -105,7 +106,7 @@ public class DeckBuilderMapScene extends PixelScene {
 		float listTop = legend.bottom() + 5;
 		float listHeight = h - listTop - insets.bottom - 4;
 		int mapWidth = Math.min(MAP_WIDTH, w - (int)insets.left - (int)insets.right - 14);
-		int targetDepth = curTransition == null ? Dungeon.depth + 1 : curTransition.destDepth;
+		int targetDepth = targetDepth();
 		segmentStart = DeckBuilderMap.FIRST_DEPTH;
 		segmentEnd = DeckBuilderMap.MAX_DEPTH;
 		int contentHeight = (segmentEnd - segmentStart) * ROW_H + TOP_PAD + BOTTOM_PAD;
@@ -156,6 +157,24 @@ public class DeckBuilderMapScene extends PixelScene {
 			Dungeon.saveAll();
 		} catch (IOException e) {
 			Game.reportException(e);
+		}
+	}
+
+	private static void ensureTransition() {
+		if (curTransition != null || Dungeon.level == null) {
+			return;
+		}
+
+		curTransition = Dungeon.level.getTransition(LevelTransition.Type.REGULAR_EXIT);
+		if (curTransition == null) {
+			int cell = Dungeon.hero == null ? Dungeon.level.entrance() : Dungeon.hero.pos;
+			curTransition = new LevelTransition(
+					Dungeon.level,
+					cell,
+					LevelTransition.Type.REGULAR_EXIT,
+					targetDepth(),
+					Dungeon.branch,
+					LevelTransition.Type.REGULAR_ENTRANCE);
 		}
 	}
 
@@ -227,7 +246,7 @@ public class DeckBuilderMapScene extends PixelScene {
 
 	private void addCurrentLinks(Component content, int mapWidth) {
 		if (Dungeon.depth >= segmentStart) return;
-		int nextDepth = curTransition == null ? Dungeon.depth + 1 : curTransition.destDepth;
+		int nextDepth = targetDepth();
 		int count = sceneCount(nextDepth);
 		int mask = (1 << count) - 1;
 		for (int node = 0; node < count; node++) {
@@ -276,9 +295,18 @@ public class DeckBuilderMapScene extends PixelScene {
 	}
 
 	private static boolean selectableNode(int depth, int node) {
-		if (curTransition != null && depth != curTransition.destDepth) return false;
-		if (curTransition == null && depth != Dungeon.depth + 1) return false;
+		if (depth != targetDepth()) return false;
 		return DeckBuilderMap.selectable(depth, node);
+	}
+
+	private static int targetDepth() {
+		if (curTransition != null) {
+			return Math.max(DeckBuilderMap.FIRST_DEPTH, Math.min(DeckBuilderMap.MAX_DEPTH, curTransition.destDepth));
+		}
+		if (Dungeon.depth < DeckBuilderMap.FIRST_DEPTH) {
+			return DeckBuilderMap.FIRST_DEPTH;
+		}
+		return Math.min(DeckBuilderMap.MAX_DEPTH, Dungeon.depth + 1);
 	}
 
 	private static float nodeY(int depth) {

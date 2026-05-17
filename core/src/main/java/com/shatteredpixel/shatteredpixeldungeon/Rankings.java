@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.DeckBattleScene;
 import com.shatteredpixel.shatteredpixeldungeon.services.rankings.DailyRankingEntry;
 import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
 import com.shatteredpixel.shatteredpixeldungeon.services.rankings.RankingService;
@@ -573,6 +574,8 @@ public enum Rankings {
 				}
 			} else if (cause == null) {
 				return Messages.get(this, "something");
+			} else if (cause == DeckBattleScene.DeckBuilderRetire.class) {
+				return "덱빌딩 모드에서 리타이어!";
 			} else {
 				String result = Messages.get(cause, "rankings_desc", (Messages.get(cause, "name")));
 				if (result.contains(Messages.NO_TEXT_FOUND)){

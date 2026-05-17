@@ -124,6 +124,7 @@ public class InterlevelScene extends PixelScene {
 
     private static Thread thread;
     private static Exception error = null;
+    private static volatile Class<? extends PixelScene> nextScene = null;
     private float waitingTime;
 
     public static int lastRegion = -1;
@@ -501,6 +502,7 @@ public class InterlevelScene extends PixelScene {
         timeLeft = fadeTime;
 
         if (thread == null) {
+            nextScene = null;
             thread = new Thread() {
                 @Override
                 public void run() {
@@ -617,18 +619,25 @@ public class InterlevelScene extends PixelScene {
                 }
 
                 if ((timeLeft -= Game.elapsed) <= 0) {
-                    if (mode == Mode.DESCEND
+					Class<? extends PixelScene> sceneToSwitch = null;
+                    if (nextScene != null) {
+                        mode = Mode.NONE;
+						sceneToSwitch = nextScene;
+                    } else if (mode == Mode.DESCEND
                             && Dungeon.deckbuilderlevel
                             && !DeckBuilderRun.startingRelicChosen
                             && Dungeon.level != null) {
                         DeckBuilderMapScene.curTransition = Dungeon.level.getTransition(LevelTransition.Type.REGULAR_EXIT);
-                        Game.switchScene(DeckRelicChoiceScene.class);
+                        mode = Mode.NONE;
+						sceneToSwitch = DeckRelicChoiceScene.class;
                     } else {
-                        Game.switchScene(GameScene.class);
+						sceneToSwitch = GameScene.class;
                     }
                     KeyEvent.clearListeners(); //removes potential listener for continue
                     thread = null;
                     error = null;
+                    nextScene = null;
+					Game.switchScene(sceneToSwitch);
                 }
                 break;
 
@@ -863,7 +872,7 @@ public class InterlevelScene extends PixelScene {
                 && isDeckBuilderCombatNode(Statistics.deckBuilderMapNode)) {
             Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
             Dungeon.switchLevel(level, Dungeon.hero.pos);
-            Game.switchScene(DeckBattleScene.class);
+            nextScene = DeckBattleScene.class;
             return;
         }
         if (Dungeon.deckbuilderlevel
@@ -872,7 +881,7 @@ public class InterlevelScene extends PixelScene {
             Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
             Dungeon.switchLevel(level, Dungeon.hero.pos);
             DeckBuilderMapScene.curTransition = level.getTransition(com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition.Type.REGULAR_EXIT);
-            Game.switchScene(DeckBuilderMapScene.class);
+            nextScene = DeckBuilderMapScene.class;
             return;
         }
         if (Dungeon.depth == -1) {
