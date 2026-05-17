@@ -13,6 +13,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
@@ -26,7 +28,16 @@ public enum DeckCard {
 	STAR_FINGER(4, "매지션즈 레드의 사격 DISC", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.RANDOM_ENEMY, 2, 13, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_FIREBOLT),
 	RIPPLE_WALL(5, "개구리", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 2, 5, 12, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DEWDROP),
 	SLIMY(6, "익사", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 1, 0, 0, 1, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.MOB_HOLDER),
-	IGNITE(7, "강화의 DISC", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 2, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ);
+	IGNITE(7, "강화의 DISC", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 2, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ),
+
+	SHIV(8, "전갈탄", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 4, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.SPIRIT_ARROW, HeroClass.HUNTRESS, 0),
+	SCORPION_THROW(9, "전갈 투척", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 1, 0, 0, 0, 0, false, ItemSpriteSheet.SPIRIT_BOW, HeroClass.HUNTRESS, 1),
+	PHANTOM_BLADES(10, "감각 폭주", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, Talent.FOLLOWUP_STRIKE, HeroClass.HUNTRESS, 0),
+	ACCURACY(11, "생명 추적", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, Talent.HEIGHTENED_SENSES, HeroClass.HUNTRESS, 0),
+	KNIFE_TRAP(12, "무한한 가능성", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 2, 0, 0, 0, 0, 0, 0, 0, true, Talent.SWIFT_SPIRIT, HeroClass.HUNTRESS, 0),
+	LEADING_STRIKE(13, "자세 교정", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 3, 0, 0, 0, 0, 0, 0, true, Talent.SHARED_UPGRADES, HeroClass.HUNTRESS, 2),
+	CLOAK_AND_DAGGER(14, "투쟁심", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 6, 0, 0, 0, 0, 0, true, Talent.POINT_BLANK, HeroClass.HUNTRESS, 1);
+
 
 	private static final int ID_MASK = 0xFF;
 	private static final int UPGRADE_SHIFT = 8;
@@ -48,9 +59,32 @@ public enum DeckCard {
 	public final int baseKeywords;
 	public final boolean reward;
 	public final int icon;
+	public final HeroClass deckClass;
+	public final int shivs;
+	public final Talent talentIcon;
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon) {
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, null, 0, null);
+	}
+
+	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
+			 int strength, int handPenalty, int baseKeywords, boolean reward, Talent talentIcon) {
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, null, 0, talentIcon);
+	}
+
+	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
+			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon, HeroClass deckClass, int shivs) {
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, deckClass, shivs, null);
+	}
+
+	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
+			 int strength, int handPenalty, int baseKeywords, boolean reward, Talent talentIcon, HeroClass deckClass, int shivs) {
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, deckClass, shivs, talentIcon);
+	}
+
+	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
+			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon, HeroClass deckClass, int shivs, Talent talentIcon) {
 		this.id = id;
 		this.title = title;
 		this.type = type;
@@ -66,6 +100,9 @@ public enum DeckCard {
 		this.baseKeywords = baseKeywords;
 		this.reward = reward;
 		this.icon = icon;
+		this.deckClass = deckClass;
+		this.shivs = shivs;
+		this.talentIcon = talentIcon;
 	}
 
 	public int code() {
@@ -81,15 +118,17 @@ public enum DeckCard {
 	}
 
 	public int damage(int code) {
+		if (this == SHIV) return damage + upgradeLevel(code) * 2;
 		return damage > 0 ? damage + upgradeLevel(code) * 3 : 0;
 	}
 
 	public int block(int code) {
+		if (this == CLOAK_AND_DAGGER) return block;
 		return block > 0 ? block + upgradeLevel(code) * 3 : 0;
 	}
 
 	public int draw(int code) {
-		return draw;
+		return this == SCORPION_THROW ? draw + upgradeLevel(code) : draw;
 	}
 
 	public int vulnerable(int code) {
@@ -100,26 +139,16 @@ public enum DeckCard {
 		return strength > 0 ? strength + upgradeLevel(code) : 0;
 	}
 
+	public int shivs(int code) {
+		return this == CLOAK_AND_DAGGER ? shivs + upgradeLevel(code) : shivs;
+	}
+
 	public boolean hasKeyword(int code, DeckCardKeyword keyword) {
 		return (keywords(code) & keyword.bit) != 0;
 	}
 
 	public int keywords(int code) {
 		return baseKeywords | keywordBits(code);
-	}
-
-	public String rulesText(int code) {
-		String text = "";
-		if (damage(code) > 0) text += target == DeckCardTarget.ALL_ENEMIES ? "모든 적에게 피해 " + damage(code) : "피해 " + damage(code);
-		if (block(code) > 0) text += (text.length() > 0 ? " / " : "") + "방어 " + block(code);
-		if (draw(code) > 0) text += (text.length() > 0 ? " / " : "") + draw(code) + "장 뽑기";
-		if (vulnerable(code) > 0) text += (text.length() > 0 ? " / " : "") + "취약 " + vulnerable(code);
-		if (strength(code) > 0) text += (text.length() > 0 ? " / " : "") + "공격력을 " + strength(code) + " 얻습니다.";
-		if (target == DeckCardTarget.RANDOM_ENEMY) text += (text.length() > 0 ? " / " : "") + "무작위 대상";
-		if (handPenalty > 0) text += (text.length() > 0 ? " / " : "") + "손패: 공격 -" + handPenalty;
-		if (hasKeyword(code, DeckCardKeyword.EXHAUST)) text += (text.length() > 0 ? " / " : "") + DeckCardKeyword.EXHAUST.label;
-		if (hasKeyword(code, DeckCardKeyword.RETAIN)) text += (text.length() > 0 ? " / " : "") + DeckCardKeyword.RETAIN.label;
-		return text;
 	}
 
 	public DeckCardEffect[] effects(int code) {
@@ -129,6 +158,10 @@ public enum DeckCard {
 		if (vulnerable(code) > 0) effects.add(new DeckCardEffects.Vulnerable());
 		if (draw(code) > 0) effects.add(new DeckCardEffects.Draw());
 		if (strength(code) > 0) effects.add(new DeckCardEffects.Strength());
+		if (shivs(code) > 0) effects.add(new DeckCardEffects.AddShivs());
+		if (this == PHANTOM_BLADES) effects.add(new DeckCardEffects.PhantomBlades());
+		if (this == ACCURACY) effects.add(new DeckCardEffects.Accuracy());
+		if (this == KNIFE_TRAP) effects.add(new DeckCardEffects.KnifeTrap());
 		return effects.toArray(new DeckCardEffect[0]);
 	}
 
@@ -169,9 +202,18 @@ public enum DeckCard {
 	}
 
 	public static DeckCard[] rewardPool() {
+		return rewardPool(null, false, false);
+	}
+
+	public static DeckCard[] rewardPool(HeroClass heroClass, boolean classOnly, boolean neutralOnly) {
 		ArrayList<DeckCard> pool = new ArrayList<>();
 		for (DeckCard card : values()) {
-			if (card.reward) pool.add(card);
+			if (!card.reward) continue;
+			boolean classCard = card.deckClass != null;
+			if (classOnly && card.deckClass != heroClass) continue;
+			if (neutralOnly && classCard) continue;
+			if (!classOnly && !neutralOnly && classCard && card.deckClass != heroClass) continue;
+			pool.add(card);
 		}
 		return pool.toArray(new DeckCard[0]);
 	}

@@ -14,6 +14,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -102,9 +103,24 @@ public class DeckBuilderRun {
 		startingRelicChoices = null;
 		act1NormalFights = 0;
 		lastNormalEncounter = -1;
-		addCopies(DeckCard.STRIKE, 5);
-		addCopies(DeckCard.GUARD, 4);
-		addCopies(DeckCard.BASH, 1);
+
+		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.WARRIOR) {
+			addCopies(DeckCard.STRIKE, 5);
+			addCopies(DeckCard.GUARD, 4);
+			addCopies(DeckCard.BASH, 1);
+		}
+
+		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.HUNTRESS) {
+			addCopies(DeckCard.STRIKE, 5);
+			addCopies(DeckCard.GUARD, 4);
+			addCopies(DeckCard.SCORPION_THROW, 1);
+			addCopies(DeckCard.PHANTOM_BLADES, 1);
+			addCopies(DeckCard.ACCURACY, 1);
+			addCopies(DeckCard.KNIFE_TRAP, 1);
+			addCopies(DeckCard.LEADING_STRIKE, 1);
+			addCopies(DeckCard.CLOAK_AND_DAGGER, 1);
+		}
+
 		addPotion(DeckPotion.HASTE);
 		addPotion(DeckPotion.FIRE);
 		addPotion(DeckPotion.STRENGTH);
@@ -158,15 +174,15 @@ public class DeckBuilderRun {
 
 	public static DeckCard[] rewardChoicesForNode(int nodeType) {
 		initIfNeeded();
-		DeckCard[] choices = new DeckCard[3];
+		DeckCard[] choices = new DeckCard[4];
 		boolean rareSeen = false;
 		int commonSeen = 0;
 		for (int i = 0; i < choices.length; i++) {
 			DeckCardRarity rarity = rollCardRarity(nodeType);
-			DeckCard card = randomCard(rarity);
+			DeckCard card = randomCard(rarity, classSlot(i));
 			int guard = 0;
 			while (duplicate(choices, i, card) && guard++ < 20) {
-				card = randomCard(rarity);
+				card = randomCard(rarity, classSlot(i));
 			}
 			choices[i] = card == null ? DeckCard.STRIKE : card;
 			if (choices[i].rarity == DeckCardRarity.RARE) rareSeen = true;
@@ -174,6 +190,13 @@ public class DeckBuilderRun {
 		}
 		cardRareOffset = rareSeen ? -5 : cardRareOffset + commonSeen;
 		return choices;
+	}
+
+	private static int classSlot(int index) {
+		if (index == 0) return 100;
+		if (index == 1) return 60;
+		if (index == 2) return 20;
+		return 0;
 	}
 
 	private static DeckCardRarity rollCardRarity(int nodeType) {
@@ -194,10 +217,23 @@ public class DeckBuilderRun {
 	}
 
 	public static DeckCard randomCard(DeckCardRarity rarity) {
-		DeckCard[] pool = DeckCard.rewardPool();
+		return randomCard(rarity, -1);
+	}
+
+	private static DeckCard randomCard(DeckCardRarity rarity, int classChance) {
+		boolean classOnly = classChance >= 100;
+		boolean neutralOnly = classChance == 0;
+		boolean classPool = classOnly || (!neutralOnly && classChance > 0 && Random.Int(100) < classChance);
+		DeckCard[] pool = DeckCard.rewardPool(Dungeon.hero == null ? null : Dungeon.hero.heroClass, classPool, !classPool);
 		ArrayList<DeckCard> rarityPool = new ArrayList<>();
 		for (DeckCard card : pool) {
 			if (card.rarity == rarity) rarityPool.add(card);
+		}
+		if (rarityPool.isEmpty() && classPool && !classOnly) {
+			return randomCard(rarity, 0);
+		}
+		if (rarityPool.isEmpty() && !classPool && !neutralOnly) {
+			return randomCard(rarity, 100);
 		}
 		if (rarityPool.isEmpty()) return pool.length == 0 ? DeckCard.STRIKE : pool[Random.Int(pool.length)];
 		return rarityPool.get(Random.Int(rarityPool.size()));

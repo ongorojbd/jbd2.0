@@ -66,6 +66,54 @@ public class DeckCardEffects {
 		}
 	}
 
+	public static class AddShivs implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			for (int i = 0; i < card.shivs(cardCode); i++) {
+				int shivCode = DeckCard.SHIV.code();
+				if (combat.shivRetain) {
+					shivCode = DeckCard.withKeyword(shivCode, DeckCardKeyword.RETAIN);
+				}
+				combat.addToHand(shivCode);
+			}
+		}
+	}
+
+	public static class PhantomBlades implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.shivRetain = true;
+			combat.firstShivDamageBonus = Math.max(combat.firstShivDamageBonus, DeckCard.upgradeLevel(cardCode) > 0 ? 12 : 9);
+		}
+	}
+
+	public static class Accuracy implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.shivDamageBonus += DeckCard.upgradeLevel(cardCode) > 0 ? 6 : 4;
+		}
+	}
+
+	public static class KnifeTrap implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			ArrayList<Integer> shivs = new ArrayList<>();
+			for (int exhausted : combat.exhaustPile) {
+				if (DeckCard.byCode(exhausted) == DeckCard.SHIV) {
+					shivs.add(DeckCard.upgradeLevel(cardCode) > 0 ? DeckCard.upgrade(exhausted) : exhausted);
+				}
+			}
+			for (int shivCode : shivs) {
+				for (DeckCombatEnemy target : targets(combat, DeckCard.SHIV)) {
+					int damage = combat.cardDamage(DeckCard.SHIV, shivCode, target);
+					int dealt = combat.damageEnemy(target, damage, true);
+					result.addHit(combat.enemyIndex(target), dealt, 0);
+				}
+				combat.firstShivUsed = true;
+			}
+		}
+	}
+
 	private static ArrayList<DeckCombatEnemy> targets(DeckBuilderCombat combat, DeckCard card) {
 		ArrayList<DeckCombatEnemy> targets = new ArrayList<>();
 		if (card.target == DeckCardTarget.ALL_ENEMIES) {

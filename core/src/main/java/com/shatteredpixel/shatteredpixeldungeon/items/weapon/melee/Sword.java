@@ -350,6 +350,31 @@ public class Sword extends MeleeWeapon {
         }
     }
 
+	public static void giorno(){
+		Sample.INSTANCE.play(Assets.Sounds.ATK_SPIRITBOW, 1, Random.Float(0.87f, 1.15f));
+
+		switch (Random.Int(6)) {
+				case 0:
+					Sample.INSTANCE.play(Assets.Sounds.GIORNO1);
+					break;
+				case 1:
+					Sample.INSTANCE.play(Assets.Sounds.GIORNO2);
+					break;
+				case 2:
+					Sample.INSTANCE.play(Assets.Sounds.GIORNO3);
+					break;
+				case 3:
+					Sample.INSTANCE.play(Assets.Sounds.GIORNO4);
+					break;
+				case 4:
+					Sample.INSTANCE.play(Assets.Sounds.GIORNO5);
+					break;
+				case 5:
+					Sample.INSTANCE.play(Assets.Sounds.GIORNO6);
+					break;
+			}
+	}
+
 	public static void seph(){
 		if (SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof MageArmor) {
 			Sample.INSTANCE.play( Assets.Sounds.CE6);

@@ -23,12 +23,14 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardKeyword;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardTarget;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCombatEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPlayResult;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotion;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
@@ -47,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -203,7 +206,7 @@ public class DeckBattleScene extends PixelScene {
 		discardCounterArea = new PointerArea(0, 0, 1, 1) {
 			@Override
 			protected void onClick(PointerEvent event) {
-                showPileWindow("버린 카드 목록", combat.discardPile);
+                showDiscardWindow();
 			}
 		};
 		add(discardCounterArea);
@@ -792,6 +795,55 @@ public class DeckBattleScene extends PixelScene {
 		saveCombatState();
 		combatLocked = true;
 
+		if (card == DeckCard.SCORPION_THROW) {
+			Sample.INSTANCE.play(Assets.Sounds.PLANT);
+		} else if (card == DeckCard.SHIV) {
+			Sword.giorno();
+		}
+
+		if (card == DeckCard.KNIFE_TRAP && result.hits.size() > 1) {
+			// 칼날 함정: 단도를 하나씩 순차적으로 날림
+			final float fx = startX;
+			final float fy = startY;
+			final ArrayList<DeckPlayResult.Hit> hits = result.hits;
+			for (int i = 0; i < hits.size(); i++) {
+				final DeckPlayResult.Hit hit = hits.get(i);
+				final float delay = i * 0.18f;
+				addEffect(new DelayedActionEffect(delay, new Runnable() {
+					@Override
+					public void run() {
+						spawnCardAttack(DeckCard.SHIV, fx, fy, hit);
+					}
+				}));
+			}
+			final float totalDelay = hits.size() * 0.18f + 0.22f;
+			log(card.title(cardCode) + ": " + cardRulesText(card, cardCode));
+			if (combat.playerDead()) {
+				addEffect(new DelayedActionEffect(totalDelay, new Runnable() {
+					@Override
+					public void run() {
+						playDeath(playerSprite);
+						finishRunDeath();
+					}
+				}));
+			} else if (combat.won()) {
+				addEffect(new DelayedActionEffect(totalDelay + 0.3f, new Runnable() {
+					@Override
+					public void run() {
+						showReward();
+					}
+				}));
+			} else {
+				addEffect(new DelayedActionEffect(totalDelay, new Runnable() {
+					@Override
+					public void run() {
+						refresh();
+					}
+				}));
+			}
+			return;
+		}
+
 		for (DeckPlayResult.Hit hit : result.hits) {
 			if (hit.damage > 0) {
 				spawnCardAttack(card, startX, startY, hit);
@@ -1191,6 +1243,81 @@ public class DeckBattleScene extends PixelScene {
 		}
 	}
 
+	private void showDiscardWindow() {
+		final Window win = new Window();
+		int width = 180;
+		int pos = 7;
+
+		// 버린 카드 섹션
+		RenderedTextBlock discardTitle = renderTextBlock("버린 카드 목록", 9);
+		discardTitle.hardlight(Window.TITLE_COLOR);
+		discardTitle.setPos((width - discardTitle.width()) / 2f, pos);
+		win.add(discardTitle);
+		pos += 15;
+
+		pos = addPileToWindow(win, combat.discardPile, width, pos);
+		pos += 8;
+
+		// 구분선
+		ColorBlock divider = new ColorBlock(width - 10, 1, 0xFF555555);
+		divider.x = 5;
+		divider.y = pos;
+		win.add(divider);
+		pos += 6;
+
+		// 소멸 카드 섹션
+		RenderedTextBlock exhaustTitle = renderTextBlock("소멸된 카드 목록", 9);
+		exhaustTitle.hardlight(0xFFFF8888);
+		exhaustTitle.setPos((width - exhaustTitle.width()) / 2f, pos);
+		win.add(exhaustTitle);
+		pos += 15;
+
+		pos = addPileToWindow(win, combat.exhaustPile, width, pos);
+		pos += 8;
+
+		RedButton close = new RedButton("닫기", 6) {
+			@Override
+			protected void onClick() {
+				win.hide();
+			}
+		};
+		close.setRect((width - 100) / 2f, pos, 100, 16);
+		win.add(close);
+		pos += 22;
+
+		win.resize(width, pos);
+		addToFront(win);
+	}
+
+	private int addPileToWindow(Window win, ArrayList<Integer> pile, int width, int pos) {
+		if (pile.isEmpty()) {
+			RenderedTextBlock empty = renderTextBlock("(없음)", 6);
+			empty.hardlight(0xFF888888);
+			empty.setPos((width - empty.width()) / 2f, pos);
+			win.add(empty);
+			pos += 12;
+		} else {
+			LinkedHashMap<Integer, Integer> counts = new LinkedHashMap<>();
+			for (int id : pile) {
+				Integer prev = counts.get(id);
+				counts.put(id, prev == null ? 1 : prev + 1);
+			}
+			for (Map.Entry<Integer, Integer> entry : counts.entrySet()) {
+				int cardCode = entry.getKey();
+				DeckCard card = DeckCard.byCode(cardCode);
+				int count = entry.getValue();
+				String line = count > 1 ? card.title(cardCode) + " x" + count : card.title(cardCode);
+				RenderedTextBlock cardLine = renderTextBlock(line, 6);
+				cardLine.maxWidth(width - 10);
+				cardLine.hardlight(0xFFDDD8C8);
+				cardLine.setPos(5, pos);
+				win.add(cardLine);
+				pos += (int) cardLine.height() + 3;
+			}
+		}
+		return pos;
+	}
+
 	private void showPileWindow(String windowTitle, ArrayList<Integer> pile) {
 		final Window win = new Window();
 		int width = 180;
@@ -1264,7 +1391,10 @@ public class DeckBattleScene extends PixelScene {
 		}
 		final DeckCard[] rewards = DeckBuilderRun.rewardChoices();
 		final Window reward = new Window();
-		int width = 220;
+		int cardW = 62;
+		int cardGap = 10;
+		int totalCardW = rewards.length * cardW + Math.max(0, rewards.length - 1) * cardGap;
+		int width = Math.max(220, totalCardW + 20);
 		int pos = 7;
 
         RenderedTextBlock title = renderTextBlock("카드 보상", 9);
@@ -1273,9 +1403,6 @@ public class DeckBattleScene extends PixelScene {
 		reward.add(title);
 		pos += 18;
 
-		int cardW = 62;
-		int cardGap = 10;
-		int totalCardW = rewards.length * cardW + Math.max(0, rewards.length - 1) * cardGap;
 		int startX = (width - totalCardW) / 2;
 		for (int i = 0; i < rewards.length; i++) {
 			final DeckCard card = rewards[i];
@@ -1403,7 +1530,10 @@ public class DeckBattleScene extends PixelScene {
 
 	private void showCardRewardWindow(final Window parent, final DeckCard[] cards, final RewardRow cardRow) {
 		final Window win = new Window();
-		int width = 235;
+		int cardW = 62;
+		int cardGap = 10;
+		int totalCardW = cards.length * cardW + Math.max(0, cards.length - 1) * cardGap;
+		int width = Math.max(235, totalCardW + 20);
 		int pos = 7;
 
         RenderedTextBlock title = renderTextBlock("카드 보상", 9);
@@ -1412,9 +1542,6 @@ public class DeckBattleScene extends PixelScene {
 		win.add(title);
 		pos += 18;
 
-		int cardW = 62;
-		int cardGap = 10;
-		int totalCardW = cards.length * cardW + Math.max(0, cards.length - 1) * cardGap;
 		int startX = (width - totalCardW) / 2;
 		for (int i = 0; i < cards.length; i++) {
 			final DeckCard card = cards[i];
@@ -1549,18 +1676,41 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private String cardRulesText(DeckCard card, int cardCode) {
+		if (card == DeckCard.SCORPION_THROW) {
+			int bonus = DeckCard.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			return "전갈탄을 1장 손으로 가져옵니다. 카드를 " + bonus + "장 뽑습니다.";
+		}
+		if (card == DeckCard.PHANTOM_BLADES) {
+			int bonus = DeckCard.upgradeLevel(cardCode) > 0 ? 12 : 9;
+			return "모든 전갈탄에 " + DeckCardKeyword.RETAIN.label + "이 부여됩니다. 매 턴마다 처음으로 사용하는 전갈탄의 피해량이 +" + bonus + " 증가합니다.";
+		}
+		if (card == DeckCard.ACCURACY) {
+			int bonus = DeckCard.upgradeLevel(cardCode) > 0 ? 6 : 4;
+			return "전갈탄의 피해량이 +" + bonus + " 증가합니다.";
+		}
+		if (card == DeckCard.KNIFE_TRAP) {
+			String base = "소멸한 카드 더미에 있는 모든 전갈탄을 선택한 적에게 사용합니다.";
+			return DeckCard.upgradeLevel(cardCode) > 0 ? base + " (강화된 단도로 사용)" : base;
+		}
+		if (card == DeckCard.LEADING_STRIKE) {
+			return "피해를 " + combat.cardDamage(card, cardCode, combat.target()) + " 줍니다. 전갈탄을 " + card.shivs(cardCode) + "장 손으로 가져옵니다.";
+		}
+		if (card == DeckCard.CLOAK_AND_DAGGER) {
+			return "보호막을 " + card.block(cardCode) + " 얻습니다. 전갈탄을 " + card.shivs(cardCode) + "장 손으로 가져옵니다.";
+		}
+
 		String text = "";
 		if (card.damage(cardCode) > 0) {
 			text += damageRulesText(card, cardCode);
 		}
-		if (card.block(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + "방어 " + card.block(cardCode);
-		if (card.draw(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + card.draw(cardCode) + "장 뽑기";
-		if (card.vulnerable(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + "피해 증폭 " + card.vulnerable(cardCode) + " 부여";
-		if (card.strength(cardCode) > 0) text += (text.length() > 0 ? " / " : "") + "공격력 " + card.strength(cardCode) + " 획득";
-		if (card.target == DeckCardTarget.RANDOM_ENEMY) text += (text.length() > 0 ? " / " : "") + "무작위 대상";
-		if (card.handPenalty > 0) text += (text.length() > 0 ? " / " : "") + "손패: 공격 -" + card.handPenalty;
-		if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) text += (text.length() > 0 ? " / " : "") + DeckCardKeyword.EXHAUST.label;
-		if (card.hasKeyword(cardCode, DeckCardKeyword.RETAIN)) text += (text.length() > 0 ? " / " : "") + DeckCardKeyword.RETAIN.label;
+		if (card.block(cardCode) > 0) text += (text.length() > 0 ? " " : "") + "보호막을 " + card.block(cardCode) + " 얻습니다.";
+		if (card.draw(cardCode) > 0) text += (text.length() > 0 ? " " : "") + card.draw(cardCode) + "장 뽑기";
+		if (card.vulnerable(cardCode) > 0) text += (text.length() > 0 ? " " : "") + "피해 증폭 " + card.vulnerable(cardCode) + " 부여";
+		if (card.strength(cardCode) > 0) text += (text.length() > 0 ? " " : "") + "공격력 " + card.strength(cardCode) + " 획득";
+		if (card.target == DeckCardTarget.RANDOM_ENEMY) text += (text.length() > 0 ? " " : "") + "무작위 대상";
+		if (card.handPenalty > 0) text += (text.length() > 0 ? " " : "") + "손패: 공격 -" + card.handPenalty;
+		if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) text += (text.length() > 0 ? " " : "") + DeckCardKeyword.EXHAUST.label;
+		if (card.hasKeyword(cardCode, DeckCardKeyword.RETAIN)) text += (text.length() > 0 ? " " : "") + DeckCardKeyword.RETAIN.label;
 		return text;
 	}
 
@@ -1579,9 +1729,9 @@ public class DeckBattleScene extends PixelScene {
 			}
 			if (min == Integer.MAX_VALUE) min = max = combat.cardDamage(card, cardCode);
 			String value = min == max ? String.valueOf(min) : min + "-" + max;
-            return card.target == DeckCardTarget.ALL_ENEMIES ? "모든 적에게 피해 " + value : "피해 " + value;
+            return card.target == DeckCardTarget.ALL_ENEMIES ? "모든 적에게 피해를 " + value + " 줍니다.": "피해를 " + value + " 줍니다.";
 		}
-        return "피해 " + combat.cardDamage(card, cardCode, combat.target());
+        return "피해를 " + combat.cardDamage(card, cardCode, combat.target()) + " 줍니다.";
 	}
 
 	private String titleText() {
@@ -2381,6 +2531,7 @@ public class DeckBattleScene extends PixelScene {
 		protected ColorBlock artPanel;
 		protected ItemSprite art;
 		protected Image spriteArt;
+		protected TalentIcon talentArt;
 		protected RenderedTextBlock cost;
 		protected RenderedTextBlock title;
 		protected RenderedTextBlock typeLabel;
@@ -2445,7 +2596,7 @@ public class DeckBattleScene extends PixelScene {
 			edge.size(width, height);
 			edge.am = enabled ? 0.95f : 0.45f;
 
-			face.color(card.rarity.faceColor);
+			face.color(card.deckClass == null || !card.reward ? card.rarity.faceColor : 0xFF1A3D6B);
 			face.x = x + 2;
 			face.y = y + 2;
 			face.size(width - 4, height - 4);
@@ -2456,7 +2607,8 @@ public class DeckBattleScene extends PixelScene {
 		cost.setPos(x + 4, y + 4);
 
             title.text(card.title(cardCode));
-		title.hardlight(enabled ? 0xFFFFFFFF : 0xFF8A8A8A);
+		int titleColor = card.rarity == DeckCardRarity.COMMON ? 0xFFFFFFFF : card.rarity.labelColor;
+		title.hardlight(enabled ? titleColor : 0xFF8A8A8A);
 		title.maxWidth((int)width - 14);
 		title.setPos(x + 12, y + 5);
 
@@ -2468,7 +2620,7 @@ public class DeckBattleScene extends PixelScene {
 		typeLabel.setPos(labelX, labelY);
 
 		float artH = Math.max(18, height * 0.46f);
-		artPanel.color(card.rarity.panelColor);
+		artPanel.color(card.deckClass == null || !card.reward ? card.rarity.panelColor : 0xFF2D5F9D);
 		artPanel.x = x + 5;
 		artPanel.y = y + height * 0.28f;
 		artPanel.size(width - 10, artH);
@@ -2476,6 +2628,7 @@ public class DeckBattleScene extends PixelScene {
 
 		if (card == DeckCard.SLIMY) {
 			if (art != null) art.visible = false;
+			if (talentArt != null) talentArt.visible = false;
 			spriteArt.visible = true;
 			spriteArt.texture(Assets.Sprites.RAT);
 			TextureFilm gnollFilm = new TextureFilm(spriteArt.texture, 16, 15);
@@ -2484,7 +2637,21 @@ public class DeckBattleScene extends PixelScene {
 			spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
 			spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
 			align(spriteArt);
+		} else if (card.talentIcon != null) {
+			if (art != null) art.visible = false;
+			spriteArt.visible = false;
+			if (talentArt != null) {
+				remove(talentArt);
+			}
+			talentArt = new TalentIcon(card.talentIcon);
+			add(talentArt);
+			talentArt.scale.set(1.25f);
+			talentArt.x = artPanel.x + (artPanel.width() - talentArt.width()) / 2f;
+			talentArt.y = artPanel.y + (artPanel.height() - talentArt.height()) / 2f;
+			align(talentArt);
+			talentArt.visible = true;
 		} else {
+			if (talentArt != null) talentArt.visible = false;
 			if (art == null) {
 				art = new ItemSprite(card.icon);
 				art.visible = false;

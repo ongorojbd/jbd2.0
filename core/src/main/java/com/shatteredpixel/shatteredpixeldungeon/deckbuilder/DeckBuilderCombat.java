@@ -52,6 +52,9 @@ public class DeckBuilderCombat {
 	private static final String ENEMY_BLOCK = "enemy_block";
 	private static final String ENEMY_THORNS = "enemy_thorns";
 	private static final String PLAYER_DAMAGE_REDUCTION = "player_damage_reduction";
+	private static final String SHIV_DAMAGE_BONUS = "shiv_damage_bonus";
+	private static final String FIRST_SHIV_DAMAGE_BONUS = "first_shiv_damage_bonus";
+	private static final String SHIV_RETAIN = "shiv_retain";
 
 	public final int nodeType;
 	public final int depth;
@@ -67,6 +70,10 @@ public class DeckBuilderCombat {
 	public int playerStrength;
 	public int playerTurnStrength;
 	public int playerDamageReduction;
+	public int shivDamageBonus;
+	public int firstShivDamageBonus;
+	public boolean firstShivUsed;
+	public boolean shivRetain;
 
 	public ArrayList<Integer> drawPile = new ArrayList<>();
 	public ArrayList<Integer> hand = new ArrayList<>();
@@ -114,6 +121,9 @@ public class DeckBuilderCombat {
 		bundle.put(PLAYER_STRENGTH, playerStrength);
 		bundle.put(PLAYER_TURN_STRENGTH, playerTurnStrength);
 		bundle.put(PLAYER_DAMAGE_REDUCTION, playerDamageReduction);
+		bundle.put(SHIV_DAMAGE_BONUS, shivDamageBonus);
+		bundle.put(FIRST_SHIV_DAMAGE_BONUS, firstShivDamageBonus);
+		bundle.put(SHIV_RETAIN, shivRetain);
 		bundle.put(DRAW_PILE, toArray(drawPile));
 		bundle.put(HAND, toArray(hand));
 		bundle.put(DISCARD_PILE, toArray(discardPile));
@@ -165,6 +175,9 @@ public class DeckBuilderCombat {
 		combat.playerStrength = bundle.getInt(PLAYER_STRENGTH);
 		combat.playerTurnStrength = bundle.getInt(PLAYER_TURN_STRENGTH);
 		combat.playerDamageReduction = bundle.contains(PLAYER_DAMAGE_REDUCTION) ? bundle.getInt(PLAYER_DAMAGE_REDUCTION) : 0;
+		combat.shivDamageBonus = bundle.contains(SHIV_DAMAGE_BONUS) ? bundle.getInt(SHIV_DAMAGE_BONUS) : 0;
+		combat.firstShivDamageBonus = bundle.contains(FIRST_SHIV_DAMAGE_BONUS) ? bundle.getInt(FIRST_SHIV_DAMAGE_BONUS) : 0;
+		combat.shivRetain = bundle.getBoolean(SHIV_RETAIN);
 		restoreList(combat.drawPile, bundle, DRAW_PILE);
 		restoreList(combat.hand, bundle, HAND);
 		restoreList(combat.discardPile, bundle, DISCARD_PILE);
@@ -204,6 +217,7 @@ public class DeckBuilderCombat {
 		energy = maxEnergy;
 		block = 0;
 		playerTurnStrength = 0;
+		firstShivUsed = false;
 		for (DeckCombatEnemy enemy : enemies) {
 			if (enemy.alive()) {
 				enemy.intent = enemy.kind.nextIntent(turn, depth, enemyIndex(enemy));
@@ -227,7 +241,12 @@ public class DeckBuilderCombat {
 		}
 
 		hand.remove(handIndex);
-		if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) {
+		if (card == DeckCard.SHIV) {
+			firstShivUsed = true;
+		}
+		if (card.type == DeckCardType.POWER) {
+			// Powers are removed from the current combat, but not from the run deck.
+		} else if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) {
 			exhaustPile.add(cardCode);
 			result.exhausted = true;
 		} else {
@@ -254,7 +273,21 @@ public class DeckBuilderCombat {
 		if (playerDamageReduction > 0) {
 			damage = damage * Math.max(0, 100 - playerDamageReduction) / 100;
 		}
+		if (card == DeckCard.SHIV) {
+			damage += shivDamageBonus;
+			if (!firstShivUsed) {
+				damage += firstShivDamageBonus;
+			}
+		}
 		return damage;
+	}
+
+	public void addToHand(int cardCode) {
+		if (hand.size() < maxHandSize) {
+			hand.add(cardCode);
+		} else {
+			discardPile.add(cardCode);
+		}
 	}
 
 	public int damageEnemy(DeckCombatEnemy target, int damage, boolean attackCard) {
@@ -274,11 +307,13 @@ public class DeckBuilderCombat {
 		return dealt;
 	}
 
-	public int endTurn() {
+	@SuppressWarnings("SuspiciousIndentation")
+    public int endTurn() {
 		lastEnemyActions.clear();
 		ArrayList<Integer> retained = new ArrayList<>();
 		for (int code : hand) {
-			if (DeckCard.byCode(code).hasKeyword(code, DeckCardKeyword.RETAIN)) {
+			DeckCard handCard = DeckCard.byCode(code);
+			if (handCard.hasKeyword(code, DeckCardKeyword.RETAIN) || (handCard == DeckCard.SHIV && shivRetain)) {
 				retained.add(code);
 			} else {
 				discardPile.add(code);
