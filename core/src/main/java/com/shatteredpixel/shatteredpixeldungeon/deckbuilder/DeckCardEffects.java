@@ -24,8 +24,8 @@ public class DeckCardEffects {
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			for (DeckCombatEnemy target : targets(combat, card)) {
 				int damage = combat.cardDamage(card, cardCode, target);
-				target.hp = Math.max(0, target.hp - damage);
-				result.addHit(combat.enemyIndex(target), damage, 0);
+				int dealt = combat.damageEnemy(target, damage, card.type == DeckCardType.ATTACK);
+				result.addHit(combat.enemyIndex(target), dealt, 0);
 			}
 		}
 	}

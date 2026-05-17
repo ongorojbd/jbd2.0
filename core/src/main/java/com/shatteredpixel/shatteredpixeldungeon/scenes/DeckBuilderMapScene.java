@@ -24,16 +24,19 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
+import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTendencyMap;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
@@ -63,7 +66,12 @@ public class DeckBuilderMapScene extends PixelScene {
 		inGameScene = true;
 		super.create();
 
-		DeckBuilderMap.init();
+		DeckBuilderRun.initIfNeeded();
+		if (!DeckBuilderRun.startingRelicChosen) {
+			Game.switchScene(DeckRelicChoiceScene.class);
+			return;
+		}
+		DeckBuilderMap.ensureReadyForNextChoice();
 		saveMapState();
 
 		int w = Camera.main.width;
@@ -71,6 +79,8 @@ public class DeckBuilderMapScene extends PixelScene {
 		RectF insets = getCommonInsets();
 
 		add(new ColorBlock(w, h, 0xFF11150F));
+		addRunHud(insets);
+		addExitButton(insets, w);
 
 		IconTitle title = new IconTitle(Icons.STAIRS.get(), "덱빌딩 경로");
 		title.setSize(200, 0);
@@ -147,6 +157,35 @@ public class DeckBuilderMapScene extends PixelScene {
 		} catch (IOException e) {
 			Game.reportException(e);
 		}
+	}
+
+	private void addRelicButton(RectF insets) {
+		IconButton relicButton = new IconButton(Icons.BACKPACK_LRG.get()) {
+			@Override
+			protected void onClick() {
+				addToFront(new WndMessage("유물\n\n" + DeckBuilderRun.relicListText()));
+			}
+		};
+		relicButton.setRect(insets.left + 4, insets.top + 4, 20, 20);
+		add(relicButton);
+	}
+
+	private void addRunHud(RectF insets) {
+		DeckRunHud hud = new DeckRunHud(null);
+		hud.setRect(insets.left + 4, insets.top + 4, 150, 20);
+		add(hud);
+	}
+
+	private void addExitButton(RectF insets, int w) {
+		IconButton exit = new IconButton(Icons.EXIT.get()) {
+			@Override
+			protected void onClick() {
+				saveMapState();
+				Game.switchScene(TitleScene.class);
+			}
+		};
+		exit.setRect(w - insets.right - 24, insets.top + 4, 20, 20);
+		add(exit);
 	}
 
 	private void addLinks(Component content, int depth, int mapWidth) {
@@ -237,7 +276,8 @@ public class DeckBuilderMapScene extends PixelScene {
 	}
 
 	private static boolean selectableNode(int depth, int node) {
-		if (curTransition == null || depth != curTransition.destDepth) return false;
+		if (curTransition != null && depth != curTransition.destDepth) return false;
+		if (curTransition == null && depth != Dungeon.depth + 1) return false;
 		return DeckBuilderMap.selectable(depth, node);
 	}
 

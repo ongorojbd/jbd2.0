@@ -55,6 +55,18 @@ public class DeckBuilderMap {
 
 		generatePaths();
 		assignNodeTypes();
+		ensureNextChoice();
+	}
+
+	public static void ensureReadyForNextChoice() {
+		init();
+		if (!hasNextChoice()) {
+			Statistics.deckBuilderMapVersion = 0;
+			init();
+		}
+		if (!hasNextChoice()) {
+			forceFirstFloorFallback();
+		}
 	}
 
 	public static int[] choicesForDepth(int depth) {
@@ -86,6 +98,10 @@ public class DeckBuilderMap {
 
 	public static int selectableMask(int depth) {
 		init();
+		return selectableMaskWithoutInit(depth);
+	}
+
+	private static int selectableMaskWithoutInit(int depth) {
 		int count = rawCount(depth);
 		if (count == 0) return 0;
 		if (Dungeon.depth < FIRST_DEPTH
@@ -93,7 +109,7 @@ public class DeckBuilderMap {
 				|| Statistics.deckBuilderMapPath >= rawCount(Dungeon.depth)) {
 			return occupiedMask(depth);
 		}
-		int mask = links(Dungeon.depth, Statistics.deckBuilderMapPath);
+		int mask = linksWithoutInit(Dungeon.depth, Statistics.deckBuilderMapPath);
 		return mask & occupiedMask(depth);
 	}
 
@@ -175,6 +191,79 @@ public class DeckBuilderMap {
 			assignNodeTypes(attempt);
 			if (validNodeTypes()) return;
 		}
+		repairNodeTypes();
+	}
+
+	private static void repairNodeTypes() {
+		for (int depth = FIRST_DEPTH; depth <= MAX_DEPTH; depth++) {
+			int fixed = fixedType(depth);
+			for (int column = 0; column < GRID_COLUMNS; column++) {
+				int idx = index(depth, column);
+				if (Statistics.deckBuilderMapTypes[idx] == NONE) continue;
+				if (fixed != NONE) {
+					Statistics.deckBuilderMapTypes[idx] = fixed;
+				} else if ((Statistics.deckBuilderMapTypes[idx] == ELITE || Statistics.deckBuilderMapTypes[idx] == REST)
+						&& mapFloor(depth) < 6) {
+					Statistics.deckBuilderMapTypes[idx] = COMBAT;
+				}
+			}
+		}
+
+		for (int depth = FIRST_DEPTH; depth < MAX_DEPTH; depth++) {
+			for (int column = 0; column < GRID_COLUMNS; column++) {
+				int idx = index(depth, column);
+				int type = Statistics.deckBuilderMapTypes[idx];
+				if (type == NONE) continue;
+				int links = Statistics.deckBuilderMapLinks[idx];
+				if ((links & occupiedMask(depth + 1)) == 0) {
+					int next = firstOccupiedColumn(depth + 1);
+					if (next >= 0) Statistics.deckBuilderMapLinks[idx] = 1 << next;
+				}
+				if (restrictedRepeatType(type)) {
+					for (int next = 0; next < GRID_COLUMNS; next++) {
+						if ((Statistics.deckBuilderMapLinks[idx] & (1 << next)) != 0
+								&& typeWithoutInit(depth + 1, next) == type
+								&& fixedType(depth) == NONE) {
+							Statistics.deckBuilderMapTypes[idx] = COMBAT;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		Statistics.deckBuilderMapTypes[index(BOSS_DEPTH, BOSS_COLUMN)] = BOSS;
+		for (int column = 0; column < GRID_COLUMNS; column++) {
+			if (column != BOSS_COLUMN) Statistics.deckBuilderMapTypes[index(BOSS_DEPTH, column)] = NONE;
+		}
+	}
+
+	private static boolean hasNextChoice() {
+		int depth = Dungeon.depth < FIRST_DEPTH ? FIRST_DEPTH : Math.min(MAX_DEPTH, Dungeon.depth + 1);
+		int mask = selectableMaskWithoutInit(depth);
+		return mask != 0;
+	}
+
+	private static void ensureNextChoice() {
+		if (hasNextChoice()) return;
+		forceFirstFloorFallback();
+	}
+
+	private static void forceFirstFloorFallback() {
+		int first = FIRST_DEPTH;
+		for (int column = 0; column < GRID_COLUMNS; column++) {
+			Statistics.deckBuilderMapCounts[first] = GRID_COLUMNS;
+			if (Statistics.deckBuilderMapTypes[index(first, column)] == NONE) {
+				Statistics.deckBuilderMapTypes[index(first, column)] = COMBAT;
+			}
+		}
+	}
+
+	private static int firstOccupiedColumn(int depth) {
+		for (int column = 0; column < GRID_COLUMNS; column++) {
+			if (typeWithoutInit(depth, column) != NONE) return column;
+		}
+		return -1;
 	}
 
 	private static void assignNodeTypes(int attempt) {
@@ -268,7 +357,7 @@ public class DeckBuilderMap {
 				&& Statistics.deckBuilderMapTypes.length >= (MAX_DEPTH + 1) * MAX_NODES
 				&& Statistics.deckBuilderMapLinks.length >= (MAX_DEPTH + 1) * MAX_NODES
 				&& validPathLayout()
-				&& validNodeTypes();
+				&& hasNextChoice();
 	}
 
 	private static boolean validPathLayout() {

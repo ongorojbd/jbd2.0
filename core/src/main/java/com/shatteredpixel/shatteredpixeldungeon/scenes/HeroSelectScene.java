@@ -170,6 +170,11 @@ public class HeroSelectScene extends PixelScene {
 
                 if (GamesInProgress.selectedClass == null) return;
 
+                if (SPDSettings.getDeckbuilder() > 0 && !SPDSettings.landscape()) {
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage("덱빌딩 모드\n\n덱빌딩 모드는 가로 화면에서만 시작할 수 있습니다.\n설정에서 가로 모드를 켠 뒤 다시 시작해주세요."));
+                    return;
+                }
+
                 Dungeon.hero = null;
                 Dungeon.daily = Dungeon.dailyReplay = false;
                 

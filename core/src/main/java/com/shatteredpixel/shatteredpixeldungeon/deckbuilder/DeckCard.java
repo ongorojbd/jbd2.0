@@ -19,14 +19,14 @@ import java.util.ArrayList;
 
 public enum DeckCard {
 
-	STRIKE(0, "타격", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WORN_SHORTSWORD),
-	GUARD(1, "수비", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_CLOTH),
-	BASH(2, "강타", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 8, 0, 0, 2, 0, 0, 0, true, ItemSpriteSheet.THROWING_STONE),
-	BREATH(3, "파문 호흡", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 3, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SEAL),
-	STAR_FINGER(4, "스타 핑거", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.RANDOM_ENEMY, 2, 13, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_FIREBOLT),
-	RIPPLE_WALL(5, "파문 장벽", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 2, 5, 12, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DEWDROP),
-	SLIMY(6, "점액투성이", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 1, 0, 0, 1, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.MOB_HOLDER),
-	IGNITE(7, "발화", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 2, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ);
+	STRIKE(0, "행운의 검", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WORN_SHORTSWORD),
+	GUARD(1, "무당벌레 브로치", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_CLOTH),
+	BASH(2, "파문 커터", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 8, 0, 0, 2, 0, 0, 0, true, ItemSpriteSheet.THROWING_STONE),
+	BREATH(3, "파문의 보호막", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 3, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SEAL),
+	STAR_FINGER(4, "매지션즈 레드의 사격 DISC", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.RANDOM_ENEMY, 2, 13, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_FIREBOLT),
+	RIPPLE_WALL(5, "개구리", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 2, 5, 12, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DEWDROP),
+	SLIMY(6, "익사", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 1, 0, 0, 1, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.MOB_HOLDER),
+	IGNITE(7, "강화의 DISC", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 2, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ);
 
 	private static final int ID_MASK = 0xFF;
 	private static final int UPGRADE_SHIFT = 8;

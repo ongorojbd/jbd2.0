@@ -134,7 +134,7 @@ public class InterlevelScene extends PixelScene {
         inGameScene = true;
     }
 
-    @Override
+	@Override
 	public void create() {
 		super.create();
 
@@ -617,7 +617,15 @@ public class InterlevelScene extends PixelScene {
                 }
 
                 if ((timeLeft -= Game.elapsed) <= 0) {
-                    Game.switchScene(GameScene.class);
+                    if (mode == Mode.DESCEND
+                            && Dungeon.deckbuilderlevel
+                            && !DeckBuilderRun.startingRelicChosen
+                            && Dungeon.level != null) {
+                        DeckBuilderMapScene.curTransition = Dungeon.level.getTransition(LevelTransition.Type.REGULAR_EXIT);
+                        Game.switchScene(DeckRelicChoiceScene.class);
+                    } else {
+                        Game.switchScene(GameScene.class);
+                    }
                     KeyEvent.clearListeners(); //removes potential listener for continue
                     thread = null;
                     error = null;

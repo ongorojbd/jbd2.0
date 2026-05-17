@@ -13,27 +13,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
-public class DeckCombatEnemy {
-
-	public final DeckEnemy kind;
-	public final String name;
-	public int ht;
-
-	public int hp;
-	public int intent;
-	public int vulnerable;
-	public int strength;
-	public int block;
-	public int thorns;
-
-	public DeckCombatEnemy(DeckEnemy kind, int depth) {
-		this.kind = kind;
-		this.name = kind.name;
-		this.ht = kind.hpForDepth(depth);
-		this.hp = ht;
-	}
-
-	public boolean alive() {
-		return hp > 0;
-	}
+public enum DeckRelicRarity {
+	COMMON,
+	UNCOMMON,
+	RARE
 }
