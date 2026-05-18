@@ -976,7 +976,7 @@ public class ItemSpriteSheet {
         assignItemRect(CITY_PAGE, 8, 8);
         assignItemRect(HALLS_PAGE, 8, 8);
         assignItemRect(FRIEND, 14, 14);
-        assignItemRect(BABY, 14, 13);
+        assignItemRect(BABY, 14, 14);
         assignItemRect(EVOLUTION, 14, 13);
         assignItemRect(H1, 16, 16);
         assignItemRect(H2, 16, 16);

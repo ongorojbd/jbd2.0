@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class DeckPlayResult {
 
-	public static final DeckPlayResult INVALID = new DeckPlayResult(false, null, 0, 0, 0, 0, 0, false, new ArrayList<Hit>());
+	public static final DeckPlayResult INVALID = new DeckPlayResult(false, null, 0, 0, 0, 0, 0, false, new ArrayList<Hit>(), new ArrayList<Shuffle>());
 
 	public final boolean played;
 	public final DeckCard card;
@@ -28,8 +28,9 @@ public class DeckPlayResult {
 	public final int strength;
 	public final boolean exhausted;
 	public final ArrayList<Hit> hits;
+	public final ArrayList<Shuffle> shuffles;
 
-	public DeckPlayResult(boolean played, DeckCard card, int damage, int block, int draw, int vulnerable, int strength, boolean exhausted, ArrayList<Hit> hits) {
+	public DeckPlayResult(boolean played, DeckCard card, int damage, int block, int draw, int vulnerable, int strength, boolean exhausted, ArrayList<Hit> hits, ArrayList<Shuffle> shuffles) {
 		this.played = played;
 		this.card = card;
 		this.damage = damage;
@@ -39,6 +40,7 @@ public class DeckPlayResult {
 		this.strength = strength;
 		this.exhausted = exhausted;
 		this.hits = hits;
+		this.shuffles = shuffles;
 	}
 
 	public static class Hit {
@@ -53,6 +55,16 @@ public class DeckPlayResult {
 		}
 	}
 
+	public static class Shuffle {
+		public final DeckCard card;
+		public final int count;
+
+		public Shuffle(DeckCard card, int count) {
+			this.card = card;
+			this.count = count;
+		}
+	}
+
 	public static class Builder {
 		public final DeckCard card;
 		public int damage;
@@ -62,6 +74,7 @@ public class DeckPlayResult {
 		public int strength;
 		public boolean exhausted;
 		public ArrayList<Hit> hits = new ArrayList<>();
+		public ArrayList<Shuffle> shuffles = new ArrayList<>();
 
 		public Builder(DeckCard card) {
 			this.card = card;
@@ -73,8 +86,14 @@ public class DeckPlayResult {
 			this.vulnerable += vulnerable;
 		}
 
+		public void addShuffle(DeckCard card, int count) {
+			if (card != null && count > 0) {
+				shuffles.add(new Shuffle(card, count));
+			}
+		}
+
 		public DeckPlayResult build() {
-			return new DeckPlayResult(true, card, damage, block, draw, vulnerable, strength, exhausted, hits);
+			return new DeckPlayResult(true, card, damage, block, draw, vulnerable, strength, exhausted, hits, shuffles);
 		}
 	}
 }

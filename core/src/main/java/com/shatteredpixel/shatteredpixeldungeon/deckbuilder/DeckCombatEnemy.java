@@ -25,12 +25,20 @@ public class DeckCombatEnemy {
 	public int strength;
 	public int block;
 	public int thorns;
+	public int platedArmor;
+	public int artifact;
+	public int tricky;
+	public int blockReduction;
+	public int venom;
+	public int lastIntent;
+	public boolean splitUsed;
 
 	public DeckCombatEnemy(DeckEnemy kind, int depth) {
 		this.kind = kind;
 		this.name = kind.name;
 		this.ht = kind.hpForDepth(depth);
 		this.hp = ht;
+		kind.initialize(this);
 	}
 
 	public boolean alive() {

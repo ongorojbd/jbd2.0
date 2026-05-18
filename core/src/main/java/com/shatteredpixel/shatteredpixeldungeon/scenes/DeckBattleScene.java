@@ -32,14 +32,22 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotion;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.FishSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollExileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PiranhaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SnakeSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StowerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
@@ -231,7 +239,7 @@ public class DeckBattleScene extends PixelScene {
 		add(playerShieldLabel);
         playerStrengthBuff = new DeckBuffButton(BuffIndicator.RAGE, "공격력", "공격 카드가 주는 피해가 이 수치만큼 증가합니다.");
 		add(playerStrengthBuff);
-		playerAgeDownBuff = new DeckBuffButton(BuffIndicator.WEAKNESS, "연령 저하", "공격 카드의 피해가 30% 감소합니다.");
+		playerAgeDownBuff = new DeckBuffButton(BuffIndicator.WEAKNESS, "유아화", "공격 카드의 피해가 30% 감소합니다.");
 		add(playerAgeDownBuff);
 
 		logText = renderTextBlock(6);
@@ -268,7 +276,7 @@ public class DeckBattleScene extends PixelScene {
 						}
 					}));
 				} else {
-                    log(result > 0 ? "Enemies dealt " + result + " damage." : "Blocked.");
+                    log(enemyTurnLog(result));
 					addEffect(new DelayedActionEffect(0.42f, new Runnable() {
 						@Override
 						public void run() {
@@ -321,7 +329,9 @@ public class DeckBattleScene extends PixelScene {
         showTitleBanner("내 턴", combat.turn + "턴", 0xFF9EE6FF, 0.78f, new Runnable() {
 			@Override
 			public void run() {
-				refresh();
+				if (!resolveAutoPlayResultsAfterDraw()) {
+					refresh();
+				}
 			}
 		});
 	}
@@ -360,12 +370,18 @@ public class DeckBattleScene extends PixelScene {
 				}
 			}));
 		} else {
-            log(result > 0 ? "적들이 총 " + result + " 피해를 입혔습니다." : "방어했습니다.");
+            log(enemyTurnLog(result));
 			float delay = Math.max(0.36f, 0.62f + combat.lastEnemyActions.size() * 0.08f);
 			addEffect(new DelayedActionEffect(delay, new Runnable() {
 				@Override
 				public void run() {
-					showPlayerTurnTitle();
+					if (combat.won()) {
+						if (!resolveAutoPlayResultsAfterDraw()) {
+							showReward();
+						}
+					} else {
+						showPlayerTurnTitle();
+					}
 				}
 			}));
 		}
@@ -377,56 +393,79 @@ public class DeckBattleScene extends PixelScene {
 
 	private void createEnemyViews() {
 		for (int i = 0; i < combat.enemies.size(); i++) {
-			EnemyView view = new EnemyView(combat.enemies.get(i), i);
-			view.sprite = enemySprite(view.enemy.kind);
-			view.sprite.scale.set(spriteScale);
-			view.sprite.flipHorizontal = true;
-			add(view.sprite);
-
-			view.name = renderTextBlock(7);
-			view.name.hardlight(0xFFFFFFFF);
-			add(view.name);
-
-			view.intent = renderTextBlock(6);
-			view.intent.hardlight(0xFFFF5555);
-			add(view.intent);
-
-			view.hpBg = new ColorBlock(1, 1, 0xFF3B1616);
-			add(view.hpBg);
-			view.hp = new ColorBlock(1, 1, 0xFFE04F45);
-			add(view.hp);
-			view.shield = new ColorBlock(1, 1, 0xFF4A90D9);
-			view.shield.am = 0.88f;
-			view.shield.visible = false;
-			add(view.shield);
-			view.shieldLabel = renderTextBlock(6);
-			view.shieldLabel.hardlight(0xFF8EDBFF);
-			view.shieldLabel.visible = false;
-			add(view.shieldLabel);
-			view.targetMark = new ColorBlock(1, 1, 0xFFFFD66B);
-			view.targetMark.am = 0.72f;
-			add(view.targetMark);
-
-			view.area = new PointerArea(0, 0, 1, 1) {
-				@Override
-				protected void onClick(PointerEvent event) {
-					combat.setTarget(view.index);
-					refresh();
-				}
-			};
-			add(view.area);
-
-            view.vulnerableBuff = new DeckBuffButton(BuffIndicator.VULNERABLE, "취약", "해당 대상이 받는 모든 공격 피해가 1.5배 증가합니다.");
-			add(view.vulnerableBuff);
-            view.strengthBuff = new DeckBuffButton(BuffIndicator.RAGE, "공격력", "공격 피해가 이 수치만큼 증가합니다.");
-			add(view.strengthBuff);
-            view.thornsBuff = new DeckBuffButton(BuffIndicator.THORNS, "반격", "공격 카드로 공격한 대상에게 피해를 되돌립니다.");
-			add(view.thornsBuff);
-			enemyViews.add(view);
+			addEnemyView(i);
 		}
 		if (!enemyViews.isEmpty()) {
 			enemySprite = enemyViews.get(0).sprite;
 		}
+	}
+
+	private void ensureEnemyViews() {
+		if (enemyViews.size() >= combat.enemies.size()) return;
+		for (int i = enemyViews.size(); i < combat.enemies.size(); i++) {
+			addEnemyView(i);
+		}
+		RectF insets = getCommonInsets();
+		layoutEnemyViews(Camera.main.width - insets.right - 12, playerBaseY);
+	}
+
+	private void addEnemyView(int index) {
+		EnemyView view = new EnemyView(combat.enemies.get(index), index);
+		view.sprite = enemySprite(view.enemy.kind);
+		view.sprite.scale.set(view.enemy.kind == DeckEnemy.RAMPAGING_BULL ? spriteScale * 0.6f : spriteScale);
+		view.sprite.flipHorizontal = true;
+		add(view.sprite);
+
+		view.name = renderTextBlock(7);
+		view.name.hardlight(0xFFFFFFFF);
+		add(view.name);
+
+		view.intent = renderTextBlock(6);
+		view.intent.hardlight(0xFFFF5555);
+		add(view.intent);
+
+		view.hpBg = new ColorBlock(1, 1, 0xFF3B1616);
+		add(view.hpBg);
+		view.hp = new ColorBlock(1, 1, 0xFFE04F45);
+		add(view.hp);
+		view.shield = new ColorBlock(1, 1, 0xFF4A90D9);
+		view.shield.am = 0.88f;
+		view.shield.visible = false;
+		add(view.shield);
+		view.shieldLabel = renderTextBlock(6);
+		view.shieldLabel.hardlight(0xFF8EDBFF);
+		view.shieldLabel.visible = false;
+		add(view.shieldLabel);
+		view.targetMark = new ColorBlock(1, 1, 0xFFFFD66B);
+		view.targetMark.am = 0.72f;
+		add(view.targetMark);
+
+		view.area = new PointerArea(0, 0, 1, 1) {
+			@Override
+			protected void onClick(PointerEvent event) {
+				combat.setTarget(view.index);
+				refresh();
+			}
+		};
+		add(view.area);
+
+		view.vulnerableBuff = new DeckBuffButton(BuffIndicator.VULNERABLE, "취약", "해당 대상이 받는 모든 공격 피해가 1.5배 증가합니다.");
+		add(view.vulnerableBuff);
+		view.strengthBuff = new DeckBuffButton(BuffIndicator.RAGE, "공격력", "공격 피해가 이 수치만큼 증가합니다.");
+		add(view.strengthBuff);
+		view.thornsBuff = new DeckBuffButton(BuffIndicator.THORNS, "반격", "공격 카드로 공격한 대상에게 피해를 되돌립니다.");
+		add(view.thornsBuff);
+		view.platedArmorBuff = new DeckBuffButton(BuffIndicator.ARMOR, "판금", "턴이 끝날 때마다 이 수치만큼 방어도를 얻습니다. 체력 피해를 받을 때마다 1 감소합니다.");
+		add(view.platedArmorBuff);
+		view.splitBuff = new DeckBuffButton(BuffIndicator.DUEL_CLEAVE, "분열", "체력이 절반 이하가 되면 행동을 취소하고 중형 슬라임 둘로 나뉩니다.");
+		add(view.splitBuff);
+		view.trickyBuff = new DeckBuffButton(BuffIndicator.DUEL_EVASIVE, "까다로움", "다음에 체력을 잃을 때, 대신 체력을 1만 잃습니다.");
+		add(view.trickyBuff);
+		view.venomBuff = new DeckBuffButton(BuffIndicator.POISON, "독극물", "막히지 않은 공격 피해를 주면 이 수치만큼 힘을 얻습니다.");
+		add(view.venomBuff);
+		view.artifactBuff = new DeckBuffButton(BuffIndicator.IMMUNITY, "정화의 보호막", "해로운 효과를 받을 때 1 차감하고 그 효과를 무효화합니다.");
+		add(view.artifactBuff);
+		enemyViews.add(view);
 	}
 
 	private void computeDimensions(int w, int h, RectF insets) {
@@ -629,6 +668,11 @@ public class DeckBattleScene extends PixelScene {
 				view.vulnerableBuff.visible = false;
 				view.strengthBuff.visible = false;
 				view.thornsBuff.visible = false;
+				view.platedArmorBuff.visible = false;
+				view.splitBuff.visible = false;
+				view.trickyBuff.visible = false;
+				view.venomBuff.visible = false;
+				view.artifactBuff.visible = false;
 				view.shield.visible = false;
 				view.shieldLabel.visible = false;
 				continue;
@@ -637,6 +681,11 @@ public class DeckBattleScene extends PixelScene {
 			view.vulnerableBuff.setStacks(view.enemy.vulnerable);
 			view.strengthBuff.setStacks(view.enemy.strength);
 			view.thornsBuff.setStacks(view.enemy.thorns);
+			view.platedArmorBuff.setStacks(view.enemy.platedArmor);
+			view.splitBuff.setActive(view.enemy.kind == DeckEnemy.LARGE_SLIME && !view.enemy.splitUsed);
+			view.trickyBuff.setStacks(view.enemy.tricky);
+			view.venomBuff.setStacks(view.enemy.venom);
+			view.artifactBuff.setStacks(view.enemy.artifact);
 			view.shield.visible = view.enemy.block > 0;
 			if (view.enemy.block > 0) {
 				view.shieldLabel.text(String.valueOf(view.enemy.block));
@@ -661,7 +710,7 @@ public class DeckBattleScene extends PixelScene {
 		if (enemy.intent < DeckBuilderCombat.RESULT_SLIMY_INJECT) {
 			switch (enemy.intent) {
 				case DeckBuilderCombat.RESULT_AGE_DOWN:
-                    return "예고: 연령 저하";
+                    return "예고: 유아화";
 				case DeckBuilderCombat.RESULT_STRENGTH_7:
                     return "예고: 공격력 +7";
 				case DeckBuilderCombat.RESULT_STRENGTH_2:
@@ -672,6 +721,30 @@ public class DeckBattleScene extends PixelScene {
                     return "예고: 3x" + Math.max(0, 3 + enemy.strength) + " 피해";
 				case DeckBuilderCombat.RESULT_TOWER_NEEDLE:
                     return "예고: 반격 +2";
+				case DeckBuilderCombat.RESULT_PRESSURIZE:
+					return "예고: 힘 +4";
+				case DeckBuilderCombat.RESULT_FLAME_TACKLE_BIG:
+					return "예고: " + Math.max(0, 16 + enemy.strength) + " 피해 + 점액 2";
+				case DeckBuilderCombat.RESULT_LICK_BIG:
+					return "예고: 방어력 저하 2";
+				case DeckBuilderCombat.RESULT_FLAME_TACKLE_MEDIUM:
+					return "예고: " + Math.max(0, 8 + enemy.strength) + " 피해 + 점액 1";
+				case DeckBuilderCombat.RESULT_LICK_MEDIUM:
+					return "예고: 방어력 저하 1";
+				case DeckBuilderCombat.RESULT_WINDUP_PUNCH:
+					return "예고: 3x" + Math.max(0, 2 + enemy.strength) + " 피해";
+				case DeckBuilderCombat.RESULT_LASH:
+					return "예고: 2x" + Math.max(0, 3 + enemy.strength) + " 피해";
+				case DeckBuilderCombat.RESULT_TACKLE:
+					return "예고: " + Math.max(0, 9 + enemy.strength) + " 피해 + 손상";
+				case DeckBuilderCombat.RESULT_CHARGE_UP:
+					return "예고: 힘 +2";
+				case DeckBuilderCombat.RESULT_REPEATER_BLAST:
+					return "예고: " + Math.max(0, 7 + enemy.strength) + " 피해 + 힘";
+				case DeckBuilderCombat.RESULT_EXPEL_BLAST:
+					return "예고: 2x" + Math.max(0, 5 + enemy.strength) + " 피해";
+				case DeckBuilderCombat.RESULT_SUBMERGE:
+					return "예고: 방어도 +15";
 			}
 		}
 		if (enemy.intent > 0 && enemy.strength != 0) {
@@ -693,6 +766,7 @@ public class DeckBattleScene extends PixelScene {
 
 		playerStatus.text(Dungeon.hero.heroClass.title() + "  " + DeckBuilderRun.playerHP + "/" + DeckBuilderRun.playerHT);
 		DeckCombatEnemy target = combat.target();
+		ensureEnemyViews();
 		targetButton.visible = combat.enemies.size() > 1;
 		refreshEnemyViews();
 		enemyRoster.visible = false;
@@ -722,7 +796,7 @@ public class DeckBattleScene extends PixelScene {
 			playerShieldLabel.visible = false;
 		}
 		playerStrengthBuff.setStacks(combat.playerStrength + combat.playerTurnStrength);
-		playerAgeDownBuff.setStacks(combat.playerDamageReduction > 0 ? combat.playerDamageReduction : 0);
+		playerAgeDownBuff.setActive(combat.playerDamageReduction > 0);
 
 		positionActorHud();
 
@@ -784,6 +858,7 @@ public class DeckBattleScene extends PixelScene {
 		}
 		int cardCode = combat.hand.get(index);
 		DeckCard card = DeckCard.byCode(cardCode);
+		int logCardCode = card.effectiveCodeForPlay(cardCode, combat, index);
 		float startX = index < cardButtons.size() ? cardButtons.get(index).centerX() : playerCenterX();
 		float startY = index < cardButtons.size() ? cardButtons.get(index).centerY() : playerCenterY();
 		DeckPlayResult result = combat.play(index);
@@ -799,6 +874,8 @@ public class DeckBattleScene extends PixelScene {
 			Sample.INSTANCE.play(Assets.Sounds.PLANT);
 		} else if (card == DeckCard.SHIV) {
 			Sword.giorno();
+		} else if (card == DeckCard.ROTATING_NAIL) {
+			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 		}
 
 		if (card == DeckCard.KNIFE_TRAP && result.hits.size() > 1) {
@@ -817,7 +894,7 @@ public class DeckBattleScene extends PixelScene {
 				}));
 			}
 			final float totalDelay = hits.size() * 0.18f + 0.22f;
-			log(card.title(cardCode) + ": " + cardRulesText(card, cardCode));
+			log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
 			if (combat.playerDead()) {
 				addEffect(new DelayedActionEffect(totalDelay, new Runnable() {
 					@Override
@@ -844,9 +921,15 @@ public class DeckBattleScene extends PixelScene {
 			return;
 		}
 
+		float finishDelay = 0f;
+		if (!result.shuffles.isEmpty()) {
+			finishDelay = Math.max(finishDelay, spawnShuffleEffects(result, startX, startY));
+		}
+
 		for (DeckPlayResult.Hit hit : result.hits) {
 			if (hit.damage > 0) {
 				spawnCardAttack(card, startX, startY, hit);
+				finishDelay = Math.max(finishDelay, 0.38f);
 			}
 			if (hit.vulnerable > 0) {
 				EnemyView view = enemyView(hit.enemyIndex);
@@ -861,7 +944,8 @@ public class DeckBattleScene extends PixelScene {
 		if (result.strength > 0) {
             spawnFloatingText("공격력 +" + result.strength, playerCenterX(), playerCenterY() - 24, 0xFFFFD84D);
 		}
-		log(card.title(cardCode) + ": " + cardRulesText(card, cardCode));
+		finishDelay = Math.max(finishDelay, spawnAutoPlayEffects());
+		log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
 		if (combat.playerDead()) {
 			playerHitTime = 0.22f;
 			Sample.INSTANCE.play(Assets.Sounds.HIT);
@@ -874,17 +958,21 @@ public class DeckBattleScene extends PixelScene {
 				}
 			}));
 		} else if (combat.won()) {
-			addEffect(new DelayedActionEffect(0.9f, new Runnable() {
+			addEffect(new DelayedActionEffect(Math.max(0.9f, finishDelay + 0.3f), new Runnable() {
 				@Override
 				public void run() {
 					showReward();
 				}
 			}));
-		} else if (result.damage > 0) {
-			addEffect(new DelayedActionEffect(0.38f, new Runnable() {
+		} else if (finishDelay > 0f) {
+			addEffect(new DelayedActionEffect(finishDelay, new Runnable() {
 				@Override
 				public void run() {
-					refresh();
+					if (combat.won()) {
+						showReward();
+					} else {
+						refresh();
+					}
 				}
 			}));
 		} else {
@@ -972,7 +1060,13 @@ public class DeckBattleScene extends PixelScene {
 				combat.draw(3);
                 log(potion.title + ": 카드를 3장 뽑았습니다.");
 				saveCombatState();
-				refresh();
+				if (!resolveAutoPlayResultsAfterDraw()) {
+					if (combat.won()) {
+						showReward();
+					} else {
+						refresh();
+					}
+				}
 				break;
 			case FIRE:
 				combatLocked = true;
@@ -981,11 +1075,13 @@ public class DeckBattleScene extends PixelScene {
 				for (int i = 0; i < combat.enemies.size(); i++) {
 					DeckCombatEnemy enemy = combat.enemies.get(i);
 					if (!enemy.alive()) continue;
-					enemy.hp = Math.max(0, enemy.hp - 10);
+					int dealt = combat.damageEnemy(enemy, 10, false);
 					EnemyView view = enemyView(i);
 					if (view != null) {
 						addEffect(new ImpactEffect(enemyCenterX(view), enemyCenterY(view), 0xFFFF7A35));
-						spawnFloatingText("-10", enemyCenterX(view), enemyCenterY(view) - 16, 0xFFFF705A);
+						spawnFloatingText("-" + dealt, enemyCenterX(view), enemyCenterY(view) - 16, 0xFFFF705A);
+						view.name.text(view.enemy.name + "  " + view.enemy.hp + "/" + view.enemy.ht);
+						view.hp.size(ACTOR_HP_W * view.enemy.hp / (float)view.enemy.ht, ACTOR_HP_H);
 						if (!enemy.alive()) playDeath(view.sprite);
 					}
 				}
@@ -1083,23 +1179,19 @@ public class DeckBattleScene extends PixelScene {
 			float nameY = view.sprite.y - 20;
 			float top = nameY;
 			float buffWidth = 0;
-			if (view.vulnerableBuff.visible) buffWidth += view.vulnerableBuff.width() + 2;
-			if (view.strengthBuff.visible) buffWidth += view.strengthBuff.width() + 2;
-			if (view.thornsBuff.visible) buffWidth += view.thornsBuff.width() + 2;
+			DeckBuffButton[] buffs = enemyBuffs(view);
+			for (DeckBuffButton buff : buffs) {
+				if (buff.visible) buffWidth += buff.width() + 2;
+			}
 			if (buffWidth > 0) {
 				buffWidth -= 2;
 				float buffX = cx - buffWidth / 2f;
-				float buffY = nameY - view.vulnerableBuff.height() - 2;
-				if (view.vulnerableBuff.visible) {
-					view.vulnerableBuff.setPos(buffX, buffY);
-					buffX += view.vulnerableBuff.width() + 2;
-				}
-				if (view.strengthBuff.visible) {
-					view.strengthBuff.setPos(buffX, buffY);
-					buffX += view.strengthBuff.width() + 2;
-				}
-				if (view.thornsBuff.visible) {
-					view.thornsBuff.setPos(buffX, buffY);
+				float buffY = nameY - 9;
+				for (DeckBuffButton buff : buffs) {
+					if (buff.visible) {
+						buff.setPos(buffX, buffY);
+						buffX += buff.width() + 2;
+					}
 				}
 				top = buffY;
 			}
@@ -1128,6 +1220,33 @@ public class DeckBattleScene extends PixelScene {
 		}
 	}
 
+	private String enemyTurnLog(int damage) {
+		int slimyCount = 0;
+		for (DeckBuilderCombat.EnemyAction action : combat.lastEnemyActions) {
+			if (action.shuffledCard == DeckCard.SLIMY) {
+				slimyCount += action.shuffledCount;
+			}
+		}
+		String text = damage > 0 ? "적들이 총 " + damage + " 피해를 입혔습니다." : "방어했습니다.";
+		if (slimyCount > 0) {
+			text += " 점액투성이 " + slimyCount + "장을 버린 카드 더미에 섞어 넣었습니다.";
+		}
+		return text;
+	}
+
+	private DeckBuffButton[] enemyBuffs(EnemyView view) {
+		return new DeckBuffButton[]{
+				view.vulnerableBuff,
+				view.strengthBuff,
+				view.thornsBuff,
+				view.platedArmorBuff,
+				view.splitBuff,
+				view.trickyBuff,
+				view.venomBuff,
+				view.artifactBuff
+		};
+	}
+
 	private void positionHudFor(CharSprite sprite, RenderedTextBlock name, ColorBlock hpBg, ColorBlock hp) {
 		float cx = sprite.x + sprite.width() / 2f;
 		float top = sprite.y - 19;
@@ -1151,17 +1270,91 @@ public class DeckBattleScene extends PixelScene {
 		add(effect);
 	}
 
+	private boolean resolveAutoPlayResultsAfterDraw() {
+		float delay = spawnAutoPlayEffects();
+		if (delay <= 0f) return false;
+		combatLocked = true;
+		addEffect(new DelayedActionEffect(delay, new Runnable() {
+			@Override
+			public void run() {
+				if (combat.won()) {
+					showReward();
+				} else if (combat.playerDead()) {
+					playDeath(playerSprite);
+					finishRunDeath();
+				} else {
+					refresh();
+				}
+			}
+		}));
+		return true;
+	}
+
+	private float spawnShuffleEffects(DeckPlayResult result, float startX, float startY) {
+		float deckX = deckCounterBg == null ? Camera.main.width * 0.12f : deckCounterBg.x + deckCounterBg.width() / 2f;
+		float deckY = deckCounterBg == null ? handY + CARD_H * 0.75f : deckCounterBg.y + deckCounterBg.height() / 2f;
+		int sequence = 0;
+		for (DeckPlayResult.Shuffle shuffle : result.shuffles) {
+			for (int i = 0; i < shuffle.count; i++) {
+				final DeckCard shuffledCard = shuffle.card;
+				final float delay = sequence * 0.08f;
+				final float sx = startX + (i - (shuffle.count - 1) / 2f) * 7f;
+				final float sy = startY - 4f;
+				addEffect(new DelayedActionEffect(delay, new Runnable() {
+					@Override
+					public void run() {
+						Sample.INSTANCE.play(Assets.Sounds.PLANT, 0.6f, 1.15f);
+						addEffect(new ShuffleIntoDrawPileEffect(shuffledCard, sx, sy, deckX, deckY));
+					}
+				}));
+				sequence++;
+			}
+		}
+		return sequence == 0 ? 0f : sequence * 0.08f + 0.38f;
+	}
+
+	private float spawnAutoPlayEffects() {
+		if (combat.lastAutoPlayResults.isEmpty()) return 0f;
+		float sourceX = deckCounterBg == null ? Camera.main.width * 0.12f : deckCounterBg.x + deckCounterBg.width() / 2f;
+		float sourceY = deckCounterBg == null ? handY + CARD_H * 0.75f : deckCounterBg.y + deckCounterBg.height() / 2f;
+		int sequence = 0;
+		for (DeckPlayResult auto : combat.lastAutoPlayResults) {
+			if (!auto.played || auto.card == null) continue;
+			for (DeckPlayResult.Hit hit : auto.hits) {
+				if (hit.damage <= 0) continue;
+				final DeckCard autoCard = auto.card;
+				final DeckPlayResult.Hit autoHit = hit;
+				final float delay = 0.16f + sequence * 0.16f;
+				addEffect(new DelayedActionEffect(delay, new Runnable() {
+					@Override
+					public void run() {
+						if (autoCard == DeckCard.ROTATING_NAIL) {
+							Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+						}
+						spawnCardAttack(autoCard, sourceX, sourceY, autoHit);
+					}
+				}));
+				sequence++;
+			}
+		}
+		return sequence == 0 ? 0f : 0.16f + sequence * 0.16f + 0.38f;
+	}
+
 	private void spawnCardAttack(DeckCard card, float startX, float startY, DeckPlayResult.Hit hit) {
 		playAttack(playerSprite);
 		final EnemyView target = enemyView(hit.enemyIndex);
 		if (target == null) return;
-		addEffect(new FlyingCardEffect(card, startX, startY, enemyCenterX(target), enemyCenterY(target)));
+		if (card == DeckCard.ROTATING_NAIL) {
+			addEffect(new NailShotEffect(startX, startY, enemyCenterX(target), enemyCenterY(target)));
+		} else {
+			addEffect(new FlyingCardEffect(card, startX, startY, enemyCenterX(target), enemyCenterY(target)));
+		}
 		addEffect(new DelayedActionEffect(0.22f, new Runnable() {
 			@Override
 			public void run() {
 				target.hitTime = 0.22f;
 				Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH);
-				addEffect(new ImpactEffect(enemyCenterX(target), enemyCenterY(target), 0xFFFFC05A));
+				addEffect(new ImpactEffect(enemyCenterX(target), enemyCenterY(target), card == DeckCard.ROTATING_NAIL ? 0xFFFFD0F0 : 0xFFFFC05A));
 				spawnFloatingText("-" + hit.damage, enemyCenterX(target), enemyCenterY(target) - 16, 0xFFFF705A);
 				target.name.text(target.enemy.name + "  " + target.enemy.hp + "/" + target.enemy.ht);
 				target.hp.size(ACTOR_HP_W * target.enemy.hp / (float)target.enemy.ht, ACTOR_HP_H);
@@ -1177,9 +1370,24 @@ public class DeckBattleScene extends PixelScene {
 		for (DeckBuilderCombat.EnemyAction action : combat.lastEnemyActions) {
 			EnemyView view = enemyView(action.enemyIndex);
 			if (view == null) continue;
-			if (action.slimyInject) {
-                spawnFloatingText("[점액투성이]", enemyCenterX(view), enemyCenterY(view) - 24, 0xFF88FF88);
-				continue;
+			if (action.shuffledCard != null && action.shuffledCount > 0) {
+				for (int i = 0; i < action.shuffledCount; i++) {
+					final float delay = attackOrdinal * 0.08f + i * 0.07f;
+					final float sx = enemyCenterX(view);
+					final float sy = enemyCenterY(view);
+					final float tx = discardCounterBg == null ? Camera.main.width * 0.88f : discardCounterBg.x + discardCounterBg.width() / 2f;
+					final float ty = discardCounterBg == null ? handY + CARD_H * 0.75f : discardCounterBg.y + discardCounterBg.height() / 2f;
+					final DeckCard shuffledCard = action.shuffledCard;
+					addEffect(new DelayedActionEffect(delay, new Runnable() {
+						@Override
+						public void run() {
+							Sample.INSTANCE.play(Assets.Sounds.PLANT, 0.6f, 1.05f);
+							addEffect(new ShuffleIntoDrawPileEffect(shuffledCard, sx, sy, tx, ty));
+						}
+					}));
+				}
+				spawnFloatingText(action.shuffledCard.title(action.shuffledCard.code()) + " +" + action.shuffledCount,
+						enemyCenterX(view), enemyCenterY(view) - 24, 0xFF88FF88);
 			}
                 if (action.label != null) {
                     spawnFloatingText(action.label, enemyCenterX(view), enemyCenterY(view) - 24, 0xFFFFD66B);
@@ -1390,7 +1598,7 @@ public class DeckBattleScene extends PixelScene {
 			return;
 		}
 		final DeckCard[] rewards = DeckBuilderRun.rewardChoices();
-		final Window reward = new Window();
+		final Window reward = new RewardWindow();
 		int cardW = 62;
 		int cardGap = 10;
 		int totalCardW = rewards.length * cardW + Math.max(0, rewards.length - 1) * cardGap;
@@ -1436,7 +1644,7 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private void showCombatRewardWindow(final CombatReward rewards) {
-		final Window reward = new Window();
+		final Window reward = new RewardWindow();
 		int width = 210;
 		int pos = 7;
 
@@ -1529,7 +1737,7 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private void showCardRewardWindow(final Window parent, final DeckCard[] cards, final RewardRow cardRow) {
-		final Window win = new Window();
+		final Window win = new RewardWindow();
 		int cardW = 62;
 		int cardGap = 10;
 		int totalCardW = cards.length * cardW + Math.max(0, cards.length - 1) * cardGap;
@@ -1583,7 +1791,7 @@ public class DeckBattleScene extends PixelScene {
 	}
 
     private void showCardTakeWindow(final Window cardWindow, final RewardRow cardRow, final DeckCard card) {
-		final Window win = new Window();
+		final Window win = new RewardWindow();
 		int width = 170;
 		int pos = 7;
 
@@ -1676,6 +1884,25 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private String cardRulesText(DeckCard card, int cardCode) {
+		if (card == DeckCard.ROTATING_NAIL) {
+			return "무작위 적에게 피해를 " + combat.cardDamage(card, cardCode, combat.target()) + " 줍니다. 카드를 1장 뽑습니다.";
+		}
+		if (card == DeckCard.TUSK_EQUIPMENT_DISC) {
+			return "회전하는 손톱 2장을 뽑을 카드 더미에 섞어 넣고 피해를 " + combat.cardDamage(card, cardCode, combat.target()) + " 줍니다. 회전하는 손톱을 뽑으면, 무작위 적에게 피해를 ? 줍니다.";
+		}
+		if (card == DeckCard.TRACKING_BULLET_HOLE) {
+			return "모든 적에게 피해를 " + card.damage(cardCode) + " 줍니다. 회전하는 손톱 3장을 뽑을 카드 더미에 섞어 넣습니다.";
+		}
+		if (card == DeckCard.SPIN_TRAINING) {
+			int bonus = DeckCard.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			return "회전하는 손톱의 피해량이 +" + bonus + " 증가합니다. 카드를 1장 뽑습니다. [조준] 회전하는 손톱 3장을 뽑을 카드 더미에 섞어 넣습니다.";
+		}
+		if (card == DeckCard.PROUD_STARVER) {
+			return "카드를 " + card.draw(cardCode) + "장 뽑습니다. 뽑을 카드 더미에 있는 회전하는 손톱의 수만큼 비용이 감소합니다.";
+		}
+		if (card == DeckCard.LESSON_FIVE) {
+			return "뽑을 카드 더미에 있는 모든 회전하는 손톱을 복사해서 시전합니다.";
+		}
 		if (card == DeckCard.SCORPION_THROW) {
 			int bonus = DeckCard.upgradeLevel(cardCode) > 0 ? 2 : 1;
 			return "전갈탄을 1장 손으로 가져옵니다. 카드를 " + bonus + "장 뽑습니다.";
@@ -1799,18 +2026,104 @@ public class DeckBattleScene extends PixelScene {
 			};
 		}
 		if (kind == DeckEnemy.CREAM) {
-			return new DeckMobSprite(Assets.Sprites.DIOBRANDO, 12, 15,
-					new int[]{0, 0, 0, 1, 0, 0, 1, 1},
-					new int[]{3, 4, 5, 6, 7, 8},
-					new int[]{9, 10, 11, 0},
-					new int[]{13, 14, 15, 16});
+			return new GooSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
 		}
 		if (kind == DeckEnemy.HORUS) {
-			return new DeckMobSprite(Assets.Sprites.KARS, 14, 15,
-					new int[]{0, 0, 0, 1, 0, 0, 1, 1},
-					new int[]{2, 3, 4, 5, 6, 7},
-					new int[]{8, 9, 0},
-					new int[]{10, 11, 12});
+			return new CrabSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
+		}
+		if (kind == DeckEnemy.KHNUM) {
+			return new AlbinoSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
+		}
+		if (kind == DeckEnemy.LARGE_SLIME || kind == DeckEnemy.MEDIUM_SLIME) {
+			return new SwarmSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
+		}
+		if (kind == DeckEnemy.RAMPAGING_BULL) {
+			CharSprite sprite = new GnollExileSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
+			sprite.scale.set(0.6f);
+			return sprite;
+		}
+		if (kind == DeckEnemy.JUDGEMENT) {
+			return new StatueSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
+		}
+		if (kind == DeckEnemy.CLASH) {
+			return new PiranhaSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
 		}
 		// Regular combat enemy uses the slime sprite for now.
 		return new RatSprite() {
@@ -1908,6 +2221,16 @@ public class DeckBattleScene extends PixelScene {
 			}
 		}
 
+		public void setActive(boolean active) {
+			this.stacks = active ? 1 : 0;
+			text.visible = false;
+			setSize(icon.width(), icon.height());
+			visible = active;
+			if (visible) {
+				layout();
+			}
+		}
+
 		@Override
 		protected void layout() {
 			super.layout();
@@ -1945,6 +2268,11 @@ public class DeckBattleScene extends PixelScene {
 		private DeckBuffButton vulnerableBuff;
 		private DeckBuffButton strengthBuff;
 		private DeckBuffButton thornsBuff;
+		private DeckBuffButton platedArmorBuff;
+		private DeckBuffButton splitBuff;
+		private DeckBuffButton trickyBuff;
+		private DeckBuffButton venomBuff;
+		private DeckBuffButton artifactBuff;
 		private float baseX;
 		private float baseY;
 		private float hitTime;
@@ -2112,6 +2440,80 @@ public class DeckBattleScene extends PixelScene {
 		}
 	}
 
+	private class NailShotEffect extends BattleEffect {
+
+		private final float sx;
+		private final float sy;
+		private final float tx;
+		private final float ty;
+		private final ColorBlock trailA;
+		private final ColorBlock trailB;
+		private final ColorBlock crossH;
+		private final ColorBlock crossV;
+		private final ItemSprite nail;
+
+		private NailShotEffect(float sx, float sy, float tx, float ty) {
+			super(0.28f);
+			this.sx = sx;
+			this.sy = sy;
+			this.tx = tx;
+			this.ty = ty;
+			trailA = new ColorBlock(1, 1, 0xFFFF65C8);
+			add(trailA);
+			trailB = new ColorBlock(1, 1, 0xFFFFF2A6);
+			add(trailB);
+			crossH = new ColorBlock(1, 1, 0xFFFFD0F0);
+			add(crossH);
+			crossV = new ColorBlock(1, 1, 0xFFFFD0F0);
+			add(crossV);
+			nail = new ItemSprite(DeckCard.ROTATING_NAIL.icon);
+			nail.scale.set(0.85f);
+			updateEffect(0);
+			add(nail);
+		}
+
+		@Override
+		protected void updateEffect(float p) {
+			float e = p * p * (3f - 2f * p);
+			float cx = sx + (tx - sx) * e;
+			float cy = sy + (ty - sy) * e - (float)Math.sin(p * Math.PI) * 9f;
+			float dx = tx - sx;
+			float dy = ty - sy;
+			float angle = (float)(Math.atan2(dy, dx) * 180f / Math.PI);
+			float alpha = 1f - Math.max(0, p - 0.74f) / 0.26f;
+			float pulse = 1f + (float)Math.sin(p * Math.PI * 5f) * 0.18f;
+
+			trailA.x = cx - 28;
+			trailA.y = cy - 1;
+			trailA.size(56 * (1f - p * 0.25f), 2);
+			trailA.angle = angle;
+			trailA.am = alpha * 0.75f;
+
+			trailB.x = cx - 18;
+			trailB.y = cy + 3;
+			trailB.size(36 * (1f - p * 0.3f), 1.5f);
+			trailB.angle = angle - 8;
+			trailB.am = alpha * 0.65f;
+
+			float cross = 16f * pulse;
+			crossH.x = cx - cross / 2f;
+			crossH.y = cy - 1;
+			crossH.size(cross, 2);
+			crossH.angle = angle + 45;
+			crossH.am = alpha;
+			crossV.x = cx - 1;
+			crossV.y = cy - cross / 2f;
+			crossV.size(2, cross);
+			crossV.angle = angle + 45;
+			crossV.am = alpha * 0.9f;
+
+			nail.x = cx - nail.width() * nail.scale.x / 2f;
+			nail.y = cy - nail.height() * nail.scale.y / 2f;
+			nail.angle = angle + p * 720f;
+			nail.am = alpha;
+		}
+	}
+
 	private class FlyingCardEffect extends BattleEffect {
 
 		private final DeckCard card;
@@ -2156,6 +2558,81 @@ public class DeckBattleScene extends PixelScene {
 			face.am = alpha;
 			art.x = cx - art.width() * art.scale.x / 2f;
 			art.y = cy - art.height() * art.scale.y / 2f;
+			art.am = alpha;
+		}
+	}
+
+	private class ShuffleIntoDrawPileEffect extends BattleEffect {
+
+		private final DeckCard card;
+		private final float sx;
+		private final float sy;
+		private final float tx;
+		private final float ty;
+		private final ColorBlock edge;
+		private final ColorBlock face;
+		private final ColorBlock streakA;
+		private final ColorBlock streakB;
+		private final ItemSprite art;
+
+		private ShuffleIntoDrawPileEffect(DeckCard card, float sx, float sy, float tx, float ty) {
+			super(0.38f);
+			this.card = card;
+			this.sx = sx;
+			this.sy = sy;
+			this.tx = tx;
+			this.ty = ty;
+			edge = new ColorBlock(1, 1, card.type.borderColor);
+			add(edge);
+			face = new ColorBlock(1, 1, card.deckClass == null || !card.reward ? card.rarity.faceColor : card.classFaceColor());
+			add(face);
+			streakA = new ColorBlock(1, 1, 0xFFB6F2FF);
+			add(streakA);
+			streakB = new ColorBlock(1, 1, 0xFFFF9AE8);
+			add(streakB);
+			art = new ItemSprite(card.icon);
+			art.scale.set(1.0f);
+			updateEffect(0);
+			add(art);
+		}
+
+		@Override
+		protected void updateEffect(float p) {
+			float e = p * p * (3f - 2f * p);
+			float arc = (float)Math.sin(p * Math.PI) * 18f;
+			float cx = sx + (tx - sx) * e;
+			float cy = sy + (ty - sy) * e - arc;
+			float alpha = 1f - Math.max(0, p - 0.78f) / 0.22f;
+			float scale = 1f - 0.42f * p;
+
+			edge.x = cx - 15 * scale;
+			edge.y = cy - 20 * scale;
+			edge.size(30 * scale, 40 * scale);
+			edge.angle = p * 420f;
+			edge.am = alpha * 0.92f;
+
+			face.x = cx - 13 * scale;
+			face.y = cy - 18 * scale;
+			face.size(26 * scale, 36 * scale);
+			face.angle = edge.angle;
+			face.am = alpha * 0.86f;
+
+			streakA.x = cx - 22;
+			streakA.y = cy - 1;
+			streakA.size(44 * (1f - p * 0.35f), 2);
+			streakA.angle = edge.angle + 28;
+			streakA.am = alpha * 0.75f;
+
+			streakB.x = cx - 16;
+			streakB.y = cy + 6;
+			streakB.size(32 * (1f - p * 0.35f), 2);
+			streakB.angle = edge.angle - 35;
+			streakB.am = alpha * 0.65f;
+
+			art.scale.set(scale);
+			art.x = cx - art.width() * art.scale.x / 2f;
+			art.y = cy - art.height() * art.scale.y / 2f;
+			art.angle = edge.angle * 0.35f;
 			art.am = alpha;
 		}
 	}
@@ -2389,7 +2866,12 @@ public class DeckBattleScene extends PixelScene {
 
 		@Override
 		protected boolean enabled() {
-			return !combatLocked && handIndex < combat.hand.size() && card().cost(cardCode()) <= combat.energy;
+			return !combatLocked && handIndex < combat.hand.size() && combat.cardCost(cardCode()) <= combat.energy;
+		}
+
+		@Override
+		protected int displayCost(DeckCard card, int cardCode) {
+			return combat == null ? card.cost(cardCode) : combat.cardCost(cardCode);
 		}
 
 		@Override
@@ -2421,13 +2903,13 @@ public class DeckBattleScene extends PixelScene {
 		protected void onPointerUp() {
 			super.onPointerUp();
 			hideCardInfo();
-			if (dragging && useOnRelease && enabled()) {
-				playCard(handIndex);
-			} else {
-				setRect(homeX, homeY, width, height);
-			}
+			boolean shouldPlay = dragging && useOnRelease && enabled();
+			setRect(homeX, homeY, width, height);
 			dragging = false;
 			useOnRelease = false;
+			if (shouldPlay) {
+				playCard(handIndex);
+			}
 		}
 
 		@Override
@@ -2446,6 +2928,13 @@ public class DeckBattleScene extends PixelScene {
 			relics = DeckBuilderRun.rollRewardRelics(nodeType);
 			potion = DeckBuilderRun.rollRewardPotion(nodeType);
 			cards = DeckBuilderRun.rewardChoicesForNode(nodeType);
+		}
+	}
+
+	private class RewardWindow extends Window {
+		@Override
+		public void onBackPressed() {
+			// Rewards must be resolved through their buttons; closing them by tapping outside can strand the run.
 		}
 	}
 
@@ -2596,13 +3085,13 @@ public class DeckBattleScene extends PixelScene {
 			edge.size(width, height);
 			edge.am = enabled ? 0.95f : 0.45f;
 
-			face.color(card.deckClass == null || !card.reward ? card.rarity.faceColor : 0xFF1A3D6B);
+			face.color(card.deckClass == null || !card.reward ? card.rarity.faceColor : card.classFaceColor());
 			face.x = x + 2;
 			face.y = y + 2;
 			face.size(width - 4, height - 4);
 			face.am = enabled ? 0.96f : 0.68f;
 
-		cost.text(String.valueOf(card.cost(cardCode)));
+		cost.text(String.valueOf(displayCost(card, cardCode)));
 		cost.hardlight(enabled ? 0xFFFFD84D : 0xFF8A7A42);
 		cost.setPos(x + 4, y + 4);
 
@@ -2620,7 +3109,7 @@ public class DeckBattleScene extends PixelScene {
 		typeLabel.setPos(labelX, labelY);
 
 		float artH = Math.max(18, height * 0.46f);
-		artPanel.color(card.deckClass == null || !card.reward ? card.rarity.panelColor : 0xFF2D5F9D);
+		artPanel.color(card.deckClass == null || !card.reward ? card.rarity.panelColor : card.classPanelColor());
 		artPanel.x = x + 5;
 		artPanel.y = y + height * 0.28f;
 		artPanel.size(width - 10, artH);
@@ -2683,6 +3172,10 @@ public class DeckBattleScene extends PixelScene {
 
 		protected boolean enabled() {
 			return true;
+		}
+
+		protected int displayCost(DeckCard card, int cardCode) {
+			return card.cost(cardCode);
 		}
 	}
 }

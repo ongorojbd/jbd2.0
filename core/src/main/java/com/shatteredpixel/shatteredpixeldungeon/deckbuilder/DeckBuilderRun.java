@@ -14,6 +14,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -39,6 +40,23 @@ public class DeckBuilderRun {
 	private static final String STARTING_RELIC_CHOICES = "deckbuilder_starting_relic_choices";
 	private static final String ACT1_NORMAL_FIGHTS = "deckbuilder_act1_normal_fights";
 	private static final String LAST_NORMAL_ENCOUNTER = "deckbuilder_last_normal_encounter";
+	private static final String SHOP_REMOVE_COUNT = "deckbuilder_shop_remove_count";
+	private static final String SHOP_DEPTH = "deckbuilder_shop_depth";
+	private static final String SHOP_PATH = "deckbuilder_shop_path";
+	private static final String SHOP_TYPES = "deckbuilder_shop_types";
+	private static final String SHOP_IDS = "deckbuilder_shop_ids";
+	private static final String SHOP_PRICES = "deckbuilder_shop_prices";
+	private static final String SHOP_SOLD = "deckbuilder_shop_sold";
+	private static final String SHOP_SALES = "deckbuilder_shop_sales";
+	private static final String SHOP_REMOVE_USED = "deckbuilder_shop_remove_used";
+	private static final String TREASURE_DEPTH = "deckbuilder_treasure_depth";
+	private static final String TREASURE_PATH = "deckbuilder_treasure_path";
+	private static final String TREASURE_CHEST = "deckbuilder_treasure_chest";
+	private static final String TREASURE_RELIC = "deckbuilder_treasure_relic";
+	private static final String TREASURE_CLAIMED = "deckbuilder_treasure_claimed";
+	private static final String REST_DEPTH = "deckbuilder_rest_depth";
+	private static final String REST_PATH = "deckbuilder_rest_path";
+	private static final String REST_USED = "deckbuilder_rest_used";
 
 	public static final int STARTING_ENERGY = 3;
 	public static final int STARTING_HAND_SIZE = 5;
@@ -62,6 +80,23 @@ public class DeckBuilderRun {
 	public static int[] startingRelicChoices;
 	public static int act1NormalFights;
 	public static int lastNormalEncounter;
+	public static int shopRemoveCount;
+	public static int shopDepth;
+	public static int shopPath;
+	public static int[] shopTypes;
+	public static int[] shopIds;
+	public static int[] shopPrices;
+	public static boolean[] shopSold;
+	public static boolean[] shopSales;
+	public static boolean shopRemoveUsed;
+	public static int treasureDepth;
+	public static int treasurePath;
+	public static int treasureChest;
+	public static int treasureRelic;
+	public static boolean treasureClaimed;
+	public static int restDepth;
+	public static int restPath;
+	public static boolean restUsed;
 	public static DeckBuilderCombat currentCombat;
 
 	public static void reset() {
@@ -81,6 +116,10 @@ public class DeckBuilderRun {
 		startingRelicChoices = null;
 		act1NormalFights = 0;
 		lastNormalEncounter = -1;
+		shopRemoveCount = 0;
+		clearShop();
+		clearTreasure();
+		clearRest();
 		currentCombat = null;
 	}
 
@@ -103,6 +142,10 @@ public class DeckBuilderRun {
 		startingRelicChoices = null;
 		act1NormalFights = 0;
 		lastNormalEncounter = -1;
+		shopRemoveCount = 0;
+		clearShop();
+		clearTreasure();
+		clearRest();
 
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.WARRIOR) {
 			addCopies(DeckCard.STRIKE, 5);
@@ -114,11 +157,12 @@ public class DeckBuilderRun {
 			addCopies(DeckCard.STRIKE, 5);
 			addCopies(DeckCard.GUARD, 4);
 			addCopies(DeckCard.SCORPION_THROW, 1);
-			addCopies(DeckCard.PHANTOM_BLADES, 1);
-			addCopies(DeckCard.ACCURACY, 1);
-			addCopies(DeckCard.KNIFE_TRAP, 1);
-			addCopies(DeckCard.LEADING_STRIKE, 1);
-			addCopies(DeckCard.CLOAK_AND_DAGGER, 1);
+		}
+
+		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.JOHNNY) {
+			addCopies(DeckCard.STRIKE7, 5);
+			addCopies(DeckCard.GUARD, 4);
+			addCopies(DeckCard.TUSK_EQUIPMENT_DISC, 1);
 		}
 
 		addPotion(DeckPotion.HASTE);
@@ -139,7 +183,13 @@ public class DeckBuilderRun {
 			act1NormalFights++;
 			return DeckEnemy.openingEncounter(encounter);
 		}
-		return DeckEnemy.encounterForNode(nodeType, depth);
+		if (nodeType == DeckBuilderMap.COMBAT) {
+			int encounter = DeckEnemy.rollAct1Encounter(lastNormalEncounter);
+			lastNormalEncounter = encounter;
+			act1NormalFights++;
+			return DeckEnemy.normalEncounter(encounter);
+		}
+		return DeckEnemy.encounterForNode(nodeType, depth, lastNormalEncounter);
 	}
 
 	public static DeckBuilderCombat combatForNode(int nodeType) {
@@ -156,6 +206,125 @@ public class DeckBuilderRun {
 
 	public static void clearCombat() {
 		currentCombat = null;
+	}
+
+	public static void clearShop() {
+		shopDepth = -1;
+		shopPath = -1;
+		shopTypes = null;
+		shopIds = null;
+		shopPrices = null;
+		shopSold = null;
+		shopSales = null;
+		shopRemoveUsed = false;
+	}
+
+	public static DeckRelic treasureRelicForCurrentNode() {
+		initIfNeeded();
+		int depth = Math.max(1, Dungeon.depth);
+		int path = Statistics.deckBuilderMapPath;
+		if (treasureDepth != depth || treasurePath != path || treasureRelic < 0) {
+			treasureDepth = depth;
+			treasurePath = path;
+			treasureChest = rollTreasureChest();
+			DeckRelic relic = DeckRelic.randomAvailable(rollTreasureRarity(treasureChest));
+			treasureRelic = relic == null ? -1 : relic.ordinal();
+			treasureClaimed = false;
+		}
+		return treasureRelic < 0 ? null : DeckRelic.byId(treasureRelic);
+	}
+
+	public static int treasureChestForCurrentNode() {
+		treasureRelicForCurrentNode();
+		return treasureChest;
+	}
+
+	public static boolean claimTreasureRelic() {
+		DeckRelic relic = treasureRelicForCurrentNode();
+		if (treasureClaimed || relic == null) return false;
+		addRelic(relic);
+		treasureClaimed = true;
+		return true;
+	}
+
+	public static void clearTreasure() {
+		treasureDepth = -1;
+		treasurePath = -1;
+		treasureChest = 0;
+		treasureRelic = -1;
+		treasureClaimed = false;
+	}
+
+	public static void initRestForCurrentNode() {
+		initIfNeeded();
+		int depth = Math.max(1, Dungeon.depth);
+		int path = Statistics.deckBuilderMapPath;
+		if (restDepth != depth || restPath != path) {
+			restDepth = depth;
+			restPath = path;
+			restUsed = false;
+		}
+	}
+
+	public static boolean restUsedForCurrentNode() {
+		initRestForCurrentNode();
+		return restUsed;
+	}
+
+	public static int restHealAmount() {
+		initIfNeeded();
+		return Math.max(0, playerHT * 30 / 100);
+	}
+
+	public static boolean canRestAtRestSite() {
+		initRestForCurrentNode();
+		return !restUsed && restHealAmount() > 0;
+	}
+
+	public static boolean canSmithAtRestSite() {
+		initRestForCurrentNode();
+		if (restUsed) return false;
+		for (int code : deck) {
+			if (DeckCard.upgrade(code) != code) return true;
+		}
+		return false;
+	}
+
+	public static boolean restAtRestSite() {
+		if (!canRestAtRestSite()) return false;
+		playerHP = Math.min(playerHT, playerHP + restHealAmount());
+		restUsed = true;
+		return true;
+	}
+
+	public static boolean smithAtRestSite(int index) {
+		if (!canSmithAtRestSite() || !upgradeCardAt(index)) return false;
+		restUsed = true;
+		return true;
+	}
+
+	public static void clearRest() {
+		restDepth = -1;
+		restPath = -1;
+		restUsed = false;
+	}
+
+	private static int rollTreasureChest() {
+		int roll = Random.Int(100);
+		if (roll < 50) return 0;
+		if (roll < 83) return 1;
+		return 2;
+	}
+
+	private static DeckRelicRarity rollTreasureRarity(int chest) {
+		int roll = Random.Int(100);
+		if (chest == 0) return roll < 75 ? DeckRelicRarity.COMMON : DeckRelicRarity.UNCOMMON;
+		if (chest == 1) {
+			if (roll < 35) return DeckRelicRarity.COMMON;
+			if (roll < 85) return DeckRelicRarity.UNCOMMON;
+			return DeckRelicRarity.RARE;
+		}
+		return roll < 75 ? DeckRelicRarity.UNCOMMON : DeckRelicRarity.RARE;
 	}
 
 	public static void applyExhaust(ArrayList<Integer> exhausted) {
@@ -285,6 +454,87 @@ public class DeckBuilderRun {
 		deck.add(card.code());
 	}
 
+	public static boolean upgradeCardAt(int index) {
+		initIfNeeded();
+		if (index < 0 || index >= deck.size()) return false;
+		int cardCode = deck.get(index);
+		int upgraded = DeckCard.upgrade(cardCode);
+		if (upgraded == cardCode) return false;
+		deck.set(index, upgraded);
+		return true;
+	}
+
+	public static boolean removeCardAt(int index) {
+		initIfNeeded();
+		if (index < 0 || index >= deck.size()) return false;
+		deck.remove(index);
+		return true;
+	}
+
+	public static DeckShop.Offer[] shopOffersForCurrentNode() {
+		initIfNeeded();
+		int depth = Math.max(1, Dungeon.depth);
+		int path = Statistics.deckBuilderMapPath;
+		boolean missingShop = shopTypes == null || shopIds == null || shopPrices == null || shopSold == null
+				|| shopTypes.length != shopIds.length || shopTypes.length != shopPrices.length || shopTypes.length != shopSold.length;
+		if (missingShop) {
+			DeckShop.Offer[] offers = DeckShop.generateOffers();
+			shopDepth = depth;
+			shopPath = path;
+			shopTypes = new int[offers.length];
+			shopIds = new int[offers.length];
+			shopPrices = new int[offers.length];
+			shopSold = new boolean[offers.length];
+			shopSales = new boolean[offers.length];
+			shopRemoveUsed = false;
+			for (int i = 0; i < offers.length; i++) {
+				shopTypes[i] = offers[i].type;
+				shopIds[i] = offers[i].id;
+				shopPrices[i] = offers[i].price;
+				shopSales[i] = offers[i].sale;
+			}
+		}
+		DeckShop.Offer[] offers = new DeckShop.Offer[shopTypes.length];
+		for (int i = 0; i < offers.length; i++) {
+			offers[i] = new DeckShop.Offer(shopTypes[i], shopIds[i], shopPrices[i], shopSales != null && i < shopSales.length && shopSales[i]);
+		}
+		return offers;
+	}
+
+	public static boolean buyShopOffer(int index) {
+		shopOffersForCurrentNode();
+		if (index < 0 || index >= shopTypes.length || shopSold[index] || gold < shopPrices[index]) return false;
+		int type = shopTypes[index];
+		int id = shopIds[index];
+		if (type == DeckShop.CARD) {
+			DeckCard[] cards = DeckCard.values();
+			if (id < 0 || id >= cards.length) return false;
+			addCard(cards[id]);
+		} else if (type == DeckShop.POTION) {
+			DeckPotion potion = DeckPotion.byId(id);
+			if (potion == null || !addPotion(potion)) return false;
+		} else if (type == DeckShop.RELIC) {
+			DeckRelic relic = DeckRelic.byId(id);
+			if (relic == null || hasRelic(relic)) return false;
+			addRelic(relic);
+		} else {
+			return false;
+		}
+		gold -= shopPrices[index];
+		shopSold[index] = true;
+		return true;
+	}
+
+	public static boolean buyCardRemoval(int deckIndex) {
+		initIfNeeded();
+		int price = DeckShop.removePrice();
+		if (shopRemoveUsed || gold < price || !removeCardAt(deckIndex)) return false;
+		gold -= price;
+		shopRemoveUsed = true;
+		shopRemoveCount++;
+		return true;
+	}
+
 	public static void addRelic(DeckRelic relic) {
 		initIfNeeded();
 		if (relic == null || hasRelic(relic)) return;
@@ -328,13 +578,13 @@ public class DeckBuilderRun {
 
 	private static void sanitizeStartingRelicChoices() {
 		if (startingRelicChosen) return;
-		DeckRelic[] all = DeckRelic.values();
-		int count = Math.min(3, all.length);
+		int count = 3;
 		boolean valid = startingRelicChoices != null && startingRelicChoices.length == count;
 		ArrayList<Integer> seen = new ArrayList<>();
 		if (valid) {
 			for (int id : startingRelicChoices) {
-				if (id < 0 || id >= all.length || seen.contains(id)) {
+				DeckRelic relic = DeckRelic.byId(id);
+				if (seen.contains(id) || relic.type != DeckRelicType.STARTER) {
 					valid = false;
 					break;
 				}
@@ -346,10 +596,8 @@ public class DeckBuilderRun {
 		startingRelicChoices = new int[count];
 		seen.clear();
 		for (int i = 0; i < startingRelicChoices.length; i++) {
-			int id;
-			do {
-				id = Random.Int(all.length);
-			} while (seen.contains(id));
+			DeckRelic relic = DeckRelic.randomStarterAvailable(seen);
+			int id = relic == null ? DeckRelic.STARTER_LUCKY_COIN.ordinal() : relic.ordinal();
 			seen.add(id);
 			startingRelicChoices[i] = id;
 		}
@@ -390,6 +638,23 @@ public class DeckBuilderRun {
 		if (startingRelicChoices != null) bundle.put(STARTING_RELIC_CHOICES, startingRelicChoices);
 		bundle.put(ACT1_NORMAL_FIGHTS, act1NormalFights);
 		bundle.put(LAST_NORMAL_ENCOUNTER, lastNormalEncounter);
+		bundle.put(SHOP_REMOVE_COUNT, shopRemoveCount);
+		bundle.put(SHOP_DEPTH, shopDepth);
+		bundle.put(SHOP_PATH, shopPath);
+		if (shopTypes != null) bundle.put(SHOP_TYPES, shopTypes);
+		if (shopIds != null) bundle.put(SHOP_IDS, shopIds);
+		if (shopPrices != null) bundle.put(SHOP_PRICES, shopPrices);
+		if (shopSold != null) bundle.put(SHOP_SOLD, shopSold);
+		if (shopSales != null) bundle.put(SHOP_SALES, shopSales);
+		bundle.put(SHOP_REMOVE_USED, shopRemoveUsed);
+		bundle.put(TREASURE_DEPTH, treasureDepth);
+		bundle.put(TREASURE_PATH, treasurePath);
+		bundle.put(TREASURE_CHEST, treasureChest);
+		bundle.put(TREASURE_RELIC, treasureRelic);
+		bundle.put(TREASURE_CLAIMED, treasureClaimed);
+		bundle.put(REST_DEPTH, restDepth);
+		bundle.put(REST_PATH, restPath);
+		bundle.put(REST_USED, restUsed);
 		if (currentCombat != null && !currentCombat.playerDead()) {
 			Bundle combatBundle = new Bundle();
 			currentCombat.storeInBundle(combatBundle);
@@ -411,6 +676,23 @@ public class DeckBuilderRun {
 		startingRelicChoices = bundle.contains(STARTING_RELIC_CHOICES) ? bundle.getIntArray(STARTING_RELIC_CHOICES) : null;
 		act1NormalFights = bundle.contains(ACT1_NORMAL_FIGHTS) ? bundle.getInt(ACT1_NORMAL_FIGHTS) : 0;
 		lastNormalEncounter = bundle.contains(LAST_NORMAL_ENCOUNTER) ? bundle.getInt(LAST_NORMAL_ENCOUNTER) : -1;
+		shopRemoveCount = bundle.contains(SHOP_REMOVE_COUNT) ? bundle.getInt(SHOP_REMOVE_COUNT) : 0;
+		shopDepth = bundle.contains(SHOP_DEPTH) ? bundle.getInt(SHOP_DEPTH) : -1;
+		shopPath = bundle.contains(SHOP_PATH) ? bundle.getInt(SHOP_PATH) : -1;
+		shopTypes = bundle.contains(SHOP_TYPES) ? bundle.getIntArray(SHOP_TYPES) : null;
+		shopIds = bundle.contains(SHOP_IDS) ? bundle.getIntArray(SHOP_IDS) : null;
+		shopPrices = bundle.contains(SHOP_PRICES) ? bundle.getIntArray(SHOP_PRICES) : null;
+		shopSold = bundle.contains(SHOP_SOLD) ? bundle.getBooleanArray(SHOP_SOLD) : null;
+		shopSales = bundle.contains(SHOP_SALES) ? bundle.getBooleanArray(SHOP_SALES) : null;
+		shopRemoveUsed = bundle.getBoolean(SHOP_REMOVE_USED);
+		treasureDepth = bundle.contains(TREASURE_DEPTH) ? bundle.getInt(TREASURE_DEPTH) : -1;
+		treasurePath = bundle.contains(TREASURE_PATH) ? bundle.getInt(TREASURE_PATH) : -1;
+		treasureChest = bundle.contains(TREASURE_CHEST) ? bundle.getInt(TREASURE_CHEST) : 0;
+		treasureRelic = bundle.contains(TREASURE_RELIC) ? bundle.getInt(TREASURE_RELIC) : -1;
+		treasureClaimed = bundle.getBoolean(TREASURE_CLAIMED);
+		restDepth = bundle.contains(REST_DEPTH) ? bundle.getInt(REST_DEPTH) : -1;
+		restPath = bundle.contains(REST_PATH) ? bundle.getInt(REST_PATH) : -1;
+		restUsed = bundle.getBoolean(REST_USED);
 		sanitizeStartingRelicChoices();
 		deck.clear();
 		if (bundle.contains(DECK)) {

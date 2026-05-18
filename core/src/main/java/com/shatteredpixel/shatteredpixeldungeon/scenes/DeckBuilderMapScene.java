@@ -395,6 +395,33 @@ public class DeckBuilderMapScene extends PixelScene {
 				return;
 			}
 
+			if (sceneType(depth, node) == DeckBuilderMap.EVENT) {
+				enterDeckEvent();
+				Game.switchScene(DeckEventScene.class);
+				return;
+			}
+
+			if (sceneType(depth, node) == DeckBuilderMap.SHOP) {
+				if (DeckBuilderRun.shopDepth != depth || DeckBuilderRun.shopPath != node) {
+					DeckBuilderRun.clearShop();
+				}
+				enterDeckEvent();
+				Game.switchScene(DeckShopScene.class);
+				return;
+			}
+
+			if (sceneType(depth, node) == DeckBuilderMap.TREASURE) {
+				enterDeckEvent();
+				Game.switchScene(DeckTreasureScene.class);
+				return;
+			}
+
+			if (sceneType(depth, node) == DeckBuilderMap.REST) {
+				enterDeckEvent();
+				Game.switchScene(DeckRestScene.class);
+				return;
+			}
+
 			Level.beforeTransition();
 			InterlevelScene.curTransition = curTransition;
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
@@ -415,6 +442,24 @@ public class DeckBuilderMapScene extends PixelScene {
 		}
 
 		private void enterDeckBattle() {
+			try {
+				Level.beforeTransition();
+				Dungeon.saveAll();
+
+				Dungeon.depth = depth;
+				Dungeon.branch = curTransition == null ? Dungeon.branch : curTransition.destBranch;
+
+				Level level = Dungeon.levelHasBeenGenerated(Dungeon.depth, Dungeon.branch)
+						? Dungeon.loadLevel(com.shatteredpixel.shatteredpixeldungeon.GamesInProgress.curSlot)
+						: Dungeon.newLevel();
+				Dungeon.switchLevel(level, -1);
+				Dungeon.saveAll();
+			} catch (IOException e) {
+				Game.reportException(e);
+			}
+		}
+
+		private void enterDeckEvent() {
 			try {
 				Level.beforeTransition();
 				Dungeon.saveAll();

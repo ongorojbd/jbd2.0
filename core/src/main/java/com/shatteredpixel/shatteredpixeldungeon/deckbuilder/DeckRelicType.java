@@ -13,11 +13,11 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
-public interface DeckCardEffect {
-
-	void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result);
-
-	default void apply(DeckCardPlayContext context) {
-		apply(context.combat, context.card, context.effectiveCardCode, context.result);
-	}
+public enum DeckRelicType {
+	STARTER,
+	COMMON,
+	UNCOMMON,
+	RARE,
+	SHOP,
+	ANCIENT
 }

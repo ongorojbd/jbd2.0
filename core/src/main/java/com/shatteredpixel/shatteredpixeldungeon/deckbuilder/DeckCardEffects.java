@@ -33,8 +33,7 @@ public class DeckCardEffects {
 	public static class Block implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
-			combat.block += card.block(cardCode);
-			result.block += card.block(cardCode);
+			result.block += combat.gainBlock(card.block(cardCode));
 		}
 	}
 
@@ -46,10 +45,79 @@ public class DeckCardEffects {
 		}
 	}
 
+	public static class ShuffleIntoDrawPile implements DeckCardEffect {
+		private final DeckCard cardToShuffle;
+		private final int count;
+		private final boolean upgradedCopies;
+
+		public ShuffleIntoDrawPile(DeckCard cardToShuffle, int count) {
+			this(cardToShuffle, count, false);
+		}
+
+		public ShuffleIntoDrawPile(DeckCard cardToShuffle, int count, boolean upgradedCopies) {
+			this.cardToShuffle = cardToShuffle;
+			this.count = count;
+			this.upgradedCopies = upgradedCopies;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			if (cardToShuffle == null || count <= 0) return;
+			int code = cardToShuffle.code();
+			if (upgradedCopies) code = DeckCard.upgrade(code);
+			combat.addToDrawPile(code, count, true);
+			result.addShuffle(cardToShuffle, count);
+		}
+	}
+
+	public static class AimShuffleIntoDrawPile implements DeckCardEffect {
+		private final DeckCard cardToShuffle;
+		private final int count;
+
+		public AimShuffleIntoDrawPile(DeckCard cardToShuffle, int count) {
+			this.cardToShuffle = cardToShuffle;
+			this.count = count;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			// Context-aware apply below handles the actual condition.
+		}
+
+		@Override
+		public void apply(DeckCardPlayContext context) {
+			if (cardToShuffle == null || count <= 0 || context.combat == null) return;
+			if (!context.aimActive) return;
+			context.combat.addToDrawPile(cardToShuffle.code(), count, true);
+			context.result.addShuffle(cardToShuffle, count);
+		}
+	}
+
+	public static class SpinningNailTraining implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.spinningNailDamageBonus += DeckCard.upgradeLevel(cardCode) > 0 ? 2 : 1;
+		}
+	}
+
+	public static class CopyAndPlayFromDrawPile implements DeckCardEffect {
+		private final DeckCard cardToPlay;
+
+		public CopyAndPlayFromDrawPile(DeckCard cardToPlay) {
+			this.cardToPlay = cardToPlay;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.copyAndPlayFromDrawPile(cardToPlay, result);
+		}
+	}
+
 	public static class Vulnerable implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			for (DeckCombatEnemy target : targets(combat, card)) {
+				if (!combat.applyEnemyDebuff(target)) continue;
 				int vulnerable = card.vulnerable(cardCode);
 				target.vulnerable += vulnerable;
 				result.addHit(combat.enemyIndex(target), 0, vulnerable);

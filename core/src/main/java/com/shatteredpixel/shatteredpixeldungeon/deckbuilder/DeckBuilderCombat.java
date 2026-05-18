@@ -27,6 +27,18 @@ public class DeckBuilderCombat {
 	public static final int RESULT_ATTACK_6_BLOCK_5 = -5;
 	public static final int RESULT_MASSACRE = -6;
 	public static final int RESULT_TOWER_NEEDLE = -7;
+	public static final int RESULT_PRESSURIZE = -8;
+	public static final int RESULT_FLAME_TACKLE_BIG = -9;
+	public static final int RESULT_LICK_BIG = -10;
+	public static final int RESULT_FLAME_TACKLE_MEDIUM = -11;
+	public static final int RESULT_LICK_MEDIUM = -12;
+	public static final int RESULT_WINDUP_PUNCH = -13;
+	public static final int RESULT_LASH = -14;
+	public static final int RESULT_TACKLE = -15;
+	public static final int RESULT_CHARGE_UP = -16;
+	public static final int RESULT_REPEATER_BLAST = -17;
+	public static final int RESULT_EXPEL_BLAST = -18;
+	public static final int RESULT_SUBMERGE = -19;
 
 	private static final String NODE_TYPE = "node_type";
 	private static final String DEPTH = "depth";
@@ -51,10 +63,19 @@ public class DeckBuilderCombat {
 	private static final String ENEMY_STRENGTH = "enemy_strength";
 	private static final String ENEMY_BLOCK = "enemy_block";
 	private static final String ENEMY_THORNS = "enemy_thorns";
+	private static final String ENEMY_PLATED_ARMOR = "enemy_plated_armor";
+	private static final String ENEMY_ARTIFACT = "enemy_artifact";
+	private static final String ENEMY_TRICKY = "enemy_tricky";
+	private static final String ENEMY_BLOCK_REDUCTION = "enemy_block_reduction";
+	private static final String ENEMY_VENOM = "enemy_venom";
+	private static final String ENEMY_LAST_INTENT = "enemy_last_intent";
+	private static final String ENEMY_SPLIT_USED = "enemy_split_used";
 	private static final String PLAYER_DAMAGE_REDUCTION = "player_damage_reduction";
+	private static final String PLAYER_BLOCK_REDUCTION = "player_block_reduction";
 	private static final String SHIV_DAMAGE_BONUS = "shiv_damage_bonus";
 	private static final String FIRST_SHIV_DAMAGE_BONUS = "first_shiv_damage_bonus";
 	private static final String SHIV_RETAIN = "shiv_retain";
+	private static final String SPINNING_NAIL_DAMAGE_BONUS = "spinning_nail_damage_bonus";
 
 	public final int nodeType;
 	public final int depth;
@@ -70,8 +91,10 @@ public class DeckBuilderCombat {
 	public int playerStrength;
 	public int playerTurnStrength;
 	public int playerDamageReduction;
+	public int playerBlockReduction;
 	public int shivDamageBonus;
 	public int firstShivDamageBonus;
+	public int spinningNailDamageBonus;
 	public boolean firstShivUsed;
 	public boolean shivRetain;
 
@@ -79,7 +102,9 @@ public class DeckBuilderCombat {
 	public ArrayList<Integer> hand = new ArrayList<>();
 	public ArrayList<Integer> discardPile = new ArrayList<>();
 	public ArrayList<Integer> exhaustPile = new ArrayList<>();
+	public ArrayList<DeckPlayResult> lastAutoPlayResults = new ArrayList<>();
 	public ArrayList<EnemyAction> lastEnemyActions = new ArrayList<>();
+	private int lastEnemyRawDamage;
 
 	public DeckBuilderCombat(int nodeType, int depth, ArrayList<Integer> deck) {
 		this.nodeType = nodeType;
@@ -121,9 +146,11 @@ public class DeckBuilderCombat {
 		bundle.put(PLAYER_STRENGTH, playerStrength);
 		bundle.put(PLAYER_TURN_STRENGTH, playerTurnStrength);
 		bundle.put(PLAYER_DAMAGE_REDUCTION, playerDamageReduction);
+		bundle.put(PLAYER_BLOCK_REDUCTION, playerBlockReduction);
 		bundle.put(SHIV_DAMAGE_BONUS, shivDamageBonus);
 		bundle.put(FIRST_SHIV_DAMAGE_BONUS, firstShivDamageBonus);
 		bundle.put(SHIV_RETAIN, shivRetain);
+		bundle.put(SPINNING_NAIL_DAMAGE_BONUS, spinningNailDamageBonus);
 		bundle.put(DRAW_PILE, toArray(drawPile));
 		bundle.put(HAND, toArray(hand));
 		bundle.put(DISCARD_PILE, toArray(discardPile));
@@ -137,6 +164,13 @@ public class DeckBuilderCombat {
 		int[] enemyStrength = new int[enemies.size()];
 		int[] enemyBlock = new int[enemies.size()];
 		int[] enemyThorns = new int[enemies.size()];
+		int[] enemyPlatedArmor = new int[enemies.size()];
+		int[] enemyArtifact = new int[enemies.size()];
+		int[] enemyTricky = new int[enemies.size()];
+		int[] enemyBlockReduction = new int[enemies.size()];
+		int[] enemyVenom = new int[enemies.size()];
+		int[] enemyLastIntent = new int[enemies.size()];
+		boolean[] enemySplitUsed = new boolean[enemies.size()];
 		for (int i = 0; i < enemies.size(); i++) {
 			DeckCombatEnemy enemy = enemies.get(i);
 			enemyKinds[i] = enemy.kind.ordinal();
@@ -147,6 +181,13 @@ public class DeckBuilderCombat {
 			enemyStrength[i] = enemy.strength;
 			enemyBlock[i] = enemy.block;
 			enemyThorns[i] = enemy.thorns;
+			enemyPlatedArmor[i] = enemy.platedArmor;
+			enemyArtifact[i] = enemy.artifact;
+			enemyTricky[i] = enemy.tricky;
+			enemyBlockReduction[i] = enemy.blockReduction;
+			enemyVenom[i] = enemy.venom;
+			enemyLastIntent[i] = enemy.lastIntent;
+			enemySplitUsed[i] = enemy.splitUsed;
 		}
 		bundle.put(ENEMY_KINDS, enemyKinds);
 		bundle.put(ENEMY_HT, enemyHt);
@@ -156,6 +197,13 @@ public class DeckBuilderCombat {
 		bundle.put(ENEMY_STRENGTH, enemyStrength);
 		bundle.put(ENEMY_BLOCK, enemyBlock);
 		bundle.put(ENEMY_THORNS, enemyThorns);
+		bundle.put(ENEMY_PLATED_ARMOR, enemyPlatedArmor);
+		bundle.put(ENEMY_ARTIFACT, enemyArtifact);
+		bundle.put(ENEMY_TRICKY, enemyTricky);
+		bundle.put(ENEMY_BLOCK_REDUCTION, enemyBlockReduction);
+		bundle.put(ENEMY_VENOM, enemyVenom);
+		bundle.put(ENEMY_LAST_INTENT, enemyLastIntent);
+		bundle.put(ENEMY_SPLIT_USED, enemySplitUsed);
 	}
 
 	public static DeckBuilderCombat restoreFromBundle(Bundle bundle) {
@@ -175,9 +223,11 @@ public class DeckBuilderCombat {
 		combat.playerStrength = bundle.getInt(PLAYER_STRENGTH);
 		combat.playerTurnStrength = bundle.getInt(PLAYER_TURN_STRENGTH);
 		combat.playerDamageReduction = bundle.contains(PLAYER_DAMAGE_REDUCTION) ? bundle.getInt(PLAYER_DAMAGE_REDUCTION) : 0;
+		combat.playerBlockReduction = bundle.contains(PLAYER_BLOCK_REDUCTION) ? bundle.getInt(PLAYER_BLOCK_REDUCTION) : 0;
 		combat.shivDamageBonus = bundle.contains(SHIV_DAMAGE_BONUS) ? bundle.getInt(SHIV_DAMAGE_BONUS) : 0;
 		combat.firstShivDamageBonus = bundle.contains(FIRST_SHIV_DAMAGE_BONUS) ? bundle.getInt(FIRST_SHIV_DAMAGE_BONUS) : 0;
 		combat.shivRetain = bundle.getBoolean(SHIV_RETAIN);
+		combat.spinningNailDamageBonus = bundle.contains(SPINNING_NAIL_DAMAGE_BONUS) ? bundle.getInt(SPINNING_NAIL_DAMAGE_BONUS) : 0;
 		restoreList(combat.drawPile, bundle, DRAW_PILE);
 		restoreList(combat.hand, bundle, HAND);
 		restoreList(combat.discardPile, bundle, DISCARD_PILE);
@@ -191,6 +241,13 @@ public class DeckBuilderCombat {
 		int[] enemyStrength = bundle.contains(ENEMY_STRENGTH) ? bundle.getIntArray(ENEMY_STRENGTH) : new int[0];
 		int[] enemyBlock = bundle.contains(ENEMY_BLOCK) ? bundle.getIntArray(ENEMY_BLOCK) : new int[0];
 		int[] enemyThorns = bundle.contains(ENEMY_THORNS) ? bundle.getIntArray(ENEMY_THORNS) : new int[0];
+		int[] enemyPlatedArmor = bundle.contains(ENEMY_PLATED_ARMOR) ? bundle.getIntArray(ENEMY_PLATED_ARMOR) : new int[0];
+		int[] enemyArtifact = bundle.contains(ENEMY_ARTIFACT) ? bundle.getIntArray(ENEMY_ARTIFACT) : new int[0];
+		int[] enemyTricky = bundle.contains(ENEMY_TRICKY) ? bundle.getIntArray(ENEMY_TRICKY) : new int[0];
+		int[] enemyBlockReduction = bundle.contains(ENEMY_BLOCK_REDUCTION) ? bundle.getIntArray(ENEMY_BLOCK_REDUCTION) : new int[0];
+		int[] enemyVenom = bundle.contains(ENEMY_VENOM) ? bundle.getIntArray(ENEMY_VENOM) : new int[0];
+		int[] enemyLastIntent = bundle.contains(ENEMY_LAST_INTENT) ? bundle.getIntArray(ENEMY_LAST_INTENT) : new int[0];
+		boolean[] enemySplitUsed = bundle.contains(ENEMY_SPLIT_USED) ? bundle.getBooleanArray(ENEMY_SPLIT_USED) : new boolean[0];
 		DeckEnemy[] allEnemies = DeckEnemy.values();
 		for (int i = 0; i < enemyKinds.length; i++) {
 			int kindIndex = enemyKinds[i];
@@ -203,6 +260,13 @@ public class DeckBuilderCombat {
 			if (i < enemyStrength.length) enemy.strength = enemyStrength[i];
 			if (i < enemyBlock.length) enemy.block = enemyBlock[i];
 			if (i < enemyThorns.length) enemy.thorns = enemyThorns[i];
+			if (i < enemyPlatedArmor.length) enemy.platedArmor = enemyPlatedArmor[i];
+			if (i < enemyArtifact.length) enemy.artifact = enemyArtifact[i];
+			if (i < enemyTricky.length) enemy.tricky = enemyTricky[i];
+			if (i < enemyBlockReduction.length) enemy.blockReduction = enemyBlockReduction[i];
+			if (i < enemyVenom.length) enemy.venom = enemyVenom[i];
+			if (i < enemyLastIntent.length) enemy.lastIntent = enemyLastIntent[i];
+			if (i < enemySplitUsed.length) enemy.splitUsed = enemySplitUsed[i];
 			combat.enemies.add(enemy);
 		}
 		if (combat.enemies.isEmpty()) {
@@ -218,9 +282,10 @@ public class DeckBuilderCombat {
 		block = 0;
 		playerTurnStrength = 0;
 		firstShivUsed = false;
+		lastAutoPlayResults.clear();
 		for (DeckCombatEnemy enemy : enemies) {
 			if (enemy.alive()) {
-				enemy.intent = enemy.kind.nextIntent(turn, depth, enemyIndex(enemy));
+				enemy.intent = enemy.kind.nextIntent(enemy, turn, depth, enemyIndex(enemy));
 			}
 		}
 		sanitizeTarget();
@@ -228,16 +293,27 @@ public class DeckBuilderCombat {
 	}
 
 	public DeckPlayResult play(int handIndex) {
+		lastAutoPlayResults.clear();
+		return play(handIndex, false);
+	}
+
+	private DeckPlayResult play(int handIndex, boolean castOnDraw) {
 		if (handIndex < 0 || handIndex >= hand.size()) return DeckPlayResult.INVALID;
 		int cardCode = hand.get(handIndex);
 		DeckCard card = DeckCard.byCode(cardCode);
-		if (card.cost(cardCode) > energy) return DeckPlayResult.INVALID;
+		int cost = cardCost(cardCode);
+		if (!castOnDraw && cost > energy) return DeckPlayResult.INVALID;
 
-		energy -= card.cost(cardCode);
+		if (!castOnDraw) {
+			energy -= cost;
+		}
 
+		boolean aimActive = card.hasKeyword(cardCode, DeckCardKeyword.AIM) && isCenterHandIndex(handIndex);
+		boolean throwActive = card.hasKeyword(cardCode, DeckCardKeyword.THROW) && isEdgeHandIndex(handIndex);
+		int effectiveCardCode = card.effectiveCodeForPlay(cardCode, this, handIndex);
 		DeckPlayResult.Builder result = new DeckPlayResult.Builder(card);
 		for (DeckCardEffect effect : card.effects(cardCode)) {
-			effect.apply(this, card, cardCode, result);
+			effect.apply(new DeckCardPlayContext(this, card, cardCode, effectiveCardCode, handIndex, castOnDraw, aimActive, throwActive, result));
 		}
 
 		hand.remove(handIndex);
@@ -254,6 +330,13 @@ public class DeckBuilderCombat {
 		}
 
 		return result.build();
+	}
+
+	private void playAutoDrawnCard(int handIndex) {
+		DeckPlayResult result = play(handIndex, true);
+		if (result.played) {
+			lastAutoPlayResults.add(result);
+		}
 	}
 
 	public int cardDamage(DeckCard card, int cardCode) {
@@ -279,7 +362,19 @@ public class DeckBuilderCombat {
 				damage += firstShivDamageBonus;
 			}
 		}
+		if (card == DeckCard.ROTATING_NAIL) {
+			damage += spinningNailDamageBonus;
+		}
 		return damage;
+	}
+
+	public int cardCost(int cardCode) {
+		DeckCard card = DeckCard.byCode(cardCode);
+		int cost = card.cost(cardCode);
+		if (card == DeckCard.PROUD_STARVER) {
+			cost -= countInDrawPile(DeckCard.ROTATING_NAIL);
+		}
+		return Math.max(0, cost);
 	}
 
 	public void addToHand(int cardCode) {
@@ -290,12 +385,61 @@ public class DeckBuilderCombat {
 		}
 	}
 
+	public void addToDrawPile(int cardCode, int count, boolean shuffle) {
+		for (int i = 0; i < count; i++) {
+			drawPile.add(cardCode);
+		}
+		if (shuffle) {
+			shuffle(drawPile);
+		}
+	}
+
+	public int countInDrawPile(DeckCard card) {
+		int count = 0;
+		for (int code : drawPile) {
+			if (DeckCard.byCode(code) == card) count++;
+		}
+		return count;
+	}
+
+	public void copyAndPlayFromDrawPile(DeckCard card, DeckPlayResult.Builder result) {
+		if (card == null) return;
+		ArrayList<Integer> copies = new ArrayList<>();
+		for (int code : drawPile) {
+			if (DeckCard.byCode(code) == card) copies.add(code);
+		}
+		for (int code : copies) {
+			DeckCard copyCard = DeckCard.byCode(code);
+			int effectiveCode = copyCard.effectiveCodeForPlay(code, this, -1);
+			for (DeckCardEffect effect : copyCard.effects(effectiveCode)) {
+				effect.apply(new DeckCardPlayContext(this, copyCard, code, effectiveCode, -1, true, false, false, result));
+			}
+		}
+	}
+
+	public boolean isCenterHandIndex(int handIndex) {
+		int size = hand.size();
+		return handIndex >= 0 && handIndex < size && size % 2 == 1 && handIndex == size / 2;
+	}
+
+	public boolean isEdgeHandIndex(int handIndex) {
+		int size = hand.size();
+		return handIndex >= 0 && handIndex < size && (handIndex == 0 || handIndex == size - 1);
+	}
+
 	public int damageEnemy(DeckCombatEnemy target, int damage, boolean attackCard) {
 		if (target == null || damage <= 0) return 0;
 		int blocked = Math.min(target.block, damage);
 		target.block -= blocked;
 		int dealt = Math.max(0, damage - blocked);
+		if (dealt > 0 && target.tricky > 0) {
+			target.tricky = 0;
+			dealt = 1;
+		}
 		target.hp = Math.max(0, target.hp - dealt);
+		if (dealt > 0 && target.platedArmor > 0) {
+			target.platedArmor--;
+		}
 		if (attackCard && target.thorns > 0) {
 			int thornBlocked = Math.min(block, target.thorns);
 			block -= thornBlocked;
@@ -305,6 +449,23 @@ public class DeckBuilderCombat {
 			}
 		}
 		return dealt;
+	}
+
+	public int gainBlock(int amount) {
+		if (amount <= 0) return 0;
+		int reduction = 25 * Math.max(0, playerBlockReduction);
+		int gained = amount * Math.max(0, 100 - reduction) / 100;
+		block += gained;
+		return gained;
+	}
+
+	public boolean applyEnemyDebuff(DeckCombatEnemy enemy) {
+		if (enemy == null) return false;
+		if (enemy.artifact > 0) {
+			enemy.artifact--;
+			return false;
+		}
+		return true;
 	}
 
 	@SuppressWarnings("SuspiciousIndentation")
@@ -321,17 +482,32 @@ public class DeckBuilderCombat {
 		}
 		hand.clear();
 		hand.addAll(retained);
+		if (playerBlockReduction > 0) playerBlockReduction--;
 
 		boolean injected = false;
-		int incoming = 0;
+		int damageTaken = 0;
 		int remainingBlock = block;
+		ArrayList<DeckCombatEnemy> splitSpawns = new ArrayList<>();
 		for (DeckCombatEnemy enemy : enemies) {
 			if (!enemy.alive()) continue;
 			enemy.block = 0;
+			if (enemy.kind == DeckEnemy.LARGE_SLIME && !enemy.splitUsed && enemy.hp <= enemy.ht / 2) {
+				enemy.splitUsed = true;
+				int splitHp = Math.max(1, enemy.hp);
+				enemy.hp = 0;
+				for (int i = 0; i < 2; i++) {
+					DeckCombatEnemy medium = new DeckCombatEnemy(DeckEnemy.MEDIUM_SLIME, depth);
+					medium.ht = splitHp;
+					medium.hp = splitHp;
+					splitSpawns.add(medium);
+				}
+				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "분열"));
+				continue;
+			}
 			if (enemy.intent == RESULT_SLIMY_INJECT) {
 				discardPile.add(DeckCard.SLIMY.code());
 				injected = true;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, true, "\uC810\uC561\uD22C\uC131\uC774"));
+                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, true, "\uC810\uC561\uD22C\uC131\uC774", false, DeckCard.SLIMY, 1));
 			} else if (enemy.intent == RESULT_AGE_DOWN) {
 				playerDamageReduction = Math.max(playerDamageReduction, 30);
                     lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "\uC5F0\uB839 \uC800\uD558"));
@@ -344,41 +520,109 @@ public class DeckBuilderCombat {
                     lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "[\uD0C0\uC6CC \uB2C8\uB4E4]"));
 			} else if (enemy.intent == RESULT_MASSACRE) {
 				for (int hit = 0; hit < 3; hit++) {
-					int enemyDamage = enemyDamage(enemy, 3);
-					incoming += enemyDamage;
-					int blocked = Math.min(remainingBlock, enemyDamage);
-					int damage = Math.max(0, enemyDamage - blocked);
-					remainingBlock = Math.max(0, remainingBlock - enemyDamage);
-                        lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, hit == 0 ? "[\uB300\uD559\uC0B4!]" : null, enemyDamage > 0 && damage == 0));
+					int damage = performEnemyAttack(enemy, 3, remainingBlock, hit == 0 ? "[\uB300\uD559\uC0B4!]" : null);
+					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+					damageTaken += damage;
 				}
 				enemy.thorns = Math.max(0, enemy.thorns - 2);
 			} else if (enemy.intent == RESULT_ATTACK_6_BLOCK_5) {
-				int enemyDamage = enemyDamage(enemy, 6);
-				incoming += enemyDamage;
-				int blocked = Math.min(remainingBlock, enemyDamage);
-				int damage = Math.max(0, enemyDamage - blocked);
-				remainingBlock = Math.max(0, remainingBlock - enemyDamage);
+				int damage = performEnemyAttack(enemy, 6, remainingBlock, "\uBC29\uC5B4\uB9C9 +5");
+				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+				damageTaken += damage;
 				enemy.block += 5;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, "\uBC29\uC5B4\uB9C9 +5", enemyDamage > 0 && damage == 0));
+			} else if (enemy.intent == RESULT_PRESSURIZE) {
+				enemy.strength += 4;
+				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "힘 +4"));
+			} else if (enemy.intent == RESULT_FLAME_TACKLE_BIG) {
+				int damage = performEnemyAttack(enemy, 16, remainingBlock, "점액투성이 +2");
+				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+				damageTaken += damage;
+				discardPile.add(DeckCard.SLIMY.code());
+				discardPile.add(DeckCard.SLIMY.code());
+				injected = true;
+				lastEnemyActions.get(lastEnemyActions.size() - 1).setShuffle(DeckCard.SLIMY, 2);
+			} else if (enemy.intent == RESULT_FLAME_TACKLE_MEDIUM) {
+				int damage = performEnemyAttack(enemy, 8, remainingBlock, "점액투성이 +1");
+				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+				damageTaken += damage;
+				discardPile.add(DeckCard.SLIMY.code());
+				injected = true;
+				lastEnemyActions.get(lastEnemyActions.size() - 1).setShuffle(DeckCard.SLIMY, 1);
+			} else if (enemy.intent == RESULT_LICK_BIG || enemy.intent == RESULT_LICK_MEDIUM) {
+				int amount = enemy.intent == RESULT_LICK_BIG ? 2 : 1;
+				playerBlockReduction += amount;
+				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "방어력 저하 +" + amount));
+			} else if (enemy.intent == RESULT_WINDUP_PUNCH) {
+				for (int hit = 0; hit < 3; hit++) {
+					int damage = performEnemyAttack(enemy, 2, remainingBlock, hit == 0 ? "감아치기" : null);
+					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+					damageTaken += damage;
+				}
+			} else if (enemy.intent == RESULT_LASH) {
+				for (int hit = 0; hit < 2; hit++) {
+					int damage = performEnemyAttack(enemy, 3, remainingBlock, hit == 0 ? "후려치기" : null);
+					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+					damageTaken += damage;
+				}
+			} else if (enemy.intent == RESULT_TACKLE) {
+				int damage = performEnemyAttack(enemy, 9, remainingBlock, "손상 +1");
+				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+				damageTaken += damage;
+				playerDamageReduction = Math.max(playerDamageReduction, 25);
+			} else if (enemy.intent == RESULT_CHARGE_UP) {
+				enemy.strength += 2;
+				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "힘 +2"));
+			} else if (enemy.intent == RESULT_REPEATER_BLAST) {
+				int damage = performEnemyAttack(enemy, 7, remainingBlock, "힘 +2");
+				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+				damageTaken += damage;
+				enemy.strength += 2;
+			} else if (enemy.intent == RESULT_EXPEL_BLAST) {
+				for (int hit = 0; hit < 2; hit++) {
+					int damage = performEnemyAttack(enemy, 5, remainingBlock, hit == 0 ? "방출 폭발" : null);
+					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+					damageTaken += damage;
+				}
+			} else if (enemy.intent == RESULT_SUBMERGE) {
+				enemy.block += 15;
+				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "방어도 +15"));
 			} else {
-				int enemyDamage = enemyDamage(enemy, enemy.intent);
-				incoming += enemyDamage;
-				int blocked = Math.min(remainingBlock, enemyDamage);
-				int damage = Math.max(0, enemyDamage - blocked);
-				remainingBlock = Math.max(0, remainingBlock - enemyDamage);
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, enemy.kind == DeckEnemy.TOWER_OF_GREY && enemy.intent == 7 ? "[\uD600 \uB728\uC5B4\uB0B4\uAE30]" : null, enemyDamage > 0 && damage == 0));
+				int damage = performEnemyAttack(enemy, enemy.intent, remainingBlock, enemy.kind == DeckEnemy.TOWER_OF_GREY && enemy.intent == 7 ? "[\uD600 \uB728\uC5B4\uB0B4\uAE30]" : null);
+				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
+				damageTaken += damage;
 			}
+			enemy.lastIntent = enemy.intent;
 			if (enemy.vulnerable > 0) enemy.vulnerable--;
+			if (enemy.platedArmor > 0 && enemy.alive()) enemy.block += enemy.platedArmor;
 		}
+		enemies.addAll(splitSpawns);
+		sanitizeTarget();
 
-		int damage = Math.max(0, incoming - block);
-		if (damage > 0) {
-			DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - damage);
+		if (damageTaken > 0) {
+			DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - damageTaken);
 		}
 		if (!playerDead()) {
 			startTurn();
 		}
-		return injected && damage == 0 ? RESULT_SLIMY_INJECT : damage;
+		return injected && damageTaken == 0 ? RESULT_SLIMY_INJECT : damageTaken;
+	}
+
+	private int performEnemyAttack(DeckCombatEnemy enemy, int baseDamage, int remainingBlock, String label) {
+		int enemyDamage = enemyDamage(enemy, baseDamage);
+		lastEnemyRawDamage = enemyDamage;
+		int blocked = Math.min(remainingBlock, enemyDamage);
+		int damage = Math.max(0, enemyDamage - blocked);
+		if (damage > 0 && enemy.venom > 0) {
+			enemy.strength += enemy.venom;
+			label = appendLabel(label, "힘 +" + enemy.venom);
+		}
+		lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, label, enemyDamage > 0 && damage == 0));
+		return damage;
+	}
+
+	private String appendLabel(String first, String second) {
+		if (first == null || first.length() == 0) return second;
+		return first + " / " + second;
 	}
 
 	private int enemyDamage(DeckCombatEnemy enemy, int baseDamage) {
@@ -441,15 +685,23 @@ public class DeckBuilderCombat {
 	public boolean draw(int count) {
 		boolean drew = false;
 		for (int i = 0; i < count; i++) {
-			if (hand.size() >= maxHandSize) return drew;
 			if (drawPile.isEmpty()) {
 				if (discardPile.isEmpty()) return drew;
 				drawPile.addAll(discardPile);
 				discardPile.clear();
 				shuffle(drawPile);
 			}
-			hand.add(drawPile.remove(0));
+			int drawn = drawPile.remove(0);
 			drew = true;
+			if (hand.size() >= maxHandSize) {
+				discardPile.add(drawn);
+				continue;
+			}
+			hand.add(drawn);
+			int handIndex = hand.size() - 1;
+			if (DeckCard.byCode(drawn).hasKeyword(drawn, DeckCardKeyword.CAST_ON_DRAW)) {
+				playAutoDrawnCard(handIndex);
+			}
 		}
 		return drew;
 	}
@@ -485,6 +737,8 @@ public class DeckBuilderCombat {
 		public final boolean slimyInject;
 		public final String label;
 		public final boolean blocked;
+		public DeckCard shuffledCard;
+		public int shuffledCount;
 
 		public EnemyAction(int enemyIndex, int damage, boolean slimyInject) {
 			this(enemyIndex, damage, slimyInject, null);
@@ -495,11 +749,22 @@ public class DeckBuilderCombat {
 		}
 
 		public EnemyAction(int enemyIndex, int damage, boolean slimyInject, String label, boolean blocked) {
+			this(enemyIndex, damage, slimyInject, label, blocked, null, 0);
+		}
+
+		public EnemyAction(int enemyIndex, int damage, boolean slimyInject, String label, boolean blocked, DeckCard shuffledCard, int shuffledCount) {
 			this.enemyIndex = enemyIndex;
 			this.damage = damage;
 			this.slimyInject = slimyInject;
 			this.label = label;
 			this.blocked = blocked;
+			this.shuffledCard = shuffledCard;
+			this.shuffledCount = shuffledCount;
+		}
+
+		public void setShuffle(DeckCard shuffledCard, int shuffledCount) {
+			this.shuffledCard = shuffledCard;
+			this.shuffledCount = shuffledCount;
 		}
 	}
 }

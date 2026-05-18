@@ -876,6 +876,34 @@ public class InterlevelScene extends PixelScene {
             return;
         }
         if (Dungeon.deckbuilderlevel
+                && Statistics.deckBuilderMapNode == DeckBuilderMap.EVENT) {
+            Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
+            Dungeon.switchLevel(level, Dungeon.hero.pos);
+            nextScene = DeckEventScene.class;
+            return;
+        }
+        if (Dungeon.deckbuilderlevel
+                && Statistics.deckBuilderMapNode == DeckBuilderMap.SHOP) {
+            Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
+            Dungeon.switchLevel(level, Dungeon.hero.pos);
+            nextScene = DeckShopScene.class;
+            return;
+        }
+        if (Dungeon.deckbuilderlevel
+                && Statistics.deckBuilderMapNode == DeckBuilderMap.TREASURE) {
+            Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
+            Dungeon.switchLevel(level, Dungeon.hero.pos);
+            nextScene = DeckTreasureScene.class;
+            return;
+        }
+        if (Dungeon.deckbuilderlevel
+                && Statistics.deckBuilderMapNode == DeckBuilderMap.REST) {
+            Level level = Dungeon.loadLevel(GamesInProgress.curSlot);
+            Dungeon.switchLevel(level, Dungeon.hero.pos);
+            nextScene = DeckRestScene.class;
+            return;
+        }
+        if (Dungeon.deckbuilderlevel
                 && DeckBuilderRun.currentCombat == null
                 && Statistics.deckBuilderMapNode == DeckBuilderMap.NONE) {
             Level level = Dungeon.loadLevel(GamesInProgress.curSlot);

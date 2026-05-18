@@ -21,12 +21,12 @@ import java.util.ArrayList;
 
 public enum DeckCard {
 
-	STRIKE(0, "행운의 검", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WORN_SHORTSWORD),
-	GUARD(1, "무당벌레 브로치", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_CLOTH),
-	BASH(2, "파문 커터", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 8, 0, 0, 2, 0, 0, 0, true, ItemSpriteSheet.THROWING_STONE),
+	STRIKE(0, "행운의 검", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.WORN_SHORTSWORD),
+	GUARD(1, "무당벌레 브로치", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, false, ItemSpriteSheet.ARMOR_CLOTH),
+	BASH(2, "파문 커터", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 8, 0, 0, 2, 0, 0, 0, false, ItemSpriteSheet.THROWING_STONE),
 	BREATH(3, "파문의 보호막", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 3, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SEAL),
 	STAR_FINGER(4, "매지션즈 레드의 사격 DISC", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.RANDOM_ENEMY, 2, 13, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_FIREBOLT),
-	RIPPLE_WALL(5, "개구리", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 2, 5, 12, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DEWDROP),
+	RIPPLE_WALL(5, "개구리", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 4, 1, 0, 0, 0, 0, true, ItemSpriteSheet.DEWDROP),
 	SLIMY(6, "익사", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 1, 0, 0, 1, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.MOB_HOLDER),
 	IGNITE(7, "강화의 DISC", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 2, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ),
 
@@ -36,7 +36,15 @@ public enum DeckCard {
 	ACCURACY(11, "생명 추적", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, Talent.HEIGHTENED_SENSES, HeroClass.HUNTRESS, 0),
 	KNIFE_TRAP(12, "무한한 가능성", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 2, 0, 0, 0, 0, 0, 0, 0, true, Talent.SWIFT_SPIRIT, HeroClass.HUNTRESS, 0),
 	LEADING_STRIKE(13, "자세 교정", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 3, 0, 0, 0, 0, 0, 0, true, Talent.SHARED_UPGRADES, HeroClass.HUNTRESS, 2),
-	CLOAK_AND_DAGGER(14, "투쟁심", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 6, 0, 0, 0, 0, 0, true, Talent.POINT_BLANK, HeroClass.HUNTRESS, 1);
+	CLOAK_AND_DAGGER(14, "투쟁심", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 6, 0, 0, 0, 0, 0, true, Talent.POINT_BLANK, HeroClass.HUNTRESS, 1),
+
+	ROTATING_NAIL(15, "회전하는 손톱", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.RANDOM_ENEMY, 1, 3, 0, 1, 0, 0, 0, keywords(DeckCardKeyword.CAST_ON_DRAW, DeckCardKeyword.EXHAUST), false, Talent.J43, HeroClass.JOHNNY, 0),
+	TUSK_EQUIPMENT_DISC(16, "터스크의 장비 DISC", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.AIM), false, ItemSpriteSheet.ARTIFACT_TUSK1, HeroClass.JOHNNY, 0),
+	TRACKING_BULLET_HOLE(17, "추적하는 탄흔", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 2, 12, 0, 0, 0, 0, 0, 0, true, Talent.J22, HeroClass.JOHNNY, 0),
+	SPIN_TRAINING(18, "회전 훈련", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 1, 0, 0, 0, keywords(DeckCardKeyword.AIM), true, Talent.J14, HeroClass.JOHNNY, 0),
+	PROUD_STARVER(19, "긍지있게 굶주린 자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 4, 0, 0, 5, 0, 0, 0, 0, true, Talent.J21, HeroClass.JOHNNY, 0),
+	LESSON_FIVE(20, "Lesson 5는 이걸 위해..", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.RANDOM_ENEMY, 2, 0, 0, 0, 0, 0, 0, 0, true, Talent.J36, HeroClass.JOHNNY, 0),
+	STRIKE7(26, "손톱탄", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 50, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.PICKAXE);
 
 
 	private static final int ID_MASK = 0xFF;
@@ -114,11 +122,14 @@ public enum DeckCard {
 	}
 
 	public int cost(int code) {
+		if (this == LESSON_FIVE && upgradeLevel(code) > 0) return 1;
 		return cost;
 	}
 
 	public int damage(int code) {
 		if (this == SHIV) return damage + upgradeLevel(code) * 2;
+		if (this == TUSK_EQUIPMENT_DISC) return damage + upgradeLevel(code) * 4;
+		if (this == TRACKING_BULLET_HOLE) return upgradeLevel(code) > 0 ? 15 : damage;
 		return damage > 0 ? damage + upgradeLevel(code) * 3 : 0;
 	}
 
@@ -128,6 +139,7 @@ public enum DeckCard {
 	}
 
 	public int draw(int code) {
+		if (this == PROUD_STARVER) return upgradeLevel(code) > 0 ? 6 : draw;
 		return this == SCORPION_THROW ? draw + upgradeLevel(code) : draw;
 	}
 
@@ -141,6 +153,27 @@ public enum DeckCard {
 
 	public int shivs(int code) {
 		return this == CLOAK_AND_DAGGER ? shivs + upgradeLevel(code) : shivs;
+	}
+
+	public int maxUpgradeLevel() {
+		if (this == TUSK_EQUIPMENT_DISC) return 3;
+		return 1;
+	}
+
+	public int effectiveCodeForPlay(int code, DeckBuilderCombat combat, int handIndex) {
+		if (combat == null) return code;
+		if (this == TUSK_EQUIPMENT_DISC && hasKeyword(code, DeckCardKeyword.AIM) && combat.isCenterHandIndex(handIndex)) {
+			return upgradedForPlay(code);
+		}
+		if (hasKeyword(code, DeckCardKeyword.THROW) && combat.isEdgeHandIndex(handIndex)) {
+			return upgradedForPlay(code);
+		}
+		return code;
+	}
+
+	public int upgradedForPlay(int code) {
+		int upgrade = Math.min(maxUpgradeLevel(), upgradeLevel(code) + 1);
+		return (code & ~(UPGRADE_MASK << UPGRADE_SHIFT)) | (upgrade << UPGRADE_SHIFT);
 	}
 
 	public boolean hasKeyword(int code, DeckCardKeyword keyword) {
@@ -162,7 +195,24 @@ public enum DeckCard {
 		if (this == PHANTOM_BLADES) effects.add(new DeckCardEffects.PhantomBlades());
 		if (this == ACCURACY) effects.add(new DeckCardEffects.Accuracy());
 		if (this == KNIFE_TRAP) effects.add(new DeckCardEffects.KnifeTrap());
+		if (this == TUSK_EQUIPMENT_DISC) effects.add(new DeckCardEffects.ShuffleIntoDrawPile(ROTATING_NAIL, 2));
+		if (this == TRACKING_BULLET_HOLE) effects.add(new DeckCardEffects.ShuffleIntoDrawPile(ROTATING_NAIL, 3));
+		if (this == SPIN_TRAINING) {
+			effects.add(new DeckCardEffects.SpinningNailTraining());
+			effects.add(new DeckCardEffects.AimShuffleIntoDrawPile(ROTATING_NAIL, 3));
+		}
+		if (this == LESSON_FIVE) effects.add(new DeckCardEffects.CopyAndPlayFromDrawPile(ROTATING_NAIL));
 		return effects.toArray(new DeckCardEffect[0]);
+	}
+
+	public int classFaceColor() {
+		if (deckClass == HeroClass.JOHNNY) return 0xFF4A213F;
+		return 0xFF1A3D6B;
+	}
+
+	public int classPanelColor() {
+		if (deckClass == HeroClass.JOHNNY) return 0xFF8D3F7F;
+		return 0xFF2D5F9D;
 	}
 
 	public static int id(int code) {
@@ -186,7 +236,8 @@ public enum DeckCard {
 	}
 
 	public static int upgrade(int code) {
-		int upgrade = Math.min(UPGRADE_MASK, upgradeLevel(code) + 1);
+		DeckCard card = byCode(code);
+		int upgrade = Math.min(card.maxUpgradeLevel(), upgradeLevel(code) + 1);
 		return (code & ~(UPGRADE_MASK << UPGRADE_SHIFT)) | (upgrade << UPGRADE_SHIFT);
 	}
 

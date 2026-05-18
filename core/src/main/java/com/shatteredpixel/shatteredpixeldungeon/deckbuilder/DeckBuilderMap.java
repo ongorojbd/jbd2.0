@@ -143,9 +143,10 @@ public class DeckBuilderMap {
 	private static void generatePaths() {
 		int[] starts = new int[PATH_COUNT];
 		starts[0] = randomIndex(0, 0, 0, GRID_COLUMNS);
-		do {
-			starts[1] = randomIndex(0, 1, 0, GRID_COLUMNS);
-		} while (starts[1] == starts[0]);
+		starts[1] = randomIndex(0, 1, 0, GRID_COLUMNS);
+		if (starts[1] == starts[0]) {
+			starts[1] = (starts[0] + 1 + randomIndex(0, 1, 1, GRID_COLUMNS - 1)) % GRID_COLUMNS;
+		}
 		for (int path = 2; path < PATH_COUNT; path++) {
 			starts[path] = randomIndex(0, path, 0, GRID_COLUMNS);
 		}
