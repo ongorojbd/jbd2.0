@@ -289,7 +289,7 @@ public class DeckBuilderCombat {
 			}
 		}
 		sanitizeTarget();
-		drawTo(handSize);
+		draw(handSize);
 	}
 
 	public DeckPlayResult play(int handIndex) {
@@ -507,26 +507,26 @@ public class DeckBuilderCombat {
 			if (enemy.intent == RESULT_SLIMY_INJECT) {
 				discardPile.add(DeckCard.SLIMY.code());
 				injected = true;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, true, "\uC810\uC561\uD22C\uC131\uC774", false, DeckCard.SLIMY, 1));
+                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, true, "점액투성이", false, DeckCard.SLIMY, 1));
 			} else if (enemy.intent == RESULT_AGE_DOWN) {
 				playerDamageReduction = Math.max(playerDamageReduction, 30);
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "\uC5F0\uB839 \uC800\uD558"));
+                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "유아화"));
 			} else if (enemy.intent == RESULT_STRENGTH_7 || enemy.intent == RESULT_STRENGTH_2) {
 				int strength = enemy.intent == RESULT_STRENGTH_7 ? 7 : 2;
 				enemy.strength += strength;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "\uACF5\uACA9\uB825 +" + strength));
+                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "공격력 +" + strength));
 			} else if (enemy.intent == RESULT_TOWER_NEEDLE) {
 				enemy.thorns += 2;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "[\uD0C0\uC6CC \uB2C8\uB4E4]"));
+                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "[타워 니들]"));
 			} else if (enemy.intent == RESULT_MASSACRE) {
 				for (int hit = 0; hit < 3; hit++) {
-					int damage = performEnemyAttack(enemy, 3, remainingBlock, hit == 0 ? "[\uB300\uD559\uC0B4!]" : null);
+					int damage = performEnemyAttack(enemy, 3, remainingBlock, hit == 0 ? "[대학살!]" : null);
 					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
 					damageTaken += damage;
 				}
 				enemy.thorns = Math.max(0, enemy.thorns - 2);
 			} else if (enemy.intent == RESULT_ATTACK_6_BLOCK_5) {
-				int damage = performEnemyAttack(enemy, 6, remainingBlock, "\uBC29\uC5B4\uB9C9 +5");
+				int damage = performEnemyAttack(enemy, 6, remainingBlock, "방어막 +5");
 				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
 				damageTaken += damage;
 				enemy.block += 5;
@@ -587,7 +587,7 @@ public class DeckBuilderCombat {
 				enemy.block += 15;
 				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "방어도 +15"));
 			} else {
-				int damage = performEnemyAttack(enemy, enemy.intent, remainingBlock, enemy.kind == DeckEnemy.TOWER_OF_GREY && enemy.intent == 7 ? "[\uD600 \uB728\uC5B4\uB0B4\uAE30]" : null);
+				int damage = performEnemyAttack(enemy, enemy.intent, remainingBlock, enemy.kind == DeckEnemy.TOWER_OF_GREY && enemy.intent == 7 ? "[혀 뜯어내기]" : null);
 				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
 				damageTaken += damage;
 			}

@@ -157,6 +157,7 @@ public class DeckBuilderRun {
 			addCopies(DeckCard.STRIKE, 5);
 			addCopies(DeckCard.GUARD, 4);
 			addCopies(DeckCard.SCORPION_THROW, 1);
+			addCopies(DeckCard.ACCURACY, 1);
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.JOHNNY) {

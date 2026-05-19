@@ -16,7 +16,7 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 public enum DeckCardRarity {
 
 	COMMON("일반", 0xFF252525, 0xFF3E3E3E, 0xFFE8E8E8),
-	UNCOMMON("고급", 0xFF252525, 0xFF3E3E3E, 0xFF48C8FF),
+	UNCOMMON("특별", 0xFF252525, 0xFF3E3E3E, 0xFF48C8FF),
 	RARE("희귀", 0xFF252525, 0xFF3E3E3E, 0xFFCC66FF);
 
 	public final String label;

@@ -423,7 +423,7 @@ public class DeckEventScene extends PixelScene {
 		if (card.damage(cardCode) > 0) text += damageRulesText(card, cardCode);
 		if (card.block(cardCode) > 0) text += append(text, "방어도를 " + card.block(cardCode) + " 얻습니다.");
 		if (card.draw(cardCode) > 0) text += append(text, "카드를 " + card.draw(cardCode) + "장 뽑습니다.");
-		if (card.vulnerable(cardCode) > 0) text += append(text, "취약을 " + card.vulnerable(cardCode) + " 부여합니다.");
+		if (card.vulnerable(cardCode) > 0) text += append(text, "피해 증폭을 " + card.vulnerable(cardCode) + " 부여합니다.");
 		if (card.strength(cardCode) > 0) text += append(text, "힘을 " + card.strength(cardCode) + " 얻습니다.");
 		if (card.shivs(cardCode) > 0) text += append(text, "단도를 " + card.shivs(cardCode) + "장 손으로 가져옵니다.");
 		if (card.target == DeckCardTarget.RANDOM_ENEMY) text += append(text, "무작위 대상.");
@@ -451,7 +451,7 @@ public class DeckEventScene extends PixelScene {
 		if (card.damage(cardCode) != card.damage(upgraded)) text += append(text, "피해 " + card.damage(cardCode) + " → " + card.damage(upgraded));
 		if (card.block(cardCode) != card.block(upgraded)) text += append(text, "방어 " + card.block(cardCode) + " → " + card.block(upgraded));
 		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " → " + card.draw(upgraded));
-		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "취약 " + card.vulnerable(cardCode) + " → " + card.vulnerable(upgraded));
+		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " → " + card.vulnerable(upgraded));
 		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "힘 " + card.strength(cardCode) + " → " + card.strength(upgraded));
 		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "단도 " + card.shivs(cardCode) + " → " + card.shivs(upgraded));
 
@@ -460,7 +460,7 @@ public class DeckEventScene extends PixelScene {
 
 	private String keywordText(DeckCard card, int cardCode) {
 		String text = "";
-		if (card.vulnerable(cardCode) > 0) text += "취약: 받는 공격 피해가 증가합니다.";
+		if (card.vulnerable(cardCode) > 0) text += "피해 증폭: 받는 공격 피해가 증가합니다.";
 		if (card.strength(cardCode) > 0) text += append(text, "힘: 공격 카드의 피해가 증가합니다.");
 		for (DeckCardKeyword keyword : DeckCardKeyword.values()) {
 			if (card.hasKeyword(cardCode, keyword)) {

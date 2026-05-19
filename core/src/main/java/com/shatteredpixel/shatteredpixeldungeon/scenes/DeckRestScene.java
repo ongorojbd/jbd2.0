@@ -340,7 +340,7 @@ public class DeckRestScene extends PixelScene {
 		if (card.damage(cardCode) != card.damage(upgraded)) text += append(text, "피해 " + card.damage(cardCode) + " → " + card.damage(upgraded));
 		if (card.block(cardCode) != card.block(upgraded)) text += append(text, "방어 " + card.block(cardCode) + " → " + card.block(upgraded));
 		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " → " + card.draw(upgraded));
-		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "취약 " + card.vulnerable(cardCode) + " → " + card.vulnerable(upgraded));
+		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " → " + card.vulnerable(upgraded));
 		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "힘 " + card.strength(cardCode) + " → " + card.strength(upgraded));
 		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "단도 " + card.shivs(cardCode) + " → " + card.shivs(upgraded));
 		return text.length() > 0 ? text : "카드 이름에 +가 붙고 강화 상태가 증가합니다.";

@@ -261,7 +261,7 @@ public class ItemSpriteSheet {
         assignItemRect(GLOVES, 12, 16);
         assignItemRect(RAPIER, 13, 14);
         assignItemRect(DAGGER, 10, 13);
-        assignItemRect(MAGES_STAFF, 15, 16);
+        assignItemRect(MAGES_STAFF, 16, 15);
         assignItemRect(RAPIER2, 13, 14);
     }
 

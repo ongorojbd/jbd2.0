@@ -157,7 +157,6 @@ public class DeckTreasureScene extends PixelScene {
 		private ColorBlock shadow;
 		private ColorBlock bg;
 		private ColorBlock accent;
-		private ItemSprite icon;
 		private RenderedTextBlock title;
 		private RenderedTextBlock desc;
 
@@ -172,8 +171,6 @@ public class DeckTreasureScene extends PixelScene {
 			add(bg);
 			accent = new ColorBlock(1, 1, 0xFFD5F27A);
 			add(accent);
-			icon = new ItemSprite(relic == null ? ItemSpriteSheet.SOMETHING : relic.icon);
-			add(icon);
 			title = renderTextBlock(7);
 			title.hardlight(Window.TITLE_COLOR);
 			add(title);
@@ -194,14 +191,12 @@ public class DeckTreasureScene extends PixelScene {
 			accent.x = x;
 			accent.y = y;
 			accent.size(3, height);
-			icon.x = x + 10;
-			icon.y = y + (height - icon.height()) / 2f;
 			title.text(relic == null ? "비어 있음" : relic.title);
-			title.maxWidth((int)(width - 46));
-			title.setPos(x + 34, y + 7);
+			title.maxWidth((int)(width - 20));
+			title.setPos(x + 10, y + 7);
 			desc.text(relic == null ? "획득할 유물이 없습니다." : relic.description);
-			desc.maxWidth((int)(width - 46));
-			desc.setPos(x + 34, title.bottom() + 2);
+			desc.maxWidth((int)(width - 20));
+			desc.setPos(x + 10, title.bottom() + 2);
 		}
 
 		@Override

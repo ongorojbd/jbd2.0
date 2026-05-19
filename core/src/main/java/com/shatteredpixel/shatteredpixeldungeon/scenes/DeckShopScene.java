@@ -560,7 +560,7 @@ public class DeckShopScene extends PixelScene {
 		if (card.damage(cardCode) > 0) text += "피해 " + card.damage(cardCode);
 		if (card.block(cardCode) > 0) text += append(text, "방어 " + card.block(cardCode));
 		if (card.draw(cardCode) > 0) text += append(text, "카드 " + card.draw(cardCode) + "장 뽑기");
-		if (card.vulnerable(cardCode) > 0) text += append(text, "취약 " + card.vulnerable(cardCode));
+		if (card.vulnerable(cardCode) > 0) text += append(text, "피해 증폭 " + card.vulnerable(cardCode));
 		if (card.strength(cardCode) > 0) text += append(text, "힘 " + card.strength(cardCode));
 		return text.length() == 0 ? "특별한 효과가 있습니다." : text;
 	}
@@ -660,13 +660,22 @@ public class DeckShopScene extends PixelScene {
 			bg.y = y;
 			bg.size(width, height);
 			bg.am = DeckBuilderRun.shopSold != null && DeckBuilderRun.shopSold[index] ? 0.35f : 0.82f;
-			icon.view(offerIcon(offer), null);
-			icon.x = x + 4;
-			icon.y = y + (height - icon.height()) / 2f;
+			icon.visible = offer.type != DeckShop.RELIC;
+			if (icon.visible) {
+				icon.am = 1f;
+				icon.view(offerIcon(offer), null);
+				icon.x = x + 4;
+				icon.y = y + (height - icon.height()) / 2f;
+			} else {
+				icon.am = 0f;
+				icon.x = -1000;
+				icon.y = -1000;
+			}
 			name.text(offerTitle(offer));
-			name.maxWidth((int)width - 42);
+			float textX = icon.visible ? x + 24 : x + 8;
+			name.maxWidth((int)(width - (icon.visible ? 42 : 26)));
 			name.hardlight(offer.type == DeckShop.RELIC ? 0xFFD5F27A : 0xFFFFFFFF);
-			name.setPos(x + 24, y + 3);
+			name.setPos(textX, y + 3);
 			price.text((DeckBuilderRun.shopSold != null && DeckBuilderRun.shopSold[index] ? "완료" : offer.price + "G"));
 			price.hardlight(DeckBuilderRun.gold >= offer.price ? 0xFFFFD66B : 0xFFFF7777);
 			price.setPos(x + width - price.width() - 5, y + height - price.height() - 3);
