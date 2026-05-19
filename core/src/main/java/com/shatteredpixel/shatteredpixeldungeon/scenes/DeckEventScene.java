@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardKeyword;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardTarget;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlchemistSprite;
@@ -396,10 +397,12 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private String cardDetailTitle(DeckCard card, int cardCode) {
+		if (card != null) return DeckCardText.detailTitle(card, cardCode);
 		return card.title(cardCode) + "  비용 " + card.cost(cardCode) + "  " + card.type.label;
 	}
 
 	private String cardRulesText(DeckCard card, int cardCode) {
+		if (card != null) return DeckCardText.rulesText(card, cardCode);
 		if (card == DeckCard.ROTATING_NAIL) {
 			return "무작위 적에게 피해를 " + card.damage(cardCode) + " 줍니다. 카드를 1장 뽑습니다.";
 		}
@@ -440,25 +443,27 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private String upgradePreviewText(int cardCode) {
+		if (cardCode >= 0) return DeckCardText.upgradePreviewText(cardCode);
 		int upgraded = DeckCard.upgrade(cardCode);
 		DeckCard card = DeckCard.byCode(cardCode);
 		if (upgraded == cardCode) return "더 이상 강화할 수 없습니다.";
-		if (card == DeckCard.SPIN_TRAINING) return "회전하는 손톱 피해량 +1 → +2";
-		if (card == DeckCard.LESSON_FIVE) return "비용 2 → 1";
+		if (card == DeckCard.SPIN_TRAINING) return "회전하는 손톱 피해량 +1 > +2";
+		if (card == DeckCard.LESSON_FIVE) return "비용 2 > 1";
 
 		String text = "";
-		if (card.cost(cardCode) != card.cost(upgraded)) text += append(text, "비용 " + card.cost(cardCode) + " → " + card.cost(upgraded));
-		if (card.damage(cardCode) != card.damage(upgraded)) text += append(text, "피해 " + card.damage(cardCode) + " → " + card.damage(upgraded));
-		if (card.block(cardCode) != card.block(upgraded)) text += append(text, "방어 " + card.block(cardCode) + " → " + card.block(upgraded));
-		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " → " + card.draw(upgraded));
-		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " → " + card.vulnerable(upgraded));
-		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "힘 " + card.strength(cardCode) + " → " + card.strength(upgraded));
-		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "단도 " + card.shivs(cardCode) + " → " + card.shivs(upgraded));
+		if (card.cost(cardCode) != card.cost(upgraded)) text += append(text, "비용 " + card.cost(cardCode) + " > " + card.cost(upgraded));
+		if (card.damage(cardCode) != card.damage(upgraded)) text += append(text, "피해 " + card.damage(cardCode) + " > " + card.damage(upgraded));
+		if (card.block(cardCode) != card.block(upgraded)) text += append(text, "방어 " + card.block(cardCode) + " > " + card.block(upgraded));
+		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
+		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
+		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "힘 " + card.strength(cardCode) + " > " + card.strength(upgraded));
+		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "단도 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
 
-		return text.length() > 0 ? text : "카드 이름에 +가 붙고 강화 상태가 증가합니다.";
+		return text.length() > 0 ? text : "강화 효과가 아직 정의되지 않았습니다.";
 	}
 
 	private String keywordText(DeckCard card, int cardCode) {
+		if (card != null) return DeckCardText.keywordText(card, cardCode);
 		String text = "";
 		if (card.vulnerable(cardCode) > 0) text += "피해 증폭: 받는 공격 피해가 증가합니다.";
 		if (card.strength(cardCode) > 0) text += append(text, "힘: 공격 카드의 피해가 증가합니다.");

@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotion;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckShop;
@@ -157,7 +158,7 @@ public class DeckShopScene extends PixelScene {
 				add(item);
 				row++;
 			}
-			if (row == 0) emptyText("구매할 유물과 포션이 없습니다.", contentX, y + 22, contentW);
+			if (row == 0) emptyText("구매할 물품이 없습니다.", contentX, y + 22, contentW);
 
 			ShopRemoveRow remove = new ShopRemoveRow();
 			float removeY = y + row * 27 + 6;
@@ -220,7 +221,7 @@ public class DeckShopScene extends PixelScene {
 				item.setRect(rowX + (i % 2) * (rowW + cellGap), y + (i / 2) * 25, rowW, 22);
 				add(item);
 			}
-			if (count == 0) emptyText("구매할 유물과 포션이 없습니다.", contentX, y + 22, contentW);
+			if (count == 0) emptyText("구매할 물품이 없습니다.", contentX, y + 22, contentW);
 
 			ShopRemoveRow remove = new ShopRemoveRow();
 			remove.setRect(contentX + (contentW - Math.min(240, contentW)) / 2f, bottom - 24, Math.min(240, contentW), 24);
@@ -353,7 +354,9 @@ public class DeckShopScene extends PixelScene {
 		int width = 190;
 		int pos = 7;
 
-		RenderedTextBlock title = renderTextBlock(offerTitle(offer), 8);
+		RenderedTextBlock title = renderTextBlock(offer.type == DeckShop.CARD
+				? DeckCardText.detailTitle(DeckCard.values()[offer.id], DeckCard.values()[offer.id].code())
+				: offerTitle(offer), 8);
 		title.hardlight(Window.TITLE_COLOR);
 		title.maxWidth(width - 14);
 		title.setPos((width - title.width()) / 2f, pos);
@@ -361,6 +364,10 @@ public class DeckShopScene extends PixelScene {
 		pos += (int)title.height() + 7;
 
 		RenderedTextBlock desc = renderTextBlock(offerDescription(offer), 6);
+		if (offer.type == DeckShop.CARD) {
+			DeckCard offeredCard = DeckCard.values()[offer.id];
+			desc.text(DeckCardText.rulesText(offeredCard, offeredCard.code()) + keywordSuffix(offeredCard, offeredCard.code()));
+		}
 		desc.maxWidth(width - 14);
 		desc.hardlight(0xFFD8D1BD);
 		desc.setPos(7, pos);
@@ -482,7 +489,7 @@ public class DeckShopScene extends PixelScene {
 			win.add(next);
 			pos += 23;
 		}
-		RedButton close = new RedButton("취소", 6) {
+		RedButton close = new RedButton("닫기", 6) {
 			@Override
 			protected void onClick() {
 				win.hide();
@@ -498,19 +505,24 @@ public class DeckShopScene extends PixelScene {
 	private void confirmRemove(final Window cardWindow, final int deckIndex) {
 		final int price = DeckShop.removePrice();
 		final Window win = new Window();
-		int width = 170;
+		int width = 190;
 		int pos = 7;
-		DeckCard card = DeckCard.byCode(DeckBuilderRun.deck.get(deckIndex));
-		RenderedTextBlock title = renderTextBlock(card.title(DeckBuilderRun.deck.get(deckIndex)), 8);
+		int cardCode = DeckBuilderRun.deck.get(deckIndex);
+		DeckCard card = DeckCard.byCode(cardCode);
+		RenderedTextBlock title = renderTextBlock(DeckCardText.detailTitle(card, cardCode), 8);
 		title.hardlight(Window.TITLE_COLOR);
+		title.maxWidth(width - 14);
 		title.setPos((width - title.width()) / 2f, pos);
 		win.add(title);
-		pos += 18;
-		RenderedTextBlock desc = renderTextBlock("이 카드를 덱에서 제거합니다.\n비용: " + price + " 골드", 6);
+		pos += (int)title.height() + 7;
+
+		RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesText(card, cardCode) + keywordSuffix(card, cardCode) + "\n\n이 카드를 덱에서 제거합니다.\n비용: " + price + " 골드", 6);
 		desc.maxWidth(width - 14);
+		desc.hardlight(0xFFD8D1BD);
 		desc.setPos(7, pos);
 		win.add(desc);
 		pos += (int)desc.height() + 8;
+
 		RedButton remove = new RedButton("제거", 6) {
 			@Override
 			protected void onClick() {
@@ -523,21 +535,21 @@ public class DeckShopScene extends PixelScene {
 				}
 			}
 		};
-		remove.setRect(7, pos, 74, 18);
+		remove.setRect(7, pos, 84, 18);
 		win.add(remove);
+
 		RedButton close = new RedButton("닫기", 6) {
 			@Override
 			protected void onClick() {
 				win.hide();
 			}
 		};
-		close.setRect(width - 81, pos, 74, 18);
+		close.setRect(width - 91, pos, 84, 18);
 		win.add(close);
 		pos += 24;
 		win.resize(width, pos);
 		addToFront(win);
 	}
-
 	private String offerTitle(DeckShop.Offer offer) {
 		if (offer.type == DeckShop.CARD) return DeckCard.values()[offer.id].title(DeckCard.values()[offer.id].code());
 		if (offer.type == DeckShop.POTION) return DeckPotion.byId(offer.id).title;
@@ -548,7 +560,7 @@ public class DeckShopScene extends PixelScene {
 	private String offerDescription(DeckShop.Offer offer) {
 		if (offer.type == DeckShop.CARD) {
 			DeckCard card = DeckCard.values()[offer.id];
-			return card.rarity.label + " " + card.type.label + "\n" + cardRulesText(card, card.code());
+			return DeckCardText.rulesText(card, card.code()) + keywordSuffix(card, card.code());
 		}
 		if (offer.type == DeckShop.POTION) return DeckPotion.byId(offer.id).description;
 		if (offer.type == DeckShop.RELIC) return DeckRelic.byId(offer.id).description;
@@ -556,17 +568,23 @@ public class DeckShopScene extends PixelScene {
 	}
 
 	private String cardRulesText(DeckCard card, int cardCode) {
+		if (card != null) return DeckCardText.rulesText(card, cardCode);
 		String text = "";
 		if (card.damage(cardCode) > 0) text += "피해 " + card.damage(cardCode);
 		if (card.block(cardCode) > 0) text += append(text, "방어 " + card.block(cardCode));
 		if (card.draw(cardCode) > 0) text += append(text, "카드 " + card.draw(cardCode) + "장 뽑기");
-		if (card.vulnerable(cardCode) > 0) text += append(text, "피해 증폭 " + card.vulnerable(cardCode));
+		if (card.vulnerable(cardCode) > 0) text += append(text, "취약 " + card.vulnerable(cardCode));
 		if (card.strength(cardCode) > 0) text += append(text, "힘 " + card.strength(cardCode));
-		return text.length() == 0 ? "특별한 효과가 있습니다." : text;
+		return text.length() == 0 ? "별도의 효과가 없습니다." : text;
 	}
 
 	private String append(String text, String value) {
 		return (text.length() > 0 ? " / " : "") + value;
+	}
+
+	private String keywordSuffix(DeckCard card, int cardCode) {
+		String keywords = DeckCardText.keywordText(card, cardCode);
+		return keywords.length() > 0 ? "\n\n" + keywords : "";
 	}
 
 	private void leaveShop() {

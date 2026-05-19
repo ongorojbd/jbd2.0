@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardKeyword;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardTarget;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCombatEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPlayResult;
@@ -241,7 +242,7 @@ public class DeckBattleScene extends PixelScene {
 		playerShieldLabel.hardlight(0xFF8EDBFF);
 		playerShieldLabel.visible = false;
 		add(playerShieldLabel);
-		playerStrengthBuff = new DeckBuffButton(BuffIndicator.RAGE, 1f, 0.5f, 0f, "공격력", "공격 카드가 주는 피해가 이 수치만큼 증가합니다.");
+		playerStrengthBuff = new DeckBuffButton(BuffIndicator.UPGRADE, 1f, 0.5f, 0f, "공격력", "공격 카드가 주는 피해가 이 수치만큼 증가합니다.");
 		add(playerStrengthBuff);
 		playerAgeDownBuff = new DeckBuffButton(BuffIndicator.MOMENTUM, "유아화", "공격 카드의 피해가 30% 감소합니다.");
 		add(playerAgeDownBuff);
@@ -476,7 +477,7 @@ public class DeckBattleScene extends PixelScene {
 
 		view.vulnerableBuff = new DeckBuffButton(BuffIndicator.CORRUPT, "피해 증폭", "해당 대상이 받는 모든 공격 피해가 1.5배 증가합니다.");
 		add(view.vulnerableBuff);
-		view.strengthBuff = new DeckBuffButton(BuffIndicator.RAGE, 1f, 0.5f, 0f,"공격력", "공격 피해가 이 수치만큼 증가합니다.");
+		view.strengthBuff = new DeckBuffButton(BuffIndicator.UPGRADE, 1f, 0.5f, 0f,"공격력", "공격 피해가 이 수치만큼 증가합니다.");
 		add(view.strengthBuff);
 		view.thornsBuff = new DeckBuffButton(BuffIndicator.TRINITY_FORM, 1.2f, 1.2f, 0.2f, "반격", "공격 카드로 공격한 대상에게 피해를 되돌립니다.");
 		add(view.thornsBuff);
@@ -1988,6 +1989,7 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private String cardRulesText(DeckCard card, int cardCode) {
+		if (card != null) return DeckCardText.rulesText(card, cardCode, combat);
 		if (card == DeckCard.ROTATING_NAIL) {
 			return "무작위 적에게 피해를 " + combat.cardDamage(card, cardCode, combat.target()) + " 줍니다. 카드를 1장 뽑습니다.";
 		}
@@ -2046,6 +2048,7 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private String cardDetailTitle(DeckCard card, int cardCode) {
+		if (card != null) return DeckCardText.detailTitle(card, cardCode);
 		if (card != null) return card.title(cardCode) + "(" + card.type.label + ", " + card.rarity.label + "): 비용 " + card.cost(cardCode);
 		if (card != null) return card.title(cardCode) + "(" + card.type.label + "): 비용 " + card.cost(cardCode);
 		return card.title(cardCode) + ": 비용 " + card.cost(cardCode);
@@ -2986,6 +2989,7 @@ public class DeckBattleScene extends PixelScene {
 		}
 
 		private String keywordText(DeckCard card, int cardCode) {
+			if (card != null) return DeckCardText.keywordText(card, cardCode);
 			String text = "";
 			if (card.vulnerable(cardCode) > 0) text += "피해 증폭: 받는 공격 피해가 50% 증가합니다.";
 			if (card.strength(cardCode) > 0) text += (text.length() > 0 ? "\n" : "") + "공격력: 공격 카드의 피해가 증가합니다.";

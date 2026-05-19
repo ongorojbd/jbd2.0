@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -276,12 +277,19 @@ public class DeckRestScene extends PixelScene {
 		int width = 190;
 		int pos = 7;
 
-		RenderedTextBlock title = renderTextBlock(card.title(cardCode), 8);
+		RenderedTextBlock title = renderTextBlock(DeckCardText.detailTitle(card, cardCode), 8);
 		title.hardlight(Window.TITLE_COLOR);
 		title.maxWidth(width - 14);
 		title.setPos((width - title.width()) / 2f, pos);
 		win.add(title);
 		pos += (int)title.height() + 8;
+
+		RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesText(card, cardCode), 6);
+		desc.hardlight(0xFFD8D1BD);
+		desc.maxWidth(width - 14);
+		desc.setPos(7, pos);
+		win.add(desc);
+		pos += (int)desc.height() + 8;
 
 		RenderedTextBlock preview = renderTextBlock("강화 효과\n" + upgradePreviewText(cardCode), 6);
 		preview.hardlight(0xFFD5F27A);
@@ -329,21 +337,22 @@ public class DeckRestScene extends PixelScene {
 	}
 
 	private String upgradePreviewText(int cardCode) {
+		if (cardCode >= 0) return DeckCardText.upgradePreviewText(cardCode);
 		int upgraded = DeckCard.upgrade(cardCode);
 		DeckCard card = DeckCard.byCode(cardCode);
 		if (upgraded == cardCode) return "더 이상 강화할 수 없습니다.";
-		if (card == DeckCard.SPIN_TRAINING) return "회전하는 손톱 피해량 +1 → +2";
-		if (card == DeckCard.LESSON_FIVE) return "비용 2 → 1";
+		if (card == DeckCard.SPIN_TRAINING) return "회전하는 손톱 피해량 +1 > +2";
+		if (card == DeckCard.LESSON_FIVE) return "비용 2 > 1";
 
 		String text = "";
-		if (card.cost(cardCode) != card.cost(upgraded)) text += append(text, "비용 " + card.cost(cardCode) + " → " + card.cost(upgraded));
-		if (card.damage(cardCode) != card.damage(upgraded)) text += append(text, "피해 " + card.damage(cardCode) + " → " + card.damage(upgraded));
-		if (card.block(cardCode) != card.block(upgraded)) text += append(text, "방어 " + card.block(cardCode) + " → " + card.block(upgraded));
-		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " → " + card.draw(upgraded));
-		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " → " + card.vulnerable(upgraded));
-		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "힘 " + card.strength(cardCode) + " → " + card.strength(upgraded));
-		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "단도 " + card.shivs(cardCode) + " → " + card.shivs(upgraded));
-		return text.length() > 0 ? text : "카드 이름에 +가 붙고 강화 상태가 증가합니다.";
+		if (card.cost(cardCode) != card.cost(upgraded)) text += append(text, "비용 " + card.cost(cardCode) + " > " + card.cost(upgraded));
+		if (card.damage(cardCode) != card.damage(upgraded)) text += append(text, "피해 " + card.damage(cardCode) + " > " + card.damage(upgraded));
+		if (card.block(cardCode) != card.block(upgraded)) text += append(text, "방어 " + card.block(cardCode) + " > " + card.block(upgraded));
+		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
+		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
+		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "힘 " + card.strength(cardCode) + " > " + card.strength(upgraded));
+		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "단도 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
+		return text.length() > 0 ? text : "강화 효과가 아직 정의되지 않았습니다.";
 	}
 
 	private String append(String text, String value) {
