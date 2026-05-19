@@ -137,7 +137,7 @@ public class DeckRestScene extends PixelScene {
 	private void addRestOptions(float x, float y, float width, float height) {
 		ArrayList<RestChoiceButton> buttons = new ArrayList<>();
 
-		buttons.add(new RestChoiceButton("휴식", "최대 체력의 30%를 회복합니다.  회복량: " + DeckBuilderRun.restHealAmount(), 0xFF66E28B, DeckBuilderRun.canRestAtRestSite()) {
+		buttons.add(new RestChoiceButton("휴식", "최대 체력의 30%를 회복합니다. (현재 체력: " + DeckBuilderRun.playerHP + " / " + DeckBuilderRun.playerHT + ")", 0xFF66E28B, DeckBuilderRun.canRestAtRestSite()) {
 			@Override
 			protected void onClick() {
 				if (!enabled) {
@@ -601,11 +601,11 @@ public class DeckRestScene extends PixelScene {
 			} else {
 				if (talentArt != null) talentArt.visible = false;
 				if (art == null) {
-					art = new ItemSprite(card.icon);
+					art = new ItemSprite(card.icon());
 					add(art);
 				}
 				spriteArt.visible = false;
-				art.view(card.icon, null);
+				art.view(card.icon(), null);
 				art.scale.set(1.15f);
 				art.x = artPanel.x + (artPanel.width() - art.width()) / 2f;
 				art.y = artPanel.y + (artPanel.height() - art.height()) / 2f;

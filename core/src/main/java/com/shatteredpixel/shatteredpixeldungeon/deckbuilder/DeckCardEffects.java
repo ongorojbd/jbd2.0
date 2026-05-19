@@ -182,6 +182,20 @@ public class DeckCardEffects {
 		}
 	}
 
+	public static class StaffEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			for (DeckCombatEnemy target : targets(combat, card)) {
+				int damage = combat.cardDamage(card, cardCode, target);
+				int unblockedDamage = combat.damageEnemy(target, damage, card.type == DeckCardType.ATTACK);
+				result.addHit(combat.enemyIndex(target), unblockedDamage, 0);
+				if (unblockedDamage > 0) {
+					result.block += combat.gainBlock(unblockedDamage);
+				}
+			}
+		}
+	}
+
 	private static ArrayList<DeckCombatEnemy> targets(DeckBuilderCombat combat, DeckCard card) {
 		ArrayList<DeckCombatEnemy> targets = new ArrayList<>();
 		if (card.target == DeckCardTarget.ALL_ENEMIES) {

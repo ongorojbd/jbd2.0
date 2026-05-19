@@ -397,87 +397,19 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private String cardDetailTitle(DeckCard card, int cardCode) {
-		if (card != null) return DeckCardText.detailTitle(card, cardCode);
-		return card.title(cardCode) + "  비용 " + card.cost(cardCode) + "  " + card.type.label;
+		return DeckCardText.detailTitle(card, cardCode);
 	}
 
 	private String cardRulesText(DeckCard card, int cardCode) {
-		if (card != null) return DeckCardText.rulesText(card, cardCode);
-		if (card == DeckCard.ROTATING_NAIL) {
-			return "무작위 적에게 피해를 " + card.damage(cardCode) + " 줍니다. 카드를 1장 뽑습니다.";
-		}
-		if (card == DeckCard.TUSK_EQUIPMENT_DISC) {
-			return "회전하는 손톱 2장을 뽑을 카드 더미에 섞어 넣고 피해를 " + card.damage(cardCode) + " 줍니다.";
-		}
-		if (card == DeckCard.TRACKING_BULLET_HOLE) {
-			return "모든 적에게 피해를 " + card.damage(cardCode) + " 줍니다. 회전하는 손톱 3장을 뽑을 카드 더미에 섞어 넣습니다.";
-		}
-		if (card == DeckCard.SPIN_TRAINING) {
-			int bonus = DeckCard.upgradeLevel(cardCode) > 0 ? 2 : 1;
-			return "회전하는 손톱의 피해량이 +" + bonus + " 증가합니다. 카드를 1장 뽑습니다. [조준] 회전하는 손톱 3장을 뽑을 카드 더미에 섞어 넣습니다.";
-		}
-		if (card == DeckCard.PROUD_STARVER) {
-			return "카드를 " + card.draw(cardCode) + "장 뽑습니다. 뽑을 카드 더미에 있는 회전하는 손톱의 수만큼 비용이 감소합니다.";
-		}
-		if (card == DeckCard.LESSON_FIVE) {
-			return "뽑을 카드 더미에 있는 모든 회전하는 손톱을 복사해서 시전합니다.";
-		}
-		String text = "";
-		if (card.damage(cardCode) > 0) text += damageRulesText(card, cardCode);
-		if (card.block(cardCode) > 0) text += append(text, "방어도를 " + card.block(cardCode) + " 얻습니다.");
-		if (card.draw(cardCode) > 0) text += append(text, "카드를 " + card.draw(cardCode) + "장 뽑습니다.");
-		if (card.vulnerable(cardCode) > 0) text += append(text, "피해 증폭을 " + card.vulnerable(cardCode) + " 부여합니다.");
-		if (card.strength(cardCode) > 0) text += append(text, "힘을 " + card.strength(cardCode) + " 얻습니다.");
-		if (card.shivs(cardCode) > 0) text += append(text, "단도를 " + card.shivs(cardCode) + "장 손으로 가져옵니다.");
-		if (card.target == DeckCardTarget.RANDOM_ENEMY) text += append(text, "무작위 대상.");
-		if (card.handPenalty > 0) text += append(text, "손에 있으면 공격 카드 피해가 " + card.handPenalty + " 감소합니다.");
-		for (DeckCardKeyword keyword : DeckCardKeyword.values()) {
-			if (card.hasKeyword(cardCode, keyword)) text += append(text, keyword.label);
-		}
-		return text.length() > 0 ? text : "특별한 효과가 없습니다.";
-	}
-
-	private String damageRulesText(DeckCard card, int cardCode) {
-		if (card.target == DeckCardTarget.ALL_ENEMIES) return "모든 적에게 피해를 " + card.damage(cardCode) + " 줍니다.";
-		return "피해를 " + card.damage(cardCode) + " 줍니다.";
+		return DeckCardText.rulesText(card, cardCode);
 	}
 
 	private String upgradePreviewText(int cardCode) {
-		if (cardCode >= 0) return DeckCardText.upgradePreviewText(cardCode);
-		int upgraded = DeckCard.upgrade(cardCode);
-		DeckCard card = DeckCard.byCode(cardCode);
-		if (upgraded == cardCode) return "더 이상 강화할 수 없습니다.";
-		if (card == DeckCard.SPIN_TRAINING) return "회전하는 손톱 피해량 +1 > +2";
-		if (card == DeckCard.LESSON_FIVE) return "비용 2 > 1";
-
-		String text = "";
-		if (card.cost(cardCode) != card.cost(upgraded)) text += append(text, "비용 " + card.cost(cardCode) + " > " + card.cost(upgraded));
-		if (card.damage(cardCode) != card.damage(upgraded)) text += append(text, "피해 " + card.damage(cardCode) + " > " + card.damage(upgraded));
-		if (card.block(cardCode) != card.block(upgraded)) text += append(text, "방어 " + card.block(cardCode) + " > " + card.block(upgraded));
-		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
-		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
-		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "힘 " + card.strength(cardCode) + " > " + card.strength(upgraded));
-		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "단도 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
-
-		return text.length() > 0 ? text : "강화 효과가 아직 정의되지 않았습니다.";
+		return DeckCardText.upgradePreviewText(cardCode);
 	}
 
 	private String keywordText(DeckCard card, int cardCode) {
-		if (card != null) return DeckCardText.keywordText(card, cardCode);
-		String text = "";
-		if (card.vulnerable(cardCode) > 0) text += "피해 증폭: 받는 공격 피해가 증가합니다.";
-		if (card.strength(cardCode) > 0) text += append(text, "힘: 공격 카드의 피해가 증가합니다.");
-		for (DeckCardKeyword keyword : DeckCardKeyword.values()) {
-			if (card.hasKeyword(cardCode, keyword)) {
-				text += append(text, keyword.label + ": " + keyword.description);
-			}
-		}
-		if (card.handPenalty > 0) text += append(text, "방해: 손에 있으면 공격 카드 피해가 감소합니다.");
-		return text;
-	}
-
-	private String append(String text, String value) {
-		return (text.length() > 0 ? "\n" : "") + value;
+		return DeckCardText.keywordText(card, cardCode);
 	}
 
 	@Override
@@ -652,11 +584,11 @@ public class DeckEventScene extends PixelScene {
 			} else {
 				if (talentArt != null) talentArt.visible = false;
 				if (art == null) {
-					art = new ItemSprite(card.icon);
+					art = new ItemSprite(card.icon());
 					add(art);
 				}
 				spriteArt.visible = false;
-				art.view(card.icon, null);
+				art.view(card.icon(), null);
 				art.scale.set(1.15f);
 				art.x = artPanel.x + (artPanel.width() - art.width()) / 2f;
 				art.y = artPanel.y + (artPanel.height() - art.height()) / 2f;

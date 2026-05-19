@@ -567,21 +567,6 @@ public class DeckShopScene extends PixelScene {
 		return "카드 한 장을 덱에서 제거합니다.";
 	}
 
-	private String cardRulesText(DeckCard card, int cardCode) {
-		if (card != null) return DeckCardText.rulesText(card, cardCode);
-		String text = "";
-		if (card.damage(cardCode) > 0) text += "피해 " + card.damage(cardCode);
-		if (card.block(cardCode) > 0) text += append(text, "방어 " + card.block(cardCode));
-		if (card.draw(cardCode) > 0) text += append(text, "카드 " + card.draw(cardCode) + "장 뽑기");
-		if (card.vulnerable(cardCode) > 0) text += append(text, "취약 " + card.vulnerable(cardCode));
-		if (card.strength(cardCode) > 0) text += append(text, "힘 " + card.strength(cardCode));
-		return text.length() == 0 ? "별도의 효과가 없습니다." : text;
-	}
-
-	private String append(String text, String value) {
-		return (text.length() > 0 ? " / " : "") + value;
-	}
-
 	private String keywordSuffix(DeckCard card, int cardCode) {
 		String keywords = DeckCardText.keywordText(card, cardCode);
 		return keywords.length() > 0 ? "\n\n" + keywords : "";
@@ -852,11 +837,11 @@ public class DeckShopScene extends PixelScene {
 			} else {
 				if (talentArt != null) talentArt.visible = false;
 				if (art == null) {
-					art = new ItemSprite(card.icon);
+					art = new ItemSprite(card.icon());
 					add(art);
 				}
 				spriteArt.visible = false;
-				art.view(card.icon, null);
+				art.view(card.icon(), null);
 				art.scale.set(1.0f);
 				art.x = artPanel.x + (artPanel.width() - art.width()) / 2f;
 				art.y = artPanel.y + (artPanel.height() - art.height()) / 2f;

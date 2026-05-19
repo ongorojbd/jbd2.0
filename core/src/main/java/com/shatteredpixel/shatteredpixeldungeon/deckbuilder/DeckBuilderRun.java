@@ -151,17 +151,19 @@ public class DeckBuilderRun {
 			addCopies(DeckCard.STRIKE, 5);
 			addCopies(DeckCard.GUARD, 4);
 			addCopies(DeckCard.BASH, 1);
+			addCopies(DeckCard.VACCINE_SNAKE, 1);
+			addCopies(DeckCard.STAFF, 1);
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.HUNTRESS) {
 			addCopies(DeckCard.STRIKE, 5);
 			addCopies(DeckCard.GUARD, 4);
 			addCopies(DeckCard.SCORPION_THROW, 1);
-			addCopies(DeckCard.ACCURACY, 1);
+			addCopies(DeckCard.PHANTOM_BLADES, 1);
 		}
 
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.JOHNNY) {
-			addCopies(DeckCard.STRIKE7, 5);
+			addCopies(DeckCard.STRIKE, 5);
 			addCopies(DeckCard.GUARD, 4);
 			addCopies(DeckCard.TUSK_EQUIPMENT_DISC, 1);
 		}

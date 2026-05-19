@@ -24,6 +24,9 @@ public class DeckCardText {
 	}
 
 	public static String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+		if (card == DeckCard.STAFF) {
+			return "피해를 " + damageValue(card, cardCode, combat) + " 줍니다. 막히지 않은 피해만큼 방어도를 얻습니다.";
+		}
 		if (card == DeckCard.ROTATING_NAIL) {
 			return "무작위 적에게 피해를 " + damageValue(card, cardCode, combat) + " 주고 카드를 1장 뽑습니다.";
 		}
