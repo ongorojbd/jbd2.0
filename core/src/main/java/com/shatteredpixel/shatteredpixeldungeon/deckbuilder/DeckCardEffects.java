@@ -28,12 +28,22 @@ public class DeckCardEffects {
 				result.addHit(combat.enemyIndex(target), dealt, 0);
 			}
 		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return DeckCardText.damageRulesText(card, cardCode, combat);
+		}
 	}
 
 	public static class Block implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			result.block += combat.gainBlock(card.block(cardCode));
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "방어도를 " + card.block(cardCode) + " 얻습니다.";
 		}
 	}
 
@@ -42,6 +52,11 @@ public class DeckCardEffects {
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			combat.draw(card.draw(cardCode));
 			result.draw += card.draw(cardCode);
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "카드를 " + card.draw(cardCode) + "장 뽑습니다.";
 		}
 	}
 
@@ -64,9 +79,15 @@ public class DeckCardEffects {
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			if (cardToShuffle == null || count <= 0) return;
 			int code = cardToShuffle.code();
-			if (upgradedCopies) code = DeckCard.upgrade(code);
+			if (upgradedCopies) code = DeckCardCode.upgrade(code);
 			combat.addToDrawPile(code, count, true);
 			result.addShuffle(cardToShuffle, count);
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			if (cardToShuffle == null || count <= 0) return "";
+			return cardToShuffle.title(cardToShuffle.code()) + " " + count + "장을 뽑을 카드 더미에 섞어 넣습니다.";
 		}
 	}
 
@@ -91,12 +112,31 @@ public class DeckCardEffects {
 			context.combat.addToDrawPile(cardToShuffle.code(), count, true);
 			context.result.addShuffle(cardToShuffle, count);
 		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			if (cardToShuffle == null || count <= 0) return "";
+			return cardToShuffle.title(cardToShuffle.code()) + " " + count + "장을 뽑을 카드 더미에 섞어 넣습니다.";
+		}
 	}
 
 	public static class SpinningNailTraining implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
-			combat.spinningNailDamageBonus += DeckCard.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			combat.spinningNailDamageBonus += DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int bonus = DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			return DeckCard.ROTATING_NAIL.title(DeckCard.ROTATING_NAIL.code()) + "의 피해량이 +" + bonus + " 증가합니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			int base = DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			int upgraded = DeckCardCode.upgradeLevel(upgradedCode) > 0 ? 2 : 1;
+			return base == upgraded ? "" : "회전하는 손톱 피해 증가 +" + base + " > +" + upgraded;
 		}
 	}
 
@@ -111,6 +151,12 @@ public class DeckCardEffects {
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			combat.copyAndPlayFromDrawPile(cardToPlay, result);
 		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			if (cardToPlay == null) return "";
+			return "뽑을 카드 더미에 있는 모든 " + cardToPlay.title(cardToPlay.code()) + "을 복사해서 시전합니다.";
+		}
 	}
 
 	public static class Vulnerable implements DeckCardEffect {
@@ -123,6 +169,11 @@ public class DeckCardEffects {
 				result.addHit(combat.enemyIndex(target), 0, vulnerable);
 			}
 		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "취약을 " + card.vulnerable(cardCode) + " 부여합니다.";
+		}
 	}
 
 	public static class Strength implements DeckCardEffect {
@@ -132,6 +183,30 @@ public class DeckCardEffects {
 			combat.playerStrength += strength;
 			result.strength += strength;
 		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "힘을 " + card.strength(cardCode) + " 얻습니다.";
+		}
+	}
+
+	public static class TurnStrength implements DeckCardEffect {
+		private final int amount;
+
+		public TurnStrength(int amount) {
+			this.amount = amount;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.playerTurnStrength += amount;
+			result.strength += amount;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "이번 턴에만 공격력을 " + amount + " 얻습니다.";
+		}
 	}
 
 	public static class AddShivs implements DeckCardEffect {
@@ -140,10 +215,15 @@ public class DeckCardEffects {
 			for (int i = 0; i < card.shivs(cardCode); i++) {
 				int shivCode = DeckCard.SHIV.code();
 				if (combat.shivRetain) {
-					shivCode = DeckCard.withKeyword(shivCode, DeckCardKeyword.RETAIN);
+					shivCode = DeckCardCode.withKeyword(shivCode, DeckCardKeyword.RETAIN);
 				}
 				combat.addToHand(shivCode);
 			}
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "전갈탄을 " + card.shivs(cardCode) + "장 손에 가져옵니다.";
 		}
 	}
 
@@ -151,14 +231,40 @@ public class DeckCardEffects {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			combat.shivRetain = true;
-			combat.firstShivDamageBonus = Math.max(combat.firstShivDamageBonus, DeckCard.upgradeLevel(cardCode) > 0 ? 12 : 9);
+			combat.firstShivDamageBonus = Math.max(combat.firstShivDamageBonus, DeckCardCode.upgradeLevel(cardCode) > 0 ? 12 : 9);
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int bonus = DeckCardCode.upgradeLevel(cardCode) > 0 ? 12 : 9;
+			return "모든 전갈탄에 " + DeckCardKeyword.RETAIN.label + "을 부여합니다. 매 턴 처음으로 사용하는 전갈탄의 피해량이 +" + bonus + " 증가합니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			int base = DeckCardCode.upgradeLevel(cardCode) > 0 ? 12 : 9;
+			int upgraded = DeckCardCode.upgradeLevel(upgradedCode) > 0 ? 12 : 9;
+			return base == upgraded ? "" : "첫 전갈탄 피해 증가 +" + base + " > +" + upgraded;
 		}
 	}
 
 	public static class Accuracy implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
-			combat.shivDamageBonus += DeckCard.upgradeLevel(cardCode) > 0 ? 6 : 4;
+			combat.shivDamageBonus += DeckCardCode.upgradeLevel(cardCode) > 0 ? 6 : 4;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int bonus = DeckCardCode.upgradeLevel(cardCode) > 0 ? 6 : 4;
+			return "전갈탄의 피해량이 +" + bonus + " 증가합니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			int base = DeckCardCode.upgradeLevel(cardCode) > 0 ? 6 : 4;
+			int upgraded = DeckCardCode.upgradeLevel(upgradedCode) > 0 ? 6 : 4;
+			return base == upgraded ? "" : "전갈탄 피해 증가 +" + base + " > +" + upgraded;
 		}
 	}
 
@@ -168,7 +274,7 @@ public class DeckCardEffects {
 			ArrayList<Integer> shivs = new ArrayList<>();
 			for (int exhausted : combat.exhaustPile) {
 				if (DeckCard.byCode(exhausted) == DeckCard.SHIV) {
-					shivs.add(DeckCard.upgradeLevel(cardCode) > 0 ? DeckCard.upgrade(exhausted) : exhausted);
+					shivs.add(DeckCardCode.upgradeLevel(cardCode) > 0 ? DeckCardCode.upgrade(exhausted) : exhausted);
 				}
 			}
 			for (int shivCode : shivs) {
@@ -179,6 +285,17 @@ public class DeckCardEffects {
 				}
 				combat.firstShivUsed = true;
 			}
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			String text = "버린 카드 더미에 있는 모든 전갈탄을 선택한 적에게 사용합니다.";
+			return DeckCardCode.upgradeLevel(cardCode) > 0 ? text + " 강화된 전갈탄으로 사용합니다." : text;
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return DeckCardCode.upgradeLevel(cardCode) == DeckCardCode.upgradeLevel(upgradedCode) ? "" : "전갈탄 시전 > 강화된 전갈탄 시전";
 		}
 	}
 
@@ -193,6 +310,56 @@ public class DeckCardEffects {
 					result.block += combat.gainBlock(unblockedDamage);
 				}
 			}
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "피해를 " + DeckCardText.damageValue(card, cardCode, combat) + " 줍니다. 막히지 않은 피해만큼 방어도를 얻습니다.";
+		}
+	}
+
+	public static class MageStaff implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			// Handled in apply(context)
+		}
+
+		@Override
+		public void apply(DeckCardPlayContext context) {
+			if (context.targetWandHandIndex >= 0 && context.targetWandHandIndex < context.combat.hand.size()) {
+				int wandCode = context.combat.hand.get(context.targetWandHandIndex);
+				if (DeckWandCards.isWand(wandCode)) {
+					DeckWandCards.fireWand(context.combat, wandCode, context.result);
+				}
+			}
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "손패의 완드 1장을 선택해 [발사]합니다.";
+		}
+
+		@Override
+		public String keywordText(DeckCard card, int cardCode) {
+			return "[발사]: 완드 카드의 효과를 최대 충전량만큼 즉시 발동시킨 뒤 해당 완드를 소멸시킵니다.";
+		}
+	}
+
+	public static class DrawPileCostReduction implements DeckCardEffect {
+		private final DeckCard countedCard;
+
+		public DrawPileCostReduction(DeckCard countedCard) {
+			this.countedCard = countedCard;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			if (countedCard == null) return "";
+			return "뽑을 카드 더미에 있는 " + countedCard.title(countedCard.code()) + "의 수만큼 비용이 감소합니다.";
 		}
 	}
 

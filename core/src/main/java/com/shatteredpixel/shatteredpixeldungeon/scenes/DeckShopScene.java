@@ -272,26 +272,26 @@ public class DeckShopScene extends PixelScene {
 
 	private int[] visibleCardOfferIndices() {
 		int count = 0;
-		for (int i = 0; i < Math.min(7, offers.length); i++) {
-			if (!sold(i)) count++;
+		for (int i = 0; i < offers.length; i++) {
+			if (offers[i].type == DeckShop.CARD && !sold(i)) count++;
 		}
 		int[] indices = new int[count];
 		int p = 0;
-		for (int i = 0; i < Math.min(7, offers.length); i++) {
-			if (!sold(i)) indices[p++] = i;
+		for (int i = 0; i < offers.length; i++) {
+			if (offers[i].type == DeckShop.CARD && !sold(i)) indices[p++] = i;
 		}
 		return indices;
 	}
 
 	private int[] visibleGoodsOfferIndices() {
 		int count = 0;
-		for (int i = 7; i < offers.length; i++) {
-			if (!sold(i)) count++;
+		for (int i = 0; i < offers.length; i++) {
+			if (offers[i].type != DeckShop.CARD && !sold(i)) count++;
 		}
 		int[] indices = new int[count];
 		int p = 0;
-		for (int i = 7; i < offers.length; i++) {
-			if (!sold(i)) indices[p++] = i;
+		for (int i = 0; i < offers.length; i++) {
+			if (offers[i].type != DeckShop.CARD && !sold(i)) indices[p++] = i;
 		}
 		return indices;
 	}
@@ -329,7 +329,7 @@ public class DeckShopScene extends PixelScene {
 	}
 
 	private boolean sold(int index) {
-		return DeckBuilderRun.shopSold != null && index >= 0 && index < DeckBuilderRun.shopSold.length && DeckBuilderRun.shopSold[index];
+		return DeckBuilderRun.shopOfferSold(index);
 	}
 
 	private void emptyText(String text, float x, float y, float width) {
@@ -348,7 +348,7 @@ public class DeckShopScene extends PixelScene {
 	}
 
 	private void showOfferConfirm(final int index) {
-		if (index < 0 || index >= offers.length || DeckBuilderRun.shopSold[index]) return;
+		if (index < 0 || index >= offers.length || DeckBuilderRun.shopOfferSold(index)) return;
 		final DeckShop.Offer offer = offers[index];
 		final Window win = new Window();
 		int width = 190;
@@ -413,7 +413,7 @@ public class DeckShopScene extends PixelScene {
 	}
 
 	private void showRemoveSelection(int page) {
-		if (DeckBuilderRun.shopRemoveUsed) {
+		if (DeckBuilderRun.shopRemoveUsed()) {
 			addToFront(new WndMessage("카드 제거\n\n이 상점에서는 이미 카드 제거를 사용했습니다."));
 			return;
 		}
@@ -662,7 +662,7 @@ public class DeckShopScene extends PixelScene {
 			bg.x = x;
 			bg.y = y;
 			bg.size(width, height);
-			bg.am = DeckBuilderRun.shopSold != null && DeckBuilderRun.shopSold[index] ? 0.35f : 0.82f;
+			bg.am = DeckBuilderRun.shopOfferSold(index) ? 0.35f : 0.82f;
 			icon.visible = offer.type != DeckShop.RELIC;
 			if (icon.visible) {
 				icon.am = 1f;
@@ -679,7 +679,7 @@ public class DeckShopScene extends PixelScene {
 			name.maxWidth((int)(width - (icon.visible ? 42 : 26)));
 			name.hardlight(offer.type == DeckShop.RELIC ? 0xFFD5F27A : 0xFFFFFFFF);
 			name.setPos(textX, y + 3);
-			price.text((DeckBuilderRun.shopSold != null && DeckBuilderRun.shopSold[index] ? "완료" : offer.price + "G"));
+			price.text((DeckBuilderRun.shopOfferSold(index) ? "완료" : offer.price + "G"));
 			price.hardlight(DeckBuilderRun.gold >= offer.price ? 0xFFFFD66B : 0xFFFF7777);
 			price.setPos(x + width - price.width() - 5, y + height - price.height() - 3);
 		}
@@ -715,13 +715,13 @@ public class DeckShopScene extends PixelScene {
 			bg.x = x;
 			bg.y = y;
 			bg.size(width, height);
-			bg.am = DeckBuilderRun.shopRemoveUsed ? 0.35f : 0.86f;
+			bg.am = DeckBuilderRun.shopRemoveUsed() ? 0.35f : 0.86f;
 			icon.x = x + 5;
 			icon.y = y + (height - icon.height()) / 2f;
 			text.text("카드 제거");
 			text.hardlight(0xFFFFD5F0);
 			text.setPos(x + 28, y + 6);
-			price.text(DeckBuilderRun.shopRemoveUsed ? "완료" : DeckShop.removePrice() + "G");
+			price.text(DeckBuilderRun.shopRemoveUsed() ? "완료" : DeckShop.removePrice() + "G");
 			price.hardlight(DeckBuilderRun.gold >= DeckShop.removePrice() ? 0xFFFFD66B : 0xFFFF7777);
 			price.setPos(x + width - price.width() - 6, y + 6);
 		}

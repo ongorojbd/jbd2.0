@@ -24,9 +24,15 @@ public class DeckCardPlayContext {
 	public final boolean aimActive;
 	public final boolean throwActive;
 	public final DeckPlayResult.Builder result;
+	public final int targetWandHandIndex;
 
 	public DeckCardPlayContext(DeckBuilderCombat combat, DeckCard card, int cardCode, int effectiveCardCode,
 							   int handIndex, boolean castOnDraw, boolean aimActive, boolean throwActive, DeckPlayResult.Builder result) {
+		this(combat, card, cardCode, effectiveCardCode, handIndex, castOnDraw, aimActive, throwActive, result, -1);
+	}
+
+	public DeckCardPlayContext(DeckBuilderCombat combat, DeckCard card, int cardCode, int effectiveCardCode,
+							   int handIndex, boolean castOnDraw, boolean aimActive, boolean throwActive, DeckPlayResult.Builder result, int targetWandHandIndex) {
 		this.combat = combat;
 		this.card = card;
 		this.cardCode = cardCode;
@@ -36,5 +42,6 @@ public class DeckCardPlayContext {
 		this.aimActive = aimActive;
 		this.throwActive = throwActive;
 		this.result = result;
+		this.targetWandHandIndex = targetWandHandIndex;
 	}
 }

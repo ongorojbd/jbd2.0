@@ -28,7 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardTarget;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCombatEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCombatRewardState;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckEnemy;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckEnemyIntent;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPlayResult;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotion;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
@@ -86,6 +88,7 @@ public class DeckBattleScene extends PixelScene {
 	private int CARD_H;
 	private int ACTOR_HP_W;
 	private static final int ACTOR_HP_H = 5;
+	private static final int NO_REWARD_ICON = -1;
 	private int ENERGY_ORB;
 	private int counterW;
 	private float cardGap;
@@ -125,6 +128,12 @@ public class DeckBattleScene extends PixelScene {
 	private float enemyAttackTime;
 	private float playerGuardTime;
 	private boolean combatLocked;
+	private boolean selectingWandForStaff;
+	private int mageStaffHandIndex;
+	private ColorBlock wandSelectionShade;
+	private ColorBlock wandSelectionAccent;
+	private RenderedTextBlock wandSelectionTitle;
+	private RenderedTextBlock wandSelectionSubtitle;
 	private ArrayList<CardButton> cardButtons = new ArrayList<>();
 	private ArrayList<BattleEffect> effects = new ArrayList<>();
 	private CardInfoPopup cardInfo;
@@ -257,6 +266,29 @@ public class DeckBattleScene extends PixelScene {
 		cardInfo.visible = false;
 		add(cardInfo);
 
+		wandSelectionShade = new ColorBlock(w, 44, 0xFF050505);
+		wandSelectionShade.x = 0;
+		wandSelectionShade.y = insets.top + 24;
+		wandSelectionShade.am = 0.72f;
+		wandSelectionShade.visible = false;
+		add(wandSelectionShade);
+
+		wandSelectionAccent = new ColorBlock(w, 2, 0xFFC07AFF);
+		wandSelectionAccent.x = 0;
+		wandSelectionAccent.y = wandSelectionShade.y + wandSelectionShade.height;
+		wandSelectionAccent.visible = false;
+		add(wandSelectionAccent);
+
+		wandSelectionTitle = renderTextBlock("발사할 완드를 손패에서 선택하세요.", 9);
+		wandSelectionTitle.hardlight(0xFFC07AFF);
+		wandSelectionTitle.visible = false;
+		add(wandSelectionTitle);
+
+		wandSelectionSubtitle = renderTextBlock("(지팡이를 다시 누르면 취소됩니다)", 6);
+		wandSelectionSubtitle.hardlight(0xFFD8D1BD);
+		wandSelectionSubtitle.visible = false;
+		add(wandSelectionSubtitle);
+
         endTurn = new RedButton("턴 종료", 7) {
 			@Override
 			protected void onClick() {
@@ -305,7 +337,9 @@ public class DeckBattleScene extends PixelScene {
 
 		layoutStatic(w, h, insets, title.bottom());
 		refresh();
-		if (freshCombat) {
+		if (combat.won()) {
+			showReward();
+		} else if (freshCombat) {
 			combatLocked = true;
 			showBattleStartTitle();
 		}
@@ -317,7 +351,6 @@ public class DeckBattleScene extends PixelScene {
 		return current == null
 				|| current.nodeType != Statistics.deckBuilderMapNode
 				|| current.depth != Math.max(1, Dungeon.depth)
-				|| current.won()
 				|| current.playerDead();
 	}
 
@@ -374,7 +407,7 @@ public class DeckBattleScene extends PixelScene {
 		}
 		int result = combat.endTurn();
 		saveCombatState();
-		spawnEnemyActions();
+		float wandDelay = spawnTurnEndAutoPlayEffects();
 		pendingDiscardStartsX.clear();
 		pendingDiscardStartsX.addAll(discardStartsX);
 		pendingDiscardStartsY.clear();
@@ -382,6 +415,21 @@ public class DeckBattleScene extends PixelScene {
 		pendingPileShuffle = beforeDraw < combat.handSize && beforeDiscard + discardStartsX.size() > 0;
 		pendingDrawVisuals = Math.max(0, combat.hand.size() - retainedBefore);
 
+		addEffect(new DelayedActionEffect(wandDelay, new Runnable() {
+			@Override
+			public void run() {
+				resolveEnemyTurnAfterWands(result);
+			}
+		}));
+	}
+
+	private void resolveEnemyTurnAfterWands(final int result) {
+		if (combat.won()) {
+			showReward();
+			return;
+		}
+
+		spawnEnemyActions();
 		if (combat.playerDead()) {
 			updatePlayerHpUi();
 			Sample.INSTANCE.play(Assets.Sounds.DEATH);
@@ -405,9 +453,7 @@ public class DeckBattleScene extends PixelScene {
 				@Override
 				public void run() {
 					if (combat.won()) {
-						if (!resolveAutoPlayResultsAfterDraw()) {
-							showReward();
-						}
+						showReward();
 					} else {
 						showPlayerTurnTitle();
 					}
@@ -735,52 +781,7 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private String intentText(DeckCombatEnemy enemy) {
-		if (enemy.intent < DeckBuilderCombat.RESULT_SLIMY_INJECT) {
-			switch (enemy.intent) {
-				case DeckBuilderCombat.RESULT_AGE_DOWN:
-                    return "예고: 유아화";
-				case DeckBuilderCombat.RESULT_STRENGTH_7:
-                    return "예고: 공격력 +7";
-				case DeckBuilderCombat.RESULT_STRENGTH_2:
-                    return "예고: 공격력 +2";
-				case DeckBuilderCombat.RESULT_ATTACK_6_BLOCK_5:
-                    return "예고: " + Math.max(0, 6 + enemy.strength) + " 피해 + 방어 5";
-				case DeckBuilderCombat.RESULT_MASSACRE:
-                    return "예고: 3x" + Math.max(0, 3 + enemy.strength) + " 피해";
-				case DeckBuilderCombat.RESULT_TOWER_NEEDLE:
-                    return "예고: 반격 +2";
-				case DeckBuilderCombat.RESULT_PRESSURIZE:
-					return "예고: 힘 +4";
-				case DeckBuilderCombat.RESULT_FLAME_TACKLE_BIG:
-					return "예고: " + Math.max(0, 16 + enemy.strength) + " 피해 + 점액 2";
-				case DeckBuilderCombat.RESULT_LICK_BIG:
-					return "예고: 방어력 저하 2";
-				case DeckBuilderCombat.RESULT_FLAME_TACKLE_MEDIUM:
-					return "예고: " + Math.max(0, 8 + enemy.strength) + " 피해 + 점액 1";
-				case DeckBuilderCombat.RESULT_LICK_MEDIUM:
-					return "예고: 방어력 저하 1";
-				case DeckBuilderCombat.RESULT_WINDUP_PUNCH:
-					return "예고: 3x" + Math.max(0, 2 + enemy.strength) + " 피해";
-				case DeckBuilderCombat.RESULT_LASH:
-					return "예고: 2x" + Math.max(0, 3 + enemy.strength) + " 피해";
-				case DeckBuilderCombat.RESULT_TACKLE:
-					return "예고: " + Math.max(0, 9 + enemy.strength) + " 피해 + 손상";
-				case DeckBuilderCombat.RESULT_CHARGE_UP:
-					return "예고: 힘 +2";
-				case DeckBuilderCombat.RESULT_REPEATER_BLAST:
-					return "예고: " + Math.max(0, 7 + enemy.strength) + " 피해 + 힘";
-				case DeckBuilderCombat.RESULT_EXPEL_BLAST:
-					return "예고: 2x" + Math.max(0, 5 + enemy.strength) + " 피해";
-				case DeckBuilderCombat.RESULT_SUBMERGE:
-					return "예고: 방어도 +15";
-			}
-		}
-		if (enemy.intent > 0 && enemy.strength != 0) {
-            return "예고: " + Math.max(0, enemy.intent + enemy.strength) + " 피해";
-		}
-		return enemy.intent == DeckBuilderCombat.RESULT_SLIMY_INJECT
-                ? "예고: 점액투성이"
-                : "예고: " + enemy.intent + " 피해";
+		return DeckEnemyIntent.text(enemy);
 	}
 
 	private void updatePlayerHpUi() {
@@ -907,8 +908,60 @@ public class DeckBattleScene extends PixelScene {
 		}
 	}
 
+	private boolean hasWandInHand(int staffIndex) {
+		for (int i = 0; i < combat.hand.size(); i++) {
+			if (i == staffIndex) continue;
+			int code = combat.hand.get(i);
+			if (DeckCard.maxCharge(code) > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void showWandSelectionBanner() {
+		int w = Camera.main.width;
+		RectF insets = getCommonInsets();
+		wandSelectionShade.y = insets.top + 24;
+		wandSelectionShade.visible = true;
+
+		wandSelectionAccent.y = wandSelectionShade.y + wandSelectionShade.height;
+		wandSelectionAccent.visible = true;
+
+		wandSelectionTitle.setPos((w - wandSelectionTitle.width()) / 2f, wandSelectionShade.y + 7);
+		wandSelectionTitle.visible = true;
+
+		wandSelectionSubtitle.setPos((w - wandSelectionSubtitle.width()) / 2f, wandSelectionTitle.bottom() + 1);
+		wandSelectionSubtitle.visible = true;
+	}
+
+	private void hideWandSelectionBanner() {
+		wandSelectionShade.visible = false;
+		wandSelectionAccent.visible = false;
+		wandSelectionTitle.visible = false;
+		wandSelectionSubtitle.visible = false;
+	}
+
+
+
 	private void playCard(int index) {
 		if (combatLocked || index < 0 || index >= combat.hand.size()) {
+			return;
+		}
+		int cardCode = combat.hand.get(index);
+		DeckCard card = DeckCard.byCode(cardCode);
+		if (card == DeckCard.MAGE_STAFF && hasWandInHand(index)) {
+			selectingWandForStaff = true;
+			mageStaffHandIndex = index;
+			showWandSelectionBanner();
+			refresh();
+			return;
+		}
+		executePlayCard(index, -1);
+	}
+
+	private void executePlayCard(int index, int targetWandIndex) {
+		if (index < 0 || index >= combat.hand.size()) {
 			return;
 		}
 		int cardCode = combat.hand.get(index);
@@ -916,7 +969,11 @@ public class DeckBattleScene extends PixelScene {
 		int logCardCode = card.effectiveCodeForPlay(cardCode, combat, index);
 		float startX = index < cardButtons.size() ? cardButtons.get(index).centerX() : playerCenterX();
 		float startY = index < cardButtons.size() ? cardButtons.get(index).centerY() : playerCenterY();
-		DeckPlayResult result = combat.play(index);
+		DeckCard wandCard = null;
+		if (targetWandIndex >= 0 && targetWandIndex < combat.hand.size()) {
+			wandCard = DeckCard.byCode(combat.hand.get(targetWandIndex));
+		}
+		DeckPlayResult result = combat.play(index, targetWandIndex);
 		if (!result.played) {
             log("에너지가 부족합니다.");
 			return;
@@ -935,6 +992,51 @@ public class DeckBattleScene extends PixelScene {
 			Sword.giorno();
 		} else if (card == DeckCard.ROTATING_NAIL) {
 			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+		}
+
+		if (card == DeckCard.MAGE_STAFF && wandCard != null) {
+			final float fx = startX;
+			final float fy = startY;
+			final ArrayList<DeckPlayResult.Hit> hits = result.hits;
+			final DeckCard finalWandCard = wandCard;
+			for (int i = 0; i < hits.size(); i++) {
+				final DeckPlayResult.Hit hit = hits.get(i);
+				final float delay = i * 0.18f;
+				final boolean isFirst = (i == 0);
+				addEffect(new DelayedActionEffect(delay, new Runnable() {
+					@Override
+					public void run() {
+						spawnCardAttack(isFirst ? DeckCard.MAGE_STAFF : finalWandCard, fx, fy, hit);
+					}
+				}));
+			}
+			final float totalDelay = hits.size() * 0.18f + 0.22f;
+			log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+			if (combat.playerDead()) {
+				updatePlayerHpUi();
+				addEffect(new DelayedActionEffect(totalDelay, new Runnable() {
+					@Override
+					public void run() {
+						playDeath(playerSprite);
+						finishRunDeath();
+					}
+				}));
+			} else if (combat.won()) {
+				addEffect(new DelayedActionEffect(totalDelay + 0.3f, new Runnable() {
+					@Override
+					public void run() {
+						showReward();
+					}
+				}));
+			} else {
+				addEffect(new DelayedActionEffect(totalDelay, new Runnable() {
+					@Override
+					public void run() {
+						refresh();
+					}
+				}));
+			}
+			return;
 		}
 
 		if (card == DeckCard.KNIFE_TRAP && result.hits.size() > 1) {
@@ -1453,11 +1555,21 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private float spawnAutoPlayEffects() {
-		if (combat.lastAutoPlayResults.isEmpty()) return 0f;
+		return spawnAutoPlayEffects(combat.lastAutoPlayResults);
+	}
+
+	private float spawnTurnEndAutoPlayEffects() {
+		return spawnAutoPlayEffects(combat.lastTurnEndAutoPlayResults);
+	}
+
+	private float spawnAutoPlayEffects(ArrayList<DeckPlayResult> sourceResults) {
+		if (sourceResults.isEmpty()) return 0f;
+		ArrayList<DeckPlayResult> autoResults = new ArrayList<>(sourceResults);
+		sourceResults.clear();
 		float sourceX = deckCounterBg == null ? Camera.main.width * 0.12f : deckCounterBg.x + deckCounterBg.width() / 2f;
 		float sourceY = deckCounterBg == null ? handY + CARD_H * 0.75f : deckCounterBg.y + deckCounterBg.height() / 2f;
 		int sequence = 0;
-		for (DeckPlayResult auto : combat.lastAutoPlayResults) {
+		for (DeckPlayResult auto : autoResults) {
 			if (!auto.played || auto.card == null) continue;
 			for (DeckPlayResult.Hit hit : auto.hits) {
 				if (hit.damage <= 0) continue;
@@ -1479,12 +1591,15 @@ public class DeckBattleScene extends PixelScene {
 		return sequence == 0 ? 0f : 0.16f + sequence * 0.16f + 0.38f;
 	}
 
-	private void spawnCardAttack(DeckCard card, float startX, float startY, DeckPlayResult.Hit hit) {
+	private void spawnCardAttack(final DeckCard card, float startX, float startY, final DeckPlayResult.Hit hit) {
 		playAttack(playerSprite);
 		final EnemyView target = enemyView(hit.enemyIndex);
 		if (target == null) return;
 		if (card == DeckCard.ROTATING_NAIL) {
 			addEffect(new NailShotEffect(startX, startY, enemyCenterX(target), enemyCenterY(target)));
+		} else if (card == DeckCard.MAGIC_MISSILE_WAND) {
+			Sample.INSTANCE.play(Assets.Sounds.ZAP);
+			addEffect(new WandShotEffect(startX, startY, enemyCenterX(target), enemyCenterY(target)));
 		} else {
 			addEffect(new FlyingCardEffect(card, startX, startY, enemyCenterX(target), enemyCenterY(target)));
 		}
@@ -1492,8 +1607,13 @@ public class DeckBattleScene extends PixelScene {
 			@Override
 			public void run() {
 				target.hitTime = 0.22f;
-				Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH);
-				addEffect(new ImpactEffect(enemyCenterX(target), enemyCenterY(target), card == DeckCard.ROTATING_NAIL ? 0xFFFFD0F0 : 0xFFFFC05A));
+				if (card == DeckCard.MAGIC_MISSILE_WAND) {
+					Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC);
+					addEffect(new ImpactEffect(enemyCenterX(target), enemyCenterY(target), 0xFFFFFFFF));
+				} else {
+					Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH);
+					addEffect(new ImpactEffect(enemyCenterX(target), enemyCenterY(target), card == DeckCard.ROTATING_NAIL ? 0xFFFFD0F0 : 0xFFFFC05A));
+				}
 				spawnFloatingText("-" + hit.damage, enemyCenterX(target), enemyCenterY(target) - 16, 0xFFFF705A);
 				target.name.text(target.enemy.name + "  " + target.enemy.hp + "/" + target.enemy.ht);
 				target.hp.size(ACTOR_HP_W * target.enemy.hp / (float)target.enemy.ht, ACTOR_HP_H);
@@ -1736,10 +1856,14 @@ public class DeckBattleScene extends PixelScene {
 		refreshEnemyViews();
 		// Remove cards that were exhausted for the whole run.
 		DeckBuilderRun.applyExhaust(combat.exhaustPile);
+		combat.exhaustPile.clear();
+		saveCombatState();
 		Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
 		boolean useFullRewardScreen = true;
 		if (useFullRewardScreen) {
-			showCombatRewardWindow(new CombatReward(Statistics.deckBuilderMapNode));
+			DeckCombatRewardState rewards = DeckBuilderRun.combatRewardForCurrentNode(Statistics.deckBuilderMapNode);
+			saveCombatState();
+			showCombatRewardWindow(rewards);
 			return;
 		}
 		final DeckCard[] rewards = DeckBuilderRun.rewardChoices();
@@ -1788,7 +1912,7 @@ public class DeckBattleScene extends PixelScene {
 		addToFront(reward);
 	}
 
-	private void showCombatRewardWindow(final CombatReward rewards) {
+	private void showCombatRewardWindow(final DeckCombatRewardState rewards) {
 		final Window reward = new RewardWindow();
 		int width = 210;
 		int pos = 7;
@@ -1805,6 +1929,7 @@ public class DeckBattleScene extends PixelScene {
 				if (claimed) return;
 				claimed = true;
 				DeckBuilderRun.gold += rewards.gold;
+				rewards.goldClaimed = true;
 				if (runHud != null) runHud.refresh();
 				Sample.INSTANCE.play(Assets.Sounds.GOLD);
                 text.text("획득 완료: " + rewards.gold + " 골드");
@@ -1812,44 +1937,52 @@ public class DeckBattleScene extends PixelScene {
 				saveCombatState();
 			}
 		};
+		goldRow.claimed = rewards.goldClaimed;
 		goldRow.setRect(10, pos, width - 20, 24);
 		reward.add(goldRow);
 		pos += 29;
 
-		for (int i = 0; i < rewards.relics.length; i++) {
-			final DeckRelic relic = rewards.relics[i];
-			RewardRow relicRow = new RewardRow(relic.icon, relic.title) {
+		for (int i = 0; rewards.relics != null && i < rewards.relics.length; i++) {
+			final int relicIndex = i;
+			final DeckRelic relic = rewards.relicAt(i);
+			if (relic == null) continue;
+			RewardRow relicRow = new RewardRow(NO_REWARD_ICON, relic.title) {
 				@Override
 				protected void onClick() {
 					if (claimed) return;
 					claimed = true;
 					DeckBuilderRun.addRelic(relic);
+					if (rewards.relicClaimed != null && relicIndex < rewards.relicClaimed.length) rewards.relicClaimed[relicIndex] = true;
                     text.text("획득 완료: " + relic.title);
 					text.hardlight(0xFF9A9A9A);
 					saveCombatState();
 				}
 			};
+			relicRow.claimed = rewards.relicClaimed != null && i < rewards.relicClaimed.length && rewards.relicClaimed[i];
 			relicRow.setRect(10, pos, width - 20, 24);
 			reward.add(relicRow);
 			pos += 29;
 		}
 
-		if (rewards.potion != null) {
-			RewardRow potionRow = new RewardRow(rewards.potion.image, rewards.potion.title) {
+		final DeckPotion rewardPotion = rewards.potion();
+		if (rewardPotion != null) {
+			RewardRow potionRow = new RewardRow(rewardPotion.image, rewardPotion.title) {
 				@Override
 				protected void onClick() {
 					if (claimed) return;
-					if (!DeckBuilderRun.addPotion(rewards.potion)) {
+					if (!DeckBuilderRun.addPotion(rewardPotion)) {
                         addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
 						return;
 					}
 					claimed = true;
+					rewards.potionClaimed = true;
 					if (runHud != null) runHud.refresh();
-                    text.text("획득 완료: " + rewards.potion.title);
+                    text.text("획득 완료: " + rewardPotion.title);
 					text.hardlight(0xFF9A9A9A);
 					saveCombatState();
 				}
 			};
+			potionRow.claimed = rewards.potionClaimed;
 			potionRow.setRect(10, pos, width - 20, 24);
 			reward.add(potionRow);
 			pos += 29;
@@ -1859,9 +1992,10 @@ public class DeckBattleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				if (claimed) return;
-				showCardRewardWindow(reward, rewards.cards, this);
+				showCardRewardWindow(reward, rewards.cardChoices(), this, rewards);
 			}
 		};
+		cardRow.claimed = rewards.cardClaimed;
 		cardRow.setRect(10, pos, width - 20, 24);
 		reward.add(cardRow);
 		pos += 32;
@@ -1881,7 +2015,7 @@ public class DeckBattleScene extends PixelScene {
 		addToFront(reward);
 	}
 
-	private void showCardRewardWindow(final Window parent, final DeckCard[] cards, final RewardRow cardRow) {
+	private void showCardRewardWindow(final Window parent, final DeckCard[] cards, final RewardRow cardRow, final DeckCombatRewardState rewards) {
 		final Window win = new RewardWindow();
 		int cardW = 62;
 		int cardGap = 10;
@@ -1901,7 +2035,7 @@ public class DeckBattleScene extends PixelScene {
 			RewardCardButton button = new RewardCardButton(card) {
 				@Override
 				protected void onClick() {
-					showCardTakeWindow(win, cardRow, card);
+					showCardTakeWindow(win, cardRow, card, rewards);
 				}
 			};
 			button.setRect(startX + i * (cardW + cardGap), pos, cardW, 64);
@@ -1913,8 +2047,10 @@ public class DeckBattleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				cardRow.claimed = true;
+				rewards.cardClaimed = true;
                 cardRow.text.text("카드 보상 건너뜀");
 				cardRow.text.hardlight(0xFF9A9A9A);
+				saveCombatState();
 				win.hide();
 			}
 		};
@@ -1935,7 +2071,7 @@ public class DeckBattleScene extends PixelScene {
 		addToFront(win);
 	}
 
-    private void showCardTakeWindow(final Window cardWindow, final RewardRow cardRow, final DeckCard card) {
+    private void showCardTakeWindow(final Window cardWindow, final RewardRow cardRow, final DeckCard card, final DeckCombatRewardState rewards) {
 		final Window win = new RewardWindow();
 		int width = 170;
 		int pos = 7;
@@ -1959,6 +2095,7 @@ public class DeckBattleScene extends PixelScene {
 				Sample.INSTANCE.play(Assets.Sounds.ITEM);
 				DeckBuilderRun.addCard(card);
 				cardRow.claimed = true;
+				rewards.cardClaimed = true;
                 cardRow.text.text("획득 완료: " + card.title(card.code()));
 				cardRow.text.hardlight(0xFF9A9A9A);
 				saveCombatState();
@@ -2223,6 +2360,12 @@ public class DeckBattleScene extends PixelScene {
 
 	@Override
 	protected void onBackPressed() {
+		if (selectingWandForStaff) {
+			selectingWandForStaff = false;
+			hideWandSelectionBanner();
+			refresh();
+			return;
+		}
 	}
 
 	private static class DeckMobSprite extends CharSprite {
@@ -2676,6 +2819,47 @@ public class DeckBattleScene extends PixelScene {
 		}
 	}
 
+	private class WandShotEffect extends BattleEffect {
+
+		private final float sx;
+		private final float sy;
+		private final float tx;
+		private final float ty;
+		private final ColorBlock inner;
+		private final ColorBlock outer;
+
+		private WandShotEffect(float sx, float sy, float tx, float ty) {
+			super(0.28f);
+			this.sx = sx;
+			this.sy = sy;
+			this.tx = tx;
+			this.ty = ty;
+
+			outer = new ColorBlock(6, 6, 0xFFFFFFFF);
+			add(outer);
+			inner = new ColorBlock(2, 2, 0xFFFFFFFF);
+			add(inner);
+
+			updateEffect(0);
+		}
+
+		@Override
+		protected void updateEffect(float p) {
+			float e = p * p * (3f - 2f * p);
+			float cx = sx + (tx - sx) * e;
+			float cy = sy + (ty - sy) * e - (float)Math.sin(p * Math.PI) * 14f;
+			float alpha = 1f - Math.max(0, p - 0.72f) / 0.28f;
+
+			outer.x = cx - 3;
+			outer.y = cy - 3;
+			outer.am = alpha;
+
+			inner.x = cx - 1;
+			inner.y = cy - 1;
+			inner.am = alpha;
+		}
+	}
+
 	private class FlyingCardEffect extends BattleEffect {
 
 		private final DeckCard card;
@@ -3122,6 +3306,13 @@ public class DeckBattleScene extends PixelScene {
 
 		@Override
 		protected boolean enabled() {
+			if (selectingWandForStaff) {
+				int code = cardCode();
+				return DeckCard.maxCharge(code) > 0 || handIndex == mageStaffHandIndex;
+			}
+			if (DeckCard.maxCharge(cardCode()) > 0) {
+				return false;
+			}
 			return !combatLocked && handIndex < combat.hand.size() && combat.cardCost(cardCode()) <= combat.energy;
 		}
 
@@ -3132,6 +3323,17 @@ public class DeckBattleScene extends PixelScene {
 
 		@Override
 		protected void onPointerDown() {
+			if (selectingWandForStaff) {
+				activeTouch = true;
+				super.onPointerDown();
+				homeX = x;
+				homeY = y;
+				dragging = false;
+				useOnRelease = false;
+				clickReady = true;
+				showCardInfo(cardCode());
+				return;
+			}
 			if (combatLocked) return;
 			activeTouch = true;
 			super.onPointerDown();
@@ -3145,6 +3347,7 @@ public class DeckBattleScene extends PixelScene {
 
 		@Override
 		protected void onDrag(PointerEvent event) {
+			if (selectingWandForStaff) return;
 			if (!activeTouch || !enabled()) return;
 			float dx = event.current.x - event.start.x;
 			float dy = event.current.y - event.start.y;
@@ -3163,6 +3366,12 @@ public class DeckBattleScene extends PixelScene {
 			activeTouch = false;
 			super.onPointerUp();
 			hideCardInfo();
+			if (selectingWandForStaff) {
+				if (clickReady) {
+					onClick();
+				}
+				return;
+			}
 			boolean shouldPlay = dragging && useOnRelease && enabled();
 			setRect(homeX, homeY, width, height);
 			dragging = false;
@@ -3174,6 +3383,19 @@ public class DeckBattleScene extends PixelScene {
 
 		@Override
 		protected void onClick() {
+			if (selectingWandForStaff) {
+				int code = cardCode();
+				if (DeckCard.maxCharge(code) > 0 && handIndex != mageStaffHandIndex) {
+					selectingWandForStaff = false;
+					hideWandSelectionBanner();
+					combatLocked = true;
+					executePlayCard(mageStaffHandIndex, handIndex);
+				} else if (handIndex == mageStaffHandIndex) {
+					selectingWandForStaff = false;
+					hideWandSelectionBanner();
+					refresh();
+				}
+			}
 		}
 	}
 
@@ -3231,12 +3453,18 @@ public class DeckBattleScene extends PixelScene {
 			bg.y = y;
 			bg.size(width, height);
 			bg.am = claimed ? 0.45f : 0.92f;
-			icon.view(iconImage, null);
-			icon.x = x + 7;
-			icon.y = y + (height - icon.height()) / 2f;
-			if (!claimed) text.text(label);
-			text.maxWidth((int)(width - 34));
-			text.setPos(x + 31, y + (height - text.height()) / 2f);
+			icon.visible = iconImage >= 0;
+			float textX = x + 10;
+			if (icon.visible) {
+				icon.view(iconImage, null);
+				icon.x = x + 7;
+				icon.y = y + (height - icon.height()) / 2f;
+				textX = x + 31;
+			}
+			text.text(claimed ? "획득 완료" : label);
+			text.hardlight(claimed ? 0xFF9A9A9A : 0xFFD8D1BD);
+			text.maxWidth((int)(width - (textX - x) - 7));
+			text.setPos(textX, y + (height - text.height()) / 2f);
 		}
 	}
 
@@ -3284,6 +3512,7 @@ public class DeckBattleScene extends PixelScene {
 		protected RenderedTextBlock cost;
 		protected RenderedTextBlock title;
 		protected RenderedTextBlock typeLabel;
+		protected RenderedTextBlock chargeLabel;
 		protected RenderedTextBlock rules;
 
 		@Override
@@ -3313,6 +3542,9 @@ public class DeckBattleScene extends PixelScene {
 		typeLabel = renderTextBlock(5);
 		typeLabel.visible = false;
 		add(typeLabel);
+		chargeLabel = renderTextBlock(5);
+		chargeLabel.visible = false;
+		add(chargeLabel);
 		rules = renderTextBlock(6);
 		rules.visible = false;
 		add(rules);
@@ -3367,6 +3599,20 @@ public class DeckBattleScene extends PixelScene {
 		float labelX = x + (width - typeLabel.width()) / 2f;
 		float labelY = y + height - typeLabel.height() - 6;
 		typeLabel.setPos(labelX, labelY);
+
+		int maxCharge = DeckCard.maxCharge(cardCode);
+		if (maxCharge > 0) {
+			chargeLabel.visible = true;
+			int currentCharge = DeckCard.currentCharge(cardCode);
+			chargeLabel.text(currentCharge + "/" + maxCharge);
+			chargeLabel.hardlight(0xFFFF00);
+			chargeLabel.maxWidth((int)width - 10);
+			float chargeX = x + (width - chargeLabel.width()) / 2f;
+			float chargeY = labelY - chargeLabel.height() - 1;
+			chargeLabel.setPos(chargeX, chargeY);
+		} else {
+			chargeLabel.visible = false;
+		}
 
 		float artH = Math.max(18, height * 0.46f);
 		artPanel.color(card.deckClass == null || !card.reward ? card.rarity.panelColor : card.classPanelColor());

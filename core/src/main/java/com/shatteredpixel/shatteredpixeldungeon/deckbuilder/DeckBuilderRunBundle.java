@@ -1,0 +1,233 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2026 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ */
+
+package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
+
+import com.watabou.utils.Bundle;
+
+public class DeckBuilderRunBundle {
+
+	private static final String INITIALIZED = "deckbuilder_initialized";
+	private static final String PLAYER_HP = "deckbuilder_player_hp";
+	private static final String PLAYER_HT = "deckbuilder_player_ht";
+	private static final String DECK = "deckbuilder_deck";
+	private static final String MAX_ENERGY = "deckbuilder_max_energy";
+	private static final String HAND_SIZE = "deckbuilder_hand_size";
+	private static final String MAX_HAND_SIZE = "deckbuilder_max_hand_size";
+	private static final String CURRENT_COMBAT = "deckbuilder_current_combat";
+	private static final String RELICS = "deckbuilder_relics";
+	private static final String GOLD = "deckbuilder_gold";
+	private static final String POTIONS = "deckbuilder_potions";
+	private static final String CARD_RARE_OFFSET = "deckbuilder_card_rare_offset";
+	private static final String POTION_DROP_CHANCE = "deckbuilder_potion_drop_chance";
+	private static final String STARTING_RELIC_CHOSEN = "deckbuilder_starting_relic_chosen";
+	private static final String STARTING_RELIC_CHOICES = "deckbuilder_starting_relic_choices";
+	private static final String ACT1_NORMAL_FIGHTS = "deckbuilder_act1_normal_fights";
+	private static final String LAST_NORMAL_ENCOUNTER = "deckbuilder_last_normal_encounter";
+	private static final String SHOP_REMOVE_COUNT = "deckbuilder_shop_remove_count";
+	private static final String SHOP_DEPTH = "deckbuilder_shop_depth";
+	private static final String SHOP_PATH = "deckbuilder_shop_path";
+	private static final String SHOP_TYPES = "deckbuilder_shop_types";
+	private static final String SHOP_IDS = "deckbuilder_shop_ids";
+	private static final String SHOP_PRICES = "deckbuilder_shop_prices";
+	private static final String SHOP_SOLD = "deckbuilder_shop_sold";
+	private static final String SHOP_SALES = "deckbuilder_shop_sales";
+	private static final String SHOP_REMOVE_USED = "deckbuilder_shop_remove_used";
+	private static final String TREASURE_DEPTH = "deckbuilder_treasure_depth";
+	private static final String TREASURE_PATH = "deckbuilder_treasure_path";
+	private static final String TREASURE_CHEST = "deckbuilder_treasure_chest";
+	private static final String TREASURE_RELIC = "deckbuilder_treasure_relic";
+	private static final String TREASURE_CLAIMED = "deckbuilder_treasure_claimed";
+	private static final String REST_DEPTH = "deckbuilder_rest_depth";
+	private static final String REST_PATH = "deckbuilder_rest_path";
+	private static final String REST_USED = "deckbuilder_rest_used";
+	private static final String REWARD_NODE = "deckbuilder_reward_node";
+	private static final String REWARD_DEPTH = "deckbuilder_reward_depth";
+	private static final String REWARD_PATH = "deckbuilder_reward_path";
+	private static final String REWARD_GOLD = "deckbuilder_reward_gold";
+	private static final String REWARD_RELICS = "deckbuilder_reward_relics";
+	private static final String REWARD_POTION = "deckbuilder_reward_potion";
+	private static final String REWARD_CARDS = "deckbuilder_reward_cards";
+	private static final String REWARD_GOLD_CLAIMED = "deckbuilder_reward_gold_claimed";
+	private static final String REWARD_RELIC_CLAIMED = "deckbuilder_reward_relic_claimed";
+	private static final String REWARD_POTION_CLAIMED = "deckbuilder_reward_potion_claimed";
+	private static final String REWARD_CARD_CLAIMED = "deckbuilder_reward_card_claimed";
+
+	public static void store(Bundle bundle) {
+		bundle.put(INITIALIZED, DeckBuilderRun.initialized);
+		bundle.put(PLAYER_HP, DeckBuilderRun.playerHP);
+		bundle.put(PLAYER_HT, DeckBuilderRun.playerHT);
+		bundle.put(DECK, DeckRunInventory.toArray(DeckBuilderRun.deck));
+		bundle.put(MAX_ENERGY, DeckBuilderRun.maxEnergy);
+		bundle.put(HAND_SIZE, DeckBuilderRun.handSize);
+		bundle.put(MAX_HAND_SIZE, DeckBuilderRun.maxHandSize);
+		bundle.put(RELICS, DeckRunInventory.toArray(DeckBuilderRun.relics));
+		bundle.put(GOLD, DeckBuilderRun.gold);
+		bundle.put(POTIONS, DeckRunInventory.toArray(DeckBuilderRun.potions));
+		bundle.put(CARD_RARE_OFFSET, DeckBuilderRun.cardRareOffset);
+		bundle.put(POTION_DROP_CHANCE, DeckBuilderRun.potionDropChance);
+		bundle.put(STARTING_RELIC_CHOSEN, DeckBuilderRun.startingRelicChosen);
+		if (DeckBuilderRun.startingRelicChoices != null) bundle.put(STARTING_RELIC_CHOICES, DeckBuilderRun.startingRelicChoices);
+		bundle.put(ACT1_NORMAL_FIGHTS, DeckBuilderRun.act1NormalFights);
+		bundle.put(LAST_NORMAL_ENCOUNTER, DeckBuilderRun.lastNormalEncounter);
+		bundle.put(SHOP_REMOVE_COUNT, DeckBuilderRun.shopRemoveCount);
+		storeShop(bundle);
+		storeTreasure(bundle);
+		storeRest(bundle);
+		storeReward(bundle);
+		if (DeckBuilderRun.currentCombat != null && !DeckBuilderRun.currentCombat.playerDead()) {
+			Bundle combatBundle = new Bundle();
+			DeckBuilderRun.currentCombat.storeInBundle(combatBundle);
+			bundle.put(CURRENT_COMBAT, combatBundle);
+		}
+	}
+
+	public static void restore(Bundle bundle) {
+		DeckBuilderRun.initialized = bundle.getBoolean(INITIALIZED);
+		DeckBuilderRun.playerHP = bundle.getInt(PLAYER_HP);
+		DeckBuilderRun.playerHT = bundle.getInt(PLAYER_HT);
+		DeckBuilderRun.maxEnergy = bundle.contains(MAX_ENERGY) ? bundle.getInt(MAX_ENERGY) : DeckBuilderRun.STARTING_ENERGY;
+		DeckBuilderRun.handSize = bundle.contains(HAND_SIZE) ? bundle.getInt(HAND_SIZE) : DeckBuilderRun.STARTING_HAND_SIZE;
+		DeckBuilderRun.maxHandSize = bundle.contains(MAX_HAND_SIZE) ? bundle.getInt(MAX_HAND_SIZE) : DeckBuilderRun.DEFAULT_MAX_HAND_SIZE;
+		DeckBuilderRun.gold = bundle.contains(GOLD) ? bundle.getInt(GOLD) : 0;
+		DeckBuilderRun.cardRareOffset = bundle.contains(CARD_RARE_OFFSET) ? bundle.getInt(CARD_RARE_OFFSET) : -5;
+		DeckBuilderRun.potionDropChance = bundle.contains(POTION_DROP_CHANCE) ? bundle.getInt(POTION_DROP_CHANCE) : 40;
+		DeckBuilderRun.startingRelicChosen = bundle.getBoolean(STARTING_RELIC_CHOSEN);
+		DeckBuilderRun.startingRelicChoices = bundle.contains(STARTING_RELIC_CHOICES) ? bundle.getIntArray(STARTING_RELIC_CHOICES) : null;
+		DeckBuilderRun.act1NormalFights = bundle.contains(ACT1_NORMAL_FIGHTS) ? bundle.getInt(ACT1_NORMAL_FIGHTS) : 0;
+		DeckBuilderRun.lastNormalEncounter = bundle.contains(LAST_NORMAL_ENCOUNTER) ? bundle.getInt(LAST_NORMAL_ENCOUNTER) : -1;
+		DeckBuilderRun.shopRemoveCount = bundle.contains(SHOP_REMOVE_COUNT) ? bundle.getInt(SHOP_REMOVE_COUNT) : 0;
+		restoreShop(bundle);
+		restoreTreasure(bundle);
+		restoreRest(bundle);
+		restoreReward(bundle);
+		DeckBuilderRun.sanitizeStartingRelicChoices();
+		restoreDeck(bundle);
+		restoreRelics(bundle);
+		restorePotions(bundle);
+		DeckBuilderRun.currentCombat = bundle.contains(CURRENT_COMBAT)
+				? DeckBuilderCombat.restoreFromBundle(bundle.getBundle(CURRENT_COMBAT))
+				: null;
+	}
+
+	private static void storeShop(Bundle bundle) {
+		bundle.put(SHOP_DEPTH, DeckBuilderRun.shop.depth);
+		bundle.put(SHOP_PATH, DeckBuilderRun.shop.path);
+		if (DeckBuilderRun.shop.types != null) bundle.put(SHOP_TYPES, DeckBuilderRun.shop.types);
+		if (DeckBuilderRun.shop.ids != null) bundle.put(SHOP_IDS, DeckBuilderRun.shop.ids);
+		if (DeckBuilderRun.shop.prices != null) bundle.put(SHOP_PRICES, DeckBuilderRun.shop.prices);
+		if (DeckBuilderRun.shop.sold != null) bundle.put(SHOP_SOLD, DeckBuilderRun.shop.sold);
+		if (DeckBuilderRun.shop.sales != null) bundle.put(SHOP_SALES, DeckBuilderRun.shop.sales);
+		bundle.put(SHOP_REMOVE_USED, DeckBuilderRun.shop.removeUsed);
+	}
+
+	private static void restoreShop(Bundle bundle) {
+		DeckBuilderRun.shop.depth = bundle.contains(SHOP_DEPTH) ? bundle.getInt(SHOP_DEPTH) : -1;
+		DeckBuilderRun.shop.path = bundle.contains(SHOP_PATH) ? bundle.getInt(SHOP_PATH) : -1;
+		DeckBuilderRun.shop.types = bundle.contains(SHOP_TYPES) ? bundle.getIntArray(SHOP_TYPES) : null;
+		DeckBuilderRun.shop.ids = bundle.contains(SHOP_IDS) ? bundle.getIntArray(SHOP_IDS) : null;
+		DeckBuilderRun.shop.prices = bundle.contains(SHOP_PRICES) ? bundle.getIntArray(SHOP_PRICES) : null;
+		DeckBuilderRun.shop.sold = bundle.contains(SHOP_SOLD) ? bundle.getBooleanArray(SHOP_SOLD) : null;
+		DeckBuilderRun.shop.sales = bundle.contains(SHOP_SALES) ? bundle.getBooleanArray(SHOP_SALES) : null;
+		DeckBuilderRun.shop.removeUsed = bundle.getBoolean(SHOP_REMOVE_USED);
+	}
+
+	private static void storeTreasure(Bundle bundle) {
+		bundle.put(TREASURE_DEPTH, DeckBuilderRun.treasure.depth);
+		bundle.put(TREASURE_PATH, DeckBuilderRun.treasure.path);
+		bundle.put(TREASURE_CHEST, DeckBuilderRun.treasure.chest);
+		bundle.put(TREASURE_RELIC, DeckBuilderRun.treasure.relic);
+		bundle.put(TREASURE_CLAIMED, DeckBuilderRun.treasure.claimed);
+	}
+
+	private static void restoreTreasure(Bundle bundle) {
+		DeckBuilderRun.treasure.depth = bundle.contains(TREASURE_DEPTH) ? bundle.getInt(TREASURE_DEPTH) : -1;
+		DeckBuilderRun.treasure.path = bundle.contains(TREASURE_PATH) ? bundle.getInt(TREASURE_PATH) : -1;
+		DeckBuilderRun.treasure.chest = bundle.contains(TREASURE_CHEST) ? bundle.getInt(TREASURE_CHEST) : 0;
+		DeckBuilderRun.treasure.relic = bundle.contains(TREASURE_RELIC) ? bundle.getInt(TREASURE_RELIC) : -1;
+		DeckBuilderRun.treasure.claimed = bundle.getBoolean(TREASURE_CLAIMED);
+	}
+
+	private static void storeRest(Bundle bundle) {
+		bundle.put(REST_DEPTH, DeckBuilderRun.rest.depth);
+		bundle.put(REST_PATH, DeckBuilderRun.rest.path);
+		bundle.put(REST_USED, DeckBuilderRun.rest.used);
+	}
+
+	private static void restoreRest(Bundle bundle) {
+		DeckBuilderRun.rest.depth = bundle.contains(REST_DEPTH) ? bundle.getInt(REST_DEPTH) : -1;
+		DeckBuilderRun.rest.path = bundle.contains(REST_PATH) ? bundle.getInt(REST_PATH) : -1;
+		DeckBuilderRun.rest.used = bundle.getBoolean(REST_USED);
+	}
+
+	private static void storeReward(Bundle bundle) {
+		bundle.put(REWARD_NODE, DeckBuilderRun.reward.node);
+		bundle.put(REWARD_DEPTH, DeckBuilderRun.reward.depth);
+		bundle.put(REWARD_PATH, DeckBuilderRun.reward.path);
+		bundle.put(REWARD_GOLD, DeckBuilderRun.reward.gold);
+		if (DeckBuilderRun.reward.relics != null) bundle.put(REWARD_RELICS, DeckBuilderRun.reward.relics);
+		bundle.put(REWARD_POTION, DeckBuilderRun.reward.potion);
+		if (DeckBuilderRun.reward.cards != null) bundle.put(REWARD_CARDS, DeckBuilderRun.reward.cards);
+		bundle.put(REWARD_GOLD_CLAIMED, DeckBuilderRun.reward.goldClaimed);
+		if (DeckBuilderRun.reward.relicClaimed != null) bundle.put(REWARD_RELIC_CLAIMED, DeckBuilderRun.reward.relicClaimed);
+		bundle.put(REWARD_POTION_CLAIMED, DeckBuilderRun.reward.potionClaimed);
+		bundle.put(REWARD_CARD_CLAIMED, DeckBuilderRun.reward.cardClaimed);
+	}
+
+	private static void restoreReward(Bundle bundle) {
+		DeckBuilderRun.reward.node = bundle.contains(REWARD_NODE) ? bundle.getInt(REWARD_NODE) : DeckBuilderMap.NONE;
+		DeckBuilderRun.reward.depth = bundle.contains(REWARD_DEPTH) ? bundle.getInt(REWARD_DEPTH) : -1;
+		DeckBuilderRun.reward.path = bundle.contains(REWARD_PATH) ? bundle.getInt(REWARD_PATH) : -1;
+		DeckBuilderRun.reward.gold = bundle.contains(REWARD_GOLD) ? bundle.getInt(REWARD_GOLD) : 0;
+		DeckBuilderRun.reward.relics = bundle.contains(REWARD_RELICS) ? bundle.getIntArray(REWARD_RELICS) : null;
+		DeckBuilderRun.reward.potion = bundle.contains(REWARD_POTION) ? bundle.getInt(REWARD_POTION) : -1;
+		DeckBuilderRun.reward.cards = bundle.contains(REWARD_CARDS) ? bundle.getIntArray(REWARD_CARDS) : null;
+		DeckBuilderRun.reward.goldClaimed = bundle.getBoolean(REWARD_GOLD_CLAIMED);
+		DeckBuilderRun.reward.relicClaimed = bundle.contains(REWARD_RELIC_CLAIMED) ? bundle.getBooleanArray(REWARD_RELIC_CLAIMED) : null;
+		DeckBuilderRun.reward.potionClaimed = bundle.getBoolean(REWARD_POTION_CLAIMED);
+		DeckBuilderRun.reward.cardClaimed = bundle.getBoolean(REWARD_CARD_CLAIMED);
+		if (DeckBuilderRun.reward.relics != null
+				&& (DeckBuilderRun.reward.relicClaimed == null || DeckBuilderRun.reward.relicClaimed.length != DeckBuilderRun.reward.relics.length)) {
+			DeckBuilderRun.reward.relicClaimed = new boolean[DeckBuilderRun.reward.relics.length];
+		}
+	}
+
+	private static void restoreDeck(Bundle bundle) {
+		DeckBuilderRun.deck.clear();
+		if (bundle.contains(DECK)) {
+			for (int id : bundle.getIntArray(DECK)) {
+				DeckBuilderRun.deck.add(id);
+			}
+		}
+	}
+
+	private static void restoreRelics(Bundle bundle) {
+		DeckBuilderRun.relics.clear();
+		if (bundle.contains(RELICS)) {
+			for (int id : bundle.getIntArray(RELICS)) {
+				DeckBuilderRun.relics.add(id);
+			}
+		}
+	}
+
+	private static void restorePotions(Bundle bundle) {
+		DeckBuilderRun.potions.clear();
+		if (bundle.contains(POTIONS)) {
+			for (int id : bundle.getIntArray(POTIONS)) {
+				if (DeckBuilderRun.potions.size() < DeckBuilderRun.MAX_POTION_SLOTS && DeckPotion.byId(id) != null) {
+					DeckBuilderRun.potions.add(id);
+				}
+			}
+		}
+	}
+}

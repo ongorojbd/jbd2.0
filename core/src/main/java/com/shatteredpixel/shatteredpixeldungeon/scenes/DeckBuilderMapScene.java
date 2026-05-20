@@ -402,7 +402,7 @@ public class DeckBuilderMapScene extends PixelScene {
 			}
 
 			if (sceneType(depth, node) == DeckBuilderMap.SHOP) {
-				if (DeckBuilderRun.shopDepth != depth || DeckBuilderRun.shopPath != node) {
+				if (!DeckBuilderRun.shopMatches(depth, node)) {
 					DeckBuilderRun.clearShop();
 				}
 				enterDeckEvent();

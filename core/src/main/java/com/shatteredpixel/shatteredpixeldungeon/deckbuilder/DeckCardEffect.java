@@ -20,4 +20,16 @@ public interface DeckCardEffect {
 	default void apply(DeckCardPlayContext context) {
 		apply(context.combat, context.card, context.effectiveCardCode, context.result);
 	}
+
+	default String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+		return "";
+	}
+
+	default String keywordText(DeckCard card, int cardCode) {
+		return "";
+	}
+
+	default String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+		return "";
+	}
 }

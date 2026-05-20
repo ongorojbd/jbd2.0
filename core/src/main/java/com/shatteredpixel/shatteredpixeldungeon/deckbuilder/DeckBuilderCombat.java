@@ -103,8 +103,8 @@ public class DeckBuilderCombat {
 	public ArrayList<Integer> discardPile = new ArrayList<>();
 	public ArrayList<Integer> exhaustPile = new ArrayList<>();
 	public ArrayList<DeckPlayResult> lastAutoPlayResults = new ArrayList<>();
+	public ArrayList<DeckPlayResult> lastTurnEndAutoPlayResults = new ArrayList<>();
 	public ArrayList<EnemyAction> lastEnemyActions = new ArrayList<>();
-	private int lastEnemyRawDamage;
 
 	public DeckBuilderCombat(int nodeType, int depth, ArrayList<Integer> deck) {
 		this.nodeType = nodeType;
@@ -289,19 +289,30 @@ public class DeckBuilderCombat {
 			}
 		}
 		sanitizeTarget();
+		DeckWandCards.triggerTurnStartWands(this);
 		draw(handSize);
 	}
 
 	public DeckPlayResult play(int handIndex) {
 		lastAutoPlayResults.clear();
-		return play(handIndex, false);
+		return play(handIndex, false, -1);
+	}
+
+	public DeckPlayResult play(int handIndex, int targetWandIndex) {
+		lastAutoPlayResults.clear();
+		return play(handIndex, false, targetWandIndex);
 	}
 
 	private DeckPlayResult play(int handIndex, boolean castOnDraw) {
+		return play(handIndex, castOnDraw, -1);
+	}
+
+	private DeckPlayResult play(int handIndex, boolean castOnDraw, int targetWandIndex) {
 		if (handIndex < 0 || handIndex >= hand.size()) return DeckPlayResult.INVALID;
 		int cardCode = hand.get(handIndex);
 		DeckCard card = DeckCard.byCode(cardCode);
 		int cost = cardCost(cardCode);
+		if (!castOnDraw && DeckWandCards.isWand(cardCode)) return DeckPlayResult.INVALID;
 		if (!castOnDraw && cost > energy) return DeckPlayResult.INVALID;
 
 		if (!castOnDraw) {
@@ -313,20 +324,41 @@ public class DeckBuilderCombat {
 		int effectiveCardCode = card.effectiveCodeForPlay(cardCode, this, handIndex);
 		DeckPlayResult.Builder result = new DeckPlayResult.Builder(card);
 		for (DeckCardEffect effect : card.effects(cardCode)) {
-			effect.apply(new DeckCardPlayContext(this, card, cardCode, effectiveCardCode, handIndex, castOnDraw, aimActive, throwActive, result));
+			effect.apply(new DeckCardPlayContext(this, card, cardCode, effectiveCardCode, handIndex, castOnDraw, aimActive, throwActive, result, targetWandIndex));
 		}
 
-		hand.remove(handIndex);
-		if (card == DeckCard.SHIV) {
-			firstShivUsed = true;
-		}
-		if (card.type == DeckCardType.POWER) {
-			// Powers are removed from the current combat, but not from the run deck.
-		} else if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) {
-			exhaustPile.add(cardCode);
+		if (targetWandIndex >= 0 && targetWandIndex < hand.size() && targetWandIndex != handIndex) {
+			int staffCode = hand.get(handIndex);
+			int wandCode = hand.get(targetWandIndex);
+			if (handIndex > targetWandIndex) {
+				hand.remove(handIndex);
+				hand.remove(targetWandIndex);
+			} else {
+				hand.remove(targetWandIndex);
+				hand.remove(handIndex);
+			}
+			exhaustPile.add(wandCode);
 			result.exhausted = true;
+			if (card.type == DeckCardType.POWER) {
+				// Powers are removed from the current combat, but not from the run deck.
+			} else if (card.hasKeyword(staffCode, DeckCardKeyword.EXHAUST)) {
+				exhaustPile.add(staffCode);
+			} else {
+				discardPile.add(staffCode);
+			}
 		} else {
-			discardPile.add(cardCode);
+			hand.remove(handIndex);
+			if (card == DeckCard.SHIV) {
+				firstShivUsed = true;
+			}
+			if (card.type == DeckCardType.POWER) {
+				// Powers are removed from the current combat, but not from the run deck.
+			} else if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) {
+				exhaustPile.add(cardCode);
+				result.exhausted = true;
+			} else {
+				discardPile.add(cardCode);
+			}
 		}
 
 		return result.build();
@@ -471,6 +503,8 @@ public class DeckBuilderCombat {
 	@SuppressWarnings("SuspiciousIndentation")
     public int endTurn() {
 		lastEnemyActions.clear();
+		lastTurnEndAutoPlayResults.clear();
+		DeckWandCards.triggerTurnEndWands(this);
 		ArrayList<Integer> retained = new ArrayList<>();
 		for (int code : hand) {
 			DeckCard handCard = DeckCard.byCode(code);
@@ -504,93 +538,10 @@ public class DeckBuilderCombat {
 				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "분열"));
 				continue;
 			}
-			if (enemy.intent == RESULT_SLIMY_INJECT) {
-				discardPile.add(DeckCard.SLIMY.code());
-				injected = true;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, true, "점액투성이", false, DeckCard.SLIMY, 1));
-			} else if (enemy.intent == RESULT_AGE_DOWN) {
-				playerDamageReduction = Math.max(playerDamageReduction, 30);
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "유아화"));
-			} else if (enemy.intent == RESULT_STRENGTH_7 || enemy.intent == RESULT_STRENGTH_2) {
-				int strength = enemy.intent == RESULT_STRENGTH_7 ? 7 : 2;
-				enemy.strength += strength;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "공격력 +" + strength));
-			} else if (enemy.intent == RESULT_TOWER_NEEDLE) {
-				enemy.thorns += 2;
-                    lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "[타워 니들]"));
-			} else if (enemy.intent == RESULT_MASSACRE) {
-				for (int hit = 0; hit < 3; hit++) {
-					int damage = performEnemyAttack(enemy, 3, remainingBlock, hit == 0 ? "[대학살!]" : null);
-					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-					damageTaken += damage;
-				}
-				enemy.thorns = Math.max(0, enemy.thorns - 2);
-			} else if (enemy.intent == RESULT_ATTACK_6_BLOCK_5) {
-				int damage = performEnemyAttack(enemy, 6, remainingBlock, "방어막 +5");
-				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-				damageTaken += damage;
-				enemy.block += 5;
-			} else if (enemy.intent == RESULT_PRESSURIZE) {
-				enemy.strength += 4;
-				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "힘 +4"));
-			} else if (enemy.intent == RESULT_FLAME_TACKLE_BIG) {
-				int damage = performEnemyAttack(enemy, 16, remainingBlock, "점액투성이 +2");
-				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-				damageTaken += damage;
-				discardPile.add(DeckCard.SLIMY.code());
-				discardPile.add(DeckCard.SLIMY.code());
-				injected = true;
-				lastEnemyActions.get(lastEnemyActions.size() - 1).setShuffle(DeckCard.SLIMY, 2);
-			} else if (enemy.intent == RESULT_FLAME_TACKLE_MEDIUM) {
-				int damage = performEnemyAttack(enemy, 8, remainingBlock, "점액투성이 +1");
-				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-				damageTaken += damage;
-				discardPile.add(DeckCard.SLIMY.code());
-				injected = true;
-				lastEnemyActions.get(lastEnemyActions.size() - 1).setShuffle(DeckCard.SLIMY, 1);
-			} else if (enemy.intent == RESULT_LICK_BIG || enemy.intent == RESULT_LICK_MEDIUM) {
-				int amount = enemy.intent == RESULT_LICK_BIG ? 2 : 1;
-				playerBlockReduction += amount;
-				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "방어력 저하 +" + amount));
-			} else if (enemy.intent == RESULT_WINDUP_PUNCH) {
-				for (int hit = 0; hit < 3; hit++) {
-					int damage = performEnemyAttack(enemy, 2, remainingBlock, hit == 0 ? "감아치기" : null);
-					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-					damageTaken += damage;
-				}
-			} else if (enemy.intent == RESULT_LASH) {
-				for (int hit = 0; hit < 2; hit++) {
-					int damage = performEnemyAttack(enemy, 3, remainingBlock, hit == 0 ? "후려치기" : null);
-					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-					damageTaken += damage;
-				}
-			} else if (enemy.intent == RESULT_TACKLE) {
-				int damage = performEnemyAttack(enemy, 9, remainingBlock, "손상 +1");
-				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-				damageTaken += damage;
-				playerDamageReduction = Math.max(playerDamageReduction, 25);
-			} else if (enemy.intent == RESULT_CHARGE_UP) {
-				enemy.strength += 2;
-				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "힘 +2"));
-			} else if (enemy.intent == RESULT_REPEATER_BLAST) {
-				int damage = performEnemyAttack(enemy, 7, remainingBlock, "힘 +2");
-				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-				damageTaken += damage;
-				enemy.strength += 2;
-			} else if (enemy.intent == RESULT_EXPEL_BLAST) {
-				for (int hit = 0; hit < 2; hit++) {
-					int damage = performEnemyAttack(enemy, 5, remainingBlock, hit == 0 ? "방출 폭발" : null);
-					remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-					damageTaken += damage;
-				}
-			} else if (enemy.intent == RESULT_SUBMERGE) {
-				enemy.block += 15;
-				lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), 0, false, "방어도 +15"));
-			} else {
-				int damage = performEnemyAttack(enemy, enemy.intent, remainingBlock, enemy.kind == DeckEnemy.TOWER_OF_GREY && enemy.intent == 7 ? "[혀 뜯어내기]" : null);
-				remainingBlock = Math.max(0, remainingBlock - lastEnemyRawDamage);
-				damageTaken += damage;
-			}
+			DeckEnemyIntent.TurnResult intentResult = DeckEnemyIntent.byId(enemy.intent).apply(this, enemy, remainingBlock);
+			remainingBlock = intentResult.remainingBlock;
+			damageTaken += intentResult.damageTaken;
+			injected = injected || intentResult.injected;
 			enemy.lastIntent = enemy.intent;
 			if (enemy.vulnerable > 0) enemy.vulnerable--;
 			if (enemy.platedArmor > 0 && enemy.alive()) enemy.block += enemy.platedArmor;
@@ -601,15 +552,14 @@ public class DeckBuilderCombat {
 		if (damageTaken > 0) {
 			DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - damageTaken);
 		}
-		if (!playerDead()) {
+		if (!playerDead() && !won()) {
 			startTurn();
 		}
 		return injected && damageTaken == 0 ? RESULT_SLIMY_INJECT : damageTaken;
 	}
 
-	private int performEnemyAttack(DeckCombatEnemy enemy, int baseDamage, int remainingBlock, String label) {
+	DeckEnemyIntent.AttackResult performEnemyAttack(DeckCombatEnemy enemy, int baseDamage, int remainingBlock, String label) {
 		int enemyDamage = enemyDamage(enemy, baseDamage);
-		lastEnemyRawDamage = enemyDamage;
 		int blocked = Math.min(remainingBlock, enemyDamage);
 		int damage = Math.max(0, enemyDamage - blocked);
 		if (damage > 0 && enemy.venom > 0) {
@@ -617,7 +567,7 @@ public class DeckBuilderCombat {
 			label = appendLabel(label, "힘 +" + enemy.venom);
 		}
 		lastEnemyActions.add(new EnemyAction(enemyIndex(enemy), damage, false, label, enemyDamage > 0 && damage == 0));
-		return damage;
+		return new DeckEnemyIntent.AttackResult(Math.max(0, remainingBlock - enemyDamage), damage);
 	}
 
 	private String appendLabel(String first, String second) {
