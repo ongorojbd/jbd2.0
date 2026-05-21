@@ -397,6 +397,7 @@ public enum DeckCard {
 		ArrayList<DeckCard> pool = new ArrayList<>();
 		for (DeckCard card : values()) {
 			if (!card.reward) continue;
+			if (DeckStartingProfile.isStartingCard(card)) continue;
 			boolean classCard = card.deckClass != null;
 			if (classOnly && card.deckClass != heroClass) continue;
 			if (neutralOnly && classCard) continue;
@@ -404,6 +405,13 @@ public enum DeckCard {
 			pool.add(card);
 		}
 		return pool.toArray(new DeckCard[0]);
+	}
+
+	public static DeckCard rewardFallback(HeroClass heroClass) {
+		DeckCard[] pool = rewardPool(heroClass, false, false);
+		if (pool.length > 0) return pool[0];
+		pool = rewardPool(null, false, false);
+		return pool.length > 0 ? pool[0] : STRIKE;
 	}
 
 	private static int keywords(DeckCardKeyword... keywords) {

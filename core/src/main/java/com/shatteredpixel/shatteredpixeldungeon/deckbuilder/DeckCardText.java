@@ -57,6 +57,15 @@ public class DeckCardText {
 		return text;
 	}
 
+	public static String rulesAndKeywordText(DeckCard card, int cardCode) {
+		return rulesAndKeywordText(card, cardCode, null);
+	}
+
+	public static String rulesAndKeywordText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+		String keywords = keywordText(card, cardCode);
+		return rulesText(card, cardCode, combat) + (keywords.length() > 0 ? "\n\n" + keywords : "");
+	}
+
 	public static String upgradePreviewText(int cardCode) {
 		int upgraded = DeckCardCode.upgrade(cardCode);
 		DeckCard card = DeckCard.byCode(cardCode);

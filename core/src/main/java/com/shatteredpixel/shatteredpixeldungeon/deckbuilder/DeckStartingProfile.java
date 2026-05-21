@@ -33,7 +33,6 @@ public class DeckStartingProfile {
 		register(HeroClass.MAGE,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
-				card(DeckCard.MAGIC_MISSILE_WAND, 1),
 				card(DeckCard.MAGE_STAFF, 1));
 
 		register(HeroClass.HUNTRESS,
@@ -43,8 +42,7 @@ public class DeckStartingProfile {
 
 		register(HeroClass.JOHNNY,
 				card(DeckCard.STRIKE, 5),
-				card(DeckCard.PURE, 1),
-				card(DeckCard.HEADBUTT, 1),
+				card(DeckCard.GUARD, 4),
 				card(DeckCard.TUSK_EQUIPMENT_DISC, 1));
 	}
 
@@ -64,10 +62,25 @@ public class DeckStartingProfile {
 		profile.addDeckTo(deck);
 	}
 
+	public static boolean isStartingCard(DeckCard card) {
+		if (card == null) return false;
+		for (DeckStartingProfile profile : PROFILES.values()) {
+			if (profile.contains(card)) return true;
+		}
+		return false;
+	}
+
 	private void addDeckTo(ArrayList<Integer> deck) {
 		for (CardEntry entry : this.deck) {
 			DeckRunInventory.addCopies(deck, entry.card, entry.count);
 		}
+	}
+
+	private boolean contains(DeckCard card) {
+		for (CardEntry entry : deck) {
+			if (entry.card == card) return true;
+		}
+		return false;
 	}
 
 	private static void register(HeroClass heroClass, CardEntry... deck) {

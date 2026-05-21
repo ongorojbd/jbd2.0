@@ -299,8 +299,8 @@ public class DeckBuilderCombat {
 			}
 		}
 		sanitizeTarget();
-		DeckWandCards.triggerTurnStartWands(this);
 		draw(handSize);
+		DeckWandCards.triggerTurnStartWands(this);
 	}
 
 	public DeckPlayResult play(int handIndex) {

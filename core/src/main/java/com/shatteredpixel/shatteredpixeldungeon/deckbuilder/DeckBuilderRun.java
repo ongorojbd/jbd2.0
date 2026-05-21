@@ -74,7 +74,7 @@ public class DeckBuilderRun {
 		potions.clear();
 		gold = 0;
 		cardRareOffset = -5;
-		potionDropChance = 40;
+		potionDropChance = DeckPotionPolicy.STARTING_DROP_CHANCE;
 		startingRelicChosen = false;
 		startingRelicChoices = null;
 		act1NormalFights = 0;
@@ -305,6 +305,10 @@ public class DeckBuilderRun {
 		DeckRewardPolicy.PotionReward reward = DeckRewardPolicy.rollPotion(nodeType, potionDropChance);
 		potionDropChance = reward.nextPotionDropChance;
 		return reward.potion;
+	}
+
+	public static void resetPotionDropChance() {
+		potionDropChance = DeckPotionPolicy.STARTING_DROP_CHANCE;
 	}
 
 	public static void addCard(DeckCard card) {

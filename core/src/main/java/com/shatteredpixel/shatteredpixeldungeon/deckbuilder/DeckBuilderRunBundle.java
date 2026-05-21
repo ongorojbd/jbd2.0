@@ -117,7 +117,7 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.maxHandSize = bundle.contains(MAX_HAND_SIZE) ? bundle.getInt(MAX_HAND_SIZE) : DeckBuilderRun.DEFAULT_MAX_HAND_SIZE;
 		DeckBuilderRun.gold = bundle.contains(GOLD) ? bundle.getInt(GOLD) : 0;
 		DeckBuilderRun.cardRareOffset = bundle.contains(CARD_RARE_OFFSET) ? bundle.getInt(CARD_RARE_OFFSET) : -5;
-		DeckBuilderRun.potionDropChance = bundle.contains(POTION_DROP_CHANCE) ? bundle.getInt(POTION_DROP_CHANCE) : 40;
+		DeckBuilderRun.potionDropChance = bundle.contains(POTION_DROP_CHANCE) ? bundle.getInt(POTION_DROP_CHANCE) : DeckPotionPolicy.STARTING_DROP_CHANCE;
 		DeckBuilderRun.startingRelicChosen = bundle.getBoolean(STARTING_RELIC_CHOSEN);
 		DeckBuilderRun.startingRelicChoices = bundle.contains(STARTING_RELIC_CHOICES) ? bundle.getIntArray(STARTING_RELIC_CHOICES) : null;
 		DeckBuilderRun.act1NormalFights = bundle.contains(ACT1_NORMAL_FIGHTS) ? bundle.getInt(ACT1_NORMAL_FIGHTS) : 0;

@@ -34,17 +34,8 @@ public class DeckShop {
 
 	public static Offer[] generateOffers(int cardRareOffset, HeroClass heroClass) {
 		ArrayList<Offer> offers = new ArrayList<>();
-		int saleIndex = Random.Int(5);
-		for (int i = 0; i < 5; i++) {
-			DeckCardRarity rarity = DeckShopBalancePolicy.rollShopCardRarity(cardRareOffset);
-			DeckCard card = randomCard(rarity, heroClass, true, false);
-			if (card != null) offers.add(cardOffer(card, false, i == saleIndex));
-		}
-		for (int i = 0; i < 2; i++) {
-			DeckCardRarity rarity = i == 0 ? DeckCardRarity.UNCOMMON : DeckCardRarity.RARE;
-			DeckCard card = randomCard(rarity, heroClass, false, true);
-			if (card != null) offers.add(cardOffer(card, true, false));
-		}
+		addClassCardOffers(offers, heroClass);
+		addColorlessCardOffers(offers, heroClass);
 		for (int i = 0; i < RELIC_COUNT; i++) {
 			boolean shopRelic = i == RELIC_COUNT - 1;
 			DeckRelicRarity rarity = DeckShopBalancePolicy.rollRelicRarity();
@@ -54,8 +45,8 @@ public class DeckShop {
 			if (relic != null) offers.add(new Offer(RELIC, relic.ordinal(), DeckShopBalancePolicy.relicPrice(relic.rarity), false));
 		}
 		for (int i = 0; i < POTION_COUNT; i++) {
-			DeckPotion potion = randomPotion(DeckShopBalancePolicy.rollPotionRarity());
-			offers.add(new Offer(POTION, potion.ordinal(), DeckShopBalancePolicy.potionPrice(DeckShopBalancePolicy.potionRarity(potion)), false));
+			DeckPotion potion = DeckPotionPolicy.randomPotion(DeckShopBalancePolicy.rollPotionRarity());
+			offers.add(new Offer(POTION, potion.ordinal(), DeckShopBalancePolicy.potionPrice(potion.rarity), false));
 		}
 		return offers.toArray(new Offer[0]);
 	}
@@ -70,12 +61,24 @@ public class DeckShop {
 		return new Offer(CARD, card.ordinal(), price, sale);
 	}
 
-	private static DeckPotion randomPotion(DeckCardRarity rarity) {
-		ArrayList<DeckPotion> pool = new ArrayList<>();
-		for (DeckPotion potion : DeckPotion.values()) {
-			if (DeckShopBalancePolicy.potionRarity(potion) == rarity) pool.add(potion);
+	private static void addClassCardOffers(ArrayList<Offer> offers, HeroClass heroClass) {
+		int saleIndex = Random.Int(5);
+		DeckCardRarity extraPowerRarity = Random.Int(2) == 0 ? DeckCardRarity.COMMON : DeckCardRarity.UNCOMMON;
+		DeckCard[] cards = new DeckCard[] {
+				randomClassCard(heroClass, DeckCardType.ATTACK, DeckCardRarity.COMMON),
+				randomClassCard(heroClass, DeckCardType.ATTACK, DeckCardRarity.RARE),
+				randomClassCard(heroClass, DeckCardType.SKILL, DeckCardRarity.COMMON),
+				randomClassCard(heroClass, DeckCardType.SKILL, DeckCardRarity.UNCOMMON),
+				randomClassCard(heroClass, DeckCardType.POWER, extraPowerRarity)
+		};
+		for (int i = 0; i < cards.length; i++) {
+			offers.add(cardOffer(cards[i], false, i == saleIndex));
 		}
-		return pool.isEmpty() ? DeckPotion.values()[Random.Int(DeckPotion.values().length)] : pool.get(Random.Int(pool.size()));
+	}
+
+	private static void addColorlessCardOffers(ArrayList<Offer> offers, HeroClass heroClass) {
+		offers.add(cardOffer(randomColorlessCard(heroClass, DeckCardRarity.UNCOMMON), true, false));
+		offers.add(cardOffer(randomColorlessCard(heroClass, DeckCardRarity.RARE), true, false));
 	}
 
 	private static DeckCard randomCard(DeckCardRarity rarity, HeroClass heroClass, boolean classOnly, boolean neutralOnly) {
@@ -92,6 +95,30 @@ public class DeckShop {
 			for (DeckCard card : DeckCard.rewardPool()) {
 				if (card.rarity == rarity) pool.add(card);
 			}
+		}
+		return pool.isEmpty() ? null : pool.get(Random.Int(pool.size()));
+	}
+
+	private static DeckCard randomClassCard(HeroClass heroClass, DeckCardType type, DeckCardRarity rarity) {
+		DeckCard card = randomCard(type, rarity, heroClass, true, false);
+		if (card != null) return card;
+		card = randomCard(type, rarity, heroClass, false, false);
+		if (card != null) return card;
+		card = randomCard(null, rarity, heroClass, false, false);
+		return card == null ? DeckCard.rewardFallback(heroClass) : card;
+	}
+
+	private static DeckCard randomColorlessCard(HeroClass heroClass, DeckCardRarity rarity) {
+		DeckCard card = randomCard(null, rarity, heroClass, false, true);
+		if (card != null) return card;
+		card = randomCard(null, rarity, heroClass, false, false);
+		return card == null ? DeckCard.rewardFallback(heroClass) : card;
+	}
+
+	private static DeckCard randomCard(DeckCardType type, DeckCardRarity rarity, HeroClass heroClass, boolean classOnly, boolean neutralOnly) {
+		ArrayList<DeckCard> pool = new ArrayList<>();
+		for (DeckCard card : DeckCard.rewardPool(heroClass, classOnly, neutralOnly)) {
+			if (card.rarity == rarity && (type == null || card.type == type)) pool.add(card);
 		}
 		return pool.isEmpty() ? null : pool.get(Random.Int(pool.size()));
 	}

@@ -1461,6 +1461,16 @@ public class DeckBattleScene extends PixelScene {
 			public void onPotion(int slot, DeckPotion potion) {
 				usePotion(slot, potion);
 			}
+
+			@Override
+			public void onDiscardPotion(int slot, DeckPotion potion) {
+				discardPotion(slot, potion);
+			}
+
+			@Override
+			public boolean canUsePotion() {
+				return !rewardOpen;
+			}
 		});
 		runHud.setRect(insets.left + 4, insets.top + 4, 150, 20);
 		add(runHud);
@@ -1556,6 +1566,16 @@ public class DeckBattleScene extends PixelScene {
 				refresh();
 				break;
 		}
+	}
+
+	private void discardPotion(int slot, DeckPotion potion) {
+		if (potion == null) return;
+		DeckBuilderRun.removePotion(slot);
+		if (runHud != null) runHud.refresh();
+		Sample.INSTANCE.play(Assets.Sounds.CLICK);
+		log(potion.title + ": 버렸습니다.");
+		saveCombatState();
+		if (!combatLocked && !rewardOpen) refresh();
 	}
 
 	private float playerCenterX() {
@@ -2268,6 +2288,7 @@ public class DeckBattleScene extends PixelScene {
 
 		reward.resize(width, pos);
 		addToFront(reward);
+		bringRunHudToFront();
 	}
 
 	private void showCombatRewardWindow(final DeckCombatRewardState rewards) {
@@ -2371,6 +2392,7 @@ public class DeckBattleScene extends PixelScene {
 
 		reward.resize(width, pos);
 		addToFront(reward);
+		bringRunHudToFront();
 	}
 
 	private void showCardRewardWindow(final Window parent, final DeckCard[] cards, final RewardRow cardRow, final DeckCombatRewardState rewards) {
@@ -2427,6 +2449,7 @@ public class DeckBattleScene extends PixelScene {
 
 		win.resize(width, pos);
 		addToFront(win);
+		bringRunHudToFront();
 	}
 
     private void showCardTakeWindow(final Window cardWindow, final RewardRow cardRow, final DeckCard card, final DeckCombatRewardState rewards) {
@@ -2440,7 +2463,7 @@ public class DeckBattleScene extends PixelScene {
 		win.add(title);
 		pos += 16;
 
-		RenderedTextBlock desc = renderTextBlock(cardRulesText(card, card.code()), 6);
+		RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesAndKeywordText(card, card.code(), combat), 6);
 		desc.maxWidth(width - 14);
 		desc.hardlight(0xFFD8D1BD);
 		desc.setPos(7, pos);
@@ -2476,6 +2499,14 @@ public class DeckBattleScene extends PixelScene {
 
 		win.resize(width, pos);
 		addToFront(win);
+		bringRunHudToFront();
+	}
+
+	private void bringRunHudToFront() {
+		if (runHud != null) {
+			bringToFront(runHud);
+			runHud.givePotionPointerPriority();
+		}
 	}
 
 	private void continueToFloor() {
@@ -3725,7 +3756,7 @@ public class DeckBattleScene extends PixelScene {
 		protected void layout() {
 			super.layout();
 			if ((selectingForPure || gamblerBrewActive) && pureSelectedIndices.contains(handIndex)) {
-				edge.color(0xFFFFE066);
+				edge.color(0xFFA8F26A);
 				edge.am = 1.0f;
 				face.am = 0.92f;
 			}

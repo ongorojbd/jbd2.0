@@ -44,6 +44,7 @@ public class DeckBuilderMap {
 			return;
 		}
 
+		DeckBuilderRun.resetPotionDropChance();
 		Statistics.deckBuilderMapVersion = MAP_VERSION;
 		Statistics.deckBuilderMapCounts = new int[MAX_DEPTH + 1];
 		Statistics.deckBuilderMapTypes = new int[(MAX_DEPTH + 1) * MAX_NODES];

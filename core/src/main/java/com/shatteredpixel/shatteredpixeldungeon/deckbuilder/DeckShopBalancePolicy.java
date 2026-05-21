@@ -23,27 +23,26 @@ public class DeckShopBalancePolicy {
 	}
 
 	public static int cardPrice(DeckCardRarity rarity, boolean colorless) {
-		int base;
-		int variance;
-		if (rarity == DeckCardRarity.RARE) {
-			base = 150;
-			variance = 15;
-		} else if (rarity == DeckCardRarity.UNCOMMON) {
-			base = 75;
-			variance = 8;
-		} else {
-			base = 50;
-			variance = 5;
-		}
-		int price = rollAround(base, variance);
-		if (colorless) price = Math.round(price * 1.2f);
-		return ascensionAdjusted(price);
+		if (colorless) return colorlessCardPrice(rarity);
+		if (rarity == DeckCardRarity.RARE) return ascensionAdjusted(Random.IntRange(135, 165));
+		if (rarity == DeckCardRarity.UNCOMMON) return ascensionAdjusted(Random.IntRange(68, 82));
+		return ascensionAdjusted(Random.IntRange(45, 55));
+	}
+
+	public static int colorlessCardPrice(DeckCardRarity rarity) {
+		if (rarity == DeckCardRarity.RARE) return ascensionAdjusted(Random.IntRange(162, 198));
+		if (rarity == DeckCardRarity.UNCOMMON) return ascensionAdjusted(Random.IntRange(81, 99));
+		return cardPrice(rarity, false);
 	}
 
 	public static int potionPrice(DeckCardRarity rarity) {
-		if (rarity == DeckCardRarity.RARE) return ascensionAdjusted(rollAround(100, 5));
-		if (rarity == DeckCardRarity.UNCOMMON) return ascensionAdjusted(rollAround(75, 4));
-		return ascensionAdjusted(rollAround(50, 3));
+		if (rarity == DeckCardRarity.RARE) return potionPrice(DeckPotionRarity.RARE);
+		if (rarity == DeckCardRarity.UNCOMMON) return potionPrice(DeckPotionRarity.UNCOMMON);
+		return potionPrice(DeckPotionRarity.COMMON);
+	}
+
+	public static int potionPrice(DeckPotionRarity rarity) {
+		return DeckPotionPolicy.shopPrice(rarity);
 	}
 
 	public static int relicPrice(DeckRelicRarity rarity) {
@@ -65,17 +64,12 @@ public class DeckShopBalancePolicy {
 		return DeckRewardPolicy.rollRelicRarity();
 	}
 
-	public static DeckCardRarity rollPotionRarity() {
-		int roll = Random.Int(100);
-		if (roll < 65) return DeckCardRarity.COMMON;
-		if (roll < 90) return DeckCardRarity.UNCOMMON;
-		return DeckCardRarity.RARE;
+	public static DeckPotionRarity rollPotionRarity() {
+		return DeckPotionPolicy.rollRarity();
 	}
 
-	public static DeckCardRarity potionRarity(DeckPotion potion) {
-		if (potion == DeckPotion.STRENGTH) return DeckCardRarity.RARE;
-		if (potion == DeckPotion.FIRE) return DeckCardRarity.UNCOMMON;
-		return DeckCardRarity.COMMON;
+	public static DeckPotionRarity potionRarity(DeckPotion potion) {
+		return potion.rarity;
 	}
 
 	private static int rollAround(int base, int variance) {

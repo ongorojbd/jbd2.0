@@ -366,7 +366,7 @@ public class DeckShopScene extends PixelScene {
 		RenderedTextBlock desc = renderTextBlock(offerDescription(offer), 6);
 		if (offer.type == DeckShop.CARD) {
 			DeckCard offeredCard = DeckCard.values()[offer.id];
-			desc.text(DeckCardText.rulesText(offeredCard, offeredCard.code()) + keywordSuffix(offeredCard, offeredCard.code()));
+			desc.text(DeckCardText.rulesAndKeywordText(offeredCard, offeredCard.code()));
 		}
 		desc.maxWidth(width - 14);
 		desc.hardlight(0xFFD8D1BD);
@@ -560,7 +560,7 @@ public class DeckShopScene extends PixelScene {
 	private String offerDescription(DeckShop.Offer offer) {
 		if (offer.type == DeckShop.CARD) {
 			DeckCard card = DeckCard.values()[offer.id];
-			return DeckCardText.rulesText(card, card.code()) + keywordSuffix(card, card.code());
+			return DeckCardText.rulesAndKeywordText(card, card.code());
 		}
 		if (offer.type == DeckShop.POTION) return DeckPotion.byId(offer.id).description;
 		if (offer.type == DeckShop.RELIC) return DeckRelic.byId(offer.id).description;

@@ -31,7 +31,7 @@ public class DeckRewardPolicy {
 			while (duplicate(choices, i, card) && guard++ < 20) {
 				card = randomCard(rarity, heroClass, classSlot(i));
 			}
-			choices[i] = card == null ? DeckCard.STRIKE : card;
+			choices[i] = card == null ? DeckCard.rewardFallback(heroClass) : card;
 			if (choices[i].rarity == DeckCardRarity.RARE) rareSeen = true;
 			if (choices[i].rarity == DeckCardRarity.COMMON) commonSeen++;
 		}
@@ -64,20 +64,8 @@ public class DeckRewardPolicy {
 	}
 
 	public static PotionReward rollPotion(int nodeType, int potionDropChance) {
-		int chance;
-		boolean variable = nodeType == DeckBuilderMap.COMBAT;
-		if (nodeType == DeckBuilderMap.ELITE) {
-			chance = 40;
-		} else if (nodeType == DeckBuilderMap.COMBAT) {
-			chance = potionDropChance;
-		} else {
-			return new PotionReward(null, potionDropChance);
-		}
-		boolean dropped = Random.Int(100) < chance;
-		int nextChance = variable ? Math.max(0, Math.min(100, potionDropChance + (dropped ? -10 : 10))) : potionDropChance;
-		if (!dropped) return new PotionReward(null, nextChance);
-		DeckPotion[] values = DeckPotion.values();
-		return new PotionReward(values[Random.Int(values.length)], nextChance);
+		DeckPotionPolicy.PotionReward reward = DeckPotionPolicy.rollRewardPotion(nodeType, potionDropChance);
+		return new PotionReward(reward.potion, reward.nextPotionDropChance);
 	}
 
 	public static int rollTreasureChest() {
@@ -148,7 +136,7 @@ public class DeckRewardPolicy {
 		if (rarityPool.isEmpty() && !classPool && !neutralOnly) {
 			return randomCard(rarity, heroClass, 100);
 		}
-		if (rarityPool.isEmpty()) return pool.length == 0 ? DeckCard.STRIKE : pool[Random.Int(pool.length)];
+		if (rarityPool.isEmpty()) return pool.length == 0 ? DeckCard.rewardFallback(heroClass) : pool[Random.Int(pool.length)];
 		return rarityPool.get(Random.Int(rarityPool.size()));
 	}
 

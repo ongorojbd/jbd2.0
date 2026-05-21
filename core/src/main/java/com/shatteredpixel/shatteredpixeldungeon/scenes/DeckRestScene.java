@@ -312,7 +312,7 @@ public class DeckRestScene extends PixelScene {
 		win.add(title);
 		pos += (int)title.height() + 8;
 
-		RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesText(card, cardCode), 6);
+		RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesAndKeywordText(card, cardCode), 6);
 		desc.hardlight(0xFFD8D1BD);
 		desc.maxWidth(width - 14);
 		desc.setPos(7, pos);

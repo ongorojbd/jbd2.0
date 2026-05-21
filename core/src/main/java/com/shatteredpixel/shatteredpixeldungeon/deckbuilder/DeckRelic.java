@@ -51,8 +51,8 @@ public enum DeckRelic {
 	LARGE_CAPSULE("대형 캡슐", "획득 시 무작위 유물 2개를 얻습니다. 타격 1장과 수비 1장을 덱에 추가합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.POTION_HOLDER) {
 		@Override
 		public void onAcquire() {
-			DeckBuilderRun.addCard(DeckCard.STRIKE);
-			DeckBuilderRun.addCard(DeckCard.GUARD);
+			DeckBuilderRun.addCard(randomCard(DeckCardRarity.COMMON, DeckCardType.ATTACK));
+			DeckBuilderRun.addCard(randomCard(DeckCardRarity.COMMON, DeckCardType.SKILL));
 			for (int i = 0; i < 2; i++) {
 				DeckRelic relic = randomAvailable(this);
 				if (relic != null) {
@@ -140,12 +140,16 @@ public enum DeckRelic {
 	}
 
 	private static DeckCard randomCard(DeckCardRarity rarity) {
+		return randomCard(rarity, null);
+	}
+
+	private static DeckCard randomCard(DeckCardRarity rarity, DeckCardType type) {
 		ArrayList<DeckCard> pool = new ArrayList<>();
 		for (DeckCard card : DeckCard.rewardPool()) {
-			if (card.rarity == rarity) {
+			if (card.rarity == rarity && (type == null || card.type == type)) {
 				pool.add(card);
 			}
 		}
-		return pool.isEmpty() ? null : pool.get(Random.Int(pool.size()));
+		return pool.isEmpty() ? DeckCard.rewardFallback(DeckBuilderRun.heroClass()) : pool.get(Random.Int(pool.size()));
 	}
 }

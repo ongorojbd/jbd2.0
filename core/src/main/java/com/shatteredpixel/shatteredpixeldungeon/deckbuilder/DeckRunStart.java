@@ -33,7 +33,7 @@ public class DeckRunStart {
 		DeckBuilderRun.potions.clear();
 		DeckBuilderRun.gold = 99;
 		DeckBuilderRun.cardRareOffset = -5;
-		DeckBuilderRun.potionDropChance = 40;
+		DeckBuilderRun.resetPotionDropChance();
 		DeckBuilderRun.startingRelicChosen = false;
 		DeckBuilderRun.startingRelicChoices = null;
 		DeckBuilderRun.act1NormalFights = 0;

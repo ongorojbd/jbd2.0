@@ -318,7 +318,7 @@ public class DeckEventScene extends PixelScene {
 		win.add(title);
 		pos += (int)title.height() + 8;
 
-		RenderedTextBlock desc = renderTextBlock(cardRulesText(card, cardCode), 6);
+		RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesAndKeywordText(card, cardCode), 6);
 		desc.maxWidth(width - 14);
 		desc.hardlight(0xFFD8D1BD);
 		desc.setPos(7, pos);
@@ -332,16 +332,6 @@ public class DeckEventScene extends PixelScene {
 			upgrade.setPos(7, pos);
 			win.add(upgrade);
 			pos += (int)upgrade.height() + 8;
-		}
-
-		String keyword = keywordText(card, cardCode);
-		if (keyword.length() > 0) {
-			RenderedTextBlock keywords = renderTextBlock(keyword, 6);
-			keywords.maxWidth(width - 14);
-			keywords.hardlight(0xFF9EE6FF);
-			keywords.setPos(7, pos);
-			win.add(keywords);
-			pos += (int)keywords.height() + 8;
 		}
 
 		RedButton confirm = new RedButton(eventType == UPGRADE_SHRINE ? "강화" : "제거", 6) {

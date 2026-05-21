@@ -32,6 +32,8 @@ public class DeckRunHud extends Component {
 
 	public interface PotionHandler {
 		void onPotion(int slot, DeckPotion potion);
+		void onDiscardPotion(int slot, DeckPotion potion);
+		boolean canUsePotion();
 	}
 
 	private final PotionHandler potionHandler;
@@ -100,6 +102,14 @@ public class DeckRunHud extends Component {
 		layout();
 	}
 
+	public void givePotionPointerPriority() {
+		if (potionButtons != null) {
+			for (PotionSlotButton potionButton : potionButtons) {
+				potionButton.givePointerPriority();
+			}
+		}
+	}
+
 	private class PotionSlotButton extends Button {
 
 		private final int slot;
@@ -152,11 +162,12 @@ public class DeckRunHud extends Component {
 		int width = 150;
 		int pos = 7;
 
-		RenderedTextBlock title = PixelScene.renderTextBlock(potion.title, 8);
+		RenderedTextBlock title = PixelScene.renderTextBlock(potion.title + "(" + potion.rarity.label + ")", 8);
 		title.hardlight(Window.TITLE_COLOR);
+		title.maxWidth(width - 14);
 		title.setPos((width - title.width()) / 2f, pos);
 		win.add(title);
-		pos += 16;
+		pos += (int)title.height() + 8;
 
 		RenderedTextBlock desc = PixelScene.renderTextBlock(potion.description, 6);
 		desc.maxWidth(width - 14);
@@ -166,24 +177,37 @@ public class DeckRunHud extends Component {
 		pos += (int)desc.height() + 8;
 
 		if (potionHandler != null) {
-			RedButton use = new RedButton("사용", 6) {
-				@Override
-				protected void onClick() {
-					win.hide();
-					potionHandler.onPotion(slot, potion);
-				}
-			};
-			use.setRect(7, pos, 62, 16);
-			win.add(use);
+			if (potionHandler.canUsePotion()) {
+				RedButton use = new RedButton("사용", 6) {
+					@Override
+					protected void onClick() {
+						win.hide();
+						potionHandler.onPotion(slot, potion);
+					}
+				};
+				use.setRect(7, pos, 62, 16);
+				win.add(use);
 
-			RedButton close = new RedButton("닫기", 6) {
-				@Override
-				protected void onClick() {
-					win.hide();
-				}
-			};
-			close.setRect(width - 69, pos, 62, 16);
-			win.add(close);
+				RedButton discard = new RedButton("버리기", 6) {
+					@Override
+					protected void onClick() {
+						win.hide();
+						potionHandler.onDiscardPotion(slot, potion);
+					}
+				};
+				discard.setRect(width - 69, pos, 62, 16);
+				win.add(discard);
+			} else {
+				RedButton discard = new RedButton("버리기", 6) {
+					@Override
+					protected void onClick() {
+						win.hide();
+						potionHandler.onDiscardPotion(slot, potion);
+					}
+				};
+				discard.setRect((width - 80) / 2f, pos, 80, 16);
+				win.add(discard);
+			}
 			pos += 22;
 		} else {
 			RedButton close = new RedButton("닫기", 6) {
