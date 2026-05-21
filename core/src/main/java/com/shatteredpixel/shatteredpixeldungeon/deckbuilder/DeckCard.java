@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public enum DeckCard {
 
-	STRIKE(0, "행운의 검", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.WORN_SHORTSWORD),
+	STRIKE(0, "행운의 검", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 50, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.WORN_SHORTSWORD),
 	GUARD(1, "무당벌레 브로치", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, false, ItemSpriteSheet.ARMOR_CLOTH),
 	BASH(2, "파문 커터", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 8, 0, 0, 2, 0, 0, 0, false, ItemSpriteSheet.THROWING_STONE),
 	VACCINE_SNAKE(3, "백신 뱀", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 9, 0, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SHORTSWORD) {
@@ -114,7 +114,25 @@ public enum DeckCard {
 		}
 	},
 	MAGE_STAFF(22, "마법사의 지팡이", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.MAGES_STAFF,
-			new DeckCardEffects.MageStaff());
+			new DeckCardEffects.MageStaff()),
+
+	DRAMATIC_ENTRANCE(23, "극적인 입장", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 0, 11, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.VANGUARD, DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_NAUDIZ) {
+		@Override
+		public int damage(int code) {
+			return upgradeLevel(code) > 0 ? 15 : 11;
+		}
+	},
+
+	PURE(24, "순수", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.RETAIN, DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.DEWDROP,
+			new DeckCardEffects.ExhaustFromHand(3)),
+
+	HEADBUTT(25, "박치기", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 9, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.THROWING_STONE,
+			new DeckCardEffects.RetrieveFromDiscard()) {
+		@Override
+		public int damage(int code) {
+			return upgradeLevel(code) > 0 ? 12 : 9;
+		}
+	};
 
 	public final int id;
 	public final String title;
@@ -219,7 +237,7 @@ public enum DeckCard {
 				}
 			}
 		}
-		return upgradeLevel(code) > 0 ? "+" + name : name;
+		return upgradeLevel(code) > 0 ? name + " +" + upgradeLevel(code) : name;
 	}
 
 	public int icon() {

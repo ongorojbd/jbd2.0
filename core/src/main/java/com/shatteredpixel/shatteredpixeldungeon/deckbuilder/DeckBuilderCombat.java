@@ -122,6 +122,16 @@ public class DeckBuilderCombat {
 		this.turn = 0;
 		this.drawPile.addAll(deck);
 		shuffle(drawPile);
+		// Move VANGUARD cards to the front so they are drawn in the opening hand
+		ArrayList<Integer> vanguardCards = new ArrayList<>();
+		for (int i = this.drawPile.size() - 1; i >= 0; i--) {
+			int code = this.drawPile.get(i);
+			if (DeckCard.byCode(code).hasKeyword(code, DeckCardKeyword.VANGUARD)) {
+				vanguardCards.add(0, code);
+				this.drawPile.remove(i);
+			}
+		}
+		this.drawPile.addAll(0, vanguardCards);
 		startTurn();
 	}
 

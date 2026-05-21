@@ -24,7 +24,6 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -71,8 +70,8 @@ public class DeckRestScene extends PixelScene {
 		addRunHud(insets);
 		addExitButton(insets, w);
 
-		ItemSprite icon = new ItemSprite(ItemSpriteSheet.TORCH);
-		icon.scale.set(1.8f);
+		Image icon = Icons.WELL_HEALTH.get();
+		icon.scale.set(1.4f);
 		RenderedTextBlock title = renderTextBlock("휴식 층", 12);
 		title.hardlight(Window.TITLE_COLOR);
 		float titleW = icon.width() + 7 + title.width();
@@ -91,15 +90,87 @@ public class DeckRestScene extends PixelScene {
 		align(body);
 		add(body);
 
-		float buttonW = Math.min(260, usableW - 22);
-		float buttonH = 40;
-		float buttonX = insets.left + (usableW - buttonW) / 2f;
-		float buttonStackH = buttonH * 2 + 8;
-		float startY = Math.max(body.bottom() + 14, h - insets.bottom - buttonStackH - 18);
+		ArrayList<RestOption> options = buildRestOptions();
 
-		addRestOptions(buttonX, startY, buttonW, buttonH);
+		float buttonW = Math.min(260, usableW - 22);
+		float buttonH = 38;
+		float buttonX = insets.left + (usableW - buttonW) / 2f;
+		int numButtons = options.size();
+		float buttonStackH = buttonH * numButtons + 8 * (numButtons - 1);
+		float startY = Math.max(body.bottom() + 18, h - insets.bottom - buttonStackH - 18);
+
+		for (int i = 0; i < options.size(); i++) {
+			final RestOption opt = options.get(i);
+			RestChoiceButton button = new RestChoiceButton(opt.label, opt.desc, opt.accentColor, opt.enabled) {
+				@Override
+				protected void onClick() {
+					opt.action.run();
+				}
+			};
+			button.setRect(buttonX, startY + i * (buttonH + 8), buttonW, buttonH);
+			add(button);
+		}
+
+		if (used) {
+			RenderedTextBlock done = renderTextBlock("이미 이 휴식 층에서 행동을 선택했습니다.", 6);
+			done.hardlight(0xFFAAAFA4);
+			done.setPos(buttonX + (buttonW - done.width()) / 2f,
+					startY + numButtons * (buttonH + 8) + 2 - 8);
+			add(done);
+		}
 
 		fadeIn();
+	}
+
+	// Returns the list of available rest choices. Add relic-based options in addRelicChoices().
+	private ArrayList<RestOption> buildRestOptions() {
+		ArrayList<RestOption> options = new ArrayList<>();
+
+		options.add(new RestOption(
+				"휴식",
+				"최대 체력의 30%를 회복합니다. (현재 체력: " + DeckBuilderRun.playerHP + " / " + DeckBuilderRun.playerHT + ")",
+				0xFFD5F27A,
+				DeckBuilderRun.canRestAtRestSite() && !used,
+				new Runnable() {
+					@Override public void run() {
+						if (used || !DeckBuilderRun.canRestAtRestSite()) {
+							addToFront(new WndMessage("휴식\n\n지금은 휴식할 수 없습니다."));
+							return;
+						}
+						if (DeckBuilderRun.restAtRestSite()) {
+							Sample.INSTANCE.play(Assets.Sounds.DRINK);
+							saveRun();
+							leaveRest();
+						}
+					}
+				}
+		));
+
+		options.add(new RestOption(
+				"강화",
+				"덱의 카드 한 장을 선택해 강화합니다.",
+				0xFFD5F27A,
+				DeckBuilderRun.canSmithAtRestSite() && !used,
+				new Runnable() {
+					@Override public void run() {
+						if (used || !DeckBuilderRun.canSmithAtRestSite()) {
+							addToFront(new WndMessage("강화\n\n강화할 수 있는 카드가 없습니다."));
+							return;
+						}
+						showCardSelection(0);
+					}
+				}
+		));
+
+		// Relic-based extra choices (e.g., card removal, potion gain) go here.
+		addRelicChoices(options);
+
+		return options;
+	}
+
+	// Insert relic-unlocked rest options here as relics are added.
+	// Example: if (DeckBuilderRun.hasRelic(DeckRelic.SOME_RELIC)) { options.add(...); }
+	private void addRelicChoices(ArrayList<RestOption> options) {
 	}
 
 	private void addBackground(int w, int h) {
@@ -132,49 +203,6 @@ public class DeckRestScene extends PixelScene {
 		};
 		exit.setRect(w - insets.right - 24, insets.top + 4, 20, 20);
 		add(exit);
-	}
-
-	private void addRestOptions(float x, float y, float width, float height) {
-		ArrayList<RestChoiceButton> buttons = new ArrayList<>();
-
-		buttons.add(new RestChoiceButton("휴식", "최대 체력의 30%를 회복합니다. (현재 체력: " + DeckBuilderRun.playerHP + " / " + DeckBuilderRun.playerHT + ")", 0xFF66E28B, DeckBuilderRun.canRestAtRestSite()) {
-			@Override
-			protected void onClick() {
-				if (!enabled) {
-					addToFront(new WndMessage("휴식\n\n지금은 휴식할 수 없습니다."));
-					return;
-				}
-				if (DeckBuilderRun.restAtRestSite()) {
-					Sample.INSTANCE.play(Assets.Sounds.DRINK);
-					saveRun();
-					leaveRest();
-				}
-			}
-		});
-
-		buttons.add(new RestChoiceButton("강화", "덱의 카드 한 장을 선택해 강화합니다.", 0xFFD5F27A, DeckBuilderRun.canSmithAtRestSite()) {
-			@Override
-			protected void onClick() {
-				if (!enabled) {
-					addToFront(new WndMessage("강화\n\n강화할 수 있는 카드가 없습니다."));
-					return;
-				}
-				showCardSelection(0);
-			}
-		});
-
-		for (int i = 0; i < buttons.size(); i++) {
-			RestChoiceButton button = buttons.get(i);
-			button.setRect(x, y + i * (height + 8), width, height);
-			add(button);
-		}
-
-		if (used) {
-			RenderedTextBlock done = renderTextBlock("이미 이 휴식 층에서 행동을 선택했습니다.", 6);
-			done.hardlight(0xFFAAAFA4);
-			done.setPos(x + (width - done.width()) / 2f, y + buttons.size() * (height + 8) + 2);
-			add(done);
-		}
 	}
 
 	private void showCardSelection(int page) {
@@ -383,6 +411,23 @@ public class DeckRestScene extends PixelScene {
 	protected void onBackPressed() {
 	}
 
+	// Data holder for a single rest screen choice.
+	private static class RestOption {
+		final String label;
+		final String desc;
+		final int accentColor;
+		final boolean enabled;
+		final Runnable action;
+
+		RestOption(String label, String desc, int accentColor, boolean enabled, Runnable action) {
+			this.label = label;
+			this.desc = desc;
+			this.accentColor = accentColor;
+			this.enabled = enabled;
+			this.action = action;
+		}
+	}
+
 	private class RestChoiceButton extends Button {
 
 		private final String label;
@@ -395,11 +440,11 @@ public class DeckRestScene extends PixelScene {
 		private RenderedTextBlock title;
 		private RenderedTextBlock body;
 
-		private RestChoiceButton(String label, String desc, int accentColor, boolean available) {
+		private RestChoiceButton(String label, String desc, int accentColor, boolean enabled) {
 			this.label = label;
 			this.desc = desc;
 			this.accentColor = accentColor;
-			this.enabled = available && !used;
+			this.enabled = enabled;
 		}
 
 		@Override
@@ -409,8 +454,11 @@ public class DeckRestScene extends PixelScene {
 			shadow.am = 0.38f;
 			add(shadow);
 			bg = new ColorBlock(1, 1, 0xFF222821);
+			bg.am = 0.96f;
 			add(bg);
-			accent = new ColorBlock(1, 1, accentColor);
+			// Hardcode the alpha-bearing color at construction time; ColorBlock.color() only
+			// updates RGB so if we constructed with color=0 (field not set yet) it stays transparent.
+			accent = new ColorBlock(1, 1, 0xFFD5F27A);
 			add(accent);
 			title = renderTextBlock(7);
 			add(title);
@@ -437,56 +485,9 @@ public class DeckRestScene extends PixelScene {
 			title.maxWidth((int)(width - 18));
 			title.setPos(x + 9, y + 6);
 			body.text(desc);
-			body.hardlight(enabled ? 0xFFD8D1BD : 0xFF777777);
+			body.hardlight(enabled ? 0xFFD8D1BD : 0xFF666666);
 			body.maxWidth((int)(width - 18));
 			body.setPos(x + 9, title.bottom() + 2);
-		}
-	}
-
-	private class CardUpgradeRow extends Button {
-
-		private final int cardCode;
-		private ColorBlock bg;
-		private ColorBlock accent;
-		private RenderedTextBlock title;
-		private RenderedTextBlock preview;
-
-		private CardUpgradeRow(int cardCode) {
-			this.cardCode = cardCode;
-		}
-
-		@Override
-		protected void createChildren() {
-			super.createChildren();
-			bg = new ColorBlock(1, 1, 0xFF1F2521);
-			bg.am = 0.95f;
-			add(bg);
-			accent = new ColorBlock(1, 1, 0xFFD5F27A);
-			add(accent);
-			title = renderTextBlock(6);
-			title.hardlight(Window.TITLE_COLOR);
-			add(title);
-			preview = renderTextBlock(5);
-			preview.hardlight(0xFFD8D1BD);
-			add(preview);
-		}
-
-		@Override
-		protected void layout() {
-			super.layout();
-			DeckCard card = DeckCard.byCode(cardCode);
-			bg.x = x;
-			bg.y = y;
-			bg.size(width, height);
-			accent.x = x;
-			accent.y = y;
-			accent.size(3, height);
-			title.text(card.title(cardCode) + "  비용 " + card.cost(cardCode) + "  " + card.type.label);
-			title.maxWidth((int)(width - 14));
-			title.setPos(x + 8, y + 4);
-			preview.text(upgradePreviewText(cardCode).replace("\n", " / "));
-			preview.maxWidth((int)(width - 14));
-			preview.setPos(x + 8, title.bottom() + 2);
 		}
 	}
 

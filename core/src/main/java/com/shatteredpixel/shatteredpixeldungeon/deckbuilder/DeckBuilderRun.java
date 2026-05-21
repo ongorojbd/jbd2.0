@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,15 @@ public class DeckBuilderRun {
 	public static int act1NormalFights;
 	public static int lastNormalEncounter;
 	public static int shopRemoveCount;
+	// 미지 노드 천장(pity) 시스템
+	public static int mysteryCombatBonus = 0;
+	public static int mysteryShopBonus = 0;
+	public static int mysteryTreasureBonus = 0;
+	public static int mysteryVisitsThisAct = 0;
+	public static boolean mysteryPrevWasShop = false;
+	public static int mysteryResolvedDepth = -1;
+	public static int mysteryResolvedPath = -1;
+	public static int mysteryResolvedType = DeckBuilderMap.NONE;
 	public static DeckBuilderCombat currentCombat;
 
 	static final DeckShopState shop = new DeckShopState();
@@ -70,6 +80,14 @@ public class DeckBuilderRun {
 		act1NormalFights = 0;
 		lastNormalEncounter = -1;
 		shopRemoveCount = 0;
+		mysteryCombatBonus = 0;
+		mysteryShopBonus = 0;
+		mysteryTreasureBonus = 0;
+		mysteryVisitsThisAct = 0;
+		mysteryPrevWasShop = false;
+		mysteryResolvedDepth = -1;
+		mysteryResolvedPath = -1;
+		mysteryResolvedType = DeckBuilderMap.NONE;
 		clearShop();
 		clearTreasure();
 		clearRest();
@@ -361,6 +379,81 @@ public class DeckBuilderRun {
 	public static String relicListText() {
 		initIfNeeded();
 		return DeckRunInventory.relicListText(relics);
+	}
+
+	/**
+	 * 미지 노드 진입 시 호출 — 천장 시스템으로 인카운터 타입을 결정합니다.
+	 * 같은 depth+path면 캐시된 결과를 반환해 세이브/로드에도 일관성을 유지합니다.
+	 */
+	public static int resolveMysteryEncounter(int depth, int path) {
+		initIfNeeded();
+		if (mysteryResolvedDepth == depth && mysteryResolvedPath == path
+				&& mysteryResolvedType != DeckBuilderMap.NONE) {
+			return mysteryResolvedType;
+		}
+
+		int combatP = 10 + mysteryCombatBonus;
+		int shopP   = mysteryPrevWasShop ? 0 : (3 + mysteryShopBonus);
+		int treasureP = 2 + mysteryTreasureBonus;
+
+		// 6층 이후: 이번 막에서 이미 방문한 미지 수 × 2% 추가
+		int floor = depth - DeckBuilderMap.FIRST_DEPTH + 1;
+		if (floor >= 6) {
+			combatP += mysteryVisitsThisAct * 2;
+		}
+
+		// 비(非)이벤트 합이 100% 초과 시 보물→상점 순으로 삭감
+		int nonEvent = combatP + shopP + treasureP;
+		if (nonEvent > 100) {
+			int excess = nonEvent - 100;
+			int tCut = Math.min(excess, Math.max(0, treasureP));
+			treasureP -= tCut;
+			excess -= tCut;
+			if (excess > 0) shopP = Math.max(0, shopP - excess);
+		}
+
+		int roll = Random.Int(100);
+		int type;
+		if      (roll < combatP)                          type = DeckBuilderMap.COMBAT;
+		else if (roll < combatP + shopP)                  type = DeckBuilderMap.SHOP;
+		else if (roll < combatP + shopP + treasureP)      type = DeckBuilderMap.TREASURE;
+		else                                               type = DeckBuilderMap.EVENT;
+
+		// 천장 업데이트: 발생한 타입은 리셋, 나머지는 기본값만큼 증가
+		mysteryVisitsThisAct++;
+		switch (type) {
+			case DeckBuilderMap.EVENT:
+				mysteryCombatBonus   += 10;
+				mysteryShopBonus     += 3;
+				mysteryTreasureBonus += 2;
+				break;
+			case DeckBuilderMap.COMBAT:
+				mysteryCombatBonus   = 0;
+				mysteryShopBonus     += 3;
+				mysteryTreasureBonus += 2;
+				break;
+			case DeckBuilderMap.SHOP:
+				mysteryShopBonus     = 0;
+				mysteryCombatBonus   += 10;
+				mysteryTreasureBonus += 2;
+				break;
+			case DeckBuilderMap.TREASURE:
+				mysteryTreasureBonus = 0;
+				mysteryCombatBonus   += 10;
+				mysteryShopBonus     += 3;
+				break;
+		}
+		mysteryPrevWasShop = (type == DeckBuilderMap.SHOP);
+
+		mysteryResolvedDepth = depth;
+		mysteryResolvedPath  = path;
+		mysteryResolvedType  = type;
+		return type;
+	}
+
+	/** 미지가 아닌 일반 노드 진입 시 호출 — 상점 직후 억제 추적용 */
+	public static void notifyNodeEntered(int type) {
+		mysteryPrevWasShop = (type == DeckBuilderMap.SHOP);
 	}
 
 	public static void storeInBundle(Bundle bundle) {

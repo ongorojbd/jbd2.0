@@ -19,7 +19,8 @@ public enum DeckPotion {
 
 	HASTE("신속의 물약", "카드를 3장 뽑습니다.", ItemSpriteSheet.POTION_AZURE, ItemSpriteSheet.Icons.POTION_HASTE),
 	FIRE("화염 물약", "모든 적에게 피해를 10 줍니다.", ItemSpriteSheet.POTION_BISTRE, ItemSpriteSheet.Icons.POTION_LIQFLAME),
-	STRENGTH("힘의 물약", "공격력을 2 얻습니다.", ItemSpriteSheet.POTION_IVORY, ItemSpriteSheet.Icons.POTION_STRENGTH);
+	STRENGTH("힘의 물약", "공격력을 2 얻습니다.", ItemSpriteSheet.POTION_IVORY, ItemSpriteSheet.Icons.POTION_STRENGTH),
+	GAMBLERS_BREW("도박꾼의 영액", "손의 카드를 원하는 만큼 버리고, 버린 만큼 카드를 뽑습니다.", ItemSpriteSheet.POTION_AMBER, ItemSpriteSheet.Icons.POTION_MINDVIS);
 
 	public final String title;
 	public final String description;

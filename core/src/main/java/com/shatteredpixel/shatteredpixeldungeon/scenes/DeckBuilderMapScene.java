@@ -386,22 +386,35 @@ public class DeckBuilderMapScene extends PixelScene {
 		@Override
 		protected void onClick() {
 			if (!selectable()) return;
-			Statistics.deckBuilderMapNode = sceneType(depth, node);
+			int rawType = sceneType(depth, node);
+
+			// 미지(?) 노드: 천장 시스템으로 실제 인카운터 결정
+			int resolvedType;
+			if (rawType == DeckBuilderMap.EVENT) {
+				resolvedType = DeckBuilderRun.resolveMysteryEncounter(depth, node);
+			} else {
+				resolvedType = rawType;
+				DeckBuilderRun.notifyNodeEntered(rawType);
+			}
+
+			Statistics.deckBuilderMapNode = resolvedType;
 			Statistics.deckBuilderMapPath = node;
 
-			if (deckBattleNode()) {
+			if (resolvedType == DeckBuilderMap.COMBAT
+					|| resolvedType == DeckBuilderMap.ELITE
+					|| resolvedType == DeckBuilderMap.BOSS) {
 				enterDeckBattle();
 				Game.switchScene(DeckBattleScene.class);
 				return;
 			}
 
-			if (sceneType(depth, node) == DeckBuilderMap.EVENT) {
+			if (resolvedType == DeckBuilderMap.EVENT) {
 				enterDeckEvent();
 				Game.switchScene(DeckEventScene.class);
 				return;
 			}
 
-			if (sceneType(depth, node) == DeckBuilderMap.SHOP) {
+			if (resolvedType == DeckBuilderMap.SHOP) {
 				if (!DeckBuilderRun.shopMatches(depth, node)) {
 					DeckBuilderRun.clearShop();
 				}
@@ -410,13 +423,13 @@ public class DeckBuilderMapScene extends PixelScene {
 				return;
 			}
 
-			if (sceneType(depth, node) == DeckBuilderMap.TREASURE) {
+			if (resolvedType == DeckBuilderMap.TREASURE) {
 				enterDeckEvent();
 				Game.switchScene(DeckTreasureScene.class);
 				return;
 			}
 
-			if (sceneType(depth, node) == DeckBuilderMap.REST) {
+			if (resolvedType == DeckBuilderMap.REST) {
 				enterDeckEvent();
 				Game.switchScene(DeckRestScene.class);
 				return;

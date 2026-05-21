@@ -22,6 +22,8 @@ public class DeckStartingProfile {
 
 	private static final EnumMap<HeroClass, DeckStartingProfile> PROFILES = new EnumMap<>(HeroClass.class);
 
+	// 카드 테스트
+
 	static {
 		register(HeroClass.WARRIOR,
 				card(DeckCard.STRIKE, 5),
@@ -37,12 +39,12 @@ public class DeckStartingProfile {
 		register(HeroClass.HUNTRESS,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
-				card(DeckCard.SCORPION_THROW, 1),
-				card(DeckCard.PHANTOM_BLADES, 1));
+				card(DeckCard.SCORPION_THROW, 1));
 
 		register(HeroClass.JOHNNY,
 				card(DeckCard.STRIKE, 5),
-				card(DeckCard.GUARD, 4),
+				card(DeckCard.PURE, 1),
+				card(DeckCard.HEADBUTT, 1),
 				card(DeckCard.TUSK_EQUIPMENT_DISC, 1));
 	}
 

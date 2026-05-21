@@ -363,6 +363,44 @@ public class DeckCardEffects {
 		}
 	}
 
+	public static class ExhaustFromHand implements DeckCardEffect {
+		private final int maxCount;
+
+		public ExhaustFromHand(int maxCount) {
+			this.maxCount = maxCount;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			// Card selection and exhaustion is handled by the battle scene before this card is played.
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int count = DeckCardCode.upgradeLevel(cardCode) > 0 ? maxCount + 2 : maxCount;
+			return "손에 있는 카드를 최대 " + count + "장까지 소멸시킵니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			int base = DeckCardCode.upgradeLevel(cardCode) > 0 ? maxCount + 2 : maxCount;
+			int upgraded = DeckCardCode.upgradeLevel(upgradedCode) > 0 ? maxCount + 2 : maxCount;
+			return base == upgraded ? "" : "소멸 장 수 " + base + "장 > " + upgraded + "장";
+		}
+	}
+
+	public static class RetrieveFromDiscard implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			// Card selection is handled by the battle scene after this card is played.
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "버린 카드 더미에서 카드 1장을 선택해 뽑을 카드 더미의 맨 위에 놓습니다.";
+		}
+	}
+
 	private static ArrayList<DeckCombatEnemy> targets(DeckBuilderCombat combat, DeckCard card) {
 		ArrayList<DeckCombatEnemy> targets = new ArrayList<>();
 		if (card.target == DeckCardTarget.ALL_ENEMIES) {

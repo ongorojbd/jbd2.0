@@ -134,6 +134,18 @@ public class DeckBattleScene extends PixelScene {
 	private ColorBlock wandSelectionAccent;
 	private RenderedTextBlock wandSelectionTitle;
 	private RenderedTextBlock wandSelectionSubtitle;
+	private boolean selectingForPure;
+	private int pureHandIndex;
+	private final ArrayList<Integer> pureSelectedIndices = new ArrayList<>();
+	private int pureMaxSelect;
+	private boolean gamblerBrewActive;
+	private int gamblerBrewSlot;
+	private PointerArea selectionBackdropArea;
+	private ColorBlock pureSelectionShade;
+	private ColorBlock pureSelectionAccent;
+	private RenderedTextBlock pureSelectionTitle;
+	private RenderedTextBlock pureSelectionSubtitle;
+	private RedButton pureSelectorConfirm;
 	private ArrayList<CardButton> cardButtons = new ArrayList<>();
 	private ArrayList<BattleEffect> effects = new ArrayList<>();
 	private CardInfoPopup cardInfo;
@@ -173,6 +185,26 @@ public class DeckBattleScene extends PixelScene {
 
 		computeDimensions(w, h, insets);
 		addBackground(w, h, insets);
+
+		selectionBackdropArea = new PointerArea(0, 0, w, h) {
+			@Override
+			protected void onClick(PointerEvent event) {
+				if (selectingWandForStaff) {
+					selectingWandForStaff = false;
+					hideWandSelectionBanner();
+					refresh();
+				} else if (selectingForPure) {
+					selectingForPure = false;
+					hidePureSelectionBanner();
+					pureSelectedIndices.clear();
+					refresh();
+				} else if (gamblerBrewActive) {
+					confirmGamblerBrew();
+				}
+			}
+		};
+		selectionBackdropArea.active = false;
+		add(selectionBackdropArea);
 
 		IconTitle title = new IconTitle(Icons.STAIRS.get(), titleText());
 		title.setSize(220, 0);
@@ -288,6 +320,42 @@ public class DeckBattleScene extends PixelScene {
 		wandSelectionSubtitle.hardlight(0xFFD8D1BD);
 		wandSelectionSubtitle.visible = false;
 		add(wandSelectionSubtitle);
+
+		pureSelectionShade = new ColorBlock(w, 58, 0xFF050505);
+		pureSelectionShade.x = 0;
+		pureSelectionShade.y = insets.top + 24;
+		pureSelectionShade.am = 0.72f;
+		pureSelectionShade.visible = false;
+		add(pureSelectionShade);
+
+		pureSelectionAccent = new ColorBlock(w, 2, 0xFF7EC8D4);
+		pureSelectionAccent.x = 0;
+		pureSelectionAccent.y = pureSelectionShade.y + pureSelectionShade.height;
+		pureSelectionAccent.visible = false;
+		add(pureSelectionAccent);
+
+		pureSelectionTitle = renderTextBlock("소멸할 카드를 최대 N장 선택하세요.", 9);
+		pureSelectionTitle.hardlight(0xFF7EC8D4);
+		pureSelectionTitle.visible = false;
+		add(pureSelectionTitle);
+
+		pureSelectionSubtitle = renderTextBlock("(순수 카드를 다시 누르면 취소됩니다)", 6);
+		pureSelectionSubtitle.hardlight(0xFFD8D1BD);
+		pureSelectionSubtitle.visible = false;
+		add(pureSelectionSubtitle);
+
+		pureSelectorConfirm = new RedButton("확인 (0/3)", 6) {
+			@Override
+			protected void onClick() {
+				if (selectingForPure) {
+					confirmPureSelection();
+				} else if (gamblerBrewActive) {
+					confirmGamblerBrew();
+				}
+			}
+		};
+		pureSelectorConfirm.visible = false;
+		add(pureSelectorConfirm);
 
         endTurn = new RedButton("턴 종료", 7) {
 			@Override
@@ -921,18 +989,23 @@ public class DeckBattleScene extends PixelScene {
 
 	private void showWandSelectionBanner() {
 		int w = Camera.main.width;
-		RectF insets = getCommonInsets();
-		wandSelectionShade.y = insets.top + 24;
+		int h = Camera.main.height;
+		int shadeH = 30;
+		wandSelectionShade.size(w, shadeH);
+		wandSelectionShade.y = (h - shadeH) / 2f;
 		wandSelectionShade.visible = true;
 
-		wandSelectionAccent.y = wandSelectionShade.y + wandSelectionShade.height;
+		wandSelectionAccent.color(0xFFFFD84D);
+		wandSelectionAccent.y = wandSelectionShade.y + shadeH;
 		wandSelectionAccent.visible = true;
 
-		wandSelectionTitle.setPos((w - wandSelectionTitle.width()) / 2f, wandSelectionShade.y + 7);
+		wandSelectionTitle.hardlight(0xFFFFD84D);
+		wandSelectionTitle.setPos((w - wandSelectionTitle.width()) / 2f, wandSelectionShade.y + (shadeH - wandSelectionTitle.height()) / 2f);
 		wandSelectionTitle.visible = true;
 
-		wandSelectionSubtitle.setPos((w - wandSelectionSubtitle.width()) / 2f, wandSelectionTitle.bottom() + 1);
-		wandSelectionSubtitle.visible = true;
+		wandSelectionSubtitle.visible = false;
+
+		selectionBackdropArea.active = true;
 	}
 
 	private void hideWandSelectionBanner() {
@@ -940,9 +1013,134 @@ public class DeckBattleScene extends PixelScene {
 		wandSelectionAccent.visible = false;
 		wandSelectionTitle.visible = false;
 		wandSelectionSubtitle.visible = false;
+		selectionBackdropArea.active = false;
 	}
 
+	private void showPureSelectionBanner() {
+		int w = Camera.main.width;
+		int h = Camera.main.height;
+		int shadeH = 44;
+		pureSelectionShade.size(w, shadeH);
+		pureSelectionShade.y = (h - shadeH) / 2f;
+		pureSelectionShade.visible = true;
 
+		pureSelectionAccent.color(0xFFFFD84D);
+		pureSelectionAccent.y = pureSelectionShade.y + shadeH;
+		pureSelectionAccent.visible = true;
+
+		pureSelectionTitle.text("소멸할 카드를 최대 " + pureMaxSelect + "장 선택하세요.");
+		pureSelectionTitle.hardlight(0xFFFFD84D);
+		pureSelectionTitle.setPos((w - pureSelectionTitle.width()) / 2f, pureSelectionShade.y + 6);
+		pureSelectionTitle.visible = true;
+
+		pureSelectionSubtitle.visible = false;
+
+		pureSelectorConfirm.text("확인 (0/" + pureMaxSelect + ")");
+		pureSelectorConfirm.setRect((w - 90) / 2f, pureSelectionTitle.bottom() + 4, 90, 14);
+		pureSelectorConfirm.visible = true;
+
+		selectionBackdropArea.active = true;
+	}
+
+	private void hidePureSelectionBanner() {
+		pureSelectionShade.visible = false;
+		pureSelectionAccent.visible = false;
+		pureSelectionTitle.visible = false;
+		pureSelectionSubtitle.visible = false;
+		pureSelectorConfirm.visible = false;
+		selectionBackdropArea.active = false;
+	}
+
+	private void updatePureConfirmButton() {
+		if (gamblerBrewActive) {
+			pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "장 교환)");
+		} else {
+			pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/" + pureMaxSelect + ")");
+		}
+	}
+
+	private void showGamblerBrewBanner() {
+		int w = Camera.main.width;
+		int h = Camera.main.height;
+		int shadeH = 44;
+		pureSelectionShade.size(w, shadeH);
+		pureSelectionShade.y = (h - shadeH) / 2f;
+		pureSelectionShade.visible = true;
+
+		pureSelectionAccent.color(0xFFFFD84D);
+		pureSelectionAccent.y = pureSelectionShade.y + shadeH;
+		pureSelectionAccent.visible = true;
+
+		pureSelectionTitle.text("버릴 카드를 선택하세요.");
+		pureSelectionTitle.hardlight(0xFFFFD84D);
+		pureSelectionTitle.setPos((w - pureSelectionTitle.width()) / 2f, pureSelectionShade.y + 6);
+		pureSelectionTitle.visible = true;
+
+		pureSelectionSubtitle.visible = false;
+
+		pureSelectorConfirm.text("확인 (0장 교환)");
+		pureSelectorConfirm.setRect((w - 100) / 2f, pureSelectionTitle.bottom() + 4, 100, 14);
+		pureSelectorConfirm.visible = true;
+
+		selectionBackdropArea.active = true;
+	}
+
+	private void confirmGamblerBrew() {
+		int count = pureSelectedIndices.size();
+		java.util.Collections.sort(pureSelectedIndices, java.util.Collections.reverseOrder());
+		for (int idx : pureSelectedIndices) {
+			int code = combat.hand.get(idx);
+			combat.hand.remove(idx);
+			combat.discardPile.add(code);
+		}
+		pureSelectedIndices.clear();
+		gamblerBrewActive = false;
+		hidePureSelectionBanner();
+		// Restore pure selection banner accent color
+		pureSelectionAccent.color(0xFF7EC8D4);
+		pureSelectionTitle.hardlight(0xFF7EC8D4);
+		if (count > 0) {
+			DeckBuilderRun.removePotion(gamblerBrewSlot);
+			if (runHud != null) runHud.refresh();
+			combat.draw(count);
+			spawnDrawPileEffects(count, 0.05f);
+		}
+		log("도박꾼의 영액: " + count + "장을 버리고 " + count + "장을 뽑았습니다.");
+		saveCombatState();
+		if (!resolveAutoPlayResultsAfterDraw()) {
+			if (combat.won()) {
+				showReward();
+			} else {
+				refresh();
+			}
+		}
+	}
+
+	private void confirmPureSelection() {
+		Map<Integer, float[]> idxToPos = new LinkedHashMap<>();
+		for (int idx : pureSelectedIndices) {
+			float ex = idx < cardButtons.size() ? cardButtons.get(idx).centerX() : playerCenterX();
+			float ey = idx < cardButtons.size() ? cardButtons.get(idx).centerY() : playerCenterY();
+			idxToPos.put(idx, new float[]{ex, ey});
+		}
+		int adjustedPureIndex = pureHandIndex;
+		for (int idx : pureSelectedIndices) {
+			if (idx < pureHandIndex) adjustedPureIndex--;
+		}
+		java.util.Collections.sort(pureSelectedIndices, java.util.Collections.reverseOrder());
+		for (int idx : pureSelectedIndices) {
+			int code = combat.hand.get(idx);
+			combat.hand.remove(idx);
+			combat.exhaustPile.add(code);
+			float[] pos = idxToPos.get(idx);
+			addEffect(new ExhaustEffect(pos[0], pos[1]));
+			Sample.INSTANCE.play(Assets.Sounds.BURNING);
+		}
+		pureSelectedIndices.clear();
+		selectingForPure = false;
+		hidePureSelectionBanner();
+		executePlayCard(adjustedPureIndex, -1);
+	}
 
 	private void playCard(int index) {
 		if (combatLocked || index < 0 || index >= combat.hand.size()) {
@@ -954,6 +1152,15 @@ public class DeckBattleScene extends PixelScene {
 			selectingWandForStaff = true;
 			mageStaffHandIndex = index;
 			showWandSelectionBanner();
+			refresh();
+			return;
+		}
+		if (card == DeckCard.PURE && combat.hand.size() > 1) {
+			selectingForPure = true;
+			pureHandIndex = index;
+			pureSelectedIndices.clear();
+			pureMaxSelect = DeckCard.upgradeLevel(cardCode) > 0 ? 5 : 3;
+			showPureSelectionBanner();
 			refresh();
 			return;
 		}
@@ -973,6 +1180,7 @@ public class DeckBattleScene extends PixelScene {
 		if (targetWandIndex >= 0 && targetWandIndex < combat.hand.size()) {
 			wandCard = DeckCard.byCode(combat.hand.get(targetWandIndex));
 		}
+		final ArrayList<Integer> headbuttDiscardSnapshot = (card == DeckCard.HEADBUTT) ? new ArrayList<>(combat.discardPile) : null;
 		DeckPlayResult result = combat.play(index, targetWandIndex);
 		if (!result.played) {
             log("에너지가 부족합니다.");
@@ -981,6 +1189,17 @@ public class DeckBattleScene extends PixelScene {
 
 		saveCombatState();
 		combatLocked = true;
+
+		if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) {
+			final float ex = startX;
+			final float ey = startY;
+			addEffect(new DelayedActionEffect(0.1f, new Runnable() {
+				@Override public void run() {
+					addEffect(new ExhaustEffect(ex, ey));
+					Sample.INSTANCE.play(Assets.Sounds.BURNING);
+				}
+			}));
+		}
 
 		if (card.type == DeckCardType.POWER) {
 			Sample.INSTANCE.play(Assets.Sounds.CHARMS);
@@ -1033,6 +1252,49 @@ public class DeckBattleScene extends PixelScene {
 					@Override
 					public void run() {
 						refresh();
+					}
+				}));
+			}
+			return;
+		}
+
+		if (card == DeckCard.HEADBUTT) {
+			float finishDelay = 0f;
+			for (DeckPlayResult.Hit hit : result.hits) {
+				if (hit.damage > 0) {
+					spawnCardAttack(card, startX, startY, hit);
+					finishDelay = Math.max(finishDelay, 0.38f);
+				}
+			}
+			log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+			if (combat.playerDead()) {
+				updatePlayerHpUi();
+				final float d = finishDelay;
+				addEffect(new DelayedActionEffect(d > 0f ? d : 0.45f, new Runnable() {
+					@Override
+					public void run() {
+						playDeath(playerSprite);
+						finishRunDeath();
+					}
+				}));
+			} else if (combat.won()) {
+				final float d = finishDelay;
+				addEffect(new DelayedActionEffect(Math.max(0.9f, d + 0.3f), new Runnable() {
+					@Override
+					public void run() {
+						showReward();
+					}
+				}));
+			} else {
+				final float d = finishDelay;
+				addEffect(new DelayedActionEffect(Math.max(0.1f, d), new Runnable() {
+					@Override
+					public void run() {
+						if (headbuttDiscardSnapshot == null || headbuttDiscardSnapshot.isEmpty()) {
+							refresh();
+						} else {
+							showHeadbuttDiscardSelectWindow(headbuttDiscardSnapshot, 0);
+						}
 					}
 				}));
 			}
@@ -1217,11 +1479,11 @@ public class DeckBattleScene extends PixelScene {
 
 	private void usePotion(int slot, DeckPotion potion) {
 		if (combatLocked || rewardOpen || potion == null) return;
-		DeckBuilderRun.removePotion(slot);
-		if (runHud != null) runHud.refresh();
 
 		switch (potion) {
 			case HASTE:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
 				Sample.INSTANCE.play(Assets.Sounds.DRINK);
 				combat.draw(3);
 				spawnDrawPileEffects(3, 0.05f);
@@ -1236,6 +1498,8 @@ public class DeckBattleScene extends PixelScene {
 				}
 				break;
 			case FIRE:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
 				combatLocked = true;
 				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
 				Sample.INSTANCE.play(Assets.Sounds.BURNING);
@@ -1274,11 +1538,21 @@ public class DeckBattleScene extends PixelScene {
 				}
 				break;
 			case STRENGTH:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
 				Sample.INSTANCE.play(Assets.Sounds.DRINK);
 				combat.playerStrength += 2;
                 spawnFloatingText("공격력 +2", playerCenterX(), playerCenterY() - 24, 0xFFFFD84D);
                 log(potion.title + ": 공격력을 2 얻었습니다.");
 				saveCombatState();
+				refresh();
+				break;
+			case GAMBLERS_BREW:
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				gamblerBrewActive = true;
+				gamblerBrewSlot = slot;
+				pureSelectedIndices.clear();
+				showGamblerBrewBanner();
 				refresh();
 				break;
 		}
@@ -1474,7 +1748,7 @@ public class DeckBattleScene extends PixelScene {
 				addEffect(new DelayedActionEffect(delay, new Runnable() {
 					@Override
 					public void run() {
-						Sample.INSTANCE.play(Assets.Sounds.PLANT, 0.6f, 1.15f);
+						Sample.INSTANCE.play(Assets.Sounds.MISS, 0.6f, 1.15f);
 						addEffect(new ShuffleIntoDrawPileEffect(shuffledCard, sx, sy, deckX, deckY));
 					}
 				}));
@@ -1547,6 +1821,7 @@ public class DeckBattleScene extends PixelScene {
 			addEffect(new DelayedActionEffect(delay, new Runnable() {
 				@Override
 				public void run() {
+					Sample.INSTANCE.play(Assets.Sounds.MISS, 0.7f, 1.0f);
 					addEffect(new PileCardFlowEffect(deckX, deckY, tx, handCenterY, 0xFF8EDBFF));
 				}
 			}));
@@ -1715,6 +1990,90 @@ public class DeckBattleScene extends PixelScene {
 		}
 	}
 
+	private void showHeadbuttDiscardSelectWindow(final ArrayList<Integer> snapshot, final int page) {
+		final int total = snapshot.size();
+		if (total == 0) { refresh(); return; }
+
+		final int HB_CARD_W = 42;
+		final int HB_CARD_H = 54;
+		final int HB_CARD_GAP = 5;
+		final int HB_CARDS_PER_PAGE = 4;
+
+		final int maxPage = Math.max(0, (total - 1) / HB_CARDS_PER_PAGE);
+		final int currentPage = Math.max(0, Math.min(page, maxPage));
+		final int first = currentPage * HB_CARDS_PER_PAGE;
+		final int count = Math.min(HB_CARDS_PER_PAGE, total - first);
+		final int totalCardW = count * HB_CARD_W + (count - 1) * HB_CARD_GAP;
+		final int width = Math.max(196, totalCardW + 20);
+
+		final Window win = new Window() {
+			@Override
+			public void onBackPressed() {
+				// Must select a card
+			}
+		};
+
+		int pos = 7;
+
+		RenderedTextBlock title = renderTextBlock("뽑을 카드 더미 맨 위에 올릴 카드 선택", 8);
+		title.hardlight(Window.TITLE_COLOR);
+		title.maxWidth(width - 14);
+		title.setPos((width - title.width()) / 2f, pos);
+		win.add(title);
+		pos += (int) title.height() + 8;
+
+		final int startX = (width - totalCardW) / 2;
+		for (int i = 0; i < count; i++) {
+			final int snapIndex = first + i;
+			final int code = snapshot.get(snapIndex);
+			final int col = i;
+			CardViewButton cardBtn = new CardViewButton() {
+				@Override protected DeckCard card() { return DeckCard.byCode(code); }
+				@Override protected int cardCode() { return code; }
+				@Override protected void onClick() {
+					combat.discardPile.remove(snapIndex);
+					combat.drawPile.add(0, code);
+					win.hide();
+					refresh();
+				}
+			};
+			cardBtn.setRect(startX + col * (HB_CARD_W + HB_CARD_GAP), pos, HB_CARD_W, HB_CARD_H);
+			win.add(cardBtn);
+		}
+		pos += HB_CARD_H + 9;
+
+		if (maxPage > 0) {
+			RedButton prev = new RedButton("이전", 6) {
+				@Override protected void onClick() {
+					win.hide();
+					showHeadbuttDiscardSelectWindow(snapshot, currentPage - 1);
+				}
+			};
+			prev.enable(currentPage > 0);
+			prev.setRect(10, pos, 58, 18);
+			win.add(prev);
+
+			RenderedTextBlock pageText = renderTextBlock((currentPage + 1) + " / " + (maxPage + 1), 6);
+			pageText.hardlight(0xFFD8D1BD);
+			pageText.setPos((width - pageText.width()) / 2f, pos + 5);
+			win.add(pageText);
+
+			RedButton next = new RedButton("다음", 6) {
+				@Override protected void onClick() {
+					win.hide();
+					showHeadbuttDiscardSelectWindow(snapshot, currentPage + 1);
+				}
+			};
+			next.enable(currentPage < maxPage);
+			next.setRect(width - 68, pos, 58, 18);
+			win.add(next);
+			pos += 23;
+		}
+
+		win.resize(width, pos + 4);
+		addToFront(win);
+	}
+
 	private void showDiscardWindow() {
 		final Window win = new Window();
 		int width = 180;
@@ -1854,8 +2213,7 @@ public class DeckBattleScene extends PixelScene {
 			button.visible = false;
 		}
 		refreshEnemyViews();
-		// Remove cards that were exhausted for the whole run.
-		DeckBuilderRun.applyExhaust(combat.exhaustPile);
+		// 소멸은 이 전투에서만 카드를 제거하는 것. 다음 전투에서는 다시 사용 가능하므로 영구 삭제하지 않음.
 		combat.exhaustPile.clear();
 		saveCombatState();
 		Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
@@ -2364,6 +2722,17 @@ public class DeckBattleScene extends PixelScene {
 			selectingWandForStaff = false;
 			hideWandSelectionBanner();
 			refresh();
+			return;
+		}
+		if (selectingForPure) {
+			selectingForPure = false;
+			hidePureSelectionBanner();
+			pureSelectedIndices.clear();
+			refresh();
+			return;
+		}
+		if (gamblerBrewActive) {
+			confirmGamblerBrew();
 			return;
 		}
 	}
@@ -3163,6 +3532,36 @@ public class DeckBattleScene extends PixelScene {
 		}
 	}
 
+	private class ExhaustEffect extends BattleEffect {
+
+		private final ColorBlock[] sparks = new ColorBlock[4];
+		private final float cx, cy;
+
+		private ExhaustEffect(float cx, float cy) {
+			super(0.42f);
+			this.cx = cx;
+			this.cy = cy;
+			for (int i = 0; i < sparks.length; i++) {
+				sparks[i] = new ColorBlock(1, 1, 0xFFFF7830);
+				add(sparks[i]);
+			}
+		}
+
+		@Override
+		protected void updateEffect(float p) {
+			float alpha = (float) Math.pow(1f - p, 0.5f);
+			float dist = p * 18f;
+			float sz = Math.max(1f, 4f - p * 3f);
+			float[][] dirs = {{-1,-1},{1,-1},{-1,1},{1,1}};
+			for (int i = 0; i < sparks.length; i++) {
+				sparks[i].size(sz, sz);
+				sparks[i].x = cx + dirs[i][0] * dist - sz / 2f;
+				sparks[i].y = cy + dirs[i][1] * dist - sz / 2f;
+				sparks[i].am = alpha;
+			}
+		}
+	}
+
 	private class ShieldEffect extends BattleEffect {
 
 		private final ColorBlock top;
@@ -3308,12 +3707,28 @@ public class DeckBattleScene extends PixelScene {
 		protected boolean enabled() {
 			if (selectingWandForStaff) {
 				int code = cardCode();
-				return DeckCard.maxCharge(code) > 0 || handIndex == mageStaffHandIndex;
+				return DeckCard.maxCharge(code) > 0;
+			}
+			if (selectingForPure) {
+				return handIndex != pureHandIndex;
+			}
+			if (gamblerBrewActive) {
+				return true;
 			}
 			if (DeckCard.maxCharge(cardCode()) > 0) {
 				return false;
 			}
 			return !combatLocked && handIndex < combat.hand.size() && combat.cardCost(cardCode()) <= combat.energy;
+		}
+
+		@Override
+		protected void layout() {
+			super.layout();
+			if ((selectingForPure || gamblerBrewActive) && pureSelectedIndices.contains(handIndex)) {
+				edge.color(0xFFFFE066);
+				edge.am = 1.0f;
+				face.am = 0.92f;
+			}
 		}
 
 		@Override
@@ -3324,6 +3739,17 @@ public class DeckBattleScene extends PixelScene {
 		@Override
 		protected void onPointerDown() {
 			if (selectingWandForStaff) {
+				activeTouch = true;
+				super.onPointerDown();
+				homeX = x;
+				homeY = y;
+				dragging = false;
+				useOnRelease = false;
+				clickReady = true;
+				showCardInfo(cardCode());
+				return;
+			}
+			if (selectingForPure || gamblerBrewActive) {
 				activeTouch = true;
 				super.onPointerDown();
 				homeX = x;
@@ -3348,6 +3774,7 @@ public class DeckBattleScene extends PixelScene {
 		@Override
 		protected void onDrag(PointerEvent event) {
 			if (selectingWandForStaff) return;
+			if (selectingForPure || gamblerBrewActive) return;
 			if (!activeTouch || !enabled()) return;
 			float dx = event.current.x - event.start.x;
 			float dy = event.current.y - event.start.y;
@@ -3367,7 +3794,12 @@ public class DeckBattleScene extends PixelScene {
 			super.onPointerUp();
 			hideCardInfo();
 			if (selectingWandForStaff) {
+				if (clickReady) onClick();
+				return;
+			}
+			if (selectingForPure || gamblerBrewActive) {
 				if (clickReady) {
+					clickReady = false;
 					onClick();
 				}
 				return;
@@ -3395,6 +3827,35 @@ public class DeckBattleScene extends PixelScene {
 					hideWandSelectionBanner();
 					refresh();
 				}
+				return;
+			}
+			if (selectingForPure) {
+				if (handIndex == pureHandIndex) {
+					selectingForPure = false;
+					hidePureSelectionBanner();
+					pureSelectedIndices.clear();
+					refresh();
+				} else {
+					Integer idx = handIndex;
+					if (pureSelectedIndices.contains(idx)) {
+						pureSelectedIndices.remove(idx);
+					} else if (pureSelectedIndices.size() < pureMaxSelect) {
+						pureSelectedIndices.add(idx);
+					}
+					updatePureConfirmButton();
+					refresh();
+				}
+				return;
+			}
+			if (gamblerBrewActive) {
+				Integer idx = handIndex;
+				if (pureSelectedIndices.contains(idx)) {
+					pureSelectedIndices.remove(idx);
+				} else {
+					pureSelectedIndices.add(idx);
+				}
+				updatePureConfirmButton();
+				refresh();
 			}
 		}
 	}
@@ -3440,6 +3901,7 @@ public class DeckBattleScene extends PixelScene {
 			bg.am = 0.92f;
 			add(bg);
 			icon = new ItemSprite();
+			icon.visible = false;
 			add(icon);
 			text = renderTextBlock("", 6);
 			text.hardlight(0xFFD8D1BD);

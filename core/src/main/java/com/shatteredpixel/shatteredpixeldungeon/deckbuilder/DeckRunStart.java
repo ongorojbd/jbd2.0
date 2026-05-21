@@ -93,6 +93,6 @@ public class DeckRunStart {
 	private static void addStartingPotions() {
 		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.HASTE, DeckBuilderRun.MAX_POTION_SLOTS);
 		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.FIRE, DeckBuilderRun.MAX_POTION_SLOTS);
-		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.STRENGTH, DeckBuilderRun.MAX_POTION_SLOTS);
+		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.GAMBLERS_BREW, DeckBuilderRun.MAX_POTION_SLOTS);
 	}
 }
