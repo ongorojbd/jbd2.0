@@ -110,12 +110,7 @@ public class DeckBattleScene extends PixelScene {
 	private ColorBlock enemyHpBg;
 	private ColorBlock playerShieldBar;
 	private RenderedTextBlock playerShieldLabel;
-	private DeckBuffButton playerStrengthBuff;
-	private DeckBuffButton playerStrengthDownBuff;
-	private DeckBuffButton playerDexterityDownBuff;
-	private DeckBuffButton playerWeakBuff;
-	private DeckBuffButton playerAgeDownBuff;
-	private DeckBuffButton playerBlockReductionBuff;
+	private final ArrayList<DeckBuffButton> playerBuffs = new ArrayList<>();
 	private ColorBlock deckCounterBg;
 	private ColorBlock discardCounterBg;
 	private PointerArea deckCounterArea;
@@ -166,6 +161,44 @@ public class DeckBattleScene extends PixelScene {
 	private boolean pendingPileShuffle;
 	private int pendingDrawVisuals;
 	private boolean needsHandDraw = false;
+
+	private static final PlayerBuffSpec[] PLAYER_STATUS_BUFFS = new PlayerBuffSpec[]{
+			new PlayerBuffSpec(BuffIndicator.UPGRADE, 1f, 0.5f, 0f, "공격력", "공격 카드가 주는 피해가 이 수치만큼 증가합니다.",
+					combat -> Math.max(0, combat.playerStrength + combat.playerTurnStrength)),
+			new PlayerBuffSpec(BuffIndicator.DEGRADE, "공격력 감소", "공격 카드가 주는 피해가 수치만큼 감소합니다.",
+					combat -> Math.max(0, -(combat.playerStrength + combat.playerTurnStrength))),
+			new PlayerBuffSpec(BuffIndicator.CRIPPLE, "민첩 감소", "보호막을 얻을 때 획득량이 수치만큼 감소합니다.",
+					combat -> Math.max(0, -combat.playerDexterity)),
+			new PlayerBuffSpec(BuffIndicator.WEAKNESS, "약화", "공격 카드 피해가 25% 감소합니다. 턴이 시작될 때마다 1 감소합니다.",
+					combat -> combat.playerWeak),
+			new PlayerBuffSpec(BuffIndicator.ROOTS, "얽힘", "공격 카드 비용이 1 증가합니다. 턴이 끝날 때마다 1 감소합니다.",
+					combat -> combat.playerEntangle),
+			new PlayerBuffSpec(BuffIndicator.MOMENTUM, "유아화", "공격 카드의 피해가 30% 감소합니다.",
+					combat -> combat.playerDamageReduction > 0 ? 1 : 0, false),
+			new PlayerBuffSpec(BuffIndicator.DEGRADE, "방어력 저하", "보호막을 얻을 때마다 방어력 저하 1당 획득량이 25% 감소합니다. 턴이 끝날 때마다 1 감소합니다.",
+					combat -> combat.playerBlockReduction)
+	};
+
+	private static final EnemyStatusBuffSpec[] ENEMY_STATUS_BUFFS = new EnemyStatusBuffSpec[]{
+			new EnemyStatusBuffSpec(BuffIndicator.CORRUPT, "피해 증폭", "해당 대상이 받는 모든 공격 피해가 1.5배 증가합니다.",
+					enemy -> enemy.vulnerable),
+			new EnemyStatusBuffSpec(BuffIndicator.WEAKNESS, "공격력 저하", "공격 피해가 25% 감소합니다. 턴이 끝날 때마다 1 감소합니다.",
+					enemy -> enemy.attackDown),
+			new EnemyStatusBuffSpec(BuffIndicator.UPGRADE, 1f, 0.5f, 0f, "공격력", "공격 피해가 이 수치만큼 증가합니다.",
+					enemy -> enemy.strength),
+			new EnemyStatusBuffSpec(BuffIndicator.TRINITY_FORM, 1.2f, 1.2f, 0.2f, "반격", "공격 카드로 공격한 대상에게 피해를 반격 수치만큼 되돌립니다.",
+					enemy -> enemy.thorns),
+			new EnemyStatusBuffSpec(BuffIndicator.HEALING, "재생", "턴이 끝날 때마다 이 수치만큼 보호막을 얻습니다. 체력 피해를 받을 때마다 1 감소합니다.",
+					enemy -> enemy.platedArmor),
+			new EnemyStatusBuffSpec(BuffIndicator.INVISIBLE, "까다로움", "다음에 체력을 잃을 때, 대신 체력을 1만 잃습니다.",
+					enemy -> enemy.tricky),
+			new EnemyStatusBuffSpec(BuffIndicator.POISON, 0.2f, 0.5f, 0.2f, "독극물", "막히지 않은 공격 피해를 주면 이 수치만큼 공격력을 얻습니다.",
+					enemy -> enemy.kind == DeckEnemy.LAGAVULIN ? 0 : enemy.venom),
+			new EnemyStatusBuffSpec(BuffIndicator.IMMUNITY, "정화의 보호막", "상태이상에 걸릴 때 정화의 보호막을 1 차감하고 그 효과를 무효화합니다.",
+					enemy -> enemy.artifact),
+			new EnemyStatusBuffSpec(BuffIndicator.SACRIFICE, 1.15f, 0.35f, 1.25f, "의식", "턴이 끝날 때마다 이 수치만큼 공격력을 얻습니다.",
+					enemy -> enemy.ritual)
+	};
 
 	private static final EnemyBuffSpec[] ENEMY_TRAIT_BUFFS = new EnemyBuffSpec[]{
 			new EnemyBuffSpec(BuffIndicator.IMBUE, "분열", "체력이 절반 이하가 되면 행동을 취소하고 둘로 나뉩니다.",
@@ -304,18 +337,11 @@ public class DeckBattleScene extends PixelScene {
 		playerShieldLabel.hardlight(0xFF8EDBFF);
 		playerShieldLabel.visible = false;
 		add(playerShieldLabel);
-		playerStrengthBuff = new DeckBuffButton(BuffIndicator.UPGRADE, 1f, 0.5f, 0f, "공격력", "공격 카드가 주는 피해가 이 수치만큼 증가합니다.");
-		add(playerStrengthBuff);
-		playerStrengthDownBuff = new DeckBuffButton(BuffIndicator.DEGRADE, "공격력 감소", "공격 카드가 주는 피해가 수치만큼 감소합니다.");
-		add(playerStrengthDownBuff);
-		playerDexterityDownBuff = new DeckBuffButton(BuffIndicator.CRIPPLE, "민첩 감소", "보호막을 얻을 때 획득량이 수치만큼 감소합니다.");
-		add(playerDexterityDownBuff);
-		playerWeakBuff = new DeckBuffButton(BuffIndicator.WEAKNESS, "약화", "공격 카드 피해가 25% 감소합니다. 턴이 시작될 때마다 1 감소합니다.");
-		add(playerWeakBuff);
-		playerAgeDownBuff = new DeckBuffButton(BuffIndicator.MOMENTUM, "유아화", "공격 카드의 피해가 30% 감소합니다.");
-		add(playerAgeDownBuff);
-		playerBlockReductionBuff = new DeckBuffButton(BuffIndicator.DEGRADE, "방어력 저하", "보호막을 얻을 때마다 방어력 저하 1당 획득량이 25% 감소합니다. 턴이 끝날 때마다 1 감소합니다.");
-		add(playerBlockReductionBuff);
+		for (PlayerBuffSpec spec : PLAYER_STATUS_BUFFS) {
+			DeckBuffButton buff = spec.createButton(this);
+			playerBuffs.add(buff);
+			add(buff);
+		}
 
 		logText = renderTextBlock(6);
 		logText.maxWidth(w - (int)insets.left - (int)insets.right - 18);
@@ -649,20 +675,11 @@ public class DeckBattleScene extends PixelScene {
 		};
 		add(view.area);
 
-		view.vulnerableBuff = new DeckBuffButton(BuffIndicator.CORRUPT, "피해 증폭", "해당 대상이 받는 모든 공격 피해가 1.5배 증가합니다.");
-		add(view.vulnerableBuff);
-		view.strengthBuff = new DeckBuffButton(BuffIndicator.UPGRADE, 1f, 0.5f, 0f,"공격력", "공격 피해가 이 수치만큼 증가합니다.");
-		add(view.strengthBuff);
-		view.thornsBuff = new DeckBuffButton(BuffIndicator.TRINITY_FORM, 1.2f, 1.2f, 0.2f, "반격", "공격 카드로 공격한 대상에게 피해를 반격 수치만큼 되돌립니다.");
-		add(view.thornsBuff);
-		view.platedArmorBuff = new DeckBuffButton(BuffIndicator.HEALING, "재생", "턴이 끝날 때마다 이 수치만큼 보호막을 얻습니다. 체력 피해를 받을 때마다 1 감소합니다.");
-		add(view.platedArmorBuff);
-		view.trickyBuff = new DeckBuffButton(BuffIndicator.INVISIBLE, "까다로움", "다음에 체력을 잃을 때, 대신 체력을 1만 잃습니다.");
-		add(view.trickyBuff);
-		view.venomBuff = new DeckBuffButton(BuffIndicator.POISON, 0.2f, 0.5f, 0.2f,"독극물", "막히지 않은 공격 피해를 주면 이 수치만큼 공격력을 얻습니다.");
-		add(view.venomBuff);
-		view.artifactBuff = new DeckBuffButton(BuffIndicator.IMMUNITY, "정화의 보호막", "상태이상에 걸릴 때 정화의 보호막을 1 차감하고 그 효과를 무효화합니다.");
-		add(view.artifactBuff);
+		for (EnemyStatusBuffSpec spec : ENEMY_STATUS_BUFFS) {
+			DeckBuffButton buff = spec.createButton(this);
+			view.statusBuffs.add(buff);
+			add(buff);
+		}
 		for (EnemyBuffSpec spec : ENEMY_TRAIT_BUFFS) {
 			DeckBuffButton buff = spec.createButton(this);
 			view.traitBuffs.add(buff);
@@ -868,27 +885,15 @@ public class DeckBattleScene extends PixelScene {
 			view.targetMark.visible = targeted;
 
 			if (!alive) {
-				view.vulnerableBuff.visible = false;
-				view.strengthBuff.visible = false;
-				view.thornsBuff.visible = false;
-				view.platedArmorBuff.visible = false;
+				hideStatusBuffs(view);
 				hideTraitBuffs(view);
-				view.trickyBuff.visible = false;
-				view.venomBuff.visible = false;
-				view.artifactBuff.visible = false;
 				view.shield.visible = false;
 				view.shieldLabel.visible = false;
 				continue;
 			}
 			
-			view.vulnerableBuff.setStacks(view.enemy.vulnerable);
-			view.strengthBuff.setStacks(view.enemy.strength);
-			view.thornsBuff.setStacks(view.enemy.thorns);
-			view.platedArmorBuff.setStacks(view.enemy.platedArmor);
+			refreshStatusBuffs(view);
 			refreshTraitBuffs(view);
-			view.trickyBuff.setStacks(view.enemy.tricky);
-			view.venomBuff.setStacks(view.enemy.kind == DeckEnemy.LAGAVULIN ? 0 : view.enemy.venom);
-			view.artifactBuff.setStacks(view.enemy.artifact);
 			view.shield.visible = view.enemy.block > 0;
 			if (view.enemy.block > 0) {
 				view.shieldLabel.text(String.valueOf(view.enemy.block));
@@ -911,6 +916,18 @@ public class DeckBattleScene extends PixelScene {
 
 	private String intentText(DeckCombatEnemy enemy) {
 		return DeckEnemyIntent.text(enemy);
+	}
+
+	private void refreshStatusBuffs(EnemyView view) {
+		for (int i = 0; i < ENEMY_STATUS_BUFFS.length; i++) {
+			ENEMY_STATUS_BUFFS[i].apply(this, view.enemy, view.statusBuffs.get(i));
+		}
+	}
+
+	private void hideStatusBuffs(EnemyView view) {
+		for (DeckBuffButton buff : view.statusBuffs) {
+			buff.visible = false;
+		}
 	}
 
 	private void refreshTraitBuffs(EnemyView view) {
@@ -967,14 +984,8 @@ public class DeckBattleScene extends PixelScene {
 		view.hpBg.visible = false;
 		view.hp.visible = false;
 		view.area.active = false;
-		view.vulnerableBuff.visible = false;
-		view.strengthBuff.visible = false;
-		view.thornsBuff.visible = false;
-		view.platedArmorBuff.visible = false;
+		hideStatusBuffs(view);
 		hideTraitBuffs(view);
-		view.trickyBuff.visible = false;
-		view.venomBuff.visible = false;
-		view.artifactBuff.visible = false;
 		view.shield.visible = false;
 		view.shieldLabel.visible = false;
 		view.targetMark.visible = false;
@@ -1007,12 +1018,7 @@ public class DeckBattleScene extends PixelScene {
         discardCounter.text("버린 카드: " + combat.discardPile.size());
 		discardCounter.maxWidth(counterW - 4);
 		discardCounter.setPos(discardCounterBg.x + (discardCounterBg.width() - discardCounter.width()) / 2f, textY);
-		playerStrengthBuff.setStacks(combat.playerStrength + combat.playerTurnStrength);
-		playerStrengthDownBuff.setStacks(Math.max(0, -(combat.playerStrength + combat.playerTurnStrength)));
-		playerDexterityDownBuff.setStacks(Math.max(0, -combat.playerDexterity));
-		playerWeakBuff.setStacks(combat.playerWeak);
-		playerAgeDownBuff.setActive(combat.playerDamageReduction > 0);
-		playerBlockReductionBuff.setStacks(combat.playerBlockReduction);
+		refreshPlayerBuffs();
 
 		positionActorHud();
 
@@ -1707,24 +1713,22 @@ public class DeckBattleScene extends PixelScene {
 		positionPlayerBuffs();
 	}
 
+	private void refreshPlayerBuffs() {
+		for (int i = 0; i < PLAYER_STATUS_BUFFS.length; i++) {
+			PLAYER_STATUS_BUFFS[i].apply(this, combat, playerBuffs.get(i));
+		}
+	}
+
 	private void positionPlayerBuffs() {
-		DeckBuffButton[] buffs = new DeckBuffButton[]{
-				playerStrengthBuff,
-				playerStrengthDownBuff,
-				playerDexterityDownBuff,
-				playerWeakBuff,
-				playerAgeDownBuff,
-				playerBlockReductionBuff
-		};
 		float buffWidth = 0;
-		for (DeckBuffButton buff : buffs) {
+		for (DeckBuffButton buff : playerBuffs) {
 			if (buff.visible) buffWidth += buff.width() + 2;
 		}
 		if (buffWidth <= 0) return;
 		buffWidth -= 2;
 		float buffX = playerHpBg.x + ACTOR_HP_W / 2f - buffWidth / 2f;
-		float buffY = playerStatus.top() - playerStrengthBuff.height() - 2;
-		for (DeckBuffButton buff : buffs) {
+		float buffY = playerStatus.top() - (playerBuffs.isEmpty() ? 7 : playerBuffs.get(0).height()) - 2;
+		for (DeckBuffButton buff : playerBuffs) {
 			if (!buff.visible) continue;
 			buff.setPos(buffX, buffY);
 			buffX += buff.width() + 2;
@@ -1811,14 +1815,8 @@ public class DeckBattleScene extends PixelScene {
 
 	private DeckBuffButton[] enemyBuffs(EnemyView view) {
 		ArrayList<DeckBuffButton> buffs = new ArrayList<>();
-		buffs.add(view.vulnerableBuff);
-		buffs.add(view.strengthBuff);
-		buffs.add(view.thornsBuff);
-		buffs.add(view.platedArmorBuff);
+		buffs.addAll(view.statusBuffs);
 		buffs.addAll(view.traitBuffs);
-		buffs.add(view.trickyBuff);
-		buffs.add(view.venomBuff);
-		buffs.add(view.artifactBuff);
 		return buffs.toArray(new DeckBuffButton[0]);
 	}
 
@@ -3027,11 +3025,19 @@ public class DeckBattleScene extends PixelScene {
 		}
 	}
 
+	private interface PlayerBuffStacks {
+		int stacks(DeckBuilderCombat combat);
+	}
+
+	private interface EnemyBuffStacks {
+		int stacks(DeckCombatEnemy enemy);
+	}
+
 	private interface EnemyBuffCondition {
 		boolean active(DeckBattleScene scene, DeckCombatEnemy enemy);
 	}
 
-	private static class EnemyBuffSpec {
+	private static class CombatBuffSpec {
 		private final int iconId;
 		private final float r;
 		private final float g;
@@ -3039,9 +3045,8 @@ public class DeckBattleScene extends PixelScene {
 		private final boolean tinted;
 		private final String label;
 		private final String desc;
-		private final EnemyBuffCondition condition;
 
-		private EnemyBuffSpec(int iconId, String label, String desc, EnemyBuffCondition condition) {
+		private CombatBuffSpec(int iconId, String label, String desc) {
 			this.iconId = iconId;
 			this.r = 1f;
 			this.g = 1f;
@@ -3049,10 +3054,9 @@ public class DeckBattleScene extends PixelScene {
 			this.tinted = false;
 			this.label = label;
 			this.desc = desc;
-			this.condition = condition;
 		}
 
-		private EnemyBuffSpec(int iconId, float r, float g, float b, String label, String desc, EnemyBuffCondition condition) {
+		private CombatBuffSpec(int iconId, float r, float g, float b, String label, String desc) {
 			this.iconId = iconId;
 			this.r = r;
 			this.g = g;
@@ -3060,13 +3064,74 @@ public class DeckBattleScene extends PixelScene {
 			this.tinted = true;
 			this.label = label;
 			this.desc = desc;
-			this.condition = condition;
 		}
 
-		private DeckBuffButton createButton(DeckBattleScene scene) {
+		protected DeckBuffButton createButton(DeckBattleScene scene) {
 			return tinted
 					? scene.new DeckBuffButton(iconId, r, g, b, label, desc)
 					: scene.new DeckBuffButton(iconId, label, desc);
+		}
+	}
+
+	private static class PlayerBuffSpec extends CombatBuffSpec {
+		private final PlayerBuffStacks stacks;
+		private final boolean showStacks;
+
+		private PlayerBuffSpec(int iconId, String label, String desc, PlayerBuffStacks stacks) {
+			this(iconId, label, desc, stacks, true);
+		}
+
+		private PlayerBuffSpec(int iconId, String label, String desc, PlayerBuffStacks stacks, boolean showStacks) {
+			super(iconId, label, desc);
+			this.stacks = stacks;
+			this.showStacks = showStacks;
+		}
+
+		private PlayerBuffSpec(int iconId, float r, float g, float b, String label, String desc, PlayerBuffStacks stacks) {
+			super(iconId, r, g, b, label, desc);
+			this.stacks = stacks;
+			this.showStacks = true;
+		}
+
+		private void apply(DeckBattleScene scene, DeckBuilderCombat combat, DeckBuffButton button) {
+			int value = stacks.stacks(combat);
+			if (showStacks) {
+				button.setStacks(value);
+			} else {
+				button.setActive(value > 0);
+			}
+		}
+	}
+
+	private static class EnemyStatusBuffSpec extends CombatBuffSpec {
+		private final EnemyBuffStacks stacks;
+
+		private EnemyStatusBuffSpec(int iconId, String label, String desc, EnemyBuffStacks stacks) {
+			super(iconId, label, desc);
+			this.stacks = stacks;
+		}
+
+		private EnemyStatusBuffSpec(int iconId, float r, float g, float b, String label, String desc, EnemyBuffStacks stacks) {
+			super(iconId, r, g, b, label, desc);
+			this.stacks = stacks;
+		}
+
+		private void apply(DeckBattleScene scene, DeckCombatEnemy enemy, DeckBuffButton button) {
+			button.setStacks(stacks.stacks(enemy));
+		}
+	}
+
+	private static class EnemyBuffSpec extends CombatBuffSpec {
+		private final EnemyBuffCondition condition;
+
+		private EnemyBuffSpec(int iconId, String label, String desc, EnemyBuffCondition condition) {
+			super(iconId, label, desc);
+			this.condition = condition;
+		}
+
+		private EnemyBuffSpec(int iconId, float r, float g, float b, String label, String desc, EnemyBuffCondition condition) {
+			super(iconId, r, g, b, label, desc);
+			this.condition = condition;
 		}
 
 		private void apply(DeckBattleScene scene, DeckCombatEnemy enemy, DeckBuffButton button) {
@@ -3086,13 +3151,7 @@ public class DeckBattleScene extends PixelScene {
 		private RenderedTextBlock shieldLabel;
 		private ColorBlock targetMark;
 		private PointerArea area;
-		private DeckBuffButton vulnerableBuff;
-		private DeckBuffButton strengthBuff;
-		private DeckBuffButton thornsBuff;
-		private DeckBuffButton platedArmorBuff;
-		private DeckBuffButton trickyBuff;
-		private DeckBuffButton venomBuff;
-		private DeckBuffButton artifactBuff;
+		private final ArrayList<DeckBuffButton> statusBuffs = new ArrayList<>();
 		private final ArrayList<DeckBuffButton> traitBuffs = new ArrayList<>();
 		private float baseX;
 		private float baseY;

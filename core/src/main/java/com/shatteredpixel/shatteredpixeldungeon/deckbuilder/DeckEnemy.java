@@ -246,6 +246,70 @@ public enum DeckEnemy {
 			} while (intent == enemy.lastIntent);
 			return intent;
 		}
+	},
+
+	CALCIFIED_FANATIC("석회화된 광신자", 38, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 38 + Random.Int(4);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			return turn == 1 ? DeckBuilderCombat.RESULT_INCANTATION : DeckBuilderCombat.RESULT_DARK_STRIKE;
+		}
+	},
+
+	ROGUE_SEAWEED("불량 해초", 44, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 44 + Random.Int(3);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			switch ((turn - 1) % 3) {
+				case 0: return DeckBuilderCombat.RESULT_SEA_KICK;
+				case 1: return DeckBuilderCombat.RESULT_SPINNING_KICK;
+				default: return DeckBuilderCombat.RESULT_BUBBLE_BURP;
+			}
+		}
+	},
+
+	STAGGERING_VINE("휘청거리는 덩굴", 61, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 61 + Random.Int(5);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			switch ((turn - 1) % 3) {
+				case 0: return DeckBuilderCombat.RESULT_VINE_SWIPE;
+				case 1: return DeckBuilderCombat.RESULT_GRASPING_VINES;
+				default: return DeckBuilderCombat.RESULT_CHOMP;
+			}
+		}
+	},
+
+	ANGLERFISH("장수아귀", 72, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 72 + Random.Int(5);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			if (turn == 1) return DeckBuilderCombat.RESULT_CLAW;
+			int[] options = enemy.splitUsed
+					? new int[]{DeckBuilderCombat.RESULT_CLAW, DeckBuilderCombat.RESULT_RAMPAGE}
+					: new int[]{DeckBuilderCombat.RESULT_CLAW, DeckBuilderCombat.RESULT_RAMPAGE, DeckBuilderCombat.RESULT_ROAR};
+			int intent;
+			do {
+				intent = options[Random.Int(options.length)];
+			} while (intent == enemy.lastIntent);
+			return intent;
+		}
 	};
 
 	public static final int ENCOUNTER_SETESH = 0;
@@ -260,6 +324,9 @@ public enum DeckEnemy {
 	public static final int ENCOUNTER_KHNUM = 8;
 	public static final int ENCOUNTER_RAMPAGING_BULL = 9;
 	public static final int ENCOUNTER_HAUNTED_SHIP = 10;
+	public static final int ENCOUNTER_ANGLERFISH = 11;
+	public static final int ENCOUNTER_STAGGERING_VINE = 12;
+	public static final int ENCOUNTER_CALCIFIED_PAIR = 13;
 
 	public final String name;
 	public final int baseHP;
@@ -337,6 +404,12 @@ public enum DeckEnemy {
 				return new DeckEnemy[]{KHNUM};
 			case ENCOUNTER_HAUNTED_SHIP:
 				return new DeckEnemy[]{HAUNTED_SHIP};
+			case ENCOUNTER_ANGLERFISH:
+				return new DeckEnemy[]{ANGLERFISH};
+			case ENCOUNTER_STAGGERING_VINE:
+				return new DeckEnemy[]{STAGGERING_VINE};
+			case ENCOUNTER_CALCIFIED_PAIR:
+				return new DeckEnemy[]{CALCIFIED_FANATIC, ROGUE_SEAWEED};
 			case ENCOUNTER_RAMPAGING_BULL:
 			default:
 				return new DeckEnemy[]{RAMPAGING_BULL};
@@ -354,7 +427,7 @@ public enum DeckEnemy {
 	public static int rollAct1Encounter(int previousEncounterId) {
 		int encounterId;
 		do {
-			encounterId = ENCOUNTER_GEB_SETESH + Random.Int(7);
+			encounterId = ENCOUNTER_GEB_SETESH + Random.Int(10);
 		} while (encounterId == previousEncounterId);
 		return encounterId;
 	}

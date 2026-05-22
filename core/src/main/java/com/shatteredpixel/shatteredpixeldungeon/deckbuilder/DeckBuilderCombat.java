@@ -50,6 +50,17 @@ public class DeckBuilderCombat {
 	public static final int RESULT_RAMMING_SPEED = -35;
 	public static final int RESULT_SWIPE = -36;
 	public static final int RESULT_STOMP = -37;
+	public static final int RESULT_CLAW = -38;
+	public static final int RESULT_RAMPAGE = -39;
+	public static final int RESULT_ROAR = -40;
+	public static final int RESULT_VINE_SWIPE = -41;
+	public static final int RESULT_GRASPING_VINES = -42;
+	public static final int RESULT_CHOMP = -43;
+	public static final int RESULT_INCANTATION = -44;
+	public static final int RESULT_DARK_STRIKE = -45;
+	public static final int RESULT_SEA_KICK = -46;
+	public static final int RESULT_SPINNING_KICK = -47;
+	public static final int RESULT_BUBBLE_BURP = -48;
 	public static final int RESULT_WINDUP_PUNCH = -13;
 	public static final int RESULT_LASH = -14;
 	public static final int RESULT_TACKLE = -15;
@@ -87,6 +98,7 @@ public class DeckBuilderCombat {
 	private static final String ENEMY_TRICKY = "enemy_tricky";
 	private static final String ENEMY_BLOCK_REDUCTION = "enemy_block_reduction";
 	private static final String ENEMY_VENOM = "enemy_venom";
+	private static final String ENEMY_RITUAL = "enemy_ritual";
 	private static final String ENEMY_LAST_INTENT = "enemy_last_intent";
 	private static final String ENEMY_SPLIT_USED = "enemy_split_used";
 	private static final String PLAYER_DAMAGE_REDUCTION = "player_damage_reduction";
@@ -97,6 +109,7 @@ public class DeckBuilderCombat {
 	private static final String FIRST_SHIV_DAMAGE_BONUS = "first_shiv_damage_bonus";
 	private static final String SHIV_RETAIN = "shiv_retain";
 	private static final String SPINNING_NAIL_DAMAGE_BONUS = "spinning_nail_damage_bonus";
+	private static final String PLAYER_ENTANGLE = "player_entangle";
 
 	public final int nodeType;
 	public final int depth;
@@ -115,6 +128,7 @@ public class DeckBuilderCombat {
 	public int playerBlockReduction;
 	public int playerWeak;
 	public int playerDexterity;
+	public int playerEntangle;
 	public int shivDamageBonus;
 	public int firstShivDamageBonus;
 	public int spinningNailDamageBonus;
@@ -188,6 +202,7 @@ public class DeckBuilderCombat {
 		bundle.put(FIRST_SHIV_DAMAGE_BONUS, firstShivDamageBonus);
 		bundle.put(SHIV_RETAIN, shivRetain);
 		bundle.put(SPINNING_NAIL_DAMAGE_BONUS, spinningNailDamageBonus);
+		bundle.put(PLAYER_ENTANGLE, playerEntangle);
 		bundle.put(DRAW_PILE, toArray(drawPile));
 		bundle.put(HAND, toArray(hand));
 		bundle.put(DISCARD_PILE, toArray(discardPile));
@@ -207,6 +222,7 @@ public class DeckBuilderCombat {
 		int[] enemyTricky = new int[enemies.size()];
 		int[] enemyBlockReduction = new int[enemies.size()];
 		int[] enemyVenom = new int[enemies.size()];
+		int[] enemyRitual = new int[enemies.size()];
 		int[] enemyLastIntent = new int[enemies.size()];
 		boolean[] enemySplitUsed = new boolean[enemies.size()];
 		for (int i = 0; i < enemies.size(); i++) {
@@ -225,6 +241,7 @@ public class DeckBuilderCombat {
 			enemyTricky[i] = enemy.tricky;
 			enemyBlockReduction[i] = enemy.blockReduction;
 			enemyVenom[i] = enemy.venom;
+			enemyRitual[i] = enemy.ritual;
 			enemyLastIntent[i] = enemy.lastIntent;
 			enemySplitUsed[i] = enemy.splitUsed;
 		}
@@ -242,6 +259,7 @@ public class DeckBuilderCombat {
 		bundle.put(ENEMY_TRICKY, enemyTricky);
 		bundle.put(ENEMY_BLOCK_REDUCTION, enemyBlockReduction);
 		bundle.put(ENEMY_VENOM, enemyVenom);
+		bundle.put(ENEMY_RITUAL, enemyRitual);
 		bundle.put(ENEMY_LAST_INTENT, enemyLastIntent);
 		bundle.put(ENEMY_SPLIT_USED, enemySplitUsed);
 	}
@@ -270,6 +288,7 @@ public class DeckBuilderCombat {
 		combat.firstShivDamageBonus = bundle.contains(FIRST_SHIV_DAMAGE_BONUS) ? bundle.getInt(FIRST_SHIV_DAMAGE_BONUS) : 0;
 		combat.shivRetain = bundle.getBoolean(SHIV_RETAIN);
 		combat.spinningNailDamageBonus = bundle.contains(SPINNING_NAIL_DAMAGE_BONUS) ? bundle.getInt(SPINNING_NAIL_DAMAGE_BONUS) : 0;
+		combat.playerEntangle = bundle.contains(PLAYER_ENTANGLE) ? bundle.getInt(PLAYER_ENTANGLE) : 0;
 		restoreList(combat.drawPile, bundle, DRAW_PILE);
 		restoreList(combat.hand, bundle, HAND);
 		restoreList(combat.discardPile, bundle, DISCARD_PILE);
@@ -289,6 +308,7 @@ public class DeckBuilderCombat {
 		int[] enemyTricky = bundle.contains(ENEMY_TRICKY) ? bundle.getIntArray(ENEMY_TRICKY) : new int[0];
 		int[] enemyBlockReduction = bundle.contains(ENEMY_BLOCK_REDUCTION) ? bundle.getIntArray(ENEMY_BLOCK_REDUCTION) : new int[0];
 		int[] enemyVenom = bundle.contains(ENEMY_VENOM) ? bundle.getIntArray(ENEMY_VENOM) : new int[0];
+		int[] enemyRitual = bundle.contains(ENEMY_RITUAL) ? bundle.getIntArray(ENEMY_RITUAL) : new int[0];
 		int[] enemyLastIntent = bundle.contains(ENEMY_LAST_INTENT) ? bundle.getIntArray(ENEMY_LAST_INTENT) : new int[0];
 		boolean[] enemySplitUsed = bundle.contains(ENEMY_SPLIT_USED) ? bundle.getBooleanArray(ENEMY_SPLIT_USED) : new boolean[0];
 		DeckEnemy[] allEnemies = DeckEnemy.values();
@@ -309,6 +329,7 @@ public class DeckBuilderCombat {
 			if (i < enemyTricky.length) enemy.tricky = enemyTricky[i];
 			if (i < enemyBlockReduction.length) enemy.blockReduction = enemyBlockReduction[i];
 			if (i < enemyVenom.length) enemy.venom = enemyVenom[i];
+			if (i < enemyRitual.length) enemy.ritual = enemyRitual[i];
 			if (i < enemyLastIntent.length) enemy.lastIntent = enemyLastIntent[i];
 			if (i < enemySplitUsed.length) enemy.splitUsed = enemySplitUsed[i];
 			combat.enemies.add(enemy);
@@ -459,6 +480,7 @@ public class DeckBuilderCombat {
 		if (card == DeckCard.PROUD_STARVER) {
 			cost -= countInDrawPile(DeckCard.ROTATING_NAIL);
 		}
+		if (card.type == DeckCardType.ATTACK && playerEntangle > 0) cost += 1;
 		return Math.max(0, cost);
 	}
 
@@ -603,6 +625,7 @@ public class DeckBuilderCombat {
 		hand.clear();
 		hand.addAll(retained);
 		if (playerBlockReduction > 0) playerBlockReduction--;
+		if (playerEntangle > 0) playerEntangle--;
 
 		boolean injected = false;
 		int damageTaken = 0;
@@ -633,6 +656,7 @@ public class DeckBuilderCombat {
 			if (enemy.attackDown > 0) enemy.attackDown--;
 			if (enemy.platedArmor > 0 && enemy.alive()) enemy.block += enemy.platedArmor;
 			if (enemy.kind == DeckEnemy.BYRDONIS && enemy.alive()) enemy.strength += 1;
+			if (enemy.ritual > 0 && enemy.alive()) enemy.strength += enemy.ritual;
 		}
 		enemies.addAll(splitSpawns);
 		sanitizeTarget();

@@ -188,6 +188,68 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent STOMP = register(multiAttack(
 			DeckBuilderCombat.RESULT_STOMP, 4, 3, "발구르기"));
 
+	public static final DeckEnemyIntent CLAW = register(multiAttack(
+			DeckBuilderCombat.RESULT_CLAW, 4, 2, "발톱"));
+
+	public static final DeckEnemyIntent RAMPAGE = register(simpleAttack(
+			DeckBuilderCombat.RESULT_RAMPAGE, 14, "날뛰기"));
+
+	public static final DeckEnemyIntent INCANTATION = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_INCANTATION,
+			(combat, enemy, remainingBlock) -> {
+				enemy.ritual += 2;
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
+						combat.enemyIndex(enemy), 0, false, "주문 (의식 +2)"));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 의식 +2"));
+
+	public static final DeckEnemyIntent DARK_STRIKE = register(simpleAttack(
+			DeckBuilderCombat.RESULT_DARK_STRIKE, 9, "어둠의 타격"));
+
+	public static final DeckEnemyIntent SEA_KICK = register(simpleAttack(
+			DeckBuilderCombat.RESULT_SEA_KICK, 11, "바다 차기"));
+
+	public static final DeckEnemyIntent SPINNING_KICK = register(multiAttack(
+			DeckBuilderCombat.RESULT_SPINNING_KICK, 2, 4, "돌려차기"));
+
+	public static final DeckEnemyIntent BUBBLE_BURP = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_BUBBLE_BURP,
+			(combat, enemy, remainingBlock) -> {
+				enemy.block += 7;
+				enemy.strength += 1;
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
+						combat.enemyIndex(enemy), 0, false, "거품 뿜기 (보호막 +7, 공격력 +1)"));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 보호막 +7, 공격력 +1"));
+
+	public static final DeckEnemyIntent VINE_SWIPE = register(multiAttack(
+			DeckBuilderCombat.RESULT_VINE_SWIPE, 6, 2, "밀쳐내기"));
+
+	public static final DeckEnemyIntent GRASPING_VINES = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_GRASPING_VINES,
+			(combat, enemy, remainingBlock) -> {
+				AttackResult attack = combat.performEnemyAttack(enemy, 8, remainingBlock, "휘감는 덩굴");
+				combat.playerEntangle += 1;
+				return attack.toTurnResult(false);
+			},
+			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 뒤얽힘 1"));
+
+	public static final DeckEnemyIntent CHOMP = register(simpleAttack(
+			DeckBuilderCombat.RESULT_CHOMP, 16, "물어뜯기"));
+
+	public static final DeckEnemyIntent ROAR = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_ROAR,
+			(combat, enemy, remainingBlock) -> {
+				enemy.vulnerable += 3;
+				enemy.splitUsed = true;
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
+						combat.enemyIndex(enemy), 0, false, "포효 (피해 증폭 +3)"));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 피해 증폭 +3"));
+
 	public static final DeckEnemyIntent WINDUP_PUNCH = register(multiAttack(
 			DeckBuilderCombat.RESULT_WINDUP_PUNCH, 3, 2, "감아치기"));
 
