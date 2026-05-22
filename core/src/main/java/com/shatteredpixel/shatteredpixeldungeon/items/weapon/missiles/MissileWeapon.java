@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -170,9 +171,7 @@ abstract public class MissileWeapon extends Weapon {
         // EnhancedThrownWeapon 버프 적용 (장착 여부와 관계없이)
         if (Dungeon.hero != null) {
             EnhancedThrownWeapon thrownEmpower = Dungeon.hero.buff(EnhancedThrownWeapon.class);
-            if (thrownEmpower != null) {
-                lvl += thrownEmpower.getEnhancementLevel();
-            }
+            lvl += thrownEmpower != null ? thrownEmpower.getEnhancementLevel() : Statistics.spw1;
             
             // J34 탤런트: 기마 상태에서 투척 무기 +1 강화
             if (Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding.class) != null

@@ -33,11 +33,14 @@ public class EnhancedWand extends Buff {
     {
         type = buffType.POSITIVE;
         announced = true;
+        revivePersists = true;
     }
 
     public static final float DURATION = 1_000_000;
     
     private int enhancementLevel = -1; // -1이면 Statistics.spw2 사용, 그 외에는 해당 값 사용
+    private int permanentEnhancementLevel = 0;
+    private int temporaryEnhancementLevel = 0;
     private float temporaryDuration = -1; // -1이면 영구, 그 외에는 임시 버프
     private float initialDuration = -1; // 초기 duration 저장 (iconFadePercent 계산용)
 
@@ -64,20 +67,22 @@ public class EnhancedWand extends Buff {
     }
     
     public int getEnhancementLevel() {
-        if (Dungeon.tendencylevel) {
-            return Statistics.spw2;
-        }
-        if (enhancementLevel >= 0) {
-            return enhancementLevel;
-        }
-        return Statistics.spw2;
+        return Statistics.spw2 + permanentEnhancementLevel + temporaryEnhancementLevel;
     }
     
     public void setEnhancementLevel(int level) {
         enhancementLevel = level;
+        permanentEnhancementLevel = level;
+    }
+
+    public void setTemporaryEnhancement(int level, float duration) {
+        temporaryEnhancementLevel = level;
+        temporaryDuration = duration;
+        initialDuration = duration;
     }
     
     public void setTemporaryDuration(float duration) {
+        temporaryEnhancementLevel = Math.max(0, enhancementLevel);
         temporaryDuration = duration;
         initialDuration = duration;
     }
@@ -85,10 +90,22 @@ public class EnhancedWand extends Buff {
     public void setPermanent() {
         temporaryDuration = -1;
         initialDuration = -1;
+        temporaryEnhancementLevel = 0;
+        permanentEnhancementLevel = Math.max(permanentEnhancementLevel, Math.max(0, enhancementLevel));
     }
     
     public boolean isPermanent() {
-        return temporaryDuration < 0;
+        return temporaryDuration < 0 && temporaryEnhancementLevel <= 0;
+    }
+
+    private boolean hasPersistentEnhancement() {
+        return Statistics.spw2 + permanentEnhancementLevel > 0;
+    }
+
+    private void clearTemporaryEnhancement() {
+        temporaryEnhancementLevel = 0;
+        temporaryDuration = -1;
+        initialDuration = -1;
     }
     
     @Override
@@ -96,11 +113,23 @@ public class EnhancedWand extends Buff {
         if (temporaryDuration > 0) {
             temporaryDuration--;
             if (temporaryDuration <= 0) {
-                detach();
+                clearTemporaryEnhancement();
+                if (!hasPersistentEnhancement()) {
+                    detach();
+                }
             }
         }
         spend(TICK);
         return true;
+    }
+
+    @Override
+    public void detach() {
+        if (hasPersistentEnhancement()) {
+            clearTemporaryEnhancement();
+        } else {
+            super.detach();
+        }
     }
 
     @Override
@@ -114,6 +143,8 @@ public class EnhancedWand extends Buff {
     }
     
     private static final String ENHANCEMENT_LEVEL = "enhancement_level";
+    private static final String PERMANENT_ENHANCEMENT_LEVEL = "permanent_enhancement_level";
+    private static final String TEMPORARY_ENHANCEMENT_LEVEL = "temporary_enhancement_level";
     private static final String TEMPORARY_DURATION = "temporary_duration";
     private static final String INITIAL_DURATION = "initial_duration";
 
@@ -121,6 +152,8 @@ public class EnhancedWand extends Buff {
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(ENHANCEMENT_LEVEL, enhancementLevel);
+        bundle.put(PERMANENT_ENHANCEMENT_LEVEL, permanentEnhancementLevel);
+        bundle.put(TEMPORARY_ENHANCEMENT_LEVEL, temporaryEnhancementLevel);
         bundle.put(TEMPORARY_DURATION, temporaryDuration);
         bundle.put(INITIAL_DURATION, initialDuration);
     }
@@ -133,10 +166,24 @@ public class EnhancedWand extends Buff {
         } else {
             enhancementLevel = -1; // 기존 세이브 파일 호환성: 키가 없으면 -1 (Statistics.spw2 사용)
         }
+        if (bundle.contains(PERMANENT_ENHANCEMENT_LEVEL)) {
+            permanentEnhancementLevel = bundle.getInt(PERMANENT_ENHANCEMENT_LEVEL);
+        } else if (enhancementLevel >= 0 && !bundle.contains(TEMPORARY_DURATION)) {
+            permanentEnhancementLevel = enhancementLevel;
+        }
+        if (bundle.contains(TEMPORARY_ENHANCEMENT_LEVEL)) {
+            temporaryEnhancementLevel = bundle.getInt(TEMPORARY_ENHANCEMENT_LEVEL);
+        }
         if (bundle.contains(TEMPORARY_DURATION)) {
             temporaryDuration = bundle.getFloat(TEMPORARY_DURATION);
+            if (!bundle.contains(TEMPORARY_ENHANCEMENT_LEVEL) && temporaryDuration > 0 && enhancementLevel >= 0) {
+                temporaryEnhancementLevel = enhancementLevel;
+            }
         } else {
             temporaryDuration = -1;
+        }
+        if (!bundle.contains(PERMANENT_ENHANCEMENT_LEVEL) && enhancementLevel >= 0 && temporaryDuration <= 0) {
+            permanentEnhancementLevel = enhancementLevel;
         }
         if (bundle.contains(INITIAL_DURATION)) {
             initialDuration = bundle.getFloat(INITIAL_DURATION);

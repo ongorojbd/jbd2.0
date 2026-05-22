@@ -183,9 +183,9 @@ public class BlessArena extends ArmorAbility {
 				}
 				
 				EnhancedWeapon weaponBuff = Buff.affect(hero, EnhancedWeapon.class);
-				weaponBuff.setEnhancementLevel(enhancementLevel);
+				weaponBuff.setTemporaryEnhancement(enhancementLevel, left);
 				EnhancedArmor armorBuff = Buff.affect(hero, EnhancedArmor.class);
-				armorBuff.setEnhancementLevel(enhancementLevel);
+				armorBuff.setTemporaryEnhancement(enhancementLevel, left);
 			} else if (hero != null) {
 				// Arena 밖으로 나가면 Enhanced 버프들만 제거 (Arena는 유지)
 				Buff.detach(hero, EnhancedWeapon.class);
@@ -297,4 +297,3 @@ public class BlessArena extends ArmorAbility {
 	}
 
 }
-

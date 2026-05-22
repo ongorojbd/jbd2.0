@@ -414,8 +414,8 @@ abstract public class Weapon extends KindOfWeapon {
             }
 
             EnhancedWeapon weaponEmpower = hero.buff(EnhancedWeapon.class);
-            if (weaponEmpower != null && isEquipped(hero)) {
-                lvl += weaponEmpower.getEnhancementLevel();
+            if (isEquipped(hero)) {
+                lvl += weaponEmpower != null ? weaponEmpower.getEnhancementLevel() : Statistics.spw1;
             }
             if (isEquipped(hero) && hero.hasTalent(Talent.J63) && (cursed || hasCurseEnchant())) {
                 lvl++;
