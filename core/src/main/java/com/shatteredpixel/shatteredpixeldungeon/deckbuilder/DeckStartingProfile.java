@@ -38,7 +38,7 @@ public class DeckStartingProfile {
 		register(HeroClass.HUNTRESS,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
-				card(DeckCard.SCORPION_THROW, 1));
+				card(DeckCard.MASSACRE, 1));
 
 		register(HeroClass.JOHNNY,
 				card(DeckCard.STRIKE, 5),

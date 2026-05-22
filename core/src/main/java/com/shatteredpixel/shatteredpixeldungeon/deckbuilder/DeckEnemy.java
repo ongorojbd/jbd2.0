@@ -13,6 +13,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.watabou.utils.Random;
 
 public enum DeckEnemy {
@@ -64,32 +65,54 @@ public enum DeckEnemy {
 		}
 	},
 
-	JUDGEMENT("저지먼트", 56, 0, false) {
+	JUDGEMENT("저지먼트", 65, 0, false) {
 		@Override
 		public void initialize(DeckCombatEnemy enemy) {
-			enemy.platedArmor = 8;
+			enemy.block = 13;
+			enemy.artifact = 1;
 		}
 
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
-			return turn % 2 == 1 ? DeckBuilderCombat.RESULT_PRESSURIZE : 10;
+			switch ((turn - 1) % 5) {
+				case 0:
+					return DeckBuilderCombat.RESULT_CHARGE_UP;
+				case 1:
+				case 2:
+					return DeckBuilderCombat.RESULT_REPEATER_BLAST;
+				case 3:
+					return DeckBuilderCombat.RESULT_EXPEL_BLAST;
+				default:
+					return DeckBuilderCombat.RESULT_SUBMERGE;
+			}
 		}
 	},
-	LARGE_SLIME("러버즈", 64, 0, false) {
+	LARGE_SLIME("러버즈", 65, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
-			return 64 + Random.Int(7);
+			return (Challenges.activeChallenges() >= 7 ? 68 : 65) + Random.Int(5);
 		}
 
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
-			return Random.Int(100) < 30 ? DeckBuilderCombat.RESULT_FLAME_TACKLE_BIG : DeckBuilderCombat.RESULT_LICK_BIG;
+			int r = Random.Int(100);
+			if (r < 30) return DeckBuilderCombat.RESULT_CORROSIVE_SPIT_BIG;
+			if (r < 70) return DeckBuilderCombat.RESULT_TACKLE_BIG;
+			return DeckBuilderCombat.RESULT_LICK_BIG;
 		}
 	},
-	MEDIUM_SLIME("러버즈", 24, 0, false) {
+	MEDIUM_SLIME("러버즈", 28, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 28 + Random.Int(5);
+		}
+
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
-			return Random.Int(100) < 30 ? DeckBuilderCombat.RESULT_FLAME_TACKLE_MEDIUM : DeckBuilderCombat.RESULT_LICK_MEDIUM;
+			int r = Random.Int(100);
+			if (r < 30) return DeckBuilderCombat.RESULT_CORROSIVE_SPIT_MEDIUM;
+			if (r < 70) return DeckBuilderCombat.RESULT_TACKLE_MEDIUM;
+			return DeckBuilderCombat.RESULT_LICK_MEDIUM;
 		}
 	},
 	CLASH("클래시", 11, 0, false) {
@@ -131,26 +154,97 @@ public enum DeckEnemy {
 			return intent;
 		}
 	},
-	RAMPAGING_BULL("날뛰는 소", 65, 0, false) {
+	RAMPAGING_BULL("날뛰는 소", 56, 0, false) {
 		@Override
 		public void initialize(DeckCombatEnemy enemy) {
-			enemy.block = 13;
-			enemy.artifact = 1;
+			enemy.platedArmor = 8;
 		}
 
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
-			switch ((turn - 1) % 5) {
-				case 0:
-					return DeckBuilderCombat.RESULT_CHARGE_UP;
-				case 1:
-				case 2:
-					return DeckBuilderCombat.RESULT_REPEATER_BLAST;
-				case 3:
-					return DeckBuilderCombat.RESULT_EXPEL_BLAST;
-				default:
-					return DeckBuilderCombat.RESULT_SUBMERGE;
+			return turn % 2 == 1 ? DeckBuilderCombat.RESULT_PRESSURIZE : 10;
+		}
+	},
+
+	LAGAVULIN("라가불린", 109, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 109 + Random.Int(3);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			if (!enemy.splitUsed) {
+				if (turn > 3) {
+					enemy.splitUsed = true;
+				} else {
+					return DeckBuilderCombat.RESULT_LAGAVULIN_SLEEP;
+				}
 			}
+			int idx = enemy.venom % 3;
+			enemy.venom++;
+			if (idx == 2) return DeckBuilderCombat.RESULT_LAGAVULIN_SIPHON;
+			return DeckBuilderCombat.RESULT_LAGAVULIN_ATTACK;
+		}
+	},
+
+	BYRDONIS("섀도니스", 81, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 81 + Random.Int(4);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			return (turn % 2 == 1) ? DeckBuilderCombat.RESULT_BYRDONIS_BITE : DeckBuilderCombat.RESULT_PECK;
+		}
+	},
+
+	RAT_JAGGED("래트(깔쭉이)", 48, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 48 + Random.Int(5);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			switch ((turn - 1) % 3) {
+				case 0: return DeckBuilderCombat.RESULT_SPLITTING_BITE;
+				case 1: return DeckBuilderCombat.RESULT_POISON_FANG;
+				default: return DeckBuilderCombat.RESULT_BITE;
+			}
+		}
+	},
+
+	RAT_SMOOTH("래트(안깔쭉이)", 42, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 42 + Random.Int(5);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			if (turn == 1) return DeckBuilderCombat.RESULT_DIRTY_FUR;
+			return (turn % 2 == 0) ? DeckBuilderCombat.RESULT_TAIL_WHIP : DeckBuilderCombat.RESULT_CORNER;
+		}
+	},
+
+	HAUNTED_SHIP("유령선", 63, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 63 + Random.Int(5);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			if (turn == 1) return DeckBuilderCombat.RESULT_HAUNT;
+			if (turn == 2) return DeckBuilderCombat.RESULT_RAMMING_SPEED;
+			int[] options = {DeckBuilderCombat.RESULT_RAMMING_SPEED, DeckBuilderCombat.RESULT_SWIPE, DeckBuilderCombat.RESULT_STOMP};
+			int intent;
+			do {
+				intent = options[Random.Int(3)];
+			} while (intent == enemy.lastIntent);
+			return intent;
 		}
 	};
 
@@ -165,6 +259,7 @@ public enum DeckEnemy {
 	public static final int ENCOUNTER_CLASHES = 7;
 	public static final int ENCOUNTER_KHNUM = 8;
 	public static final int ENCOUNTER_RAMPAGING_BULL = 9;
+	public static final int ENCOUNTER_HAUNTED_SHIP = 10;
 
 	public final String name;
 	public final int baseHP;
@@ -183,7 +278,7 @@ public enum DeckEnemy {
 
 	public int hpForDepth(int depth) {
 		if (this == SETESH || this == NDOUL || this == THE_FOOL) return baseHP;
-		if (this == GEB_GOD || this == JUDGEMENT || this == MEDIUM_SLIME || this == KHNUM || this == RAMPAGING_BULL) return baseHP;
+		if (this == GEB_GOD || this == JUDGEMENT || this == KHNUM || this == RAMPAGING_BULL) return baseHP;
 		return baseHP + Math.max(1, depth) * 3;
 	}
 
@@ -195,7 +290,7 @@ public enum DeckEnemy {
 	}
 
 	public static DeckEnemy forNode(int nodeType) {
-		if (nodeType == DeckBuilderMap.ELITE) return HORUS;
+		if (nodeType == DeckBuilderMap.ELITE) return BYRDONIS;
 		if (nodeType == DeckBuilderMap.BOSS) return CREAM;
 		return GEB_GOD;
 	}
@@ -205,7 +300,10 @@ public enum DeckEnemy {
 			return new DeckEnemy[]{CREAM};
 		}
 		if (nodeType == DeckBuilderMap.ELITE) {
-			return new DeckEnemy[]{HORUS, GEB_GOD};
+			int r = Random.Int(3);
+			if (r == 0) return new DeckEnemy[]{BYRDONIS};
+			if (r == 1) return new DeckEnemy[]{RAT_JAGGED, RAT_SMOOTH};
+			return new DeckEnemy[]{LAGAVULIN};
 		}
 		int encounter = rollAct1Encounter(previousEncounterId);
 		return normalEncounter(encounter);
@@ -237,6 +335,8 @@ public enum DeckEnemy {
 				return new DeckEnemy[]{CLASH, CLASH, CLASH};
 			case ENCOUNTER_KHNUM:
 				return new DeckEnemy[]{KHNUM};
+			case ENCOUNTER_HAUNTED_SHIP:
+				return new DeckEnemy[]{HAUNTED_SHIP};
 			case ENCOUNTER_RAMPAGING_BULL:
 			default:
 				return new DeckEnemy[]{RAMPAGING_BULL};
@@ -254,7 +354,7 @@ public enum DeckEnemy {
 	public static int rollAct1Encounter(int previousEncounterId) {
 		int encounterId;
 		do {
-			encounterId = ENCOUNTER_GEB_SETESH + Random.Int(6);
+			encounterId = ENCOUNTER_GEB_SETESH + Random.Int(7);
 		} while (encounterId == previousEncounterId);
 		return encounterId;
 	}

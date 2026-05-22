@@ -22,6 +22,7 @@ public class DeckCombatEnemy {
 	public int hp;
 	public int intent;
 	public int vulnerable;
+	public int attackDown;
 	public int strength;
 	public int block;
 	public int thorns;

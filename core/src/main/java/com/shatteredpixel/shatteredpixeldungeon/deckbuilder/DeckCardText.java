@@ -24,6 +24,12 @@ public class DeckCardText {
 	}
 
 	public static String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+		if (card == DeckCard.POISON_DART) {
+			return "사용불가. 내 턴 종료 시 이 카드가 손에 있다면, 피해를 3 받습니다.";
+		}
+		if (card == DeckCard.BARNACLE) {
+			return "사용불가. " + DeckCardKeyword.TRANSIENT.label;
+		}
 		String text = "";
 		for (DeckCardEffect effect : card.effects(cardCode)) {
 			text += appendSentence(text, effect.rulesText(card, cardCode, combat));
@@ -41,7 +47,7 @@ public class DeckCardText {
 	public static String keywordText(DeckCard card, int cardCode) {
 		String text = "";
 		if (card.vulnerable(cardCode) > 0) text += "취약: 받는 공격 피해가 50% 증가합니다.";
-		if (card.strength(cardCode) > 0) text += appendLine(text, "힘: 공격 카드의 피해가 증가합니다.");
+		if (card.strength(cardCode) > 0) text += appendLine(text, "공격력: 공격 카드의 피해가 증가합니다.");
 		for (DeckCardKeyword keyword : DeckCardKeyword.values()) {
 			if (card.hasKeyword(cardCode, keyword)) {
 				text += appendLine(text, keyword.label + ": " + keyword.description);

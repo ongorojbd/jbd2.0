@@ -43,7 +43,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "방어도를 " + card.block(cardCode) + " 얻습니다.";
+			return "보호막을 " + card.block(cardCode) + " 얻습니다.";
 		}
 	}
 
@@ -176,6 +176,41 @@ public class DeckCardEffects {
 		}
 	}
 
+	public static class AttackDown implements DeckCardEffect {
+		private final int base;
+		private final int upgraded;
+
+		public AttackDown(int base, int upgraded) {
+			this.base = base;
+			this.upgraded = upgraded;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? upgraded : base;
+			for (DeckCombatEnemy target : targets(combat, card)) {
+				if (!combat.applyEnemyDebuff(target)) continue;
+				target.attackDown += amount;
+			}
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? upgraded : base;
+			return "공격력 저하를 " + amount + " 부여합니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return base == upgraded ? "" : "공격력 저하 " + base + " > " + upgraded;
+		}
+
+		@Override
+		public String keywordText(DeckCard card, int cardCode) {
+			return "공격력 저하: 적의 공격 피해가 25% 감소합니다.";
+		}
+	}
+
 	public static class Strength implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
@@ -186,7 +221,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "힘을 " + card.strength(cardCode) + " 얻습니다.";
+			return "공격력을 " + card.strength(cardCode) + " 얻습니다.";
 		}
 	}
 
@@ -314,7 +349,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "피해를 " + DeckCardText.damageValue(card, cardCode, combat) + " 줍니다. 막히지 않은 피해만큼 방어도를 얻습니다.";
+			return "피해를 " + DeckCardText.damageValue(card, cardCode, combat) + " 줍니다. 막히지 않은 피해만큼 보호막을 얻습니다.";
 		}
 	}
 

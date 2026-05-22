@@ -44,11 +44,11 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent ATTACK_6_BLOCK_5 = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_ATTACK_6_BLOCK_5,
 			(combat, enemy, remainingBlock) -> {
-				AttackResult attack = combat.performEnemyAttack(enemy, 6, remainingBlock, "방어막 +5");
+				AttackResult attack = combat.performEnemyAttack(enemy, 6, remainingBlock, "보호막 +5");
 				enemy.block += 5;
 				return attack.toTurnResult(false);
 			},
-			enemy -> "예고: " + damageText(enemy, 6) + " 피해 + 방어 5"));
+			enemy -> "예고: " + damageText(enemy, 6) + " 피해 + 보호막 5"));
 
 	public static final DeckEnemyIntent MASSACRE = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_MASSACRE,
@@ -68,19 +68,125 @@ public class DeckEnemyIntent {
 			},
 			enemy -> "예고: 반격 +2"));
 
-	public static final DeckEnemyIntent PRESSURIZE = register(strengthIntent(DeckBuilderCombat.RESULT_PRESSURIZE, 4, "힘"));
+	public static final DeckEnemyIntent PRESSURIZE = register(strengthIntent(DeckBuilderCombat.RESULT_PRESSURIZE, 4, "공격력"));
 
-	public static final DeckEnemyIntent FLAME_TACKLE_BIG = register(flameTackle(
-			DeckBuilderCombat.RESULT_FLAME_TACKLE_BIG, 16, 2));
+	public static final DeckEnemyIntent TACKLE_BIG = register(simpleAttack(
+			DeckBuilderCombat.RESULT_TACKLE_BIG, 16, "태클"));
 
 	public static final DeckEnemyIntent LICK_BIG = register(blockReduction(
 			DeckBuilderCombat.RESULT_LICK_BIG, 2));
 
-	public static final DeckEnemyIntent FLAME_TACKLE_MEDIUM = register(flameTackle(
-			DeckBuilderCombat.RESULT_FLAME_TACKLE_MEDIUM, 8, 1));
+	public static final DeckEnemyIntent CORROSIVE_SPIT_BIG = register(corrosiveSpit(
+			DeckBuilderCombat.RESULT_CORROSIVE_SPIT_BIG, 11));
+
+	public static final DeckEnemyIntent TACKLE_MEDIUM = register(simpleAttack(
+			DeckBuilderCombat.RESULT_TACKLE_MEDIUM, 10, "태클"));
 
 	public static final DeckEnemyIntent LICK_MEDIUM = register(blockReduction(
 			DeckBuilderCombat.RESULT_LICK_MEDIUM, 1));
+
+	public static final DeckEnemyIntent CORROSIVE_SPIT_MEDIUM = register(corrosiveSpit(
+			DeckBuilderCombat.RESULT_CORROSIVE_SPIT_MEDIUM, 7));
+
+	public static final DeckEnemyIntent SPLITTING_BITE = register(multiAttack(
+			DeckBuilderCombat.RESULT_SPLITTING_BITE, 2, 4, "갈라물기"));
+
+	public static final DeckEnemyIntent POISON_FANG = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_POISON_FANG,
+			(combat, enemy, remainingBlock) -> {
+				AttackResult attack = combat.performEnemyAttack(enemy, 6, remainingBlock, "독니 찌르기");
+				combat.discardPile.add(DeckCard.POISON_DART.code());
+				combat.lastEnemyActions.get(combat.lastEnemyActions.size() - 1).setShuffle(DeckCard.POISON_DART, 1);
+				return attack.toTurnResult(true);
+			},
+			enemy -> "예고: " + damageText(enemy, 6) + " 피해 + 상태이상 부여 1"));
+
+	public static final DeckEnemyIntent BITE = register(simpleAttack(
+			DeckBuilderCombat.RESULT_BITE, 8, "물어뜯기"));
+
+	public static final DeckEnemyIntent TAIL_WHIP = register(simpleAttack(
+			DeckBuilderCombat.RESULT_TAIL_WHIP, 9, "꼬리 후려치기"));
+
+	public static final DeckEnemyIntent DIRTY_FUR = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_DIRTY_FUR,
+			(combat, enemy, remainingBlock) -> {
+				combat.discardPile.add(DeckCard.POISON_DART.code());
+				combat.discardPile.add(DeckCard.POISON_DART.code());
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "더러운 털뭉치", false, DeckCard.POISON_DART, 2));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 상태이상 부여 2"));
+
+	public static final DeckEnemyIntent CORNER = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_CORNER,
+			(combat, enemy, remainingBlock) -> {
+				AttackResult attack = combat.performEnemyAttack(enemy, 5, remainingBlock, "구석 몰기");
+				combat.playerWeak += 1;
+				return attack.toTurnResult(false);
+			},
+			enemy -> "예고: " + damageText(enemy, 5) + " 피해 + 상태이상 부여 1"));
+
+	public static final DeckEnemyIntent LAGAVULIN_SLEEP = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_LAGAVULIN_SLEEP,
+			(combat, enemy, remainingBlock) -> {
+				enemy.block += 8;
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "[금속화] 보호막 +8"));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 금속화 (보호막 +8)"));
+
+	public static final DeckEnemyIntent LAGAVULIN_STUN = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_LAGAVULIN_STUN,
+			(combat, enemy, remainingBlock) -> {
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "[기절]"));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 기절"));
+
+	public static final DeckEnemyIntent LAGAVULIN_ATTACK = register(simpleAttack(
+			DeckBuilderCombat.RESULT_LAGAVULIN_ATTACK, 18, "공격"));
+
+	public static final DeckEnemyIntent LAGAVULIN_SIPHON = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_LAGAVULIN_SIPHON,
+			(combat, enemy, remainingBlock) -> {
+				combat.playerStrength -= 1;
+				combat.playerDexterity -= 1;
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "영혼 흡수 (공격력 -1, 민첩 -1)"));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 영혼 흡수"));
+
+	public static final DeckEnemyIntent PECK = register(multiAttack(
+			DeckBuilderCombat.RESULT_PECK, 3, 3, "쪼기"));
+
+	public static final DeckEnemyIntent BYRDONIS_BITE = register(simpleAttack(
+			DeckBuilderCombat.RESULT_BYRDONIS_BITE, 17, "물기"));
+
+	public static final DeckEnemyIntent HAUNT = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_HAUNT,
+			(combat, enemy, remainingBlock) -> {
+				for (int i = 0; i < 3; i++) combat.discardPile.add(DeckCard.BARNACLE.code());
+				combat.playerWeak += 3;
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
+						combat.enemyIndex(enemy), 0, false, "출몰 (공격력 저하 +3)", false, DeckCard.BARNACLE, 3));
+				return new TurnResult(remainingBlock, 0, true);
+			},
+			enemy -> "예고: 따개비 3장 + 공격력 저하 3"));
+
+	public static final DeckEnemyIntent RAMMING_SPEED = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_RAMMING_SPEED,
+			(combat, enemy, remainingBlock) -> {
+				AttackResult attack = combat.performEnemyAttack(enemy, 10, remainingBlock, "전속력");
+				combat.playerWeak += 1;
+				return attack.toTurnResult(false);
+			},
+			enemy -> "예고: " + damageText(enemy, 10) + " 피해 + 약화 1"));
+
+	public static final DeckEnemyIntent SWIPE = register(simpleAttack(
+			DeckBuilderCombat.RESULT_SWIPE, 13, "밀쳐내기"));
+
+	public static final DeckEnemyIntent STOMP = register(multiAttack(
+			DeckBuilderCombat.RESULT_STOMP, 4, 3, "발구르기"));
 
 	public static final DeckEnemyIntent WINDUP_PUNCH = register(multiAttack(
 			DeckBuilderCombat.RESULT_WINDUP_PUNCH, 3, 2, "감아치기"));
@@ -91,22 +197,22 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent TACKLE = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_TACKLE,
 			(combat, enemy, remainingBlock) -> {
-				AttackResult attack = combat.performEnemyAttack(enemy, 9, remainingBlock, "손상 +1");
+				AttackResult attack = combat.performEnemyAttack(enemy, 9, remainingBlock, "방어력 저하 +1");
 				combat.playerDamageReduction = Math.max(combat.playerDamageReduction, 25);
 				return attack.toTurnResult(false);
 			},
-			enemy -> "예고: " + damageText(enemy, 9) + " 피해 + 손상"));
+			enemy -> "예고: " + damageText(enemy, 9) + " 피해 + 상태이상 부여 1"));
 
-	public static final DeckEnemyIntent CHARGE_UP = register(strengthIntent(DeckBuilderCombat.RESULT_CHARGE_UP, 2, "힘"));
+	public static final DeckEnemyIntent CHARGE_UP = register(strengthIntent(DeckBuilderCombat.RESULT_CHARGE_UP, 2, "공격력"));
 
 	public static final DeckEnemyIntent REPEATER_BLAST = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_REPEATER_BLAST,
 			(combat, enemy, remainingBlock) -> {
-				AttackResult attack = combat.performEnemyAttack(enemy, 7, remainingBlock, "힘 +2");
+				AttackResult attack = combat.performEnemyAttack(enemy, 7, remainingBlock, "공격력 +2");
 				enemy.strength += 2;
 				return attack.toTurnResult(false);
 			},
-			enemy -> "예고: " + damageText(enemy, 7) + " 피해 + 힘"));
+			enemy -> "예고: " + damageText(enemy, 7) + " 피해 + 공격력"));
 
 	public static final DeckEnemyIntent EXPEL_BLAST = register(multiAttack(
 			DeckBuilderCombat.RESULT_EXPEL_BLAST, 2, 5, "방출 폭발"));
@@ -115,10 +221,10 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_SUBMERGE,
 			(combat, enemy, remainingBlock) -> {
 				enemy.block += 15;
-				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "방어도 +15"));
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "보호막 +15"));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 방어도 +15"));
+			enemy -> "예고: 보호막 +15"));
 
 	public final int id;
 	private final IntentAction action;
@@ -170,18 +276,26 @@ public class DeckEnemyIntent {
 				enemy -> "예고: " + label + " +" + amount);
 	}
 
-	private static DeckEnemyIntent flameTackle(int id, int damage, int slimyCount) {
+	private static DeckEnemyIntent simpleAttack(int id, int damage, String label) {
 		return new DeckEnemyIntent(
 				id,
 				(combat, enemy, remainingBlock) -> {
-					AttackResult attack = combat.performEnemyAttack(enemy, damage, remainingBlock, "점액투성이 +" + slimyCount);
-					for (int i = 0; i < slimyCount; i++) {
-						combat.discardPile.add(DeckCard.SLIMY.code());
-					}
-					combat.lastEnemyActions.get(combat.lastEnemyActions.size() - 1).setShuffle(DeckCard.SLIMY, slimyCount);
+					AttackResult attack = combat.performEnemyAttack(enemy, damage, remainingBlock, label);
+					return attack.toTurnResult(false);
+				},
+				enemy -> "예고: " + damageText(enemy, damage) + " 피해");
+	}
+
+	private static DeckEnemyIntent corrosiveSpit(int id, int damage) {
+		return new DeckEnemyIntent(
+				id,
+				(combat, enemy, remainingBlock) -> {
+					AttackResult attack = combat.performEnemyAttack(enemy, damage, remainingBlock, "부식의 침");
+					combat.discardPile.add(DeckCard.SLIMY.code());
+					combat.lastEnemyActions.get(combat.lastEnemyActions.size() - 1).setShuffle(DeckCard.SLIMY, 1);
 					return attack.toTurnResult(true);
 				},
-				enemy -> "예고: " + damageText(enemy, damage) + " 피해 + 점액 " + slimyCount);
+				enemy -> "예고: " + damageText(enemy, damage) + " 피해 + 점액 1");
 	}
 
 	private static DeckEnemyIntent blockReduction(int id, int amount) {
@@ -192,7 +306,7 @@ public class DeckEnemyIntent {
 					combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "방어력 저하 +" + amount));
 					return TurnResult.noChange(remainingBlock);
 				},
-				enemy -> "예고: 방어력 저하 " + amount);
+				enemy -> "예고: 상태이상 부여 " + amount);
 	}
 
 	private static DeckEnemyIntent multiAttack(int id, int hits, int baseDamage, String firstLabel) {

@@ -75,7 +75,7 @@ public enum DeckCard {
 
 	ROTATING_NAIL(15, "회전하는 손톱", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.RANDOM_ENEMY, 1, 3, 0, 1, 0, 0, 0, keywords(DeckCardKeyword.CAST_ON_DRAW, DeckCardKeyword.EXHAUST), false, Talent.J43, HeroClass.JOHNNY, 0),
 	TUSK_EQUIPMENT_DISC(16, "터스크의 장비 DISC", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.AIM), false, ItemSpriteSheet.ARTIFACT_TUSK1, HeroClass.JOHNNY, 0,
-			new DeckCardEffects.ShuffleIntoDrawPile(ROTATING_NAIL, 2)) {
+			new DeckCardEffects.ShuffleIntoDrawPile(ROTATING_NAIL, 5)) {
 		@Override
 		public int damage(int code) {
 			return damage + upgradeLevel(code) * 4;
@@ -132,6 +132,28 @@ public enum DeckCard {
 		public int damage(int code) {
 			return upgradeLevel(code) > 0 ? 12 : 9;
 		}
+	},
+
+	POISON_DART(26, "독침", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.SPIRIT_ARROW),
+
+	MASSACRE(27, "대학살", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 20, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), true, ItemSpriteSheet.GREATAXE) {
+		@Override
+		public int damage(int code) {
+			return upgradeLevel(code) > 0 ? 28 : 20;
+		}
+	},
+
+	SHOCKWAVE(28, "충격파", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 2, 0, 0, 0, 3, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.HOLSTER,
+			new DeckCardEffects.AttackDown(3, 5)) {
+		@Override
+		public int vulnerable(int code) {
+			return upgradeLevel(code) > 0 ? 5 : 3;
+		}
+	},
+
+	BARNACLE(29, "따개비", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), false, ItemSpriteSheet.DEWDROP) {
+		@Override
+		public boolean unplayable(int code) { return true; }
 	};
 
 	public final int id;
@@ -328,6 +350,18 @@ public enum DeckCard {
 		return effects.toArray(new DeckCardEffect[0]);
 	}
 
+	public boolean hasCategory(DeckCardCategory category) {
+		return DeckCardCategoryTable.has(this, category);
+	}
+
+	public DeckCardCategory[] categories() {
+		return DeckCardCategoryTable.categories(this);
+	}
+
+	public boolean unplayable(int code) {
+		return this == POISON_DART || DeckWandCards.isWand(code);
+	}
+
 	public int classFaceColor() {
 		if (deckClass == HeroClass.JOHNNY) return 0xFF4A213F;
 		return 0xFF1A3D6B;
@@ -380,6 +414,18 @@ public enum DeckCard {
 
 	public static DeckCard byCode(int code) {
 		return byId(id(code));
+	}
+
+	public static boolean hasCategory(int code, DeckCardCategory category) {
+		return byCode(code).hasCategory(category);
+	}
+
+	public static DeckCard[] cardsInCategory(DeckCardCategory category) {
+		return DeckCardCategoryTable.cards(category);
+	}
+
+	public static DeckCard[] rewardCardsInCategory(DeckCardCategory category) {
+		return DeckCardCategoryTable.rewardCards(category);
 	}
 
 	public static DeckCard byId(int id) {
