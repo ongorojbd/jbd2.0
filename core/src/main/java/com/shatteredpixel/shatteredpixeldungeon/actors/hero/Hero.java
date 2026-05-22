@@ -212,6 +212,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
@@ -2148,9 +2149,7 @@ public class Hero extends Char {
         }
 
         //TODO hero cannot take damage in the vault tester area
-        if (Dungeon.depth > 15
-                && Dungeon.branch == 1
-                && !(Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.ParallelBrawlLevel)){
+        if (Dungeon.level instanceof VaultLevel){
             dmg = 0;
         }
 

@@ -32,6 +32,7 @@ public class EnhancedRings extends FlavourBuff {
 
 	{
 		type = Buff.buffType.POSITIVE;
+		revivePersists = true;
 	}
 
 	@Override

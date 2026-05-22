@@ -37,6 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
+import java.util.ArrayList;
+
 public class Doom extends Buff {
 
     {
@@ -73,14 +75,14 @@ public class Doom extends Buff {
         }
 
         if (target instanceof Hero && Statistics.polpoQuest) {
-            if (Statistics.deepestFloor >= Statistics.polpocount && Dungeon.hero.belongings.getItem(PolpoItem.class) != null) {
+            ArrayList<PolpoItem> polpoItems = Dungeon.hero.belongings.getAllItems(PolpoItem.class);
+            if (Statistics.deepestFloor >= Statistics.polpocount && !polpoItems.isEmpty()) {
 
                 // grant reward buff and remove the quest item first
                 Buff.affect(hero, PolpoBuff.class);
 
-                PolpoItem item = Dungeon.hero.belongings.getItem(PolpoItem.class);
-                if (item != null) {
-                    item.detach(hero.belongings.backpack);
+                for (PolpoItem item : polpoItems) {
+                    item.detachAll(hero.belongings.backpack);
                 }
 
                 if (hero.sprite != null) {

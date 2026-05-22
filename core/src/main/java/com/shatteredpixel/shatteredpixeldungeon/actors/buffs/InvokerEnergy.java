@@ -282,16 +282,8 @@ public class InvokerEnergy extends Buff implements ActionIndicator.Action {
     // ─────────────────────────────────────────────
     private void castBodyBuff(Hero hero) {
         Buff.affect(hero, Haste.class, 12f);
-        if (hero.buff(EnhancedWeapon.class) == null) {
-            EnhancedWeapon ew = Buff.affect(hero, EnhancedWeapon.class);
-            ew.setEnhancementLevel(1);
-            ew.setTemporaryDuration(12f);
-        }
-        if (hero.buff(EnhancedArmor.class) == null) {
-            EnhancedArmor ea = Buff.affect(hero, EnhancedArmor.class);
-            ea.setEnhancementLevel(1);
-            ea.setTemporaryDuration(12f);
-        }
+        Buff.affect(hero, EnhancedWeapon.class).setTemporaryEnhancement(1, 12f);
+        Buff.affect(hero, EnhancedArmor.class).setTemporaryEnhancement(1, 12f);
         // 버프 적용 후 아이템 슬롯의 파란 "+1" 표시가 즉시 갱신되도록 강제 갱신
         Item.updateQuickslot();
         Sample.INSTANCE.play(Assets.Sounds.D12);

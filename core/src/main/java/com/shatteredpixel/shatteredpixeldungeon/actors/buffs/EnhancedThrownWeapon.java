@@ -33,11 +33,14 @@ public class EnhancedThrownWeapon extends Buff {
     {
         type = buffType.POSITIVE;
         announced = true;
+        revivePersists = true;
     }
 
     public static final float DURATION = 1_000_000;
     
     private int enhancementLevel = -1; // -1이면 Statistics.spw1 사용, 그 외에는 해당 값 사용
+    private int permanentEnhancementLevel = 0;
+    private int temporaryEnhancementLevel = 0;
     private float temporaryDuration = -1; // -1이면 영구, 그 외에는 임시 버프
     private float initialDuration = -1; // 초기 duration 저장 (iconFadePercent 계산용)
 
@@ -74,26 +77,38 @@ public class EnhancedThrownWeapon extends Buff {
     }
     
     public int getEnhancementLevel() {
-        if (Dungeon.tendencylevel) {
-            return Statistics.spw1;
-        }
-        if (enhancementLevel >= 0) {
-            return enhancementLevel;
-        }
-        return Statistics.spw1;
+        return Statistics.spw1 + permanentEnhancementLevel + temporaryEnhancementLevel;
     }
     
     public void setEnhancementLevel(int level) {
         enhancementLevel = level;
+        permanentEnhancementLevel = level;
+    }
+
+    public void setTemporaryEnhancement(int level, float duration) {
+        temporaryEnhancementLevel = level;
+        temporaryDuration = duration;
+        initialDuration = duration;
     }
     
     public void setTemporaryDuration(float duration) {
+        temporaryEnhancementLevel = Math.max(0, enhancementLevel);
         temporaryDuration = duration;
         initialDuration = duration;
     }
     
     public boolean isPermanent() {
-        return temporaryDuration < 0;
+        return temporaryDuration < 0 && temporaryEnhancementLevel <= 0;
+    }
+
+    private boolean hasPersistentEnhancement() {
+        return Statistics.spw1 + permanentEnhancementLevel > 0;
+    }
+
+    private void clearTemporaryEnhancement() {
+        temporaryEnhancementLevel = 0;
+        temporaryDuration = -1;
+        initialDuration = -1;
     }
     
     @Override
@@ -101,14 +116,28 @@ public class EnhancedThrownWeapon extends Buff {
         if (temporaryDuration > 0) {
             temporaryDuration--;
             if (temporaryDuration <= 0) {
-                detach();
+                clearTemporaryEnhancement();
+                if (!hasPersistentEnhancement()) {
+                    detach();
+                }
             }
         }
         spend(TICK);
         return true;
     }
+
+    @Override
+    public void detach() {
+        if (hasPersistentEnhancement()) {
+            clearTemporaryEnhancement();
+        } else {
+            super.detach();
+        }
+    }
     
     private static final String ENHANCEMENT_LEVEL = "enhancement_level";
+    private static final String PERMANENT_ENHANCEMENT_LEVEL = "permanent_enhancement_level";
+    private static final String TEMPORARY_ENHANCEMENT_LEVEL = "temporary_enhancement_level";
     private static final String TEMPORARY_DURATION = "temporary_duration";
     private static final String INITIAL_DURATION = "initial_duration";
 
@@ -116,6 +145,8 @@ public class EnhancedThrownWeapon extends Buff {
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(ENHANCEMENT_LEVEL, enhancementLevel);
+        bundle.put(PERMANENT_ENHANCEMENT_LEVEL, permanentEnhancementLevel);
+        bundle.put(TEMPORARY_ENHANCEMENT_LEVEL, temporaryEnhancementLevel);
         bundle.put(TEMPORARY_DURATION, temporaryDuration);
         bundle.put(INITIAL_DURATION, initialDuration);
     }
@@ -123,11 +154,25 @@ public class EnhancedThrownWeapon extends Buff {
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
-        enhancementLevel = bundle.getInt(ENHANCEMENT_LEVEL);
+        enhancementLevel = bundle.contains(ENHANCEMENT_LEVEL) ? bundle.getInt(ENHANCEMENT_LEVEL) : -1;
+        if (bundle.contains(PERMANENT_ENHANCEMENT_LEVEL)) {
+            permanentEnhancementLevel = bundle.getInt(PERMANENT_ENHANCEMENT_LEVEL);
+        } else if (enhancementLevel >= 0 && !bundle.contains(TEMPORARY_DURATION)) {
+            permanentEnhancementLevel = enhancementLevel;
+        }
+        if (bundle.contains(TEMPORARY_ENHANCEMENT_LEVEL)) {
+            temporaryEnhancementLevel = bundle.getInt(TEMPORARY_ENHANCEMENT_LEVEL);
+        }
         if (bundle.contains(TEMPORARY_DURATION)) {
             temporaryDuration = bundle.getFloat(TEMPORARY_DURATION);
+            if (!bundle.contains(TEMPORARY_ENHANCEMENT_LEVEL) && temporaryDuration > 0 && enhancementLevel >= 0) {
+                temporaryEnhancementLevel = enhancementLevel;
+            }
         } else {
             temporaryDuration = -1;
+        }
+        if (!bundle.contains(PERMANENT_ENHANCEMENT_LEVEL) && enhancementLevel >= 0 && temporaryDuration <= 0) {
+            permanentEnhancementLevel = enhancementLevel;
         }
         if (bundle.contains(INITIAL_DURATION)) {
             initialDuration = bundle.getFloat(INITIAL_DURATION);
@@ -137,4 +182,3 @@ public class EnhancedThrownWeapon extends Buff {
     }
 
 }
-

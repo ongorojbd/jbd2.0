@@ -149,7 +149,13 @@ public class Polpo extends NPC {
                         if (index == 0) {
                             showSummonOptions();
                         } else if (index == 1) {
-                            if (!Statistics.polpoQuest) showPolpoItemOptions();
+                            if (!Statistics.polpoQuest) {
+                                if (canReceivePolpoItem()) {
+                                    showPolpoItemOptions();
+                                } else {
+                                    GLog.n("현재 인벤토리가 가득 차있습니다.");
+                                }
+                            }
                             else GLog.n(Messages.get(Polpo.class, "test3"));
                         } else {
                             triggerAmbush();
@@ -234,20 +240,26 @@ public class Polpo extends NPC {
             protected void onSelect(int index) {
                 if (index == 0) {
                     if (!Statistics.polpoQuest) {
+                        if (!canReceivePolpoItem()) {
+                            GLog.n("현재 인벤토리가 가득 차있습니다.");
+                            return;
+                        }
                         Statistics.polpocount = Statistics.deepestFloor + 3;
                         PolpoItem polpoItem = new PolpoItem();
                         if (polpoItem.doPickUp(Dungeon.hero)) {
                             GLog.i(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", polpoItem.name())));
-                        } else {
-                            Dungeon.level.drop(polpoItem, Dungeon.hero.pos).sprite.drop();
+                            Statistics.polpoQuest = true;
                         }
-                        Statistics.polpoQuest = true;
                     } else {
 
                     }
                 }
             }
         });
+    }
+
+    private boolean canReceivePolpoItem() {
+        return Dungeon.hero.belongings.backpack.canHold(new PolpoItem());
     }
 
     private void triggerAmbush() {

@@ -610,48 +610,28 @@ public class TuskEquipmentDisc extends Artifact {
 						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_rings"));
 						break;
 					case 1: // 물리 공격 강화
-						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon existingWeapon = 
-							hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
-						if (existingWeapon == null || !existingWeapon.isPermanent()) {
-							com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon weapon = 
-								Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
-							weapon.setEnhancementLevel(1);
-							weapon.setTemporaryDuration(duration);
-							GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_weapon"));
-						}
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon weapon = 
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
+						weapon.setTemporaryEnhancement(1, duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_weapon"));
 						break;
 					case 2: // 브로치 강화
-						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor existingArmor = 
-							hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
-						if (existingArmor == null || !existingArmor.isPermanent()) {
-							com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor armor = 
-								Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
-							armor.setEnhancementLevel(1);
-							armor.setTemporaryDuration(duration);
-							GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_armor"));
-						}
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor armor = 
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
+						armor.setTemporaryEnhancement(1, duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_armor"));
 						break;
 					case 3: // 사격 DISC 강화
-						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand existingWand = 
-							hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
-						if (existingWand == null || !existingWand.isPermanent()) {
-							com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand wand = 
-								Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
-							wand.setEnhancementLevel(1);
-							wand.setTemporaryDuration(duration);
-							GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_wand"));
-						}
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand wand = 
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
+						wand.setTemporaryEnhancement(1, duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_wand"));
 						break;
 					case 4: // 투척무기 강화
-						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon existingThrown = 
-							hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
-						if (existingThrown == null || !existingThrown.isPermanent()) {
-							com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon thrown = 
-								Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
-							thrown.setEnhancementLevel(1);
-							thrown.setTemporaryDuration(duration);
-							GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_thrown"));
-						}
+						com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon thrown = 
+							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
+						thrown.setTemporaryEnhancement(1, duration);
+						GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_thrown"));
 						break;
 				}
 			}
@@ -1163,56 +1143,36 @@ public class TuskEquipmentDisc extends Artifact {
 			}
 		}
 
-		switch (Random.Int(5)) {
-			case 0:
-				Buff.prolong(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class, duration);
-				GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_rings"));
-				break;
-			case 1:
-				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon existingWeapon =
-						hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
-				if (existingWeapon == null || !existingWeapon.isPermanent()) {
+			switch (Random.Int(5)) {
+				case 0:
+					Buff.prolong(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class, duration);
+					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_rings"));
+					break;
+				case 1:
 					com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon weapon =
 							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWeapon.class);
-					weapon.setEnhancementLevel(1);
-					weapon.setTemporaryDuration(duration);
+					weapon.setTemporaryEnhancement(1, duration);
 					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_weapon"));
-				}
-				break;
-			case 2:
-				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor existingArmor =
-						hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
-				if (existingArmor == null || !existingArmor.isPermanent()) {
+					break;
+				case 2:
 					com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor armor =
 							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedArmor.class);
-					armor.setEnhancementLevel(1);
-					armor.setTemporaryDuration(duration);
+					armor.setTemporaryEnhancement(1, duration);
 					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_armor"));
-				}
-				break;
-			case 3:
-				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand existingWand =
-						hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
-				if (existingWand == null || !existingWand.isPermanent()) {
+					break;
+				case 3:
 					com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand wand =
 							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedWand.class);
-					wand.setEnhancementLevel(1);
-					wand.setTemporaryDuration(duration);
+					wand.setTemporaryEnhancement(1, duration);
 					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_wand"));
-				}
-				break;
-			case 4:
-				com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon existingThrown =
-						hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
-				if (existingThrown == null || !existingThrown.isPermanent()) {
+					break;
+				case 4:
 					com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon thrown =
 							Buff.affect(hero, com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedThrownWeapon.class);
-					thrown.setEnhancementLevel(1);
-					thrown.setTemporaryDuration(duration);
+					thrown.setTemporaryEnhancement(1, duration);
 					GLog.p(Messages.get(TuskEquipmentDisc.class, "scope_buff_thrown"));
-				}
-				break;
-		}
+					break;
+			}
 	}
 
 	// J34 탤런트 레벨 3: 적에게 꽂힌 투척 무기 즉시 회수 (TelekineticGrab 방식)
@@ -1344,12 +1304,12 @@ public class TuskEquipmentDisc extends Artifact {
 				
 				// J38 탤런트: Perfect 데미지 증가 (+25%/+50%/+75%)
 				Hero hero = Dungeon.hero;
-				if (hero != null && hero.hasTalent(Talent.J38)) {
-					int talentLevel = hero.pointsInTalent(Talent.J38);
-					float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
-					baseDamage = Math.round(baseDamage * (1f + damageBonus));
-				}
-				break;
+					if (hero != null && hero.hasTalent(Talent.J38)) {
+						int talentLevel = hero.pointsInTalent(Talent.J38);
+						float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
+						baseDamage = Math.round(baseDamage * (1f + damageBonus));
+					}
+					break;
 			
 			case "great":
 				// 노랑 영역: 최소 2+(level×0.75), 최대 8+(level×1.5)

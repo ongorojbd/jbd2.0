@@ -1141,7 +1141,7 @@ public enum Talent {
 
     public static void onJ57ThrowingSpikeRecovered(Hero hero) {
         EnhancedThrownWeapon enhancement = Buff.affect(hero, EnhancedThrownWeapon.class);
-        enhancement.setEnhancementLevel(enhancement.getEnhancementLevel() + 1);
+        enhancement.setTemporaryEnhancement(enhancement.getEnhancementLevel() - com.shatteredpixel.shatteredpixeldungeon.Statistics.spw1 + 1, 35f);
         Buff.affect(hero, J57RecoveryTracker.class).resetTimer();
     }
 
