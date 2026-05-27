@@ -57,7 +57,7 @@ public class DeckEnemyIntent {
 				enemy.thorns = Math.max(0, enemy.thorns - 2);
 				return result.toTurnResult(false);
 			},
-			enemy -> "예고: 3x" + damageText(enemy, 3) + " 피해"));
+			enemy -> "예고: " + damageText(enemy, 3) + "x3 피해"));
 
 	public static final DeckEnemyIntent TOWER_NEEDLE = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_TOWER_NEEDLE,
@@ -375,7 +375,7 @@ public class DeckEnemyIntent {
 		return new DeckEnemyIntent(
 				id,
 				(combat, enemy, remainingBlock) -> attackSeries(combat, enemy, remainingBlock, hits, baseDamage, firstLabel).toTurnResult(false),
-				enemy -> "예고: " + hits + "x" + damageText(enemy, baseDamage) + " 피해");
+				enemy -> "예고: " + damageText(enemy, baseDamage) + "x" + hits + " 피해");
 	}
 
 	private static TurnResult applyAttack(DeckBuilderCombat combat, DeckCombatEnemy enemy, int remainingBlock) {
@@ -384,14 +384,16 @@ public class DeckEnemyIntent {
 	}
 
 	private static String attackText(DeckCombatEnemy enemy) {
-		if (enemy.intent > 0 && enemy.strength != 0) {
+		if (enemy.intent > 0 && (enemy.strength != 0 || enemy.attackDown > 0)) {
 			return "예고: " + damageText(enemy, enemy.intent) + " 피해";
 		}
 		return "예고: " + enemy.intent + " 피해";
 	}
 
 	private static int damageText(DeckCombatEnemy enemy, int baseDamage) {
-		return Math.max(0, baseDamage + enemy.strength);
+		int damage = Math.max(0, baseDamage + enemy.strength);
+		if (enemy.attackDown > 0) damage = damage * 3 / 4;
+		return damage;
 	}
 
 	private static AttackSeriesResult attackSeries(DeckBuilderCombat combat, DeckCombatEnemy enemy, int remainingBlock, int hits, int baseDamage, String firstLabel) {

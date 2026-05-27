@@ -37,11 +37,9 @@ public class DeckShop {
 		addClassCardOffers(offers, heroClass);
 		addColorlessCardOffers(offers, heroClass);
 		for (int i = 0; i < RELIC_COUNT; i++) {
-			boolean shopRelic = i == RELIC_COUNT - 1;
 			DeckRelicRarity rarity = DeckShopBalancePolicy.rollRelicRarity();
-			DeckRelic relic = DeckRelic.randomAvailable(rarity, shopRelic);
-			if (relic == null && shopRelic) relic = DeckRelic.randomAvailable(DeckShopBalancePolicy.rollRelicRarity(), true);
-			if (relic == null) relic = DeckRelic.randomAvailable(rarity);
+			DeckRelic relic = DeckRelic.randomAvailable(rarity, true);
+			if (relic == null) relic = DeckRelic.randomAvailable(DeckShopBalancePolicy.rollRelicRarity(), true);
 			if (relic != null) offers.add(new Offer(RELIC, relic.ordinal(), DeckShopBalancePolicy.relicPrice(relic.rarity), false));
 		}
 		for (int i = 0; i < POTION_COUNT; i++) {

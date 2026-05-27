@@ -59,6 +59,7 @@ public class DeckBuilderRunBundle {
 	private static final String REST_DEPTH = "deckbuilder_rest_depth";
 	private static final String REST_PATH = "deckbuilder_rest_path";
 	private static final String REST_USED = "deckbuilder_rest_used";
+	private static final String REST_TENT_USED = "deckbuilder_rest_tent_used";
 	private static final String REWARD_NODE = "deckbuilder_reward_node";
 	private static final String REWARD_DEPTH = "deckbuilder_reward_depth";
 	private static final String REWARD_PATH = "deckbuilder_reward_path";
@@ -70,6 +71,17 @@ public class DeckBuilderRunBundle {
 	private static final String REWARD_RELIC_CLAIMED = "deckbuilder_reward_relic_claimed";
 	private static final String REWARD_POTION_CLAIMED = "deckbuilder_reward_potion_claimed";
 	private static final String REWARD_CARD_CLAIMED = "deckbuilder_reward_card_claimed";
+	private static final String PENDING_CARD_TRANSFORM        = "deckbuilder_pending_card_transform";
+	private static final String PENDING_NEUTRAL_DISCOVER      = "deckbuilder_pending_neutral_discover";
+	private static final String PENDING_CARD_REWARD           = "deckbuilder_pending_card_reward";
+	private static final String PENDING_CARD_REMOVE           = "deckbuilder_pending_card_remove";
+	private static final String PENDING_CARD_UPGRADE          = "deckbuilder_pending_card_upgrade";
+	private static final String PENDING_OTHER_CLASS_REWARD    = "deckbuilder_pending_other_class_reward";
+	private static final String PENDING_CARD_REMOVE_COUNT     = "deckbuilder_pending_card_remove_count";
+	private static final String PENDING_RARE_CARD_CHOICE      = "deckbuilder_pending_rare_card_choice";
+	private static final String FISHING_ROD_PROGRESS         = "deckbuilder_fishing_rod_progress";
+	private static final String UPGRADED_CARD_REWARD_COUNT   = "deckbuilder_upgraded_card_reward_count";
+	private static final String FIRST_TREASURE_EMPTY         = "deckbuilder_first_treasure_empty";
 
 	public static void store(Bundle bundle) {
 		bundle.put(INITIALIZED, DeckBuilderRun.initialized);
@@ -97,6 +109,17 @@ public class DeckBuilderRunBundle {
 		bundle.put(MYSTERY_RESOLVED_DEPTH, DeckBuilderRun.mysteryResolvedDepth);
 		bundle.put(MYSTERY_RESOLVED_PATH,  DeckBuilderRun.mysteryResolvedPath);
 		bundle.put(MYSTERY_RESOLVED_TYPE,  DeckBuilderRun.mysteryResolvedType);
+		bundle.put(PENDING_CARD_TRANSFORM,     DeckBuilderRun.pendingCardTransform);
+		bundle.put(PENDING_NEUTRAL_DISCOVER,   DeckBuilderRun.pendingNeutralDiscover);
+		bundle.put(PENDING_CARD_REWARD,        DeckBuilderRun.pendingCardReward);
+		bundle.put(PENDING_CARD_REMOVE,        DeckBuilderRun.pendingCardRemove);
+		bundle.put(PENDING_CARD_UPGRADE,       DeckBuilderRun.pendingCardUpgrade);
+		bundle.put(PENDING_OTHER_CLASS_REWARD, DeckBuilderRun.pendingOtherClassCardReward);
+		bundle.put(PENDING_CARD_REMOVE_COUNT,  DeckBuilderRun.pendingCardRemoveCount);
+		bundle.put(PENDING_RARE_CARD_CHOICE,   DeckBuilderRun.pendingRareCardChoice);
+		bundle.put(FISHING_ROD_PROGRESS,       DeckBuilderRun.fishingRodProgress);
+		bundle.put(UPGRADED_CARD_REWARD_COUNT, DeckBuilderRun.upgradedCardRewardCount);
+		bundle.put(FIRST_TREASURE_EMPTY,       DeckBuilderRun.firstTreasureEmpty);
 		storeShop(bundle);
 		storeTreasure(bundle);
 		storeRest(bundle);
@@ -131,6 +154,17 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.mysteryResolvedDepth    = bundle.contains(MYSTERY_RESOLVED_DEPTH)  ? bundle.getInt(MYSTERY_RESOLVED_DEPTH)  : -1;
 		DeckBuilderRun.mysteryResolvedPath     = bundle.contains(MYSTERY_RESOLVED_PATH)   ? bundle.getInt(MYSTERY_RESOLVED_PATH)   : -1;
 		DeckBuilderRun.mysteryResolvedType     = bundle.contains(MYSTERY_RESOLVED_TYPE)   ? bundle.getInt(MYSTERY_RESOLVED_TYPE)   : DeckBuilderMap.NONE;
+		DeckBuilderRun.pendingCardTransform        = bundle.getBoolean(PENDING_CARD_TRANSFORM);
+		DeckBuilderRun.pendingNeutralDiscover      = bundle.getBoolean(PENDING_NEUTRAL_DISCOVER);
+		DeckBuilderRun.pendingCardReward           = bundle.getBoolean(PENDING_CARD_REWARD);
+		DeckBuilderRun.pendingCardRemove           = bundle.getBoolean(PENDING_CARD_REMOVE);
+		DeckBuilderRun.pendingCardUpgrade          = bundle.getBoolean(PENDING_CARD_UPGRADE);
+		DeckBuilderRun.pendingOtherClassCardReward = bundle.contains(PENDING_OTHER_CLASS_REWARD) ? bundle.getInt(PENDING_OTHER_CLASS_REWARD) : 0;
+		DeckBuilderRun.pendingCardRemoveCount      = bundle.contains(PENDING_CARD_REMOVE_COUNT)  ? bundle.getInt(PENDING_CARD_REMOVE_COUNT)  : 0;
+		DeckBuilderRun.pendingRareCardChoice       = bundle.contains(PENDING_RARE_CARD_CHOICE)   ? bundle.getInt(PENDING_RARE_CARD_CHOICE)   : 0;
+		DeckBuilderRun.fishingRodProgress          = bundle.contains(FISHING_ROD_PROGRESS)       ? bundle.getInt(FISHING_ROD_PROGRESS)       : 0;
+		DeckBuilderRun.upgradedCardRewardCount     = bundle.contains(UPGRADED_CARD_REWARD_COUNT) ? bundle.getInt(UPGRADED_CARD_REWARD_COUNT) : 0;
+		DeckBuilderRun.firstTreasureEmpty          = bundle.getBoolean(FIRST_TREASURE_EMPTY);
 		restoreShop(bundle);
 		restoreTreasure(bundle);
 		restoreRest(bundle);
@@ -186,12 +220,14 @@ public class DeckBuilderRunBundle {
 		bundle.put(REST_DEPTH, DeckBuilderRun.rest.depth);
 		bundle.put(REST_PATH, DeckBuilderRun.rest.path);
 		bundle.put(REST_USED, DeckBuilderRun.rest.used);
+		bundle.put(REST_TENT_USED, DeckBuilderRun.rest.tentUsed);
 	}
 
 	private static void restoreRest(Bundle bundle) {
 		DeckBuilderRun.rest.depth = bundle.contains(REST_DEPTH) ? bundle.getInt(REST_DEPTH) : -1;
 		DeckBuilderRun.rest.path = bundle.contains(REST_PATH) ? bundle.getInt(REST_PATH) : -1;
 		DeckBuilderRun.rest.used = bundle.getBoolean(REST_USED);
+		DeckBuilderRun.rest.tentUsed = bundle.contains(REST_TENT_USED) && bundle.getBoolean(REST_TENT_USED);
 	}
 
 	private static void storeReward(Bundle bundle) {

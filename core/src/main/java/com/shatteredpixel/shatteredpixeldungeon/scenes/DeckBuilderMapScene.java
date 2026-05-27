@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -67,7 +68,15 @@ public class DeckBuilderMapScene extends PixelScene {
 		super.create();
 
 		DeckBuilderRun.initIfNeeded();
-		if (!DeckBuilderRun.startingRelicChosen) {
+		if (!DeckBuilderRun.startingRelicChosen
+				|| DeckBuilderRun.pendingCardTransform
+				|| DeckBuilderRun.pendingNeutralDiscover
+				|| DeckBuilderRun.pendingCardReward
+				|| DeckBuilderRun.pendingCardRemove
+				|| DeckBuilderRun.pendingCardRemoveCount > 0
+				|| DeckBuilderRun.pendingCardUpgrade
+				|| DeckBuilderRun.pendingRareCardChoice > 0
+				|| DeckBuilderRun.pendingOtherClassCardReward > 0) {
 			Game.switchScene(DeckRelicChoiceScene.class);
 			return;
 		}
@@ -409,6 +418,9 @@ public class DeckBuilderMapScene extends PixelScene {
 			}
 
 			if (resolvedType == DeckBuilderMap.EVENT) {
+				if (DeckBuilderRun.hasRelic(DeckRelic.PLANISPHERE)) {
+					DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + 5);
+				}
 				enterDeckEvent();
 				Game.switchScene(DeckEventScene.class);
 				return;

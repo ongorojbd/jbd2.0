@@ -28,7 +28,7 @@ public class DeckCardText {
 			return "사용불가. 내 턴 종료 시 이 카드가 손에 있다면, 피해를 3 받습니다.";
 		}
 		if (card == DeckCard.BARNACLE) {
-			return "사용불가. " + DeckCardKeyword.TRANSIENT.label;
+			return "사용불가. " + DeckCardKeyword.TRANSIENT.label + ".";
 		}
 		String text = "";
 		for (DeckCardEffect effect : card.effects(cardCode)) {
@@ -36,12 +36,15 @@ public class DeckCardText {
 		}
 		if (card.handPenalty > 0) text += appendSentence(text, "손패에 있으면 공격 카드 피해가 " + card.handPenalty + " 감소합니다.");
 		for (DeckCardKeyword keyword : DeckCardKeyword.values()) {
-			if (card.hasKeyword(cardCode, keyword)) text += appendSentence(text, keyword.label);
+			if (keyword.label.isEmpty()) continue;
+			if (card.hasKeyword(cardCode, keyword)) text += appendSentence(text, keyword.label + ".");
 		}
 		if (DeckCardCode.maxCharge(cardCode) > 0) {
-			text += appendSentence(text, "[충전: " + DeckCardCode.currentCharge(cardCode) + "/" + DeckCardCode.maxCharge(cardCode) + "]");
+			text += appendSentence(text, "_충전: " + DeckCardCode.currentCharge(cardCode) + "/" + DeckCardCode.maxCharge(cardCode) + "_.");
 		}
-		return text.length() > 0 ? text : "별도의 즉시 효과가 없습니다.";
+		String result = text.length() > 0 ? text : "별도의 즉시 효과가 없습니다.";
+		if (!result.endsWith(".")) result += ".";
+		return result;
 	}
 
 	public static String keywordText(DeckCard card, int cardCode) {
@@ -49,12 +52,13 @@ public class DeckCardText {
 		if (card.vulnerable(cardCode) > 0) text += "취약: 받는 공격 피해가 50% 증가합니다.";
 		if (card.strength(cardCode) > 0) text += appendLine(text, "공격력: 공격 카드의 피해가 증가합니다.");
 		for (DeckCardKeyword keyword : DeckCardKeyword.values()) {
+			if (keyword.label.isEmpty()) continue;
 			if (card.hasKeyword(cardCode, keyword)) {
-				text += appendLine(text, keyword.label + ": " + keyword.description);
+				text += appendLine(text, keyword.label.replace("_", "") + ": " + keyword.description);
 			}
 		}
 		if (DeckCardCode.maxCharge(cardCode) > 0) {
-			text += appendLine(text, "[충전]: 직접 사용할 수 없으며, 손패에 둔 상태로 정해진 시점마다 효과를 발동하고 충전을 1 잃습니다. 충전이 0이 되면 소멸합니다.");
+			text += appendLine(text, "충전: 직접 사용할 수 없으며, 손패에 둔 상태로 정해진 시점마다 효과를 발동하고 충전을 1 잃습니다. 충전이 0이 되면 소멸합니다.");
 		}
 		for (DeckCardEffect effect : card.effects(cardCode)) {
 			text += appendLine(text, effect.keywordText(card, cardCode));

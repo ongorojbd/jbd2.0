@@ -15,6 +15,8 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 public enum DeckRelicType {
 	STARTER,
+	PENALTY_STARTER,
+	CLASS_STARTER,
 	COMMON,
 	UNCOMMON,
 	RARE,

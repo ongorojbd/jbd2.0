@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderCombat;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardCode;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
@@ -173,10 +174,16 @@ public class DeckBattleScene extends PixelScene {
 					combat -> combat.playerWeak),
 			new PlayerBuffSpec(BuffIndicator.ROOTS, "얽힘", "공격 카드 비용이 1 증가합니다. 턴이 끝날 때마다 1 감소합니다.",
 					combat -> combat.playerEntangle),
+			new PlayerBuffSpec(BuffIndicator.UPGRADE, 1f, 0f, 0f, "연속 타격", "공격 카드의 피해가 이 수치만큼 증가합니다. 공격 이외의 카드를 사용하면 소멸합니다.",
+					combat -> combat.playerConsecutiveStrike),
+			new PlayerBuffSpec(BuffIndicator.TRINITY_FORM, 1f, 0.4f, 0f, "반격", "적이 체력 피해를 줄 때 해당 적에게 반격 수치만큼 피해를 줍니다. 턴이 끝나면 사라집니다.",
+					combat -> combat.playerThorns),
 			new PlayerBuffSpec(BuffIndicator.MOMENTUM, "유아화", "공격 카드의 피해가 30% 감소합니다.",
 					combat -> combat.playerDamageReduction > 0 ? 1 : 0, false),
 			new PlayerBuffSpec(BuffIndicator.DEGRADE, "방어력 저하", "보호막을 얻을 때마다 방어력 저하 1당 획득량이 25% 감소합니다. 턴이 끝날 때마다 1 감소합니다.",
-					combat -> combat.playerBlockReduction)
+					combat -> combat.playerBlockReduction),
+			new PlayerBuffSpec(BuffIndicator.HEALING, "재생", "매 턴 시작 시 이 수치만큼 보호막을 얻습니다.",
+					combat -> combat.playerRegen)
 	};
 
 	private static final EnemyStatusBuffSpec[] ENEMY_STATUS_BUFFS = new EnemyStatusBuffSpec[]{
@@ -991,8 +998,111 @@ public class DeckBattleScene extends PixelScene {
 		view.targetMark.visible = false;
 	}
 
+	private void showDiscoverWindow() {
+		combatLocked = true;
+		final DeckCard[] choices = combat.pendingDiscoverChoices;
+		if (choices == null || choices.length == 0) {
+			combat.pendingDiscoverChoices = null;
+			combatLocked = false;
+			refresh();
+			return;
+		}
+		final boolean zeroCost = combat.pendingDiscoverZeroCost;
+		final boolean discoverTransient = combat.pendingDiscoverTransient;
+		final boolean discoverUpgraded = combat.pendingDiscoverUpgraded;
+
+		final Window win = new RewardWindow();
+		int cardW = 62;
+		int cardGap = 10;
+		int totalCardW = choices.length * cardW + Math.max(0, choices.length - 1) * cardGap;
+		int width = Math.max(220, totalCardW + 20);
+		int pos = 7;
+
+		RenderedTextBlock title = renderTextBlock("발견", 9);
+		title.hardlight(Window.TITLE_COLOR);
+		title.setPos((width - title.width()) / 2f, pos);
+		win.add(title);
+		pos += 18;
+
+		int startX = (width - totalCardW) / 2;
+		for (int i = 0; i < choices.length; i++) {
+			final DeckCard card = choices[i];
+			int tempCode = discoverUpgraded ? DeckCardCode.upgrade(card.code()) : card.code();
+			if (zeroCost) tempCode = DeckCard.withKeyword(tempCode, DeckCardKeyword.ZERO_COST);
+			if (discoverTransient) tempCode = DeckCard.withKeyword(tempCode, DeckCardKeyword.TRANSIENT);
+			final int code = tempCode;
+			RewardCardButton button = new RewardCardButton(card) {
+				@Override
+				protected int cardCode() { return code; }
+				@Override
+				protected void onClick() {
+					showDiscoverDetailWindow(win, card, code);
+				}
+			};
+			button.setRect(startX + i * (cardW + cardGap), pos, cardW, 64);
+			win.add(button);
+		}
+		pos += 70;
+
+		win.resize(width, pos);
+		addToFront(win);
+		bringRunHudToFront();
+	}
+
+	private void showDiscoverDetailWindow(final Window discoverWindow, final DeckCard card, final int cardCode) {
+		final Window win = new RewardWindow();
+		int width = 170;
+		int pos = 7;
+
+		RenderedTextBlock title = renderTextBlock(cardDetailTitle(card, cardCode), 8);
+		title.hardlight(Window.TITLE_COLOR);
+		title.setPos((width - title.width()) / 2f, pos);
+		win.add(title);
+		pos += 16;
+
+		RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesAndKeywordText(card, cardCode, combat), 6);
+		desc.maxWidth(width - 14);
+		desc.hardlight(0xFFD8D1BD);
+		desc.setPos(7, pos);
+		win.add(desc);
+		pos += (int)desc.height() + 8;
+
+		RedButton take = new RedButton("가져가기", 6) {
+			@Override
+			protected void onClick() {
+				Sample.INSTANCE.play(Assets.Sounds.ITEM);
+				combat.addToHand(cardCode);
+				combat.pendingDiscoverChoices = null;
+				saveCombatState();
+				win.hide();
+				discoverWindow.hide();
+				refresh();
+			}
+		};
+		take.setRect(7, pos, 74, 18);
+		win.add(take);
+
+		RedButton close = new RedButton("닫기", 6) {
+			@Override
+			protected void onClick() {
+				win.hide();
+			}
+		};
+		close.setRect(width - 81, pos, 74, 18);
+		win.add(close);
+		pos += 24;
+
+		win.resize(width, pos);
+		addToFront(win);
+		bringRunHudToFront();
+	}
+
 	private void refresh() {
 		if (rewardOpen) return;
+		if (combat.pendingDiscoverChoices != null) {
+			showDiscoverWindow();
+			return;
+		}
 		combatLocked = false;
 		for (CardButton button : cardButtons) {
 			button.destroy();
@@ -1359,7 +1469,7 @@ public class DeckBattleScene extends PixelScene {
 		if (card == DeckCard.HEADBUTT) {
 			float finishDelay = 0f;
 			for (DeckPlayResult.Hit hit : result.hits) {
-				if (hit.damage > 0) {
+				if (hit.isAttack) {
 					spawnCardAttack(card, startX, startY, hit);
 					finishDelay = Math.max(finishDelay, 0.38f);
 				}
@@ -1443,13 +1553,112 @@ public class DeckBattleScene extends PixelScene {
 			return;
 		}
 
+		if (card == DeckCard.ONSLAUGHT) {
+			int maxWave = 0;
+			for (DeckPlayResult.Hit h : result.hits) {
+				if (h.wave > maxWave) maxWave = h.wave;
+			}
+			final float waveInterval = 0.25f;
+			for (int w = 0; w <= maxWave; w++) {
+				for (DeckPlayResult.Hit hit : result.hits) {
+					if (hit.wave != w || !hit.isAttack) continue;
+					final DeckPlayResult.Hit capturedHit = hit;
+					if (w == 0) {
+						spawnCardAttack(card, startX, startY, capturedHit);
+					} else {
+						final float delay = w * waveInterval;
+						addEffect(new DelayedActionEffect(delay, new Runnable() {
+							@Override
+							public void run() {
+								spawnCardAttack(card, startX, startY, capturedHit);
+							}
+						}));
+					}
+				}
+			}
+			final float finishDelay = result.hits.isEmpty() ? 0f : maxWave * waveInterval + 0.38f;
+			log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+			if (combat.playerDead()) {
+				updatePlayerHpUi();
+				addEffect(new DelayedActionEffect(finishDelay, new Runnable() {
+					@Override public void run() { playDeath(playerSprite); finishRunDeath(); }
+				}));
+			} else if (combat.won()) {
+				addEffect(new DelayedActionEffect(finishDelay + 0.3f, new Runnable() {
+					@Override public void run() { showReward(); }
+				}));
+			} else {
+				addEffect(new DelayedActionEffect(finishDelay, new Runnable() {
+					@Override public void run() { refresh(); }
+				}));
+			}
+			return;
+		}
+
+		if (card == DeckCard.BARRAGE) {
+			final ArrayList<DeckPlayResult.Hit> wave0 = new ArrayList<>();
+			final ArrayList<DeckPlayResult.Hit> wave1 = new ArrayList<>();
+			for (DeckPlayResult.Hit h : result.hits) {
+				if (h.wave == 0) wave0.add(h);
+				else wave1.add(h);
+			}
+			for (DeckPlayResult.Hit hit : wave0) {
+				if (hit.isAttack) spawnCardAttack(card, startX, startY, hit);
+			}
+			final float wave1Delay = wave0.isEmpty() ? 0f : 0.38f;
+			for (int i = 0; i < wave1.size(); i++) {
+				final DeckPlayResult.Hit hit = wave1.get(i);
+				addEffect(new DelayedActionEffect(wave1Delay, new Runnable() {
+					@Override
+					public void run() {
+						if (hit.isAttack) spawnCardAttack(card, startX, startY, hit);
+					}
+				}));
+			}
+			final float finishDelay2 = wave1.isEmpty() ? (wave0.isEmpty() ? 0f : 0.38f) : wave1Delay + 0.38f;
+			log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+			if (combat.playerDead()) {
+				updatePlayerHpUi();
+				addEffect(new DelayedActionEffect(finishDelay2, new Runnable() {
+					@Override
+					public void run() { playDeath(playerSprite); finishRunDeath(); }
+				}));
+			} else if (combat.won()) {
+				addEffect(new DelayedActionEffect(finishDelay2 + 0.3f, new Runnable() {
+					@Override
+					public void run() { showReward(); }
+				}));
+			} else {
+				addEffect(new DelayedActionEffect(finishDelay2, new Runnable() {
+					@Override
+					public void run() { refresh(); }
+				}));
+			}
+			return;
+		}
+
+		if (card == DeckCard.ARMAMENTS && combat.pendingHandCardUpgrade) {
+			combat.pendingHandCardUpgrade = false;
+			if (result.block > 0) {
+				spawnShieldEffect(playerCenterX(), playerCenterY(), "+" + result.block);
+			}
+			log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+			addEffect(new DelayedActionEffect(0.18f, new Runnable() {
+				@Override
+				public void run() {
+					showArmamentsHandUpgradeWindow(0);
+				}
+			}));
+			return;
+		}
+
 		float finishDelay = 0f;
 		if (!result.shuffles.isEmpty()) {
 			finishDelay = Math.max(finishDelay, spawnShuffleEffects(result, startX, startY));
 		}
 
 		for (DeckPlayResult.Hit hit : result.hits) {
-			if (hit.damage > 0) {
+			if (hit.isAttack) {
 				spawnCardAttack(card, startX, startY, hit);
 				finishDelay = Math.max(finishDelay, 0.38f);
 			}
@@ -1994,7 +2203,7 @@ public class DeckBattleScene extends PixelScene {
 		for (DeckPlayResult auto : autoResults) {
 			if (!auto.played || auto.card == null) continue;
 			for (DeckPlayResult.Hit hit : auto.hits) {
-				if (hit.damage <= 0) continue;
+				if (!hit.isAttack) continue;
 				final DeckCard autoCard = auto.card;
 				final DeckPlayResult.Hit autoHit = hit;
 				final float delay = 0.16f + sequence * 0.16f;
@@ -2105,6 +2314,18 @@ public class DeckBattleScene extends PixelScene {
 					} else {
 						spawnShieldEffect(playerCenterX(), playerCenterY(), "BLOCK");
 					}
+					if (action.counterDamage > 0) {
+						view.displayHp = Math.max(0, view.displayHp - action.counterDamage);
+						final int capturedHp = view.displayHp;
+						final EnemyView counterView = view;
+						spawnFloatingText("반격 -" + action.counterDamage, enemyCenterX(counterView), enemyCenterY(counterView) - 16, 0xFFFF9040);
+						counterView.name.text(counterView.enemy.name + "  " + capturedHp + "/" + counterView.enemy.ht);
+						counterView.hp.size(ACTOR_HP_W * capturedHp / (float) counterView.enemy.ht, ACTOR_HP_H);
+						if (!counterView.enemy.alive()) {
+							playDeath(counterView.sprite);
+							hideEnemyUI(counterView);
+						}
+					}
 				}
 			}));
 		}
@@ -2147,6 +2368,99 @@ public class DeckBattleScene extends PixelScene {
 		if (sprite != null && sprite.die != null) {
 			sprite.play(sprite.die);
 		}
+	}
+
+	private void showArmamentsHandUpgradeWindow(final int page) {
+		final ArrayList<Integer> upgradeable = new ArrayList<>();
+		final ArrayList<Integer> upgradeableIndices = new ArrayList<>();
+		for (int i = 0; i < combat.hand.size(); i++) {
+			int code = combat.hand.get(i);
+			if (DeckCardCode.upgradeLevel(code) < DeckCard.byCode(code).maxUpgradeLevel()) {
+				upgradeable.add(code);
+				upgradeableIndices.add(i);
+			}
+		}
+		if (upgradeable.isEmpty()) {
+			refresh();
+			return;
+		}
+
+		final int ARM_CARD_W = 42;
+		final int ARM_CARD_H = 54;
+		final int ARM_CARD_GAP = 5;
+		final int ARM_CARDS_PER_PAGE = 4;
+		final int total = upgradeable.size();
+		final int maxPage = Math.max(0, (total - 1) / ARM_CARDS_PER_PAGE);
+		final int currentPage = Math.max(0, Math.min(page, maxPage));
+		final int first = currentPage * ARM_CARDS_PER_PAGE;
+		final int count = Math.min(ARM_CARDS_PER_PAGE, total - first);
+		final int totalCardW = count * ARM_CARD_W + (count - 1) * ARM_CARD_GAP;
+		final int width = Math.max(196, totalCardW + 20);
+
+		final Window win = new Window() {
+			@Override
+			public void onBackPressed() { }
+		};
+
+		int pos = 7;
+		RenderedTextBlock title = renderTextBlock("강화할 카드를 선택하세요.", 8);
+		title.hardlight(Window.TITLE_COLOR);
+		title.maxWidth(width - 14);
+		title.setPos((width - title.width()) / 2f, pos);
+		win.add(title);
+		pos += (int) title.height() + 8;
+
+		final int startX = (width - totalCardW) / 2;
+		for (int i = 0; i < count; i++) {
+			final int snapIndex = first + i;
+			final int code = upgradeable.get(snapIndex);
+			final int handIdx = upgradeableIndices.get(snapIndex);
+			final int col = i;
+			CardViewButton btn = new CardViewButton() {
+				@Override protected DeckCard card() { return DeckCard.byCode(code); }
+				@Override protected int cardCode() { return code; }
+				@Override protected void onClick() {
+					combat.hand.set(handIdx, DeckCardCode.upgrade(code));
+					saveCombatState();
+					win.hide();
+					refresh();
+				}
+			};
+			btn.setRect(startX + col * (ARM_CARD_W + ARM_CARD_GAP), pos, ARM_CARD_W, ARM_CARD_H);
+			win.add(btn);
+		}
+		pos += ARM_CARD_H + 9;
+
+		if (maxPage > 0) {
+			RedButton prev = new RedButton("이전", 6) {
+				@Override protected void onClick() {
+					win.hide();
+					showArmamentsHandUpgradeWindow(currentPage - 1);
+				}
+			};
+			prev.enable(currentPage > 0);
+			prev.setRect(10, pos, 58, 18);
+			win.add(prev);
+
+			RenderedTextBlock pageText = renderTextBlock((currentPage + 1) + " / " + (maxPage + 1), 6);
+			pageText.hardlight(0xFFD8D1BD);
+			pageText.setPos((width - pageText.width()) / 2f, pos + 5);
+			win.add(pageText);
+
+			RedButton next = new RedButton("다음", 6) {
+				@Override protected void onClick() {
+					win.hide();
+					showArmamentsHandUpgradeWindow(currentPage + 1);
+				}
+			};
+			next.enable(currentPage < maxPage);
+			next.setRect(width - 68, pos, 58, 18);
+			win.add(next);
+			pos += 23;
+		}
+
+		win.resize(width, pos + 4);
+		addToFront(win);
 	}
 
 	private void showHeadbuttDiscardSelectWindow(final ArrayList<Integer> snapshot, final int page) {
@@ -2374,6 +2688,25 @@ public class DeckBattleScene extends PixelScene {
 		refreshEnemyViews();
 		// 소멸은 이 전투에서만 카드를 제거하는 것. 다음 전투에서는 다시 사용 가능하므로 영구 삭제하지 않음.
 		combat.exhaustPile.clear();
+		for (int i = DeckBuilderRun.deck.size() - 1; i >= 0; i--) {
+			if (DeckCard.byCode(DeckBuilderRun.deck.get(i)).type == DeckCardType.STATUS) {
+				DeckBuilderRun.deck.remove(i);
+			}
+		}
+		for (int i = DeckBuilderRun.deck.size() - 1; i >= 0; i--) {
+			int code = DeckBuilderRun.deck.get(i);
+			if (DeckCard.byCode(code) == DeckCard.GUILT) {
+				int newCode = DeckCardCode.upgrade(code);
+				if (DeckCard.upgradeLevel(newCode) >= 5) {
+					DeckBuilderRun.deck.remove(i);
+				} else {
+					DeckBuilderRun.deck.set(i, newCode);
+				}
+			}
+		}
+		if (DeckBuilderRun.hasRelic(DeckRelic.MEAT_ON_THE_BONE) && DeckBuilderRun.playerHP * 2 <= DeckBuilderRun.playerHT) {
+			DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + 12);
+		}
 		saveCombatState();
 		Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
 		boolean useFullRewardScreen = true;
@@ -2614,6 +2947,7 @@ public class DeckBattleScene extends PixelScene {
 			protected void onClick() {
 				Sample.INSTANCE.play(Assets.Sounds.ITEM);
 				DeckBuilderRun.addCard(card);
+				DeckBuilderRun.consumeUpgradedCardReward();
 				cardRow.claimed = true;
 				rewards.cardClaimed = true;
                 cardRow.text.text("획득 완료: " + card.title(card.code()));
@@ -3449,6 +3783,7 @@ public class DeckBattleScene extends PixelScene {
 			face = new ColorBlock(1, 1, card.rarity.faceColor);
 			add(face);
 			art = new ItemSprite(card.icon());
+			art.visible = card.icon() != 0;
 			art.scale.set(1.2f);
 			updateEffect(0);
 			add(art);
@@ -3503,6 +3838,7 @@ public class DeckBattleScene extends PixelScene {
 			streakB = new ColorBlock(1, 1, 0xFFFF9AE8);
 			add(streakB);
 			art = new ItemSprite(card.icon());
+			art.visible = card.icon() != 0;
 			art.scale.set(1.0f);
 			updateEffect(0);
 			add(art);
@@ -3972,6 +4308,10 @@ public class DeckBattleScene extends PixelScene {
 				edge.color(0xFFA8F26A);
 				edge.am = 1.0f;
 				face.am = 0.92f;
+			} else if (!selectingForPure && !gamblerBrewActive && !selectingWandForStaff
+					&& combat != null && card().conditionMet(cardCode(), combat)) {
+				edge.color(0xFFA8F26A);
+				edge.am = 1.0f;
 			}
 		}
 

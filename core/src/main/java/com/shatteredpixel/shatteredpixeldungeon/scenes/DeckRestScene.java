@@ -18,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
@@ -111,7 +112,7 @@ public class DeckRestScene extends PixelScene {
 			add(button);
 		}
 
-		if (used) {
+		if (used && (!DeckBuilderRun.hasRelic(DeckRelic.MINIATURE_TENT) || DeckBuilderRun.restTentActionsDone())) {
 			RenderedTextBlock done = renderTextBlock("이미 이 휴식 층에서 행동을 선택했습니다.", 6);
 			done.hardlight(0xFFAAAFA4);
 			done.setPos(buttonX + (buttonW - done.width()) / 2f,
@@ -130,17 +131,17 @@ public class DeckRestScene extends PixelScene {
 				"휴식",
 				"최대 체력의 30%를 회복합니다. (현재 체력: " + DeckBuilderRun.playerHP + " / " + DeckBuilderRun.playerHT + ")",
 				0xFFD5F27A,
-				DeckBuilderRun.canRestAtRestSite() && !used,
+				DeckBuilderRun.canRestAtRestSite(),
 				new Runnable() {
 					@Override public void run() {
-						if (used || !DeckBuilderRun.canRestAtRestSite()) {
+						if (!DeckBuilderRun.canRestAtRestSite()) {
 							addToFront(new WndMessage("휴식\n\n지금은 휴식할 수 없습니다."));
 							return;
 						}
 						if (DeckBuilderRun.restAtRestSite()) {
 							Sample.INSTANCE.play(Assets.Sounds.DRINK);
 							saveRun();
-							leaveRest();
+							leaveOrRefreshRest();
 						}
 					}
 				}
@@ -150,10 +151,10 @@ public class DeckRestScene extends PixelScene {
 				"강화",
 				"덱의 카드 한 장을 선택해 강화합니다.",
 				0xFFD5F27A,
-				DeckBuilderRun.canSmithAtRestSite() && !used,
+				DeckBuilderRun.canSmithAtRestSite(),
 				new Runnable() {
 					@Override public void run() {
-						if (used || !DeckBuilderRun.canSmithAtRestSite()) {
+						if (!DeckBuilderRun.canSmithAtRestSite()) {
 							addToFront(new WndMessage("강화\n\n강화할 수 있는 카드가 없습니다."));
 							return;
 						}
@@ -334,7 +335,7 @@ public class DeckRestScene extends PixelScene {
 					saveRun();
 					win.hide();
 					cardWindow.hide();
-					leaveRest();
+					leaveOrRefreshRest();
 				}
 			}
 		};
@@ -359,6 +360,8 @@ public class DeckRestScene extends PixelScene {
 		ArrayList<Integer> choices = new ArrayList<>();
 		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
 			int code = DeckBuilderRun.deck.get(i);
+			DeckCard card = DeckCard.byCode(code);
+			if (card.type == DeckCardType.CURSE || card.type == DeckCardType.STATUS) continue;
 			if (DeckCard.upgrade(code) != code) choices.add(i);
 		}
 		return choices;
@@ -385,6 +388,14 @@ public class DeckRestScene extends PixelScene {
 
 	private String append(String text, String value) {
 		return (text.length() > 0 ? "\n" : "") + value;
+	}
+
+	private void leaveOrRefreshRest() {
+		if (!DeckBuilderRun.hasRelic(DeckRelic.MINIATURE_TENT) || DeckBuilderRun.restTentActionsDone()) {
+			leaveRest();
+		} else {
+			Game.switchScene(DeckRestScene.class);
+		}
 	}
 
 	private void leaveRest() {

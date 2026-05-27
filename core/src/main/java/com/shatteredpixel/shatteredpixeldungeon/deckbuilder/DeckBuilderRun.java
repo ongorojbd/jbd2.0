@@ -19,6 +19,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
+
 import java.util.ArrayList;
 
 public class DeckBuilderRun {
@@ -57,6 +59,21 @@ public class DeckBuilderRun {
 	public static int mysteryResolvedType = DeckBuilderMap.NONE;
 	public static DeckBuilderCombat currentCombat;
 
+	// Pending relic events set by onAcquire(), resolved in DeckRelicChoiceScene before going to map
+	public static boolean pendingCardTransform;
+	public static boolean pendingNeutralDiscover;
+	public static boolean pendingCardReward;
+	public static boolean pendingCardRemove;
+	public static int pendingCardRemoveCount;
+	public static boolean pendingCardUpgrade;
+	public static int pendingOtherClassCardReward;
+	public static int pendingRareCardChoice;
+	// Fishing Rod: counts normal combats toward next random card upgrade
+	public static int fishingRodProgress;
+	// Silver Crucible: upgrade card picked from reward; first treasure empty
+	public static int upgradedCardRewardCount;
+	public static boolean firstTreasureEmpty;
+
 	static final DeckShopState shop = new DeckShopState();
 	static final DeckTreasureState treasure = new DeckTreasureState();
 	static final DeckRestState rest = new DeckRestState();
@@ -88,6 +105,17 @@ public class DeckBuilderRun {
 		mysteryResolvedDepth = -1;
 		mysteryResolvedPath = -1;
 		mysteryResolvedType = DeckBuilderMap.NONE;
+		pendingCardTransform = false;
+		pendingNeutralDiscover = false;
+		pendingCardReward = false;
+		pendingCardRemove = false;
+		pendingCardRemoveCount = 0;
+		pendingCardUpgrade = false;
+		pendingOtherClassCardReward = 0;
+		pendingRareCardChoice = 0;
+		fishingRodProgress = 0;
+		upgradedCardRewardCount = 0;
+		firstTreasureEmpty = false;
 		clearShop();
 		clearTreasure();
 		clearRest();
@@ -153,7 +181,25 @@ public class DeckBuilderRun {
 		reward.clear();
 	}
 
+	private static void upgradeRandomDeckCard() {
+		ArrayList<Integer> upgradable = new ArrayList<>();
+		for (int i = 0; i < deck.size(); i++) {
+			int code = deck.get(i);
+			if (DeckCardCode.upgrade(code) != code) upgradable.add(i);
+		}
+		if (upgradable.isEmpty()) return;
+		int idx = upgradable.get(Random.Int(upgradable.size()));
+		deck.set(idx, DeckCardCode.upgrade(deck.get(idx)));
+	}
+
 	private static void rollCombatReward(int nodeType, int depth, int path) {
+		if (nodeType == DeckBuilderMap.COMBAT && hasRelic(DeckRelic.FISHING_ROD)) {
+			fishingRodProgress++;
+			if (fishingRodProgress >= 3) {
+				fishingRodProgress = 0;
+				upgradeRandomDeckCard();
+			}
+		}
 		reward.node = nodeType;
 		reward.depth = depth;
 		reward.path = path;
@@ -202,11 +248,23 @@ public class DeckBuilderRun {
 			treasure.depth = depth;
 			treasure.path = path;
 			treasure.chest = DeckRewardPolicy.rollTreasureChest();
-			DeckRelic relic = DeckRelic.randomAvailable(DeckRewardPolicy.rollTreasureRarity(treasure.chest));
-			treasure.relic = relic == null ? -1 : relic.ordinal();
+			if (firstTreasureEmpty) {
+				firstTreasureEmpty = false;
+				treasure.relic = -1;
+			} else {
+				DeckRelic relic = DeckRelic.randomAvailable(DeckRewardPolicy.rollTreasureRarity(treasure.chest));
+				treasure.relic = relic == null ? -1 : relic.ordinal();
+			}
 			treasure.claimed = false;
 		}
 		return treasure.relic < 0 ? null : DeckRelic.byId(treasure.relic);
+	}
+
+	public static void consumeUpgradedCardReward() {
+		if (upgradedCardRewardCount <= 0 || deck.isEmpty()) return;
+		upgradedCardRewardCount--;
+		int lastIdx = deck.size() - 1;
+		deck.set(lastIdx, DeckCardCode.upgrade(deck.get(lastIdx)));
 	}
 
 	public static int treasureChestForCurrentNode() {
@@ -245,29 +303,44 @@ public class DeckBuilderRun {
 
 	public static boolean canRestAtRestSite() {
 		initRestForCurrentNode();
-		return !rest.used && restHealAmount() > 0;
+		if (restHealAmount() <= 0) return false;
+		if (!rest.used) return true;
+		return hasRelic(DeckRelic.MINIATURE_TENT) && !rest.tentUsed;
 	}
 
 	public static boolean canSmithAtRestSite() {
 		initRestForCurrentNode();
-		if (rest.used) return false;
+		boolean canUpgrade = false;
 		for (int code : deck) {
-			if (DeckCardCode.upgrade(code) != code) return true;
+			DeckCard card = DeckCard.byCode(code);
+			if (card.type == DeckCardType.CURSE || card.type == DeckCardType.STATUS) continue;
+			if (DeckCardCode.upgrade(code) != code) { canUpgrade = true; break; }
 		}
-		return false;
+		if (!canUpgrade) return false;
+		if (!rest.used) return true;
+		return hasRelic(DeckRelic.MINIATURE_TENT) && !rest.tentUsed;
 	}
 
 	public static boolean restAtRestSite() {
 		if (!canRestAtRestSite()) return false;
 		playerHP = Math.min(playerHT, playerHP + restHealAmount());
-		rest.used = true;
+		if (hasRelic(DeckRelic.STONE_HUMIDIFIER)) {
+			playerHT += 5;
+			playerHP = Math.min(playerHT, playerHP + 5);
+		}
+		if (rest.used) rest.tentUsed = true; else rest.used = true;
 		return true;
 	}
 
 	public static boolean smithAtRestSite(int index) {
 		if (!canSmithAtRestSite() || !upgradeCardAt(index)) return false;
-		rest.used = true;
+		if (rest.used) rest.tentUsed = true; else rest.used = true;
 		return true;
+	}
+
+	public static boolean restTentActionsDone() {
+		initRestForCurrentNode();
+		return rest.used && rest.tentUsed;
 	}
 
 	public static void clearRest() {
@@ -314,6 +387,10 @@ public class DeckBuilderRun {
 	public static void addCard(DeckCard card) {
 		initIfNeeded();
 		DeckRunInventory.addCard(deck, card);
+		if (hasRelic(DeckRelic.MOLTEN_EGG) && card != null && card.type == DeckCardType.ATTACK && !deck.isEmpty()) {
+			int lastIdx = deck.size() - 1;
+			deck.set(lastIdx, DeckCardCode.upgrade(deck.get(lastIdx)));
+		}
 	}
 
 	public static boolean upgradeCardAt(int index) {

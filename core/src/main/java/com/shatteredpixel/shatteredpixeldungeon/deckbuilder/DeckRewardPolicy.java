@@ -53,8 +53,14 @@ public class DeckRewardPolicy {
 	}
 
 	public static DeckRelic[] rollRelics(int nodeType, boolean blackStar) {
-		if (nodeType != DeckBuilderMap.ELITE) return new DeckRelic[0];
-		int count = blackStar ? 2 : 1;
+		int count;
+		if (nodeType == DeckBuilderMap.ELITE) {
+			count = blackStar ? 2 : 1;
+		} else if (nodeType == DeckBuilderMap.BOSS && DeckBuilderRun.hasRelic(DeckRelic.LAVA_ROCK)) {
+			count = 2;
+		} else {
+			return new DeckRelic[0];
+		}
 		ArrayList<DeckRelic> result = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
 			DeckRelic relic = DeckRelic.randomAvailable(rollRelicRarity());

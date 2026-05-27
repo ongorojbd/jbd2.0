@@ -32,4 +32,8 @@ public interface DeckCardEffect {
 	default String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
 		return "";
 	}
+
+	default boolean conditionMet(DeckBuilderCombat combat, DeckCard card, int cardCode) {
+		return false;
+	}
 }

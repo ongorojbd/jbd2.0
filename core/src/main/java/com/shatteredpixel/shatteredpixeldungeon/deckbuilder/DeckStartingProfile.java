@@ -28,6 +28,12 @@ public class DeckStartingProfile {
 		register(HeroClass.WARRIOR,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
+				card(DeckCard.WEAKNESS_STAB, 1),
+				card(DeckCard.BARRAGE, 1),
+				card(DeckCard.FLOW_SLASH, 1),
+				card(DeckCard.ACCEL_STAB, 1),
+				card(DeckCard.HYPERVENTILATE, 1),
+				card(DeckCard.THORN_STANCE, 1),
 				card(DeckCard.BASH, 1));
 
 		register(HeroClass.MAGE,
@@ -38,7 +44,7 @@ public class DeckStartingProfile {
 		register(HeroClass.HUNTRESS,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
-				card(DeckCard.MASSACRE, 1));
+				card(DeckCard.FOUNDATION_BOX, 1));
 
 		register(HeroClass.JOHNNY,
 				card(DeckCard.STRIKE, 5),
@@ -68,6 +74,15 @@ public class DeckStartingProfile {
 			if (profile.contains(card)) return true;
 		}
 		return false;
+	}
+
+	public static boolean isStartingCard(DeckCard card, HeroClass heroClass) {
+		if (card == null) return false;
+		if (heroClass != null) {
+			DeckStartingProfile profile = forHero(heroClass);
+			return profile != null && profile.contains(card);
+		}
+		return isStartingCard(card);
 	}
 
 	private void addDeckTo(ArrayList<Integer> deck) {

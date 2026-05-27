@@ -18,6 +18,7 @@ final class DeckRestState {
 	int depth;
 	int path;
 	boolean used;
+	boolean tentUsed;
 
 	DeckRestState() {
 		clear();
@@ -27,6 +28,7 @@ final class DeckRestState {
 		depth = -1;
 		path = -1;
 		used = false;
+		tentUsed = false;
 	}
 
 	void initFor(int depth, int path) {
@@ -34,6 +36,7 @@ final class DeckRestState {
 			this.depth = depth;
 			this.path = path;
 			used = false;
+			tentUsed = false;
 		}
 	}
 }

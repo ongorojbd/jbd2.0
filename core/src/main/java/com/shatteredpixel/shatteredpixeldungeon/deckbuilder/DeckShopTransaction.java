@@ -22,11 +22,20 @@ public class DeckShopTransaction {
 			DeckShop.Offer[] offers = DeckShop.generateOffers(cardRareOffset, heroClass);
 			shop.replaceOffers(depth, path, offers);
 		}
-		return shop.offers();
+		DeckShop.Offer[] offers = shop.offers();
+		if (DeckBuilderRun.hasRelic(DeckRelic.MEMBERSHIP_CARD)) {
+			for (int i = 0; i < offers.length; i++) {
+				DeckShop.Offer o = offers[i];
+				offers[i] = new DeckShop.Offer(o.type, o.id, Math.max(1, o.price / 2), o.sale);
+			}
+		}
+		return offers;
 	}
 
 	public static boolean buyOffer(DeckShopState shop, int index) {
-		if (index < 0 || index >= shop.types.length || shop.sold[index] || DeckBuilderRun.gold < shop.prices[index]) return false;
+		int basePrice = shop.prices[index];
+		int actualPrice = DeckBuilderRun.hasRelic(DeckRelic.MEMBERSHIP_CARD) ? Math.max(1, basePrice / 2) : basePrice;
+		if (index < 0 || index >= shop.types.length || shop.sold[index] || DeckBuilderRun.gold < actualPrice) return false;
 		int type = shop.types[index];
 		int id = shop.ids[index];
 		if (type == DeckShop.CARD) {
@@ -43,7 +52,7 @@ public class DeckShopTransaction {
 		} else {
 			return false;
 		}
-		DeckBuilderRun.gold -= shop.prices[index];
+		DeckBuilderRun.gold -= actualPrice;
 		shop.sold[index] = true;
 		return true;
 	}

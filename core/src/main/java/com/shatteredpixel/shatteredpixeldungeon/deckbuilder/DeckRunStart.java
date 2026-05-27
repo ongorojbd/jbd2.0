@@ -39,12 +39,27 @@ public class DeckRunStart {
 		DeckBuilderRun.act1NormalFights = 0;
 		DeckBuilderRun.lastNormalEncounter = -1;
 		DeckBuilderRun.shopRemoveCount = 0;
+		DeckBuilderRun.pendingCardTransform = false;
+		DeckBuilderRun.pendingNeutralDiscover = false;
+		DeckBuilderRun.pendingCardReward = false;
+		DeckBuilderRun.pendingCardRemove = false;
+		DeckBuilderRun.pendingCardUpgrade = false;
+		DeckBuilderRun.pendingOtherClassCardReward = 0;
+		DeckBuilderRun.pendingRareCardChoice = 0;
+		DeckBuilderRun.pendingCardRemoveCount = 0;
+		DeckBuilderRun.fishingRodProgress = 0;
+		DeckBuilderRun.upgradedCardRewardCount = 0;
+		DeckBuilderRun.firstTreasureEmpty = false;
 		DeckBuilderRun.clearShop();
 		DeckBuilderRun.clearTreasure();
 		DeckBuilderRun.clearRest();
 
 		DeckStartingProfile.addStartingDeck(DeckBuilderRun.deck, heroClass);
 		addStartingPotions();
+
+		if (heroClass == HeroClass.WARRIOR) {
+			DeckRunInventory.addRelic(DeckBuilderRun.relics, DeckRelic.WAVE_RUSH);
+		}
 	}
 
 	public static DeckRelic[] startingRelicChoices() {
@@ -62,9 +77,12 @@ public class DeckRunStart {
 				&& DeckBuilderRun.startingRelicChoices.length == STARTING_RELIC_CHOICE_COUNT;
 		ArrayList<Integer> seen = new ArrayList<>();
 		if (valid) {
-			for (int id : DeckBuilderRun.startingRelicChoices) {
+			for (int i = 0; i < DeckBuilderRun.startingRelicChoices.length; i++) {
+				int id = DeckBuilderRun.startingRelicChoices[i];
 				DeckRelic relic = DeckRelic.byId(id);
-				if (seen.contains(id) || relic.type != DeckRelicType.STARTER) {
+				DeckRelicType expected = (i == STARTING_RELIC_CHOICE_COUNT - 1)
+						? DeckRelicType.PENALTY_STARTER : DeckRelicType.STARTER;
+				if (seen.contains(id) || relic.type != expected) {
 					valid = false;
 					break;
 				}
@@ -74,12 +92,20 @@ public class DeckRunStart {
 		if (valid) return;
 
 		DeckBuilderRun.startingRelicChoices = new int[STARTING_RELIC_CHOICE_COUNT];
-		seen.clear();
-		for (int i = 0; i < DeckBuilderRun.startingRelicChoices.length; i++) {
-			DeckRelic relic = DeckRelic.randomStarterAvailable(seen);
-			int id = relic == null ? DeckRelic.STARTER_LUCKY_COIN.ordinal() : relic.ordinal();
-			seen.add(id);
-			DeckBuilderRun.startingRelicChoices[i] = id;
+		ArrayList<Integer> starterSeen = new ArrayList<>();
+		ArrayList<Integer> penaltySeen = new ArrayList<>();
+		for (int i = 0; i < STARTING_RELIC_CHOICE_COUNT; i++) {
+			if (i == STARTING_RELIC_CHOICE_COUNT - 1) {
+				DeckRelic relic = DeckRelic.randomPenaltyStarterAvailable(penaltySeen);
+				int id = relic == null ? DeckRelic.CURSED_PEARL.ordinal() : relic.ordinal();
+				penaltySeen.add(id);
+				DeckBuilderRun.startingRelicChoices[i] = id;
+			} else {
+				DeckRelic relic = DeckRelic.randomStarterAvailable(starterSeen);
+				int id = relic == null ? DeckRelic.NEW_LEAF.ordinal() : relic.ordinal();
+				starterSeen.add(id);
+				DeckBuilderRun.startingRelicChoices[i] = id;
+			}
 		}
 	}
 

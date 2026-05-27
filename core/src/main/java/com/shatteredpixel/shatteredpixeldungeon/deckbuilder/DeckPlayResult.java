@@ -47,11 +47,15 @@ public class DeckPlayResult {
 		public final int enemyIndex;
 		public final int damage;
 		public final int vulnerable;
+		public final int wave;
+		public final boolean isAttack;
 
-		public Hit(int enemyIndex, int damage, int vulnerable) {
+		public Hit(int enemyIndex, int damage, int vulnerable, int wave, boolean isAttack) {
 			this.enemyIndex = enemyIndex;
 			this.damage = damage;
 			this.vulnerable = vulnerable;
+			this.wave = wave;
+			this.isAttack = isAttack;
 		}
 	}
 
@@ -75,15 +79,23 @@ public class DeckPlayResult {
 		public boolean exhausted;
 		public ArrayList<Hit> hits = new ArrayList<>();
 		public ArrayList<Shuffle> shuffles = new ArrayList<>();
+		private int currentWave = 0;
 
 		public Builder(DeckCard card) {
 			this.card = card;
 		}
 
+		public void nextWave() { currentWave++; }
+
 		public void addHit(int enemyIndex, int damage, int vulnerable) {
-			hits.add(new Hit(enemyIndex, damage, vulnerable));
+			hits.add(new Hit(enemyIndex, damage, vulnerable, currentWave, false));
 			this.damage += damage;
 			this.vulnerable += vulnerable;
+		}
+
+		public void addAttackHit(int enemyIndex, int damage) {
+			hits.add(new Hit(enemyIndex, damage, 0, currentWave, true));
+			this.damage += damage;
 		}
 
 		public void addShuffle(DeckCard card, int count) {
