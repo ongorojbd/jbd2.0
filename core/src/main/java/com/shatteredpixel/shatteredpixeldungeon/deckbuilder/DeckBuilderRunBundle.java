@@ -82,6 +82,10 @@ public class DeckBuilderRunBundle {
 	private static final String FISHING_ROD_PROGRESS         = "deckbuilder_fishing_rod_progress";
 	private static final String UPGRADED_CARD_REWARD_COUNT   = "deckbuilder_upgraded_card_reward_count";
 	private static final String FIRST_TREASURE_EMPTY         = "deckbuilder_first_treasure_empty";
+	private static final String TUTORIAL_MODE                = "deckbuilder_tutorial_mode";
+	private static final String TUTORIAL_STEP                = "deckbuilder_tutorial_step";
+	private static final String TUTORIAL_MAP_MESSAGE_SHOWN   = "deckbuilder_tutorial_map_message_shown";
+	private static final String SELECTED_BOSS               = "deckbuilder_selected_boss";
 
 	public static void store(Bundle bundle) {
 		bundle.put(INITIALIZED, DeckBuilderRun.initialized);
@@ -120,6 +124,10 @@ public class DeckBuilderRunBundle {
 		bundle.put(FISHING_ROD_PROGRESS,       DeckBuilderRun.fishingRodProgress);
 		bundle.put(UPGRADED_CARD_REWARD_COUNT, DeckBuilderRun.upgradedCardRewardCount);
 		bundle.put(FIRST_TREASURE_EMPTY,       DeckBuilderRun.firstTreasureEmpty);
+		bundle.put(TUTORIAL_MODE,              DeckBuilderRun.tutorialMode);
+		bundle.put(TUTORIAL_STEP,              DeckBuilderRun.tutorialStep);
+		bundle.put(TUTORIAL_MAP_MESSAGE_SHOWN, DeckBuilderRun.tutorialMapMessageShown);
+		bundle.put(SELECTED_BOSS,              DeckBuilderRun.selectedBoss);
 		storeShop(bundle);
 		storeTreasure(bundle);
 		storeRest(bundle);
@@ -165,6 +173,10 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.fishingRodProgress          = bundle.contains(FISHING_ROD_PROGRESS)       ? bundle.getInt(FISHING_ROD_PROGRESS)       : 0;
 		DeckBuilderRun.upgradedCardRewardCount     = bundle.contains(UPGRADED_CARD_REWARD_COUNT) ? bundle.getInt(UPGRADED_CARD_REWARD_COUNT) : 0;
 		DeckBuilderRun.firstTreasureEmpty          = bundle.getBoolean(FIRST_TREASURE_EMPTY);
+		DeckBuilderRun.tutorialMode                = bundle.getBoolean(TUTORIAL_MODE);
+		DeckBuilderRun.tutorialStep                = bundle.contains(TUTORIAL_STEP) ? bundle.getInt(TUTORIAL_STEP) : 0;
+		DeckBuilderRun.tutorialMapMessageShown     = bundle.getBoolean(TUTORIAL_MAP_MESSAGE_SHOWN);
+		DeckBuilderRun.selectedBoss                = bundle.contains(SELECTED_BOSS) ? bundle.getInt(SELECTED_BOSS) : -1;
 		restoreShop(bundle);
 		restoreTreasure(bundle);
 		restoreRest(bundle);

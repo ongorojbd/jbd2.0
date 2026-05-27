@@ -238,6 +238,16 @@ public class Dungeon {
     public static boolean tendencylevel;
     public static boolean deckbuilderlevel;
 
+    public enum GameMode {
+        NORMAL,
+        DIO_CASTLE,
+        TENDENCY,
+        DECKBUILDER,
+        DECKBUILDER_TUTORIAL
+    }
+
+    public static GameMode selectedMode = GameMode.NORMAL;
+
     public static HashSet<Integer> chapters;
 
     public static SparseArray<ArrayList<Item>> droppedItems;
@@ -365,14 +375,15 @@ public class Dungeon {
         } else if (branch == 0) {
             switch (depth) {
                 case 1:
-                    if (SPDSettings.getDio() >= 1) {
+                    if (selectedMode == GameMode.DIO_CASTLE && SPDSettings.getDio() >= 1) {
                         diolevel = true;
                         level = new DioLevel();
-                    } else if (SPDSettings.getDeckbuilder() > 0) {
+                    } else if ((selectedMode == GameMode.DECKBUILDER && SPDSettings.getDeckbuilder() > 0)
+                            || selectedMode == GameMode.DECKBUILDER_TUTORIAL) {
                         deckbuilderlevel = true;
                         Statistics.deckBuilderMode = true;
                         level = new TendencyRestLevel();
-                    } else if (SPDSettings.getTendency() > 0) { // 전투조류 시작
+                    } else if (selectedMode == GameMode.TENDENCY && SPDSettings.getTendency() > 0) { // 전투조류 시작
                         tendencylevel = true;
                         level = new ArenaLevel();
                     } else {

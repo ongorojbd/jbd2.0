@@ -277,7 +277,7 @@ public enum HeroClass {
             Catalog.setSeen(BrokenSeal.class); //as it's not added to the inventory
         }
 
-        if (SPDSettings.getDio() >= 1) {
+        if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
             hamm.collect();
@@ -298,7 +298,7 @@ public enum HeroClass {
         (hero.belongings.weapon = staff).identify();
         hero.belongings.weapon.activate(hero);
 
-        if (SPDSettings.getDio() >= 1) {
+        if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
             hamm.collect();
@@ -326,7 +326,7 @@ public enum HeroClass {
         Dungeon.quickslot.setSlot(0, cloak);
         Dungeon.quickslot.setSlot(1, knives);
 
-        if (SPDSettings.getDio() >= 1) {
+        if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
             hamm.collect();
@@ -345,7 +345,7 @@ public enum HeroClass {
         SpiritBow bow = new SpiritBow();
         bow.identify().collect();
 
-        if (SPDSettings.getDio() >= 1) {
+        if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
             hamm.collect();
@@ -371,7 +371,7 @@ public enum HeroClass {
         Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
         Dungeon.quickslot.setSlot(1, spikes);
 
-        if (SPDSettings.getDio() >= 1) {
+        if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
             hamm.collect();
@@ -395,7 +395,7 @@ public enum HeroClass {
 
         Dungeon.quickslot.setSlot(0, tome);
 
-        if (SPDSettings.getDio() >= 1) {
+        if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
             hamm.collect();
@@ -419,7 +419,7 @@ public enum HeroClass {
 
         Dungeon.quickslot.setSlot(0, tuskEquipmentDisc);
 
-        if (SPDSettings.getDio() >= 1) {
+        if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
             NitoDismantleHammer hamm = new NitoDismantleHammer();
             Diomap map = new Diomap();
             hamm.collect();
@@ -508,43 +508,43 @@ public enum HeroClass {
         switch (this) {
             case WARRIOR:
             default:
-                if (SPDSettings.getDio() >= 1) {
+                if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.WARRIOR;
 
             case MAGE:
 
-                if (SPDSettings.getDio() >= 1) {
+                if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.MAGE;
 
             case ROGUE:
 
-                if (SPDSettings.getDio() >= 1) {
+                if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.ROGUE;
 
             case HUNTRESS:
 
-                if (SPDSettings.getDio() >= 1) {
+                if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.HUNTRESS;
 
             case DUELIST:
 
-                if (SPDSettings.getDio() >= 1) {
+                if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.DUELIST;
 
             case CLERIC:
 
-                if (SPDSettings.getDio() >= 1) {
+                if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.CLERIC;
 
             case JOHNNY:
 
-                if (SPDSettings.getDio() >= 1) {
+                if (Dungeon.selectedMode == Dungeon.GameMode.DIO_CASTLE) {
                     return Assets.Splashes.BRANDO;
                 } else return Assets.Splashes.JOHNNY;
         }

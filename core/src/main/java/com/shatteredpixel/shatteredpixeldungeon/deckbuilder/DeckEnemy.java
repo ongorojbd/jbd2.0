@@ -15,12 +15,24 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.watabou.utils.Random;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 
 public enum DeckEnemy {
+
+	TUTORIAL_DUMMY("튜토리얼 적", 24, 0, false) {
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			if (turn == 1) return 0;
+			if (turn == 2) return 6;
+			return 4;
+		}
+	},
 
 	GEB_GOD("테스트용 적", 50, 5, true),
 	HORUS("호루스신", 44, 9, false),
 	CREAM("크림", 60, 11, false),
+	CIVIL_WAR("시빌 워", 80, 14, false),
+	NUKESAKU("누케사쿠", 55, 9, false),
 	SETESH("세트신", 38, 0, false) {
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
@@ -358,13 +370,26 @@ public enum DeckEnemy {
 
 	public static DeckEnemy forNode(int nodeType) {
 		if (nodeType == DeckBuilderMap.ELITE) return BYRDONIS;
-		if (nodeType == DeckBuilderMap.BOSS) return CREAM;
+		if (nodeType == DeckBuilderMap.BOSS) {
+			if (DeckBuilderRun.selectedBoss < 0) DeckBuilderRun.selectedBoss = Random.Int(3);
+			return bossBySelection();
+		}
 		return GEB_GOD;
+	}
+
+	/** 현재 선택된 보스 반환 (0=크림, 1=시빌 워, 2=누케사쿠) */
+	public static DeckEnemy bossBySelection() {
+		switch (DeckBuilderRun.selectedBoss) {
+			case 1:  return CIVIL_WAR;
+			case 2:  return NUKESAKU;
+			default: return CREAM;
+		}
 	}
 
 	public static DeckEnemy[] encounterForNode(int nodeType, int depth, int previousEncounterId) {
 		if (nodeType == DeckBuilderMap.BOSS) {
-			return new DeckEnemy[]{CREAM};
+			if (DeckBuilderRun.selectedBoss < 0) DeckBuilderRun.selectedBoss = Random.Int(3);
+			return new DeckEnemy[]{bossBySelection()};
 		}
 		if (nodeType == DeckBuilderMap.ELITE) {
 			int r = Random.Int(3);

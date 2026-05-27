@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDungeonMode;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -170,24 +171,7 @@ public class HeroSelectScene extends PixelScene {
 
                 if (GamesInProgress.selectedClass == null) return;
 
-                if (SPDSettings.getDeckbuilder() > 0 && !SPDSettings.landscape()) {
-                    ShatteredPixelDungeon.scene().addToFront(new WndMessage("덱빌딩 모드\n\n덱빌딩 모드는 가로 화면에서만 시작할 수 있습니다.\n설정에서 가로 모드를 켠 뒤 다시 시작해주세요."));
-                    return;
-                }
-
-                Dungeon.hero = null;
-                Dungeon.daily = Dungeon.dailyReplay = false;
-                
-                // 텐덴시 모드가 활성화된 경우 시드를 초기화
-                if (SPDSettings.getTendency() > 0 || SPDSettings.getDeckbuilder() > 0) {
-                    SPDSettings.customSeed("");
-                }
-                
-                Dungeon.initSeed();
-                ActionIndicator.clearAction();
-                InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-
-                Game.switchScene(InterlevelScene.class);
+                ShatteredPixelDungeon.scene().addToFront(new WndDungeonMode());
             }
         };
         startBtn.icon(Icons.get(Icons.ENTER));
@@ -466,14 +450,7 @@ public class HeroSelectScene extends PixelScene {
     }
 
     private void updateOptionsColor() {
-        if (SPDSettings.getDeckbuilder() > 0) {
-            btnOptions.icon().hardlight(0.55f, 1.25f, 1.8f);
-            return;
-        }
-        // 텐덴시 모드가 활성화된 경우 시드 색상을 적용하지 않음
-        if (SPDSettings.getTendency() > 0) {
-            btnOptions.icon().hardlight(1f, 0.5f, 0.5f); // 텐덴시 모드 색상
-        } else if (!SPDSettings.customSeed().isEmpty()) {
+        if (!SPDSettings.customSeed().isEmpty()) {
             btnOptions.icon().hardlight(1f, 1.5f, 0.67f);
         } else if (SPDSettings.challenges() != 0) {
             btnOptions.icon().hardlight(2f, 1.33f, 0.5f);
@@ -836,6 +813,7 @@ public class HeroSelectScene extends PixelScene {
                                     if (SPDSettings.getDeckbuilder() == 1) {
                                         SPDSettings.setDeckbuilder(0);
                                     }
+                                    Dungeon.selectedMode = Dungeon.GameMode.NORMAL;
                                     // 리플레이 모드 시작
                                     Dungeon.dailyReplay = true;
                                     Dungeon.hero = null;
@@ -904,6 +882,9 @@ public class HeroSelectScene extends PixelScene {
 
                                     SPDSettings.lastDaily(time);
                                     Dungeon.dailyReplay = false;
+                                    SPDSettings.setTendency(0);
+                                    SPDSettings.setDeckbuilder(0);
+                                    Dungeon.selectedMode = Dungeon.GameMode.NORMAL;
                                 Dungeon.hero = null;
                                 Dungeon.daily = true;
                                 Ranking.checkForRankings(Ranking.currentDailyDate());
@@ -1007,64 +988,6 @@ public class HeroSelectScene extends PixelScene {
                     add(randomButton);
                 }
 
-            StyledButton dioButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "tendency_mode"), 6) {
-                @Override
-                protected void onClick() {
-                    if (!Badges.isUnlocked(Badges.Badge.VICTORY)) {
-                        ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
-                                Icons.get(Icons.NEWS),
-                                Messages.get(HeroSelectScene.class, "tendency_mode"),
-                                Messages.get(HeroSelectScene.class, "tendency_nowin"))
-                        );
-                        return;
-                    }
-                    super.onClick();
-                    if (SPDSettings.getTendency() == 0) {
-                        SPDSettings.addTendency(1);
-                        SPDSettings.setDeckbuilder(0);
-                        icon.hardlight(1f, 0.5f, 0.5f);
-                    } else {
-                        SPDSettings.addTendency(-1);
-                        icon.resetColor();
-                    }
-                    updateOptionsColor();
-                }
-            };
-            dioButton.leftJustify = true;
-            dioButton.icon(Icons.get(Icons.NEWS));
-            if (SPDSettings.getTendency() > 0) dioButton.icon().hardlight(1f, 0.5f, 0.5f);
-            add(dioButton);
-            buttons.add(dioButton);
-
-            StyledButton deckButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "deckbuilder_mode"), 6) {
-                @Override
-                protected void onClick() {
-                    if (!Badges.isUnlocked(Badges.Badge.VICTORY)) {
-                        ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
-                                Icons.get(Icons.NEWS),
-                                Messages.get(HeroSelectScene.class, "deckbuilder_mode"),
-                                Messages.get(HeroSelectScene.class, "deckbuilder_nowin"))
-                        );
-                        return;
-                    }
-                    super.onClick();
-                    if (SPDSettings.getDeckbuilder() == 0) {
-                        SPDSettings.setDeckbuilder(1);
-                        SPDSettings.setTendency(0);
-                        icon.hardlight(0.55f, 1.25f, 1.8f);
-                        dioButton.icon().resetColor();
-                    } else {
-                        SPDSettings.setDeckbuilder(0);
-                        icon.resetColor();
-                    }
-                    updateOptionsColor();
-                }
-            };
-            deckButton.leftJustify = true;
-            deckButton.icon(Icons.get(Icons.TALENT));
-            if (SPDSettings.getDeckbuilder() > 0) deckButton.icon().hardlight(0.55f, 1.25f, 1.8f);
-            add(deckButton);
-            buttons.add(deckButton);
             }
 
             for (int i = 1; i < buttons.size(); i++) {

@@ -33,7 +33,7 @@ public class DeckStartingProfile {
 				card(DeckCard.FLOW_SLASH, 1),
 				card(DeckCard.ACCEL_STAB, 1),
 				card(DeckCard.HYPERVENTILATE, 1),
-				card(DeckCard.THORN_STANCE, 1),
+				card(DeckCard.BARRICADE, 1),
 				card(DeckCard.BASH, 1));
 
 		register(HeroClass.MAGE,

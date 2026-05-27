@@ -47,6 +47,7 @@ public class DeckBuilderRun {
 	public static int[] startingRelicChoices;
 	public static int act1NormalFights;
 	public static int lastNormalEncounter;
+	public static int selectedBoss = -1; // -1: 미결정, 0: 크림, 1: 시빌 워, 2: 누케사쿠
 	public static int shopRemoveCount;
 	// 미지 노드 천장(pity) 시스템
 	public static int mysteryCombatBonus = 0;
@@ -73,6 +74,9 @@ public class DeckBuilderRun {
 	// Silver Crucible: upgrade card picked from reward; first treasure empty
 	public static int upgradedCardRewardCount;
 	public static boolean firstTreasureEmpty;
+	public static boolean tutorialMode;
+	public static int tutorialStep;
+	public static boolean tutorialMapMessageShown;
 
 	static final DeckShopState shop = new DeckShopState();
 	static final DeckTreasureState treasure = new DeckTreasureState();
@@ -96,6 +100,7 @@ public class DeckBuilderRun {
 		startingRelicChoices = null;
 		act1NormalFights = 0;
 		lastNormalEncounter = -1;
+		selectedBoss = -1;
 		shopRemoveCount = 0;
 		mysteryCombatBonus = 0;
 		mysteryShopBonus = 0;
@@ -116,6 +121,9 @@ public class DeckBuilderRun {
 		fishingRodProgress = 0;
 		upgradedCardRewardCount = 0;
 		firstTreasureEmpty = false;
+		tutorialMode = false;
+		tutorialStep = 0;
+		tutorialMapMessageShown = false;
 		clearShop();
 		clearTreasure();
 		clearRest();
@@ -136,6 +144,9 @@ public class DeckBuilderRun {
 
 	public static DeckEnemy[] rollEncounter(int nodeType, int depth) {
 		initIfNeeded();
+		if (tutorialMode) {
+			return new DeckEnemy[]{DeckEnemy.TUTORIAL_DUMMY};
+		}
 		if (nodeType == DeckBuilderMap.COMBAT && act1NormalFights < 3) {
 			int encounter = DeckEnemy.rollOpeningEncounter(lastNormalEncounter);
 			lastNormalEncounter = encounter;
@@ -193,6 +204,24 @@ public class DeckBuilderRun {
 	}
 
 	private static void rollCombatReward(int nodeType, int depth, int path) {
+		if (tutorialMode) {
+			reward.node = nodeType;
+			reward.depth = depth;
+			reward.path = path;
+			reward.gold = 0;
+			reward.relics = new int[0];
+			reward.relicClaimed = new boolean[0];
+			reward.potion = -1;
+			reward.cards = new int[]{
+					DeckCard.BASH.ordinal(),
+					DeckCard.RIPPLE_WALL.ordinal(),
+					DeckCard.IGNITE.ordinal()
+			};
+			reward.goldClaimed = true;
+			reward.potionClaimed = true;
+			reward.cardClaimed = false;
+			return;
+		}
 		if (nodeType == DeckBuilderMap.COMBAT && hasRelic(DeckRelic.FISHING_ROD)) {
 			fishingRodProgress++;
 			if (fishingRodProgress >= 3) {

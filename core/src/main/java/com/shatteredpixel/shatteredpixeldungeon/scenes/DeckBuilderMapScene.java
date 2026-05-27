@@ -25,7 +25,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CivilSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -159,6 +163,12 @@ public class DeckBuilderMapScene extends PixelScene {
 		pane.jumpTo(0, focusY);
 
 		fadeIn();
+		if (DeckBuilderRun.tutorialMode && !DeckBuilderRun.tutorialMapMessageShown && DeckBuilderRun.tutorialStep >= 3) {
+			DeckBuilderRun.tutorialMapMessageShown = true;
+			addToFront(new WndMessage(
+					"덱빌딩 튜토리얼\n\n전투가 끝나면 지도에서 다음 경로를 선택합니다. 전투, 휴식, 상점, 이벤트를 지나며 덱을 조금씩 바꾸는 것이 이 모드의 핵심입니다.\n\n튜토리얼은 여기까지입니다. 이제 자유롭게 다음 노드를 선택해 보세요."));
+			saveMapState();
+		}
 	}
 
 	private void saveMapState() {
@@ -381,15 +391,26 @@ public class DeckBuilderMapScene extends PixelScene {
 			accent.visible = current();
 
 			icon.copy(icon());
-			icon.x = x + 5;
-			icon.y = y + (height - icon.height()) / 2f;
+			boolean isBoss = sceneType(depth, node) == DeckBuilderMap.BOSS;
+			if (isBoss) {
+				// 보스 노드: 텍스트 제거 + 스프라이트 가운데 배치
+				label.text("");
+				label.visible = false;
+				label.alpha(0f);
+				icon.x = x + (width - icon.width()) / 2f;
+				icon.y = y + (height - icon.height()) / 2f;
+			} else {
+				label.visible = true;
+				label.alpha(1f);
+				label.text(labelText());
+				label.hardlight(textColor());
+				label.maxWidth((int)(width - 21));
+				label.setPos(x + 21, y + (height - label.height()) / 2f);
+				align(label);
+				icon.x = x + 5;
+				icon.y = y + (height - icon.height()) / 2f;
+			}
 			align(icon);
-
-			label.text(labelText());
-			label.hardlight(textColor());
-			label.maxWidth((int)(width - 21));
-			label.setPos(x + 21, y + (height - label.height()) / 2f);
-			align(label);
 		}
 
 		@Override
@@ -399,7 +420,10 @@ public class DeckBuilderMapScene extends PixelScene {
 
 			// 미지(?) 노드: 천장 시스템으로 실제 인카운터 결정
 			int resolvedType;
-			if (rawType == DeckBuilderMap.EVENT) {
+			if (DeckBuilderRun.tutorialMode && DeckBuilderRun.tutorialStep < 3) {
+				resolvedType = DeckBuilderMap.COMBAT;
+				DeckBuilderRun.notifyNodeEntered(resolvedType);
+			} else if (rawType == DeckBuilderMap.EVENT) {
 				resolvedType = DeckBuilderRun.resolveMysteryEncounter(depth, node);
 			} else {
 				resolvedType = rawType;
@@ -554,7 +578,10 @@ public class DeckBuilderMapScene extends PixelScene {
 		private Image icon() {
 			switch (sceneType(depth, node)) {
 				case DeckBuilderMap.BOSS:
-                    return Icons.NEWS.get();
+					DeckEnemy boss = DeckEnemy.forNode(DeckBuilderMap.BOSS);
+					if (boss == DeckEnemy.CIVIL_WAR) return new CivilSprite();
+					if (boss == DeckEnemy.NUKESAKU)  return new VampireSprite.Blue();
+					return new GooSprite(); // CREAM
 				case DeckBuilderMap.ELITE:
 					return Icons.SKULL.get();
 				case DeckBuilderMap.SHOP:

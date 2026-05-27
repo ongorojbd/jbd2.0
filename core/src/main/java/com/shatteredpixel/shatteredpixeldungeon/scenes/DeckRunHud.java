@@ -15,6 +15,7 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotion;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
@@ -22,11 +23,15 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.ui.Component;
+
+import java.util.ArrayList;
 
 public class DeckRunHud extends Component {
 
@@ -51,7 +56,7 @@ public class DeckRunHud extends Component {
 		relicButton = new IconButton(Icons.BACKPACK_LRG.get()) {
 			@Override
 			protected void onClick() {
-				Game.scene().addToFront(new WndMessage("유물\n\n" + DeckBuilderRun.relicListText()));
+				showRelicWindow();
 			}
 		};
 		add(relicButton);
@@ -155,6 +160,70 @@ public class DeckRunHud extends Component {
 				showPotionWindow(slot, potion);
 			}
 		}
+	}
+
+	private void showRelicWindow() {
+		final Window win = new Window();
+		int width = 180;
+		int padding = 5;
+		int pos = 7;
+
+		RenderedTextBlock titleBlock = PixelScene.renderTextBlock("유물 목록", 9);
+		titleBlock.hardlight(Window.TITLE_COLOR);
+		titleBlock.setPos((width - titleBlock.width()) / 2f, pos);
+		win.add(titleBlock);
+		pos += 18;
+
+		Component content = new Component();
+		float contentPos = 0;
+
+		if (DeckBuilderRun.relics.isEmpty()) {
+			RenderedTextBlock empty = PixelScene.renderTextBlock("획득한 유물이 없습니다.", 6);
+			empty.hardlight(0xFF888888);
+			empty.setPos((width - 10 - empty.width()) / 2f, contentPos);
+			content.add(empty);
+			contentPos += empty.height() + padding;
+		} else {
+			for (int id : DeckBuilderRun.relics) {
+				DeckRelic relic = DeckRelic.byId(id);
+
+				RenderedTextBlock nameTxt = PixelScene.renderTextBlock(relic.title, 7);
+				nameTxt.hardlight(Window.TITLE_COLOR);
+				nameTxt.maxWidth(width - padding * 2);
+				nameTxt.setPos(padding, contentPos);
+				content.add(nameTxt);
+				contentPos += nameTxt.height() + 2;
+
+				RenderedTextBlock descTxt = PixelScene.renderTextBlock(relic.description, 6);
+				descTxt.hardlight(0xFFD8D1BD);
+				descTxt.maxWidth(width - padding * 2);
+				descTxt.setPos(padding, contentPos);
+				content.add(descTxt);
+				contentPos += descTxt.height() + 8;
+			}
+		}
+		content.setSize(width - 2, contentPos);
+
+		int maxScrollH = Math.min(150, Camera.main.height - 80);
+		int scrollH = (int) Math.min(maxScrollH, contentPos);
+		int scrollTop = pos;
+		pos += scrollH + 4;
+
+		RedButton close = new RedButton("닫기", 6) {
+			@Override
+			protected void onClick() {
+				win.hide();
+			}
+		};
+		close.setRect((width - 100) / 2f, pos, 100, 16);
+		win.add(close);
+		pos += 22;
+
+		ScrollPane scrollPane = new ScrollPane(content);
+		win.add(scrollPane);
+		win.resize(width, pos);           // resize 먼저 → 윈도우 카메라 위치 확정
+		scrollPane.setRect(0, scrollTop, width, scrollH);  // 그 다음 setRect → 올바른 카메라 위치 사용
+		Game.scene().addToFront(win);
 	}
 
 	private void showPotionWindow(final int slot, final DeckPotion potion) {

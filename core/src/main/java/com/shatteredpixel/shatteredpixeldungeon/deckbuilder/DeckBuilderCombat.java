@@ -122,6 +122,7 @@ public class DeckBuilderCombat {
 	private static final String SKILL_CARDS_PLAYED = "skill_cards_played";
 	private static final String BURNING_STICKS_FIRED = "burning_sticks_fired";
 	private static final String CARDS_PLAYED_THIS_TURN = "cards_played_this_turn";
+	private static final String POWERS_PLAYED = "powers_played";
 	private static final String RUPTURE_STRENGTH = "rupture_strength";
 	private static final String FIRESEA_DAMAGE = "firesea_damage";
 	private static final String HP_LOST_THIS_TURN = "hp_lost_this_turn";
@@ -176,6 +177,7 @@ public class DeckBuilderCombat {
 	public ArrayList<Integer> hand = new ArrayList<>();
 	public ArrayList<Integer> discardPile = new ArrayList<>();
 	public ArrayList<Integer> exhaustPile = new ArrayList<>();
+	public ArrayList<Integer> powersPlayed = new ArrayList<>();
 	public ArrayList<DeckPlayResult> lastAutoPlayResults = new ArrayList<>();
 	public ArrayList<DeckPlayResult> lastTurnEndAutoPlayResults = new ArrayList<>();
 	public ArrayList<EnemyAction> lastEnemyActions = new ArrayList<>();
@@ -188,7 +190,8 @@ public class DeckBuilderCombat {
 		this.maxEnergy = Math.min(DeckBuilderRun.MAX_ENERGY_CAP, Math.max(1, DeckBuilderRun.maxEnergy));
 		this.handSize = Math.max(1, DeckBuilderRun.handSize);
 		this.maxHandSize = Math.max(this.handSize, DeckBuilderRun.maxHandSize);
-		for (DeckEnemy kind : DeckBuilderRun.rollEncounter(nodeType, this.depth)) {
+		DeckEnemy[] encounter = DeckBuilderRun.rollEncounter(nodeType, this.depth);
+		for (DeckEnemy kind : encounter) {
 			enemies.add(new DeckCombatEnemy(kind, this.depth));
 		}
 		if (enemies.isEmpty()) {
@@ -196,18 +199,26 @@ public class DeckBuilderCombat {
 		}
 		targetIndex = 0;
 		this.turn = 0;
-		this.drawPile.addAll(deck);
-		shuffle(drawPile);
-		// Move VANGUARD cards to the front so they are drawn in the opening hand
-		ArrayList<Integer> vanguardCards = new ArrayList<>();
-		for (int i = this.drawPile.size() - 1; i >= 0; i--) {
-			int code = this.drawPile.get(i);
-			if (DeckCard.byCode(code).hasKeyword(code, DeckCardKeyword.VANGUARD)) {
-				vanguardCards.add(0, code);
-				this.drawPile.remove(i);
+		if (DeckBuilderRun.tutorialMode) {
+			this.drawPile.add(DeckCard.STAFF.code());
+			this.drawPile.add(DeckCard.GUARD.code());
+			this.drawPile.add(DeckCard.BASH.code());
+			this.drawPile.add(DeckCard.GUARD.code());
+			this.drawPile.add(DeckCard.STAFF.code());
+		} else {
+			this.drawPile.addAll(deck);
+			shuffle(drawPile);
+			// Move VANGUARD cards to the front so they are drawn in the opening hand
+			ArrayList<Integer> vanguardCards = new ArrayList<>();
+			for (int i = this.drawPile.size() - 1; i >= 0; i--) {
+				int code = this.drawPile.get(i);
+				if (DeckCard.byCode(code).hasKeyword(code, DeckCardKeyword.VANGUARD)) {
+					vanguardCards.add(0, code);
+					this.drawPile.remove(i);
+				}
 			}
+			this.drawPile.addAll(0, vanguardCards);
 		}
-		this.drawPile.addAll(0, vanguardCards);
 		startTurnState();
 	}
 
@@ -264,6 +275,7 @@ public class DeckBuilderCombat {
 		bundle.put(HAND, toArray(hand));
 		bundle.put(DISCARD_PILE, toArray(discardPile));
 		bundle.put(EXHAUST_PILE, toArray(exhaustPile));
+		bundle.put(POWERS_PLAYED, toArray(powersPlayed));
 
 		int[] enemyKinds = new int[enemies.size()];
 		int[] enemyHt = new int[enemies.size()];
@@ -374,6 +386,7 @@ public class DeckBuilderCombat {
 		restoreList(combat.hand, bundle, HAND);
 		restoreList(combat.discardPile, bundle, DISCARD_PILE);
 		restoreList(combat.exhaustPile, bundle, EXHAUST_PILE);
+		restoreList(combat.powersPlayed, bundle, POWERS_PLAYED);
 
 		int[] enemyKinds = bundle.getIntArray(ENEMY_KINDS);
 		int[] enemyHt = bundle.contains(ENEMY_HT) ? bundle.getIntArray(ENEMY_HT) : new int[0];
@@ -578,6 +591,7 @@ public class DeckBuilderCombat {
 			}
 			if (card.type == DeckCardType.POWER) {
 				// Powers are removed from the current combat, but not from the run deck.
+				if (!castOnDraw) powersPlayed.add(cardCode);
 			} else if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) {
 				exhaustPile.add(cardCode);
 				result.exhausted = true;

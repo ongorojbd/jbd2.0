@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderCombat;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardCode;
@@ -39,6 +40,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CivilSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.FishSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollExileSprite;
@@ -62,8 +65,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.ui.Component;
 import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.input.PointerEvent;
@@ -314,7 +319,7 @@ public class DeckBattleScene extends PixelScene {
 		deckCounterArea = new PointerArea(0, 0, 1, 1) {
 			@Override
 			protected void onClick(PointerEvent event) {
-                showPileWindow("남은 카드 목록", combat.drawPile);
+				showDrawPileWindow();
 			}
 		};
 		add(deckCounterArea);
@@ -505,6 +510,7 @@ public class DeckBattleScene extends PixelScene {
 			pendingDrawVisuals = drawn;
 			pendingPileShuffle = discardPileBefore > 0 && combat.discardPile.size() < discardPileBefore;
 			saveCombatState();
+			showTutorialTurnPrompt();
 		}
 		Sample.INSTANCE.play(Assets.Sounds.ITEM);
         showTitleBanner("내 턴", combat.turn + "턴", 0xFF9EE6FF, 0.78f, new Runnable() {
@@ -1356,6 +1362,9 @@ public class DeckBattleScene extends PixelScene {
 		}
 		int cardCode = combat.hand.get(index);
 		DeckCard card = DeckCard.byCode(cardCode);
+		if (!tutorialAllowsCard(card, cardCode)) {
+			return;
+		}
 		if (card == DeckCard.MAGE_STAFF && hasWandInHand(index)) {
 			selectingWandForStaff = true;
 			mageStaffHandIndex = index;
@@ -1394,6 +1403,7 @@ public class DeckBattleScene extends PixelScene {
             log("에너지가 부족합니다.");
 			return;
 		}
+		advanceTutorialAfterCard(card, cardCode);
 
 		saveCombatState();
 		combatLocked = true;
@@ -1411,6 +1421,9 @@ public class DeckBattleScene extends PixelScene {
 
 		if (card.type == DeckCardType.POWER) {
 			Sample.INSTANCE.play(Assets.Sounds.CHARMS);
+			final float px = playerCenterX();
+			final float py = playerCenterY();
+			addEffect(new PowerEffect(px, py));
 		}
 
 		if (card == DeckCard.SCORPION_THROW) {
@@ -2547,37 +2560,47 @@ public class DeckBattleScene extends PixelScene {
 		addToFront(win);
 	}
 
-	private void showDiscardWindow() {
+	private void showDrawPileWindow() {
 		final Window win = new Window();
 		int width = 180;
 		int pos = 7;
 
-		// 버린 카드 섹션
-		RenderedTextBlock discardTitle = renderTextBlock("버린 카드 목록", 9);
-		discardTitle.hardlight(Window.TITLE_COLOR);
-		discardTitle.setPos((width - discardTitle.width()) / 2f, pos);
-		win.add(discardTitle);
+		RenderedTextBlock drawTitle = renderTextBlock("남은 카드 목록", 9);
+		drawTitle.hardlight(Window.TITLE_COLOR);
+		drawTitle.setPos((width - drawTitle.width()) / 2f, pos);
+		win.add(drawTitle);
 		pos += 15;
 
-		pos = addPileToWindow(win, combat.discardPile, width, pos);
-		pos += 8;
+		// 스크롤 가능한 콘텐츠 구성
+		Component content = new Component();
+		float contentPos = 0;
 
-		// 구분선
-		ColorBlock divider = new ColorBlock(width - 10, 1, 0xFF555555);
-		divider.x = 5;
-		divider.y = pos;
-		win.add(divider);
-		pos += 6;
+		contentPos = addPileToContent(content, combat.drawPile, width, contentPos);
+		contentPos += 8;
 
-		// 소멸 카드 섹션
-		RenderedTextBlock exhaustTitle = renderTextBlock("소멸된 카드 목록", 9);
-		exhaustTitle.hardlight(0xFFFF8888);
-		exhaustTitle.setPos((width - exhaustTitle.width()) / 2f, pos);
-		win.add(exhaustTitle);
-		pos += 15;
+		if (!combat.powersPlayed.isEmpty()) {
+			ColorBlock divider = new ColorBlock(width - 10, 1, 0xFF555555);
+			divider.x = 5;
+			divider.y = contentPos;
+			content.add(divider);
+			contentPos += 6;
 
-		pos = addPileToWindow(win, combat.exhaustPile, width, pos);
-		pos += 8;
+			RenderedTextBlock powerTitle = renderTextBlock("사용한 파워 카드", 9);
+			powerTitle.hardlight(0xFFFFD66B);
+			powerTitle.setPos((width - powerTitle.width()) / 2f, contentPos);
+			content.add(powerTitle);
+			contentPos += 15;
+
+			contentPos = addPileToContent(content, combat.powersPlayed, width, contentPos);
+			contentPos += 8;
+		}
+
+		content.setSize(width - 2, contentPos);
+
+		int scrollTop = pos;
+		int maxScrollH = Math.min(150, Camera.main.height - 80);
+		int scrollH = (int) Math.min(maxScrollH, contentPos);
+		pos += scrollH + 4;
 
 		RedButton close = new RedButton("닫기", 6) {
 			@Override
@@ -2589,16 +2612,79 @@ public class DeckBattleScene extends PixelScene {
 		win.add(close);
 		pos += 22;
 
+		ScrollPane scrollPane = new ScrollPane(content);
+		win.add(scrollPane);
 		win.resize(width, pos);
+		scrollPane.setRect(0, scrollTop, width, scrollH);
 		addToFront(win);
 	}
 
-	private int addPileToWindow(Window win, ArrayList<Integer> pile, int width, int pos) {
+	private void showDiscardWindow() {
+		final Window win = new Window();
+		int width = 180;
+		int pos = 7;
+
+		// 버린 카드 섹션 제목
+		RenderedTextBlock discardTitle = renderTextBlock("버린 카드 목록", 9);
+		discardTitle.hardlight(Window.TITLE_COLOR);
+		discardTitle.setPos((width - discardTitle.width()) / 2f, pos);
+		win.add(discardTitle);
+		pos += 15;
+
+		// 스크롤 가능한 콘텐츠 구성
+		Component content = new Component();
+		float contentPos = 0;
+
+		contentPos = addPileToContent(content, combat.discardPile, width, contentPos);
+		contentPos += 8;
+
+		// 구분선
+		ColorBlock divider = new ColorBlock(width - 10, 1, 0xFF555555);
+		divider.x = 5;
+		divider.y = contentPos;
+		content.add(divider);
+		contentPos += 6;
+
+		// 소멸 카드 섹션
+		RenderedTextBlock exhaustTitle = renderTextBlock("소멸된 카드 목록", 9);
+		exhaustTitle.hardlight(0xFFFF8888);
+		exhaustTitle.setPos((width - exhaustTitle.width()) / 2f, contentPos);
+		content.add(exhaustTitle);
+		contentPos += 15;
+
+		contentPos = addPileToContent(content, combat.exhaustPile, width, contentPos);
+		contentPos += 8;
+
+		content.setSize(width - 2, contentPos);
+
+		int scrollTop = pos;
+		int maxScrollH = Math.min(150, Camera.main.height - 80);
+		int scrollH = (int) Math.min(maxScrollH, contentPos);
+		pos += scrollH + 4;
+
+		RedButton close = new RedButton("닫기", 6) {
+			@Override
+			protected void onClick() {
+				win.hide();
+			}
+		};
+		close.setRect((width - 100) / 2f, pos, 100, 16);
+		win.add(close);
+		pos += 22;
+
+		ScrollPane scrollPane = new ScrollPane(content);
+		win.add(scrollPane);
+		win.resize(width, pos);
+		scrollPane.setRect(0, scrollTop, width, scrollH);
+		addToFront(win);
+	}
+
+	private float addPileToContent(Component content, ArrayList<Integer> pile, int width, float pos) {
 		if (pile.isEmpty()) {
 			RenderedTextBlock empty = renderTextBlock("(없음)", 6);
 			empty.hardlight(0xFF888888);
 			empty.setPos((width - empty.width()) / 2f, pos);
-			win.add(empty);
+			content.add(empty);
 			pos += 12;
 		} else {
 			LinkedHashMap<Integer, Integer> counts = new LinkedHashMap<>();
@@ -2615,7 +2701,7 @@ public class DeckBattleScene extends PixelScene {
 				cardLine.maxWidth(width - 10);
 				cardLine.hardlight(0xFFDDD8C8);
 				cardLine.setPos(5, pos);
-				win.add(cardLine);
+				content.add(cardLine);
 				pos += (int) cardLine.height() + 3;
 			}
 		}
@@ -2713,6 +2799,7 @@ public class DeckBattleScene extends PixelScene {
 		if (useFullRewardScreen) {
 			DeckCombatRewardState rewards = DeckBuilderRun.combatRewardForCurrentNode(Statistics.deckBuilderMapNode);
 			saveCombatState();
+			showTutorialRewardPrompt();
 			showCombatRewardWindow(rewards);
 			return;
 		}
@@ -2761,6 +2848,60 @@ public class DeckBattleScene extends PixelScene {
 		reward.resize(width, pos);
 		addToFront(reward);
 		bringRunHudToFront();
+	}
+
+	private void showTutorialTurnPrompt() {
+		if (!DeckBuilderRun.tutorialMode) return;
+		if (DeckBuilderRun.tutorialStep == 0) {
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"덱빌딩 튜토리얼\n\n전투에서는 손패의 카드를 사용해 행동합니다. 먼저 공격 카드를 사용해서 적에게 피해를 주세요."));
+		} else if (DeckBuilderRun.tutorialStep == 1 && enemyIsAttacking()) {
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"덱빌딩 튜토리얼\n\n적이 공격하려 합니다. 이번에는 보호막을 얻는 카드를 사용해서 피해를 막아 보세요."));
+		}
+	}
+
+	private boolean tutorialAllowsCard(DeckCard card, int cardCode) {
+		if (!DeckBuilderRun.tutorialMode) return true;
+		if (DeckBuilderRun.tutorialStep == 0 && card.type != DeckCardType.ATTACK) {
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"이번에는 공격 카드를 사용해 보세요. 적을 쓰러뜨리려면 먼저 피해를 주는 흐름을 익히는 것이 좋습니다."));
+			return false;
+		}
+		if (DeckBuilderRun.tutorialStep == 1 && enemyIsAttacking() && card.block(cardCode) <= 0) {
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"적의 공격이 예고되어 있습니다. 이번에는 보호막을 얻는 카드를 사용해 보세요."));
+			return false;
+		}
+		return true;
+	}
+
+	private void advanceTutorialAfterCard(DeckCard card, int cardCode) {
+		if (!DeckBuilderRun.tutorialMode) return;
+		if (DeckBuilderRun.tutorialStep == 0 && card.type == DeckCardType.ATTACK) {
+			DeckBuilderRun.tutorialStep = 1;
+			return;
+		}
+		if (DeckBuilderRun.tutorialStep == 1 && card.block(cardCode) > 0) {
+			DeckBuilderRun.tutorialStep = 2;
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"좋습니다. 보호막은 이번 턴의 피해를 먼저 막아 줍니다. 남은 에너지는 공격이나 추가 방어에 사용하고, 준비가 끝나면 턴 종료를 누르세요."));
+		}
+	}
+
+	private boolean enemyIsAttacking() {
+		if (combat == null) return false;
+		for (DeckCombatEnemy enemy : combat.enemies) {
+			if (enemy.alive() && enemy.intent > 0) return true;
+		}
+		return false;
+	}
+
+	private void showTutorialRewardPrompt() {
+		if (!DeckBuilderRun.tutorialMode || DeckBuilderRun.tutorialStep >= 3) return;
+		DeckBuilderRun.tutorialStep = 3;
+		ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+				"덱빌딩 튜토리얼\n\n전투에서 승리하면 보상을 얻습니다. 카드 보상에서는 덱에 추가할 카드 한 장을 고를 수 있습니다."));
 	}
 
 	private void showCombatRewardWindow(final DeckCombatRewardState rewards) {
@@ -3106,6 +3247,34 @@ public class DeckBattleScene extends PixelScene {
 		}
 		if (kind == DeckEnemy.CREAM) {
 			return new GooSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
+		}
+		if (kind == DeckEnemy.CIVIL_WAR) {
+			return new CivilSprite() {
+				@Override
+				public void die() {
+					play(die);
+				}
+				@Override
+				public synchronized void onComplete(Animation anim) {
+					if (anim == attack || anim == run) {
+						idle();
+					}
+				}
+			};
+		}
+		if (kind == DeckEnemy.NUKESAKU) {
+			return new VampireSprite.Blue() {
 				@Override
 				public void die() {
 					play(die);
@@ -4186,6 +4355,70 @@ public class DeckBattleScene extends PixelScene {
 			right.y = left.y;
 			right.size(2, h);
 			right.am = alpha;
+		}
+	}
+
+	// 파워 카드 사용 시 황금빛 방사형 폭발 이펙트
+	private class PowerEffect extends BattleEffect {
+
+		private final ColorBlock top, bottom, left, right;
+		private final ColorBlock[] corners = new ColorBlock[4];
+		private final ColorBlock glow;
+		private final float cx, cy;
+
+		private PowerEffect(float cx, float cy) {
+			super(0.56f);
+			this.cx = cx;
+			this.cy = cy;
+			// 중심 글로우 (밝은 황백색)
+			glow = new ColorBlock(1, 1, 0xFFFFFFBB);
+			add(glow);
+			// 상하좌우 막대 (밝은 금색)
+			top    = new ColorBlock(1, 1, 0xFFFFE060); add(top);
+			bottom = new ColorBlock(1, 1, 0xFFFFE060); add(bottom);
+			left   = new ColorBlock(1, 1, 0xFFFFE060); add(left);
+			right  = new ColorBlock(1, 1, 0xFFFFE060); add(right);
+			// 대각선 파티클 (짙은 금색)
+			for (int i = 0; i < corners.length; i++) {
+				corners[i] = new ColorBlock(1, 1, 0xFFFFD84D);
+				add(corners[i]);
+			}
+		}
+
+		@Override
+		protected void updateEffect(float p) {
+			// 페이드: 빠른 등장(0→0.15) → 유지(0.15→0.5) → 서서히 소멸(0.5→1.0)
+			float alpha;
+			if (p < 0.15f)     alpha = p / 0.15f;
+			else if (p < 0.5f) alpha = 1f;
+			else               alpha = 1f - (p - 0.5f) / 0.5f;
+
+			// 중심 글로우: 크게 시작해서 서서히 줄어들며 사라짐
+			float gs = 12f - p * 7f;
+			glow.size(gs, gs);
+			glow.x = cx - gs / 2f;
+			glow.y = cy - gs / 2f;
+			glow.am = alpha * 0.85f;
+
+			// 상하좌우 막대가 중심에서 바깥으로 뻗어나감
+			float dist = 3f + p * 24f;
+			float bw   = 3f;
+			float bh   = Math.max(1.5f, 7f - p * 5f);
+			top.size(bw, bh);    top.x    = cx - bw / 2f;   top.y    = cy - dist - bh; top.am    = alpha;
+			bottom.size(bw, bh); bottom.x = cx - bw / 2f;   bottom.y = cy + dist;      bottom.am = alpha;
+			left.size(bh, bw);   left.x   = cx - dist - bh; left.y   = cy - bw / 2f;   left.am   = alpha;
+			right.size(bh, bw);  right.x  = cx + dist;      right.y  = cy - bw / 2f;   right.am  = alpha;
+
+			// 대각선 코너 파티클
+			float cd = dist * 0.75f;
+			float cs = Math.max(1.5f, 4f - p * 2.5f);
+			float[][] cdir = {{-1f, -1f}, {1f, -1f}, {-1f, 1f}, {1f, 1f}};
+			for (int i = 0; i < corners.length; i++) {
+				corners[i].size(cs, cs);
+				corners[i].x = cx + cdir[i][0] * cd - cs / 2f;
+				corners[i].y = cy + cdir[i][1] * cd - cs / 2f;
+				corners[i].am = alpha * 0.8f;
+			}
 		}
 	}
 

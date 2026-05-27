@@ -13,6 +13,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 
 import java.util.ArrayList;
@@ -50,15 +51,23 @@ public class DeckRunStart {
 		DeckBuilderRun.fishingRodProgress = 0;
 		DeckBuilderRun.upgradedCardRewardCount = 0;
 		DeckBuilderRun.firstTreasureEmpty = false;
+		DeckBuilderRun.tutorialMode = Dungeon.selectedMode == Dungeon.GameMode.DECKBUILDER_TUTORIAL;
+		DeckBuilderRun.tutorialStep = 0;
+		DeckBuilderRun.tutorialMapMessageShown = false;
 		DeckBuilderRun.clearShop();
 		DeckBuilderRun.clearTreasure();
 		DeckBuilderRun.clearRest();
 
-		DeckStartingProfile.addStartingDeck(DeckBuilderRun.deck, heroClass);
-		addStartingPotions();
+		if (DeckBuilderRun.tutorialMode) {
+			addTutorialDeck();
+			DeckBuilderRun.startingRelicChosen = true;
+		} else {
+			DeckStartingProfile.addStartingDeck(DeckBuilderRun.deck, heroClass);
+			addStartingPotions();
 
-		if (heroClass == HeroClass.WARRIOR) {
-			DeckRunInventory.addRelic(DeckBuilderRun.relics, DeckRelic.WAVE_RUSH);
+			if (heroClass == HeroClass.WARRIOR) {
+				DeckRunInventory.addRelic(DeckBuilderRun.relics, DeckRelic.WAVE_RUSH);
+			}
 		}
 	}
 
@@ -120,5 +129,13 @@ public class DeckRunStart {
 		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.HASTE, DeckBuilderRun.MAX_POTION_SLOTS);
 		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.FIRE, DeckBuilderRun.MAX_POTION_SLOTS);
 		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.GAMBLERS_BREW, DeckBuilderRun.MAX_POTION_SLOTS);
+	}
+
+	private static void addTutorialDeck() {
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STAFF);
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.GUARD);
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.BASH);
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.GUARD);
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STAFF);
 	}
 }
