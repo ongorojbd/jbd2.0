@@ -168,6 +168,10 @@ public class DeckBattleScene extends PixelScene {
 	private int pendingDrawVisuals;
 	private boolean needsHandDraw = false;
 
+	// Tutorial highlight border (4-sided pulsing golden frame)
+	private ColorBlock tutBorderTop, tutBorderBottom, tutBorderLeft, tutBorderRight;
+	private float tutHighlightTime = 0f;
+
 	private static final PlayerBuffSpec[] PLAYER_STATUS_BUFFS = new PlayerBuffSpec[]{
 			new PlayerBuffSpec(BuffIndicator.UPGRADE, 1f, 0.5f, 0f, "공격력", "공격 카드가 주는 피해가 이 수치만큼 증가합니다.",
 					combat -> Math.max(0, combat.playerStrength + combat.playerTurnStrength)),
@@ -478,6 +482,15 @@ public class DeckBattleScene extends PixelScene {
 			showBattleStartTitle();
 		}
 		fadeIn();
+
+		// Tutorial highlight border — added last so it renders above card buttons
+		if (DeckBuilderRun.tutorialMode) {
+			tutBorderTop    = new ColorBlock(1, 2, 0xFFFFE060); tutBorderTop.visible    = false; add(tutBorderTop);
+			tutBorderBottom = new ColorBlock(1, 2, 0xFFFFE060); tutBorderBottom.visible = false; add(tutBorderBottom);
+			tutBorderLeft   = new ColorBlock(2, 1, 0xFFFFE060); tutBorderLeft.visible   = false; add(tutBorderLeft);
+			tutBorderRight  = new ColorBlock(2, 1, 0xFFFFE060); tutBorderRight.visible  = false; add(tutBorderRight);
+			refreshTutorialHighlight();
+		}
 	}
 
 	private boolean shouldStartFreshCombat() {
@@ -1156,6 +1169,15 @@ public class DeckBattleScene extends PixelScene {
 			cardButtons.add(button);
 			add(button);
 		}
+
+		// Keep tutorial highlight on top of dynamically-added card buttons
+		if (tutBorderTop != null) {
+			remove(tutBorderTop);    add(tutBorderTop);
+			remove(tutBorderBottom); add(tutBorderBottom);
+			remove(tutBorderLeft);   add(tutBorderLeft);
+			remove(tutBorderRight);  add(tutBorderRight);
+			refreshTutorialHighlight();
+		}
 	}
 
 	@Override
@@ -1187,6 +1209,14 @@ public class DeckBattleScene extends PixelScene {
 				effect.killAndErase();
 				effects.remove(i);
 			}
+		}
+
+		// Pulse tutorial highlight border
+		if (tutBorderTop != null && tutBorderTop.visible) {
+			tutHighlightTime += Game.elapsed;
+			float pulse = 0.5f + 0.5f * (float)Math.abs(Math.sin(tutHighlightTime * 3.8f));
+			float am = 0.45f + 0.50f * pulse;
+			tutBorderTop.am = tutBorderBottom.am = tutBorderLeft.am = tutBorderRight.am = am;
 		}
 	}
 
@@ -2585,7 +2615,7 @@ public class DeckBattleScene extends PixelScene {
 			content.add(divider);
 			contentPos += 6;
 
-			RenderedTextBlock powerTitle = renderTextBlock("사용한 파워 카드", 9);
+			RenderedTextBlock powerTitle = renderTextBlock("사용한 지속 카드", 9);
 			powerTitle.hardlight(0xFFFFD66B);
 			powerTitle.setPos((width - powerTitle.width()) / 2f, contentPos);
 			content.add(powerTitle);
@@ -2765,6 +2795,7 @@ public class DeckBattleScene extends PixelScene {
 		if (rewardOpen) return;
 		rewardOpen = true;
 		combatLocked = true;
+		hideTutorialHighlight();
 		hideCardInfo();
 		endTurn.visible = false;
 		targetButton.visible = false;
@@ -2799,8 +2830,8 @@ public class DeckBattleScene extends PixelScene {
 		if (useFullRewardScreen) {
 			DeckCombatRewardState rewards = DeckBuilderRun.combatRewardForCurrentNode(Statistics.deckBuilderMapNode);
 			saveCombatState();
-			showTutorialRewardPrompt();
 			showCombatRewardWindow(rewards);
+			showTutorialRewardPrompt();
 			return;
 		}
 		final DeckCard[] rewards = DeckBuilderRun.rewardChoices();
@@ -2852,25 +2883,46 @@ public class DeckBattleScene extends PixelScene {
 
 	private void showTutorialTurnPrompt() {
 		if (!DeckBuilderRun.tutorialMode) return;
-		if (DeckBuilderRun.tutorialStep == 0) {
+		int step = DeckBuilderRun.tutorialStep;
+		if (step == 0) {
+			// 1단계: 공격(ATTACK) 카드 소개
 			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-					"덱빌딩 튜토리얼\n\n전투에서는 손패의 카드를 사용해 행동합니다. 먼저 공격 카드를 사용해서 적에게 피해를 주세요."));
-		} else if (DeckBuilderRun.tutorialStep == 1 && enemyIsAttacking()) {
+					"덱빌딩 튜토리얼 — 공격 카드\n\n" +
+					"공격(ATTACK) 카드는 적에게 직접 피해를 주는 카드입니다.\n\n" +
+					"에너지(좌하단 수치)를 소비해 카드를 사용합니다. 카드 좌상단의 숫자가 소모 에너지입니다.\n" +
+					"적 이름 아래 빨간 숫자는 다음 턴에 받을 피해 예고입니다.\n\n" +
+					"공격 카드를 눌러 적에게 피해를 주세요."));
+		} else if (step >= 3 && step < 8 && combat.turn >= 2) {
+			// 2턴~, 세 타입 모두 사용 완료 후 물약 튜토리얼
+			DeckBuilderRun.tutorialStep = 8;
 			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-					"덱빌딩 튜토리얼\n\n적이 공격하려 합니다. 이번에는 보호막을 얻는 카드를 사용해서 피해를 막아 보세요."));
+					"물약 안내\n\n" +
+					"화면 상단 HUD에 물약 슬롯이 있습니다.\n\n" +
+					"물약은 전투 중 언제든지 사용할 수 있는 일회성 아이템입니다. " +
+					"시작 물약 '공격력의 물약'은 공격력을 2 얻습니다.\n\n" +
+					"위기에 처했을 때나 결정적인 순간에 전략적으로 사용하세요!"));
 		}
 	}
 
 	private boolean tutorialAllowsCard(DeckCard card, int cardCode) {
 		if (!DeckBuilderRun.tutorialMode) return true;
-		if (DeckBuilderRun.tutorialStep == 0 && card.type != DeckCardType.ATTACK) {
+		int step = DeckBuilderRun.tutorialStep;
+		if (step == 0 && card.type != DeckCardType.ATTACK) {
 			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-					"이번에는 공격 카드를 사용해 보세요. 적을 쓰러뜨리려면 먼저 피해를 주는 흐름을 익히는 것이 좋습니다."));
+					"지금은 공격 카드를 사용할 차례입니다.\n\n" +
+					"공격(ATTACK) 타입 카드를 골라 적에게 피해를 주세요."));
 			return false;
 		}
-		if (DeckBuilderRun.tutorialStep == 1 && enemyIsAttacking() && card.block(cardCode) <= 0) {
+		if (step == 1 && card.type != DeckCardType.SKILL) {
 			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-					"적의 공격이 예고되어 있습니다. 이번에는 보호막을 얻는 카드를 사용해 보세요."));
+					"이제 보조 카드를 사용할 차례입니다.\n\n" +
+					"보조(SKILL) 타입 카드를 골라 사용해 보세요."));
+			return false;
+		}
+		if (step == 2 && card.type != DeckCardType.POWER) {
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"이제 지속 카드를 사용할 차례입니다.\n\n" +
+					"지속(POWER) 타입 카드를 골라 사용해 보세요."));
 			return false;
 		}
 		return true;
@@ -2878,14 +2930,31 @@ public class DeckBattleScene extends PixelScene {
 
 	private void advanceTutorialAfterCard(DeckCard card, int cardCode) {
 		if (!DeckBuilderRun.tutorialMode) return;
-		if (DeckBuilderRun.tutorialStep == 0 && card.type == DeckCardType.ATTACK) {
+		int step = DeckBuilderRun.tutorialStep;
+		if (step == 0 && card.type == DeckCardType.ATTACK) {
 			DeckBuilderRun.tutorialStep = 1;
-			return;
-		}
-		if (DeckBuilderRun.tutorialStep == 1 && card.block(cardCode) > 0) {
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"잘했습니다! 공격 카드로 적에게 피해를 주었습니다.\n\n" +
+					"다음은 보조(SKILL) 카드입니다.\n" +
+					"보조 카드는 방어, 드로우 등 다양한 지원 효과를 가집니다. " +
+					"보호막 카드를 사용하면 적의 피해를 먼저 흡수합니다.\n\n" +
+					"손패에서 보조 카드를 사용해 보세요."));
+		} else if (step == 1 && card.type == DeckCardType.SKILL) {
 			DeckBuilderRun.tutorialStep = 2;
 			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-					"좋습니다. 보호막은 이번 턴의 피해를 먼저 막아 줍니다. 남은 에너지는 공격이나 추가 방어에 사용하고, 준비가 끝나면 턴 종료를 누르세요."));
+					"좋습니다! 보조 카드를 사용했습니다.\n\n" +
+					"다음은 지속(POWER) 카드입니다.\n" +
+					"지속 카드는 전투가 끝날 때까지 지속되는 강화 효과를 제공합니다. " +
+					"한번 사용하면 전투 내내 효과가 유지됩니다.\n\n" +
+					"손패에서 지속 카드를 찾아 사용해 보세요."));
+		} else if (step == 2 && card.type == DeckCardType.POWER) {
+			DeckBuilderRun.tutorialStep = 3;
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"훌륭합니다! 세 가지 카드 타입을 모두 사용해보셨습니다.\n\n" +
+					"[카드 순환]\n" +
+					"카드를 모두 사용하면 버린 카드들이 자동으로 다시 섞여 새 덱이 됩니다. " +
+					"덱이 작을수록 강한 카드를 더 자주 뽑을 수 있습니다.\n\n" +
+					"이제 자유롭게 카드를 사용해 적을 쓰러뜨려 보세요!"));
 		}
 	}
 
@@ -2898,10 +2967,62 @@ public class DeckBattleScene extends PixelScene {
 	}
 
 	private void showTutorialRewardPrompt() {
-		if (!DeckBuilderRun.tutorialMode || DeckBuilderRun.tutorialStep >= 3) return;
-		DeckBuilderRun.tutorialStep = 3;
+		if (!DeckBuilderRun.tutorialMode) return; // 이미 종료됐거나 튜토리얼 아님
+		// 튜토리얼 전투 종료 → 즉시 tutorialMode 해제
+		DeckBuilderRun.tutorialMode = false;
+		// addToFront: 마지막에 추가한 창이 가장 위에 표시됨
+		// 카드 보상 안내를 먼저 추가 → 전리품 창 바로 위에 위치
 		ShatteredPixelDungeon.scene().addToFront(new WndMessage(
-				"덱빌딩 튜토리얼\n\n전투에서 승리하면 보상을 얻습니다. 카드 보상에서는 덱에 추가할 카드 한 장을 고를 수 있습니다."));
+				"카드 보상\n\n" +
+				"전투 후에는 3장의 카드 중 1장을 선택해 덱에 추가할 수 있습니다.\n\n" +
+				"[조언]\n" +
+				"카드를 무조건 추가하는 것이 항상 좋지는 않습니다. 덱이 커질수록 원하는 카드를 뽑기 어려워집니다. " +
+				"25장 이하의 작은 덱을 유지하면 강한 카드를 더 자주 쓸 수 있습니다.\n\n" +
+				"카드를 고르고 나면 튜토리얼이 완료됩니다!"));
+		// 물약 안내를 2턴에 보여주지 못했다면 여기서 보충
+		if (DeckBuilderRun.tutorialStep < 8) {
+			ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+					"물약 안내\n\n" +
+					"화면 상단 HUD에 물약 슬롯이 있습니다.\n\n" +
+					"물약은 전투 중 언제든지 사용할 수 있는 일회성 아이템입니다. " +
+					"'공격력의 물약'은 공격력을 2 얻습니다.\n\n" +
+					"위기에 처했을 때나 결정적인 순간에 전략적으로 사용하세요!"));
+		}
+	}
+
+	// ─── Tutorial highlight helpers ───────────────────────────────────────────
+
+	private void refreshTutorialHighlight() {
+		if (!DeckBuilderRun.tutorialMode || tutBorderTop == null) {
+			hideTutorialHighlight();
+			return;
+		}
+		int step = DeckBuilderRun.tutorialStep;
+		// step 0→1→2 단계 안내 중에만 손패 영역 하이라이트
+		if (step < 3) {
+			int sw = Camera.main.width;
+			RectF insets = getCommonInsets();
+			float handLeft  = insets.left + counterW + 4;
+			float handRight = sw - insets.right - counterW - 4;
+			setTutorialHighlight(handLeft, handY, handRight - handLeft, CARD_H);
+		} else {
+			hideTutorialHighlight();
+		}
+	}
+
+	private void setTutorialHighlight(float x, float y, float w, float h) {
+		int pad = 3;
+		tutBorderTop.x    = x - pad;         tutBorderTop.y    = y - pad;         tutBorderTop.size(w + pad * 2, 2);
+		tutBorderBottom.x = x - pad;         tutBorderBottom.y = y + h + pad - 2; tutBorderBottom.size(w + pad * 2, 2);
+		tutBorderLeft.x   = x - pad;         tutBorderLeft.y   = y - pad;         tutBorderLeft.size(2, h + pad * 2);
+		tutBorderRight.x  = x + w + pad - 2; tutBorderRight.y  = y - pad;         tutBorderRight.size(2, h + pad * 2);
+		tutBorderTop.visible = tutBorderBottom.visible = tutBorderLeft.visible = tutBorderRight.visible = true;
+		tutHighlightTime = 0f;
+	}
+
+	private void hideTutorialHighlight() {
+		if (tutBorderTop == null) return;
+		tutBorderTop.visible = tutBorderBottom.visible = tutBorderLeft.visible = tutBorderRight.visible = false;
 	}
 
 	private void showCombatRewardWindow(final DeckCombatRewardState rewards) {
@@ -2996,7 +3117,11 @@ public class DeckBattleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				reward.hide();
-				continueToFloor();
+				if (Dungeon.selectedMode == Dungeon.GameMode.DECKBUILDER_TUTORIAL) {
+					finishTutorialRun();
+				} else {
+					continueToFloor();
+				}
 			}
 		};
 		done.setRect((width - 100) / 2f, pos, 100, 18);
@@ -3045,6 +3170,9 @@ public class DeckBattleScene extends PixelScene {
 				cardRow.text.hardlight(0xFF9A9A9A);
 				saveCombatState();
 				win.hide();
+				if (Dungeon.selectedMode == Dungeon.GameMode.DECKBUILDER_TUTORIAL) {
+					finishTutorialRun();
+				}
 			}
 		};
 		skip.setRect(20, pos, 90, 18);
@@ -3096,6 +3224,9 @@ public class DeckBattleScene extends PixelScene {
 				saveCombatState();
 				win.hide();
 				cardWindow.hide();
+				if (Dungeon.selectedMode == Dungeon.GameMode.DECKBUILDER_TUTORIAL) {
+					finishTutorialRun();
+				}
 			}
 		};
 		take.setRect(7, pos, 74, 18);
@@ -3148,6 +3279,13 @@ public class DeckBattleScene extends PixelScene {
 		}
 		Dungeon.deleteGame(GamesInProgress.curSlot, true);
 		Game.switchScene(RankingsScene.class);
+	}
+
+	/** 튜토리얼 완료 — 게임 데이터를 삭제하고 타이틀 화면으로 돌아갑니다. */
+	private void finishTutorialRun() {
+		DeckBuilderRun.clearCombat();
+		Dungeon.deleteGame(GamesInProgress.curSlot, true);
+		Game.switchScene(TitleScene.class);
 	}
 
 	private void showCardInfo(int cardCode) {

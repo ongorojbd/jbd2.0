@@ -200,11 +200,12 @@ public class DeckBuilderCombat {
 		targetIndex = 0;
 		this.turn = 0;
 		if (DeckBuilderRun.tutorialMode) {
-			this.drawPile.add(DeckCard.STAFF.code());
-			this.drawPile.add(DeckCard.GUARD.code());
-			this.drawPile.add(DeckCard.BASH.code());
-			this.drawPile.add(DeckCard.GUARD.code());
-			this.drawPile.add(DeckCard.STAFF.code());
+			// 튜토리얼 고정 덱: ATTACK(STAFF/BASH) + SKILL(GUARD) + POWER(IGNITE) 각 타입 체험
+			this.drawPile.add(DeckCard.STAFF.code());   // ATTACK
+			this.drawPile.add(DeckCard.GUARD.code());   // SKILL (보호막)
+			this.drawPile.add(DeckCard.BASH.code());    // ATTACK
+			this.drawPile.add(DeckCard.IGNITE.code());  // POWER (강화의 DISC: +2 공격력)
+			this.drawPile.add(DeckCard.STAFF.code());   // ATTACK
 		} else {
 			this.drawPile.addAll(deck);
 			shuffle(drawPile);

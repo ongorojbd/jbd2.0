@@ -61,6 +61,7 @@ public class DeckRunStart {
 		if (DeckBuilderRun.tutorialMode) {
 			addTutorialDeck();
 			DeckBuilderRun.startingRelicChosen = true;
+			DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.STRENGTH, DeckBuilderRun.MAX_POTION_SLOTS);
 		} else {
 			DeckStartingProfile.addStartingDeck(DeckBuilderRun.deck, heroClass);
 			addStartingPotions();
@@ -132,10 +133,11 @@ public class DeckRunStart {
 	}
 
 	private static void addTutorialDeck() {
+		// 튜토리얼 고정 덱: ATTACK(STAFF/BASH) + SKILL(GUARD) + POWER(IGNITE) 각 타입 체험
 		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STAFF);
 		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.GUARD);
 		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.BASH);
-		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.GUARD);
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.IGNITE);
 		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STAFF);
 	}
 }

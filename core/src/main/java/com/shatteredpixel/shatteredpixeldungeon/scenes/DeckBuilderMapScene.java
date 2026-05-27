@@ -163,10 +163,17 @@ public class DeckBuilderMapScene extends PixelScene {
 		pane.jumpTo(0, focusY);
 
 		fadeIn();
-		if (DeckBuilderRun.tutorialMode && !DeckBuilderRun.tutorialMapMessageShown && DeckBuilderRun.tutorialStep >= 3) {
+		// 튜토리얼 모드 — 첫 맵 로드 시 인트로 메시지 표시 (전투 전)
+		if (DeckBuilderRun.tutorialMode && !DeckBuilderRun.tutorialMapMessageShown) {
 			DeckBuilderRun.tutorialMapMessageShown = true;
 			addToFront(new WndMessage(
-					"덱빌딩 튜토리얼\n\n전투가 끝나면 지도에서 다음 경로를 선택합니다. 전투, 휴식, 상점, 이벤트를 지나며 덱을 조금씩 바꾸는 것이 이 모드의 핵심입니다.\n\n튜토리얼은 여기까지입니다. 이제 자유롭게 다음 노드를 선택해 보세요."));
+					"덱빌딩 모드에 오신 것을 환영합니다!\n\n" +
+					"[목표]\n" +
+					"각 런이 제공하는 랜덤한 구성요소를 헤쳐나가며, 주어진 카드와 유물로 이길 수 있는 덱을 만드는 것이 목표입니다. " +
+					"처음에는 어려워 보이겠지만, 카드 간의 시너지를 파악한다면 항상 이길 수 있는 길이 있습니다!\n\n" +
+					"[지도 경로]\n" +
+					"지도에서 노드를 선택해 다음 행선지를 결정합니다. 전투, 엘리트, 상점, 이벤트, 휴식, 보물 등 다양한 경로가 있으며, 보스를 쓰러뜨리면 한 층을 클리어합니다.\n\n" +
+					"아래 노드를 클릭해 첫 번째 전투를 시작해 보세요!"));
 			saveMapState();
 		}
 	}
@@ -420,7 +427,7 @@ public class DeckBuilderMapScene extends PixelScene {
 
 			// 미지(?) 노드: 천장 시스템으로 실제 인카운터 결정
 			int resolvedType;
-			if (DeckBuilderRun.tutorialMode && DeckBuilderRun.tutorialStep < 3) {
+			if (DeckBuilderRun.tutorialMode) {
 				resolvedType = DeckBuilderMap.COMBAT;
 				DeckBuilderRun.notifyNodeEntered(resolvedType);
 			} else if (rawType == DeckBuilderMap.EVENT) {

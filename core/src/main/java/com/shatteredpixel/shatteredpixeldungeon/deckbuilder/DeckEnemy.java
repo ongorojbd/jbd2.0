@@ -19,12 +19,12 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 
 public enum DeckEnemy {
 
-	TUTORIAL_DUMMY("튜토리얼 적", 24, 0, false) {
+	TUTORIAL_DUMMY("튜토리얼 적", 50, 0, false) {
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
-			if (turn == 1) return 0;
-			if (turn == 2) return 6;
-			return 4;
+			if (turn == 1) return 0;  // 1턴: 공격 없음 (ATTACK 튜토리얼)
+			if (turn == 2) return 6;  // 2턴: 공격 (SKILL 방어 튜토리얼)
+			return 4;                 // 3턴~: 약한 공격 (자유 플레이)
 		}
 	},
 
