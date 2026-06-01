@@ -19,6 +19,8 @@ public final class DeckCardCode {
 	private static final int UPGRADE_SHIFT = 8;
 	private static final int UPGRADE_MASK = 0xF;
 	private static final int KEYWORD_SHIFT = 12;
+	private static final int COST_OVERRIDE_SHIFT = 20;
+	private static final int COST_OVERRIDE_MASK = 0xF;
 	private static final int CHARGE_SHIFT = 24;
 	private static final int CHARGE_MASK = 0xF;
 
@@ -34,7 +36,7 @@ public final class DeckCardCode {
 	}
 
 	public static int keywordBits(int code) {
-		return code >>> KEYWORD_SHIFT;
+		return (code >>> KEYWORD_SHIFT) & 0xFF;
 	}
 
 	public static int withKeyword(int code, DeckCardKeyword keyword) {
@@ -43,6 +45,20 @@ public final class DeckCardCode {
 
 	public static int withoutKeyword(int code, DeckCardKeyword keyword) {
 		return code & ~(keyword.bit << KEYWORD_SHIFT);
+	}
+
+	public static int costOverride(int code) {
+		int encoded = (code >>> COST_OVERRIDE_SHIFT) & COST_OVERRIDE_MASK;
+		return encoded == 0 ? -1 : encoded - 1;
+	}
+
+	public static int withCostOverride(int code, int cost) {
+		int clamped = Math.max(0, Math.min(3, cost)) + 1;
+		return (code & ~(COST_OVERRIDE_MASK << COST_OVERRIDE_SHIFT)) | (clamped << COST_OVERRIDE_SHIFT);
+	}
+
+	public static int withoutCostOverride(int code) {
+		return code & ~(COST_OVERRIDE_MASK << COST_OVERRIDE_SHIFT);
 	}
 
 	public static int upgrade(int code) {

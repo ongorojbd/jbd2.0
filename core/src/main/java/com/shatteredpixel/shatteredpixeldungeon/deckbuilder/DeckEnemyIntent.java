@@ -234,7 +234,7 @@ public class DeckEnemyIntent {
 				combat.playerEntangle += 1;
 				return attack.toTurnResult(false);
 			},
-			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 뒤얽힘 1"));
+			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 뒤얽힘 1 부여"));
 
 	public static final DeckEnemyIntent CHOMP = register(simpleAttack(
 			DeckBuilderCombat.RESULT_CHOMP, 16, "물어뜯기"));

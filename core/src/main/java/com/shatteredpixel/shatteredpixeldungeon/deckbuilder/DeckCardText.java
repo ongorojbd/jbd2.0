@@ -96,6 +96,11 @@ public class DeckCardText {
 		return text.length() > 0 ? text : "강화 효과가 아직 정의되지 않았습니다.";
 	}
 
+	static int blockValue(int baseBlock, DeckBuilderCombat combat) {
+		if (combat == null) return baseBlock;
+		return Math.max(0, baseBlock + combat.playerDexterity);
+	}
+
 	static String damageRulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
 		if (card.target == DeckCardTarget.ALL_ENEMIES) return "모든 적에게 피해를 " + damageValue(card, cardCode, combat) + " 줍니다.";
 		if (card.target == DeckCardTarget.RANDOM_ENEMY) return "무작위 적에게 피해를 " + damageValue(card, cardCode, combat) + " 줍니다.";

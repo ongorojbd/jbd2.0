@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckEnemyIntent;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPlayResult;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotion;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotionPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -2052,6 +2053,45 @@ public class DeckBattleScene extends PixelScene {
 			case POWER:
 				useDiscoverPotion(slot, potion, DeckDiscover.Pool.POWER);
 				break;
+			case EXPLOSIVE_AMPHULE:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				combatLocked = true;
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+				Sample.INSTANCE.play(Assets.Sounds.BLAST);
+				for (DeckCombatEnemy enemy : combat.enemies) {
+					if (!enemy.alive()) continue;
+					int ampuleDamage = combat.damageEnemy(enemy, 10, false);
+					EnemyView view = enemyView(combat.enemyIndex(enemy));
+					if (view != null) {
+						addEffect(new ImpactEffect(enemyCenterX(view), enemyCenterY(view), 0xFFFF9040));
+						spawnFloatingText("-" + ampuleDamage, enemyCenterX(view), enemyCenterY(view) - 16, 0xFFFF705A);
+						view.name.text(view.enemy.name + "  " + view.enemy.hp + "/" + view.enemy.ht);
+						view.hp.size(ACTOR_HP_W * view.enemy.hp / (float)view.enemy.ht, ACTOR_HP_H);
+						if (!enemy.alive()) {
+							playDeath(view.sprite);
+							hideEnemyUI(view);
+						}
+					}
+				}
+				log(potion.title + ": 모든 적에게 10 피해를 줬습니다.");
+				saveCombatState();
+				if (combat.won()) {
+					addEffect(new DelayedActionEffect(0.55f, new Runnable() {
+						@Override
+						public void run() {
+							showReward();
+						}
+					}));
+				} else {
+					addEffect(new DelayedActionEffect(0.38f, new Runnable() {
+						@Override
+						public void run() {
+							refresh();
+						}
+					}));
+				}
+				break;
 			case FORTIFIER:
 				DeckBuilderRun.removePotion(slot);
 				if (runHud != null) runHud.refresh();
@@ -2186,6 +2226,145 @@ public class DeckBattleScene extends PixelScene {
 			case POWDERED_DEMISE:
 				usePowderedDemise(slot, potion);
 				break;
+			case GIGANTIFICATION:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				combat.nextAttackDamageMultiplier = Math.max(combat.nextAttackDamageMultiplier, 3);
+				spawnFloatingText("다음 공격 x3", playerCenterX(), playerCenterY() - 24, 0xFFFFD84D);
+				log(potion.title + ": 다음 공격 카드의 피해량이 3배가 됩니다.");
+				saveCombatState();
+				refresh();
+				break;
+			case FRUIT_JUICE:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				DeckBuilderRun.playerHT += 5;
+				DeckBuilderRun.playerHP += 5;
+				spawnFloatingText("최대 체력 +5", playerCenterX(), playerCenterY() - 24, 0xFF80FF80);
+				log(potion.title + ": 최대 체력을 5 얻었습니다.");
+				saveCombatState();
+				refresh();
+				break;
+			case BEETLE_JUICE:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				combat.incomingDamageReductionTurns = Math.max(combat.incomingDamageReductionTurns, 4);
+				spawnFloatingText("피해 -30%", playerCenterX(), playerCenterY() - 24, 0xFFB6D8FF);
+				log(potion.title + ": 다음 4턴 동안 적 공격 피해가 30% 감소합니다.");
+				saveCombatState();
+				refresh();
+				break;
+			case MAZALETHS_GIFT:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				combat.strengthPerTurn += 1;
+				spawnFloatingText("턴 시작 공격력 +1", playerCenterX(), playerCenterY() - 24, 0xFFFFD84D);
+				log(potion.title + ": 턴이 시작할 때마다 공격력을 1 얻습니다.");
+				saveCombatState();
+				refresh();
+				break;
+			case BOTTLED_POTENTIAL:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				combat.shuffleAllCardsIntoDrawPile();
+				combat.draw(5);
+				spawnDrawPileEffects(5, 0.05f);
+				log(potion.title + ": 모든 카드를 뽑을 카드 더미에 섞고 카드를 5장 뽑았습니다.");
+				saveCombatState();
+				if (!resolveAutoPlayResultsAfterDraw()) refresh();
+				break;
+			case SHIP_IN_A_BOTTLE:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				int shipBlock = combat.gainBlock(10);
+				combat.nextTurnBlock += 10;
+				spawnShieldEffect(playerCenterX(), playerCenterY(), "+" + shipBlock);
+				log(potion.title + ": 보호막을 10 얻고 다음 턴 보호막 10을 준비했습니다.");
+				saveCombatState();
+				refresh();
+				break;
+			case FAIRY_IN_A_BOTTLE:
+				log(potion.title + ": 사망 시 자동으로 발동하는 포션입니다.");
+				break;
+			case SHACKLING:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+				for (DeckCombatEnemy enemy : combat.enemies) {
+					if (enemy.alive()) enemy.turnStrengthLoss += 7;
+				}
+				log(potion.title + ": 이번 턴 동안 모든 적이 공격력을 7 잃습니다.");
+				saveCombatState();
+				refresh();
+				break;
+			case SNECKO_OIL:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				combat.draw(7);
+				combat.randomizeHandCostsThisTurn();
+				spawnDrawPileEffects(7, 0.05f);
+				log(potion.title + ": 카드를 7장 뽑고 손의 카드 비용을 무작위로 바꿨습니다.");
+				saveCombatState();
+				if (!resolveAutoPlayResultsAfterDraw()) refresh();
+				break;
+			case LIQUID_MEMORIES:
+				if (combat.discardPile.isEmpty()) return;
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				showLiquidMemoriesDiscardSelectWindow(slot, potion, new ArrayList<>(combat.discardPile), 0);
+				break;
+			case ENTROPIC_BREW:
+				DeckBuilderRun.removePotion(slot);
+				for (int i = DeckBuilderRun.potions.size(); i < DeckBuilderRun.MAX_POTION_SLOTS; i++) {
+					DeckBuilderRun.addPotion(DeckPotionPolicy.randomPotion(DeckPotionPolicy.rollRarity()));
+				}
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				log(potion.title + ": 비어있는 포션 슬롯을 무작위 포션으로 채웠습니다.");
+				saveCombatState();
+				refresh();
+				break;
+			case PRECOGNITION_DROPLET:
+				if (combat.drawPile.isEmpty()) return;
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				showPrecognitionDrawSelectWindow(slot, potion, new ArrayList<>(combat.drawPile), 0);
+				break;
+			case OROBIC_ACID:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				addRandomZeroCostPotionCard(DeckDiscover.Pool.ATTACK);
+				addRandomZeroCostPotionCard(DeckDiscover.Pool.SKILL);
+				addRandomZeroCostPotionCard(DeckDiscover.Pool.POWER);
+				log(potion.title + ": 무작위 공격, 보조, 지속 카드를 손으로 가져왔습니다.");
+				saveCombatState();
+				refresh();
+				break;
+			case DISTILLED_CHAOS:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				combat.playTopFromDrawPile(3);
+				log(potion.title + ": 뽑을 카드 더미에서 카드 3장을 시전했습니다." + buildRandomPlayLog(combat.lastAutoPlayResults));
+				saveCombatState();
+				if (!resolveAutoPlayResultsAfterDraw()) refresh();
+				break;
+			case LUCKY_TONIC:
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				combat.preventHpLossTurns = Math.max(combat.preventHpLossTurns, 1);
+				spawnFloatingText("HP 피해 무효", playerCenterX(), playerCenterY() - 24, 0xFFAAFF66);
+				log(potion.title + ": 다음 턴에 체력을 잃지 않습니다.");
+				saveCombatState();
+				refresh();
+				break;
 			case GAMBLERS_BREW:
 				Sample.INSTANCE.play(Assets.Sounds.DRINK);
 				gamblerBrewActive = true;
@@ -2264,6 +2443,129 @@ public class DeckBattleScene extends PixelScene {
 		log(potion.title + ": 대상에게 종언을 9 부여했습니다.");
 		saveCombatState();
 		refresh();
+	}
+
+	private void addRandomZeroCostPotionCard(DeckDiscover.Pool pool) {
+		DeckCard[] choices = new DeckDiscover(pool, 1, true, false).rollChoices(combat);
+		if (choices.length == 0) return;
+		int code = choices[0].code();
+		code = DeckCard.withKeyword(code, DeckCardKeyword.ZERO_COST);
+		code = DeckCard.withKeyword(code, DeckCardKeyword.TRANSIENT);
+		code = DeckCard.withKeyword(code, DeckCardKeyword.EXHAUST);
+		combat.addToHand(code);
+	}
+
+	private void showLiquidMemoriesDiscardSelectWindow(final int slot, final DeckPotion potion, final ArrayList<Integer> snapshot, final int page) {
+		showPotionPileSelectWindow("버린 카드 더미에서 가져올 카드 선택", snapshot, page, new PotionPilePickHandler() {
+			@Override
+			public void onPick(int snapIndex, int code) {
+				combat.discardPile.remove(snapIndex);
+				combat.addToHand(DeckCard.withKeyword(code, DeckCardKeyword.ZERO_COST));
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				log(potion.title + ": 버린 카드 더미에서 카드를 1장 가져왔습니다.");
+				saveCombatState();
+				refresh();
+			}
+		});
+	}
+
+	private void showPrecognitionDrawSelectWindow(final int slot, final DeckPotion potion, final ArrayList<Integer> snapshot, final int page) {
+		showPotionPileSelectWindow("뽑을 카드 더미에서 가져올 카드 선택", snapshot, page, new PotionPilePickHandler() {
+			@Override
+			public void onPick(int snapIndex, int code) {
+				combat.drawPile.remove(snapIndex);
+				combat.addToHand(code);
+				DeckBuilderRun.removePotion(slot);
+				if (runHud != null) runHud.refresh();
+				log(potion.title + ": 뽑을 카드 더미에서 카드를 1장 가져왔습니다.");
+				saveCombatState();
+				refresh();
+			}
+		});
+	}
+
+	private interface PotionPilePickHandler {
+		void onPick(int snapIndex, int code);
+	}
+
+	private void showPotionPileSelectWindow(final String titleText, final ArrayList<Integer> snapshot, final int page, final PotionPilePickHandler handler) {
+		final int total = snapshot.size();
+		if (total == 0) { refresh(); return; }
+
+		final int CARD_W = 42;
+		final int CARD_H = 54;
+		final int CARD_GAP = 5;
+		final int CARDS_PER_PAGE = 4;
+
+		final int maxPage = Math.max(0, (total - 1) / CARDS_PER_PAGE);
+		final int currentPage = Math.max(0, Math.min(page, maxPage));
+		final int first = currentPage * CARDS_PER_PAGE;
+		final int count = Math.min(CARDS_PER_PAGE, total - first);
+		final int totalCardW = count * CARD_W + (count - 1) * CARD_GAP;
+		final int width = Math.max(196, totalCardW + 20);
+
+		final Window win = new Window() {
+			@Override
+			public void onBackPressed() { }
+		};
+
+		int pos = 7;
+		RenderedTextBlock title = renderTextBlock(titleText, 8);
+		title.hardlight(Window.TITLE_COLOR);
+		title.maxWidth(width - 14);
+		title.setPos((width - title.width()) / 2f, pos);
+		win.add(title);
+		pos += (int) title.height() + 8;
+
+		final int startX = (width - totalCardW) / 2;
+		for (int i = 0; i < count; i++) {
+			final int snapIndex = first + i;
+			final int code = snapshot.get(snapIndex);
+			final int col = i;
+			CardViewButton cardBtn = new CardViewButton() {
+				@Override protected DeckCard card() { return DeckCard.byCode(code); }
+				@Override protected int cardCode() { return code; }
+				@Override protected void onClick() {
+					handler.onPick(snapIndex, code);
+					win.hide();
+				}
+			};
+			cardBtn.setRect(startX + col * (CARD_W + CARD_GAP), pos, CARD_W, CARD_H);
+			win.add(cardBtn);
+		}
+		pos += CARD_H + 9;
+
+		if (maxPage > 0) {
+			RedButton prev = new RedButton("이전", 6) {
+				@Override protected void onClick() {
+					win.hide();
+					showPotionPileSelectWindow(titleText, snapshot, currentPage - 1, handler);
+				}
+			};
+			prev.enable(currentPage > 0);
+			prev.setRect(10, pos, 58, 18);
+			win.add(prev);
+
+			RenderedTextBlock pageText = renderTextBlock((currentPage + 1) + " / " + (maxPage + 1), 6);
+			pageText.hardlight(0xFFD8D1BD);
+			pageText.setPos((width - pageText.width()) / 2f, pos + 5);
+			win.add(pageText);
+
+			RedButton next = new RedButton("다음", 6) {
+				@Override protected void onClick() {
+					win.hide();
+					showPotionPileSelectWindow(titleText, snapshot, currentPage + 1, handler);
+				}
+			};
+			next.enable(currentPage < maxPage);
+			next.setRect(width - 68, pos, 58, 18);
+			win.add(next);
+			pos += 23;
+		}
+
+		win.resize(width, pos + 4);
+		addToFront(win);
 	}
 
 	private void discardPotion(int slot, DeckPotion potion) {
@@ -4619,13 +4921,13 @@ public class DeckBattleScene extends PixelScene {
 			face.size(w - 4, h - 4);
 			face.am = alpha;
 			if (art != null) {
-				art.x = cx - art.width() * art.scale.x / 2f;
-				art.y = cy - art.height() * art.scale.y / 2f;
+				art.x = cx - art.width() / 2f;
+				art.y = cy - art.height() / 2f;
 				art.am = alpha;
 			}
 			if (talentArt != null) {
-				talentArt.x = cx - talentArt.width() * talentArt.scale.x / 2f;
-				talentArt.y = cy - talentArt.height() * talentArt.scale.y / 2f;
+				talentArt.x = cx - talentArt.width() / 2f;
+				talentArt.y = cy - talentArt.height() / 2f;
 				talentArt.am = alpha;
 			}
 		}

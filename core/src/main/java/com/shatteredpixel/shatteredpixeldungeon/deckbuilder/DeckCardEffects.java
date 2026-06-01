@@ -44,7 +44,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "보호막을 " + card.block(cardCode) + " 얻습니다.";
+			return "보호막을 " + DeckCardText.blockValue(card.block(cardCode), combat) + " 얻습니다.";
 		}
 	}
 
@@ -571,7 +571,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "_연속 타격_이 2 이상이면 보호막을 10 얻습니다.";
+			return "_연속 타격_이 2 이상이면 보호막을 " + DeckCardText.blockValue(10, combat) + " 얻습니다.";
 		}
 
 		@Override
@@ -628,7 +628,7 @@ public class DeckCardEffects {
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
 			int thorns = DeckCard.upgradeLevel(cardCode) > 0 ? 6 : 4;
-			return "이번 턴에 반격 " + thorns + "을 얻습니다.";
+			return "이번 턴에 반격 " + thorns+ "를 얻습니다.";
 		}
 
 		@Override
@@ -888,7 +888,7 @@ public class DeckCardEffects {
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
 			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 20 : 16;
-			return "체력을 2 잃습니다. 보호막을 " + block + " 얻습니다.";
+			return "체력을 2 잃습니다. 보호막을 " + DeckCardText.blockValue(block, combat) + " 얻습니다.";
 		}
 		@Override
 		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) { return "보호막 16 → 20"; }

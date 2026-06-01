@@ -35,8 +35,8 @@ public class CausticSlimeSprite extends MobSprite {
 		
 		int c = 9;
 		
-		idle = new Animation( 3, true );
-		idle.frames( frames, c+0, c+1, c+1, c+0 );
+		idle = new Animation( 1, true );
+		idle.frames( frames, c+0, c+0, c+0, c+1, c+0, c+0, c+1, c+1 );
 		
 		run = new Animation( 10, true );
 		run.frames( frames, c+0, c+2, c+3, c+3, c+2, c+0 );
