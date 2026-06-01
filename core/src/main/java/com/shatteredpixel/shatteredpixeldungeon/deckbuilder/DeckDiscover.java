@@ -37,7 +37,10 @@ public class DeckDiscover {
         CLASS_ONLY,
         NEUTRAL_ONLY,
         OTHER_CLASS,
-        FROM_DECK
+        FROM_DECK,
+        ATTACK,
+        SKILL,
+        POWER
     }
 
     public final Pool pool;
@@ -96,7 +99,7 @@ public class DeckDiscover {
             case OTHER_CLASS:
                 ArrayList<DeckCard> other = new ArrayList<>();
                 for (DeckCard c : DeckCard.rewardPool()) {
-                    if (c.deckClass == null || c.deckClass != heroClass) other.add(c);
+                    if (DeckCardPool.isNeutralCard(c) || c.deckClass != heroClass) other.add(c);
                 }
                 return other.toArray(new DeckCard[0]);
             case FROM_DECK:
@@ -113,9 +116,23 @@ public class DeckDiscover {
                     return seen.toArray(new DeckCard[0]);
                 }
                 return DeckCard.rewardPool();
+            case ATTACK:
+                return filterByType(DeckCard.rewardPool(heroClass, false, false), DeckCardType.ATTACK);
+            case SKILL:
+                return filterByType(DeckCard.rewardPool(heroClass, false, false), DeckCardType.SKILL);
+            case POWER:
+                return filterByType(DeckCard.rewardPool(heroClass, false, false), DeckCardType.POWER);
             case ALL:
             default:
                 return DeckCard.rewardPool();
         }
+    }
+
+    private DeckCard[] filterByType(DeckCard[] source, DeckCardType type) {
+        ArrayList<DeckCard> filtered = new ArrayList<>();
+        for (DeckCard card : source) {
+            if (card.type == type) filtered.add(card);
+        }
+        return filtered.toArray(new DeckCard[0]);
     }
 }

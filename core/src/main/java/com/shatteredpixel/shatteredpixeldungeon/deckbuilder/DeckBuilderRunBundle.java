@@ -34,6 +34,7 @@ public class DeckBuilderRunBundle {
 	private static final String STARTING_RELIC_CHOICES = "deckbuilder_starting_relic_choices";
 	private static final String ACT1_NORMAL_FIGHTS = "deckbuilder_act1_normal_fights";
 	private static final String LAST_NORMAL_ENCOUNTER = "deckbuilder_last_normal_encounter";
+	private static final String LAST_ELITE_ENCOUNTER  = "deckbuilder_last_elite_encounter";
 	private static final String SHOP_REMOVE_COUNT = "deckbuilder_shop_remove_count";
 	private static final String MYSTERY_COMBAT_BONUS    = "deckbuilder_mystery_combat_bonus";
 	private static final String MYSTERY_SHOP_BONUS      = "deckbuilder_mystery_shop_bonus";
@@ -104,6 +105,7 @@ public class DeckBuilderRunBundle {
 		if (DeckBuilderRun.startingRelicChoices != null) bundle.put(STARTING_RELIC_CHOICES, DeckBuilderRun.startingRelicChoices);
 		bundle.put(ACT1_NORMAL_FIGHTS, DeckBuilderRun.act1NormalFights);
 		bundle.put(LAST_NORMAL_ENCOUNTER, DeckBuilderRun.lastNormalEncounter);
+		bundle.put(LAST_ELITE_ENCOUNTER,  DeckBuilderRun.lastEliteEncounter);
 		bundle.put(SHOP_REMOVE_COUNT, DeckBuilderRun.shopRemoveCount);
 		bundle.put(MYSTERY_COMBAT_BONUS,   DeckBuilderRun.mysteryCombatBonus);
 		bundle.put(MYSTERY_SHOP_BONUS,     DeckBuilderRun.mysteryShopBonus);
@@ -153,6 +155,7 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.startingRelicChoices = bundle.contains(STARTING_RELIC_CHOICES) ? bundle.getIntArray(STARTING_RELIC_CHOICES) : null;
 		DeckBuilderRun.act1NormalFights = bundle.contains(ACT1_NORMAL_FIGHTS) ? bundle.getInt(ACT1_NORMAL_FIGHTS) : 0;
 		DeckBuilderRun.lastNormalEncounter = bundle.contains(LAST_NORMAL_ENCOUNTER) ? bundle.getInt(LAST_NORMAL_ENCOUNTER) : -1;
+		DeckBuilderRun.lastEliteEncounter  = bundle.contains(LAST_ELITE_ENCOUNTER)  ? bundle.getInt(LAST_ELITE_ENCOUNTER)  : -1;
 		DeckBuilderRun.shopRemoveCount        = bundle.contains(SHOP_REMOVE_COUNT)       ? bundle.getInt(SHOP_REMOVE_COUNT)       : 0;
 		DeckBuilderRun.mysteryCombatBonus      = bundle.contains(MYSTERY_COMBAT_BONUS)    ? bundle.getInt(MYSTERY_COMBAT_BONUS)    : 0;
 		DeckBuilderRun.mysteryShopBonus        = bundle.contains(MYSTERY_SHOP_BONUS)      ? bundle.getInt(MYSTERY_SHOP_BONUS)      : 0;

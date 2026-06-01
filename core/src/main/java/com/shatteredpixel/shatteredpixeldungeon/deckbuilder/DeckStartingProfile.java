@@ -28,12 +28,8 @@ public class DeckStartingProfile {
 		register(HeroClass.WARRIOR,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
-				card(DeckCard.WEAKNESS_STAB, 1),
-				card(DeckCard.BARRAGE, 1),
-				card(DeckCard.FLOW_SLASH, 1),
-				card(DeckCard.ACCEL_STAB, 1),
-				card(DeckCard.HYPERVENTILATE, 1),
-				card(DeckCard.BARRICADE, 1),
+				card(DeckCard.SURGE, 1),
+				card(DeckCard.CALAMITY, 1),
 				card(DeckCard.BASH, 1));
 
 		register(HeroClass.MAGE,

@@ -28,13 +28,15 @@ public class DeckBuilderMap {
 	public static final int TREASURE = 7;
 
 	public static final int GRID_COLUMNS = 7;
+	public static final int ACT_COUNT = 3;
+	public static final int ACT_LENGTH = 17;
 	public static final int MAP_FLOORS = 15;
 	public static final int FIRST_DEPTH = 2;
 	public static final int BOSS_DEPTH = FIRST_DEPTH + MAP_FLOORS;
 	public static final int BOSS_COLUMN = GRID_COLUMNS / 2;
-	public static final int MAX_DEPTH = BOSS_DEPTH;
+	public static final int MAX_DEPTH = ACT_COUNT * ACT_LENGTH;
 	public static final int MAX_NODES = GRID_COLUMNS;
-	public static final int MAP_VERSION = 19;
+	public static final int MAP_VERSION = 20;
 
 	private static final int PATH_COUNT = 6;
 	private static final int MAX_TYPE_ATTEMPTS = 250;
@@ -50,8 +52,8 @@ public class DeckBuilderMap {
 		Statistics.deckBuilderMapTypes = new int[(MAX_DEPTH + 1) * MAX_NODES];
 		Statistics.deckBuilderMapLinks = new int[(MAX_DEPTH + 1) * MAX_NODES];
 
-		for (int depth = FIRST_DEPTH; depth <= MAX_DEPTH; depth++) {
-			Statistics.deckBuilderMapCounts[depth] = GRID_COLUMNS;
+		for (int depth = 1; depth <= MAX_DEPTH; depth++) {
+			Statistics.deckBuilderMapCounts[depth] = isMapDepth(depth) || isBossDepth(depth) ? GRID_COLUMNS : 0;
 		}
 
 		generatePaths();
@@ -142,35 +144,39 @@ public class DeckBuilderMap {
 	}
 
 	private static void generatePaths() {
-		int[] starts = new int[PATH_COUNT];
-		starts[0] = randomIndex(0, 0, 0, GRID_COLUMNS);
-		starts[1] = randomIndex(0, 1, 0, GRID_COLUMNS);
-		if (starts[1] == starts[0]) {
-			starts[1] = (starts[0] + 1 + randomIndex(0, 1, 1, GRID_COLUMNS - 1)) % GRID_COLUMNS;
-		}
-		for (int path = 2; path < PATH_COUNT; path++) {
-			starts[path] = randomIndex(0, path, 0, GRID_COLUMNS);
-		}
-
-		for (int path = 0; path < PATH_COUNT; path++) {
-			int column = starts[path];
-			for (int row = 0; row < MAP_FLOORS; row++) {
-				int depth = depthForRow(row);
-				Statistics.deckBuilderMapTypes[index(depth, column)] = COMBAT;
-
-				if (row >= MAP_FLOORS - 1) continue;
-				int linkIndex = index(depth, column);
-				int existingLink = row == MAP_FLOORS - 2 ? Statistics.deckBuilderMapLinks[linkIndex] : 0;
-				int nextColumn = existingLink == 0 ? nextColumn(row, column, path) : firstLinkedColumn(existingLink);
-				Statistics.deckBuilderMapLinks[linkIndex] |= 1 << nextColumn;
-				column = nextColumn;
+		for (int act = 1; act <= ACT_COUNT; act++) {
+			int[] starts = new int[PATH_COUNT];
+			starts[0] = randomIndex(actStartDepth(act), 0, 0, GRID_COLUMNS);
+			starts[1] = randomIndex(actStartDepth(act), 1, 0, GRID_COLUMNS);
+			if (starts[1] == starts[0]) {
+				starts[1] = (starts[0] + 1 + randomIndex(actStartDepth(act), 1, 1, GRID_COLUMNS - 1)) % GRID_COLUMNS;
 			}
-		}
+			for (int path = 2; path < PATH_COUNT; path++) {
+				starts[path] = randomIndex(actStartDepth(act), path, 0, GRID_COLUMNS);
+			}
 
-		Statistics.deckBuilderMapTypes[index(BOSS_DEPTH, BOSS_COLUMN)] = BOSS;
-		for (int column = 0; column < GRID_COLUMNS; column++) {
-			if (Statistics.deckBuilderMapTypes[index(depthForFloor(15), column)] != NONE) {
-				Statistics.deckBuilderMapLinks[index(depthForFloor(15), column)] = 1 << BOSS_COLUMN;
+			for (int path = 0; path < PATH_COUNT; path++) {
+				int column = starts[path];
+				for (int row = 0; row < MAP_FLOORS; row++) {
+					int depth = depthForRow(act, row);
+					Statistics.deckBuilderMapTypes[index(depth, column)] = COMBAT;
+
+					if (row >= MAP_FLOORS - 1) continue;
+					int linkIndex = index(depth, column);
+					int existingLink = row == MAP_FLOORS - 2 ? Statistics.deckBuilderMapLinks[linkIndex] : 0;
+					int nextColumn = existingLink == 0 ? nextColumn(row, column, path) : firstLinkedColumn(existingLink);
+					Statistics.deckBuilderMapLinks[linkIndex] |= 1 << nextColumn;
+					column = nextColumn;
+				}
+			}
+
+			int bossDepth = bossDepthForAct(act);
+			Statistics.deckBuilderMapTypes[index(bossDepth, BOSS_COLUMN)] = BOSS;
+			for (int column = 0; column < GRID_COLUMNS; column++) {
+				int lastMapDepth = depthForFloor(act, MAP_FLOORS);
+				if (Statistics.deckBuilderMapTypes[index(lastMapDepth, column)] != NONE) {
+					Statistics.deckBuilderMapLinks[index(lastMapDepth, column)] = 1 << BOSS_COLUMN;
+				}
 			}
 		}
 	}
@@ -234,14 +240,17 @@ public class DeckBuilderMap {
 			}
 		}
 
-		Statistics.deckBuilderMapTypes[index(BOSS_DEPTH, BOSS_COLUMN)] = BOSS;
-		for (int column = 0; column < GRID_COLUMNS; column++) {
-			if (column != BOSS_COLUMN) Statistics.deckBuilderMapTypes[index(BOSS_DEPTH, column)] = NONE;
+		for (int act = 1; act <= ACT_COUNT; act++) {
+			int bossDepth = bossDepthForAct(act);
+			Statistics.deckBuilderMapTypes[index(bossDepth, BOSS_COLUMN)] = BOSS;
+			for (int column = 0; column < GRID_COLUMNS; column++) {
+				if (column != BOSS_COLUMN) Statistics.deckBuilderMapTypes[index(bossDepth, column)] = NONE;
+			}
 		}
 	}
 
 	private static boolean hasNextChoice() {
-		int depth = Dungeon.depth < FIRST_DEPTH ? FIRST_DEPTH : Math.min(MAX_DEPTH, Dungeon.depth + 1);
+		int depth = targetDepthAfter(Dungeon.depth);
 		int mask = selectableMaskWithoutInit(depth);
 		return mask != 0;
 	}
@@ -252,7 +261,7 @@ public class DeckBuilderMap {
 	}
 
 	private static void forceFirstFloorFallback() {
-		int first = FIRST_DEPTH;
+		int first = targetDepthAfter(Dungeon.depth);
 		for (int column = 0; column < GRID_COLUMNS; column++) {
 			Statistics.deckBuilderMapCounts[first] = GRID_COLUMNS;
 			if (Statistics.deckBuilderMapTypes[index(first, column)] == NONE) {
@@ -269,13 +278,15 @@ public class DeckBuilderMap {
 	}
 
 	private static void assignNodeTypes(int attempt) {
-		for (int row = 0; row < MAP_FLOORS; row++) {
-			int depth = depthForRow(row);
-			for (int column = 0; column < GRID_COLUMNS; column++) {
-				int idx = index(depth, column);
-				if (Statistics.deckBuilderMapTypes[idx] == NONE) continue;
-				int fixed = fixedType(depth);
-				Statistics.deckBuilderMapTypes[idx] = fixed == NONE ? rollType(depth, column, attempt) : fixed;
+		for (int act = 1; act <= ACT_COUNT; act++) {
+			for (int row = 0; row < MAP_FLOORS; row++) {
+				int depth = depthForRow(act, row);
+				for (int column = 0; column < GRID_COLUMNS; column++) {
+					int idx = index(depth, column);
+					if (Statistics.deckBuilderMapTypes[idx] == NONE) continue;
+					int fixed = fixedType(depth);
+					Statistics.deckBuilderMapTypes[idx] = fixed == NONE ? rollType(depth, column, attempt) : fixed;
+				}
 			}
 		}
 	}
@@ -285,7 +296,7 @@ public class DeckBuilderMap {
 		if (floor == 1) return COMBAT;
 		if (floor == 9) return TREASURE;
 		if (floor == 15) return REST;
-		if (depth == BOSS_DEPTH) return BOSS;
+		if (isBossDepth(depth)) return BOSS;
 		return NONE;
 	}
 
@@ -314,8 +325,10 @@ public class DeckBuilderMap {
 				if ((type == ELITE || type == REST) && mapFloor(depth) < 6) return false;
 
 				int linkMask = linksWithoutInit(depth, node);
-				if (depth < depthForFloor(15)
-						&& depth + 1 != depthForFloor(9)
+				int act = actForDepth(depth);
+				if (act > 0
+						&& depth < depthForFloor(act, MAP_FLOORS)
+						&& depth + 1 != depthForFloor(act, 9)
 						&& duplicatedNextChoiceType(depth + 1, linkMask)) return false;
 				if (linkedToSameRestrictedType(depth, node, type, linkMask)) return false;
 			}
@@ -369,20 +382,25 @@ public class DeckBuilderMap {
 		}
 		if (starts < 2) return false;
 
-		if (typeWithoutInit(BOSS_DEPTH, BOSS_COLUMN) != BOSS) return false;
-		for (int node = 0; node < GRID_COLUMNS; node++) {
-			if (node != BOSS_COLUMN && typeWithoutInit(BOSS_DEPTH, node) != NONE) return false;
+		for (int act = 1; act <= ACT_COUNT; act++) {
+			int bossDepth = bossDepthForAct(act);
+			if (typeWithoutInit(bossDepth, BOSS_COLUMN) != BOSS) return false;
+			for (int node = 0; node < GRID_COLUMNS; node++) {
+				if (node != BOSS_COLUMN && typeWithoutInit(bossDepth, node) != NONE) return false;
+			}
 		}
 
 		for (int depth = FIRST_DEPTH; depth <= MAX_DEPTH; depth++) {
-			if (rawCount(depth) != GRID_COLUMNS) return false;
+			boolean playableDepth = isMapDepth(depth) || isBossDepth(depth);
+			if (rawCount(depth) != (playableDepth ? GRID_COLUMNS : 0)) return false;
 			int occupied = occupiedMask(depth);
-			if (occupied == 0) return false;
+			if (playableDepth && occupied == 0) return false;
 			for (int node = 0; node < GRID_COLUMNS; node++) {
 				int type = typeWithoutInit(depth, node);
 				int links = linksWithoutInit(depth, node);
 				if (type == NONE && links != 0) return false;
-				if (depth < MAX_DEPTH && type != NONE && (links & occupiedMask(depth + 1)) == 0) return false;
+				if (isMapDepth(depth) && mapFloor(depth) < MAP_FLOORS && type != NONE && (links & occupiedMask(depth + 1)) == 0) return false;
+				if (isMapDepth(depth) && mapFloor(depth) == MAP_FLOORS && type != NONE && (links & occupiedMask(bossDepthForAct(actForDepth(depth)))) == 0) return false;
 			}
 		}
 		return true;
@@ -412,16 +430,73 @@ public class DeckBuilderMap {
 		return Statistics.deckBuilderMapLinks[index(depth, node)];
 	}
 
-	private static int depthForRow(int row) {
-		return FIRST_DEPTH + row;
+	private static int depthForRow(int act, int row) {
+		return firstDepthForAct(act) + row;
 	}
 
-	private static int depthForFloor(int floor) {
-		return FIRST_DEPTH + floor - 1;
+	private static int depthForFloor(int act, int floor) {
+		return firstDepthForAct(act) + floor - 1;
 	}
 
-	private static int mapFloor(int depth) {
-		return depth - FIRST_DEPTH + 1;
+	public static int mapFloor(int depth) {
+		int act = actForDepth(depth);
+		if (act <= 0 || isActStartDepth(depth)) return 0;
+		return depth - firstDepthForAct(act) + 1;
+	}
+
+	public static int actForDepth(int depth) {
+		if (depth < 1 || depth > MAX_DEPTH) return 0;
+		return (depth - 1) / ACT_LENGTH + 1;
+	}
+
+	public static int actStartDepth(int act) {
+		return (act - 1) * ACT_LENGTH + 1;
+	}
+
+	public static int firstDepthForAct(int act) {
+		return actStartDepth(act) + 1;
+	}
+
+	public static int bossDepthForAct(int act) {
+		return actStartDepth(act) + MAP_FLOORS + 1;
+	}
+
+	public static int bossDepthForDepth(int depth) {
+		return bossDepthForAct(Math.max(1, actForDepth(depth)));
+	}
+
+	public static boolean isActStartDepth(int depth) {
+		int act = actForDepth(depth);
+		return act > 0 && depth == actStartDepth(act);
+	}
+
+	public static boolean isBossDepth(int depth) {
+		int act = actForDepth(depth);
+		return act > 0 && depth == bossDepthForAct(act);
+	}
+
+	public static boolean isFinalBossDepth(int depth) {
+		return depth == bossDepthForAct(ACT_COUNT);
+	}
+
+	public static boolean isMapDepth(int depth) {
+		int act = actForDepth(depth);
+		return act > 0 && depth >= firstDepthForAct(act) && depth < bossDepthForAct(act);
+	}
+
+	public static int nextActStartDepth(int depth) {
+		int nextAct = actForDepth(depth) + 1;
+		return nextAct > ACT_COUNT ? -1 : actStartDepth(nextAct);
+	}
+
+	public static int targetDepthAfter(int depth) {
+		if (depth < FIRST_DEPTH) return FIRST_DEPTH;
+		if (isActStartDepth(depth)) return firstDepthForAct(actForDepth(depth));
+		if (isBossDepth(depth)) {
+			int nextStart = nextActStartDepth(depth);
+			return nextStart < 0 ? MAX_DEPTH : firstDepthForAct(actForDepth(nextStart));
+		}
+		return Math.min(MAX_DEPTH, depth + 1);
 	}
 
 	private static int index(int depth, int node) {

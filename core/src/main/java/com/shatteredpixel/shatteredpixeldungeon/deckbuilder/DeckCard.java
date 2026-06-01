@@ -293,6 +293,21 @@ public enum DeckCard {
 	REND(64, "갈가리 찢기", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 2, 5, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.RendBonus()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 7 : 5; }
+	},
+
+	FOOTWORK(65, "발놀림", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_CLOTH,
+			new DeckCardEffects.Dexterity(2, 3)),
+
+	SURGE(66, "쇄도", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.SurgeEffect()) {
+		@Override
+		public int cost(int code) { return upgradeLevel(code) > 0 ? 1 : 2; }
+	},
+
+	CALAMITY(67, "재난", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_LIGHTNING,
+			new DeckCardEffects.PlayRandomFromDrawPile(2, 3)) {
+		@Override
+		public int cost(int code) { return upgradeLevel(code) > 0 ? 1 : 2; }
 	};
 
 	public final int id;
@@ -596,28 +611,15 @@ public enum DeckCard {
 	}
 
 	public static DeckCard[] rewardPool() {
-		return rewardPool(null, false, false);
+		return DeckCardPool.rewardPool();
 	}
 
 	public static DeckCard[] rewardPool(HeroClass heroClass, boolean classOnly, boolean neutralOnly) {
-		ArrayList<DeckCard> pool = new ArrayList<>();
-		for (DeckCard card : values()) {
-			if (!card.reward) continue;
-			if (DeckStartingProfile.isStartingCard(card, heroClass)) continue;
-			boolean classCard = card.deckClass != null;
-			if (classOnly && card.deckClass != heroClass) continue;
-			if (neutralOnly && classCard) continue;
-			if (!classOnly && !neutralOnly && classCard && card.deckClass != heroClass) continue;
-			pool.add(card);
-		}
-		return pool.toArray(new DeckCard[0]);
+		return DeckCardPool.rewardPool(heroClass, classOnly, neutralOnly);
 	}
 
 	public static DeckCard rewardFallback(HeroClass heroClass) {
-		DeckCard[] pool = rewardPool(heroClass, false, false);
-		if (pool.length > 0) return pool[0];
-		pool = rewardPool(null, false, false);
-		return pool.length > 0 ? pool[0] : STRIKE;
+		return DeckCardPool.rewardFallback(heroClass);
 	}
 
 	private static int keywords(DeckCardKeyword... keywords) {

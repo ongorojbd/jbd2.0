@@ -20,10 +20,10 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardKeyword;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardPool;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardTarget;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
-import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlchemistSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
@@ -519,7 +519,7 @@ public class DeckEventScene extends PixelScene {
 			edge.size(width, height);
 			edge.am = 0.95f;
 
-			face.color(card.deckClass == null || !card.reward ? card.rarity.faceColor : card.classFaceColor());
+			face.color(DeckCardPool.isNeutralCard(card) || !card.reward ? card.rarity.faceColor : card.classFaceColor());
 			face.x = x + 2;
 			face.y = y + 2;
 			face.size(width - 4, height - 4);
@@ -535,7 +535,7 @@ public class DeckEventScene extends PixelScene {
 			title.setPos(x + 13, y + 5);
 
 			float artH = Math.max(20, height * 0.45f);
-			artPanel.color(card.deckClass == null || !card.reward ? card.rarity.panelColor : card.classPanelColor());
+			artPanel.color(DeckCardPool.isNeutralCard(card) || !card.reward ? card.rarity.panelColor : card.classPanelColor());
 			artPanel.x = x + 5;
 			artPanel.y = y + height * 0.30f;
 			artPanel.size(width - 10, artH);
@@ -588,7 +588,7 @@ public class DeckEventScene extends PixelScene {
 		}
 
 		private int cardLabelColor(DeckCard card) {
-			if (card.type == DeckCardType.STATUS || card.type == DeckCardType.CURSE) {
+			if (DeckCardPool.isStatusOrCurse(card)) {
 				return card.type.labelColor;
 			}
 			return card.rarity.labelColor;

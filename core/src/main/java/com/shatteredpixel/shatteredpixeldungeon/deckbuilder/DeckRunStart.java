@@ -51,6 +51,7 @@ public class DeckRunStart {
 		DeckBuilderRun.fishingRodProgress = 0;
 		DeckBuilderRun.upgradedCardRewardCount = 0;
 		DeckBuilderRun.firstTreasureEmpty = false;
+		DeckBuilderRun.lastEliteEncounter = -1;
 		DeckBuilderRun.tutorialMode = Dungeon.selectedMode == Dungeon.GameMode.DECKBUILDER_TUTORIAL;
 		DeckBuilderRun.tutorialStep = 0;
 		DeckBuilderRun.tutorialMapMessageShown = false;

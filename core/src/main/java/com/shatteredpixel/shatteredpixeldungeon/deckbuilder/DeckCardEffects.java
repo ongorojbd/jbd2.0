@@ -39,7 +39,7 @@ public class DeckCardEffects {
 	public static class Block implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
-			result.block += combat.gainBlock(card.block(cardCode));
+			result.block += combat.gainBlockFromCard(card.block(cardCode));
 		}
 
 		@Override
@@ -223,6 +223,44 @@ public class DeckCardEffects {
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
 			return "공격력을 " + card.strength(cardCode) + " 얻습니다.";
+		}
+	}
+
+	public static class Dexterity implements DeckCardEffect {
+		private final int base;
+		private final int upgraded;
+
+		public Dexterity(int base, int upgraded) {
+			this.base = base;
+			this.upgraded = upgraded;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int dexterity = amount(cardCode);
+			combat.playerDexterity += dexterity;
+			result.dexterity += dexterity;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "방어력 증가를 " + amount(cardCode) + " 얻습니다.";
+		}
+
+		@Override
+		public String keywordText(DeckCard card, int cardCode) {
+			return "방어력 증가: 획득 보호막 수치가 직접적으로 표시된 공격/스킬 카드의 사용을 통해 얻는 보호막이 방어력 증가 수치만큼 증감합니다. 전투가 끝날 때까지 유지됩니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			int current = amount(cardCode);
+			int next = amount(upgradedCode);
+			return current == next ? "" : "방어력 증가 " + current + " > " + next;
+		}
+
+		private int amount(int cardCode) {
+			return DeckCardCode.upgradeLevel(cardCode) > 0 ? upgraded : base;
 		}
 	}
 
@@ -528,7 +566,7 @@ public class DeckCardEffects {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			if (combat.playerConsecutiveStrike < 2) return;
-			result.block += combat.gainBlock(10);
+			result.block += combat.gainBlockFromCard(10);
 		}
 
 		@Override
@@ -845,7 +883,7 @@ public class DeckCardEffects {
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			combat.loseHP(2, result);
 			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 20 : 16;
-			result.block += combat.gainBlock(block);
+			result.block += combat.gainBlockFromCard(block);
 		}
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
@@ -951,6 +989,45 @@ public class DeckCardEffects {
 		@Override
 		public boolean conditionMet(DeckBuilderCombat combat, DeckCard card, int cardCode) {
 			return combat.playerHPLostCountThisCombat > 0;
+		}
+	}
+
+	public static class SurgeEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.surgeActive = true;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "내 턴 종료 시, 손에 있는 무작위 공격 카드 1장이 무작위 적에게 사용됩니다.";
+		}
+	}
+
+	public static class PlayRandomFromDrawPile implements DeckCardEffect {
+		private final int base;
+		private final int upgraded;
+
+		public PlayRandomFromDrawPile(int base, int upgraded) {
+			this.base = base;
+			this.upgraded = upgraded;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int count = DeckCardCode.upgradeLevel(cardCode) > 0 ? upgraded : base;
+			combat.playRandomFromDrawPile(count);
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int count = DeckCardCode.upgradeLevel(cardCode) > 0 ? upgraded : base;
+			return "뽑을 카드 더미에서 무작위 카드를 " + count + "장 사용합니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return base == upgraded ? "" : "무작위 카드 " + base + "장 → " + upgraded + "장";
 		}
 	}
 

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class DeckPlayResult {
 
-	public static final DeckPlayResult INVALID = new DeckPlayResult(false, null, 0, 0, 0, 0, 0, false, new ArrayList<Hit>(), new ArrayList<Shuffle>());
+	public static final DeckPlayResult INVALID = new DeckPlayResult(false, null, 0, 0, 0, 0, 0, 0, false, false, new ArrayList<Hit>(), new ArrayList<Shuffle>());
 
 	public final boolean played;
 	public final DeckCard card;
@@ -26,11 +26,13 @@ public class DeckPlayResult {
 	public final int draw;
 	public final int vulnerable;
 	public final int strength;
+	public final int dexterity;
 	public final boolean exhausted;
+	public final boolean isRandomPlay;
 	public final ArrayList<Hit> hits;
 	public final ArrayList<Shuffle> shuffles;
 
-	public DeckPlayResult(boolean played, DeckCard card, int damage, int block, int draw, int vulnerable, int strength, boolean exhausted, ArrayList<Hit> hits, ArrayList<Shuffle> shuffles) {
+	public DeckPlayResult(boolean played, DeckCard card, int damage, int block, int draw, int vulnerable, int strength, int dexterity, boolean exhausted, boolean isRandomPlay, ArrayList<Hit> hits, ArrayList<Shuffle> shuffles) {
 		this.played = played;
 		this.card = card;
 		this.damage = damage;
@@ -38,7 +40,9 @@ public class DeckPlayResult {
 		this.draw = draw;
 		this.vulnerable = vulnerable;
 		this.strength = strength;
+		this.dexterity = dexterity;
 		this.exhausted = exhausted;
+		this.isRandomPlay = isRandomPlay;
 		this.hits = hits;
 		this.shuffles = shuffles;
 	}
@@ -76,13 +80,20 @@ public class DeckPlayResult {
 		public int draw;
 		public int vulnerable;
 		public int strength;
+		public int dexterity;
 		public boolean exhausted;
+		public boolean isRandomPlay;
 		public ArrayList<Hit> hits = new ArrayList<>();
 		public ArrayList<Shuffle> shuffles = new ArrayList<>();
 		private int currentWave = 0;
 
 		public Builder(DeckCard card) {
+			this(card, false);
+		}
+
+		public Builder(DeckCard card, boolean isRandomPlay) {
 			this.card = card;
+			this.isRandomPlay = isRandomPlay;
 		}
 
 		public void nextWave() { currentWave++; }
@@ -105,7 +116,7 @@ public class DeckPlayResult {
 		}
 
 		public DeckPlayResult build() {
-			return new DeckPlayResult(true, card, damage, block, draw, vulnerable, strength, exhausted, hits, shuffles);
+			return new DeckPlayResult(true, card, damage, block, draw, vulnerable, strength, dexterity, exhausted, isRandomPlay, hits, shuffles);
 		}
 	}
 }

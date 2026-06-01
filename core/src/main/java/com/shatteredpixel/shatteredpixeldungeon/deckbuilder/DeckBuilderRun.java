@@ -47,6 +47,7 @@ public class DeckBuilderRun {
 	public static int[] startingRelicChoices;
 	public static int act1NormalFights;
 	public static int lastNormalEncounter;
+	public static int lastEliteEncounter; // -1: 없음
 	public static int selectedBoss = -1; // -1: 미결정, 0: 크림, 1: 시빌 워, 2: 누케사쿠
 	public static int shopRemoveCount;
 	// 미지 노드 천장(pity) 시스템
@@ -100,6 +101,7 @@ public class DeckBuilderRun {
 		startingRelicChoices = null;
 		act1NormalFights = 0;
 		lastNormalEncounter = -1;
+		lastEliteEncounter = -1;
 		selectedBoss = -1;
 		shopRemoveCount = 0;
 		mysteryCombatBonus = 0;
@@ -342,7 +344,7 @@ public class DeckBuilderRun {
 		boolean canUpgrade = false;
 		for (int code : deck) {
 			DeckCard card = DeckCard.byCode(code);
-			if (card.type == DeckCardType.CURSE || card.type == DeckCardType.STATUS) continue;
+			if (DeckCardPool.isStatusOrCurse(card)) continue;
 			if (DeckCardCode.upgrade(code) != code) { canUpgrade = true; break; }
 		}
 		if (!canUpgrade) return false;
@@ -486,6 +488,27 @@ public class DeckBuilderRun {
 		DeckRunStart.chooseStartingRelic(relic);
 	}
 
+	public static void prepareNextAct() {
+		startingRelicChosen = false;
+		startingRelicChoices = null;
+		act1NormalFights = 0;
+		lastNormalEncounter = -1;
+		lastEliteEncounter = -1;
+		selectedBoss = -1;
+		mysteryCombatBonus = 0;
+		mysteryShopBonus = 0;
+		mysteryTreasureBonus = 0;
+		mysteryVisitsThisAct = 0;
+		mysteryPrevWasShop = false;
+		mysteryResolvedDepth = -1;
+		mysteryResolvedPath = -1;
+		mysteryResolvedType = DeckBuilderMap.NONE;
+		clearShop();
+		clearTreasure();
+		clearRest();
+		clearCombatReward();
+	}
+
 	public static String relicListText() {
 		initIfNeeded();
 		return DeckRunInventory.relicListText(relics);
@@ -507,7 +530,7 @@ public class DeckBuilderRun {
 		int treasureP = 2 + mysteryTreasureBonus;
 
 		// 6층 이후: 이번 막에서 이미 방문한 미지 수 × 2% 추가
-		int floor = depth - DeckBuilderMap.FIRST_DEPTH + 1;
+		int floor = DeckBuilderMap.mapFloor(depth);
 		if (floor >= 6) {
 			combatP += mysteryVisitsThisAct * 2;
 		}

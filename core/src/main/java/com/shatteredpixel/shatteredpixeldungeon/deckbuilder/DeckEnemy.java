@@ -22,7 +22,7 @@ public enum DeckEnemy {
 	TUTORIAL_DUMMY("튜토리얼 적", 50, 0, false) {
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
-			if (turn == 1) return 0;  // 1턴: 공격 없음 (ATTACK 튜토리얼)
+			if (turn == 1) return 3;  // 1턴: 공격 없음 (ATTACK 튜토리얼)
 			if (turn == 2) return 6;  // 2턴: 공격 (SKILL 방어 튜토리얼)
 			return 4;                 // 3턴~: 약한 공격 (자유 플레이)
 		}
@@ -77,7 +77,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	JUDGEMENT("저지먼트", 65, 0, false) {
+	JUDGEMENT("오아시스", 65, 0, false) {
 		@Override
 		public void initialize(DeckCombatEnemy enemy) {
 			enemy.block = 13;
@@ -178,7 +178,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	LAGAVULIN("라가불린", 109, 0, false) {
+	LAGAVULIN("화이트 앨범", 109, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
 			return 109 + Random.Int(3);
@@ -200,7 +200,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	BYRDONIS("섀도니스", 81, 0, false) {
+	BYRDONIS("요요마", 81, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
 			return 81 + Random.Int(4);
@@ -241,7 +241,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	HAUNTED_SHIP("유령선", 63, 0, false) {
+	HAUNTED_SHIP("다크 블루 문", 63, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
 			return 63 + Random.Int(5);
@@ -260,7 +260,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	CALCIFIED_FANATIC("석회화된 광신자", 38, 0, false) {
+	CALCIFIED_FANATIC("하이 프리스티스", 38, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
 			return 38 + Random.Int(4);
@@ -272,7 +272,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	ROGUE_SEAWEED("불량 해초", 44, 0, false) {
+	ROGUE_SEAWEED("블랙 사바스", 44, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
 			return 44 + Random.Int(3);
@@ -288,7 +288,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	STAGGERING_VINE("휘청거리는 덩굴", 61, 0, false) {
+	STAGGERING_VINE("머라이어", 61, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
 			return 61 + Random.Int(5);
@@ -304,7 +304,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	ANGLERFISH("장수아귀", 72, 0, false) {
+	ANGLERFISH("호루스신", 72, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
 			return 72 + Random.Int(5);
@@ -392,7 +392,16 @@ public enum DeckEnemy {
 			return new DeckEnemy[]{bossBySelection()};
 		}
 		if (nodeType == DeckBuilderMap.ELITE) {
-			int r = Random.Int(3);
+			int last = DeckBuilderRun.lastEliteEncounter;
+			int r;
+			if (last < 0) {
+				r = Random.Int(3);
+			} else {
+				// 직전 강적을 제외한 2종 중 랜덤 선택
+				r = Random.Int(2);
+				if (r >= last) r++;
+			}
+			DeckBuilderRun.lastEliteEncounter = r;
 			if (r == 0) return new DeckEnemy[]{BYRDONIS};
 			if (r == 1) return new DeckEnemy[]{RAT_JAGGED, RAT_SMOOTH};
 			return new DeckEnemy[]{LAGAVULIN};

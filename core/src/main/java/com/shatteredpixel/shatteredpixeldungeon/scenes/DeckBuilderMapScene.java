@@ -63,6 +63,8 @@ public class DeckBuilderMapScene extends PixelScene {
 
 	public static LevelTransition curTransition;
 
+	private static int visibleSegmentEnd = DeckBuilderMap.BOSS_DEPTH;
+
 	private int segmentStart;
 	private int segmentEnd;
 
@@ -120,8 +122,10 @@ public class DeckBuilderMapScene extends PixelScene {
 		float listHeight = h - listTop - insets.bottom - 4;
 		int mapWidth = Math.min(MAP_WIDTH, w - (int)insets.left - (int)insets.right - 14);
 		int targetDepth = targetDepth();
-		segmentStart = DeckBuilderMap.FIRST_DEPTH;
-		segmentEnd = DeckBuilderMap.MAX_DEPTH;
+		int act = Math.max(1, DeckBuilderMap.actForDepth(targetDepth));
+		segmentStart = DeckBuilderMap.firstDepthForAct(act);
+		segmentEnd = DeckBuilderMap.bossDepthForAct(act);
+		visibleSegmentEnd = segmentEnd;
 		int contentHeight = (segmentEnd - segmentStart) * ROW_H + TOP_PAD + BOTTOM_PAD;
 
 		SmoothMapScrollPane pane = new SmoothMapScrollPane(new Component());
@@ -135,7 +139,7 @@ public class DeckBuilderMapScene extends PixelScene {
 		content.clear();
 		content.setSize(mapWidth, contentHeight);
 
-		if (Dungeon.depth < segmentStart) {
+		if (Dungeon.depth < segmentStart || DeckBuilderMap.isActStartDepth(Dungeon.depth)) {
 			addCurrentMarker(content, mapWidth);
 		}
 
@@ -157,9 +161,9 @@ public class DeckBuilderMapScene extends PixelScene {
 
 		addBossLabel(content, mapWidth);
 
-		float focusY = Dungeon.depth < segmentStart
+		float focusY = Dungeon.depth < segmentStart || DeckBuilderMap.isActStartDepth(Dungeon.depth)
 				? (nodeY(targetDepth) + currentY()) / 2f - listHeight / 2f
-				: nodeY(Math.min(DeckBuilderMap.MAX_DEPTH, targetDepth)) - listHeight / 2f;
+				: nodeY(Math.min(segmentEnd, targetDepth)) - listHeight / 2f;
 		pane.jumpTo(0, focusY);
 
 		fadeIn();
@@ -271,7 +275,7 @@ public class DeckBuilderMapScene extends PixelScene {
 	}
 
 	private void addCurrentLinks(Component content, int mapWidth) {
-		if (Dungeon.depth >= segmentStart) return;
+		if (Dungeon.depth >= segmentStart && !DeckBuilderMap.isActStartDepth(Dungeon.depth)) return;
 		int nextDepth = targetDepth();
 		int count = sceneCount(nextDepth);
 		int mask = (1 << count) - 1;
@@ -327,20 +331,17 @@ public class DeckBuilderMapScene extends PixelScene {
 
 	private static int targetDepth() {
 		if (curTransition != null) {
-			return Math.max(DeckBuilderMap.FIRST_DEPTH, Math.min(DeckBuilderMap.MAX_DEPTH, curTransition.destDepth));
+			return Math.max(DeckBuilderMap.FIRST_DEPTH, Math.min(DeckBuilderMap.MAX_DEPTH, DeckBuilderMap.targetDepthAfter(curTransition.destDepth - 1)));
 		}
-		if (Dungeon.depth < DeckBuilderMap.FIRST_DEPTH) {
-			return DeckBuilderMap.FIRST_DEPTH;
-		}
-		return Math.min(DeckBuilderMap.MAX_DEPTH, Dungeon.depth + 1);
+		return DeckBuilderMap.targetDepthAfter(Dungeon.depth);
 	}
 
 	private static float nodeY(int depth) {
-		return TOP_PAD + (DeckBuilderMap.MAX_DEPTH - depth) * ROW_H;
+		return TOP_PAD + (visibleSegmentEnd - depth) * ROW_H;
 	}
 
 	private static float currentY() {
-		return nodeY(DeckBuilderMap.FIRST_DEPTH) + ROW_H;
+		return nodeY(targetDepth()) + ROW_H;
 	}
 
 	@Override

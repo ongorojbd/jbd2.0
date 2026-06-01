@@ -19,8 +19,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardPool;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
-import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotion;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
@@ -789,7 +789,7 @@ public class DeckShopScene extends PixelScene {
 			edge.x = x;
 			edge.y = y;
 			edge.size(width, height - 10);
-			face.color(card.deckClass == null || !card.reward ? card.rarity.faceColor : card.classFaceColor());
+			face.color(DeckCardPool.isNeutralCard(card) || !card.reward ? card.rarity.faceColor : card.classFaceColor());
 			face.x = x + 2;
 			face.y = y + 2;
 			face.size(width - 4, height - 14);
@@ -800,14 +800,14 @@ public class DeckShopScene extends PixelScene {
 			title.hardlight(card.rarity == DeckCardRarity.COMMON ? 0xFFFFFFFF : card.rarity.labelColor);
 			title.maxWidth((int)width - 15);
 			title.setPos(x + 13, y + 5);
-			artPanel.color(card.deckClass == null || !card.reward ? card.rarity.panelColor : card.classPanelColor());
+			artPanel.color(DeckCardPool.isNeutralCard(card) || !card.reward ? card.rarity.panelColor : card.classPanelColor());
 			artPanel.x = x + 5;
 			artPanel.y = y + height * 0.30f;
 			artPanel.size(width - 10, Math.max(20, height * 0.38f));
 			artPanel.am = 0.32f;
 			layoutArt(card);
 			typeLabel.text(card.type.label);
-			typeLabel.hardlight(card.type == DeckCardType.STATUS ? card.type.labelColor : card.rarity.labelColor);
+			typeLabel.hardlight(DeckCardPool.isStatus(card) ? card.type.labelColor : card.rarity.labelColor);
 			typeLabel.maxWidth((int)width - 10);
 			typeLabel.setPos(x + (width - typeLabel.width()) / 2f, y + height - typeLabel.height() - 16);
 		}

@@ -80,6 +80,7 @@ public class DeckBuilderCombat {
 	private static final String TURN = "turn";
 	private static final String PLAYER_STRENGTH = "player_strength";
 	private static final String PLAYER_TURN_STRENGTH = "player_turn_strength";
+	private static final String PLAYER_TURN_DEXTERITY = "player_turn_dexterity";
 	private static final String DRAW_PILE = "draw_pile";
 	private static final String HAND = "hand";
 	private static final String DISCARD_PILE = "discard_pile";
@@ -98,6 +99,7 @@ public class DeckBuilderCombat {
 	private static final String ENEMY_TRICKY = "enemy_tricky";
 	private static final String ENEMY_BLOCK_REDUCTION = "enemy_block_reduction";
 	private static final String ENEMY_VENOM = "enemy_venom";
+	private static final String ENEMY_DEMISE = "enemy_demise";
 	private static final String ENEMY_RITUAL = "enemy_ritual";
 	private static final String ENEMY_LAST_INTENT = "enemy_last_intent";
 	private static final String ENEMY_SPLIT_USED = "enemy_split_used";
@@ -127,6 +129,11 @@ public class DeckBuilderCombat {
 	private static final String FIRESEA_DAMAGE = "firesea_damage";
 	private static final String HP_LOST_THIS_TURN = "hp_lost_this_turn";
 	private static final String HP_LOST_THIS_COMBAT = "hp_lost_this_combat";
+	private static final String BONUS_ENERGY_TURNS = "bonus_energy_turns";
+	private static final String BONUS_DRAW_TURNS = "bonus_draw_turns";
+	private static final String RETAIN_HAND_TURNS = "retain_hand_turns";
+	private static final String DUPLICATE_NEXT_CARDS = "duplicate_next_cards";
+	private static final String SURGE_ACTIVE = "surge_active";
 
 	public final int nodeType;
 	public final int depth;
@@ -141,6 +148,7 @@ public class DeckBuilderCombat {
 	public int turn;
 	public int playerStrength;
 	public int playerTurnStrength;
+	public int playerTurnDexterity;
 	public int playerDamageReduction;
 	public int playerBlockReduction;
 	public int playerWeak;
@@ -172,6 +180,11 @@ public class DeckBuilderCombat {
 	public int fireseaDamagePerLoss;
 	public int playerHPLostCountThisTurn;
 	public int playerHPLostCountThisCombat;
+	public int bonusEnergyTurns;
+	public int bonusDrawTurns;
+	public int retainHandTurns;
+	public int duplicateNextCards;
+	public boolean surgeActive;
 
 	public ArrayList<Integer> drawPile = new ArrayList<>();
 	public ArrayList<Integer> hand = new ArrayList<>();
@@ -243,6 +256,7 @@ public class DeckBuilderCombat {
 		bundle.put(TURN, turn);
 		bundle.put(PLAYER_STRENGTH, playerStrength);
 		bundle.put(PLAYER_TURN_STRENGTH, playerTurnStrength);
+		bundle.put(PLAYER_TURN_DEXTERITY, playerTurnDexterity);
 		bundle.put(PLAYER_DAMAGE_REDUCTION, playerDamageReduction);
 		bundle.put(PLAYER_BLOCK_REDUCTION, playerBlockReduction);
 		bundle.put(PLAYER_WEAK, playerWeak);
@@ -266,6 +280,11 @@ public class DeckBuilderCombat {
 		bundle.put(FIRESEA_DAMAGE, fireseaDamagePerLoss);
 		bundle.put(HP_LOST_THIS_TURN, playerHPLostCountThisTurn);
 		bundle.put(HP_LOST_THIS_COMBAT, playerHPLostCountThisCombat);
+		bundle.put(BONUS_ENERGY_TURNS, bonusEnergyTurns);
+		bundle.put(BONUS_DRAW_TURNS, bonusDrawTurns);
+		bundle.put(RETAIN_HAND_TURNS, retainHandTurns);
+		bundle.put(DUPLICATE_NEXT_CARDS, duplicateNextCards);
+		bundle.put(SURGE_ACTIVE, surgeActive);
 		if (pendingDiscoverChoices != null) {
 			int[] ids = new int[pendingDiscoverChoices.length];
 			for (int i = 0; i < pendingDiscoverChoices.length; i++) ids[i] = pendingDiscoverChoices[i].id;
@@ -292,6 +311,7 @@ public class DeckBuilderCombat {
 		int[] enemyTricky = new int[enemies.size()];
 		int[] enemyBlockReduction = new int[enemies.size()];
 		int[] enemyVenom = new int[enemies.size()];
+		int[] enemyDemise = new int[enemies.size()];
 		int[] enemyRitual = new int[enemies.size()];
 		int[] enemyLastIntent = new int[enemies.size()];
 		boolean[] enemySplitUsed = new boolean[enemies.size()];
@@ -311,6 +331,7 @@ public class DeckBuilderCombat {
 			enemyTricky[i] = enemy.tricky;
 			enemyBlockReduction[i] = enemy.blockReduction;
 			enemyVenom[i] = enemy.venom;
+			enemyDemise[i] = enemy.demise;
 			enemyRitual[i] = enemy.ritual;
 			enemyLastIntent[i] = enemy.lastIntent;
 			enemySplitUsed[i] = enemy.splitUsed;
@@ -329,6 +350,7 @@ public class DeckBuilderCombat {
 		bundle.put(ENEMY_TRICKY, enemyTricky);
 		bundle.put(ENEMY_BLOCK_REDUCTION, enemyBlockReduction);
 		bundle.put(ENEMY_VENOM, enemyVenom);
+		bundle.put(ENEMY_DEMISE, enemyDemise);
 		bundle.put(ENEMY_RITUAL, enemyRitual);
 		bundle.put(ENEMY_LAST_INTENT, enemyLastIntent);
 		bundle.put(ENEMY_SPLIT_USED, enemySplitUsed);
@@ -350,6 +372,7 @@ public class DeckBuilderCombat {
 		combat.turn = bundle.getInt(TURN);
 		combat.playerStrength = bundle.getInt(PLAYER_STRENGTH);
 		combat.playerTurnStrength = bundle.getInt(PLAYER_TURN_STRENGTH);
+		combat.playerTurnDexterity = bundle.contains(PLAYER_TURN_DEXTERITY) ? bundle.getInt(PLAYER_TURN_DEXTERITY) : 0;
 		combat.playerDamageReduction = bundle.contains(PLAYER_DAMAGE_REDUCTION) ? bundle.getInt(PLAYER_DAMAGE_REDUCTION) : 0;
 		combat.playerBlockReduction = bundle.contains(PLAYER_BLOCK_REDUCTION) ? bundle.getInt(PLAYER_BLOCK_REDUCTION) : 0;
 		combat.playerWeak = bundle.contains(PLAYER_WEAK) ? bundle.getInt(PLAYER_WEAK) : 0;
@@ -373,6 +396,11 @@ public class DeckBuilderCombat {
 		combat.fireseaDamagePerLoss = bundle.contains(FIRESEA_DAMAGE) ? bundle.getInt(FIRESEA_DAMAGE) : 0;
 		combat.playerHPLostCountThisTurn = bundle.contains(HP_LOST_THIS_TURN) ? bundle.getInt(HP_LOST_THIS_TURN) : 0;
 		combat.playerHPLostCountThisCombat = bundle.contains(HP_LOST_THIS_COMBAT) ? bundle.getInt(HP_LOST_THIS_COMBAT) : 0;
+		combat.bonusEnergyTurns = bundle.contains(BONUS_ENERGY_TURNS) ? bundle.getInt(BONUS_ENERGY_TURNS) : 0;
+		combat.bonusDrawTurns = bundle.contains(BONUS_DRAW_TURNS) ? bundle.getInt(BONUS_DRAW_TURNS) : 0;
+		combat.retainHandTurns = bundle.contains(RETAIN_HAND_TURNS) ? bundle.getInt(RETAIN_HAND_TURNS) : 0;
+		combat.duplicateNextCards = bundle.contains(DUPLICATE_NEXT_CARDS) ? bundle.getInt(DUPLICATE_NEXT_CARDS) : 0;
+		combat.surgeActive = bundle.contains(SURGE_ACTIVE) && bundle.getBoolean(SURGE_ACTIVE);
 		if (bundle.contains(PENDING_DISCOVER)) {
 			int[] ids = bundle.getIntArray(PENDING_DISCOVER);
 			combat.pendingDiscoverChoices = new DeckCard[ids.length];
@@ -403,6 +431,7 @@ public class DeckBuilderCombat {
 		int[] enemyTricky = bundle.contains(ENEMY_TRICKY) ? bundle.getIntArray(ENEMY_TRICKY) : new int[0];
 		int[] enemyBlockReduction = bundle.contains(ENEMY_BLOCK_REDUCTION) ? bundle.getIntArray(ENEMY_BLOCK_REDUCTION) : new int[0];
 		int[] enemyVenom = bundle.contains(ENEMY_VENOM) ? bundle.getIntArray(ENEMY_VENOM) : new int[0];
+		int[] enemyDemise = bundle.contains(ENEMY_DEMISE) ? bundle.getIntArray(ENEMY_DEMISE) : new int[0];
 		int[] enemyRitual = bundle.contains(ENEMY_RITUAL) ? bundle.getIntArray(ENEMY_RITUAL) : new int[0];
 		int[] enemyLastIntent = bundle.contains(ENEMY_LAST_INTENT) ? bundle.getIntArray(ENEMY_LAST_INTENT) : new int[0];
 		boolean[] enemySplitUsed = bundle.contains(ENEMY_SPLIT_USED) ? bundle.getBooleanArray(ENEMY_SPLIT_USED) : new boolean[0];
@@ -424,6 +453,7 @@ public class DeckBuilderCombat {
 			if (i < enemyTricky.length) enemy.tricky = enemyTricky[i];
 			if (i < enemyBlockReduction.length) enemy.blockReduction = enemyBlockReduction[i];
 			if (i < enemyVenom.length) enemy.venom = enemyVenom[i];
+			if (i < enemyDemise.length) enemy.demise = enemyDemise[i];
 			if (i < enemyRitual.length) enemy.ritual = enemyRitual[i];
 			if (i < enemyLastIntent.length) enemy.lastIntent = enemyLastIntent[i];
 			if (i < enemySplitUsed.length) enemy.splitUsed = enemySplitUsed[i];
@@ -439,9 +469,14 @@ public class DeckBuilderCombat {
 	public void startTurnState() {
 		turn++;
 		energy = maxEnergy;
+		if (bonusEnergyTurns > 0) {
+			energy = Math.min(DeckBuilderRun.MAX_ENERGY_CAP, energy + 1);
+			bonusEnergyTurns--;
+		}
 		if (!playerBarricade) block = 0;
 		firstBlockDoubleUsedThisTurn = false;
 		playerTurnStrength = 0;
+		playerTurnDexterity = 0;
 		attackCardsThisTurn = 0;
 		cardsPlayedThisTurn = 0;
 		playerHPLostCountThisTurn = 0;
@@ -458,6 +493,10 @@ public class DeckBuilderCombat {
 
 	public void drawTurnHand() {
 		draw(handSize);
+		if (bonusDrawTurns > 0) {
+			draw(1);
+			bonusDrawTurns--;
+		}
 		if (fireseaDamagePerLoss > 0) loseHP(1);
 		if (turn == 1) {
 			if (nodeType == DeckBuilderMap.ELITE && DeckBuilderRun.hasRelic(DeckRelic.BOOMING_CONCH)) {
@@ -526,6 +565,13 @@ public class DeckBuilderCombat {
 		DeckPlayResult.Builder result = new DeckPlayResult.Builder(card);
 		for (DeckCardEffect effect : card.effects(cardCode)) {
 			effect.apply(new DeckCardPlayContext(this, card, cardCode, effectiveCardCode, handIndex, castOnDraw, aimActive, throwActive, result, targetWandIndex));
+		}
+		if (!castOnDraw && duplicateNextCards > 0) {
+			duplicateNextCards--;
+			result.nextWave();
+			for (DeckCardEffect effect : card.effects(cardCode)) {
+				effect.apply(new DeckCardPlayContext(this, card, cardCode, effectiveCardCode, handIndex, true, aimActive, throwActive, result, targetWandIndex));
+			}
 		}
 
 		if (DeckBuilderRun.hasRelic(DeckRelic.WAVE_RUSH)) {
@@ -616,7 +662,10 @@ public class DeckBuilderCombat {
 	private void playAutoDrawnCard(int handIndex) {
 		DeckPlayResult result = play(handIndex, true);
 		if (result.played) {
-			lastAutoPlayResults.add(result);
+			lastAutoPlayResults.add(new DeckPlayResult(
+					true, result.card, result.damage, result.block, result.draw,
+					result.vulnerable, result.strength, result.dexterity, result.exhausted,
+					true, result.hits, result.shuffles));
 		}
 	}
 
@@ -707,6 +756,41 @@ public class DeckBuilderCombat {
 		}
 	}
 
+	public void playRandomFromDrawPile(int count) {
+		for (int i = 0; i < count; i++) {
+			if (drawPile.isEmpty()) {
+				if (!discardPile.isEmpty()) {
+					drawPile.addAll(discardPile);
+					discardPile.clear();
+					shuffle(drawPile);
+				}
+			}
+			if (drawPile.isEmpty()) break;
+			int idx = Random.Int(drawPile.size());
+			int cardCode = drawPile.remove(idx);
+			DeckCard card = DeckCard.byCode(cardCode);
+			DeckPlayResult.Builder resultBuilder = new DeckPlayResult.Builder(card, true);
+			if (!card.unplayable(cardCode) && !DeckCardPool.isStatusOrCurse(card)) {
+				int effectiveCode = card.effectiveCodeForPlay(cardCode, this, -1);
+				for (DeckCardEffect effect : card.effects(effectiveCode)) {
+					effect.apply(new DeckCardPlayContext(this, card, cardCode, effectiveCode, -1, true, false, false, resultBuilder));
+				}
+				if (card.type == DeckCardType.POWER) {
+					// 랜덤 시전에서는 파워 카드도 버림
+					discardPile.add(cardCode);
+				} else if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) {
+					exhaustPile.add(cardCode);
+					resultBuilder.exhausted = true;
+				} else {
+					discardPile.add(cardCode);
+				}
+			} else {
+				discardPile.add(cardCode);
+			}
+			lastAutoPlayResults.add(resultBuilder.build());
+		}
+	}
+
 	public boolean isCenterHandIndex(int handIndex) {
 		int size = hand.size();
 		return handIndex >= 0 && handIndex < size && size % 2 == 1 && handIndex == size / 2;
@@ -758,16 +842,31 @@ public class DeckBuilderCombat {
 	}
 
 	public int gainBlock(int amount) {
+		return gainBlock(amount, false);
+	}
+
+	public int gainBlockFromCard(int amount) {
+		return gainBlock(amount, true);
+	}
+
+	private int gainBlock(int amount, boolean affectedByDexterity) {
 		if (amount <= 0) return 0;
-		int effectiveAmount = Math.max(0, amount + playerDexterity);
+		int effectiveAmount = Math.max(0, amount + (affectedByDexterity ? playerDexterity : 0));
 		if (effectiveAmount <= 0) return 0;
 		if (playerFirstBlockDouble && !firstBlockDoubleUsedThisTurn) {
 			effectiveAmount *= 2;
 			firstBlockDoubleUsedThisTurn = true;
 		}
-		int reduction = 25 * Math.max(0, playerBlockReduction);
-		int gained = effectiveAmount * Math.max(0, 100 - reduction) / 100;
+		int gained = playerBlockReduction > 0 ? effectiveAmount * 3 / 4 : effectiveAmount;
 		block += gained;
+		return gained;
+	}
+
+	public int enemyGainBlock(DeckCombatEnemy enemy, int amount) {
+		if (enemy == null || amount <= 0) return 0;
+		int reduction = 25 * Math.max(0, enemy.blockReduction);
+		int gained = amount * Math.max(0, 100 - reduction) / 100;
+		enemy.block += gained;
 		return gained;
 	}
 
@@ -801,7 +900,7 @@ public class DeckBuilderCombat {
 		int curseDamageTaken = 0, curseBlockReductionGain = 0, curseWeakGain = 0;
 		for (int code : hand) {
 			DeckCard handCard = DeckCard.byCode(code);
-			if (handCard.type != DeckCardType.CURSE) continue;
+			if (!DeckCardPool.isCurse(handCard)) continue;
 			if (handCard == DeckCard.DECAY) {
 				curseDamageTaken += 2;
 			} else if (handCard == DeckCard.DEBT) {
@@ -822,12 +921,39 @@ public class DeckBuilderCombat {
 			DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - cappedCurse);
 			if (playerDead()) return lastTurnEndStatusDamage;
 		}
+		if (surgeActive && !won()) {
+			ArrayList<Integer> attacksInHand = new ArrayList<>();
+			for (int code : hand) {
+				if (DeckCard.byCode(code).type == DeckCardType.ATTACK) attacksInHand.add(code);
+			}
+			if (!attacksInHand.isEmpty()) {
+				int pickedCode = attacksInHand.get(Random.Int(attacksInHand.size()));
+				hand.remove((Integer) pickedCode);
+				DeckCard pickedCard = DeckCard.byCode(pickedCode);
+				int savedTarget = targetIndex;
+				ArrayList<DeckCombatEnemy> alive = aliveEnemies();
+				if (!alive.isEmpty()) targetIndex = enemyIndex(alive.get(Random.Int(alive.size())));
+				int effectiveCode = pickedCard.effectiveCodeForPlay(pickedCode, this, -1);
+				DeckPlayResult.Builder surgeResult = new DeckPlayResult.Builder(pickedCard, true);
+				for (DeckCardEffect effect : pickedCard.effects(effectiveCode)) {
+					effect.apply(new DeckCardPlayContext(this, pickedCard, pickedCode, effectiveCode, -1, true, false, false, surgeResult));
+				}
+				targetIndex = savedTarget;
+				if (pickedCard.hasKeyword(pickedCode, DeckCardKeyword.EXHAUST)) {
+					exhaustPile.add(pickedCode);
+				} else {
+					discardPile.add(pickedCode);
+				}
+				lastTurnEndAutoPlayResults.add(surgeResult.build());
+			}
+		}
+
 		ArrayList<Integer> retained = new ArrayList<>();
 		for (int code : hand) {
 			DeckCard handCard = DeckCard.byCode(code);
 			if (handCard.hasKeyword(code, DeckCardKeyword.TRANSIENT)) {
 				exhaustPile.add(code);
-			} else if (handCard.hasKeyword(code, DeckCardKeyword.RETAIN) || (handCard == DeckCard.SHIV && shivRetain)
+			} else if (retainHandTurns > 0 || handCard.hasKeyword(code, DeckCardKeyword.RETAIN) || (handCard == DeckCard.SHIV && shivRetain)
 					|| (turn == 1 && DeckBuilderRun.hasRelic(DeckRelic.RINGING_TRIANGLE))) {
 				retained.add(code);
 			} else {
@@ -836,6 +962,11 @@ public class DeckBuilderCombat {
 		}
 		hand.clear();
 		hand.addAll(retained);
+		if (retainHandTurns > 0) retainHandTurns--;
+		if (playerTurnDexterity > 0) {
+			playerDexterity -= playerTurnDexterity;
+			playerTurnDexterity = 0;
+		}
 		if (playerBlockReduction > 0) playerBlockReduction--;
 		if (playerEntangle > 0) playerEntangle--;
 		playerBlockReduction += curseBlockReductionGain;
@@ -868,9 +999,12 @@ public class DeckBuilderCombat {
 			enemy.lastIntent = enemy.intent;
 			if (enemy.vulnerable > 0) enemy.vulnerable--;
 			if (enemy.attackDown > 0) enemy.attackDown--;
-			if (enemy.platedArmor > 0 && enemy.alive()) enemy.block += enemy.platedArmor;
+			if (enemy.platedArmor > 0 && enemy.alive()) enemyGainBlock(enemy, enemy.platedArmor);
 			if (enemy.kind == DeckEnemy.BYRDONIS && enemy.alive()) enemy.strength += 1;
 			if (enemy.ritual > 0 && enemy.alive()) enemy.strength += enemy.ritual;
+			if (enemy.demise > 0 && enemy.alive()) {
+				enemy.hp = Math.max(0, enemy.hp - enemy.demise);
+			}
 		}
 		enemies.addAll(splitSpawns);
 		sanitizeTarget();

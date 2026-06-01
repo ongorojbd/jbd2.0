@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardCode;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardPool;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRewardPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -34,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
-import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardType;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
@@ -571,7 +571,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass = DeckBuilderRun.heroClass();
 		ArrayList<DeckCard> pool = new ArrayList<>();
 		for (DeckCard c : DeckCard.rewardPool()) {
-			if (c.deckClass != heroClass) pool.add(c);
+			if (DeckCardPool.isNeutralCard(c) || c.deckClass != heroClass) pool.add(c);
 		}
 		for (int i = pool.size() - 1; i > 0; i--) {
 			int j = Random.Int(i + 1);
@@ -645,18 +645,23 @@ public class DeckRelicChoiceScene extends PixelScene {
 			Dungeon.depth = 1;
 		}
 
-		if (DeckBuilderMapScene.curTransition != null || Dungeon.level == null) {
+		int targetDepth = DeckBuilderMap.targetDepthAfter(Dungeon.depth);
+		if (DeckBuilderMapScene.curTransition != null
+				&& DeckBuilderMapScene.curTransition.destDepth == targetDepth) {
+			return;
+		}
+		if (Dungeon.level == null) {
 			return;
 		}
 
 		LevelTransition transition = Dungeon.level.getTransition(LevelTransition.Type.REGULAR_EXIT);
-		if (transition == null) {
+		if (transition == null || transition.destDepth != targetDepth) {
 			int cell = Dungeon.hero == null ? Dungeon.level.entrance() : Dungeon.hero.pos;
 			transition = new LevelTransition(
 					Dungeon.level,
 					cell,
 					LevelTransition.Type.REGULAR_EXIT,
-					DeckBuilderMap.FIRST_DEPTH,
+					targetDepth,
 					Dungeon.branch,
 					LevelTransition.Type.REGULAR_ENTRANCE);
 		}
@@ -791,7 +796,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 			edge.size(width, height);
 			edge.am = 0.95f;
 
-			face.color(card.deckClass == null || !card.reward ? card.rarity.faceColor : card.classFaceColor());
+			face.color(DeckCardPool.isNeutralCard(card) || !card.reward ? card.rarity.faceColor : card.classFaceColor());
 			face.x = x + 2;
 			face.y = y + 2;
 			face.size(width - 4, height - 4);
@@ -807,7 +812,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 			title.setPos(x + 13, y + 5);
 
 			float artH = Math.max(20, height * 0.45f);
-			artPanel.color(card.deckClass == null || !card.reward ? card.rarity.panelColor : card.classPanelColor());
+			artPanel.color(DeckCardPool.isNeutralCard(card) || !card.reward ? card.rarity.panelColor : card.classPanelColor());
 			artPanel.x = x + 5;
 			artPanel.y = y + height * 0.30f;
 			artPanel.size(width - 10, artH);
@@ -860,7 +865,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		}
 
 		private int cardLabelColor(DeckCard card) {
-			if (card.type == DeckCardType.STATUS || card.type == DeckCardType.CURSE) {
+			if (DeckCardPool.isStatusOrCurse(card)) {
 				return card.type.labelColor;
 			}
 			return card.rarity.labelColor;
