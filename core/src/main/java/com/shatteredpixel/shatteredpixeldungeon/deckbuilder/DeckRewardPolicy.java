@@ -35,6 +35,16 @@ public class DeckRewardPolicy {
 			if (choices[i].rarity == DeckCardRarity.RARE) rareSeen = true;
 			if (choices[i].rarity == DeckCardRarity.COMMON) commonSeen++;
 		}
+		if (nodeType == DeckBuilderMap.ELITE && DeckBuilderRun.hasRelic(DeckRelic.AUTUMN_LEAVES) && !rareSeen) {
+			int idx = Random.Int(choices.length);
+			DeckCard card = randomCard(DeckCardRarity.RARE, heroClass, classSlot(idx));
+			int guard = 0;
+			while (duplicate(choices, choices.length, card) && guard++ < 20) {
+				card = randomCard(DeckCardRarity.RARE, heroClass, classSlot(idx));
+			}
+			choices[idx] = card == null ? DeckCard.rewardFallback(heroClass) : card;
+			rareSeen = choices[idx].rarity == DeckCardRarity.RARE;
+		}
 		return new CardReward(choices, rareSeen ? -5 : cardRareOffset + commonSeen);
 	}
 

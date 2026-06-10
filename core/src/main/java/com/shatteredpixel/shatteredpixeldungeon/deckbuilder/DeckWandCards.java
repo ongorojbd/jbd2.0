@@ -78,7 +78,7 @@ public class DeckWandCards {
 		int charge = DeckCardCode.currentCharge(code) - 1;
 		if (charge <= 0) {
 			combat.hand.remove(handIndex);
-			combat.exhaustPile.add(code);
+			result.draw += combat.exhaustCard(code);
 			result.exhausted = true;
 		} else {
 			combat.hand.set(handIndex, DeckCardCode.withCharge(code, charge));

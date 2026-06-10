@@ -43,6 +43,7 @@ public class DeckRunStart {
 		DeckBuilderRun.pendingCardTransform = false;
 		DeckBuilderRun.pendingNeutralDiscover = false;
 		DeckBuilderRun.pendingCardReward = false;
+		DeckBuilderRun.pendingCardRewardCount = 0;
 		DeckBuilderRun.pendingCardRemove = false;
 		DeckBuilderRun.pendingCardUpgrade = false;
 		DeckBuilderRun.pendingOtherClassCardReward = 0;

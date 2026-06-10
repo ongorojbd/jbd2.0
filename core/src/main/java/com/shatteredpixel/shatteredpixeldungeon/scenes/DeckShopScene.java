@@ -356,7 +356,7 @@ public class DeckShopScene extends PixelScene {
 
 		RenderedTextBlock title = renderTextBlock(offer.type == DeckShop.CARD
 				? DeckCardText.detailTitle(DeckCard.values()[offer.id], DeckCard.values()[offer.id].code())
-				: offerTitle(offer), 8);
+				: offerDetailTitle(offer), 8);
 		title.hardlight(Window.TITLE_COLOR);
 		title.maxWidth(width - 14);
 		title.setPos((width - title.width()) / 2f, pos);
@@ -557,6 +557,18 @@ public class DeckShopScene extends PixelScene {
 		return "카드 제거";
 	}
 
+	private String offerDetailTitle(DeckShop.Offer offer) {
+		if (offer.type == DeckShop.POTION) {
+			DeckPotion potion = DeckPotion.byId(offer.id);
+			return potion == null ? "" : potion.title + "(" + potion.rarity.label + ")";
+		}
+		if (offer.type == DeckShop.RELIC) {
+			DeckRelic relic = DeckRelic.byId(offer.id);
+			return relic == null ? "" : relic.titleWithRarity();
+		}
+		return offerTitle(offer);
+	}
+
 	private String offerDescription(DeckShop.Offer offer) {
 		if (offer.type == DeckShop.CARD) {
 			DeckCard card = DeckCard.values()[offer.id];
@@ -663,20 +675,14 @@ public class DeckShopScene extends PixelScene {
 			bg.y = y;
 			bg.size(width, height);
 			bg.am = DeckBuilderRun.shopOfferSold(index) ? 0.35f : 0.82f;
-			icon.visible = offer.type != DeckShop.RELIC;
-			if (icon.visible) {
-				icon.am = 1f;
-				icon.view(offerIcon(offer), null);
-				icon.x = x + 4;
-				icon.y = y + (height - icon.height()) / 2f;
-			} else {
-				icon.am = 0f;
-				icon.x = -1000;
-				icon.y = -1000;
-			}
+			icon.visible = true;
+			icon.am = 1f;
+			icon.view(offerIcon(offer), null);
+			icon.x = x + 4;
+			icon.y = y + (height - icon.height()) / 2f;
 			name.text(offerTitle(offer));
-			float textX = icon.visible ? x + 24 : x + 8;
-			name.maxWidth((int)(width - (icon.visible ? 42 : 26)));
+			float textX = x + 24;
+			name.maxWidth((int)(width - 42));
 			name.hardlight(offer.type == DeckShop.RELIC ? 0xFFD5F27A : 0xFFFFFFFF);
 			name.setPos(textX, y + 3);
 			price.text((DeckBuilderRun.shopOfferSold(index) ? "완료" : offer.price + "G"));

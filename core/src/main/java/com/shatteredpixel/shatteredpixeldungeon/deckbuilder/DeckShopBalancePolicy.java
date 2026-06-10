@@ -13,7 +13,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.watabou.utils.Random;
 
 public class DeckShopBalancePolicy {
@@ -24,14 +23,14 @@ public class DeckShopBalancePolicy {
 
 	public static int cardPrice(DeckCardRarity rarity, boolean colorless) {
 		if (colorless) return colorlessCardPrice(rarity);
-		if (rarity == DeckCardRarity.RARE) return ascensionAdjusted(Random.IntRange(135, 165));
-		if (rarity == DeckCardRarity.UNCOMMON) return ascensionAdjusted(Random.IntRange(68, 82));
-		return ascensionAdjusted(Random.IntRange(45, 55));
+		if (rarity == DeckCardRarity.RARE) return Random.IntRange(135, 165);
+		if (rarity == DeckCardRarity.UNCOMMON) return Random.IntRange(68, 82);
+		return Random.IntRange(45, 55);
 	}
 
 	public static int colorlessCardPrice(DeckCardRarity rarity) {
-		if (rarity == DeckCardRarity.RARE) return ascensionAdjusted(Random.IntRange(162, 198));
-		if (rarity == DeckCardRarity.UNCOMMON) return ascensionAdjusted(Random.IntRange(81, 99));
+		if (rarity == DeckCardRarity.RARE) return Random.IntRange(162, 198);
+		if (rarity == DeckCardRarity.UNCOMMON) return Random.IntRange(81, 99);
 		return cardPrice(rarity, false);
 	}
 
@@ -46,9 +45,13 @@ public class DeckShopBalancePolicy {
 	}
 
 	public static int relicPrice(DeckRelicRarity rarity) {
-		if (rarity == DeckRelicRarity.RARE) return ascensionAdjusted(rollAround(300, 15));
-		if (rarity == DeckRelicRarity.UNCOMMON) return ascensionAdjusted(rollAround(250, 13));
-		return ascensionAdjusted(rollAround(150, 8));
+		if (rarity == DeckRelicRarity.RARE) return Random.IntRange(285, 315);
+		if (rarity == DeckRelicRarity.UNCOMMON) return Random.IntRange(238, 262);
+		return Random.IntRange(143, 157);
+	}
+
+	public static int shopRelicPrice() {
+		return Random.IntRange(143, 157);
 	}
 
 	public static DeckCardRarity rollShopCardRarity(int cardRareOffset) {
@@ -72,11 +75,4 @@ public class DeckShopBalancePolicy {
 		return potion.rarity;
 	}
 
-	private static int rollAround(int base, int variance) {
-		return base - variance + Random.Int(variance * 2 + 1);
-	}
-
-	private static int ascensionAdjusted(int price) {
-		return Challenges.activeChallenges() >= 16 ? Math.round(price * 1.1f) : price;
-	}
 }

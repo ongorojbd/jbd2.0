@@ -80,7 +80,7 @@ public class DeckRunInventory {
 		String text = "";
 		for (int id : relics) {
 			DeckRelic relic = DeckRelic.byId(id);
-			text += (text.length() > 0 ? "\n\n" : "") + relic.title + "\n" + relic.description;
+			text += (text.length() > 0 ? "\n\n" : "") + relic.titleWithRarity() + "\n" + relic.description;
 		}
 		return text;
 	}

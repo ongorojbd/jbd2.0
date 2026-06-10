@@ -65,6 +65,7 @@ public class DeckBuilderRun {
 	public static boolean pendingCardTransform;
 	public static boolean pendingNeutralDiscover;
 	public static boolean pendingCardReward;
+	public static int pendingCardRewardCount;
 	public static boolean pendingCardRemove;
 	public static int pendingCardRemoveCount;
 	public static boolean pendingCardUpgrade;
@@ -75,6 +76,9 @@ public class DeckBuilderRun {
 	// Silver Crucible: upgrade card picked from reward; first treasure empty
 	public static int upgradedCardRewardCount;
 	public static boolean firstTreasureEmpty;
+	public static int lifeBombCardsAdded;
+	public static int nextCombatBonusEnergy;
+	public static boolean diverDownUsed;
 	public static boolean tutorialMode;
 	public static int tutorialStep;
 	public static boolean tutorialMapMessageShown;
@@ -115,6 +119,7 @@ public class DeckBuilderRun {
 		pendingCardTransform = false;
 		pendingNeutralDiscover = false;
 		pendingCardReward = false;
+		pendingCardRewardCount = 0;
 		pendingCardRemove = false;
 		pendingCardRemoveCount = 0;
 		pendingCardUpgrade = false;
@@ -123,6 +128,9 @@ public class DeckBuilderRun {
 		fishingRodProgress = 0;
 		upgradedCardRewardCount = 0;
 		firstTreasureEmpty = false;
+		lifeBombCardsAdded = 0;
+		nextCombatBonusEnergy = 0;
+		diverDownUsed = false;
 		tutorialMode = false;
 		tutorialStep = 0;
 		tutorialMapMessageShown = false;
@@ -235,6 +243,23 @@ public class DeckBuilderRun {
 		reward.depth = depth;
 		reward.path = path;
 		reward.gold = DeckRewardPolicy.rollGold(nodeType);
+		if ((nodeType == DeckBuilderMap.COMBAT || nodeType == DeckBuilderMap.ELITE || nodeType == DeckBuilderMap.BOSS)
+				&& hasRelic(DeckRelic.DETECTION_COMMAND_DISC)) {
+			reward.gold += 15;
+		}
+		if (reward.gold > 0 && hasRelic(DeckRelic.LUCKY_STONE_MASK)) {
+			reward.gold += reward.gold / 4;
+		}
+		if (nodeType == DeckBuilderMap.ELITE && hasRelic(DeckRelic.BLACK_WILL)) {
+			playerHP = Math.min(playerHT, playerHP + 7);
+			gainGold(35);
+		}
+		if (hasRelic(DeckRelic.DANGEROUS_OBJECT_UNIDENTIFIED)
+				&& currentCombat != null
+				&& (nodeType == DeckBuilderMap.COMBAT || nodeType == DeckBuilderMap.ELITE || nodeType == DeckBuilderMap.BOSS)
+				&& currentCombat.playerHPLostCountThisCombat == 0) {
+			upgradedCardRewardCount++;
+		}
 		DeckRelic[] relics = DeckRewardPolicy.rollRelics(nodeType, hasRelic(DeckRelic.BLACK_STAR));
 		reward.relics = new int[relics.length];
 		reward.relicClaimed = new boolean[relics.length];
@@ -243,7 +268,14 @@ public class DeckBuilderRun {
 		}
 		DeckRewardPolicy.PotionReward potionReward = DeckRewardPolicy.rollPotion(nodeType, potionDropChance);
 		potionDropChance = potionReward.nextPotionDropChance;
-		reward.potion = potionReward.potion == null ? -1 : potionReward.potion.ordinal();
+		DeckPotion rewardPotion = potionReward.potion;
+		if (rewardPotion == null
+				&& hasRelic(DeckRelic.RUBY)
+				&& (nodeType == DeckBuilderMap.COMBAT || nodeType == DeckBuilderMap.ELITE || nodeType == DeckBuilderMap.BOSS)) {
+			rewardPotion = DeckPotionPolicy.randomPotion(DeckPotionPolicy.rollRarity());
+			potionDropChance = DeckPotionPolicy.STARTING_DROP_CHANCE;
+		}
+		reward.potion = rewardPotion == null ? -1 : rewardPotion.ordinal();
 		DeckRewardPolicy.CardReward cardReward = DeckRewardPolicy.rollCardChoices(nodeType, cardRareOffset, heroClass());
 		cardRareOffset = cardReward.nextCardRareOffset;
 		reward.cards = new int[cardReward.choices.length];
@@ -355,6 +387,13 @@ public class DeckBuilderRun {
 	public static boolean restAtRestSite() {
 		if (!canRestAtRestSite()) return false;
 		playerHP = Math.min(playerHT, playerHP + restHealAmount());
+		if (hasRelic(DeckRelic.SLEEP_COMMAND_DISC)) {
+			playerHP = Math.min(playerHT, playerHP + 15);
+		}
+		if (hasRelic(DeckRelic.YASUHO_MEMORY_DISC)) {
+			addPotion(DeckPotionPolicy.randomPotion(DeckPotionPolicy.rollRarity()));
+			addPotion(DeckPotionPolicy.randomPotion(DeckPotionPolicy.rollRarity()));
+		}
 		if (hasRelic(DeckRelic.STONE_HUMIDIFIER)) {
 			playerHT += 5;
 			playerHP = Math.min(playerHT, playerHP + 5);
@@ -363,10 +402,34 @@ public class DeckBuilderRun {
 		return true;
 	}
 
+	public static void onRestNodeEntered() {
+		initIfNeeded();
+		if (hasRelic(DeckRelic.PHANTOM_KEY)) nextCombatBonusEnergy++;
+		if (hasRelic(DeckRelic.PUCCI_MEMORY_DISC)) {
+			playerHP = Math.min(playerHT, playerHP + (deck.size() / 5) * 3);
+		}
+	}
+
 	public static boolean smithAtRestSite(int index) {
 		if (!canSmithAtRestSite() || !upgradeCardAt(index)) return false;
 		if (rest.used) rest.tentUsed = true; else rest.used = true;
 		return true;
+	}
+
+	public static boolean canExploreAtRestSite() {
+		initRestForCurrentNode();
+		if (!hasRelic(DeckRelic.SAINT_TORSO)) return false;
+		if (!rest.used) return true;
+		return hasRelic(DeckRelic.MINIATURE_TENT) && !rest.tentUsed;
+	}
+
+	public static DeckRelic exploreAtRestSite() {
+		if (!canExploreAtRestSite()) return null;
+		DeckRelic relic = DeckRelic.randomAvailable(DeckRewardPolicy.rollRelicRarity());
+		if (relic == null) return null;
+		addRelic(relic);
+		if (rest.used) rest.tentUsed = true; else rest.used = true;
+		return relic;
 	}
 
 	public static boolean restTentActionsDone() {
@@ -422,6 +485,24 @@ public class DeckBuilderRun {
 			int lastIdx = deck.size() - 1;
 			deck.set(lastIdx, DeckCardCode.upgrade(deck.get(lastIdx)));
 		}
+		if (hasRelic(DeckRelic.SCAN) && card != null && card.type == DeckCardType.POWER && !deck.isEmpty()) {
+			int lastIdx = deck.size() - 1;
+			deck.set(lastIdx, DeckCardCode.upgrade(deck.get(lastIdx)));
+		}
+		if (hasRelic(DeckRelic.LAVA_STONE) && card != null && card.type == DeckCardType.SKILL && !deck.isEmpty()) {
+			int lastIdx = deck.size() - 1;
+			deck.set(lastIdx, DeckCardCode.upgrade(deck.get(lastIdx)));
+		}
+		if (hasRelic(DeckRelic.LIFE_BOMB)) {
+			lifeBombCardsAdded++;
+			while (lifeBombCardsAdded >= 5) {
+				lifeBombCardsAdded -= 5;
+				playerHP = Math.min(playerHT, playerHP + 20);
+			}
+		}
+		if (hasRelic(DeckRelic.POCOLOCO_MEMORY_DISC)) {
+			gainGold(15);
+		}
 	}
 
 	public static boolean upgradeCardAt(int index) {
@@ -431,7 +512,21 @@ public class DeckBuilderRun {
 
 	public static boolean removeCardAt(int index) {
 		initIfNeeded();
-		return DeckRunInventory.removeCardAt(deck, index);
+		if (!DeckRunInventory.removeCardAt(deck, index)) return false;
+		if (hasRelic(DeckRelic.RAW_MEAT_YUKHOE)) {
+			playerHP = Math.min(playerHT, playerHP + 15);
+		}
+		return true;
+	}
+
+	public static void gainGold(int amount) {
+		initIfNeeded();
+		if (amount <= 0) return;
+		gold += amount;
+		if (hasRelic(DeckRelic.MAGIC_LAMP)) {
+			playerHT += 1;
+			playerHP = Math.min(playerHT, playerHP + 1);
+		}
 	}
 
 	public static DeckShop.Offer[] shopOffersForCurrentNode() {
@@ -465,14 +560,34 @@ public class DeckBuilderRun {
 		return DeckRunInventory.potionAt(potions, slot);
 	}
 
+	public static int maxPotionSlots() {
+		return MAX_POTION_SLOTS + (DeckRunInventory.hasRelic(relics, DeckRelic.POTION_RACK) ? 2 : 0);
+	}
+
 	public static boolean addPotion(DeckPotion potion) {
 		initIfNeeded();
-		return DeckRunInventory.addPotion(potions, potion, MAX_POTION_SLOTS);
+		return DeckRunInventory.addPotion(potions, potion, maxPotionSlots());
 	}
 
 	public static void removePotion(int slot) {
 		initIfNeeded();
 		DeckRunInventory.removePotion(potions, slot);
+	}
+
+	public static int onPotionUsed() {
+		initIfNeeded();
+		if (!hasRelic(DeckRelic.FF_DRINK)) return 0;
+		int before = playerHP;
+		playerHP = Math.min(playerHT, playerHP + 5);
+		return playerHP - before;
+	}
+
+	public static boolean triggerDiverDownRevive() {
+		initIfNeeded();
+		if (playerHP > 0 || diverDownUsed || !hasRelic(DeckRelic.DIVER_DOWN)) return false;
+		diverDownUsed = true;
+		playerHP = Math.max(1, playerHT / 2);
+		return true;
 	}
 
 	public static DeckRelic[] startingRelicChoices() {
@@ -525,7 +640,7 @@ public class DeckBuilderRun {
 			return mysteryResolvedType;
 		}
 
-		int combatP = 10 + mysteryCombatBonus;
+		int combatP = hasRelic(DeckRelic.EXPLORATION_COMMAND_DISC) ? 0 : 10 + mysteryCombatBonus;
 		int shopP   = mysteryPrevWasShop ? 0 : (3 + mysteryShopBonus);
 		int treasureP = 2 + mysteryTreasureBonus;
 

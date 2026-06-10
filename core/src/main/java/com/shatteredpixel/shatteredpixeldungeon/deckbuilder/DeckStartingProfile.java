@@ -29,7 +29,7 @@ public class DeckStartingProfile {
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
 				card(DeckCard.SURGE, 1),
-				card(DeckCard.CALAMITY, 1),
+				card(DeckCard.FIRESEA, 1),
 				card(DeckCard.BASH, 1));
 
 		register(HeroClass.MAGE,

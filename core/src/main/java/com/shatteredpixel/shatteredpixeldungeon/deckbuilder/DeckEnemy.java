@@ -13,7 +13,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.watabou.utils.Random;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 
@@ -102,7 +101,7 @@ public enum DeckEnemy {
 	LARGE_SLIME("러버즈", 65, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
-			return (Challenges.activeChallenges() >= 7 ? 68 : 65) + Random.Int(5);
+			return 65 + Random.Int(5);
 		}
 
 		@Override

@@ -75,6 +75,7 @@ public class DeckBuilderRunBundle {
 	private static final String PENDING_CARD_TRANSFORM        = "deckbuilder_pending_card_transform";
 	private static final String PENDING_NEUTRAL_DISCOVER      = "deckbuilder_pending_neutral_discover";
 	private static final String PENDING_CARD_REWARD           = "deckbuilder_pending_card_reward";
+	private static final String PENDING_CARD_REWARD_COUNT     = "deckbuilder_pending_card_reward_count";
 	private static final String PENDING_CARD_REMOVE           = "deckbuilder_pending_card_remove";
 	private static final String PENDING_CARD_UPGRADE          = "deckbuilder_pending_card_upgrade";
 	private static final String PENDING_OTHER_CLASS_REWARD    = "deckbuilder_pending_other_class_reward";
@@ -83,6 +84,9 @@ public class DeckBuilderRunBundle {
 	private static final String FISHING_ROD_PROGRESS         = "deckbuilder_fishing_rod_progress";
 	private static final String UPGRADED_CARD_REWARD_COUNT   = "deckbuilder_upgraded_card_reward_count";
 	private static final String FIRST_TREASURE_EMPTY         = "deckbuilder_first_treasure_empty";
+	private static final String LIFE_BOMB_CARDS_ADDED       = "deckbuilder_life_bomb_cards_added";
+	private static final String NEXT_COMBAT_BONUS_ENERGY    = "deckbuilder_next_combat_bonus_energy";
+	private static final String DIVER_DOWN_USED             = "deckbuilder_diver_down_used";
 	private static final String TUTORIAL_MODE                = "deckbuilder_tutorial_mode";
 	private static final String TUTORIAL_STEP                = "deckbuilder_tutorial_step";
 	private static final String TUTORIAL_MAP_MESSAGE_SHOWN   = "deckbuilder_tutorial_map_message_shown";
@@ -118,6 +122,7 @@ public class DeckBuilderRunBundle {
 		bundle.put(PENDING_CARD_TRANSFORM,     DeckBuilderRun.pendingCardTransform);
 		bundle.put(PENDING_NEUTRAL_DISCOVER,   DeckBuilderRun.pendingNeutralDiscover);
 		bundle.put(PENDING_CARD_REWARD,        DeckBuilderRun.pendingCardReward);
+		bundle.put(PENDING_CARD_REWARD_COUNT,  DeckBuilderRun.pendingCardRewardCount);
 		bundle.put(PENDING_CARD_REMOVE,        DeckBuilderRun.pendingCardRemove);
 		bundle.put(PENDING_CARD_UPGRADE,       DeckBuilderRun.pendingCardUpgrade);
 		bundle.put(PENDING_OTHER_CLASS_REWARD, DeckBuilderRun.pendingOtherClassCardReward);
@@ -126,6 +131,9 @@ public class DeckBuilderRunBundle {
 		bundle.put(FISHING_ROD_PROGRESS,       DeckBuilderRun.fishingRodProgress);
 		bundle.put(UPGRADED_CARD_REWARD_COUNT, DeckBuilderRun.upgradedCardRewardCount);
 		bundle.put(FIRST_TREASURE_EMPTY,       DeckBuilderRun.firstTreasureEmpty);
+		bundle.put(LIFE_BOMB_CARDS_ADDED,      DeckBuilderRun.lifeBombCardsAdded);
+		bundle.put(NEXT_COMBAT_BONUS_ENERGY,   DeckBuilderRun.nextCombatBonusEnergy);
+		bundle.put(DIVER_DOWN_USED,            DeckBuilderRun.diverDownUsed);
 		bundle.put(TUTORIAL_MODE,              DeckBuilderRun.tutorialMode);
 		bundle.put(TUTORIAL_STEP,              DeckBuilderRun.tutorialStep);
 		bundle.put(TUTORIAL_MAP_MESSAGE_SHOWN, DeckBuilderRun.tutorialMapMessageShown);
@@ -168,6 +176,7 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.pendingCardTransform        = bundle.getBoolean(PENDING_CARD_TRANSFORM);
 		DeckBuilderRun.pendingNeutralDiscover      = bundle.getBoolean(PENDING_NEUTRAL_DISCOVER);
 		DeckBuilderRun.pendingCardReward           = bundle.getBoolean(PENDING_CARD_REWARD);
+		DeckBuilderRun.pendingCardRewardCount      = bundle.contains(PENDING_CARD_REWARD_COUNT) ? bundle.getInt(PENDING_CARD_REWARD_COUNT) : 0;
 		DeckBuilderRun.pendingCardRemove           = bundle.getBoolean(PENDING_CARD_REMOVE);
 		DeckBuilderRun.pendingCardUpgrade          = bundle.getBoolean(PENDING_CARD_UPGRADE);
 		DeckBuilderRun.pendingOtherClassCardReward = bundle.contains(PENDING_OTHER_CLASS_REWARD) ? bundle.getInt(PENDING_OTHER_CLASS_REWARD) : 0;
@@ -176,6 +185,9 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.fishingRodProgress          = bundle.contains(FISHING_ROD_PROGRESS)       ? bundle.getInt(FISHING_ROD_PROGRESS)       : 0;
 		DeckBuilderRun.upgradedCardRewardCount     = bundle.contains(UPGRADED_CARD_REWARD_COUNT) ? bundle.getInt(UPGRADED_CARD_REWARD_COUNT) : 0;
 		DeckBuilderRun.firstTreasureEmpty          = bundle.getBoolean(FIRST_TREASURE_EMPTY);
+		DeckBuilderRun.lifeBombCardsAdded          = bundle.contains(LIFE_BOMB_CARDS_ADDED) ? bundle.getInt(LIFE_BOMB_CARDS_ADDED) : 0;
+		DeckBuilderRun.nextCombatBonusEnergy       = bundle.contains(NEXT_COMBAT_BONUS_ENERGY) ? bundle.getInt(NEXT_COMBAT_BONUS_ENERGY) : 0;
+		DeckBuilderRun.diverDownUsed               = bundle.contains(DIVER_DOWN_USED) && bundle.getBoolean(DIVER_DOWN_USED);
 		DeckBuilderRun.tutorialMode                = bundle.getBoolean(TUTORIAL_MODE);
 		DeckBuilderRun.tutorialStep                = bundle.contains(TUTORIAL_STEP) ? bundle.getInt(TUTORIAL_STEP) : 0;
 		DeckBuilderRun.tutorialMapMessageShown     = bundle.getBoolean(TUTORIAL_MAP_MESSAGE_SHOWN);
@@ -299,7 +311,7 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.potions.clear();
 		if (bundle.contains(POTIONS)) {
 			for (int id : bundle.getIntArray(POTIONS)) {
-				if (DeckBuilderRun.potions.size() < DeckBuilderRun.MAX_POTION_SLOTS && DeckPotion.byId(id) != null) {
+				if (DeckBuilderRun.potions.size() < DeckBuilderRun.maxPotionSlots() && DeckPotion.byId(id) != null) {
 					DeckBuilderRun.potions.add(id);
 				}
 			}

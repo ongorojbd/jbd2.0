@@ -32,7 +32,7 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent AGE_DOWN = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_AGE_DOWN,
 			(combat, enemy, remainingBlock) -> {
-				combat.playerDamageReduction = Math.max(combat.playerDamageReduction, 30);
+				if (combat.applyPlayerDebuff()) combat.playerDamageReduction = Math.max(combat.playerDamageReduction, 30);
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "유아화"));
 				return TurnResult.noChange(remainingBlock);
 			},
@@ -121,7 +121,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_CORNER,
 			(combat, enemy, remainingBlock) -> {
 				AttackResult attack = combat.performEnemyAttack(enemy, 5, remainingBlock, "구석 몰기");
-				combat.playerWeak += 1;
+				if (combat.applyPlayerDebuff()) combat.playerWeak += 1;
 				return attack.toTurnResult(false);
 			},
 			enemy -> "예고: " + damageText(enemy, 5) + " 피해 + 공격력 저하 1 부여"));
@@ -149,8 +149,10 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent LAGAVULIN_SIPHON = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_LAGAVULIN_SIPHON,
 			(combat, enemy, remainingBlock) -> {
-				combat.playerStrength -= 1;
-				combat.playerDexterity -= 1;
+				if (combat.applyPlayerDebuff()) {
+					combat.playerStrength -= 1;
+					combat.playerDexterity -= 1;
+				}
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "영혼 흡수 (공격력 -1, 민첩 -1)"));
 				return TurnResult.noChange(remainingBlock);
 			},
@@ -166,7 +168,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_HAUNT,
 			(combat, enemy, remainingBlock) -> {
 				for (int i = 0; i < 3; i++) combat.discardPile.add(DeckCard.BARNACLE.code());
-				combat.playerWeak += 3;
+				if (combat.applyPlayerDebuff()) combat.playerWeak += 3;
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
 						combat.enemyIndex(enemy), 0, false, "출몰 (공격력 저하 +3)", false, DeckCard.BARNACLE, 3));
 				return new TurnResult(remainingBlock, 0, true);
@@ -177,7 +179,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_RAMMING_SPEED,
 			(combat, enemy, remainingBlock) -> {
 				AttackResult attack = combat.performEnemyAttack(enemy, 10, remainingBlock, "전속력");
-				combat.playerWeak += 1;
+				if (combat.applyPlayerDebuff()) combat.playerWeak += 1;
 				return attack.toTurnResult(false);
 			},
 			enemy -> "예고: " + damageText(enemy, 10) + " 피해 + 공격력 저하 1 부여"));
@@ -231,7 +233,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_GRASPING_VINES,
 			(combat, enemy, remainingBlock) -> {
 				AttackResult attack = combat.performEnemyAttack(enemy, 8, remainingBlock, "휘감는 덩굴");
-				combat.playerEntangle += 1;
+				if (combat.applyPlayerDebuff()) combat.playerEntangle += 1;
 				return attack.toTurnResult(false);
 			},
 			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 뒤얽힘 1 부여"));
@@ -260,7 +262,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_TACKLE,
 			(combat, enemy, remainingBlock) -> {
 				AttackResult attack = combat.performEnemyAttack(enemy, 9, remainingBlock, "방어력 저하 +1");
-				combat.playerDamageReduction = Math.max(combat.playerDamageReduction, 25);
+				if (combat.applyPlayerDebuff()) combat.playerDamageReduction = Math.max(combat.playerDamageReduction, 25);
 				return attack.toTurnResult(false);
 			},
 			enemy -> "예고: " + damageText(enemy, 9) + " 피해 + 유아화 부여"));
@@ -364,7 +366,7 @@ public class DeckEnemyIntent {
 		return new DeckEnemyIntent(
 				id,
 				(combat, enemy, remainingBlock) -> {
-					combat.playerBlockReduction += amount;
+					if (combat.applyPlayerDebuff()) combat.playerBlockReduction += amount;
 					combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "방어력 저하 +" + amount));
 					return TurnResult.noChange(remainingBlock);
 				},

@@ -165,7 +165,7 @@ public class DeckCardEffects {
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			for (DeckCombatEnemy target : targets(combat, card)) {
 				if (!combat.applyEnemyDebuff(target)) continue;
-				int vulnerable = card.vulnerable(cardCode);
+				int vulnerable = combat.enemyDebuffAmount(card.vulnerable(cardCode));
 				target.vulnerable += vulnerable;
 				result.addHit(combat.enemyIndex(target), 0, vulnerable);
 			}
@@ -173,7 +173,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "취약을 " + card.vulnerable(cardCode) + " 부여합니다.";
+			return "피해 증폭을 " + card.vulnerable(cardCode) + " 부여합니다.";
 		}
 	}
 
@@ -188,7 +188,7 @@ public class DeckCardEffects {
 
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
-			int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? upgraded : base;
+			int amount = combat.enemyDebuffAmount(DeckCardCode.upgradeLevel(cardCode) > 0 ? upgraded : base);
 			for (DeckCombatEnemy target : targets(combat, card)) {
 				if (!combat.applyEnemyDebuff(target)) continue;
 				target.attackDown += amount;
@@ -516,15 +516,16 @@ public class DeckCardEffects {
 			combat.playerConsecutiveStrike -= 2;
 			for (DeckCombatEnemy target : targets(combat, card)) {
 				if (!combat.applyEnemyDebuff(target)) continue;
-				target.attackDown += 2;
-				target.vulnerable += 2;
-				result.addHit(combat.enemyIndex(target), 0, 2);
+				int amount = combat.enemyDebuffAmount(2);
+				target.attackDown += amount;
+				target.vulnerable += amount;
+				result.addHit(combat.enemyIndex(target), 0, amount);
 			}
 		}
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "_연속 타격_을 2 소모하고 약화 2와 취약 2를 부여합니다.";
+			return "_연속 타격_을 2 소모하고 공격력 저하 2와 피해 증폭 2를 부여합니다.";
 		}
 
 		@Override
@@ -842,10 +843,10 @@ public class DeckCardEffects {
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
 			int s = DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
-			return "내 턴 동안 체력을 잃을 때마다, 힘을 " + s + " 얻습니다.";
+			return "내 턴 동안 체력을 잃을 때마다, 공격력을 " + s + " 얻습니다.";
 		}
 		@Override
-		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) { return "힘 1 → 2"; }
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) { return "공격력 1 → 2"; }
 	}
 
 	public static class BloodlettingEffect implements DeckCardEffect {
@@ -935,7 +936,7 @@ public class DeckCardEffects {
 			combat.loseHP(1, result);
 			if (!combat.hand.isEmpty()) {
 				int idx = Random.Int(combat.hand.size());
-				combat.exhaustPile.add(combat.hand.get(idx));
+				result.draw += combat.exhaustCard(combat.hand.get(idx));
 				combat.hand.remove(idx);
 				result.exhausted = true;
 			}

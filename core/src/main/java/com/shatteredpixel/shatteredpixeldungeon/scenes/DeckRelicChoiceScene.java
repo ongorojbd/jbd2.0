@@ -180,7 +180,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 			showNeutralDiscoverWindow();
 			return;
 		}
-		if (DeckBuilderRun.pendingCardReward) {
+		if (DeckBuilderRun.pendingCardReward || DeckBuilderRun.pendingCardRewardCount > 0) {
 			showCardRewardWindow();
 			return;
 		}
@@ -540,7 +540,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 				@Override protected void onClick() {
 					DeckBuilderRun.addCard(card);
 					DeckBuilderRun.consumeUpgradedCardReward();
-					DeckBuilderRun.pendingCardReward = false;
+					consumePendingCardReward();
 					saveRun();
 					win.hide();
 					processPendingRelicEvent();
@@ -553,7 +553,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 
 		RedButton skip = new RedButton("건너뛰기", 6) {
 			@Override protected void onClick() {
-				DeckBuilderRun.pendingCardReward = false;
+				consumePendingCardReward();
 				saveRun();
 				win.hide();
 				processPendingRelicEvent();
@@ -565,6 +565,14 @@ public class DeckRelicChoiceScene extends PixelScene {
 
 		win.resize(width, pos);
 		addToFront(win);
+	}
+
+	private void consumePendingCardReward() {
+		if (DeckBuilderRun.pendingCardRewardCount > 0) {
+			DeckBuilderRun.pendingCardRewardCount--;
+		} else {
+			DeckBuilderRun.pendingCardReward = false;
+		}
 	}
 
 	private void showOtherClassCardRewardWindow() {
@@ -878,6 +886,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		private ColorBlock shadow;
 		private ColorBlock bg;
 		private ColorBlock accent;
+		private ItemSprite icon;
 		private RenderedTextBlock title;
 		private RenderedTextBlock desc;
 
@@ -896,6 +905,8 @@ public class DeckRelicChoiceScene extends PixelScene {
 			add(bg);
 			accent = new ColorBlock(1, 1, 0xFFD5F27A);
 			add(accent);
+			icon = new ItemSprite();
+			add(icon);
 			title = renderTextBlock(6);
 			title.hardlight(Window.TITLE_COLOR);
 			add(title);
@@ -916,12 +927,15 @@ public class DeckRelicChoiceScene extends PixelScene {
 			accent.x = x;
 			accent.y = y;
 			accent.size(3, height);
-			title.text(relic.title);
-			title.maxWidth((int)(width - 14));
-			title.setPos(x + 8, y + 5);
+			icon.view(relic.icon, null);
+			icon.x = x + 8;
+			icon.y = y + 6;
+			title.text(relic.titleWithRarity());
+			title.maxWidth((int)(width - 34));
+			title.setPos(x + 28, y + 5);
 			desc.text(relic.description);
 			desc.maxWidth((int)(width - 16));
-			desc.setPos(x + 8, Math.min(title.bottom() + 2, y + height - desc.height() - 4));
+			desc.setPos(x + 8, Math.max(y + 24, Math.min(title.bottom() + 2, y + height - desc.height() - 4)));
 		}
 
 		@Override

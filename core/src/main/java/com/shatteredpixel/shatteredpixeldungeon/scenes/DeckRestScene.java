@@ -172,6 +172,31 @@ public class DeckRestScene extends PixelScene {
 	// Insert relic-unlocked rest options here as relics are added.
 	// Example: if (DeckBuilderRun.hasRelic(DeckRelic.SOME_RELIC)) { options.add(...); }
 	private void addRelicChoices(ArrayList<RestOption> options) {
+		if (DeckBuilderRun.hasRelic(DeckRelic.SAINT_TORSO)) {
+			options.add(new RestOption(
+					"탐색",
+					"성인의 동체부로 휴식 장소를 탐색해 무작위 유물을 획득합니다.",
+					0xFFBDA7FF,
+					DeckBuilderRun.canExploreAtRestSite(),
+					new Runnable() {
+						@Override public void run() {
+							if (!DeckBuilderRun.canExploreAtRestSite()) {
+								addToFront(new WndMessage("탐색\n\n지금은 탐색할 수 없습니다."));
+								return;
+							}
+							DeckRelic relic = DeckBuilderRun.exploreAtRestSite();
+							if (relic == null) {
+								addToFront(new WndMessage("탐색\n\n획득 가능한 유물이 없습니다."));
+								return;
+							}
+							Sample.INSTANCE.play(Assets.Sounds.ITEM);
+							saveRun();
+							addToFront(new WndMessage("탐색\n\n" + relic.titleWithRarity() + " 획득."));
+							leaveOrRefreshRest();
+						}
+					}
+			));
+		}
 	}
 
 	private void addBackground(int w, int h) {

@@ -47,7 +47,7 @@ public enum DeckPotion {
 	GAMBLERS_BREW("연막 물약", "손의 카드를 원하는 만큼 버리고, 버린 만큼 카드를 뽑습니다.", DeckPotionRarity.UNCOMMON, ItemSpriteSheet.EXOTIC_INDIGO, ItemSpriteSheet.Icons.POTION_MINDVIS),
 	FYSH_OIL("바위 인간의 물약", "공격력을 1 얻고 방어력 증가를 1 얻습니다.", DeckPotionRarity.UNCOMMON, ItemSpriteSheet.EXOTIC_MAGENTA, ItemSpriteSheet.Icons.POTION_STRENGTH),
 	DUPLICATOR("불길의 물약", "이번 턴에 사용하는 다음 카드가 1번 추가로 사용됩니다.", DeckPotionRarity.UNCOMMON, ItemSpriteSheet.EXOTIC_BISTRE, ItemSpriteSheet.Icons.POTION_MASTERY),
-	BINDING("부식 물약", "모든 적에게 공격력 저하를 1, 방어력 저하를 1 부여합니다.", DeckPotionRarity.UNCOMMON, ItemSpriteSheet.EXOTIC_CHARCOAL, ItemSpriteSheet.Icons.POTION_PARAGAS),
+	BINDING("부식 물약", "모든 적에게 공격력 저하를 1, 피해 증폭을 1 부여합니다.", DeckPotionRarity.UNCOMMON, ItemSpriteSheet.EXOTIC_CHARCOAL, ItemSpriteSheet.Icons.POTION_PARAGAS),
 	STABLE_SERUM("순간 빙결 물약", "손에 있는 카드를 2턴 동안 보존합니다.", DeckPotionRarity.UNCOMMON, ItemSpriteSheet.EXOTIC_SILVER, ItemSpriteSheet.Icons.POTION_STAMINA),
 	LIQUID_BRONZE("폭우 물약", "반격을 3 얻습니다.", DeckPotionRarity.UNCOMMON, ItemSpriteSheet.EXOTIC_IVORY, ItemSpriteSheet.Icons.POTION_EARTHARMR),
 	FORGE_BLESSING("눈보라 용액", "손에 있는 모든 카드를 남은 전투 동안 강화합니다.", DeckPotionRarity.UNCOMMON, ItemSpriteSheet.BREW_BLIZZARD, ItemSpriteSheet.Icons.POTION_MASTERY),

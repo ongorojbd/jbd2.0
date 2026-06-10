@@ -68,7 +68,7 @@ public class DeckRunHud extends Component {
 		goldText.hardlight(Window.TITLE_COLOR);
 		add(goldText);
 
-		potionButtons = new PotionSlotButton[DeckBuilderRun.MAX_POTION_SLOTS];
+		potionButtons = new PotionSlotButton[DeckBuilderRun.maxPotionSlots()];
 		for (int i = 0; i < potionButtons.length; i++) {
 			potionButtons[i] = new PotionSlotButton(i);
 			add(potionButtons[i]);
@@ -187,12 +187,17 @@ public class DeckRunHud extends Component {
 			for (int id : DeckBuilderRun.relics) {
 				DeckRelic relic = DeckRelic.byId(id);
 
-				RenderedTextBlock nameTxt = PixelScene.renderTextBlock(relic.title, 7);
+				ItemSprite relicIcon = new ItemSprite(relic.icon);
+				relicIcon.x = padding;
+				relicIcon.y = contentPos;
+				content.add(relicIcon);
+
+				RenderedTextBlock nameTxt = PixelScene.renderTextBlock(relic.titleWithRarity(), 7);
 				nameTxt.hardlight(Window.TITLE_COLOR);
-				nameTxt.maxWidth(width - padding * 2);
-				nameTxt.setPos(padding, contentPos);
+				nameTxt.maxWidth(width - padding * 2 - 22);
+				nameTxt.setPos(padding + 22, contentPos);
 				content.add(nameTxt);
-				contentPos += nameTxt.height() + 2;
+				contentPos += Math.max(18, nameTxt.height()) + 2;
 
 				RenderedTextBlock descTxt = PixelScene.renderTextBlock(relic.description, 6);
 				descTxt.hardlight(0xFFD8D1BD);

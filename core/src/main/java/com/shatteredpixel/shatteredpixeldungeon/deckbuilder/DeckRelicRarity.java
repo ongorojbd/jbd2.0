@@ -14,7 +14,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 public enum DeckRelicRarity {
-	COMMON,
-	UNCOMMON,
-	RARE
+	COMMON("일반"),
+	UNCOMMON("고급"),
+	RARE("희귀");
+
+	public final String label;
+
+	DeckRelicRarity(String label) {
+		this.label = label;
+	}
 }

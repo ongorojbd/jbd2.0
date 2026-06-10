@@ -78,6 +78,7 @@ public class DeckBuilderMapScene extends PixelScene {
 				|| DeckBuilderRun.pendingCardTransform
 				|| DeckBuilderRun.pendingNeutralDiscover
 				|| DeckBuilderRun.pendingCardReward
+				|| DeckBuilderRun.pendingCardRewardCount > 0
 				|| DeckBuilderRun.pendingCardRemove
 				|| DeckBuilderRun.pendingCardRemoveCount > 0
 				|| DeckBuilderRun.pendingCardUpgrade
@@ -474,6 +475,7 @@ public class DeckBuilderMapScene extends PixelScene {
 			}
 
 			if (resolvedType == DeckBuilderMap.REST) {
+				DeckBuilderRun.onRestNodeEntered();
 				enterDeckEvent();
 				Game.switchScene(DeckRestScene.class);
 				return;

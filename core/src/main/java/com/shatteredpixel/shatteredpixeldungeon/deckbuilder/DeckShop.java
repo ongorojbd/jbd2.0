@@ -26,7 +26,8 @@ public class DeckShop {
 	public static final int REMOVE = 3;
 
 	private static final int POTION_COUNT = 3;
-	private static final int RELIC_COUNT = 3;
+	private static final int REWARD_RELIC_COUNT = 2;
+	private static final int SHOP_RELIC_COUNT = 1;
 
 	public static Offer[] generateOffers() {
 		return generateOffers(DeckBuilderRun.cardRareOffset, DeckBuilderRun.heroClass());
@@ -36,11 +37,22 @@ public class DeckShop {
 		ArrayList<Offer> offers = new ArrayList<>();
 		addClassCardOffers(offers, heroClass);
 		addColorlessCardOffers(offers, heroClass);
-		for (int i = 0; i < RELIC_COUNT; i++) {
+		ArrayList<Integer> relicOfferIds = new ArrayList<>();
+		for (int i = 0; i < REWARD_RELIC_COUNT; i++) {
 			DeckRelicRarity rarity = DeckShopBalancePolicy.rollRelicRarity();
-			DeckRelic relic = DeckRelic.randomAvailable(rarity, true);
-			if (relic == null) relic = DeckRelic.randomAvailable(DeckShopBalancePolicy.rollRelicRarity(), true);
-			if (relic != null) offers.add(new Offer(RELIC, relic.ordinal(), DeckShopBalancePolicy.relicPrice(relic.rarity), false));
+			DeckRelic relic = DeckRelic.randomAvailable(rarity, false, relicOfferIds);
+			if (relic == null) relic = DeckRelic.randomAvailable(DeckShopBalancePolicy.rollRelicRarity(), false, relicOfferIds);
+			if (relic != null) {
+				relicOfferIds.add(relic.ordinal());
+				offers.add(new Offer(RELIC, relic.ordinal(), DeckShopBalancePolicy.relicPrice(relic.rarity), false));
+			}
+		}
+		for (int i = 0; i < SHOP_RELIC_COUNT; i++) {
+			DeckRelic relic = DeckRelic.randomShopAvailable(relicOfferIds);
+			if (relic != null) {
+				relicOfferIds.add(relic.ordinal());
+				offers.add(new Offer(RELIC, relic.ordinal(), DeckShopBalancePolicy.shopRelicPrice(), false));
+			}
 		}
 		for (int i = 0; i < POTION_COUNT; i++) {
 			DeckPotion potion = DeckPotionPolicy.randomPotion(DeckShopBalancePolicy.rollPotionRarity());

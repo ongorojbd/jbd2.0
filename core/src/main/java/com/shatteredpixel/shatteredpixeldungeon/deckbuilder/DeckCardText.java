@@ -49,7 +49,7 @@ public class DeckCardText {
 
 	public static String keywordText(DeckCard card, int cardCode) {
 		String text = "";
-		if (card.vulnerable(cardCode) > 0) text += "취약: 받는 공격 피해가 50% 증가합니다.";
+		if (card.vulnerable(cardCode) > 0) text += "피해 증폭: 받는 공격 피해가 50% 증가합니다.";
 		if (card.strength(cardCode) > 0) text += appendLine(text, "공격력: 공격 카드의 피해가 증가합니다.");
 		for (DeckCardKeyword keyword : DeckCardKeyword.values()) {
 			if (keyword.label.isEmpty()) continue;
@@ -86,7 +86,7 @@ public class DeckCardText {
 		if (card.damage(cardCode) != card.damage(upgraded)) text += appendLine(text, "피해 " + card.damage(cardCode) + " > " + card.damage(upgraded));
 		if (card.block(cardCode) != card.block(upgraded)) text += appendLine(text, "보호막 " + card.block(cardCode) + " > " + card.block(upgraded));
 		if (card.draw(cardCode) != card.draw(upgraded)) text += appendLine(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
-		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += appendLine(text, "취약 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
+		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += appendLine(text, "피해 증폭 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
 		if (card.strength(cardCode) != card.strength(upgraded)) text += appendLine(text, "공격력 " + card.strength(cardCode) + " > " + card.strength(upgraded));
 		if (card.shivs(cardCode) != card.shivs(upgraded)) text += appendLine(text, "전갈탄 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
 		if (DeckCardCode.maxCharge(cardCode) != DeckCardCode.maxCharge(upgraded)) text += appendLine(text, "충전 " + DeckCardCode.maxCharge(cardCode) + "/" + DeckCardCode.maxCharge(cardCode) + " > " + DeckCardCode.maxCharge(upgraded) + "/" + DeckCardCode.maxCharge(upgraded));

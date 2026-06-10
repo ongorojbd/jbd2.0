@@ -13,7 +13,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -55,18 +54,14 @@ public class DeckPotionPolicy {
 	}
 
 	public static int shopPrice(DeckPotionRarity rarity) {
-		if (rarity == DeckPotionRarity.RARE) return ascensionAdjusted(Random.IntRange(95, 105));
-		if (rarity == DeckPotionRarity.UNCOMMON) return ascensionAdjusted(Random.IntRange(72, 78));
-		return ascensionAdjusted(Random.IntRange(48, 52));
+		if (rarity == DeckPotionRarity.RARE) return Random.IntRange(95, 105);
+		if (rarity == DeckPotionRarity.UNCOMMON) return Random.IntRange(72, 78);
+		return Random.IntRange(48, 52);
 	}
 
 	public static int nextDropChance(int currentChance, boolean dropped) {
 		int next = currentChance + (dropped ? -DROP_CHANCE_STEP : DROP_CHANCE_STEP);
 		return Math.max(0, Math.min(100, next));
-	}
-
-	private static int ascensionAdjusted(int price) {
-		return Challenges.activeChallenges() >= 16 ? Math.round(price * 1.1f) : price;
 	}
 
 	public static class PotionReward {
