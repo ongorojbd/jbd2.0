@@ -4,7 +4,7 @@ Shattered Pixel Dungeon에 추가된 슬레이 더 스파이어 스타일 덱빌
 
 - 패키지 루트: `com.shatteredpixel.shatteredpixeldungeon.deckbuilder`
 - 주요 씬 루트: `com.shatteredpixel.shatteredpixeldungeon.scenes`
-- 현재 코드 기준: 카드 68장, 유물 59종, 적 25종, 포션 29종
+- 현재 코드 기준: 카드 68장, 유물 59종, 적 25종, 포션 45종
 - 마지막 구조 확인: 2026-06-01
 
 ---
@@ -663,6 +663,69 @@ pending 유물/이벤트 필드:
 | `POWDERED_DEMISE` | 대상에게 턴 종료 체력 손실 9 부여 |
 
 드랍 확률은 `DeckPotionPolicy`와 `DeckBuilderRun.potionDropChance`가 관리한다.
+
+---
+
+## 이벤트 시스템
+
+### 구현 파일
+
+`DeckEventScene.java` 단일 파일에 모든 이벤트 로직이 들어 있다.
+
+### 이벤트 타입 결정
+
+```java
+private int eventType() {
+    long hash = Dungeon.seed ^ depth * 0x9E3... ^ path * 0xBF5...;
+    return (hash & 1L) == 0 ? UPGRADE_SHRINE : PURIFIER;
+}
+```
+
+시드·깊이·경로 해시로 결정적으로 1종을 선택. 현재 2종이므로 50/50 확률.
+
+### 현재 이벤트 목록
+
+| 상수 | 이름 | 설명 |
+|------|------|------|
+| `UPGRADE_SHRINE = 0` | 강화 성소 | 덱에서 카드 1장 선택 → 강화. 이미 최대 업그레이드된 카드는 선택 불가 |
+| `PURIFIER = 1` | 정화 성소 | 덱에서 카드 1장 선택 → 영구 제거. 모든 카드 선택 가능 |
+
+두 이벤트 모두 "기도" 버튼(효과 실행)과 "떠난다" 버튼(스킵)을 가진다.
+
+### UI 구조
+
+```
+EventChoiceButton("기도", actionText, accentColor)  → showCardSelection()
+EventChoiceButton("떠난다", ...)                    → leaveEvent()
+```
+
+- **`EventChoiceButton`**: 라벨+설명+왼쪽 색상 강조선 버튼
+- **`showCardSelection(page)`**: 페이지네이션 카드 선택 창 (`CardChoiceButton` 4장/페이지)
+- **`showCardConfirmWindow(...)`**: 카드 상세+강화 미리보기+최종 확인 창
+- **`selectableDeckIndices()`**: `UPGRADE_SHRINE`이면 최대 업그레이드 카드 제외, 나머지는 전체
+- **`resolved` 플래그**: 중복 실행 방지
+
+완료/스킵 후 `leaveEvent()` → `DeckBuilderMapScene`으로 복귀.
+
+### 이벤트 추가 패턴
+
+현재 구조는 `eventType()` 해시로 단순히 int를 반환한다.
+이벤트를 추가하면 `eventType()` 반환 범위도 같이 넓혀야 한다.
+
+```java
+// 예: 3종으로 확장
+return (int)(Math.abs(hash) % 3);
+```
+
+카드 선택이 필요한 이벤트:
+- `showCardSelection()` / `showCardConfirmWindow()` 흐름 재사용
+- `selectableDeckIndices()`에 필터 조건만 추가
+
+카드 선택이 없는 이벤트(고정 효과, 조건 분기 등):
+- "기도" 버튼 `onClick()`에서 직접 효과 적용 후 `leaveEvent()` 호출
+- 선택지가 2개 이상이면 `EventChoiceButton`을 추가하면 됨
+
+NPC 스프라이트는 `BlacksmithSprite`(강화)와 `AlchemistSprite`(정화)를 현재 사용 중.
 
 ---
 

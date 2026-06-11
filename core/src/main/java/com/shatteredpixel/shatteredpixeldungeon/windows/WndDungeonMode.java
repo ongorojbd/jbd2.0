@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -172,7 +173,7 @@ public class WndDungeonMode extends Window {
                 showLockedMessage();
                 return false;
             }
-            if ((this == DECKBUILDER || this == DECKBUILDER_TUTORIAL) && !SPDSettings.landscape()) {
+            if ((this == DECKBUILDER || this == DECKBUILDER_TUTORIAL) && !SPDSettings.landscape() && !DeviceCompat.isDesktop()) {
                 ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndDungeonMode.class, "deckbuilder_portrait")));
                 return false;
             }
