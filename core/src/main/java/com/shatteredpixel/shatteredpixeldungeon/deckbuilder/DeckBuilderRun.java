@@ -61,6 +61,8 @@ public class DeckBuilderRun {
 	public static int mysteryResolvedType = DeckBuilderMap.NONE;
 	public static DeckBuilderCombat currentCombat;
 
+	public static int lastEventType = -1; // -1 = 직전 이벤트 없음
+
 	// Pending relic events set by onAcquire(), resolved in DeckRelicChoiceScene before going to map
 	public static boolean pendingCardTransform;
 	public static boolean pendingNeutralDiscover;
@@ -116,6 +118,7 @@ public class DeckBuilderRun {
 		mysteryResolvedDepth = -1;
 		mysteryResolvedPath = -1;
 		mysteryResolvedType = DeckBuilderMap.NONE;
+		lastEventType = -1;
 		pendingCardTransform = false;
 		pendingNeutralDiscover = false;
 		pendingCardReward = false;

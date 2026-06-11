@@ -72,6 +72,7 @@ public class DeckBuilderRunBundle {
 	private static final String REWARD_RELIC_CLAIMED = "deckbuilder_reward_relic_claimed";
 	private static final String REWARD_POTION_CLAIMED = "deckbuilder_reward_potion_claimed";
 	private static final String REWARD_CARD_CLAIMED = "deckbuilder_reward_card_claimed";
+	private static final String LAST_EVENT_TYPE               = "deckbuilder_last_event_type";
 	private static final String PENDING_CARD_TRANSFORM        = "deckbuilder_pending_card_transform";
 	private static final String PENDING_NEUTRAL_DISCOVER      = "deckbuilder_pending_neutral_discover";
 	private static final String PENDING_CARD_REWARD           = "deckbuilder_pending_card_reward";
@@ -119,6 +120,7 @@ public class DeckBuilderRunBundle {
 		bundle.put(MYSTERY_RESOLVED_DEPTH, DeckBuilderRun.mysteryResolvedDepth);
 		bundle.put(MYSTERY_RESOLVED_PATH,  DeckBuilderRun.mysteryResolvedPath);
 		bundle.put(MYSTERY_RESOLVED_TYPE,  DeckBuilderRun.mysteryResolvedType);
+		bundle.put(LAST_EVENT_TYPE,            DeckBuilderRun.lastEventType);
 		bundle.put(PENDING_CARD_TRANSFORM,     DeckBuilderRun.pendingCardTransform);
 		bundle.put(PENDING_NEUTRAL_DISCOVER,   DeckBuilderRun.pendingNeutralDiscover);
 		bundle.put(PENDING_CARD_REWARD,        DeckBuilderRun.pendingCardReward);
@@ -173,6 +175,7 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.mysteryResolvedDepth    = bundle.contains(MYSTERY_RESOLVED_DEPTH)  ? bundle.getInt(MYSTERY_RESOLVED_DEPTH)  : -1;
 		DeckBuilderRun.mysteryResolvedPath     = bundle.contains(MYSTERY_RESOLVED_PATH)   ? bundle.getInt(MYSTERY_RESOLVED_PATH)   : -1;
 		DeckBuilderRun.mysteryResolvedType     = bundle.contains(MYSTERY_RESOLVED_TYPE)   ? bundle.getInt(MYSTERY_RESOLVED_TYPE)   : DeckBuilderMap.NONE;
+		DeckBuilderRun.lastEventType               = bundle.contains(LAST_EVENT_TYPE) ? bundle.getInt(LAST_EVENT_TYPE) : -1;
 		DeckBuilderRun.pendingCardTransform        = bundle.getBoolean(PENDING_CARD_TRANSFORM);
 		DeckBuilderRun.pendingNeutralDiscover      = bundle.getBoolean(PENDING_NEUTRAL_DISCOVER);
 		DeckBuilderRun.pendingCardReward           = bundle.getBoolean(PENDING_CARD_REWARD);

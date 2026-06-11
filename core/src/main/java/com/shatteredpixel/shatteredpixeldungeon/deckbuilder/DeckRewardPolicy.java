@@ -45,7 +45,7 @@ public class DeckRewardPolicy {
 			choices[idx] = card == null ? DeckCard.rewardFallback(heroClass) : card;
 			rareSeen = choices[idx].rarity == DeckCardRarity.RARE;
 		}
-		return new CardReward(choices, rareSeen ? -5 : cardRareOffset + commonSeen);
+		return new CardReward(choices, rareSeen ? 0 : cardRareOffset + commonSeen);
 	}
 
 	public static DeckCard[] commonChoices(HeroClass heroClass, int count) {
@@ -121,6 +121,7 @@ public class DeckRewardPolicy {
 	}
 
 	private static DeckCardRarity rollCardRarity(int nodeType, int cardRareOffset) {
+		if (nodeType == DeckBuilderMap.BOSS) return DeckCardRarity.RARE;
 		int baseRare = nodeType == DeckBuilderMap.ELITE ? 10 : 3;
 		int uncommon = nodeType == DeckBuilderMap.ELITE ? 40 : 37;
 		int rare = baseRare + cardRareOffset;

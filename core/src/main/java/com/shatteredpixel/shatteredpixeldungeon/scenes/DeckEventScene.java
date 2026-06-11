@@ -25,12 +25,23 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardPool;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardTarget;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRewardPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlchemistSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ButterflySprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Butterfly2Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CausticSlimeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollGeomancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollTricksterSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.PiranhaSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RotLasherSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WarlockSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -56,11 +67,25 @@ import java.util.ArrayList;
 
 public class DeckEventScene extends PixelScene {
 
-	private static final int UPGRADE_SHRINE = 0;
-	private static final int PURIFIER = 1;
-	private static final int TRANSMOGRIFIER = 2;
-	private static final int GOLDEN_SHRINE = 3;
-	private static final int BLUE_WOMAN = 4;
+	private static final int UPGRADE_SHRINE  = 0;
+	private static final int PURIFIER        = 1;
+	private static final int TRANSMOGRIFIER  = 2;
+	private static final int GOLDEN_SHRINE   = 3;
+	private static final int BLUE_WOMAN      = 4;
+	private static final int LABORATORY      = 5;
+	private static final int DUPLICATOR      = 6;
+	private static final int SHINING_LIGHT   = 7;
+	private static final int CLERIC          = 8;
+	private static final int WORLD_OF_GOOP          = 9;
+	private static final int LIVING_WALL             = 10;
+	private static final int BIG_FISH                = 11;
+	private static final int SHAPESHIFTER_FOREST     = 12;
+	private static final int UNREST_SITE             = 13;
+
+	private static final int MODE_UPGRADE   = 0;
+	private static final int MODE_REMOVE    = 1;
+	private static final int MODE_TRANSFORM = 2;
+	private static final int MODE_DUPLICATE = 3;
 
 	private static final int CARD_W = 42;
 	private static final int CARD_H = 54;
@@ -68,6 +93,7 @@ public class DeckEventScene extends PixelScene {
 	private static final int CARDS_PER_PAGE = 4;
 
 	private int eventType;
+	private int cardSelectionMode;
 	private boolean resolved;
 
 	@Override
@@ -77,6 +103,14 @@ public class DeckEventScene extends PixelScene {
 
 		DeckBuilderRun.initIfNeeded();
 		eventType = eventType();
+		DeckBuilderRun.lastEventType = eventType;
+		switch (eventType) {
+			case UPGRADE_SHRINE: cardSelectionMode = MODE_UPGRADE;    break;
+			case PURIFIER:       cardSelectionMode = MODE_REMOVE;     break;
+			case TRANSMOGRIFIER: cardSelectionMode = MODE_TRANSFORM;  break;
+			case DUPLICATOR:     cardSelectionMode = MODE_DUPLICATE;  break;
+			default:             cardSelectionMode = -1;              break;
+		}
 		saveRun();
 
 		if (Dungeon.level != null) {
@@ -97,7 +131,16 @@ public class DeckEventScene extends PixelScene {
 		else if (eventType == PURIFIER)        icon = new ItemSprite(ItemSpriteSheet.OBLIVION_SHARD);
 		else if (eventType == TRANSMOGRIFIER)  icon = new ItemSprite(ItemSpriteSheet.SCROLL_MANNAZ);
 		else if (eventType == GOLDEN_SHRINE)   icon = new ItemSprite(ItemSpriteSheet.GOLD);
-		else                                   icon = new ItemSprite(ItemSpriteSheet.POTION_AZURE);
+		else if (eventType == BLUE_WOMAN)      icon = new ItemSprite(ItemSpriteSheet.POTION_AZURE);
+		else if (eventType == LABORATORY)      icon = new ItemSprite(ItemSpriteSheet.POTION_IVORY);
+		else if (eventType == DUPLICATOR)      icon = new ItemSprite(ItemSpriteSheet.ARTIFACT_SPELLBOOK);
+		else if (eventType == SHINING_LIGHT)   icon = new ItemSprite(ItemSpriteSheet.ARTIFACT_CHALICE1);
+		else if (eventType == CLERIC)          icon = new ItemSprite(ItemSpriteSheet.ARTIFACT_CHALICE2);
+		else if (eventType == WORLD_OF_GOOP)   icon = new ItemSprite(ItemSpriteSheet.DEWDROP);
+		else if (eventType == LIVING_WALL)     icon = new ItemSprite(ItemSpriteSheet.SEED_EARTHROOT);
+		else if (eventType == BIG_FISH)        icon = new ItemSprite(ItemSpriteSheet.RATION);
+		else if (eventType == SHAPESHIFTER_FOREST) icon = new ItemSprite(ItemSpriteSheet.ARTIFACT_HORN1);
+		else                                   icon = new ItemSprite(ItemSpriteSheet.TORCH);
 		RenderedTextBlock title = renderTextBlock(titleText(), 12);
 		title.hardlight(Window.TITLE_COLOR);
 		float titleW = icon.width() + 6 + title.width();
@@ -118,9 +161,11 @@ public class DeckEventScene extends PixelScene {
 
 		boolean wide = usableW >= h * 1.15f;
 		float buttonW = Math.min(wide ? 205 : 250, usableW - 22);
-		int buttonCount = (eventType == BLUE_WOMAN) ? 4 : 2;
-		float buttonH = (eventType == BLUE_WOMAN) ? 28 : 38;
-		float buttonGap = (eventType == BLUE_WOMAN) ? 6 : 8;
+		boolean manyButtons = eventType == BLUE_WOMAN || eventType == CLERIC
+				|| eventType == LIVING_WALL || eventType == BIG_FISH;
+		int buttonCount = eventType == BLUE_WOMAN ? 4 : manyButtons ? 3 : 2;
+		float buttonH = manyButtons ? 28 : 38;
+		float buttonGap = manyButtons ? 6 : 8;
 		float buttonX = insets.left + (usableW - buttonW) / 2f;
 		float buttonStackH = buttonH * buttonCount + buttonGap * (buttonCount - 1);
 		float prayY;
@@ -130,7 +175,16 @@ public class DeckEventScene extends PixelScene {
 		else if (eventType == PURIFIER)        host = new AlchemistSprite();
 		else if (eventType == TRANSMOGRIFIER)  host = new WarlockSprite();
 		else if (eventType == GOLDEN_SHRINE)   host = new ImpSprite();
-		else                                   host = new ButterflySprite();
+		else if (eventType == BLUE_WOMAN)      host = new ButterflySprite();
+		else if (eventType == LABORATORY)      host = new AlbinoSprite();
+		else if (eventType == DUPLICATOR)      host = new GnollTricksterSprite();
+		else if (eventType == SHINING_LIGHT)   host = new Butterfly2Sprite();
+		else if (eventType == CLERIC)          host = new GnollGeomancerSprite();
+		else if (eventType == WORLD_OF_GOOP)   host = new CausticSlimeSprite();
+		else if (eventType == LIVING_WALL)     host = new RotLasherSprite();
+		else if (eventType == BIG_FISH)        host = new PiranhaSprite();
+		else if (eventType == SHAPESHIFTER_FOREST) host = new SlimeSprite();
+		else                                   host = new GhostSprite();
 		if (wide) {
 			host.scale.set(Math.max(3.2f, Math.min(4.5f, h / 65f)));
 			float hostGap = 18;
@@ -185,8 +239,25 @@ public class DeckEventScene extends PixelScene {
 		hash ^= Dungeon.depth * 0x9E3779B97F4A7C15L;
 		hash ^= Statistics.deckBuilderMapPath * 0xBF58476D1CE4E5B9L;
 		hash ^= (hash >>> 33);
-		int n = DeckBuilderRun.gold >= 50 ? 5 : 4;
-		return (int) Math.floorMod(hash, n);
+		ArrayList<Integer> pool = new ArrayList<>();
+		pool.add(UPGRADE_SHRINE);
+		pool.add(PURIFIER);
+		pool.add(TRANSMOGRIFIER);
+		pool.add(LABORATORY);
+		pool.add(DUPLICATOR);
+		pool.add(SHINING_LIGHT);
+		pool.add(LIVING_WALL);
+		pool.add(BIG_FISH);
+		if (DeckBuilderRun.gold >= 35) pool.add(CLERIC);
+		if (DeckBuilderRun.gold >= 50) {
+			pool.add(GOLDEN_SHRINE);
+			pool.add(BLUE_WOMAN);
+			pool.add(WORLD_OF_GOOP);
+		}
+		if (DeckBuilderRun.gold >= 100) pool.add(SHAPESHIFTER_FOREST);
+		if (DeckBuilderRun.playerHP < DeckBuilderRun.playerHT * 70 / 100) pool.add(UNREST_SITE);
+		pool.remove(Integer.valueOf(DeckBuilderRun.lastEventType));
+		return pool.get((int) Math.floorMod(hash, pool.size()));
 	}
 
 	private String titleText() {
@@ -195,7 +266,16 @@ public class DeckEventScene extends PixelScene {
 			case PURIFIER:        return "정화 성소";
 			case TRANSMOGRIFIER:  return "변환 성소";
 			case GOLDEN_SHRINE:   return "황금 성소";
-			default:              return "파란 옷의 여자";
+			case BLUE_WOMAN:      return "파란 옷의 여자";
+			case LABORATORY:      return "연구실";
+			case DUPLICATOR:      return "복제 성소";
+			case SHINING_LIGHT:   return "밝은 빛";
+			case CLERIC:               return "성직자";
+			case WORLD_OF_GOOP:        return "끈적이 천지";
+			case LIVING_WALL:          return "살아있는 벽";
+			case BIG_FISH:             return "월척";
+			case SHAPESHIFTER_FOREST:  return "변성체의 숲";
+			default:                   return "불안한 휴식 장소";
 		}
 	}
 
@@ -205,7 +285,16 @@ public class DeckEventScene extends PixelScene {
 			case PURIFIER:        return "정화 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 제거한다.";
 			case TRANSMOGRIFIER:  return "변환 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 카드풀 내 무작위 카드로 변화시킨다.";
 			case GOLDEN_SHRINE:   return "고대의 영혼을 기리는 공들인 성소가 놓여 있다.";
-			default:              return "어두운 곳에서 시야가 밝아지자, 어떤 여성이 다짜고짜 외친다.\n\n\"포션 사세요, 당장!\"";
+			case BLUE_WOMAN:      return "어두운 곳에서 시야가 밝아지자, 어떤 여성이 다짜고짜 외친다.\n\n\"포션 사세요, 당장!\"";
+			case LABORATORY:      return "먼지가 쌓인 연구실이 있다. 선반에는 각종 포션이 놓여 있다.";
+			case DUPLICATOR:      return "복제 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 복제한다.";
+			case SHINING_LIGHT:   return "알 수 없는 밝은 빛이 앞을 가로막고 있다.";
+			case CLERIC:               return "낡은 제의를 걸친 성직자가 앉아 있다.\n\n\"도움이 필요한가?\"";
+			case WORLD_OF_GOOP:        return "바닥이 온통 끈적이는 슬라임 덩어리로 가득 차 있다.";
+			case LIVING_WALL:          return "갑자기 살아있는 벽이 등장하여 길을 막는다.\n\n\"망각, 변화, 성장. 셋 중 하나를 고르라.\"";
+			case BIG_FISH:             return "천장에서 바나나, 도넛, 상자가 내려와 있고 부스럭거리는 소리가 들린다. 아무래도 하나만 선택할 수 있는 듯하다.";
+			case SHAPESHIFTER_FOREST:  return "결정화된 나무들로 가득한 숲에서 변성체 무리가 당신을 반깁니다.\n\n구석에서 무리와 어울리지 못한 외톨이 한 마리가 불안해하고 있습니다.";
+			default:                   return "한적한 휴식 장소를 발견했습니다. 불을 피우자 불길이 옆으로 퍼져 기름진 숲을 향해 번져 갑니다.";
 		}
 	}
 
@@ -238,8 +327,9 @@ public class DeckEventScene extends PixelScene {
 		int pos = 7;
 
 		RenderedTextBlock title = renderTextBlock(
-				eventType == UPGRADE_SHRINE ? "강화할 카드 선택"
-				: eventType == PURIFIER ? "제거할 카드 선택"
+				cardSelectionMode == MODE_UPGRADE ? "강화할 카드 선택"
+				: cardSelectionMode == MODE_REMOVE ? "제거할 카드 선택"
+				: cardSelectionMode == MODE_DUPLICATE ? "복제할 카드 선택"
 				: "변환할 카드 선택", 9);
 		title.hardlight(Window.TITLE_COLOR);
 		title.setPos((width - title.width()) / 2f, pos);
@@ -318,9 +408,8 @@ public class DeckEventScene extends PixelScene {
 		ArrayList<Integer> choices = new ArrayList<>();
 		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
 			int code = DeckBuilderRun.deck.get(i);
-			if (eventType != UPGRADE_SHRINE || DeckCard.upgrade(code) != code) {
-				choices.add(i);
-			}
+			if (cardSelectionMode == MODE_UPGRADE && DeckCard.upgrade(code) == code) continue;
+			choices.add(i);
 		}
 		return choices;
 	}
@@ -345,7 +434,7 @@ public class DeckEventScene extends PixelScene {
 		win.add(desc);
 		pos += (int)desc.height() + 8;
 
-		if (eventType == UPGRADE_SHRINE) {
+		if (cardSelectionMode == MODE_UPGRADE) {
 			RenderedTextBlock upgrade = renderTextBlock("강화 효과\n" + upgradePreviewText(cardCode), 6);
 			upgrade.maxWidth(width - 14);
 			upgrade.hardlight(0xFFD5F27A);
@@ -354,19 +443,26 @@ public class DeckEventScene extends PixelScene {
 			pos += (int)upgrade.height() + 8;
 		}
 
-		RedButton confirm = new RedButton(eventType == UPGRADE_SHRINE ? "강화" : eventType == PURIFIER ? "제거" : "변환", 6) {
+		String confirmLabel = cardSelectionMode == MODE_UPGRADE ? "강화"
+				: cardSelectionMode == MODE_DUPLICATE ? "복제"
+				: cardSelectionMode == MODE_TRANSFORM ? "변환"
+				: eventType == CLERIC ? "정화" : "제거";
+		RedButton confirm = new RedButton(confirmLabel, 6) {
 			@Override
 			protected void onClick() {
 				if (resolved) return;
-				if (eventType == UPGRADE_SHRINE) {
+				if (cardSelectionMode == MODE_UPGRADE) {
 					DeckBuilderRun.upgradeCardAt(deckIndex);
-				} else if (eventType == PURIFIER) {
+				} else if (cardSelectionMode == MODE_REMOVE) {
+					if (eventType == CLERIC) DeckBuilderRun.gold -= 50;
 					DeckBuilderRun.removeCardAt(deckIndex);
+				} else if (cardSelectionMode == MODE_DUPLICATE) {
+					duplicateCard(deckIndex);
 				} else {
 					transformCard(deckIndex);
 				}
 				resolved = true;
-				Sample.INSTANCE.play(eventType == UPGRADE_SHRINE ? Assets.Sounds.EVOKE : Assets.Sounds.CURSED);
+				Sample.INSTANCE.play(cardSelectionMode == MODE_UPGRADE ? Assets.Sounds.EVOKE : Assets.Sounds.CURSED);
 				win.hide();
 				cardWindow.hide();
 				leaveEvent();
@@ -394,6 +490,24 @@ public class DeckEventScene extends PixelScene {
 			addGoldenShrineButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
 		} else if (eventType == BLUE_WOMAN) {
 			addBlueWomanButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == LABORATORY) {
+			addLaboratoryButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == DUPLICATOR) {
+			addDuplicatorButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == SHINING_LIGHT) {
+			addShiningLightButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == CLERIC) {
+			addClericButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == WORLD_OF_GOOP) {
+			addWorldOfGoopButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == LIVING_WALL) {
+			addLivingWallButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == BIG_FISH) {
+			addBigFishButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == SHAPESHIFTER_FOREST) {
+			addShapeshifterForestButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == UNREST_SITE) {
+			addUnrestSiteButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
 		} else {
 			addCardEventButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
 		}
@@ -476,6 +590,298 @@ public class DeckEventScene extends PixelScene {
 		};
 		pass.setRect(buttonX, prayY + 3 * (buttonH + buttonGap), buttonW, buttonH);
 		add(pass);
+	}
+
+	private void addLaboratoryButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		EventChoiceButton search = new EventChoiceButton("포션을 좀 찾아본다", "무작위 포션 3개를 획득합니다.", 0xFF7EE8A0) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				for (int i = 0; i < 3; i++) {
+					DeckBuilderRun.addPotion(DeckPotionPolicy.randomPotion(DeckPotionPolicy.rollRarity()));
+				}
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				leaveEvent();
+			}
+		};
+		search.setRect(buttonX, prayY, buttonW, buttonH);
+		add(search);
+
+		EventChoiceButton leave = new EventChoiceButton("떠난다", "아무 일도 일어나지 않습니다.", 0xFFB8A77D) {
+			@Override protected void onClick() { leaveEvent(); }
+		};
+		leave.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(leave);
+	}
+
+	private void addDuplicatorButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		EventChoiceButton duplicate = new EventChoiceButton("기도", "카드 한 장을 선택해 복제합니다.", 0xFF88AAFF) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				showCardSelection(0);
+			}
+		};
+		duplicate.setRect(buttonX, prayY, buttonW, buttonH);
+		add(duplicate);
+
+		EventChoiceButton leave = new EventChoiceButton("떠난다", "아무 일도 일어나지 않습니다.", 0xFFB8A77D) {
+			@Override protected void onClick() { leaveEvent(); }
+		};
+		leave.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(leave);
+	}
+
+	private void addShiningLightButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		int hpLoss = Math.max(1, DeckBuilderRun.playerHT / 5);
+		String enterDesc = "최대 HP의 20% (" + hpLoss + " HP)를 잃고, 덱의 카드 중 2장을 무작위로 강화합니다.";
+		EventChoiceButton enter = new EventChoiceButton("들어간다", enterDesc, 0xFFFFEE88) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				int loss = Math.max(1, DeckBuilderRun.playerHT / 5);
+				DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - loss);
+				upgradeRandomCards(2);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				leaveEvent();
+			}
+		};
+		enter.setRect(buttonX, prayY, buttonW, buttonH);
+		add(enter);
+
+		EventChoiceButton leave = new EventChoiceButton("떠난다", "아무 일도 일어나지 않습니다.", 0xFFB8A77D) {
+			@Override protected void onClick() { leaveEvent(); }
+		};
+		leave.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(leave);
+	}
+
+	private void addClericButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		int healAmount = Math.max(1, DeckBuilderRun.playerHT / 4);
+		String healDesc = "35 골드를 잃고 최대 HP의 25% (" + healAmount + " HP)를 회복합니다.";
+		EventChoiceButton heal = new EventChoiceButton("회복 (35골드)", healDesc, 0xFF7EE8A0) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				if (DeckBuilderRun.gold < 35) return;
+				DeckBuilderRun.gold -= 35;
+				int amount = Math.max(1, DeckBuilderRun.playerHT / 4);
+				DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + amount);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				leaveEvent();
+			}
+		};
+		heal.setRect(buttonX, prayY, buttonW, buttonH);
+		add(heal);
+
+		EventChoiceButton purify = new EventChoiceButton("정화 (50골드)", "50 골드를 잃고 카드 한 장을 선택해 덱에서 제거합니다.", 0xFF8FE6FF) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				if (DeckBuilderRun.gold < 50) return;
+				cardSelectionMode = MODE_REMOVE;
+				showCardSelection(0);
+			}
+		};
+		purify.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(purify);
+
+		EventChoiceButton leave = new EventChoiceButton("떠나기", "아무 일도 일어나지 않습니다.", 0xFFB8A77D) {
+			@Override protected void onClick() { leaveEvent(); }
+		};
+		leave.setRect(buttonX, prayY + (buttonH + buttonGap) * 2, buttonW, buttonH);
+		add(leave);
+	}
+
+	private void addWorldOfGoopButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		EventChoiceButton grab = new EventChoiceButton("골드를 챙긴다", "75 골드를 획득하고 11 HP를 잃습니다.", 0xFFD5F27A) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				DeckBuilderRun.gold += 75;
+				DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - 11);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.GOLD);
+				leaveEvent();
+			}
+		};
+		grab.setRect(buttonX, prayY, buttonW, buttonH);
+		add(grab);
+
+		EventChoiceButton avoid = new EventChoiceButton("건드리지 않는다", "20~50 골드를 잃습니다.", 0xFFB8A77D) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				int loss = 20 + Random.Int(31);
+				DeckBuilderRun.gold = Math.max(0, DeckBuilderRun.gold - loss);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.EAT);
+				leaveEvent();
+			}
+		};
+		avoid.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(avoid);
+	}
+
+	private void addLivingWallButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		EventChoiceButton forget = new EventChoiceButton("망각", "카드 한 장을 선택해 제거합니다.", 0xFF8FE6FF) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				cardSelectionMode = MODE_REMOVE;
+				showCardSelection(0);
+			}
+		};
+		forget.setRect(buttonX, prayY, buttonW, buttonH);
+		add(forget);
+
+		EventChoiceButton change = new EventChoiceButton("변화", "카드 한 장을 선택해 무작위 카드로 변화시킵니다.", 0xFFD478E8) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				cardSelectionMode = MODE_TRANSFORM;
+				showCardSelection(0);
+			}
+		};
+		change.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(change);
+
+		EventChoiceButton grow = new EventChoiceButton("성장", "카드 한 장을 선택해 강화합니다.", 0xFFD5F27A) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				cardSelectionMode = MODE_UPGRADE;
+				showCardSelection(0);
+			}
+		};
+		grow.setRect(buttonX, prayY + (buttonH + buttonGap) * 2, buttonW, buttonH);
+		add(grow);
+	}
+
+	private void addBigFishButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		int healAmount = Math.max(1, DeckBuilderRun.playerHT * 30 / 100);
+		EventChoiceButton banana = new EventChoiceButton("바나나", "최대 HP의 30% (" + healAmount + " HP)만큼 체력을 회복합니다.", 0xFF7EE8A0) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				int amount = Math.max(1, DeckBuilderRun.playerHT * 30 / 100);
+				DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + amount);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.EAT);
+				leaveEvent();
+			}
+		};
+		banana.setRect(buttonX, prayY, buttonW, buttonH);
+		add(banana);
+
+		EventChoiceButton donut = new EventChoiceButton("도넛", "최대 체력이 5 증가합니다.", 0xFFFFEE88) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				DeckBuilderRun.playerHT += 5;
+				DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + 5);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.EAT);
+				leaveEvent();
+			}
+		};
+		donut.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(donut);
+
+		EventChoiceButton box = new EventChoiceButton("상자", "무작위 유물을 1개 획득합니다. 저주 카드 '후회'를 받습니다.", 0xFFD4844A) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				DeckRelic relic = DeckRelic.randomAvailable(DeckRewardPolicy.rollRelicRarity());
+				if (relic != null) DeckBuilderRun.addRelic(relic);
+				DeckBuilderRun.addCard(DeckCard.REGRET);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.CURSED);
+				leaveEvent();
+			}
+		};
+		box.setRect(buttonX, prayY + (buttonH + buttonGap) * 2, buttonW, buttonH);
+		add(box);
+	}
+
+	private void addShapeshifterForestButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		EventChoiceButton crowd = new EventChoiceButton("무리", "모든 골드를 잃습니다. 덱의 카드 중 2장을 무작위로 변화시킵니다.", 0xFFD478E8) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				DeckBuilderRun.gold = 0;
+				transformRandomCards(2);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.CURSED);
+				leaveEvent();
+			}
+		};
+		crowd.setRect(buttonX, prayY, buttonW, buttonH);
+		add(crowd);
+
+		EventChoiceButton loner = new EventChoiceButton("외톨이", "최대 체력이 5 증가합니다.", 0xFF7EE8A0) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				DeckBuilderRun.playerHT += 5;
+				DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + 5);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				leaveEvent();
+			}
+		};
+		loner.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(loner);
+	}
+
+	private void addUnrestSiteButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		EventChoiceButton rest = new EventChoiceButton("그래도 휴식한다", "체력을 모두 회복합니다. 저주 카드 '수면 부족'을 받습니다.", 0xFF7EE8A0) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				DeckBuilderRun.playerHP = DeckBuilderRun.playerHT;
+				DeckBuilderRun.addCard(DeckCard.SLEEP_DEPRIVATION);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.DRINK);
+				leaveEvent();
+			}
+		};
+		rest.setRect(buttonX, prayY, buttonW, buttonH);
+		add(rest);
+
+		EventChoiceButton chop = new EventChoiceButton("나무들을 베어낸다", "최대 체력을 8 잃습니다. 무작위 유물을 1개 획득합니다.", 0xFFD5F27A) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				DeckBuilderRun.playerHT = Math.max(1, DeckBuilderRun.playerHT - 8);
+				DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP);
+				DeckRelic relic = DeckRelic.randomAvailable(DeckRewardPolicy.rollRelicRarity());
+				if (relic != null) DeckBuilderRun.addRelic(relic);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				leaveEvent();
+			}
+		};
+		chop.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(chop);
+	}
+
+	private void duplicateCard(int deckIndex) {
+		int code = DeckBuilderRun.deck.get(deckIndex);
+		DeckCard card = DeckCard.byCode(code);
+		DeckBuilderRun.addCard(card);
+	}
+
+	private void upgradeRandomCards(int count) {
+		ArrayList<Integer> upgradable = new ArrayList<>();
+		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
+			int code = DeckBuilderRun.deck.get(i);
+			DeckCard card = DeckCard.byCode(code);
+			if (DeckCardPool.isStatusOrCurse(card)) continue;
+			if (DeckCard.upgrade(code) == code) continue;
+			upgradable.add(i);
+		}
+		for (int i = 0; i < count && !upgradable.isEmpty(); i++) {
+			int pick = Random.Int(upgradable.size());
+			int idx = upgradable.remove(pick);
+			DeckBuilderRun.upgradeCardAt(idx);
+		}
+	}
+
+	private void transformRandomCards(int count) {
+		ArrayList<Integer> indices = new ArrayList<>();
+		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) indices.add(i);
+		for (int i = 0; i < count && !indices.isEmpty(); i++) {
+			int pick = Random.Int(indices.size());
+			int idx = indices.remove(pick);
+			transformCard(idx);
+		}
 	}
 
 	private void transformCard(int deckIndex) {
