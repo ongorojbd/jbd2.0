@@ -290,6 +290,84 @@ public class DeckEnemyIntent {
 			},
 			enemy -> "예고: 보호막 +15"));
 
+	// 시생인
+	public static final DeckEnemyIntent POWER_DANCE = register(strengthIntent(
+			DeckBuilderCombat.RESULT_POWER_DANCE, 2, "힘의 춤"));
+
+	public static final DeckEnemyIntent BOOMERANG = register(multiAttack(
+			DeckBuilderCombat.RESULT_BOOMERANG, 2, 2, "부메랑"));
+
+	public static final DeckEnemyIntent QUICK_SLASH = register(simpleAttack(
+			DeckBuilderCombat.RESULT_QUICK_SLASH, 5, "빠른 참격"));
+
+	// 누케사쿠
+	public static final DeckEnemyIntent ORB_OF_FRAILTY = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_ORB_OF_FRAILTY,
+			(combat, enemy, remainingBlock) -> {
+				AttackResult attack = combat.performEnemyAttack(enemy, 8, remainingBlock, "쇠약의 구체");
+				if (combat.applyPlayerDebuff()) combat.playerBlockReduction += 1;
+				return attack.toTurnResult(false);
+			},
+			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 방어력 저하 1 부여"));
+
+	public static final DeckEnemyIntent ORB_OF_WEAKNESS = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_ORB_OF_WEAKNESS,
+			(combat, enemy, remainingBlock) -> {
+				AttackResult attack = combat.performEnemyAttack(enemy, 8, remainingBlock, "나약함의 구체");
+				if (combat.applyPlayerDebuff()) combat.playerWeak += 1;
+				return attack.toTurnResult(false);
+			},
+			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 공격력 저하 1 부여"));
+
+	public static final DeckEnemyIntent SOUL_BEAM = register(multiAttack(
+			DeckBuilderCombat.RESULT_SOUL_BEAM, 3, 3, "영혼 광선"));
+
+	public static final DeckEnemyIntent DARK_RITUAL = register(strengthIntent(
+			DeckBuilderCombat.RESULT_DARK_RITUAL, 2, "어둠의 의식"));
+
+	// 시빌 워
+	public static final DeckEnemyIntent PRICE_CARDS = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_PRICE_CARDS,
+			(combat, enemy, remainingBlock) -> {
+				int priceCode = DeckCard.PRICE_OF_SIN.code();
+				combat.drawPile.add(priceCode);
+				combat.discardPile.add(priceCode);
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "죄의 대가", false, DeckCard.PRICE_OF_SIN, 2));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 죄의 대가 2장 섞어 넣음"));
+
+	public static final DeckEnemyIntent DE_GAS = register(simpleAttack(
+			DeckBuilderCombat.RESULT_DE_GAS, 16, "가스 방출"));
+
+	public static final DeckEnemyIntent GAZE = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_GAZE,
+			(combat, enemy, remainingBlock) -> {
+				AttackResult attack = combat.performEnemyAttack(enemy, 7, remainingBlock, "시선");
+				combat.discardPile.add(DeckCard.PRICE_OF_SIN.code());
+				combat.lastEnemyActions.get(combat.lastEnemyActions.size() - 1).setShuffle(DeckCard.PRICE_OF_SIN, 1);
+				return attack.toTurnResult(true);
+			},
+			enemy -> "예고: " + damageText(enemy, 7) + " 피해 + 죄의 대가 1장 버린 카드 더미에 추가"));
+
+	public static final DeckEnemyIntent FADE = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_FADE,
+			(combat, enemy, remainingBlock) -> {
+				enemy.blessed += 2;
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "희미함 (축복 +2)"));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 축복 +2 획득"));
+
+	public static final DeckEnemyIntent SCREAM = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_SCREAM,
+			(combat, enemy, remainingBlock) -> {
+				AttackResult attack = combat.performEnemyAttack(enemy, 11, remainingBlock, "절규");
+				enemy.strength += 3;
+				return attack.toTurnResult(false);
+			},
+			enemy -> "예고: " + damageText(enemy, 11) + " 피해 + 피해 증폭 +3"));
+
 	public final int id;
 	private final IntentAction action;
 	private final IntentText text;

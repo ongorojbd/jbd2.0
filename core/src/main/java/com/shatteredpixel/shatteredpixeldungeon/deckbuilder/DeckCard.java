@@ -308,7 +308,10 @@ public enum DeckCard {
 			new DeckCardEffects.PlayRandomFromDrawPile(2, 3)) {
 		@Override
 		public int cost(int code) { return upgradeLevel(code) > 0 ? 1 : 2; }
-	};
+	},
+
+	PRICE_OF_SIN(68, "죄의 대가", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.POTION_CRIMSON,
+			new DeckCardEffects.TextOnly("내 턴 종료 시 이 카드가 손에 있다면, 체력을 6 잃습니다."));
 
 	public final int id;
 	public final String title;

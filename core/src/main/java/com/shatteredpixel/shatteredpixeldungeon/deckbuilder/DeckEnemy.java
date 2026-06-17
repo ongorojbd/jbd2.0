@@ -30,8 +30,64 @@ public enum DeckEnemy {
 	GEB_GOD("테스트용 적", 50, 5, true),
 	HORUS("호루스신", 44, 9, false),
 	CREAM("크림", 60, 11, false),
-	CIVIL_WAR("시빌 워", 80, 14, false),
-	NUKESAKU("누케사쿠", 55, 9, false),
+	CIVIL_WAR("시빌 워", 211, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 211;
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			switch ((turn - 1) % 5) {
+				case 0:  return DeckBuilderCombat.RESULT_PRICE_CARDS;
+				case 1:  return DeckBuilderCombat.RESULT_DE_GAS;
+				case 2:  return DeckBuilderCombat.RESULT_GAZE;
+				case 3:  return DeckBuilderCombat.RESULT_FADE;
+				default: return DeckBuilderCombat.RESULT_SCREAM;
+			}
+		}
+	},
+	SICIGIN("시생인", 58, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 58 + Random.Int(2);
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			if (encounterIndex == 0) {
+				// 앞쪽: 힘의 춤 → 빠른 참격 → 부메랑 → 반복
+				switch ((turn - 1) % 3) {
+					case 0:  return DeckBuilderCombat.RESULT_POWER_DANCE;
+					case 1:  return DeckBuilderCombat.RESULT_QUICK_SLASH;
+					default: return DeckBuilderCombat.RESULT_BOOMERANG;
+				}
+			} else {
+				// 뒤쪽: 빠른 참격 → 부메랑 → 힘의 춤 → 반복
+				switch ((turn - 1) % 3) {
+					case 0:  return DeckBuilderCombat.RESULT_QUICK_SLASH;
+					case 1:  return DeckBuilderCombat.RESULT_BOOMERANG;
+					default: return DeckBuilderCombat.RESULT_POWER_DANCE;
+				}
+			}
+		}
+	},
+	NUKESAKU("누케사쿠", 190, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 190;
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			switch ((turn - 1) % 4) {
+				case 0:  return DeckBuilderCombat.RESULT_ORB_OF_FRAILTY;
+				case 1:  return DeckBuilderCombat.RESULT_ORB_OF_WEAKNESS;
+				case 2:  return DeckBuilderCombat.RESULT_SOUL_BEAM;
+				default: return DeckBuilderCombat.RESULT_DARK_RITUAL;
+			}
+		}
+	},
 	SETESH("세트신", 38, 0, false) {
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
@@ -388,6 +444,9 @@ public enum DeckEnemy {
 	public static DeckEnemy[] encounterForNode(int nodeType, int depth, int previousEncounterId) {
 		if (nodeType == DeckBuilderMap.BOSS) {
 			if (DeckBuilderRun.selectedBoss < 0) DeckBuilderRun.selectedBoss = Random.Int(3);
+			if (DeckBuilderRun.selectedBoss == 2) {
+				return new DeckEnemy[]{SICIGIN, NUKESAKU, SICIGIN};
+			}
 			return new DeckEnemy[]{bossBySelection()};
 		}
 		if (nodeType == DeckBuilderMap.ELITE) {

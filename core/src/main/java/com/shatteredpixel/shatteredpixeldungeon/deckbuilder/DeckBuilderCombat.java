@@ -61,6 +61,22 @@ public class DeckBuilderCombat {
 	public static final int RESULT_SEA_KICK = -46;
 	public static final int RESULT_SPINNING_KICK = -47;
 	public static final int RESULT_BUBBLE_BURP = -48;
+	// 시생인
+	public static final int RESULT_POWER_DANCE  = -49;
+	public static final int RESULT_BOOMERANG    = -50;
+	public static final int RESULT_QUICK_SLASH  = -51;
+	// 누케사쿠
+	public static final int RESULT_ORB_OF_FRAILTY  = -52;
+	public static final int RESULT_ORB_OF_WEAKNESS  = -53;
+	public static final int RESULT_SOUL_BEAM         = -54;
+	public static final int RESULT_DARK_RITUAL       = -55;
+
+	// 시빌 워
+	public static final int RESULT_PRICE_CARDS = -56;
+	public static final int RESULT_DE_GAS      = -57;
+	public static final int RESULT_GAZE        = -58;
+	public static final int RESULT_FADE        = -59;
+	public static final int RESULT_SCREAM      = -60;
 	public static final int RESULT_WINDUP_PUNCH = -13;
 	public static final int RESULT_LASH = -14;
 	public static final int RESULT_TACKLE = -15;
@@ -104,6 +120,8 @@ public class DeckBuilderCombat {
 	private static final String ENEMY_RITUAL = "enemy_ritual";
 	private static final String ENEMY_LAST_INTENT = "enemy_last_intent";
 	private static final String ENEMY_SPLIT_USED = "enemy_split_used";
+	private static final String ENEMY_BLESSED = "enemy_blessed";
+	private static final String PLAYER_BLESSED = "player_blessed";
 	private static final String PLAYER_DAMAGE_REDUCTION = "player_damage_reduction";
 	private static final String PLAYER_BLOCK_REDUCTION = "player_block_reduction";
 	private static final String PLAYER_WEAK = "player_weak";
@@ -222,6 +240,7 @@ public class DeckBuilderCombat {
 	public int strengthPerTurn;
 	public int nextTurnBlock;
 	public int preventHpLossTurns;
+	public int playerBlessed;
 
 	public ArrayList<Integer> drawPile = new ArrayList<>();
 	public ArrayList<Integer> hand = new ArrayList<>();
@@ -383,6 +402,7 @@ public class DeckBuilderCombat {
 		int[] enemyRitual = new int[enemies.size()];
 		int[] enemyLastIntent = new int[enemies.size()];
 		boolean[] enemySplitUsed = new boolean[enemies.size()];
+		int[] enemyBlessed = new int[enemies.size()];
 		for (int i = 0; i < enemies.size(); i++) {
 			DeckCombatEnemy enemy = enemies.get(i);
 			enemyKinds[i] = enemy.kind.ordinal();
@@ -404,6 +424,7 @@ public class DeckBuilderCombat {
 			enemyRitual[i] = enemy.ritual;
 			enemyLastIntent[i] = enemy.lastIntent;
 			enemySplitUsed[i] = enemy.splitUsed;
+			enemyBlessed[i] = enemy.blessed;
 		}
 		bundle.put(ENEMY_KINDS, enemyKinds);
 		bundle.put(ENEMY_HT, enemyHt);
@@ -424,6 +445,8 @@ public class DeckBuilderCombat {
 		bundle.put(ENEMY_RITUAL, enemyRitual);
 		bundle.put(ENEMY_LAST_INTENT, enemyLastIntent);
 		bundle.put(ENEMY_SPLIT_USED, enemySplitUsed);
+		bundle.put(ENEMY_BLESSED, enemyBlessed);
+		bundle.put(PLAYER_BLESSED, playerBlessed);
 	}
 
 	public static DeckBuilderCombat restoreFromBundle(Bundle bundle) {
@@ -489,6 +512,7 @@ public class DeckBuilderCombat {
 		combat.strengthPerTurn = bundle.contains(STRENGTH_PER_TURN) ? bundle.getInt(STRENGTH_PER_TURN) : 0;
 		combat.nextTurnBlock = bundle.contains(NEXT_TURN_BLOCK) ? bundle.getInt(NEXT_TURN_BLOCK) : 0;
 		combat.preventHpLossTurns = bundle.contains(PREVENT_HP_LOSS_TURNS) ? bundle.getInt(PREVENT_HP_LOSS_TURNS) : 0;
+		combat.playerBlessed = bundle.contains(PLAYER_BLESSED) ? bundle.getInt(PLAYER_BLESSED) : 0;
 		if (bundle.contains(PENDING_DISCOVER)) {
 			int[] ids = bundle.getIntArray(PENDING_DISCOVER);
 			combat.pendingDiscoverChoices = new DeckCard[ids.length];
@@ -524,6 +548,7 @@ public class DeckBuilderCombat {
 		int[] enemyRitual = bundle.contains(ENEMY_RITUAL) ? bundle.getIntArray(ENEMY_RITUAL) : new int[0];
 		int[] enemyLastIntent = bundle.contains(ENEMY_LAST_INTENT) ? bundle.getIntArray(ENEMY_LAST_INTENT) : new int[0];
 		boolean[] enemySplitUsed = bundle.contains(ENEMY_SPLIT_USED) ? bundle.getBooleanArray(ENEMY_SPLIT_USED) : new boolean[0];
+		int[] enemyBlessed = bundle.contains(ENEMY_BLESSED) ? bundle.getIntArray(ENEMY_BLESSED) : new int[0];
 		DeckEnemy[] allEnemies = DeckEnemy.values();
 		for (int i = 0; i < enemyKinds.length; i++) {
 			int kindIndex = enemyKinds[i];
@@ -547,6 +572,7 @@ public class DeckBuilderCombat {
 			if (i < enemyRitual.length) enemy.ritual = enemyRitual[i];
 			if (i < enemyLastIntent.length) enemy.lastIntent = enemyLastIntent[i];
 			if (i < enemySplitUsed.length) enemy.splitUsed = enemySplitUsed[i];
+			if (i < enemyBlessed.length) enemy.blessed = enemyBlessed[i];
 			combat.enemies.add(enemy);
 		}
 		if (combat.enemies.isEmpty()) {
@@ -589,6 +615,7 @@ public class DeckBuilderCombat {
 		playerHPLostCountThisTurn = 0;
 		firstShivUsed = false;
 		if (playerWeak > 0) playerWeak--;
+		if (playerBlessed > 0) playerBlessed--;
 		syncPotionlessDexterity();
 		lastDamageEvents.clear();
 		lastAutoPlayResults.clear();
@@ -677,7 +704,6 @@ public class DeckBuilderCombat {
 				}
 			}
 		}
-		if (turn == 2 && DeckBuilderRun.hasRelic(DeckRelic.HORN_CLEAT)) gainBlock(14);
 		if (turn == 2 && DeckBuilderRun.hasRelic(DeckRelic.CHARGE_STONE_MASK)) energy = Math.min(DeckBuilderRun.MAX_ENERGY_CAP, energy + 1);
 		if (turn == 2 && DeckBuilderRun.hasRelic(DeckRelic.VALENTINE_MEMORY_DISC)) gainBlock(14);
 		if (turn == 3 && DeckBuilderRun.hasRelic(DeckRelic.GOO_GOO_DOLLS)) gainBlock(18);
@@ -1149,6 +1175,7 @@ public class DeckBuilderCombat {
 			target.tricky = 0;
 			dealt = 1;
 		}
+		if (dealt > 0 && target.blessed > 0) dealt = 1;
 		target.hp = Math.max(0, target.hp - dealt);
 		if (dealt > 0) {
 			lastDamageEvents.add(DamageEvent.enemy(enemyIndex(target), dealt));
@@ -1160,6 +1187,11 @@ public class DeckBuilderCombat {
 					if ((target.kind == DeckEnemy.RAT_JAGGED && other.kind == DeckEnemy.RAT_SMOOTH) ||
 						(target.kind == DeckEnemy.RAT_SMOOTH && other.kind == DeckEnemy.RAT_JAGGED)) {
 						other.strength += 2;
+					}
+					// 결전: 누케사쿠 사망 시 시생인 동반 사망
+					if (target.kind == DeckEnemy.NUKESAKU && other.kind == DeckEnemy.SICIGIN) {
+						other.hp = 0;
+						playKillCount++;
 					}
 				}
 			}
@@ -1270,7 +1302,7 @@ public class DeckBuilderCombat {
 			} else if (handCard == DeckCard.SHAME) {
 				curseBlockReductionGain++;
 			} else if (handCard == DeckCard.SUSPICION) {
-				curseWeakGain += 2;
+				curseWeakGain++;
 			} else if (handCard == DeckCard.REGRET) {
 				curseDamageTaken += hand.size();
 			}
@@ -1282,6 +1314,12 @@ public class DeckBuilderCombat {
 			lastTurnEndStatusDamage += curseDamageTaken;
 			DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - preventableHpLoss(cappedCurse));
 			if (playerDead()) return lastTurnEndStatusDamage;
+		}
+		for (int code : hand) {
+			if (DeckCard.byCode(code) == DeckCard.PRICE_OF_SIN) {
+				loseHP(6);
+				if (playerDead()) return lastTurnEndStatusDamage;
+			}
 		}
 		if (surgeActive && !won()) {
 			ArrayList<Integer> attacksInHand = new ArrayList<>();
@@ -1393,6 +1431,7 @@ public class DeckBuilderCombat {
 			enemy.lastIntent = enemy.intent;
 			if (enemy.vulnerable > 0) enemy.vulnerable--;
 			if (enemy.attackDown > 0) enemy.attackDown--;
+			if (enemy.blessed > 0) enemy.blessed--;
 			enemy.turnStrengthLoss = 0;
 			if (enemy.platedArmor > 0 && enemy.alive()) enemyGainBlock(enemy, enemy.platedArmor);
 			if (enemy.kind == DeckEnemy.BYRDONIS && enemy.alive()) enemy.strength += 1;
@@ -1429,6 +1468,7 @@ public class DeckBuilderCombat {
 		int blocked = Math.min(remainingBlock, enemyDamage);
 		int damage = Math.max(0, enemyDamage - blocked);
 		if (preventHpLossTurns > 0) damage = 0;
+		if (playerBlessed > 0 && damage > 0) damage = 1;
 		if (damage > 0 && enemy.venom > 0) {
 			enemy.strength += enemy.venom;
 			label = appendLabel(label, "공격력 +" + enemy.venom);
@@ -1633,6 +1673,7 @@ public class DeckBuilderCombat {
 
 	private int preventableHpLoss(int amount) {
 		if (preventHpLossTurns > 0) return 0;
+		if (playerBlessed > 0 && amount > 0) return 1;
 		if (DeckBuilderRun.hasRelic(DeckRelic.THE_HUSTLE)) return Math.max(0, amount - 1);
 		return amount;
 	}

@@ -36,6 +36,7 @@ public class DeckCombatEnemy {
 	public int ritual;
 	public int lastIntent;
 	public boolean splitUsed;
+	public int blessed;
 
 	public DeckCombatEnemy(DeckEnemy kind, int depth) {
 		this.kind = kind;

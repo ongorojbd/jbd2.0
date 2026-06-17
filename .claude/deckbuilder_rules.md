@@ -674,23 +674,50 @@ pending 유물/이벤트 필드:
 
 ### 이벤트 타입 결정
 
-```java
-private int eventType() {
-    long hash = Dungeon.seed ^ depth * 0x9E3... ^ path * 0xBF5...;
-    return (hash & 1L) == 0 ? UPGRADE_SHRINE : PURIFIER;
-}
-```
+`DeckEventScene.eventType()`에서 시드, 깊이, 맵 경로를 해시해 이벤트 풀에서 결정적으로 1종을 선택한다.
 
-시드·깊이·경로 해시로 결정적으로 1종을 선택. 현재 2종이므로 50/50 확률.
+이벤트 메타데이터는 `DeckEventScene.EVENT_DEFS`의 `DeckEventDef` 배열에 모여 있다.
+
+`DeckEventDef`가 담당하는 것:
+
+- 이벤트 ID
+- 표시 이름
+- 설명 본문
+- 아이콘
+- 호스트 스프라이트
+- 최소 골드 조건
+- 낮은 HP 조건
+
+- 기본 풀 이벤트는 모든 막에서 등장한다.
+- 골드/체력 조건이 있는 이벤트는 `DeckEventDef.available()`이 true일 때만 풀에 들어간다.
+- `DeckBuilderRun.lastEventType`을 풀에서 제거해 같은 이벤트가 연속으로 나오지 않게 한다.
 
 ### 현재 이벤트 목록
 
-| 상수 | 이름 | 설명 |
-|------|------|------|
-| `UPGRADE_SHRINE = 0` | 강화 성소 | 덱에서 카드 1장 선택 → 강화. 이미 최대 업그레이드된 카드는 선택 불가 |
-| `PURIFIER = 1` | 정화 성소 | 덱에서 카드 1장 선택 → 영구 제거. 모든 카드 선택 가능 |
+현재 `DeckEventScene` 이벤트는 20종이다.
 
-두 이벤트 모두 "기도" 버튼(효과 실행)과 "떠난다" 버튼(스킵)을 가진다.
+| 상수 | 이름 | 등장 조건 | 설명 |
+|------|------|-----------|------|
+| `UPGRADE_SHRINE = 0` | 강화 성소 | 기본 | 덱에서 카드 1장 선택 → 강화 |
+| `PURIFIER = 1` | 정화 성소 | 기본 | 덱에서 카드 1장 선택 → 제거 |
+| `TRANSMOGRIFIER = 2` | 변환 성소 | 기본 | 덱에서 카드 1장 선택 → 무작위 카드로 변화 |
+| `GOLDEN_SHRINE = 3` | 황금 성소 | 골드 50 이상 | 100골드 또는 275골드+후회 |
+| `BLUE_WOMAN = 4` | 파란 옷의 여자 | 골드 50 이상 | 골드로 무작위 포션 1/2/3개 구매 |
+| `LABORATORY = 5` | 연구실 | 기본 | 무작위 포션 3개 획득 |
+| `DUPLICATOR = 6` | 복제 성소 | 기본 | 덱에서 카드 1장 선택 → 복제 |
+| `SHINING_LIGHT = 7` | 밝은 빛 | 기본 | 최대 HP 20% 손실, 무작위 카드 2장 강화 |
+| `CLERIC = 8` | 성직자 | 골드 35 이상 | 35골드 회복 또는 50골드 카드 제거 |
+| `WORLD_OF_GOOP = 9` | 끈적이 천지 | 골드 50 이상 | 75골드+11HP 손실 또는 20~50골드 손실 |
+| `LIVING_WALL = 10` | 살아있는 벽 | 기본 | 제거/변화/강화 중 1개 선택 |
+| `BIG_FISH = 11` | 월척 | 기본 | 회복/최대 체력+5/유물+후회 중 1개 선택 |
+| `SHAPESHIFTER_FOREST = 12` | 변성체의 숲 | 골드 100 이상 | 모든 골드 손실+무작위 카드 2장 변화 또는 최대 체력+5 |
+| `UNREST_SITE = 13` | 불안한 휴식 장소 | 현재 HP 70% 미만 | 전체 회복+수면 부족 또는 최대 체력 -8+무작위 유물 |
+| `THIS_OR_THAT = 14` | 이거 아님 저거? | 기본 | HP -6+41~68골드 또는 서투름+무작위 유물 |
+| `JUNGLE_MAZE_ADVENTURE = 15` | 정글 미로 탐험 | 기본 | 135~165골드+HP -18 또는 35~65골드 |
+| `AROMA_OF_CHAOS = 16` | 혼돈의 향기 | 기본 | 카드 1장 변화 또는 카드 1장 강화 |
+| `DOORS_OF_LIGHT_AND_DARK = 17` | 빛과 어둠의 문 | 기본 | 무작위 카드 2장 강화 또는 카드 1장 제거 |
+| `MAUSOLEUM = 18` | 영묘 | 기본 | 무작위 유물 1개, 50% 확률로 몸부림 또는 떠나기 |
+| `WHISPERING_HOLLOW = 19` | 속삭이는 골짜기 | 골드 50 이상 | 50골드로 무작위 포션 2개 또는 HP -9+카드 1장 변화 |
 
 ### UI 구조
 
@@ -709,13 +736,19 @@ EventChoiceButton("떠난다", ...)                    → leaveEvent()
 
 ### 이벤트 추가 패턴
 
-현재 구조는 `eventType()` 해시로 단순히 int를 반환한다.
-이벤트를 추가하면 `eventType()` 반환 범위도 같이 넓혀야 한다.
+현재 구조는 이벤트 메타데이터를 `EVENT_DEFS`로 모으고, 선택지/효과 실행만 전용 메서드에 둔다.
 
-```java
-// 예: 3종으로 확장
-return (int)(Math.abs(hash) % 3);
-```
+이벤트를 추가하면 보통 아래 위치를 갱신한다.
+
+- 이벤트 상수
+- `EVENT_DEFS`에 `DeckEventDef` 추가
+- `addEventButtons()` 분기
+- 전용 `addXxxButtons()` 메서드
+
+새 이벤트가 새 스프라이트 계열을 써야 한다면:
+
+- `HOST_*` 상수 추가
+- `DeckEventDef.host()` switch에 생성 분기 추가
 
 카드 선택이 필요한 이벤트:
 - `showCardSelection()` / `showCardConfirmWindow()` 흐름 재사용
@@ -725,7 +758,7 @@ return (int)(Math.abs(hash) % 3);
 - "기도" 버튼 `onClick()`에서 직접 효과 적용 후 `leaveEvent()` 호출
 - 선택지가 2개 이상이면 `EventChoiceButton`을 추가하면 됨
 
-NPC 스프라이트는 `BlacksmithSprite`(강화)와 `AlchemistSprite`(정화)를 현재 사용 중.
+현재 구조는 기존보다 확장 지점이 줄었지만, 선택지 action은 아직 `DeckEventScene` 내부 메서드에 남아 있다. 이벤트가 더 늘면 다음 리팩토링 후보는 `EventChoice` 정의 객체와 action 분리다.
 
 ---
 
