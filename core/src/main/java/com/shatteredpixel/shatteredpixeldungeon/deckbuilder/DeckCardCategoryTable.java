@@ -25,6 +25,17 @@ public class DeckCardCategoryTable {
 		register(DeckCard.VACCINE_SNAKE, DeckCardCategory.MELEE_WEAPON);
 		register(DeckCard.RIPPLE_WALL, DeckCardCategory.MELEE_WEAPON);
 		register(DeckCard.MASSACRE, DeckCardCategory.MELEE_WEAPON);
+		register(DeckCard.MAGIC_MISSILE_WAND, DeckCardCategory.WAND);
+		register(DeckCard.ENERGY_WAND, DeckCardCategory.WAND);
+		register(DeckCard.DRAW_WAND, DeckCardCategory.WAND);
+		register(DeckCard.BARRIER_WAND, DeckCardCategory.WAND);
+		register(DeckCard.ENHANCEMENT_WAND, DeckCardCategory.WAND);
+		register(DeckCard.MAGICIANS_WAND, DeckCardCategory.WAND);
+		register(DeckCard.HORUS_WAND, DeckCardCategory.WAND);
+		register(DeckCard.HEAVENS_WAND, DeckCardCategory.WAND);
+		register(DeckCard.SOFT_WAND, DeckCardCategory.WAND);
+		register(DeckCard.GOLD_EXPERIENCE_WAND, DeckCardCategory.WAND);
+		register(DeckCard.TUSK2_WAND, DeckCardCategory.WAND);
 	}
 
 	public static boolean has(DeckCard card, DeckCardCategory category) {

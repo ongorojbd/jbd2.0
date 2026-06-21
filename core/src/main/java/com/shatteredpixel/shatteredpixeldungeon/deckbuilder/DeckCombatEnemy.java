@@ -34,6 +34,7 @@ public class DeckCombatEnemy {
 	public int venom;
 	public int demise;
 	public int ritual;
+	public int darkSpace;
 	public int lastIntent;
 	public boolean splitUsed;
 	public int blessed;

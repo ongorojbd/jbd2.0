@@ -375,14 +375,14 @@ public class WndRPSGame extends Window {
 		// 가위(0) > 보(2)
 		// 바위(1) > 가위(0)
 		// 보(2) > 바위(1)
-		// 즉, (npc + 1) % 3 == player → 플레이어 승리
+		// 즉, (npc + 1) % 3 == player > 플레이어 승리
 
 		int result; // 0: 무승부, 1: 플레이어 승, -1: 플레이어 패
 		if (playerChoice == npcChoice) {
 			result = 0;
 			draws++;
 		} else if ((npcChoice + 1) % 3 == playerChoice) {
-			// NPC가 낸 것의 다음 것이 플레이어 → 플레이어 승리
+			// NPC가 낸 것의 다음 것이 플레이어 > 플레이어 승리
 			result = 1;
 			playerWins++;
 		} else {
@@ -396,7 +396,7 @@ public class WndRPSGame extends Window {
 		// 점수 업데이트
 		updateScoreText();
 
-		// 안내 텍스트 → 결과로 변경
+		// 안내 텍스트 > 결과로 변경
 		String resultMsg;
 		int resultColor;
 		if (result == 0) {

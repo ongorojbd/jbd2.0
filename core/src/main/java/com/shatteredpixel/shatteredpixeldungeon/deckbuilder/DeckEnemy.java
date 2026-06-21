@@ -29,7 +29,30 @@ public enum DeckEnemy {
 
 	GEB_GOD("테스트용 적", 50, 5, true),
 	HORUS("호루스신", 44, 9, false),
-	CREAM("크림", 60, 11, false),
+	CREAM("크림", 226, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 226;
+		}
+
+		@Override
+		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
+			if (turn == 1) return DeckBuilderCombat.RESULT_CREAM_AMBUSH;
+			if (turn <= 4) {
+				switch (turn) {
+					case 2: return DeckBuilderCombat.RESULT_CREAM_MIASMA;
+					case 3: return DeckBuilderCombat.RESULT_CREAM_SPIN;
+					default: return DeckBuilderCombat.RESULT_CREAM_RAGE;
+				}
+			}
+			switch ((turn - 5) % 4) {
+				case 0:
+				case 1:  return DeckBuilderCombat.RESULT_CREAM_MIASMA;
+				case 2:  return DeckBuilderCombat.RESULT_CREAM_SPIN;
+				default: return DeckBuilderCombat.RESULT_CREAM_RAGE;
+			}
+		}
+	},
 	CIVIL_WAR("시빌 워", 211, 0, false) {
 		@Override
 		public int hpForDepth(int depth) {
@@ -56,14 +79,14 @@ public enum DeckEnemy {
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
 			if (encounterIndex == 0) {
-				// 앞쪽: 힘의 춤 → 빠른 참격 → 부메랑 → 반복
+				// 앞쪽: 힘의 춤 > 빠른 참격 > 부메랑 > 반복
 				switch ((turn - 1) % 3) {
 					case 0:  return DeckBuilderCombat.RESULT_POWER_DANCE;
 					case 1:  return DeckBuilderCombat.RESULT_QUICK_SLASH;
 					default: return DeckBuilderCombat.RESULT_BOOMERANG;
 				}
 			} else {
-				// 뒤쪽: 빠른 참격 → 부메랑 → 힘의 춤 → 반복
+				// 뒤쪽: 빠른 참격 > 부메랑 > 힘의 춤 > 반복
 				switch ((turn - 1) % 3) {
 					case 0:  return DeckBuilderCombat.RESULT_QUICK_SLASH;
 					case 1:  return DeckBuilderCombat.RESULT_BOOMERANG;

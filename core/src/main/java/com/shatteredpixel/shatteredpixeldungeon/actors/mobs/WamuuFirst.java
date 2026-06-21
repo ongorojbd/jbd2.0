@@ -357,7 +357,7 @@ public class WamuuFirst extends Mob {
         spend(1f);
     }
 
-    // 와이어(회오리 바람) - 도넛 3단계(작은→중간→큰)로 3턴 연속 타격
+    // 와이어(회오리 바람) - 도넛 3단계(작은>중간>큰)로 3턴 연속 타격
     private boolean telegraphWire() {
         wireCells.clear(); wireRing1.clear(); wireRing2.clear(); wireRing3.clear();
         int w = Dungeon.level.width();

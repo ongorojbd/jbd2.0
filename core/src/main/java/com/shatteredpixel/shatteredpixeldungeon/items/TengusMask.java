@@ -188,7 +188,7 @@ public class TengusMask extends Item {
                 Dungeon.level.drop(exort, Dungeon.hero.pos).sprite.drop();
             }
 
-            // 1·2·3번 퀵슬롯(인덱스 0·1·2)에 Q→W→E 고정 등록
+            // 1·2·3번 퀵슬롯(인덱스 0·1·2)에 Q>W>E 고정 등록
             Dungeon.quickslot.setSlot(2, quas);
             Dungeon.quickslot.setSlot(1, wex);
             Dungeon.quickslot.setSlot(0, exort);

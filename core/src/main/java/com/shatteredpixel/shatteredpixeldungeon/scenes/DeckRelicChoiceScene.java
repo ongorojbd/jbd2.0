@@ -14,6 +14,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.watabou.noosa.audio.Music;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
@@ -23,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardCode;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardPool;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRewardPolicy;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DArbySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -82,9 +84,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 
 		DeckRelic[] choices = DeckBuilderRun.startingRelicChoices();
 		saveRun();
-		if (Dungeon.level != null) {
-			Dungeon.level.playLevelMusic();
-		}
+		Music.INSTANCE.playTracks(SewerLevel.SEWER_TRACK_LIST, SewerLevel.SEWER_TRACK_CHANCES, false);
 		Sample.INSTANCE.play(Assets.Sounds.DA3);
 
 		int w = Camera.main.width;

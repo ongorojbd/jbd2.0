@@ -26,11 +26,8 @@ public class DeckStartingProfile {
 
 	static {
 		register(HeroClass.WARRIOR,
-				card(DeckCard.STRIKE, 5),
-				card(DeckCard.GUARD, 4),
-				card(DeckCard.SURGE, 1),
-				card(DeckCard.FIRESEA, 1),
-				card(DeckCard.BASH, 1));
+				card(DeckCard.STRIKE, 1),
+				card(DeckCard.SHITTIM_BOX, 9));
 
 		register(HeroClass.MAGE,
 				card(DeckCard.STRIKE, 5),

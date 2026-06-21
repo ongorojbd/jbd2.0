@@ -205,6 +205,20 @@ public class DeckBuilderRun {
 		reward.clear();
 	}
 
+	private static void completeEliteQuests(int nodeType) {
+		if (nodeType != DeckBuilderMap.ELITE) return;
+		int completed = 0;
+		for (int i = deck.size() - 1; i >= 0; i--) {
+			if (DeckCard.byCode(deck.get(i)) == DeckCard.ABDUL_QUEST) {
+				deck.remove(i);
+				completed++;
+			}
+		}
+		for (int i = 0; i < completed; i++) {
+			addCard(DeckCard.MUHAMMAD_AVDOL);
+		}
+	}
+
 	private static void upgradeRandomDeckCard() {
 		ArrayList<Integer> upgradable = new ArrayList<>();
 		for (int i = 0; i < deck.size(); i++) {
@@ -235,6 +249,7 @@ public class DeckBuilderRun {
 			reward.cardClaimed = false;
 			return;
 		}
+		completeEliteQuests(nodeType);
 		if (nodeType == DeckBuilderMap.COMBAT && hasRelic(DeckRelic.FISHING_ROD)) {
 			fishingRodProgress++;
 			if (fishingRodProgress >= 3) {
@@ -515,6 +530,7 @@ public class DeckBuilderRun {
 
 	public static boolean removeCardAt(int index) {
 		initIfNeeded();
+		if (index >= 0 && index < deck.size() && DeckCardPool.isQuest(DeckCard.byCode(deck.get(index)))) return false;
 		if (!DeckRunInventory.removeCardAt(deck, index)) return false;
 		if (hasRelic(DeckRelic.RAW_MEAT_YUKHOE)) {
 			playerHP = Math.min(playerHT, playerHP + 15);
@@ -653,7 +669,7 @@ public class DeckBuilderRun {
 			combatP += mysteryVisitsThisAct * 2;
 		}
 
-		// 비(非)이벤트 합이 100% 초과 시 보물→상점 순으로 삭감
+		// 비(非)이벤트 합이 100% 초과 시 보물>상점 순으로 삭감
 		int nonEvent = combatP + shopP + treasureP;
 		if (nonEvent > 100) {
 			int excess = nonEvent - 100;

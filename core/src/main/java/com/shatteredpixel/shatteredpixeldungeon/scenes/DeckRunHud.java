@@ -226,8 +226,8 @@ public class DeckRunHud extends Component {
 
 		ScrollPane scrollPane = new ScrollPane(content);
 		win.add(scrollPane);
-		win.resize(width, pos);           // resize 먼저 → 윈도우 카메라 위치 확정
-		scrollPane.setRect(0, scrollTop, width, scrollH);  // 그 다음 setRect → 올바른 카메라 위치 사용
+		win.resize(width, pos);           // resize 먼저 > 윈도우 카메라 위치 확정
+		scrollPane.setRect(0, scrollTop, width, scrollH);  // 그 다음 setRect > 올바른 카메라 위치 사용
 		Game.scene().addToFront(win);
 	}
 

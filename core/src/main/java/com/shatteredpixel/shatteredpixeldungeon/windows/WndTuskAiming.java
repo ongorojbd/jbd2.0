@@ -136,7 +136,7 @@ public class WndTuskAiming extends Window {
 			targetWidth  = uiW * 0.31625f; // 가로 모드에서 UI 너비 15% 더 넓힘 (0.275 * 1.15 = 0.31625)
 			targetHeight = uiH * 0.24f; // 가로 모드에서 UI 크기 줄임
 		} else {
-			// 모바일 세로 화면 → 더 낮게, 가로는 넓게
+			// 모바일 세로 화면 > 더 낮게, 가로는 넓게
 			targetWidth  = uiW * 0.94f;
 			targetHeight = uiH * 0.22f;  // 🔥 세로 높이 추가로 더 줄임
 		}
@@ -217,7 +217,7 @@ public class WndTuskAiming extends Window {
 			y += shotCountText.height() + 2;
 		}
 
-		// 이제 instruction 텍스트는 없음 → 바로 바 영역 계산
+		// 이제 instruction 텍스트는 없음 > 바로 바 영역 계산
 
 		// 하단 버튼 위치 계산
 		float buttonHeight = landscape ? 16 : 18; // 가로 모드에서 버튼 높이 살짝 늘림 (14 -> 16)

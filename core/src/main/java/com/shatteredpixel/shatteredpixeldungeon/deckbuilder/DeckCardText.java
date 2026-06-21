@@ -128,6 +128,7 @@ public class DeckCardText {
 			case ATTACK: return "공격";
 			case SKILL: return "보조";
 			case POWER: return "지속";
+			case QUEST: return "퀘스트";
 			case STATUS: return "상태이상";
 			case CURSE: return "저주";
 			default: return type.label;

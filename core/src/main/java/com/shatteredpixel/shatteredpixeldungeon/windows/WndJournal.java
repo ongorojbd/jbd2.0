@@ -799,13 +799,6 @@ public class WndJournal extends WndTabbed {
 						}
 					}
 
-					//mage's staff normally has 2 pixels extra at the top for particle effects, we chop that off here
-					if (item instanceof MagesStaff){
-						RectF frame = sprite.frame();
-						frame.top += frame.height()/8f;
-						sprite.frame(frame);
-					}
-
 					if (item.icon != -1) {
 						secondIcon = new Image(Assets.Sprites.ITEM_ICONS);
 						secondIcon.frame(ItemSpriteSheet.Icons.film.get(item.icon));

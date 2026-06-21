@@ -28,7 +28,7 @@ public class DeckCardPool {
 	}
 
 	public static boolean isStatusOrCurse(DeckCard card) {
-		return isStatus(card) || isCurse(card);
+		return isStatus(card) || isCurse(card) || isQuest(card);
 	}
 
 	public static boolean isStatus(DeckCard card) {
@@ -37,6 +37,10 @@ public class DeckCardPool {
 
 	public static boolean isCurse(DeckCard card) {
 		return card != null && card.type == DeckCardType.CURSE;
+	}
+
+	public static boolean isQuest(DeckCard card) {
+		return card != null && card.type == DeckCardType.QUEST;
 	}
 
 	public static boolean isRewardCard(DeckCard card, HeroClass heroClass, boolean classOnly, boolean neutralOnly) {

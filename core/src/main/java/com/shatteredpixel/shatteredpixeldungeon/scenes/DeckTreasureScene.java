@@ -66,22 +66,46 @@ public class DeckTreasureScene extends PixelScene {
 		title.setPos((w - title.width()) / 2f, insets.top + 12);
 		add(title);
 
-		ItemSprite chestSprite = new ItemSprite(chestIcon());
-		chestSprite.scale.set(chest == 2 ? 3.3f : chest == 1 ? 3.6f : 3.1f);
-		chestSprite.x = (w - chestSprite.width()) / 2f;
-		chestSprite.y = title.bottom() + 20;
-		align(chestSprite);
-		add(chestSprite);
-
 		RenderedTextBlock text = renderTextBlock("상자가 놓여 있다.\n상자를 열어 유물을 획득한다.", 7);
 		text.hardlight(0xFFD8D1BD);
 		text.maxWidth(Math.min(220, w - (int)insets.left - (int)insets.right - 24));
-		text.setPos((w - text.width()) / 2f, chestSprite.y + chestSprite.height() + 18);
-		add(text);
 
 		RelicTakeButton take = new RelicTakeButton();
 		float buttonW = Math.min(230, w - insets.left - insets.right - 28);
-		take.setRect((w - buttonW) / 2f, Math.min(h - insets.bottom - 66, text.bottom() + 20), buttonW, 44);
+
+		float buttonH = 44;
+		float buttonY = h - insets.bottom - buttonH - 12;
+		float minTextButtonGap = 10;
+		float textGap = 18;
+		float chestY = title.bottom() + 20;
+		float chestScale = chest == 2 ? 3.3f : chest == 1 ? 3.6f : 3.1f;
+		float maxTextY = buttonY - minTextButtonGap - text.height();
+		float maxChestH = maxTextY - textGap - chestY;
+		if (maxChestH < 20) {
+			chestY = title.bottom() + 8;
+			textGap = 8;
+			maxChestH = maxTextY - textGap - chestY;
+		}
+		if (maxChestH > 0) {
+			chestScale = Math.min(chestScale, Math.max(1.5f, chestScale * maxChestH / (16f * chestScale)));
+		}
+
+		ItemSprite chestSprite = new ItemSprite(chestIcon());
+		chestSprite.scale.set(chestScale);
+		chestSprite.x = (w - chestSprite.width()) / 2f;
+		chestSprite.y = chestY;
+		align(chestSprite);
+		add(chestSprite);
+
+		float textY = Math.min(chestSprite.y + chestSprite.height() + textGap, maxTextY);
+		text.setPos((w - text.width()) / 2f, textY);
+		add(text);
+
+		if (buttonY < text.bottom() + minTextButtonGap) {
+			buttonY = text.bottom() + minTextButtonGap;
+		}
+		buttonY = Math.min(buttonY, h - insets.bottom - buttonH - 4);
+		take.setRect((w - buttonW) / 2f, buttonY, buttonW, buttonH);
 		add(take);
 
 		fadeIn();

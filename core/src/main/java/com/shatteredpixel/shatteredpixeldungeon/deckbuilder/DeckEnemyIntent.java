@@ -368,6 +368,29 @@ public class DeckEnemyIntent {
 			},
 			enemy -> "예고: " + damageText(enemy, 11) + " 피해 + 피해 증폭 +3"));
 
+	// 크림
+	public static final DeckEnemyIntent CREAM_AMBUSH = register(new DeckEnemyIntent(
+			DeckBuilderCombat.RESULT_CREAM_AMBUSH,
+			(combat, enemy, remainingBlock) -> {
+				enemy.darkSpace += 5;
+				for (int i = 0; i < 2; i++) {
+					combat.drawPile.add(DeckCard.GLIDE.code());
+					combat.discardPile.add(DeckCard.GLIDE.code());
+				}
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "급습 (암흑공간 +5)", false, DeckCard.GLIDE, 4));
+				return TurnResult.noChange(remainingBlock);
+			},
+			enemy -> "예고: 암흑공간 +5, 활공 4장 섞어 넣음"));
+
+	public static final DeckEnemyIntent CREAM_MIASMA = register(multiAttack(
+			DeckBuilderCombat.RESULT_CREAM_MIASMA, 2, 6, "아공간의 독기"));
+
+	public static final DeckEnemyIntent CREAM_SPIN = register(simpleAttack(
+			DeckBuilderCombat.RESULT_CREAM_SPIN, 22, "무차별 회전"));
+
+	public static final DeckEnemyIntent CREAM_RAGE = register(strengthIntent(
+			DeckBuilderCombat.RESULT_CREAM_RAGE, 1, "격분"));
+
 	public final int id;
 	private final IntentAction action;
 	private final IntentText text;

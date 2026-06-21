@@ -217,7 +217,7 @@ public class WO extends Mob {
         }
     }
 
-    // 와이어(회오리 바람) - 도넛 3단계(작은→중간→큰)로 3턴 연속 타격
+    // 와이어(회오리 바람) - 도넛 3단계(작은>중간>큰)로 3턴 연속 타격
     private boolean telegraphWire() {
         wireCells.clear();
         wireRing1.clear();
@@ -289,7 +289,7 @@ public class WO extends Mob {
         }
     }
 
-    // 체스판 패턴 - 흰색 영역 → 검정색 영역 순차 폭발
+    // 체스판 패턴 - 흰색 영역 > 검정색 영역 순차 폭발
     private boolean telegraphChessboard() {
         chessboardWhite.clear();
         chessboardBlack.clear();

@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.HamonPartice;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
 
@@ -64,8 +65,11 @@ public class ZombieSprite extends MobSprite {
     @Override
     public void play( Animation anim ) {
         if (anim == die) {
-            emitter().burst( FlameParticle.FACTORY, 20);
-            emitter().burst( ShadowParticle.UP, 12 );
+            Emitter emitter = emitter();
+            if (emitter != null) {
+                emitter.burst( FlameParticle.FACTORY, 20);
+                emitter.burst( ShadowParticle.UP, 12 );
+            }
         }
         super.play( anim );
     }

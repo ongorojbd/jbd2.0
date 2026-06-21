@@ -16,12 +16,24 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+import com.watabou.utils.Random;
+
 public class DeckWandCards {
 
 	private static final EnumMap<DeckCard, WandProfile> PROFILES = new EnumMap<>(DeckCard.class);
 
 	static {
 		register(DeckCard.MAGIC_MISSILE_WAND, 3, 4, TriggerTiming.TURN_START);
+		register(DeckCard.ENERGY_WAND, 2, 3, TriggerTiming.TURN_START);
+		register(DeckCard.DRAW_WAND, 2, 3, TriggerTiming.TURN_START);
+		register(DeckCard.BARRIER_WAND, 4, 5, TriggerTiming.TURN_START);
+		register(DeckCard.ENHANCEMENT_WAND, 3, 3, TriggerTiming.TURN_END);
+		register(DeckCard.MAGICIANS_WAND, 3, 4, TriggerTiming.TURN_END);
+		register(DeckCard.HORUS_WAND, 2, 3, TriggerTiming.TURN_END);
+		register(DeckCard.HEAVENS_WAND, 3, 4, TriggerTiming.TURN_END);
+		register(DeckCard.SOFT_WAND, 3, 4, TriggerTiming.TURN_START);
+		register(DeckCard.GOLD_EXPERIENCE_WAND, 2, 3, TriggerTiming.TURN_START);
+		register(DeckCard.TUSK2_WAND, 3, 4, TriggerTiming.TURN_END);
 	}
 
 	public static boolean isWand(int cardCode) {
@@ -52,6 +64,11 @@ public class DeckWandCards {
 
 	public static void fireWand(DeckBuilderCombat combat, int wandCode, DeckPlayResult.Builder result) {
 		DeckCard wand = DeckCard.byCode(wandCode);
+		if (wand == DeckCard.ENHANCEMENT_WAND) {
+			int stored = DeckCardCode.auxValue(wandCode) + maxCharge(wandCode);
+			damageRandomEnemy(combat, stored * wand.damage(wandCode), result);
+			return;
+		}
 		for (int i = 0; i < maxCharge(wandCode); i++) {
 			applyWandEffects(combat, wand, wandCode, result);
 		}
@@ -73,9 +90,18 @@ public class DeckWandCards {
 
 		DeckCard wand = DeckCard.byCode(code);
 		DeckPlayResult.Builder result = new DeckPlayResult.Builder(wand);
-		applyWandEffects(combat, wand, code, result);
 
 		int charge = DeckCardCode.currentCharge(code) - 1;
+		if (wand == DeckCard.ENHANCEMENT_WAND) {
+			int stored = DeckCardCode.auxValue(code) + 1;
+			if (charge <= 0) {
+				damageRandomEnemy(combat, stored * wand.damage(code), result);
+			} else {
+				code = DeckCardCode.withAuxValue(code, stored);
+			}
+		} else {
+			applyWandEffects(combat, wand, code, result);
+		}
 		if (charge <= 0) {
 			combat.hand.remove(handIndex);
 			result.draw += combat.exhaustCard(code);
@@ -88,9 +114,72 @@ public class DeckWandCards {
 	}
 
 	private static void applyWandEffects(DeckBuilderCombat combat, DeckCard wand, int wandCode, DeckPlayResult.Builder result) {
+		if (applySpecialWandEffect(combat, wand, wandCode, result)) return;
 		for (DeckCardEffect effect : wand.effects(wandCode)) {
 			effect.apply(new DeckCardPlayContext(combat, wand, wandCode, wandCode, -1, false, false, false, result, -1));
 		}
+	}
+
+	private static boolean applySpecialWandEffect(DeckBuilderCombat combat, DeckCard wand, int wandCode, DeckPlayResult.Builder result) {
+		if (wand == DeckCard.ENERGY_WAND) {
+			combat.energy = Math.min(DeckBuilderRun.MAX_ENERGY_CAP, combat.energy + 1);
+			return true;
+		}
+		if (wand == DeckCard.DRAW_WAND) {
+			if (combat.draw(1)) result.draw++;
+			return true;
+		}
+		if (wand == DeckCard.BARRIER_WAND) {
+			result.block += combat.gainBlock(4);
+			damageRandomEnemy(combat, 2, result);
+			return true;
+		}
+		if (wand == DeckCard.MAGICIANS_WAND) {
+			for (DeckCombatEnemy enemy : combat.aliveEnemies()) {
+				int dealt = combat.damageEnemy(enemy, 5, false);
+				result.addAttackHit(combat.enemyIndex(enemy), dealt);
+			}
+			return true;
+		}
+		if (wand == DeckCard.HORUS_WAND) {
+			DeckCombatEnemy enemy = randomEnemy(combat);
+			if (enemy != null) {
+				if (combat.applyEnemyDebuff(enemy)) enemy.attackDown++;
+				int dealt = combat.damageEnemy(enemy, 2, false);
+				result.addAttackHit(combat.enemyIndex(enemy), dealt);
+			}
+			return true;
+		}
+		if (wand == DeckCard.HEAVENS_WAND) {
+			DeckCombatEnemy enemy = randomEnemy(combat);
+			if (enemy != null && combat.applyEnemyDebuff(enemy)) enemy.vulnerable++;
+			return true;
+		}
+		if (wand == DeckCard.SOFT_WAND) {
+			DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + 2);
+			return true;
+		}
+		if (wand == DeckCard.GOLD_EXPERIENCE_WAND) {
+			combat.addRandomZeroCostExhaustCardsToHand(2);
+			return true;
+		}
+		if (wand == DeckCard.TUSK2_WAND) {
+			combat.addToDrawPile(DeckCard.ROTATING_NAIL.code(), 2, true);
+			return true;
+		}
+		return false;
+	}
+
+	private static void damageRandomEnemy(DeckBuilderCombat combat, int damage, DeckPlayResult.Builder result) {
+		DeckCombatEnemy enemy = randomEnemy(combat);
+		if (enemy == null) return;
+		int dealt = combat.damageEnemy(enemy, damage, false);
+		result.addAttackHit(combat.enemyIndex(enemy), dealt);
+	}
+
+	private static DeckCombatEnemy randomEnemy(DeckBuilderCombat combat) {
+		ArrayList<DeckCombatEnemy> alive = combat.aliveEnemies();
+		return alive.isEmpty() ? null : alive.get(Random.Int(alive.size()));
 	}
 
 	private static void register(DeckCard card, int maxCharge, int upgradedMaxCharge, TriggerTiming timing) {

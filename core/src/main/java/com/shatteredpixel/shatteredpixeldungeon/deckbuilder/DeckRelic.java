@@ -22,8 +22,12 @@ public enum DeckRelic {
 
 	NEW_LEAF("새로운 잎", "획득 시, 덱의 카드 1장이 무작위로 변환됩니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.SEED_STARFLOWER) {
 		@Override public void onAcquire() {
-			if (DeckBuilderRun.deck.isEmpty()) return;
-			int idx = Random.Int(DeckBuilderRun.deck.size());
+			ArrayList<Integer> transformable = new ArrayList<>();
+			for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
+				if (!DeckCardPool.isQuest(DeckCard.byCode(DeckBuilderRun.deck.get(i)))) transformable.add(i);
+			}
+			if (transformable.isEmpty()) return;
+			int idx = transformable.get(Random.Int(transformable.size()));
 			int code = DeckBuilderRun.deck.get(idx);
 			DeckCard current = DeckCard.byCode(code);
 			DeckCard[] pool = DeckCard.rewardPool(DeckBuilderRun.heroClass(), false, false);
@@ -65,6 +69,11 @@ public enum DeckRelic {
 		@Override public void onAcquire() {
 			upgradeFirstInDeck(DeckCard.STRIKE);
 			upgradeFirstInDeck(DeckCard.GUARD);
+		}
+	},
+	NEOWS_LAMENT("니오우의 비탄", "획득 시, 덱에 오시리스신을 1장 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.SCROLL_HOLDER) {
+		@Override public void onAcquire() {
+			DeckBuilderRun.addCard(DeckCard.OSIRIS_GOD);
 		}
 	},
 	PHIAL_HOLSTER("약병 홀스터", "획득 시, 무작위 포션 3개를 획득합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.POTION_HOLDER) {
@@ -424,7 +433,7 @@ public enum DeckRelic {
 
 	private static DeckCard randomCard(DeckCardRarity rarity, DeckCardType type) {
 		ArrayList<DeckCard> pool = new ArrayList<>();
-		for (DeckCard card : DeckCard.rewardPool()) {
+		for (DeckCard card : DeckCard.rewardPool(DeckBuilderRun.heroClass(), false, false)) {
 			if (card.rarity == rarity && (type == null || card.type == type)) {
 				pool.add(card);
 			}

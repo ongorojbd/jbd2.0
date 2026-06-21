@@ -23,6 +23,8 @@ public final class DeckCardCode {
 	private static final int COST_OVERRIDE_MASK = 0xF;
 	private static final int CHARGE_SHIFT = 24;
 	private static final int CHARGE_MASK = 0xF;
+	private static final int AUX_SHIFT = 28;
+	private static final int AUX_MASK = 0xF;
 
 	private DeckCardCode() {
 	}
@@ -53,7 +55,7 @@ public final class DeckCardCode {
 	}
 
 	public static int withCostOverride(int code, int cost) {
-		int clamped = Math.max(0, Math.min(3, cost)) + 1;
+		int clamped = Math.max(0, Math.min(14, cost)) + 1;
 		return (code & ~(COST_OVERRIDE_MASK << COST_OVERRIDE_SHIFT)) | (clamped << COST_OVERRIDE_SHIFT);
 	}
 
@@ -86,5 +88,14 @@ public final class DeckCardCode {
 
 	public static int withCharge(int code, int charge) {
 		return (code & ~(CHARGE_MASK << CHARGE_SHIFT)) | (charge << CHARGE_SHIFT);
+	}
+
+	public static int auxValue(int code) {
+		return (code >>> AUX_SHIFT) & AUX_MASK;
+	}
+
+	public static int withAuxValue(int code, int value) {
+		int clamped = Math.max(0, Math.min(AUX_MASK, value));
+		return (code & ~(AUX_MASK << AUX_SHIFT)) | (clamped << AUX_SHIFT);
 	}
 }

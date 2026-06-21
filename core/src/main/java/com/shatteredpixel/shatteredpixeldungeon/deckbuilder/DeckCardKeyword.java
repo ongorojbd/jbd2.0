@@ -15,13 +15,13 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 public enum DeckCardKeyword {
 
-	EXHAUST(1, "_\uC18C\uBA78_", "\uC0AC\uC6A9\uD558\uBA74 \uC774\uBC88 \uC804\uD22C\uC5D0\uC11C \uC81C\uAC70\uB429\uB2C8\uB2E4."),
-	RETAIN(2, "_\uBCF4\uC874_", "\uD134 \uC885\uB8CC \uC2DC \uBC84\uB824\uC9C0\uC9C0 \uC54A\uACE0 \uC190\uC5D0 \uB0A8\uC2B5\uB2C8\uB2E4."),
-	CAST_ON_DRAW(4, "_\uBFD1\uC744 \uB54C \uC2DC\uC804_", "\uC774 \uCE74\uB4DC\uB97C \uBFD1\uC73C\uBA74 \uC790\uB3D9\uC73C\uB85C \uC2DC\uC804\uB429\uB2C8\uB2E4."),
-	AIM(8, "_\uC870\uC900_", "\uC190\uD328\uC758 \uC815\uC911\uC559\uC5D0\uC11C \uC0AC\uC6A9\uD558\uBA74 \uAC15\uD654 \uD6A8\uACFC\uAC00 \uBC1C\uB3D9\uD569\uB2C8\uB2E4."),
-	THROW(16, "_\uD22C\uCC99_", "\uC190\uD328\uC758 \uAC00\uC7A5 \uC67C\uCABD \uB610\uB294 \uAC00\uC7A5 \uC624\uB978\uCABD\uC5D0\uC11C \uC0AC\uC6A9\uD558\uBA74 \uAC15\uD654 \uD6A8\uACFC\uAC00 \uBC1C\uB3D9\uD569\uB2C8\uB2E4."),
-	VANGUARD(32, "_\uC120\uBD09_", "\uC804\uD22C \uC2DC\uC791 \uC2DC \uCCAB \uD328\uC5D0 \uB4E4\uC5B4\uC635\uB2C8\uB2E4."),
-	TRANSIENT(64, "_\uC77C\uC2DC\uC801_", "\uB0B4 \uD134\uC774 \uB05D\uB0A0 \uB54C \uC190\uC5D0 \uB4E4\uACE0 \uC788\uB2E4\uBA74 \uC18C\uBA78\uD569\uB2C8\uB2E4."),
+	EXHAUST(1, "_소멸_", "사용하면 이번 전투에서 제거됩니다."),
+	RETAIN(2, "_보존_", "턴 종료 시 버려지지 않고 손에 남습니다."),
+	CAST_ON_DRAW(4, "_뽑을 때 시전_", "이 카드를 뽑으면 자동으로 시전됩니다."),
+	AIM(8, "_조준_", "손패의 정중앙에서 사용하면 강화 효과가 발동합니다."),
+	THROW(16, "_투척_", "손패의 가장 왼쪽 또는 가장 오른쪽에서 사용하면 강화 효과가 발동합니다."),
+	VANGUARD(32, "_선봉_", "전투 시작 시 첫 패에 들어옵니다."),
+	TRANSIENT(64, "_일시적_", "내 턴이 끝날 때 손에 들고 있다면 소멸합니다."),
 	ZERO_COST(128, "", "");
 
 	public final int bit;

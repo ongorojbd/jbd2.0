@@ -270,6 +270,59 @@ DeckCard.rewardFallback(heroClass);
 - 새 카드/유물/포션이 피해를 준다면 가능하면 직접 HP를 깎지 말고 `damageEnemy(...)` 또는 `loseHP(...)`를 호출한다.
 - 특수한 투사체/사운드가 필요한 카드만 별도 연출을 추가하고, 기본 피격/피해 숫자 표시는 공통 피해 이벤트 기록을 신뢰한다.
 
+### 연타(다단 히트) 이펙트 시스템
+
+한 카드가 여러 번 타격하는 연타 연출은 `DeckPlayResult.Builder`의 **wave** 메커니즘으로 구현한다.
+
+**wave 개념**
+
+- 효과 내에서 `result.addAttackHit(enemyIndex, dealt)` 를 호출하면 현재 wave 번호에 해당하는 타격이 기록된다.
+- `result.nextWave()` 를 호출하면 내부 wave 카운터가 1 증가한다.
+- wave 0 타격은 씬에서 즉시 표시, wave 1 이상은 `0.25f × wave` 초 지연 후 순차 표시된다.
+
+**일반 카드 플레이 핸들러 (wave-aware)**
+
+`DeckBattleScene`의 일반 플레이 핸들러는 wave를 자동으로 인식한다.
+
+- wave 0 타격: 즉시 `spawnCardAttack()` 호출.
+- wave 1+: `DelayedActionEffect(w * 0.25f, ...)` 로 순차 시전.
+- `finishDelay` 는 `maxWave * 0.25f + 0.38f` 로 갱신.
+
+**카드별 별도 핸들러가 있는 경우**
+
+- `ONSLAUGHT`: wave 0..N을 0.25f 간격으로 순차 표시 (별도 핸들러).
+- `BARRAGE`: wave 0(즉시) → wave 1(0.38f 지연) 별도 핸들러.
+- 위 두 카드는 `return;` 으로 일반 핸들러에 진입하지 않는다.
+- 그 외 다단 히트 카드(MALICE, REND, KNIFE_TRAP 등)는 **일반 wave-aware 핸들러**를 통과한다.
+
+**새 연타 카드 추가 패턴**
+
+```java
+// 이펙트 내부 — 첫 타격은 nextWave() 없이, 이후 각 타격마다 nextWave() 먼저 호출
+result.addAttackHit(combat.enemyIndex(target), dealt); // wave 0
+result.nextWave();
+result.addAttackHit(combat.enemyIndex(target), dealt2); // wave 1 → 0.25초 후 표시
+result.nextWave();
+result.addAttackHit(combat.enemyIndex(target), dealt3); // wave 2 → 0.50초 후 표시
+```
+
+- 여러 적을 동시 타격(ALL_ENEMIES)하는 경우 한 wave 안에 모두 기록해도 된다.
+- 별도 특수 연출이 필요한 경우에만 씬에 카드별 핸들러 추가; 그 외엔 일반 핸들러로 자동 처리된다.
+
+**참조 구현**
+
+- `DeckCardEffects.KnifeTrap` — 소멸 더미 전갈탄 수만큼 nextWave()로 분리해 순차 타격 연출.
+- `DeckCardEffects.OnslaughtBonus` — `playerConsecutiveStrike` 수만큼 nextWave().
+- `DeckCardEffects.MaliceBonus` — 조건 충족 시 1~2회 추가 타격을 nextWave()로 분리.
+
+**endTurn 중 발생하는 플레이어→적 피해**
+
+`endTurn()` 내부에서 발생한 피해(오렌지 폭탄 폭발 등)는 `damageEnemy()` 호출로 `lastDamageEvents`에 자동 기록된다.
+
+- **wand 경로**: `spawnUnanimatedDamageEvents()`가 이미 호출되어 피해 숫자 표시.
+- **simple endTurn 버튼 경로**: `lastOrangeBombTotalDamage > 0`일 때만 `spawnUnanimatedDamageEvents()` 추가 호출.
+- 폭발 로그는 `enemyTurnLog()` 내에서 `lastOrangeBombTotalDamage`를 참조해 출력.
+
 ### 무작위 카드 자동 시전 시스템
 
 카드 효과로 다른 카드를 자동 시전할 때 사용하는 공통 인프라.

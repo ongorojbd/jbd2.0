@@ -15,7 +15,8 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 public enum DeckCardCategory {
 
-	MELEE_WEAPON("근접 무기");
+	MELEE_WEAPON("근접 무기"),
+	WAND("완드");
 
 	public final String label;
 

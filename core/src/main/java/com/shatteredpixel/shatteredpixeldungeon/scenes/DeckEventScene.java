@@ -14,6 +14,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.watabou.noosa.audio.Music;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
@@ -27,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardTarget;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRewardPolicy;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlchemistSprite;
@@ -87,6 +89,7 @@ public class DeckEventScene extends PixelScene {
 	private static final int DOORS_OF_LIGHT_AND_DARK = 17;
 	private static final int MAUSOLEUM               = 18;
 	private static final int WHISPERING_HOLLOW      = 19;
+	private static final int AVDOL_GHOST             = 20;
 
 	private static final int HOST_BLACKSMITH       = 0;
 	private static final int HOST_ALCHEMIST        = 1;
@@ -126,6 +129,7 @@ public class DeckEventScene extends PixelScene {
 			new DeckEventDef(DOORS_OF_LIGHT_AND_DARK, "빛과 어둠의 문", "방금 전까지만 해도 존재하지 않았던 출입구가 어느새 생겨나 있습니다.\n\n안으로 들어서자, 희미하게 빛나는 두 개의 문과 잘 차려입은 문지기가 보입니다.", ItemSpriteSheet.GOLDEN_KEY, HOST_WARLOCK),
 			new DeckEventDef(MAUSOLEUM, "영묘", "검은 안개가 새어 나오는 관이 있다.", ItemSpriteSheet.TOMB, HOST_GHOST),
 			new DeckEventDef(WHISPERING_HOLLOW, "속삭이는 골짜기", "당신은 죽은 나무들로 이뤄진 골짜기를 지나던 중, 우연히 뼈처럼 새하얀 색의 나무 한 그루를 발견합니다. 무언가를 보호하는 갈비뼈처럼 안쪽으로 휘어진 가지에는, 점토 장식이 매달려 있습니다.\n\n정말 소름끼치는 나무입니다. 나무는 속삭입니다.\n\n...거래하라.....", ItemSpriteSheet.SEED_EARTHROOT, HOST_LASHER, 50, false),
+			new DeckEventDef(AVDOL_GHOST, "무함마드 압둘의 유령", "나도 한때 이 카이로 사막을 탐험했지만, 어느 스탠드의 습격으로 목숨을 잃었다..\n\n이제 난 이곳에 갇혀 복수를 이루기 전까진 떠날 수 없지..\n\n다음에 만나는 강적을 없애줘.. 그 놈이 내 목숨을 앗아갔으니..", ItemSpriteSheet.SCROLL_LAGUZ, HOST_GHOST),
 	};
 
 	private static final int MODE_UPGRADE   = 0;
@@ -159,9 +163,7 @@ public class DeckEventScene extends PixelScene {
 		}
 		saveRun();
 
-		if (Dungeon.level != null) {
-			Dungeon.level.playLevelMusic();
-		}
+		Music.INSTANCE.playTracks(SewerLevel.SEWER_TRACK_LIST, SewerLevel.SEWER_TRACK_CHANCES, false);
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;
@@ -173,16 +175,10 @@ public class DeckEventScene extends PixelScene {
 		addExitButton(insets, w);
 
 		DeckEventDef def = eventDef(eventType);
-		Image icon = def.icon();
 		RenderedTextBlock title = renderTextBlock(titleText(), 12);
 		title.hardlight(Window.TITLE_COLOR);
-		float titleW = icon.width() + 6 + title.width();
-		icon.x = insets.left + (usableW - titleW) / 2f;
-		icon.y = insets.top + 12;
-		title.setPos(icon.x + icon.width() + 6, icon.y + (icon.height() - title.height()) / 2f);
-		align(icon);
+		title.setPos(insets.left + (usableW - title.width()) / 2f, insets.top + 12);
 		align(title);
-		add(icon);
 		add(title);
 
 		RenderedTextBlock body = renderTextBlock(descriptionText(), 7);
@@ -384,6 +380,7 @@ public class DeckEventScene extends PixelScene {
 		ArrayList<Integer> choices = new ArrayList<>();
 		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
 			int code = DeckBuilderRun.deck.get(i);
+			if (DeckCardPool.isQuest(DeckCard.byCode(code))) continue;
 			if (cardSelectionMode == MODE_UPGRADE && DeckCard.upgrade(code) == code) continue;
 			choices.add(i);
 		}
@@ -496,6 +493,8 @@ public class DeckEventScene extends PixelScene {
 			addMausoleumButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
 		} else if (eventType == WHISPERING_HOLLOW) {
 			addWhisperingHollowButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
+		} else if (eventType == AVDOL_GHOST) {
+			addAvdolGhostButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
 		} else {
 			addCardEventButtons(buttonX, buttonW, prayY, buttonH, buttonGap);
 		}
@@ -993,6 +992,26 @@ public class DeckEventScene extends PixelScene {
 		add(embrace);
 	}
 
+	private void addAvdolGhostButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
+		EventChoiceButton accept = new EventChoiceButton("퀘스트를 수락한다", "덱에 '압둘의 퀘스트'를 추가합니다.", 0xFF7EE8A0) {
+			@Override protected void onClick() {
+				if (resolved) return;
+				DeckBuilderRun.addCard(DeckCard.ABDUL_QUEST);
+				resolved = true;
+				Sample.INSTANCE.play(Assets.Sounds.CURSED);
+				leaveEvent();
+			}
+		};
+		accept.setRect(buttonX, prayY, buttonW, buttonH);
+		add(accept);
+
+		EventChoiceButton pass = new EventChoiceButton("지나간다", "퀘스트를 받지 않고 떠납니다.", 0xFFB8A77D) {
+			@Override protected void onClick() { leaveEvent(); }
+		};
+		pass.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
+		add(pass);
+	}
+
 	private void duplicateCard(int deckIndex) {
 		int code = DeckBuilderRun.deck.get(deckIndex);
 		DeckCard card = DeckCard.byCode(code);
@@ -1017,7 +1036,10 @@ public class DeckEventScene extends PixelScene {
 
 	private void transformRandomCards(int count) {
 		ArrayList<Integer> indices = new ArrayList<>();
-		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) indices.add(i);
+		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
+			if (DeckCardPool.isQuest(DeckCard.byCode(DeckBuilderRun.deck.get(i)))) continue;
+			indices.add(i);
+		}
 		for (int i = 0; i < count && !indices.isEmpty(); i++) {
 			int pick = Random.Int(indices.size());
 			int idx = indices.remove(pick);

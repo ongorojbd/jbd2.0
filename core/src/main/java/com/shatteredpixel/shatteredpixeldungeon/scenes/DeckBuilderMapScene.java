@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CivilSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GooSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VampireSprite;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -590,7 +591,7 @@ public class DeckBuilderMapScene extends PixelScene {
 				case DeckBuilderMap.BOSS:
 					DeckEnemy boss = DeckEnemy.forNode(DeckBuilderMap.BOSS);
 					if (boss == DeckEnemy.CIVIL_WAR) return new CivilSprite();
-					if (boss == DeckEnemy.NUKESAKU)  return new VampireSprite.Blue();
+					if (boss == DeckEnemy.NUKESAKU)  return new RatKingSprite();
 					return new GooSprite(); // CREAM
 				case DeckBuilderMap.ELITE:
 					return Icons.SKULL.get();

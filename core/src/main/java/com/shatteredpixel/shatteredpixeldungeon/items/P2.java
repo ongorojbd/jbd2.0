@@ -104,7 +104,7 @@ public class P2 extends Item {
             int enemyCell = segment[segment.length - 1]; // = nearest.pos
 
             // 2단계: 적을 지나 벽까지 Ballistica로 연장
-            // 진입 방향: 경로 마지막 두 칸 (또는 hero → enemy) 으로 계산
+            // 진입 방향: 경로 마지막 두 칸 (또는 hero > enemy) 으로 계산
             int prevCell = segment.length >= 2 ? segment[segment.length - 2] : hero.pos;
             int w = Dungeon.level.width();
             int dCol = Integer.signum((enemyCell % w) - (prevCell % w));

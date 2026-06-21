@@ -1,5 +1,5 @@
 /*
- * Wamuu (Full Duel) - 3-phase boss: Chariot → Wind-Sense → Final Mode (혼설삽)
+ * Wamuu (Full Duel) - 3-phase boss: Chariot > Wind-Sense > Final Mode (혼설삽)
  */
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 

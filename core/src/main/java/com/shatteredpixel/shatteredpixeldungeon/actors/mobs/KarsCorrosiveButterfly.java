@@ -139,7 +139,7 @@ public class KarsCorrosiveButterfly extends Mob {
         next();
     }
 
-    // 시각 경로(onAttackComplete → attack)에서도 독 부여
+    // 시각 경로(onAttackComplete > attack)에서도 독 부여
     @Override
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc(enemy, damage);
