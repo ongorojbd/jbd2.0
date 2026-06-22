@@ -16,7 +16,7 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 public class DeckCardText {
 
 	public static String detailTitle(DeckCard card, int cardCode) {
-		return card.title(cardCode) + "(" + typeLabel(card.type) + ", " + rarityLabel(card.rarity) + "): 비용 " + card.cost(cardCode);
+		return card.title(cardCode) + "(" + typeLabel(card.type) + ", " + rarityLabel(card.rarity) + "): 비용 " + costText(card, cardCode);
 	}
 
 	public static String rulesText(DeckCard card, int cardCode) {
@@ -82,7 +82,7 @@ public class DeckCardText {
 		if (upgraded == cardCode) return "더 이상 강화할 수 없습니다.";
 
 		String text = "";
-		if (card.cost(cardCode) != card.cost(upgraded)) text += appendLine(text, "비용 " + card.cost(cardCode) + " > " + card.cost(upgraded));
+		if (card.cost(cardCode) != card.cost(upgraded)) text += appendLine(text, "비용 " + costText(card, cardCode) + " > " + costText(card, upgraded));
 		if (card.damage(cardCode) != card.damage(upgraded)) text += appendLine(text, "피해 " + card.damage(cardCode) + " > " + card.damage(upgraded));
 		if (card.block(cardCode) != card.block(upgraded)) text += appendLine(text, "보호막 " + card.block(cardCode) + " > " + card.block(upgraded));
 		if (card.draw(cardCode) != card.draw(upgraded)) text += appendLine(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
@@ -152,5 +152,9 @@ public class DeckCardText {
 	static String appendLine(String text, String value) {
 		if (value == null || value.length() == 0) return "";
 		return (text.length() > 0 ? "\n" : "") + value;
+	}
+
+	static String costText(DeckCard card, int cardCode) {
+		return card.cost(cardCode) < 0 ? "X" : String.valueOf(card.cost(cardCode));
 	}
 }

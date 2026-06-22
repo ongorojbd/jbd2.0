@@ -992,3 +992,10 @@ boolean hasRelic = DeckBuilderRun.hasRelic(DeckRelic.BLACK_STAR);
 - 카드 발견형 포션은 기존 `DeckDiscover` + `showDiscoverWindow()` 흐름을 사용한다.
 - 손패 선택형 포션은 `PURE`(id 24) 계열 손패 선택 흐름을 재사용한다.
 - 더미 선택형 포션은 `showHeadbuttDiscardSelectWindow()` 계열과 동일한 카드 버튼/페이지 UI를 쓰되, 대상 더미와 선택 후 동작만 분리한다.
+
+---
+
+## 카드 이펙트 규칙
+
+- 카드 효과가 손패/더미의 카드를 소멸시키면 실제 소멸 처리와 함께 `ExhaustEffect` 계열 시각 효과도 표시한다.
+- 카드 효과가 체력을 회복시키면 실제 회복량을 `DeckPlayResult.heal`에 기록하고, 전투 씬에서 회복 이펙트와 회복량 텍스트를 표시한다.

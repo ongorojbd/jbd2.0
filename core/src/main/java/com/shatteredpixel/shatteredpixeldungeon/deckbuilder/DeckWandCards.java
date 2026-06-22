@@ -156,7 +156,7 @@ public class DeckWandCards {
 			return true;
 		}
 		if (wand == DeckCard.SOFT_WAND) {
-			DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + 2);
+			result.heal += combat.healPlayer(2);
 			return true;
 		}
 		if (wand == DeckCard.GOLD_EXPERIENCE_WAND) {

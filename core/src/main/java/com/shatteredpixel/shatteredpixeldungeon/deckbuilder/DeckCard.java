@@ -536,8 +536,53 @@ public enum DeckCard {
 			new DeckCardEffects.WandTextEffect("내 턴 시작 시, 비용이 0인 무작위 카드 2장에 소멸을 부여하고 손으로 가져옵니다.")),
 
 	TUSK2_WAND(120, "터스크2 완드", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.RETAIN), true, ItemSpriteSheet.ARTIFACT_TUSK2,
-			new DeckCardEffects.WandTextEffect("내 턴 종료 시, 회전하는 손톱 2장을 뽑을 카드 더미에 섞어 넣습니다.")) {
-	};
+			new DeckCardEffects.WandTextEffect("내 턴 종료 시, 회전하는 손톱 2장을 뽑을 카드 더미에 섞어 넣습니다.")),
+
+	COMBAT_BREATHING(121, "전투 호흡", DeckCardType.POWER, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ, HeroClass.WARRIOR, 0,
+			new DeckCardEffects.CombatBreathingEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 5 : 3; }
+	},
+
+	BLOODY_CLOAK(122, "핏빛 망토", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARTIFACT_CLOAK, HeroClass.WARRIOR, 0,
+			new DeckCardEffects.BloodyCloakEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 8 : 6; }
+	},
+
+	SLEDGEHAMMER(123, "슬레지해머", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 12, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE) {
+		@Override public int damage(int code) {
+			int n = upgradeLevel(code);
+			return 12 + n * (n + 7) / 2;
+		}
+		@Override public int maxUpgradeLevel() { return 15; }
+	},
+
+	TARKUS_GREATSWORD(124, "타커스의 대검", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE,
+			new DeckCardEffects.TarkusGreatswordDamage()),
+
+	ODD_COMIC_BOOK(125, "기묘한 만화책", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_HOLDER,
+			new DeckCardEffects.OddComicBookDamage()),
+
+	CLUBBING(126, "몽둥이질", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 3, 32, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 42 : 32; }
+	},
+
+	SOUL_CUT(127, "영혼 절단", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 16, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_TIWAZ,
+			new DeckCardEffects.SoulCutEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 22 : 16; }
+	},
+
+	WHIRLWIND(128, "소용돌이", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, -1, 5, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_BLAST_WAVE,
+			new DeckCardEffects.WhirlwindEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 8 : 5; }
+	},
+
+	SKY_HIGH(129, "스카이 하이", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 3, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SPIRIT_BOW,
+			new DeckCardEffects.SkyHighEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
+	},
+
+	RELIC_SELECTION_BOX(130, "유물 선택 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.CRYSTAL_CHEST,
+			new DeckCardEffects.RelicSelectionBoxEffect());
 
 	public final int id;
 	public final String title;

@@ -143,7 +143,8 @@ public class DeckTreasureScene extends PixelScene {
 
 	private void takeRelic() {
 		if (relic == null) {
-			addToFront(new WndMessage("보물\n\n상자가 비어 있습니다."));
+			saveRun();
+			leaveTreasure();
 			return;
 		}
 		if (DeckBuilderRun.claimTreasureRelic()) {
@@ -235,3 +236,4 @@ public class DeckTreasureScene extends PixelScene {
 		}
 	}
 }
+

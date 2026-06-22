@@ -257,6 +257,10 @@ public class DeckBuilderRun {
 				upgradeRandomDeckCard();
 			}
 		}
+		if ((nodeType == DeckBuilderMap.COMBAT || nodeType == DeckBuilderMap.ELITE || nodeType == DeckBuilderMap.BOSS)
+				&& hasRelic(DeckRelic.WAVE_RUSH)) {
+			playerHP = Math.min(playerHT, playerHP + 6);
+		}
 		reward.node = nodeType;
 		reward.depth = depth;
 		reward.path = path;
