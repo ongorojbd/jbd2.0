@@ -3013,16 +3013,24 @@ public class DeckBattleScene extends PixelScene {
                 slimyCount += action.shuffledCount;
             }
         }
-        int statusDamage = combat.lastTurnEndStatusDamage;
-        int enemyDamage = Math.max(0, damage - statusDamage);
+        int turnEndCardDamage = combat.lastTurnEndStatusDamage;
+        int poisonDamage = Math.max(0, turnEndCardDamage - combat.lastTurnEndCurseDamage);
+        int enemyDamage = Math.max(0, damage - turnEndCardDamage);
         String text = "";
         if (!pendingTurnEndAutoPlayLog.isEmpty()) {
             text += pendingTurnEndAutoPlayLog + " ";
             pendingTurnEndAutoPlayLog = "";
         }
         text += enemyDamage > 0 ? "적들이 총 " + enemyDamage + " 피해를 입혔습니다." : "피해를 막았습니다.";
-        if (statusDamage > 0) {
-            text += " 독침 " + combat.lastTurnEndPoisonDarts + "장으로 " + statusDamage + " 피해를 받았습니다.";
+        if (poisonDamage > 0) {
+            text += " 독침 " + combat.lastTurnEndPoisonDarts + "장으로 " + poisonDamage + " 피해를 받았습니다.";
+        }
+        if (combat.lastTurnEndRegretDamage > 0) {
+            text += " 후회로 " + combat.lastTurnEndRegretDamage + " 피해를 받았습니다.";
+        }
+        int otherCurseDamage = combat.lastTurnEndCurseDamage - combat.lastTurnEndRegretDamage;
+        if (otherCurseDamage > 0) {
+            text += " 저주로 " + otherCurseDamage + " 피해를 받았습니다.";
         }
         if (slimyCount > 0) {
             text += " 점액투성이 " + slimyCount + "장을 버린 카드 더미에 섞어 넣었습니다.";
@@ -3514,11 +3522,21 @@ public class DeckBattleScene extends PixelScene {
     }
 
     private void spawnPoisonDartDamageEffect() {
-        if (combat.lastTurnEndStatusDamage <= 0) return;
-        playerHitTime = 0.22f;
-        Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC, 0.9f, 0.85f);
-        addEffect(new PoisonDartEffect(playerCenterX(), playerCenterY()));
-        spawnFloatingText("독침 -" + combat.lastTurnEndStatusDamage, playerCenterX(), playerCenterY() - 22, 0xFF8CFF5A);
+        int poisonDamage = Math.max(0, combat.lastTurnEndStatusDamage - combat.lastTurnEndCurseDamage);
+        if (poisonDamage <= 0 && combat.lastTurnEndCurseDamage <= 0) return;
+        if (poisonDamage > 0) {
+            playerHitTime = 0.22f;
+            Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC, 0.9f, 0.85f);
+            addEffect(new PoisonDartEffect(playerCenterX(), playerCenterY()));
+            spawnFloatingText("독침 -" + poisonDamage, playerCenterX(), playerCenterY() - 22, 0xFF8CFF5A);
+        }
+        if (combat.lastTurnEndRegretDamage > 0) {
+            spawnPlayerDamageImpact(combat.lastTurnEndRegretDamage, "후회");
+        }
+        int otherCurseDamage = combat.lastTurnEndCurseDamage - combat.lastTurnEndRegretDamage;
+        if (otherCurseDamage > 0) {
+            spawnPlayerDamageImpact(otherCurseDamage, "저주");
+        }
         updatePlayerHpUi();
     }
 

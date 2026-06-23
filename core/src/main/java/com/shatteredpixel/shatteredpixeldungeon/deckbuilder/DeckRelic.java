@@ -150,51 +150,51 @@ public enum DeckRelic {
 			DeckBuilderRun.playerHP += 11;
 		}
 	},
-	BAG_OF_MARBLES("전격탄", "매 전투 시작 시, 모든 적에게 피해 증폭을 1 부여합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.THROWING_STONE),
-	VAJRA("축복탄", "매 전투 시작 시, 공격력을 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.OBLIVION_SHARD),
-	ANCHOR("빙결탄", "매 전투 시작 시 보호막을 10 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.ARTIFACT_HOURGLASS),
-	STRAWBERRY("창부풍 스파게티", "획득 시, 최대 체력이 7 증가합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.SEED_STARFLOWER) {
+	BAG_OF_MARBLES("전격탄", "매 전투 시작 시, 모든 적에게 피해 증폭을 1 부여합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.SHOCKING_DART),
+	VAJRA("축복탄", "매 전투 시작 시, 공격력을 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.HOLY_DART),
+	ANCHOR("빙결탄", "매 전투 시작 시 보호막을 10 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.CHILLING_DART),
+	STRAWBERRY("창부풍 스파게티", "획득 시, 최대 체력이 7 증가합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.RATION) {
 		@Override public void onAcquire() { DeckBuilderRun.playerHT += 7; DeckBuilderRun.playerHP += 7; }
 	},
-	LANTERN("랜턴", "매 전투 시작 시, 추가로 1 에너지를 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	GORGET("치유탄", "매 전투 시작 시, 재생을 4 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.ARMOR_CLOTH),
-	BLOCKADE_COMMAND_DISC("봉쇄의 명령 DISC", "전투 시작 시, 방어력 증가를 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	MOVEMENT_COMMAND_DISC("이동의 명령 DISC", "매 전투마다 처음으로 체력을 잃을 시, 카드를 3장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.SCROLL_CATALYST),
-	FEAR_COMMAND_DISC("두려움의 명령 DISC", "전투 시작 시, 모든 적에게 공격력 저하를 1 부여합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.OBLIVION_SHARD),
-	ATTACK_COMMAND_DISC("공격의 명령 DISC", "획득 시, 무작위 공격 카드를 2장 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.RUNIC_BLADE) {
+	LANTERN("죠스타의 피", "매 전투 시작 시, 추가로 1 에너지를 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.SANDBAG),
+	GORGET("치유탄", "매 전투 시작 시, 재생을 4 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.HEALING_DART),
+	BLOCKADE_COMMAND_DISC("봉쇄의 명령 DISC", "전투 시작 시, 방어력 증가를 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_FLOCK),
+	MOVEMENT_COMMAND_DISC("이동의 명령 DISC", "매 전투마다 처음으로 체력을 잃을 시, 카드를 3장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_BLINK),
+	FEAR_COMMAND_DISC("두려움의 명령 DISC", "전투 시작 시, 모든 적에게 공격력 저하를 1 부여합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_FEAR),
+	ATTACK_COMMAND_DISC("공격의 명령 DISC", "획득 시, 무작위 공격 카드를 2장 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_AGGRESSION) {
 		@Override public void onAcquire() {
 			upgradeRandomDeckCard(DeckCardType.ATTACK);
 			upgradeRandomDeckCard(DeckCardType.ATTACK);
 		}
 	},
-	LOST_BEEF_SANDWICH("로스트 비프 샌드위치", "상점 방에 진입할 때마다, 체력을 15 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.MEAT_PIE),
-	EXPLORATION_COMMAND_DISC("탐사의 명령 DISC", "EVENT 노드에서 더 이상 일반 적 전투가 발생하지 않습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.SCROLL_HOLDER),
-	LIFE_BOMB("생명 폭탄", "덱에 카드를 5장 추가할 때마다, 체력을 20 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.SEED_STARFLOWER),
-	PHANTOM_KEY("환영 열쇠", "휴식 장소에 진입할 때마다, 다음 전투 시작 시 추가로 1 에너지를 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.GOLDEN_KEY),
-	DETECTION_COMMAND_DISC("탐지의 명령 DISC", "적이 보상으로 주는 골드가 15 증가합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.GOLD),
-	RECHARGE_COMMAND_DISC("재충전의 명령 DISC", "전투 시작 시, 카드를 추가로 2장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.ARTIFACT_HOLDER),
-	EQUIVALENT_EXCHANGE_COMMAND_DISC("등가교환의 명령 DISC", "전투 시작 시, 반격을 3 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.ARTIFACT_TALISMAN),
-	EXPLOSION_COMMAND_DISC("폭발의 명령 DISC", "전투 시작 시, 모든 적에게 피해를 9 줍니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.FIRE_BOMB),
-	FLAME_DETECTOR("불꽃의 탐지기", "획득 시, 무작위 보조 카드를 2장 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.SCROLL_CATALYST) {
+	LOST_BEEF_SANDWICH("로스트 비프 샌드위치", "상점 방에 진입할 때마다, 체력을 15 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STEWED),
+	EXPLORATION_COMMAND_DISC("탐사의 명령 DISC", "EVENT 노드에서 더 이상 일반 적 전투가 발생하지 않습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_CLAIRVOYANCE),
+	LIFE_BOMB("생명 폭탄", "덱에 카드를 5장 추가할 때마다, 체력을 20 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.REGROWTH_BOMB),
+	PHANTOM_KEY("환영 열쇠", "휴식 장소에 진입할 때마다, 다음 전투 시작 시 추가로 1 에너지를 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.CRYSTAL_KEY),
+	DETECTION_COMMAND_DISC("탐지의 명령 DISC", "적이 보상으로 주는 골드가 15 증가합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_DETECT),
+	RECHARGE_COMMAND_DISC("재충전의 명령 DISC", "전투 시작 시, 카드를 추가로 2장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_SHOCK),
+	EQUIVALENT_EXCHANGE_COMMAND_DISC("등가교환의 명령 DISC", "전투 시작 시, 반격을 3 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_AUGMENTATION),
+	EXPLOSION_COMMAND_DISC("폭발의 명령 DISC", "전투 시작 시, 모든 적에게 피해를 9 줍니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_BLAST),
+	FLAME_DETECTOR("불꽃의 탐지기", "획득 시, 무작위 보조 카드를 2장 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.TORCH) {
 		@Override public void onAcquire() {
 			upgradeRandomDeckCard(DeckCardType.SKILL);
 			upgradeRandomDeckCard(DeckCardType.SKILL);
 		}
 	},
-	OBSERVATION_COMMAND_DISC("관찰의 명령 DISC", "3턴마다, 카드를 1장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	POTION_RACK("물약 보관대", "획득 시, 포션 슬롯을 2개 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.POTION_HOLDER),
-	LEATHER_POUCH("가죽 주머니", "전투 시작 시, 체력을 2 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.ARMOR_CLOTH),
-	ENERGY_GRANT_COMMAND_DISC("에너지 부여의 명령 DISC", "3턴마다, 1 에너지를 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.ARTIFACT_HOURGLASS),
-	SLEEP_COMMAND_DISC("수면의 명령 DISC", "휴식을 취할 때마다 추가로 체력을 15 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.ELIXIR_FEATHER),
-	FF_DRINK("F.F.의 음료수", "포션을 사용할 때마다 체력을 5 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.BREW_AQUA),
-	GREMLIN_HORN("소음 폭탄", "적이 죽을 때마다, 1 에너지를 얻고 카드를 1장 뽑습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ARTIFACT_TUSK4),
-	MINIATURE_CANNON("전격 폭탄", "강화된 공격 카드의 피해량이 3 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RUNIC_BLADE),
-	PEAR("떡국", "획득 시, 최대 체력이 10 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.MEAT_PIE) {
+	OBSERVATION_COMMAND_DISC("관찰의 명령 DISC", "3턴마다, 카드를 1장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_INTUITION),
+	POTION_RACK("물약 보관대", "획득 시, 포션 슬롯을 2개 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.BANDOLIER),
+	LEATHER_POUCH("가죽 주머니", "전투 시작 시, 체력을 2 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.VIAL),
+	ENERGY_GRANT_COMMAND_DISC("에너지 부여의 명령 DISC", "3턴마다, 1 에너지를 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_ENCHANT),
+	SLEEP_COMMAND_DISC("수면의 명령 DISC", "휴식을 취할 때마다 추가로 체력을 15 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_SLEEP),
+	FF_DRINK("F.F.의 음료수", "포션을 사용할 때마다 체력을 5 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.PHANTOM_MEAT),
+	GREMLIN_HORN("소음 폭탄", "적이 죽을 때마다, 1 에너지를 얻고 카드를 1장 뽑습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.NOISEMAKER),
+	MINIATURE_CANNON("전격 폭탄", "강화된 공격 카드의 피해량이 3 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.FLASHBANG),
+	PEAR("떡국", "획득 시, 최대 체력이 10 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.STEAMED_FISH) {
 		@Override public void onAcquire() { DeckBuilderRun.playerHT += 10; DeckBuilderRun.playerHP += 10; }
 	},
-	PLANISPHERE("흙 뭉치", "조우(EVENT) 방에 진입할 때마다, 체력을 5 회복합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	KUSARIGAMA("화염 폭탄", "한 턴에 공격 카드를 3장 사용할 때마다, 무작위 적에게 피해를 6 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.GOLDEN_KEY),
-	TUNING_FORK("정화 폭탄", "보조 카드를 10장 사용할 때마다, 보호막을 7 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.OBLIVION_SHARD),
+	PLANISPHERE("흙 뭉치", "조우(EVENT) 방에 진입할 때마다, 체력을 5 회복합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.PETAL),
+	KUSARIGAMA("화염 폭탄", "한 턴에 공격 카드를 3장 사용할 때마다, 무작위 적에게 피해를 6 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.FIRE_BOMB),
+	TUNING_FORK("정화 폭탄", "보조 카드를 10장 사용할 때마다, 보호막을 7 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.HOLY_BOMB),
 
 	ARCANE_SCROLL("비전 두루마리", "획득 시 덱에 무작위 희귀 카드 1장을 추가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.STARTER, ItemSpriteSheet.SCROLL_CATALYST) {
 		@Override
@@ -205,128 +205,115 @@ public enum DeckRelic {
 			}
 		}
 	},
-	GYRO_MEMORY_DISC("자이로 체펠리의 기억 DISC", "세 번째 턴 시작 시, 공격력을 1, 방어력 증가를 1 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.SCROLL_CATALYST),
-	MIYAMOTO_MEMORY_DISC("미야모토 테루노스케의 기억 DISC", "내 턴 시작 시, 모든 적에게 피해를 3 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.OBLIVION_SHARD),
-	ANGER_STONE_MASK("분노의 돌가면", "공격 카드를 10장 사용할 때마다, 1 에너지를 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	STRENGTH_STONE_MASK("힘의 돌가면", "전투 시작 시, 일시적으로 공격력을 5 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ARTIFACT_TUSK4),
-	PUCCI_MEMORY_DISC("푸치신부의 기억 DISC", "휴식 장소에 진입 시, 덱에 있는 카드 5장마다 체력을 3 회복합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.SCROLL_HOLDER),
-	PURIFICATION_STONE_MASK("정화의 돌가면", "매 전투마다 처음으로 지속 카드를 사용 시, 보호막을 7 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ARTIFACT_TALISMAN),
-	ENDURANCE_STONE_MASK("인내의 돌가면", "내 턴 종료 시 보호막이 없다면, 보호막을 6 획득합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ARMOR_CLOTH),
-	PET_SHOP_MEMORY_DISC("펫 숍의 기억 DISC", "매 전투마다 처음으로 카드를 통해 얻는 보호막이 2배로 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.SCROLL_CATALYST),
-	YASUHO_MEMORY_DISC("히로세 야스호의 기억 DISC", "휴식을 취할 때마다, 무작위 포션을 2개 생성합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.POTION_HOLDER),
-	ACCURACY_STONE_MASK("정확성의 돌가면", "한 턴에 공격 카드를 3장 사용할 때마다, 보호막을 4 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RUNIC_BLADE),
-	LUCKY_STONE_MASK("행운의 돌가면", "골드를 25% 추가로 획득합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.GOLD),
-	CHAOS_STONE_MASK("혼돈의 돌가면", "전투 시작 시, 뽑을 카드 더미에 있는 무작위 카드 2장을 남은 전투 동안 강화합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ARCANE_RESIN),
-	EVASION_STONE_MASK("회피의 돌가면", "내 턴 동안 공격 카드를 사용하지 않았다면, 보호막을 4 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ELIXIR_FEATHER),
-	KAWAJIRI_MEMORY_DISC("카와지리 코사쿠의 기억 DISC", "매 턴 종료 시 보호막이 10 이상이라면, 무작위 적에게 피해를 6 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.SCROLL_CATALYST),
-	CHARGE_STONE_MASK("충전의 돌가면", "두 번째 턴 시작 시, 1 에너지를 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ARTIFACT_HOURGLASS),
-	OJIRO_MEMORY_DISC("사사메 오지로의 기억 DISC", "포션을 사용할 때마다, 이번 턴 동안 공격력을 3 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.BREW_AQUA),
-	EMPORIO_MEMORY_DISC("엠포리오의 기억 DISC", "보스 전투 시작 시, 체력을 25 회복합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.SCROLL_HOLDER),
-	SNIPING_STONE_MASK("저격의 돌가면", "열 번째로 사용하는 공격 카드의 피해량이 2배로 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RUNIC_BLADE),
-	VALENTINE_MEMORY_DISC("퍼니 밸런타인의 기억 DISC", "두 번째 턴 시작 시, 보호막을 14 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ARTIFACT_TALISMAN),
-	POCOLOCO_MEMORY_DISC("포코로코의 기억 DISC", "덱에 카드를 추가할 때마다, 골드를 15 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.GOLD),
-	SPEED_STONE_MASK("신속의 돌가면", "카드를 5장 소멸시킬 때마다, 카드를 1장 뽑습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.ELIXIR_FEATHER),
+	GYRO_MEMORY_DISC("자이로 체펠리의 기억 DISC", "세 번째 턴 시작 시, 공격력을 1, 방어력 증가를 1 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_KAUNAN),
+	MIYAMOTO_MEMORY_DISC("미야모토 테루노스케의 기억 DISC", "내 턴 시작 시, 모든 적에게 피해를 3 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_SOWILO),
+	ANGER_STONE_MASK("분노의 돌가면", "공격 카드를 10장 사용할 때마다, 1 에너지를 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_GARNET),
+	STRENGTH_STONE_MASK("힘의 돌가면", "전투 시작 시, 일시적으로 공격력을 5 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_RUBY),
+	PUCCI_MEMORY_DISC("푸치신부의 기억 DISC", "휴식 장소에 진입 시, 덱에 있는 카드 5장마다 체력을 3 회복합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_LAGUZ),
+	PURIFICATION_STONE_MASK("정화의 돌가면", "매 전투마다 처음으로 지속 카드를 사용 시, 보호막을 7 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_TOPAZ),
+	ENDURANCE_STONE_MASK("인내의 돌가면", "내 턴 종료 시 보호막이 없다면, 보호막을 6 획득합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_EMERALD),
+	PET_SHOP_MEMORY_DISC("펫 숍의 기억 DISC", "매 전투마다 처음으로 카드를 통해 얻는 보호막이 2배로 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_YNGVI),
+	YASUHO_MEMORY_DISC("히로세 야스호의 기억 DISC", "휴식을 취할 때마다, 무작위 포션을 2개 생성합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_GYFU),
+	ACCURACY_STONE_MASK("정확성의 돌가면", "한 턴에 공격 카드를 3장 사용할 때마다, 보호막을 4 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_ONYX),
+	LUCKY_STONE_MASK("행운의 돌가면", "골드를 25% 추가로 획득합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_OPAL),
+	CHAOS_STONE_MASK("혼돈의 돌가면", "전투 시작 시, 뽑을 카드 더미에 있는 무작위 카드 2장을 남은 전투 동안 강화합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_TOURMALINE),
+	EVASION_STONE_MASK("회피의 돌가면", "내 턴 동안 공격 카드를 사용하지 않았다면, 보호막을 4 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_SAPPHIRE),
+	KAWAJIRI_MEMORY_DISC("카와지리 코사쿠의 기억 DISC", "매 턴 종료 시 보호막이 10 이상이라면, 무작위 적에게 피해를 6 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_RAIDO),
+	CHARGE_STONE_MASK("충전의 돌가면", "두 번째 턴 시작 시, 1 에너지를 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_AMETHYST),
+	OJIRO_MEMORY_DISC("사사메 오지로의 기억 DISC", "포션을 사용할 때마다, 이번 턴 동안 공격력을 3 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_ISAZ),
+	EMPORIO_MEMORY_DISC("엠포리오의 기억 DISC", "보스 전투 시작 시, 체력을 25 회복합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_MANNAZ),
+	SNIPING_STONE_MASK("저격의 돌가면", "열 번째로 사용하는 공격 카드의 피해량이 2배로 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_QUARTZ),
+	VALENTINE_MEMORY_DISC("퍼니 밸런타인의 기억 DISC", "두 번째 턴 시작 시, 보호막을 14 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_NAUDIZ),
+	POCOLOCO_MEMORY_DISC("포코로코의 기억 DISC", "덱에 카드를 추가할 때마다, 골드를 15 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_BERKANAN),
+	SPEED_STONE_MASK("신속의 돌가면", "카드를 5장 소멸시킬 때마다, 카드를 1장 뽑습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_AGATE),
 	SUSPICIOUS_TEA("수상한 차", "카드 보상에서 건너뛰기를 선택하면 최대 체력이 2 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.BREW_CAUSTIC),
-	STRENGTH_ARM_STONE_MASK("완력의 돌가면", "한 턴에 보조 카드를 3장 사용할 때마다, 모든 적에게 피해를 5 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.OBLIVION_SHARD),
+	STRENGTH_ARM_STONE_MASK("완력의 돌가면", "한 턴에 보조 카드를 3장 사용할 때마다, 모든 적에게 피해를 5 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_DIAMOND),
 
-	LARGE_CAPSULE("대형 캡슐", "획득 시 무작위 유물 2개를 얻습니다. 타격 1장과 수비 1장을 덱에 추가합니다.", DeckRelicRarity.RARE, DeckRelicType.STARTER, ItemSpriteSheet.POTION_HOLDER) {
-		@Override
-		public void onAcquire() {
-			DeckBuilderRun.addCard(randomCard(DeckCardRarity.COMMON, DeckCardType.ATTACK));
-			DeckBuilderRun.addCard(randomCard(DeckCardRarity.COMMON, DeckCardType.SKILL));
-			for (int i = 0; i < 2; i++) {
-				DeckRelic relic = randomAvailable(this);
-				if (relic != null) {
-					DeckBuilderRun.addRelic(relic);
-				}
-			}
-		}
-	},
 	DIVER_DOWN("다이버 다운", "체력이 0이 될 때, 최대 체력의 50%만큼 체력을 회복합니다. 한 번만 발동합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ANKH),
-	GAMBLE_CHIP("겜블 칩", "전투 시작 시, 원하는 만큼 카드를 버리고 버린 만큼 카드를 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.GOLDEN_KEY),
+	GAMBLE_CHIP("겜블 칩", "전투 시작 시, 원하는 만큼 카드를 버리고 버린 만큼 카드를 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.TOKEN),
 	STRAWBERRY_SHORTCAKE("딸기 생크림 케이크", "획득 시, 최대 체력이 14 상승합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.MEAT_PIE) {
 		@Override public void onAcquire() { DeckBuilderRun.playerHT += 14; DeckBuilderRun.playerHP += 14; }
 	},
-	FROG_SKIN("개구리 가죽", "내 턴 종료 시, 손에 있는 카드 1장당 보호막을 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARMOR_CLOTH),
-	TAROT_CARD("타로 카드", "내 턴 동안 손에 카드가 없다면, 카드를 1장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SCROLL_HOLDER),
-	OBSIDIAN("흑요석", "매 턴마다 공격, 보조, 지속 카드를 처음으로 모두 사용 시, 공격력, 방어력 증가를 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.OBLIVION_SHARD),
-	VITRIOL_DEVICE("염청 장치", "지속 카드를 사용할 때마다, 손에 있는 무작위 카드 1장을 이번 턴 동안 비용 없이 사용할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARCANE_RESIN),
-	SPW_FOUNDATION_LOST_ITEM("SPW재단의 유실물", "상점에서 판매하는 카드, 유물, 포션이 품절되지 않으며, 판매 금액이 20% 감소합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SPWORLD),
-	THOTH("토트신", "내 턴 동안 공격 카드를 사용하지 않았다면, 다음 턴에 추가 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SCROLL_CATALYST),
-	SAINT_TORSO("성인의 동체부", "휴식 장소에 탐색 선택지가 추가됩니다. 탐색을 선택하면 무작위 유물을 획득할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_HOLDER),
-	NIGHT_RULER("밤의 지배자", "세 번째 턴 시작 시, 추가 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	TOORU_DOLL("토오루의 인형", "일곱번째 턴 종료 시, 모든 적에게 피해를 52 줍니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_TALISMAN),
-	GOO_GOO_DOLLS("구구 돌즈", "세 번째 턴 시작 시, 방어도를 18 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_HOLDER),
-	SHORT_KEY_NO_2("쇼트 키 No. 2", "매 전투마다 처음으로 적에게 해로운 효과를 부여하는 카드를 사용 시, 효과가 2배가 됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.GOLDEN_KEY),
-	BLACK_PEARL("검은 진주", "한 턴에 공격 카드를 3장 사용할 때마다, 방어력 증가를 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.OBLIVION_SHARD),
-	CHERRY_DECORATION("체리 장식", "턴 종료 시 남은 에너지가 사라지지 않습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SEED_STARFLOWER),
-	SCAN("스캔", "지속 카드를 덱에 추가할 때마다, 그 카드를 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SCROLL_CATALYST),
-	EMERALD("에메랄드", "비용이 2 이상인 카드를 사용할 때마다, 보호막을 4 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARCANE_RESIN),
-	LAVA_STONE("용암 암석", "보조 카드를 덱에 추가할 때마다, 그 카드를 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.FIRE_BOMB),
-	HEY_YA("헤이 야!", "전투 시작 시, 무작위 카드를 1장 손으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ELIXIR_FEATHER),
-	THE_HUSTLE("THE 허슬", "체력을 잃을 때마다, 1만큼 덜 잃습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARMOR_CLOTH),
+	FROG_SKIN("개구리 가죽", "내 턴 종료 시, 손에 있는 카드 1장당 보호막을 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.MOSSY_CLUMP),
+	TAROT_CARD("타로 카드", "내 턴 동안 손에 카드가 없다면, 카드를 1장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.WONDROUS_RESIN),
+	OBSIDIAN("흑요석", "매 턴마다 공격, 보조, 지속 카드를 처음으로 모두 사용 시, 공격력, 방어력 증가를 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SUMMON_ELE),
+	VITRIOL_DEVICE("염청 장치", "지속 카드를 사용할 때마다, 손에 있는 무작위 카드 1장을 이번 턴 동안 비용 없이 사용할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.EYE_OF_NEWT),
+	SPW_FOUNDATION_LOST_ITEM("SPW재단의 유실물", "상점에서 판매하는 카드, 유물, 포션이 품절되지 않으며, 판매 금액이 20% 감소합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BONES),
+	THOTH("토트신", "내 턴 동안 공격 카드를 사용하지 않았다면, 다음 턴에 추가 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RAT_SKULL),
+	SAINT_TORSO("성인의 동체부", "휴식 장소에 탐색 선택지가 추가됩니다. 탐색을 선택하면 무작위 유물을 획득할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.PARCHMENT_SCRAP),
+	NIGHT_RULER("밤의 지배자", "세 번째 턴 시작 시, 추가 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SUNDIAL),
+	TOORU_DOLL("토오루의 인형", "일곱번째 턴 종료 시, 모든 적에게 피해를 52 줍니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.MIMIC_TOOTH),
+	GOO_GOO_DOLLS("구구 돌즈", "세 번째 턴 시작 시, 방어도를 18 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.FERRET_TUFT),
+	SHORT_KEY_NO_2("쇼트 키 No. 2", "매 전투마다 처음으로 적에게 해로운 효과를 부여하는 카드를 사용 시, 효과가 2배가 됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.CHAOTIC_CENSER),
+	BLACK_PEARL("검은 진주", "한 턴에 공격 카드를 3장 사용할 때마다, 방어력 증가를 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RECLAIM_TRAP),
+	CHERRY_DECORATION("체리 장식", "턴 종료 시 남은 에너지가 사라지지 않습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SALT_CUBE),
+	SCAN("스캔", "지속 카드를 덱에 추가할 때마다, 그 카드를 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.PETRIFIED_SEED),
+	EMERALD("에메랄드", "비용이 2 이상인 카드를 사용할 때마다, 보호막을 4 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.WILD_ENERGY),
+	LAVA_STONE("용암 암석", "보조 카드를 덱에 추가할 때마다, 그 카드를 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.EXOTIC_CRYSTALS),
+	HEY_YA("헤이 야!", "전투 시작 시, 무작위 카드를 1장 손으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.CLOVER),
+	THE_HUSTLE("THE 허슬", "체력을 잃을 때마다, 1만큼 덜 잃습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BLOOD_VIAL),
 	OLD_WORKMAN("낡은 워크맨", "턴 사이에 보호막이 최대 10까지 유지됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_HOURGLASS),
-	CHOCOLATE_DISCO("초콜릿 디스코", "한 턴에 공격 카드를 3장 사용할 때마다, 공격력을 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BREW_CAUSTIC),
-	TOPAZ("토파즈", "전투 시작 시 손에 있는 모든 카드가 강화됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	AUTUMN_LEAVES("어텀 리브스", "강적 처치 보상에 희귀 카드가 항상 등장합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SEED_STARFLOWER),
-	RUBY("루비", "전투 보상에 포션이 항상 등장합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BREW_AQUA),
-	MAGNET("자철석", "내 턴 동안 카드를 3장 이하로 사용했다면, 다음 턴 시작 시 카드를 추가로 3장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	OPAL("오팔", "지속 카드를 사용할 때마다 체력을 2 회복합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_CHALICE3),
-	DIO_BONE("DIO의 뼈", "카드가 소멸될 때마다 무작위 카드를 1장 손으로 가져옵니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_TUSK4),
-	BLACK_STAR("검은 별", "승리할 때 유물을 하나 더 선택합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_TUSK4),
-	GAME_PIECE("사파이어", "파워 카드를 사용할 때마다, 카드를 1장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ANKH),
-	MEAT_ON_THE_BONE("허브", "매 전투 종료 시 남은 체력이 50% 이하라면, 체력을 12 회복합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_CHALICE3),
-	BEATING_REMNANT("20th 센츄리 보이", "내가 한 턴에 잃는 체력이 20을 넘을 수 없습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARCANE_RESIN),
-	RAZOR_TOOTH("스피넬", "공격이나 보조 카드를 사용할 때마다, 그 카드를 남은 전투 동안 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RUNIC_BLADE),
+	CHOCOLATE_DISCO("초콜릿 디스코", "한 턴에 공격 카드를 3장 사용할 때마다, 공격력을 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.OBLIVION_SHARD),
+	TOPAZ("토파즈", "전투 시작 시 손에 있는 모든 카드가 강화됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.MAGIC_INFUSE),
+	AUTUMN_LEAVES("어텀 리브스", "강적 처치 보상에 희귀 카드가 항상 등장합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SPYGLASS),
+	RUBY("루비", "전투 보상에 포션이 항상 등장합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RECYCLE),
+	MAGNET("자철석", "내 턴 동안 카드를 3장 이하로 사용했다면, 다음 턴 시작 시 카드를 추가로 3장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.TELE_GRAB),
+	OPAL("자수정", "지속 카드를 사용할 때마다 체력을 2 회복합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RETURN_BEACON),
+	DIO_BONE("DIO의 뼈", "카드가 소멸될 때마다 무작위 카드를 1장 손으로 가져옵니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BEACON),
+	BLACK_STAR("송편", "강적이 보상으로 주는 유물이 1개 증가합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SHATTERED_CAKE),
+	GAME_PIECE("사파이어", "파워 카드를 사용할 때마다, 카드를 1장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.PHASE_SHIFT),
+	MEAT_ON_THE_BONE("허브", "매 전투 종료 시 남은 체력이 50% 이하라면, 체력을 12 회복합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ORE),
+	BEATING_REMNANT("20th 센츄리 보이", "내가 한 턴에 잃는 체력이 20을 넘을 수 없습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.CEN),
+	RAZOR_TOOTH("스피넬", "공격이나 보조 카드를 사용할 때마다, 그 카드를 남은 전투 동안 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.CURSE_INFUSE),
 	OLD_COIN("금화", "획득 시, 골드를 300 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.GOLD) {
 		@Override public void onAcquire() { DeckBuilderRun.gainGold(300); }
 	},
-	MOLTEN_EGG("에코즈의 알", "공격 카드를 덱에 추가할 때마다, 그 카드를 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.POTION_HOLDER),
+	MOLTEN_EGG("에코즈의 알", "공격 카드를 덱에 추가할 때마다, 그 카드를 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BLANDFRUIT),
 
-	CAULDRON("미감정 물약", "획득 시, 무작위 포션을 3개 생성합니다.", DeckRelicRarity.COMMON, DeckRelicType.SHOP, ItemSpriteSheet.ARTIFACT_CHALICE3) {
+	CAULDRON("미감정 물약", "획득 시, 무작위 포션을 3개 생성합니다.", DeckRelicRarity.COMMON, DeckRelicType.SHOP, ItemSpriteSheet.POTION_HOLDER) {
 		@Override public void onAcquire() {
 			DeckPotion[] potions = DeckPotion.values();
 			for (int i = 0; i < 3; i++) DeckBuilderRun.addPotion(potions[Random.Int(potions.length)]);
 		}
 	},
-	TOOLBOX("소프트&웨트의 방울", "매 전투 시작 시, 무작위 중립 카드 3장 중 1장을 선택해 손으로 가져옵니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.ARTIFACT_HOLDER),
-	RINGING_TRIANGLE("황금 열쇠", "매 전투마다 첫 턴에 손에 있는 카드를 보존합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.ARTIFACT_TALISMAN),
-	DOLLYS_MIRROR("에니그마의 종이", "획득 시, 덱에 있는 무작위 카드의 복사본을 1장 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.ARTIFACT_HOURGLASS) {
+	TOOLBOX("소프트&웨트의 방울", "매 전투 시작 시, 무작위 중립 카드 3장 중 1장을 선택해 손으로 가져옵니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.STYLUS),
+	RINGING_TRIANGLE("황금 열쇠", "매 전투마다 첫 턴에 손에 있는 카드를 보존합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.GOLDEN_KEY),
+	DOLLYS_MIRROR("에니그마의 종이", "획득 시, 덱에 있는 무작위 카드의 복사본을 1장 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.HOLSTER) {
 		@Override public void onAcquire() {
 			if (!DeckBuilderRun.deck.isEmpty()) {
 				DeckBuilderRun.deck.add(DeckBuilderRun.deck.get(Random.Int(DeckBuilderRun.deck.size())));
 			}
 		}
 	},
-	LEES_WAFFLE("마르게리타 피자", "획득 시, 최대 체력이 7 상승하고 모든 체력을 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.SHOP, ItemSpriteSheet.MEAT_PIE) {
+	LEES_WAFFLE("마르게리타 피자", "획득 시, 최대 체력이 7 상승하고 모든 체력을 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.SHOP, ItemSpriteSheet.PASTY) {
 		@Override public void onAcquire() { DeckBuilderRun.playerHT += 7; DeckBuilderRun.playerHP = DeckBuilderRun.playerHT; }
 	},
-	MEMBERSHIP_CARD("크리스마스 선물 세트", "모든 상품이 50% 할인됩니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.GOLDEN_KEY),
-	MINIATURE_TENT("특수 열쇠", "휴식 장소에서 선택지를 둘다 선택할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.CRYSTAL_CHEST),
-	BURNING_STICKS("직화구이 고기", "매 전투마다 처음으로 보조 카드를 소멸시킬 시, 그 카드의 복사본을 1장 손으로 가져옵니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.ELIXIR_FEATHER),
-	SPW_FOUNDATION_SUPPLIES("SPW재단의 보급품", "보유한 포션이 없는 동안, 2의 방어력 증가를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ARTIFACT_HOLDER),
-	HIGHWAY_TO_HELL("하이웨이 투 헬", "내 턴 종료 시 손에 카드가 없다면, 모든 적에게 피해를 20 줍니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.FIRE_BOMB),
-	SUPER_AJA("슈퍼 에이자", "첫 턴 시작 시, 1 에너지를 잃습니다. 다른 모든 턴 시작 시, 1 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ARCANE_RESIN),
-	MAGIC_LAMP("마법의 램프", "골드를 획득할 때마다, 최대 체력이 1 증가합니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.STONE_CLAIRVOYANCE),
-	POLPO_LIGHTER("폴포의 라이터", "엘리트 전투 시작 시, 공격력을 2 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.BREW_CAUSTIC),
-	DANGEROUS_OBJECT_UNIDENTIFIED("위험한 물건(미식별)", "전투 동안 피해를 입지 않았다면, 매 전투 종료 시 모든 카드 보상이 강화됩니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.OBLIVION_SHARD),
-	FORMAGGIO_BOTTLE("포르마조의 병", "STRIKE, GUARD가 일시적을 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.BREW_AQUA),
-	ESCAPE_ROPE("탈출용 로프", "뽑을 카드 더미를 섞을 때마다, 보호막을 6 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ARTIFACT_CHAINS),
-	SPW_FOUNDATION_SUPPLY_BOX("SPW 재단의 보급 상자", "획득 시, 카드 보상을 5번 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.CRYSTAL_CHEST) {
+	MEMBERSHIP_CARD("크리스마스 선물 세트", "모든 상품이 50% 할인됩니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.CANDY_CANE),
+	MINIATURE_TENT("특수 열쇠", "휴식 장소에서 선택지를 둘다 선택할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.WORN_KEY),
+	BURNING_STICKS("직화구이 고기", "매 전투마다 처음으로 보조 카드를 소멸시킬 시, 그 카드의 복사본을 1장 손으로 가져옵니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.STEAK),
+	SPW_FOUNDATION_SUPPLIES("SPW재단의 보급품", "보유한 포션이 없는 동안, 2의 방어력 증가를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.OVERPRICED),
+	HIGHWAY_TO_HELL("하이웨이 투 헬", "내 턴 종료 시 손에 카드가 없다면, 모든 적에게 피해를 20 줍니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.HIGHWAY),
+	SUPER_AJA("슈퍼 에이자", "첫 턴 시작 시, 1 에너지를 잃습니다. 다른 모든 턴 시작 시, 1 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ALCHEMIZE),
+	MAGIC_LAMP("마법의 램프", "골드를 획득할 때마다, 최대 체력이 1 증가합니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.RAM),
+	POLPO_LIGHTER("폴포의 라이터", "엘리트 전투 시작 시, 공격력을 2 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.HONEYPOT),
+	DANGEROUS_OBJECT_UNIDENTIFIED("무언가가 담긴 자루", "전투 동안 피해를 입지 않았다면, 매 전투 종료 시 모든 카드 보상이 강화됩니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.WATERSKIN),
+	FORMAGGIO_BOTTLE("포르마조의 병", "STRIKE, GUARD가 일시적을 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.FORMAGGIO),
+	ESCAPE_ROPE("탈출용 로프", "뽑을 카드 더미를 섞을 때마다, 보호막을 6 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ESCAPE),
+	SPW_FOUNDATION_SUPPLY_BOX("SPW 재단의 보급 상자", "획득 시, 카드 보상을 5번 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.SUPPLY_RATION) {
 		@Override public void onAcquire() { DeckBuilderRun.pendingCardRewardCount += 5; }
 	},
-	SEVERED_WOMAN_HAND("잘린 여자 손", "3턴마다 적 전체에게 공격력 저하를 1 부여합니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ARTIFACT_TALISMAN),
-	RAW_MEAT_YUKHOE("생고기 육회", "덱에서 카드를 제거할 때마다 체력을 15 회복합니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.MEAT_PIE),
-	BLACK_WILL("칠흑의 의지", "엘리트를 처치할 때마다 체력을 7 얻고 골드를 35 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ARTIFACT_TUSK4),
-	ST_GERMAIN_SANDWICH("생 제르맹 샌드위치", "매 전투 시 처음으로 지속 카드를 사용하면 공격력을 1 얻고 보호막을 6 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.MEAT_PIE),
-	DONUT("도넛", "전투 시작 시, 정화의 보호막을 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.FOOD_HOLDER),
-	MODIFIED_DISC("변형된 DISC", "전투 시작 시, 무작위 일시적 카드 2장을 손으로 가져옵니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.SCROLL_CATALYST),
-	STRANGE_FRAGMENT("기묘한 파편", "에너지가 3 이상인 카드를 사용할 때마다, 1 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ARCANE_RESIN),
-	DRAGONS_DREAM("드래곤즈 드림", "매 턴 시작 시 에너지를 1 추가로 얻습니다. 전투 시작 시 모든 적이 공격력을 1 추가로 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.STONE_CLAIRVOYANCE),
+	SEVERED_WOMAN_HAND("잘린 여자 손", "3턴마다 적 전체에게 공격력 저하를 1 부여합니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.CANDLE),
+	RAW_MEAT_YUKHOE("생고기 육회", "덱에서 카드를 제거할 때마다 체력을 15 회복합니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.CARPACCIO),
+	BLACK_WILL("칠흑의 의지", "엘리트를 처치할 때마다 체력을 7 얻고 골드를 35 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.BLOB),
+	ST_GERMAIN_SANDWICH("생 제르맹 샌드위치", "매 전투 시 처음으로 지속 카드를 사용하면 공격력을 1 얻고 보호막을 6 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.PUMPKIN_PIE),
+	DONUT("도넛", "전투 시작 시, 정화의 보호막을 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.EASTER_EGG),
+	MODIFIED_DISC("변형된 DISC", "전투 시작 시, 무작위 일시적 카드 2장을 손으로 가져옵니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.UNSTABLE_SPELL),
+	STRANGE_FRAGMENT("기묘한 파편", "에너지가 3 이상인 카드를 사용할 때마다, 1 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.SHARD),
+	DRAGONS_DREAM("드래곤즈 드림", "매 턴 시작 시 에너지를 1 추가로 얻습니다. 전투 시작 시 모든 적이 공격력을 1 추가로 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.GRAVE),
 
-	WAVE_RUSH("파문질주", "공격 카드를 사용할 때마다 연속 타격을 1 얻습니다. 연속 타격은 공격 이외의 카드를 사용하면 소멸합니다. 연속 타격은 공격 카드의 피해를 수치만큼 증가시킵니다. 매 전투 종료 시, 체력을 6 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.CLASS_STARTER, ItemSpriteSheet.SPIRIT_BOW),
+	WAVE_RUSH("파문질주", "공격 카드를 사용할 때마다 연속 타격을 1 얻습니다. 연속 타격은 공격 이외의 카드를 사용하면 소멸합니다. 연속 타격은 공격 카드의 피해를 수치만큼 증가시킵니다. 매 전투 종료 시, 체력을 6 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.CLASS_STARTER, ItemSpriteSheet.SEAL_SHARD),
 
-	CHEMICAL_X("케미컬 X", "비용이 X인 카드를 사용할 때, 그 카드의 효과가 X+2 에너지를 사용한 효과로 발동됩니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ELIXIR_TOXIC);
+	CHEMICAL_X("폭약 더미", "비용이 X인 카드를 사용할 때, 그 카드의 효과가 X+2 에너지를 사용한 효과로 발동됩니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.TBOMB2);
 
 	public final String title;
 	public final String description;
@@ -346,7 +333,7 @@ public enum DeckRelic {
 	}
 
 	public boolean rewardPool() {
-		if (this == NUTRITIOUS_OYSTER || this == ARCANE_SCROLL || this == LARGE_CAPSULE) return false;
+		if (this == NUTRITIOUS_OYSTER || this == ARCANE_SCROLL) return false;
 		return type == DeckRelicType.COMMON || type == DeckRelicType.UNCOMMON || type == DeckRelicType.RARE;
 	}
 

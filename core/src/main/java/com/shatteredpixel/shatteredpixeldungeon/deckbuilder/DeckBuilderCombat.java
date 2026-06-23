@@ -308,6 +308,8 @@ public class DeckBuilderCombat {
 	public ArrayList<DamageEvent> lastDamageEvents = new ArrayList<>();
 	public int lastTurnEndStatusDamage;
 	public int lastTurnEndPoisonDarts;
+	public int lastTurnEndCurseDamage;
+	public int lastTurnEndRegretDamage;
 	public int lastOrangeBombTotalDamage;
 	public int lastOrangeBombExplosions;
 	public int lastPriceOfSinDamage;
@@ -1549,6 +1551,8 @@ public class DeckBuilderCombat {
 		lastTurnEndAutoPlayResults.clear();
 		lastTurnEndStatusDamage = 0;
 		lastTurnEndPoisonDarts = 0;
+		lastTurnEndCurseDamage = 0;
+		lastTurnEndRegretDamage = 0;
 		lastOrangeBombTotalDamage = 0;
 		lastOrangeBombExplosions = 0;
 		lastPriceOfSinDamage = 0;
@@ -1564,7 +1568,7 @@ public class DeckBuilderCombat {
 			if (playerDead()) return lastTurnEndStatusDamage;
 		}
 		DeckWandCards.triggerTurnEndWands(this);
-		int curseDamageTaken = 0, curseBlockReductionGain = 0, curseWeakGain = 0;
+		int curseDamageTaken = 0, regretDamageTaken = 0, curseBlockReductionGain = 0, curseWeakGain = 0;
 		for (int code : hand) {
 			DeckCard handCard = DeckCard.byCode(code);
 			if (!DeckCardPool.isCurse(handCard)) continue;
@@ -1577,13 +1581,17 @@ public class DeckBuilderCombat {
 			} else if (handCard == DeckCard.SUSPICION) {
 				curseWeakGain++;
 			} else if (handCard == DeckCard.REGRET) {
-				curseDamageTaken += hand.size();
+				int regretDamage = hand.size();
+				regretDamageTaken += regretDamage;
+				curseDamageTaken += regretDamage;
 			}
 		}
 		if (curseDamageTaken > 0) {
 			int cappedCurse = DeckBuilderRun.hasRelic(DeckRelic.BEATING_REMNANT)
 					? Math.min(curseDamageTaken, Math.max(0, 20 - lastTurnEndStatusDamage))
 					: curseDamageTaken;
+			lastTurnEndCurseDamage = curseDamageTaken;
+			lastTurnEndRegretDamage = regretDamageTaken;
 			lastTurnEndStatusDamage += curseDamageTaken;
 			DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - preventableHpLoss(cappedCurse));
 			if (playerDead()) return lastTurnEndStatusDamage;

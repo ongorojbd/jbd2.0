@@ -4,7 +4,7 @@ Shattered Pixel Dungeon에 추가된 슬레이 더 스파이어 스타일 덱빌
 
 - 패키지 루트: `com.shatteredpixel.shatteredpixeldungeon.deckbuilder`
 - 주요 씬 루트: `com.shatteredpixel.shatteredpixeldungeon.scenes`
-- 현재 코드 기준: 카드 68장, 유물 59종, 적 25종, 포션 45종
+- 콘텐츠 수량은 계속 늘어날 수 있으므로 `DeckCard`, `DeckRelic`, `DeckEnemy`, `DeckPotion` enum을 기준으로 확인한다.
 - 마지막 구조 확인: 2026-06-01
 
 ---
@@ -161,23 +161,18 @@ DeckCard.rewardFallback(heroClass);
 - `neutralOnly`면 직업 카드 제외
 - 일반 보상 풀은 현재 직업 카드 + 중립 카드
 
-### 현재 카드 그룹
+### 카드 그룹
 
-전체 카드 ID 범위: `0..67`
+카드는 `DeckCard` enum에 정의된다. 카드 ID는 저장/복원과 호환성에 영향을 주므로, 기존 카드의 ID는 변경하지 않고 새 카드는 뒤에 추가한다.
 
-| 범위 | 성격 |
-|------|------|
-| 0-7 | 공용 기본 카드와 초반 카드 |
-| 8-14 | HUNTRESS 카드 |
-| 15-20 | JOHNNY 카드 |
-| 21-25 | 공용 완드/입장/순수/박치기 카드 |
-| 26, 29 | STATUS 카드 |
-| 27-30 | 공용 추가 카드와 발견 카드 |
-| 31-43 | WARRIOR 카드 1차 묶음 |
-| 44-55 | CURSE 카드 |
-| 56-64 | WARRIOR 혈류/자해/화상 계열 추가 카드 |
-| 65 | 공용 지속 카드 `FOOTWORK` |
-| 66-67 | 공용 특별 카드 (`SURGE`, `CALAMITY`) |
+주요 그룹:
+
+- 공용 기본 카드와 중립 카드
+- 직업 카드
+- STATUS 카드
+- CURSE 카드
+- 완드/발견/선택형 카드
+- 지속/특수 카드
 
 대표 카드:
 
@@ -408,7 +403,7 @@ result.addAttackHit(combat.enemyIndex(target), dealt3); // wave 2 → 0.50초 �
 
 ## 적 시스템
 
-`DeckEnemy`는 현재 25종이다.
+적은 `DeckEnemy` enum에 정의된다. 새 적을 추가할 때는 인텐트 패턴, 보상/노드 배치, 저장/복원 영향을 함께 확인한다.
 
 주요 적:
 
@@ -637,7 +632,7 @@ pending 유물/이벤트 필드:
 
 ## 유물 시스템
 
-`DeckRelic`는 현재 59종이다.
+유물은 `DeckRelic` enum에 정의된다. 새 유물을 추가할 때는 중복 등장 규칙, 보상/상점 풀, 획득 즉시 효과, pending 선택 이벤트, 저장/복원을 함께 확인한다.
 
 `DeckRelicType`:
 
@@ -675,13 +670,13 @@ pending 유물/이벤트 필드:
 - 상점 유물 상품도 소지 유물을 제외하며, 같은 상점 안에서 동일 유물을 중복 판매하지 않는다.
 - 상점처럼 한 번에 여러 유물을 생성하는 경우, 이번 생성에서 이미 고른 유물 id를 제외 목록으로 넘겨야 한다.
 - 시작 유물은 일반 보상/보물/상점 풀에 나오면 안 된다.
-- `NUTRITIOUS_OYSTER`, `ARCANE_SCROLL`, `LARGE_CAPSULE`는 enum id 보존을 위해 남아 있지만, 시작 유물과 겹치므로 `rewardPool()`에서 제외한다.
+- `NUTRITIOUS_OYSTER`, `ARCANE_SCROLL`는 시작 유물과 겹치므로 `rewardPool()`에서 제외한다.
 
 ---
 
 ## 포션 시스템
 
-`DeckPotion`은 현재 29종이다.
+포션은 `DeckPotion` enum에 정의된다. 새 포션을 추가할 때는 `DeckPotionPolicy`의 드랍/희귀도 정책과 전투 UI 처리 흐름을 함께 확인한다.
 
 | 포션 | 효과 |
 |------|------|
@@ -829,7 +824,7 @@ EventChoiceButton("떠난다", ...)                    → leaveEvent()
 - 보상 유물 풀(`COMMON`/`UNCOMMON`/`RARE`, `rewardPool() == true`)에서 2개를 생성한다. 희귀도 롤은 보상 유물 희귀도 롤과 동일하다.
 - 상점 유물 풀(`DeckRelicType.SHOP`)에서 1개를 생성한다. 상점 유물은 희귀도 롤을 하지 않고 상점 유물 풀에서 무작위로 1개를 뽑는다.
 - 상점 유물 상품은 이미 소지한 유물과 같은 상점 내 이미 나온 유물을 제외한다.
-- 보상 유물 판매가: 일반 143-157G, 고급 238-262G, 희귀 285-315G.
+- 보상 유물 판매가: 일반 143-157G, 특별 238-262G, 희귀 285-315G.
 - 상점 유물 판매가: 143-157G.
 - 덱빌딩 모드의 상점 가격과 전투 밸런스는 챌린지/승천 개수에 따른 보정을 받지 않는다.
 
@@ -963,7 +958,7 @@ boolean hasRelic = DeckBuilderRun.hasRelic(DeckRelic.BLACK_STAR);
 
 ## 2026-06-01 희귀 포션 구현 메모
 
-현재 코드 기준 `DeckPotion`은 총 45종이다.
+2026-06-01 구현 당시 `DeckPotion` 스냅샷은 총 45종이었다. 정확한 최신 수량은 `DeckPotion` enum을 기준으로 확인한다.
 
 2026-06-01 추가 일반 포션:
 
