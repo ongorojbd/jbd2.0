@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -40,10 +41,12 @@ public class Spw4 extends Item {
     }
 
     public static int levelDamageBonus() {
+        if (!Dungeon.tendencylevel) return 0;
         return Math.max(0, Math.min(8, Statistics.spw4));
     }
 
     public static float durabilityMultiplier() {
+        if (!Dungeon.tendencylevel) return 1f;
         return durabilityMultiplier(Statistics.spw4);
     }
 

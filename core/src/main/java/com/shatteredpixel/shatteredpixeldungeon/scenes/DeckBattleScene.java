@@ -176,6 +176,7 @@ public class DeckBattleScene extends PixelScene {
     private RedButton endTurn;
     private RedButton targetButton;
     private DeckRunHud runHud;
+    private Window hudPopupWindow;
     private float spriteScale;
     private boolean rewardOpen;
     private boolean endingRun;
@@ -195,7 +196,7 @@ public class DeckBattleScene extends PixelScene {
     private static final PlayerBuffSpec[] PLAYER_STATUS_BUFFS = new PlayerBuffSpec[]{
             new PlayerBuffSpec(BuffIndicator.UPGRADE, 1f, 0.5f, 0f, "공격력", "공격 카드가 주는 피해가 이 수치만큼 증가합니다.",
                     combat -> Math.max(0, combat.playerStrength + combat.playerTurnStrength)),
-            new PlayerBuffSpec(BuffIndicator.UPGRADE, 0.45f, 0.75f, 1f, "방어력 증가", "획득 보호막 수치가 직접적으로 표시된 공격/스킬 카드의 사용을 통해 얻는 보호막이 이 수치만큼 증가합니다.",
+            new PlayerBuffSpec(BuffIndicator.UPGRADE, 0.45f, 0.75f, 1f, "방어력 증가", "공격/스킬 카드를 통해 얻는 보호막이 이 수치만큼 증가합니다.",
                     combat -> Math.max(0, combat.playerDexterity)),
             new PlayerBuffSpec(BuffIndicator.DEGRADE, "공격력 감소", "공격 카드가 주는 피해가 수치만큼 감소합니다.",
                     combat -> Math.max(0, -(combat.playerStrength + combat.playerTurnStrength))),
@@ -203,6 +204,8 @@ public class DeckBattleScene extends PixelScene {
                     combat -> Math.max(0, -combat.playerDexterity)),
             new PlayerBuffSpec(BuffIndicator.WEAKNESS, "공격력 저하", "공격 카드 피해가 25% 감소합니다. 턴이 시작될 때마다 1 감소합니다.",
                     combat -> combat.playerWeak),
+            new PlayerBuffSpec(BuffIndicator.CORRUPT, "피해 증폭", "받는 공격 피해가 50% 증가합니다. 턴이 시작될 때마다 1 감소합니다.",
+                    combat -> combat.playerVulnerable),
             new PlayerBuffSpec(BuffIndicator.ROOTS, "얽힘", "공격 카드 비용이 1 증가합니다. 턴이 끝날 때마다 1 감소합니다.",
                     combat -> combat.playerEntangle),
             new PlayerBuffSpec(BuffIndicator.UPGRADE, 1f, 0f, 0f, "연속 타격", "공격 카드의 피해가 이 수치만큼 증가합니다. 공격 이외의 카드를 사용하면 소멸합니다.",
@@ -213,6 +216,10 @@ public class DeckBattleScene extends PixelScene {
                     combat -> combat.playerDamageReduction > 0 ? 1 : 0, false),
             new PlayerBuffSpec(BuffIndicator.DEGRADE, "방어력 저하", "보호막을 얻을 때마다 방어력 저하 1당 획득량이 25% 감소합니다. 턴이 끝날 때마다 1 감소합니다.",
                     combat -> combat.playerBlockReduction),
+            new PlayerBuffSpec(BuffIndicator.IMMUNITY, "정화의 보호막", "상태이상을 받을 때 정화의 보호막을 1 차감하고 그 효과를 무효화합니다.",
+                    combat -> combat.playerArtifact),
+            new PlayerBuffSpec(BuffIndicator.BLESS, "축복", "체력 피해를 받을 때 피해를 1로 줄입니다. 턴이 시작될 때마다 1 감소합니다.",
+                    combat -> combat.playerBlessed),
             new PlayerBuffSpec(BuffIndicator.HEALING, "재생", "매 턴 시작 시 이 수치만큼 보호막을 얻습니다.",
                     combat -> combat.playerRegen),
             new PlayerBuffSpec(BuffIndicator.TIME, 1f, 0.45f, 0.05f, "오렌지 폭탄", "표시된 턴 수가 0이 되면 모든 적에게 폭탄 피해를 줍니다.",
@@ -240,22 +247,24 @@ public class DeckBattleScene extends PixelScene {
                     enemy -> enemy.demise),
             new EnemyStatusBuffSpec(BuffIndicator.IMMUNITY, "정화의 보호막", "상태이상에 걸릴 때 정화의 보호막을 1 차감하고 그 효과를 무효화합니다.",
                     enemy -> enemy.artifact),
-            new EnemyStatusBuffSpec(BuffIndicator.SACRIFICE, 1.15f, 0.35f, 1.25f, "의식", "턴이 끝날 때마다 이 수치만큼 공격력을 얻습니다.",
+            new EnemyStatusBuffSpec(BuffIndicator.BLESS, "축복", "체력 피해를 받을 때 피해를 1로 줄입니다. 턴이 끝날 때마다 1 감소합니다.",
+                    enemy -> enemy.blessed),
+            new EnemyStatusBuffSpec(BuffIndicator.MARK, "도탄 사격", "턴이 끝날 때마다 이 수치만큼 공격력을 얻습니다.",
                     enemy -> enemy.ritual),
-            new EnemyStatusBuffSpec(BuffIndicator.INVISIBLE, 0.25f, 0.05f, 0.35f, "암흑공간", "턴 종료 시 1 감소합니다. 0이 되면 부활 효과를 무시하고 게임 오버가 됩니다.",
+            new EnemyStatusBuffSpec(BuffIndicator.PREPARATION, "암흑공간", "턴 종료 시 1 감소합니다. 0이 되면 플레이어를 집어삼키며, 부활 효과를 무시하고 즉사시킵니다.",
                     enemy -> enemy.kind == DeckEnemy.CREAM ? enemy.darkSpace : 0)
     };
 
     private static final EnemyBuffSpec[] ENEMY_TRAIT_BUFFS = new EnemyBuffSpec[]{
             new EnemyBuffSpec(BuffIndicator.IMBUE, "분열", "체력이 절반 이하가 되면 행동을 취소하고 둘로 나뉩니다.",
                     (scene, enemy) -> enemy.kind == DeckEnemy.LARGE_SLIME && !enemy.splitUsed),
-            new EnemyBuffSpec(BuffIndicator.MAGIC_SLEEP, "수면", "피해를 받거나 3턴이 지나기 전까지 행동하지 않고 매 턴 보호막을 얻습니다.",
+            new EnemyBuffSpec(BuffIndicator.LIGHT_SHIELD, "젠틀리 위프스", "피해를 받거나 3턴이 지나기 전까지 행동하지 않고 매 턴 보호막을 얻습니다.",
                     (scene, enemy) -> enemy.kind == DeckEnemy.LAGAVULIN && !enemy.splitUsed),
-            new EnemyBuffSpec(BuffIndicator.PARALYSIS, "기절", "이번 턴 행동하지 않습니다.",
+            new EnemyBuffSpec(BuffIndicator.INVERT_MARK, "타겟 고정", "이번 턴 행동하지 않습니다.",
                     (scene, enemy) -> enemy.kind == DeckEnemy.LAGAVULIN && enemy.intent == DeckBuilderCombat.RESULT_LAGAVULIN_STUN),
-            new EnemyBuffSpec(BuffIndicator.UPGRADE, 1f, 0.5f, 0f, "사냥 본능", "턴이 끝날 때마다 공격력이 1 증가합니다.",
+            new EnemyBuffSpec(BuffIndicator.OOZE, "산성 체액", "턴이 끝날 때마다 공격력이 1 증가합니다.",
                     (scene, enemy) -> enemy.kind == DeckEnemy.BYRDONIS),
-            new EnemyBuffSpec(BuffIndicator.RAGE, 1.2f, 0.35f, 0.25f, "쥐 떼의 분노", "짝이 쓰러지면 공격력이 2 증가합니다.",
+            new EnemyBuffSpec(BuffIndicator.AMOK, "쥐 떼의 분노", "동료가 쓰러지면 공격력이 2 증가합니다.",
                     (scene, enemy) -> scene.hasAliveRatPartner(enemy))
     };
 
@@ -565,7 +574,11 @@ public class DeckBattleScene extends PixelScene {
             int handBefore = combat.hand.size();
             int drawPileBefore = combat.drawPile.size();
             int discardPileBefore = combat.discardPile.size();
-            combat.drawTurnHand();
+            if (combat.turn <= 0) {
+                combat.startTurn();
+            } else {
+                combat.drawTurnHand();
+            }
             int drawn = combat.hand.size() - handBefore;
             pendingDrawVisuals = drawn;
             pendingPileShuffle = discardPileBefore > 0 && combat.discardPile.size() < discardPileBefore;
@@ -713,8 +726,10 @@ public class DeckBattleScene extends PixelScene {
             }));
         } else {
             log(enemyTurnLog(result));
-            float delay = Math.max(0.36f, 0.62f + combat.lastEnemyActions.size() * 0.08f);
-            addEffect(new DelayedActionEffect(delay, new Runnable() {
+            float attackDelay = Math.max(0.36f, 0.62f + combat.lastEnemyActions.size() * 0.08f);
+            float endTurnDelay = spawnEnemyEndTurnDamageEffects(attackDelay);
+            float totalDelay = Math.max(attackDelay, endTurnDelay);
+            addEffect(new DelayedActionEffect(totalDelay, new Runnable() {
                 @Override
                 public void run() {
                     if (combat.won()) {
@@ -726,6 +741,24 @@ public class DeckBattleScene extends PixelScene {
                 }
             }));
         }
+    }
+
+    private float spawnEnemyEndTurnDamageEffects(float startDelay) {
+        if (combat.lastEnemyEndTurnDamageEvents.isEmpty()) return 0f;
+        float delay = startDelay;
+        for (DeckBuilderCombat.DamageEvent event : combat.lastEnemyEndTurnDamageEvents) {
+            if (event.damage <= 0 || event.playerTarget()) continue;
+            final float capturedDelay = delay;
+            final DeckBuilderCombat.DamageEvent captured = event;
+            addEffect(new DelayedActionEffect(capturedDelay, new Runnable() {
+                @Override
+                public void run() {
+                    spawnEnemyDamageImpact(captured.enemyIndex, captured.damage, 0xFFFF8844, "종언", captured.enemyHpAfter);
+                }
+            }));
+            delay += 0.16f;
+        }
+        return delay + 0.1f;
     }
 
     private void showTitleBanner(String title, String subtitle, int color, float duration, Runnable onDone) {
@@ -840,7 +873,7 @@ public class DeckBattleScene extends PixelScene {
     private void addBackground(int w, int h, RectF insets) {
         add(new ColorBlock(w, h, 0xFF141414));
 
-        Image splash = new Image(Assets.Splashes.TENDENCY);
+        Image splash = new Image(Assets.Splashes.DECK1);
         float splashScale = Math.max(w / splash.width(), h / splash.height());
         splash.scale.set(splashScale);
         splash.x = (w - splash.width()) / 2f;
@@ -1285,6 +1318,8 @@ public class DeckBattleScene extends PixelScene {
             add(tutBorderRight);
             refreshTutorialHighlight();
         }
+
+        bringHudPopupToFront();
     }
 
     @Override
@@ -1619,19 +1654,31 @@ public class DeckBattleScene extends PixelScene {
             spawnEffectExhausts(handBeforePlay, handPositionsBeforePlay, index);
         }
 
+        boolean cardUseSoundPlayed = false;
         if (card.type == DeckCardType.POWER) {
             Sample.INSTANCE.play(Assets.Sounds.CHARMS);
+            cardUseSoundPlayed = true;
             final float px = playerCenterX();
             final float py = playerCenterY();
             addEffect(new PowerEffect(px, py));
         }
 
-        if (card == DeckCard.SCORPION_THROW) {
+        if (card == DeckCard.RIPPLE_WALL) {
+            Sample.INSTANCE.play(Assets.Sounds.DEWDROP);
+            cardUseSoundPlayed = true;
+        } else if (card == DeckCard.SCORPION_THROW) {
             Sample.INSTANCE.play(Assets.Sounds.PLANT);
+            cardUseSoundPlayed = true;
         } else if (card == DeckCard.SHIV) {
             Sword.giorno();
+            cardUseSoundPlayed = true;
         } else if (card == DeckCard.ROTATING_NAIL) {
             Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+            cardUseSoundPlayed = true;
+        }
+
+        if (!cardUseSoundPlayed && card.type == DeckCardType.SKILL) {
+            Sample.INSTANCE.play(Assets.Sounds.MISS);
         }
 
         if (result.heal > 0) {
@@ -1919,8 +1966,10 @@ public class DeckBattleScene extends PixelScene {
             if (result.block > 0) {
                 spawnShieldEffect(playerCenterX(), playerCenterY(), "+" + result.block);
             }
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
             log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
-            addEffect(new DelayedActionEffect(0.18f, new Runnable() {
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.18f, fd), new Runnable() {
                 @Override
                 public void run() {
                     showArmamentsHandUpgradeWindow(0);
@@ -1934,8 +1983,10 @@ public class DeckBattleScene extends PixelScene {
             if (result.draw > 0) {
                 spawnDrawPileEffects(result.draw, 0.08f);
             }
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
             log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
-            addEffect(new DelayedActionEffect(0.25f, new Runnable() {
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.25f, fd), new Runnable() {
                 @Override
                 public void run() {
                     showForesightHandSelectWindow(0);
@@ -1946,8 +1997,10 @@ public class DeckBattleScene extends PixelScene {
 
         if (card == DeckCard.SHITTIM_BOX && combat.pendingAllCardDiscover) {
             combat.pendingAllCardDiscover = false;
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
             log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
-            addEffect(new DelayedActionEffect(0.12f, new Runnable() {
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.12f, fd), new Runnable() {
                 @Override
                 public void run() {
                     showShittimBoxSelectWindow("", 0);
@@ -1958,8 +2011,10 @@ public class DeckBattleScene extends PixelScene {
 
         if (card == DeckCard.RELIC_SELECTION_BOX && combat.pendingAllRelicDiscover) {
             combat.pendingAllRelicDiscover = false;
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
             log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
-            addEffect(new DelayedActionEffect(0.12f, new Runnable() {
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.12f, fd), new Runnable() {
                 @Override
                 public void run() {
                     showRelicSelectionBoxWindow("", 0);
@@ -1968,11 +2023,27 @@ public class DeckBattleScene extends PixelScene {
             return;
         }
 
+        if (card == DeckCard.POTION_SELECTION_BOX && combat.pendingAllPotionDiscover) {
+            combat.pendingAllPotionDiscover = false;
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
+            log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.12f, fd), new Runnable() {
+                @Override
+                public void run() {
+                    showPotionSelectionBoxWindow(0);
+                }
+            }));
+            return;
+        }
+
         if (combat.pendingDrawPileTypeSelect != null) {
             final DeckCardType selectType = combat.pendingDrawPileTypeSelect;
             combat.pendingDrawPileTypeSelect = null;
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
             log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
-            addEffect(new DelayedActionEffect(0.12f, new Runnable() {
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.12f, fd), new Runnable() {
                 @Override
                 public void run() {
                     showDrawPileTypeSelectWindow(selectType, 0);
@@ -2112,6 +2183,30 @@ public class DeckBattleScene extends PixelScene {
         } else {
             refresh();
         }
+    }
+
+    private boolean resolveTerminalAfterPassiveDamage(float finishDelay) {
+        if (combat.playerDead()) {
+            updatePlayerHpUi();
+            addEffect(new DelayedActionEffect(finishDelay > 0f ? finishDelay : 0.45f, new Runnable() {
+                @Override
+                public void run() {
+                    playDeath(playerSprite);
+                    finishRunDeath();
+                }
+            }));
+            return true;
+        }
+        if (combat.won()) {
+            addEffect(new DelayedActionEffect(Math.max(0.9f, finishDelay + 0.3f), new Runnable() {
+                @Override
+                public void run() {
+                    showReward();
+                }
+            }));
+            return true;
+        }
+        return false;
     }
 
     private String enemyCountText() {
@@ -3017,6 +3112,9 @@ public class DeckBattleScene extends PixelScene {
         int poisonDamage = Math.max(0, turnEndCardDamage - combat.lastTurnEndCurseDamage);
         int enemyDamage = Math.max(0, damage - turnEndCardDamage);
         String text = "";
+        if (combat.lastCombatBreathingBlock > 0) {
+            text += "전투 호흡: 보호막 " + combat.lastCombatBreathingBlock + "을 얻었습니다. ";
+        }
         if (!pendingTurnEndAutoPlayLog.isEmpty()) {
             text += pendingTurnEndAutoPlayLog + " ";
             pendingTurnEndAutoPlayLog = "";
@@ -3473,7 +3571,6 @@ public class DeckBattleScene extends PixelScene {
                         enemyCenterX(view), enemyCenterY(view) - 24, 0xFF88FF88);
             }
             if (action.label != null) {
-                spawnFloatingText(action.label, enemyCenterX(view), enemyCenterY(view) - 24, 0xFFFFD66B);
                 if (action.damage <= 0 && !action.blocked) {
                     Sample.INSTANCE.play(Assets.Sounds.CHARGEUP, 0.9f, 1.1f);
                     addEffect(new BuffEffect(enemyCenterX(view), enemyCenterY(view), 0xFFFFD66B));
@@ -3610,7 +3707,7 @@ public class DeckBattleScene extends PixelScene {
         final ArrayList<Integer> upgradeableIndices = new ArrayList<>();
         for (int i = 0; i < combat.hand.size(); i++) {
             int code = combat.hand.get(i);
-            if (DeckCardCode.upgradeLevel(code) < DeckCard.byCode(code).maxUpgradeLevel()) {
+            if (DeckCardCode.upgrade(code) != code) {
                 upgradeable.add(code);
                 upgradeableIndices.add(i);
             }
@@ -3975,6 +4072,87 @@ public class DeckBattleScene extends PixelScene {
             protected void onClick() {
                 win.hide();
                 showRelicSelectionBoxWindow(filter, currentPage + 1);
+            }
+        };
+        next.enable(currentPage < maxPage);
+        next.setRect(width - 68, pos, 58, 18);
+        win.add(next);
+        pos += 23;
+
+        win.resize(width, pos + 4);
+        addToFront(win);
+    }
+
+    private void showPotionSelectionBoxWindow(final int page) {
+        final DeckPotion[] all = DeckPotion.values();
+        final int ROW_H = 24;
+        final int ROW_GAP = 3;
+        final int ROWS_PER_PAGE = 7;
+        final int total = all.length;
+        final int maxPage = Math.max(0, (total - 1) / ROWS_PER_PAGE);
+        final int currentPage = Math.max(0, Math.min(page, maxPage));
+        final int first = currentPage * ROWS_PER_PAGE;
+        final int count = Math.min(ROWS_PER_PAGE, total - first);
+        final int width = 230;
+
+        final Window win = new Window() {
+            @Override
+            public void onBackPressed() {
+            }
+        };
+
+        int pos = 7;
+        RenderedTextBlock title = renderTextBlock("[물약 선택 상자] 획득할 물약 선택", 8);
+        title.hardlight(Window.TITLE_COLOR);
+        title.maxWidth(width - 14);
+        title.setPos((width - title.width()) / 2f, pos);
+        win.add(title);
+        pos += (int) title.height() + 6;
+
+        for (int i = 0; i < count; i++) {
+            final DeckPotion picked = all[first + i];
+            DeckRewardRow row = new DeckRewardRow(picked.image, picked.title) {
+                @Override
+                protected void onClick() {
+                    if (!DeckBuilderRun.addPotion(picked)) {
+                        win.hide();
+                        addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
+                        return;
+                    }
+                    Sample.INSTANCE.play(Assets.Sounds.ITEM);
+                    saveCombatState();
+                    if (runHud != null) runHud.refresh();
+                    win.hide();
+                    refresh();
+                }
+            };
+            row.setRect(10, pos, width - 20, ROW_H);
+            win.add(row);
+            pos += ROW_H + ROW_GAP;
+        }
+
+        RenderedTextBlock pageText = renderTextBlock((currentPage + 1) + " / " + (maxPage + 1) + "  (전체 " + total + "개)", 6);
+        pageText.hardlight(0xFFD8D1BD);
+        pageText.setPos((width - pageText.width()) / 2f, pos);
+        win.add(pageText);
+        pos += (int) pageText.height() + 4;
+
+        RedButton prev = new RedButton("이전", 6) {
+            @Override
+            protected void onClick() {
+                win.hide();
+                showPotionSelectionBoxWindow(currentPage - 1);
+            }
+        };
+        prev.enable(currentPage > 0);
+        prev.setRect(10, pos, 58, 18);
+        win.add(prev);
+
+        RedButton next = new RedButton("다음", 6) {
+            @Override
+            protected void onClick() {
+                win.hide();
+                showPotionSelectionBoxWindow(currentPage + 1);
             }
         };
         next.enable(currentPage < maxPage);
@@ -4917,16 +5095,7 @@ public class DeckBattleScene extends PixelScene {
                 @Override
                 protected void onClick() {
                     if (claimed) return;
-                    if (!DeckBuilderRun.addPotion(rewardPotion)) {
-                        addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
-                        return;
-                    }
-                    claimed = true;
-                    rewards.potionClaimed = true;
-                    if (runHud != null) runHud.refresh();
-                    text.text("획득 완료: " + rewardPotion.title);
-                    text.hardlight(0xFF9A9A9A);
-                    saveCombatState();
+                    showPotionRewardWindow(reward, this, rewardPotion, rewards);
                 }
             };
             potionRow.claimed = rewards.potionClaimed;
@@ -4999,6 +5168,65 @@ public class DeckBattleScene extends PixelScene {
                 if (runHud != null) runHud.refresh();
                 relicRow.text.text("획득 완료: " + relic.titleWithRarity());
                 relicRow.text.hardlight(0xFF9A9A9A);
+                saveCombatState();
+                win.hide();
+                rewardWindow.hide();
+                showCombatRewardWindow(rewards);
+            }
+        };
+        take.setRect(7, pos, 82, 18);
+        win.add(take);
+
+        RedButton close = new RedButton("닫기", 6) {
+            @Override
+            protected void onClick() {
+                win.hide();
+            }
+        };
+        close.setRect(width - 89, pos, 82, 18);
+        win.add(close);
+        pos += 24;
+
+        win.resize(width, pos);
+        addToFront(win);
+        bringRunHudToFront();
+    }
+
+    private void showPotionRewardWindow(final Window rewardWindow, final DeckRewardRow potionRow, final DeckPotion potion,
+                                        final DeckCombatRewardState rewards) {
+        final Window win = new DeckRewardWindow();
+        int width = 190;
+        int pos = 7;
+
+        RenderedTextBlock title = renderTextBlock(potion.title, 8);
+        title.hardlight(Window.TITLE_COLOR);
+        title.maxWidth(width - 14);
+        title.setPos((width - title.width()) / 2f, pos);
+        win.add(title);
+        pos += (int) title.height() + 6;
+
+        RenderedTextBlock desc = renderTextBlock(potion.description, 6);
+        desc.maxWidth(width - 14);
+        desc.hardlight(0xFFD8D1BD);
+        desc.setPos(7, pos);
+        win.add(desc);
+        pos += (int) desc.height() + 8;
+
+        RedButton take = new RedButton("가져가기", 6) {
+            @Override
+            protected void onClick() {
+                if (potionRow.claimed) return;
+                if (!DeckBuilderRun.addPotion(potion)) {
+                    win.hide();
+                    addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
+                    return;
+                }
+                Sample.INSTANCE.play(Assets.Sounds.ITEM);
+                potionRow.claimed = true;
+                rewards.potionClaimed = true;
+                if (runHud != null) runHud.refresh();
+                potionRow.text.text("획득 완료: " + potion.title);
+                potionRow.text.hardlight(0xFF9A9A9A);
                 saveCombatState();
                 win.hide();
                 rewardWindow.hide();
@@ -5145,6 +5373,17 @@ public class DeckBattleScene extends PixelScene {
         if (runHud != null) {
             bringToFront(runHud);
             runHud.givePotionPointerPriority();
+        }
+    }
+
+    void addHudPopupToFront(Window win) {
+        hudPopupWindow = win;
+        addToFront(win);
+    }
+
+    private void bringHudPopupToFront() {
+        if (hudPopupWindow != null && hudPopupWindow.parent == this) {
+            bringToFront(hudPopupWindow);
         }
     }
 

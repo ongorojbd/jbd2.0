@@ -159,7 +159,7 @@ public enum DeckRelic {
 	LANTERN("죠스타의 피", "매 전투 시작 시, 추가로 1 에너지를 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.SANDBAG),
 	GORGET("치유탄", "매 전투 시작 시, 재생을 4 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.HEALING_DART),
 	BLOCKADE_COMMAND_DISC("봉쇄의 명령 DISC", "전투 시작 시, 방어력 증가를 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_FLOCK),
-	MOVEMENT_COMMAND_DISC("이동의 명령 DISC", "매 전투마다 처음으로 체력을 잃을 시, 카드를 3장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_BLINK),
+	MOVEMENT_COMMAND_DISC("이동의 명령 DISC", "매 전투마다 처음으로 내 턴에 체력을 잃을 시, 카드를 3장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_BLINK),
 	FEAR_COMMAND_DISC("두려움의 명령 DISC", "전투 시작 시, 모든 적에게 공격력 저하를 1 부여합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_FEAR),
 	ATTACK_COMMAND_DISC("공격의 명령 DISC", "획득 시, 무작위 공격 카드를 2장 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.COMMON, ItemSpriteSheet.STONE_AGGRESSION) {
 		@Override public void onAcquire() {
@@ -252,8 +252,8 @@ public enum DeckRelic {
 	LAVA_STONE("용암 암석", "보조 카드를 덱에 추가할 때마다, 그 카드를 강화합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.EXOTIC_CRYSTALS),
 	HEY_YA("헤이 야!", "전투 시작 시, 무작위 카드를 1장 손으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.CLOVER),
 	THE_HUSTLE("THE 허슬", "체력을 잃을 때마다, 1만큼 덜 잃습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BLOOD_VIAL),
-	OLD_WORKMAN("낡은 워크맨", "턴 사이에 보호막이 최대 10까지 유지됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ARTIFACT_HOURGLASS),
-	CHOCOLATE_DISCO("초콜릿 디스코", "한 턴에 공격 카드를 3장 사용할 때마다, 공격력을 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.OBLIVION_SHARD),
+	OLD_WORKMAN("낡은 워크맨", "턴 사이에 보호막이 최대 10까지 유지됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.OBLIVION_SHARD),
+	CHOCOLATE_DISCO("초콜릿 디스코", "한 턴에 공격 카드를 3장 사용할 때마다, 공격력을 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.TRAP_MECHANISM),
 	TOPAZ("토파즈", "전투 시작 시 손에 있는 모든 카드가 강화됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.MAGIC_INFUSE),
 	AUTUMN_LEAVES("어텀 리브스", "강적 처치 보상에 희귀 카드가 항상 등장합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SPYGLASS),
 	RUBY("루비", "전투 보상에 포션이 항상 등장합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RECYCLE),

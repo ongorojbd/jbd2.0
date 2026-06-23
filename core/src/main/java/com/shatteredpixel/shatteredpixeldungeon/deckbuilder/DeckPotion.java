@@ -66,7 +66,7 @@ public enum DeckPotion {
 	SHACKLING("기화냉동 용액", "이번 턴 동안 모든 적이 공격력을 7 잃습니다.", DeckPotionRarity.RARE, ItemSpriteSheet.ELIXIR_ICY, ItemSpriteSheet.Icons.POTION_PARAGAS),
 	SNECKO_OIL("광기의 피", "카드를 7장 뽑고, 이번 턴 동안 손에 있는 카드의 비용을 무작위로 변경합니다.", DeckPotionRarity.RARE, ItemSpriteSheet.ELIXIR_MIGHT, ItemSpriteSheet.Icons.POTION_MINDVIS),
 	LIQUID_MEMORIES("산성 용액", "버린 카드 더미에서 카드를 1장 선택해 손으로 가져옵니다. 이번 턴 동안 비용이 0이 됩니다.", DeckPotionRarity.RARE, ItemSpriteSheet.BREW_CAUSTIC, ItemSpriteSheet.Icons.POTION_MINDVIS),
-	ENTROPIC_BREW("물약 보관대", "비어있는 모든 포션 슬롯을 무작위 포션으로 채웁니다.", DeckPotionRarity.RARE, ItemSpriteSheet.POTION_HOLDER, ItemSpriteSheet.Icons.POTION_STRMCLOUD),
+	ENTROPIC_BREW("물약 보관대", "비어있는 모든 포션 슬롯을 무작위 포션으로 채웁니다.", DeckPotionRarity.RARE, ItemSpriteSheet.BANDOLIER, ItemSpriteSheet.Icons.POTION_STRMCLOUD),
 	PRECOGNITION_DROPLET("용암 용액", "뽑을 카드 더미에서 카드를 1장 선택해 손으로 가져옵니다.", DeckPotionRarity.RARE, ItemSpriteSheet.BREW_INFERNAL, ItemSpriteSheet.Icons.POTION_MAGISIGHT),
 	OROBIC_ACID("눈보라 용액", "무작위 공격, 보조, 지속 카드를 손으로 가져옵니다. 이번 턴 동안 비용 없이 사용할 수 있습니다.", DeckPotionRarity.RARE, ItemSpriteSheet.BREW_BLIZZARD, ItemSpriteSheet.Icons.POTION_CORROGAS),
 	DISTILLED_CHAOS("디스토션 용액", "뽑을 카드 더미 위에서부터 3장의 카드를 사용합니다.", DeckPotionRarity.RARE, ItemSpriteSheet.ELIXIR_TOXIC, ItemSpriteSheet.Icons.POTION_DRGBREATH),

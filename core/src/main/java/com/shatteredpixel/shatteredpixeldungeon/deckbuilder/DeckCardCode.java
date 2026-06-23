@@ -65,6 +65,9 @@ public final class DeckCardCode {
 
 	public static int upgrade(int code) {
 		DeckCard card = DeckCard.byCode(code);
+		if (DeckCardPool.isStatus(card) || DeckCardPool.isCurse(card)) {
+			return code;
+		}
 		int upgrade = Math.min(card.maxUpgradeLevel(), upgradeLevel(code) + 1);
 		return withUpgradeLevel(code, upgrade);
 	}

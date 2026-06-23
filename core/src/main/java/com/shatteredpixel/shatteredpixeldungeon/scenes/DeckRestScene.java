@@ -201,7 +201,7 @@ public class DeckRestScene extends PixelScene {
 
 	private void addBackground(int w, int h) {
 		add(new ColorBlock(w, h, 0xFF10140F));
-		Image splash = new Image(Assets.Splashes.TENDENCY);
+		Image splash = new Image(Assets.Splashes.DECK1);
 		float scale = Math.max(w / splash.width(), h / splash.height());
 		splash.scale.set(scale);
 		splash.x = (w - splash.width()) / 2f;

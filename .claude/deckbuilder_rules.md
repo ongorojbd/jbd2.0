@@ -994,3 +994,35 @@ boolean hasRelic = DeckBuilderRun.hasRelic(DeckRelic.BLACK_STAR);
 
 - 카드 효과가 손패/더미의 카드를 소멸시키면 실제 소멸 처리와 함께 `ExhaustEffect` 계열 시각 효과도 표시한다.
 - 카드 효과가 체력을 회복시키면 실제 회복량을 `DeckPlayResult.heal`에 기록하고, 전투 씬에서 회복 이펙트와 회복량 텍스트를 표시한다.
+
+---
+
+## 덱빌더 버프/디버프 효과 정리
+
+전투 상태 효과를 추가하거나 수정할 때는 `DeckBuilderCombat`/`DeckCombatEnemy`의 상태 필드, 저장/복원, 턴 감소 타이밍, `DeckBattleScene`의 버프 아이콘 표시를 함께 확인한다.
+
+| 표시명 | 대상 | 내부 필드 | 효과 | 감소/소모 타이밍 | UI 아이콘 |
+|---|---|---|---|---|---|
+| 공격력 | 플레이어 | `playerStrength + playerTurnStrength` | 공격 카드 피해 증가 | `playerTurnStrength`는 턴 종료 시 제거 | `PLAYER_STATUS_BUFFS` |
+| 방어력 증가 | 플레이어 | `playerDexterity` | 카드로 얻는 보호막 증가 | 지속 | `PLAYER_STATUS_BUFFS` |
+| 공격력 저하 | 플레이어 | `playerWeak` | 공격 카드 피해 25% 감소 | 턴 시작 시 1 감소 | `PLAYER_STATUS_BUFFS` |
+| 방어력 저하 | 플레이어 | `playerBlockReduction` | 보호막 획득량이 스택당 25% 감소 | 턴 종료 시 1 감소 | `PLAYER_STATUS_BUFFS` |
+| 정화의 보호막 | 플레이어 | `playerArtifact` | 상태이상을 받을 때 1 소모하고 무효화 | `applyPlayerDebuff()`에서 소모 | `PLAYER_STATUS_BUFFS` |
+| 축복 | 플레이어 | `playerBlessed` | 체력 피해를 받을 때 피해를 1로 제한 | 턴 시작 시 1 감소 | `PLAYER_STATUS_BUFFS` |
+| 얽힘 | 플레이어 | `playerEntangle` | 공격 카드 비용 +1 | 턴 종료 시 1 감소 | `PLAYER_STATUS_BUFFS` |
+| 유아화 | 플레이어 | `playerDamageReduction` | 공격 카드 피해 30% 감소 | 별도 지속값 | `PLAYER_STATUS_BUFFS` |
+| 반격 | 플레이어 | `playerThorns` | 적이 체력 피해를 주면 반격 피해 | 턴 종료 후 0 | `PLAYER_STATUS_BUFFS` |
+| 피해 증폭 | 적 | `vulnerable` | 받는 공격 피해 1.5배 | 적 행동 후 1 감소 | `ENEMY_STATUS_BUFFS` |
+| 공격력 저하 | 적 | `attackDown` | 공격 피해 25% 감소 | 적 행동 후 1 감소 | `ENEMY_STATUS_BUFFS` |
+| 방어력 저하 | 적 | `blockReduction` | 보호막 획득량 감소 | 현재 적 상태 표시 | `ENEMY_STATUS_BUFFS` |
+| 정화의 보호막 | 적 | `artifact` | 상태이상을 받을 때 1 소모하고 무효화 | `applyEnemyDebuff(enemy)`에서 소모 | `ENEMY_STATUS_BUFFS` |
+| 축복 | 적 | `blessed` | 체력 피해를 받을 때 피해를 1로 제한 | 적 행동 후 1 감소 | `ENEMY_STATUS_BUFFS` |
+| 재생 | 적 | `platedArmor` | 턴 종료 시 보호막 획득, 체력 피해를 받으면 1 감소 | 적 턴 처리 | `ENEMY_STATUS_BUFFS` |
+| 까다로움 | 적 | `tricky` | 다음 체력 피해를 1로 제한 | 피해를 받을 때 소모 | `ENEMY_STATUS_BUFFS` |
+
+주의:
+
+- 플레이어에게 상태이상을 부여하는 효과는 직접 `playerWeak++`처럼 더하기보다 가능하면 `applyPlayerDebuff()`를 거쳐 정화의 보호막을 소모/무효화한다.
+- 적에게 상태이상을 부여하는 효과는 `applyEnemyDebuff(enemy)`를 거쳐 정화의 보호막을 소모/무효화한다.
+- 새 버프/디버프 필드를 추가하면 `DeckBuilderCombat.storeInBundle()`/`restoreFromBundle()`에 저장/복원을 추가한다.
+- UI 표시가 필요한 상태는 `DeckBattleScene.PLAYER_STATUS_BUFFS` 또는 `ENEMY_STATUS_BUFFS`에 추가한다.

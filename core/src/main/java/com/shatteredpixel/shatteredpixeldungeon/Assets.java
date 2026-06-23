@@ -513,6 +513,7 @@ public class Assets {
         public static final String LABS = "splashes/labs.jpg";
         public static final String SO = "splashes/so.jpg";
         public static final String TENDENCY = "splashes/tendency.jpg";
+        public static final String DECK1 = "splashes/deck1.jpg";
     }
 
     public static class Sprites {

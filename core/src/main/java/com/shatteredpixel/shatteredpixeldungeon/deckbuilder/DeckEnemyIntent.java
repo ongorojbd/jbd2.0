@@ -133,7 +133,7 @@ public class DeckEnemyIntent {
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "[금속화] 보호막 +8"));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 금속화 (보호막 +8)"));
+			enemy -> "예고: 젠틀리 위프스 (보호막 +8)"));
 
 	public static final DeckEnemyIntent LAGAVULIN_STUN = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_LAGAVULIN_STUN,
@@ -141,7 +141,7 @@ public class DeckEnemyIntent {
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "[기절]"));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 기절"));
+			enemy -> "예고: 타겟 고정"));
 
 	public static final DeckEnemyIntent LAGAVULIN_ATTACK = register(simpleAttack(
 			DeckBuilderCombat.RESULT_LAGAVULIN_ATTACK, 18, "공격"));
@@ -201,10 +201,10 @@ public class DeckEnemyIntent {
 			(combat, enemy, remainingBlock) -> {
 				enemy.ritual += 2;
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
-						combat.enemyIndex(enemy), 0, false, "주문 (의식 +2)"));
+						combat.enemyIndex(enemy), 0, false, "주문 (도탄 사격 +2)"));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 의식 +2"));
+			enemy -> "예고: 도탄 사격 +2"));
 
 	public static final DeckEnemyIntent DARK_STRIKE = register(simpleAttack(
 			DeckBuilderCombat.RESULT_DARK_STRIKE, 9, "어둠의 타격"));
@@ -244,10 +244,11 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent ROAR = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_ROAR,
 			(combat, enemy, remainingBlock) -> {
-				enemy.vulnerable += 3;
+				boolean applied = combat.applyPlayerDebuff();
+				if (applied) combat.playerVulnerable += 3;
 				enemy.splitUsed = true;
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
-						combat.enemyIndex(enemy), 0, false, "포효 (피해 증폭 +3)"));
+						combat.enemyIndex(enemy), 0, false, applied ? "포효 (피해 증폭 +3)" : "포효 (피해 증폭 무효)"));
 				return TurnResult.noChange(remainingBlock);
 			},
 			enemy -> "예고: 피해 증폭 +3"));
@@ -323,7 +324,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_SOUL_BEAM, 3, 3, "영혼 광선"));
 
 	public static final DeckEnemyIntent DARK_RITUAL = register(strengthIntent(
-			DeckBuilderCombat.RESULT_DARK_RITUAL, 2, "어둠의 의식"));
+			DeckBuilderCombat.RESULT_DARK_RITUAL, 2, "공격력"));
 
 	// 시빌 워
 	public static final DeckEnemyIntent PRICE_CARDS = register(new DeckEnemyIntent(
@@ -362,8 +363,9 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent SCREAM = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_SCREAM,
 			(combat, enemy, remainingBlock) -> {
-				AttackResult attack = combat.performEnemyAttack(enemy, 11, remainingBlock, "절규");
-				enemy.strength += 3;
+				boolean willApply = combat.playerArtifact <= 0;
+				AttackResult attack = combat.performEnemyAttack(enemy, 11, remainingBlock, willApply ? "절규 (피해 증폭 +3)" : "절규 (피해 증폭 무효)");
+				if (combat.applyPlayerDebuff()) combat.playerVulnerable += 3;
 				return attack.toTurnResult(false);
 			},
 			enemy -> "예고: " + damageText(enemy, 11) + " 피해 + 피해 증폭 +3"));
@@ -389,7 +391,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_CREAM_SPIN, 22, "무차별 회전"));
 
 	public static final DeckEnemyIntent CREAM_RAGE = register(strengthIntent(
-			DeckBuilderCombat.RESULT_CREAM_RAGE, 1, "격분"));
+			DeckBuilderCombat.RESULT_CREAM_RAGE, 1, "공격력"));
 
 	public final int id;
 	private final IntentAction action;

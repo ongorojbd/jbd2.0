@@ -964,7 +964,7 @@ public class DeckCardEffects {
 			for (int i = 0; i < context.combat.hand.size(); i++) {
 				if (i == context.handIndex) continue;
 				int code = context.combat.hand.get(i);
-				if (DeckCardCode.upgradeLevel(code) < DeckCard.byCode(code).maxUpgradeLevel()) {
+				if (DeckCardCode.upgrade(code) != code) {
 					candidates.add(i);
 				}
 			}
@@ -995,7 +995,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "내 턴 시작 시 방어도가 사라지지 않습니다.";
+			return "내 턴 시작 시 보호막이 사라지지 않습니다.";
 		}
 	}
 
@@ -1007,7 +1007,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "매 턴 처음으로 카드를 통해 얻는 방어도가 2배가 됩니다.";
+			return "매 턴 처음으로 카드를 통해 얻는 보호막이 2배가 됩니다.";
 		}
 	}
 
@@ -1017,8 +1017,7 @@ public class DeckCardEffects {
 			if (DeckCardCode.upgradeLevel(cardCode) > 0) {
 				for (int i = 0; i < combat.hand.size(); i++) {
 					int handCode = combat.hand.get(i);
-					DeckCard handCard = DeckCard.byCode(handCode);
-					if (DeckCardCode.upgradeLevel(handCode) < handCard.maxUpgradeLevel()) {
+					if (DeckCardCode.upgrade(handCode) != handCode) {
 						combat.hand.set(i, DeckCardCode.upgrade(handCode));
 					}
 				}
@@ -1545,6 +1544,19 @@ public class DeckCardEffects {
 		}
 	}
 
+	// 물약 선택 상자: 모든 물약 중 1개 선택 획득(디버그용)
+	public static class PotionSelectionBoxEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.pendingAllPotionDiscover = true;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "모든 물약 중 1개를 선택해 획득합니다.";
+		}
+	}
+
 	public static class OrangeBombEffect implements DeckCardEffect {
 		private final int base;
 		private final int upgraded;
@@ -1636,7 +1648,7 @@ public class DeckCardEffects {
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
 			int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? upgraded : base;
-			return "무당벌레 브로치 카드를 통해 얻는 방어도가 " + amount + " 증가합니다.";
+			return "무당벌레 브로치 카드를 통해 얻는 보호막이 " + amount + " 증가합니다.";
 		}
 
 		@Override

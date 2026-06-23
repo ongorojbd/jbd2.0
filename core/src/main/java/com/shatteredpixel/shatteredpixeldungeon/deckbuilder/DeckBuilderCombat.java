@@ -129,6 +129,7 @@ public class DeckBuilderCombat {
 	private static final String PLAYER_BLESSED = "player_blessed";
 	private static final String PLAYER_DAMAGE_REDUCTION = "player_damage_reduction";
 	private static final String PLAYER_BLOCK_REDUCTION = "player_block_reduction";
+	private static final String PLAYER_VULNERABLE = "player_vulnerable";
 	private static final String PLAYER_WEAK = "player_weak";
 	private static final String PLAYER_DEXTERITY = "player_dexterity";
 	private static final String PLAYER_ARTIFACT = "player_artifact";
@@ -183,6 +184,7 @@ public class DeckBuilderCombat {
 	private static final String ORANGE_BOMB_DAMAGES = "orange_bomb_damages";
 	private static final String PENDING_ALL_CARD_DISCOVER = "pending_all_card_discover";
 	private static final String PENDING_ALL_RELIC_DISCOVER = "pending_all_relic_discover";
+	private static final String PENDING_ALL_POTION_DISCOVER = "pending_all_potion_discover";
 	private static final String PULSING_AXE_RETURNS = "pulsing_axe_returns";
 	private static final String PENDING_DRAW_PILE_PEEK = "pending_draw_pile_peek";
 	private static final String PENDING_DRAW_PILE_TYPE_SELECT = "pending_draw_pile_type_select";
@@ -216,6 +218,7 @@ public class DeckBuilderCombat {
 	public int playerTurnDexterity;
 	public int playerDamageReduction;
 	public int playerBlockReduction;
+	public int playerVulnerable;
 	public int playerWeak;
 	public int playerDexterity;
 	public int playerArtifact;
@@ -274,6 +277,7 @@ public class DeckBuilderCombat {
 	public int blockFromCardDisabledTurns;
 	public boolean pendingAllCardDiscover;
 	public boolean pendingAllRelicDiscover;
+	public boolean pendingAllPotionDiscover;
 	public ArrayList<Integer> pulsingAxeReturns = new ArrayList<>();
 	public boolean pendingDrawPilePeek = false;
 	public DeckCardType pendingDrawPileTypeSelect = null;
@@ -305,6 +309,7 @@ public class DeckBuilderCombat {
 	public ArrayList<DeckPlayResult> lastAutoPlayResults = new ArrayList<>();
 	public ArrayList<DeckPlayResult> lastTurnEndAutoPlayResults = new ArrayList<>();
 	public ArrayList<EnemyAction> lastEnemyActions = new ArrayList<>();
+	public ArrayList<DamageEvent> lastEnemyEndTurnDamageEvents = new ArrayList<>();
 	public ArrayList<DamageEvent> lastDamageEvents = new ArrayList<>();
 	public int lastTurnEndStatusDamage;
 	public int lastTurnEndPoisonDarts;
@@ -313,6 +318,7 @@ public class DeckBuilderCombat {
 	public int lastOrangeBombTotalDamage;
 	public int lastOrangeBombExplosions;
 	public int lastPriceOfSinDamage;
+	public int lastCombatBreathingBlock;
 
 	public DeckBuilderCombat(int nodeType, int depth, ArrayList<Integer> deck) {
 		this.nodeType = nodeType;
@@ -387,6 +393,7 @@ public class DeckBuilderCombat {
 		bundle.put(PLAYER_TURN_DEXTERITY, playerTurnDexterity);
 		bundle.put(PLAYER_DAMAGE_REDUCTION, playerDamageReduction);
 		bundle.put(PLAYER_BLOCK_REDUCTION, playerBlockReduction);
+		bundle.put(PLAYER_VULNERABLE, playerVulnerable);
 		bundle.put(PLAYER_WEAK, playerWeak);
 		bundle.put(PLAYER_DEXTERITY, playerDexterity);
 		bundle.put(PLAYER_ARTIFACT, playerArtifact);
@@ -436,6 +443,7 @@ public class DeckBuilderCombat {
 		bundle.put(BLOCK_FROM_CARD_DISABLED_TURNS, blockFromCardDisabledTurns);
 		bundle.put(PENDING_ALL_CARD_DISCOVER, pendingAllCardDiscover);
 		bundle.put(PENDING_ALL_RELIC_DISCOVER, pendingAllRelicDiscover);
+		bundle.put(PENDING_ALL_POTION_DISCOVER, pendingAllPotionDiscover);
 		bundle.put(PENDING_DRAW_PILE_PEEK, pendingDrawPilePeek);
 		bundle.put(PENDING_DRAW_PILE_TYPE_SELECT, pendingDrawPileTypeSelect == null ? -1 : pendingDrawPileTypeSelect.ordinal());
 		bundle.put(PENDING_DISCARD_HAND_SELECT_COUNT, pendingDiscardHandSelectCount);
@@ -558,6 +566,7 @@ public class DeckBuilderCombat {
 		combat.playerTurnDexterity = bundle.contains(PLAYER_TURN_DEXTERITY) ? bundle.getInt(PLAYER_TURN_DEXTERITY) : 0;
 		combat.playerDamageReduction = bundle.contains(PLAYER_DAMAGE_REDUCTION) ? bundle.getInt(PLAYER_DAMAGE_REDUCTION) : 0;
 		combat.playerBlockReduction = bundle.contains(PLAYER_BLOCK_REDUCTION) ? bundle.getInt(PLAYER_BLOCK_REDUCTION) : 0;
+		combat.playerVulnerable = bundle.contains(PLAYER_VULNERABLE) ? bundle.getInt(PLAYER_VULNERABLE) : 0;
 		combat.playerWeak = bundle.contains(PLAYER_WEAK) ? bundle.getInt(PLAYER_WEAK) : 0;
 		combat.playerDexterity = bundle.contains(PLAYER_DEXTERITY) ? bundle.getInt(PLAYER_DEXTERITY) : 0;
 		combat.playerArtifact = bundle.contains(PLAYER_ARTIFACT) ? bundle.getInt(PLAYER_ARTIFACT) : 0;
@@ -608,6 +617,7 @@ public class DeckBuilderCombat {
 		combat.blockFromCardDisabledTurns = bundle.contains(BLOCK_FROM_CARD_DISABLED_TURNS) ? bundle.getInt(BLOCK_FROM_CARD_DISABLED_TURNS) : 0;
 		combat.pendingAllCardDiscover = bundle.contains(PENDING_ALL_CARD_DISCOVER) && bundle.getBoolean(PENDING_ALL_CARD_DISCOVER);
 		combat.pendingAllRelicDiscover = bundle.contains(PENDING_ALL_RELIC_DISCOVER) && bundle.getBoolean(PENDING_ALL_RELIC_DISCOVER);
+		combat.pendingAllPotionDiscover = bundle.contains(PENDING_ALL_POTION_DISCOVER) && bundle.getBoolean(PENDING_ALL_POTION_DISCOVER);
 		combat.pendingDrawPilePeek = bundle.contains(PENDING_DRAW_PILE_PEEK) && bundle.getBoolean(PENDING_DRAW_PILE_PEEK);
 		if (bundle.contains(PENDING_DRAW_PILE_TYPE_SELECT)) {
 			int type = bundle.getInt(PENDING_DRAW_PILE_TYPE_SELECT);
@@ -749,6 +759,7 @@ public class DeckBuilderCombat {
 		playerHPLostCountThisTurn = 0;
 		firstShivUsed = false;
 		nostalgiaUsedThisTurn = false;
+		if (playerVulnerable > 0) playerVulnerable--;
 		if (playerWeak > 0) playerWeak--;
 		if (playerBlessed > 0) playerBlessed--;
 		syncPotionlessDexterity();
@@ -1548,6 +1559,7 @@ public class DeckBuilderCombat {
 	@SuppressWarnings("SuspiciousIndentation")
     public int endTurn() {
 		lastEnemyActions.clear();
+		lastEnemyEndTurnDamageEvents.clear();
 		lastTurnEndAutoPlayResults.clear();
 		lastTurnEndStatusDamage = 0;
 		lastTurnEndPoisonDarts = 0;
@@ -1556,6 +1568,7 @@ public class DeckBuilderCombat {
 		lastOrangeBombTotalDamage = 0;
 		lastOrangeBombExplosions = 0;
 		lastPriceOfSinDamage = 0;
+		lastCombatBreathingBlock = 0;
 		for (int code : hand) {
 			if (DeckCard.byCode(code) == DeckCard.POISON_DART) {
 				lastTurnEndPoisonDarts++;
@@ -1650,7 +1663,7 @@ public class DeckBuilderCombat {
 		}
 		int combatBreathingBlock = activePowerBlock(DeckCard.COMBAT_BREATHING);
 		if (combatBreathingBlock > 0 && playerConsecutiveStrike > 0) {
-			gainBlock(combatBreathingBlock * playerConsecutiveStrike);
+			lastCombatBreathingBlock = gainBlock(combatBreathingBlock * playerConsecutiveStrike);
 		}
 
 		ArrayList<Integer> retained = new ArrayList<>();
@@ -1675,8 +1688,12 @@ public class DeckBuilderCombat {
 		}
 		if (playerBlockReduction > 0) playerBlockReduction--;
 		if (playerEntangle > 0) playerEntangle--;
-		playerBlockReduction += curseBlockReductionGain;
-		playerWeak += curseWeakGain;
+		for (int i = 0; i < curseBlockReductionGain; i++) {
+			if (applyPlayerDebuff()) playerBlockReduction++;
+		}
+		for (int i = 0; i < curseWeakGain; i++) {
+			if (applyPlayerDebuff()) playerWeak++;
+		}
 		if (DeckBuilderRun.hasRelic(DeckRelic.KAWAJIRI_MEMORY_DISC) && block >= 10) {
 			ArrayList<DeckCombatEnemy> alive = aliveEnemies();
 			if (!alive.isEmpty()) {
@@ -1756,7 +1773,11 @@ public class DeckBuilderCombat {
 			if (enemy.kind == DeckEnemy.BYRDONIS && enemy.alive()) enemy.strength += 1;
 			if (enemy.ritual > 0 && enemy.alive()) enemy.strength += enemy.ritual;
 			if (enemy.demise > 0 && enemy.alive()) {
+				int dealt = Math.min(enemy.demise, enemy.hp);
 				enemy.hp = Math.max(0, enemy.hp - enemy.demise);
+				if (dealt > 0) {
+					lastEnemyEndTurnDamageEvents.add(DamageEvent.enemy(enemyIndex(enemy), dealt, enemy.hp));
+				}
 			}
 		}
 		enemies.addAll(splitSpawns);
@@ -1785,6 +1806,7 @@ public class DeckBuilderCombat {
 
 	DeckEnemyIntent.AttackResult performEnemyAttack(DeckCombatEnemy enemy, int baseDamage, int remainingBlock, String label) {
 		int enemyDamage = enemyDamage(enemy, baseDamage);
+		if (playerVulnerable > 0) enemyDamage = (enemyDamage * 3 + 1) / 2;
 		if (enemy.attackDown > 0) enemyDamage = enemyDamage * 3 / 4;
 		if (incomingDamageReductionTurns > 0) enemyDamage = enemyDamage * 70 / 100;
 		int blocked = Math.min(remainingBlock, enemyDamage);

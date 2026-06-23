@@ -582,7 +582,10 @@ public enum DeckCard {
 	},
 
 	RELIC_SELECTION_BOX(130, "유물 선택 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.CRYSTAL_CHEST,
-			new DeckCardEffects.RelicSelectionBoxEffect());
+			new DeckCardEffects.RelicSelectionBoxEffect()),
+
+	POTION_SELECTION_BOX(131, "물약 선택 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.POTION_HOLDER,
+			new DeckCardEffects.PotionSelectionBoxEffect());
 
 	public final int id;
 	public final String title;
@@ -752,6 +755,9 @@ public enum DeckCard {
 	}
 
 	public int upgradedForPlay(int code) {
+		if (DeckCardPool.isStatus(this) || DeckCardPool.isCurse(this)) {
+			return code;
+		}
 		int upgrade = Math.min(maxUpgradeLevel(), upgradeLevel(code) + 1);
 		return DeckCardCode.withUpgradeLevel(code, upgrade);
 	}
