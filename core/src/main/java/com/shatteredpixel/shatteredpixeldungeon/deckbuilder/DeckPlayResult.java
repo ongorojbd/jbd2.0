@@ -55,13 +55,19 @@ public class DeckPlayResult {
 		public final int enemyIndex;
 		public final int damage;
 		public final int vulnerable;
+		public final int attackDown;
 		public final int wave;
 		public final boolean isAttack;
 
 		public Hit(int enemyIndex, int damage, int vulnerable, int wave, boolean isAttack) {
+			this(enemyIndex, damage, vulnerable, 0, wave, isAttack);
+		}
+
+		public Hit(int enemyIndex, int damage, int vulnerable, int attackDown, int wave, boolean isAttack) {
 			this.enemyIndex = enemyIndex;
 			this.damage = damage;
 			this.vulnerable = vulnerable;
+			this.attackDown = attackDown;
 			this.wave = wave;
 			this.isAttack = isAttack;
 		}
@@ -105,7 +111,11 @@ public class DeckPlayResult {
 		public void nextWave() { currentWave++; }
 
 		public void addHit(int enemyIndex, int damage, int vulnerable) {
-			hits.add(new Hit(enemyIndex, damage, vulnerable, currentWave, false));
+			addHit(enemyIndex, damage, vulnerable, 0);
+		}
+
+		public void addHit(int enemyIndex, int damage, int vulnerable, int attackDown) {
+			hits.add(new Hit(enemyIndex, damage, vulnerable, attackDown, currentWave, false));
 			this.damage += damage;
 			this.vulnerable += vulnerable;
 		}

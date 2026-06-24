@@ -39,7 +39,14 @@ public class DeckStartingProfile {
 		register(HeroClass.HUNTRESS,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
-				card(DeckCard.FOUNDATION_BOX, 1));
+				card(DeckCard.FOUNDATION_BOX, 1),
+				card(DeckCard.POISON_COAT, 1),
+				card(DeckCard.LIFE_UNDERSTANDING, 1),
+				card(DeckCard.BLADE_FAN, 1),
+				card(DeckCard.BLADE_DANCE, 1),
+				card(DeckCard.INFINITE_BLADES, 1),
+				card(DeckCard.SECRET_PLAN, 1),
+				card(DeckCard.HIDDEN_DAGGER, 1));
 
 		register(HeroClass.JOHNNY,
 				card(DeckCard.STRIKE, 5),

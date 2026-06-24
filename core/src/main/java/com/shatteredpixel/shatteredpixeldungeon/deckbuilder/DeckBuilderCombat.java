@@ -121,6 +121,7 @@ public class DeckBuilderCombat {
 	private static final String ENEMY_BLOCK_REDUCTION = "enemy_block_reduction";
 	private static final String ENEMY_VENOM = "enemy_venom";
 	private static final String ENEMY_DEMISE = "enemy_demise";
+	private static final String ENEMY_PERSISTENT_DAMAGE = "enemy_persistent_damage";
 	private static final String ENEMY_RITUAL = "enemy_ritual";
 	private static final String ENEMY_DARK_SPACE = "enemy_dark_space";
 	private static final String ENEMY_LAST_INTENT = "enemy_last_intent";
@@ -136,6 +137,8 @@ public class DeckBuilderCombat {
 	private static final String SHIV_DAMAGE_BONUS = "shiv_damage_bonus";
 	private static final String FIRST_SHIV_DAMAGE_BONUS = "first_shiv_damage_bonus";
 	private static final String SHIV_RETAIN = "shiv_retain";
+	private static final String SHIV_ALL_ENEMIES = "shiv_all_enemies";
+	private static final String INFINITE_BLADES_SHIVS = "infinite_blades_shivs";
 	private static final String SPINNING_NAIL_DAMAGE_BONUS = "spinning_nail_damage_bonus";
 	private static final String PLAYER_ENTANGLE = "player_entangle";
 	private static final String PENDING_DISCOVER = "pending_discover";
@@ -166,6 +169,7 @@ public class DeckBuilderCombat {
 	private static final String POWERS_PLAYED = "powers_played";
 	private static final String RUPTURE_STRENGTH = "rupture_strength";
 	private static final String FIRESEA_DAMAGE = "firesea_damage";
+	private static final String POISON_COAT_DAMAGE = "poison_coat_damage";
 	private static final String HP_LOST_THIS_TURN = "hp_lost_this_turn";
 	private static final String HP_LOST_THIS_COMBAT = "hp_lost_this_combat";
 	private static final String BONUS_ENERGY_TURNS = "bonus_energy_turns";
@@ -190,6 +194,7 @@ public class DeckBuilderCombat {
 	private static final String PENDING_DRAW_PILE_PEEK = "pending_draw_pile_peek";
 	private static final String PENDING_DRAW_PILE_TYPE_SELECT = "pending_draw_pile_type_select";
 	private static final String PENDING_DISCARD_HAND_SELECT_COUNT = "pending_discard_hand_select_count";
+	private static final String PENDING_DAGGER_THROW_DISCARD = "pending_dagger_throw_discard";
 	private static final String IMPOSTING_PRESENCE_DAMAGE = "imposting_presence_damage";
 	private static final String GUARD_BLOCK_BONUS = "guard_block_bonus";
 	private static final String AUTOMATION_COUNT = "automation_count";
@@ -240,6 +245,8 @@ public class DeckBuilderCombat {
 	public int spinningNailDamageBonus;
 	public boolean firstShivUsed;
 	public boolean shivRetain;
+	public boolean shivAllEnemies;
+	public int infiniteBladesShivs;
 	public boolean playerBarricade;
 	public boolean playerFirstBlockDouble;
 	public boolean firstBlockDoubleUsedThisTurn;
@@ -264,6 +271,7 @@ public class DeckBuilderCombat {
 	public int cardsPlayedThisCombat;
 	public int ruptureStrengthPerLoss;
 	public int fireseaDamagePerLoss;
+	public int poisonCoatDamage;
 	public int playerHPLostCountThisTurn;
 	public int playerHPLostCountThisCombat;
 	public int bonusEnergyTurns;
@@ -287,6 +295,7 @@ public class DeckBuilderCombat {
 	public boolean pendingDrawPilePeek = false;
 	public DeckCardType pendingDrawPileTypeSelect = null;
 	public int pendingDiscardHandSelectCount = 0;
+	public boolean pendingDaggerThrowDiscard = false;
 	public int impostingPresenceDamage = 0;
 	public int guardBlockBonus = 0;
 	public int automationCount = 0;
@@ -414,6 +423,8 @@ public class DeckBuilderCombat {
 		bundle.put(SHIV_DAMAGE_BONUS, shivDamageBonus);
 		bundle.put(FIRST_SHIV_DAMAGE_BONUS, firstShivDamageBonus);
 		bundle.put(SHIV_RETAIN, shivRetain);
+		bundle.put(SHIV_ALL_ENEMIES, shivAllEnemies);
+		bundle.put(INFINITE_BLADES_SHIVS, infiniteBladesShivs);
 		bundle.put(SPINNING_NAIL_DAMAGE_BONUS, spinningNailDamageBonus);
 		bundle.put(PLAYER_ENTANGLE, playerEntangle);
 		bundle.put(PLAYER_CONSECUTIVE_STRIKE, playerConsecutiveStrike);
@@ -441,6 +452,7 @@ public class DeckBuilderCombat {
 		bundle.put(CARDS_PLAYED_THIS_COMBAT, cardsPlayedThisCombat);
 		bundle.put(RUPTURE_STRENGTH, ruptureStrengthPerLoss);
 		bundle.put(FIRESEA_DAMAGE, fireseaDamagePerLoss);
+		bundle.put(POISON_COAT_DAMAGE, poisonCoatDamage);
 		bundle.put(HP_LOST_THIS_TURN, playerHPLostCountThisTurn);
 		bundle.put(HP_LOST_THIS_COMBAT, playerHPLostCountThisCombat);
 		bundle.put(BONUS_ENERGY_TURNS, bonusEnergyTurns);
@@ -462,6 +474,7 @@ public class DeckBuilderCombat {
 		bundle.put(PENDING_DRAW_PILE_PEEK, pendingDrawPilePeek);
 		bundle.put(PENDING_DRAW_PILE_TYPE_SELECT, pendingDrawPileTypeSelect == null ? -1 : pendingDrawPileTypeSelect.ordinal());
 		bundle.put(PENDING_DISCARD_HAND_SELECT_COUNT, pendingDiscardHandSelectCount);
+		bundle.put(PENDING_DAGGER_THROW_DISCARD, pendingDaggerThrowDiscard);
 		if (!pulsingAxeReturns.isEmpty()) {
 			bundle.put(PULSING_AXE_RETURNS, toArray(pulsingAxeReturns));
 		}
@@ -512,6 +525,7 @@ public class DeckBuilderCombat {
 		int[] enemyBlockReduction = new int[enemies.size()];
 		int[] enemyVenom = new int[enemies.size()];
 		int[] enemyDemise = new int[enemies.size()];
+		int[] enemyPersistentDamage = new int[enemies.size()];
 		int[] enemyRitual = new int[enemies.size()];
 		int[] enemyDarkSpace = new int[enemies.size()];
 		int[] enemyLastIntent = new int[enemies.size()];
@@ -535,6 +549,7 @@ public class DeckBuilderCombat {
 			enemyBlockReduction[i] = enemy.blockReduction;
 			enemyVenom[i] = enemy.venom;
 			enemyDemise[i] = enemy.demise;
+			enemyPersistentDamage[i] = enemy.persistentDamage;
 			enemyRitual[i] = enemy.ritual;
 			enemyDarkSpace[i] = enemy.darkSpace;
 			enemyLastIntent[i] = enemy.lastIntent;
@@ -557,6 +572,7 @@ public class DeckBuilderCombat {
 		bundle.put(ENEMY_BLOCK_REDUCTION, enemyBlockReduction);
 		bundle.put(ENEMY_VENOM, enemyVenom);
 		bundle.put(ENEMY_DEMISE, enemyDemise);
+		bundle.put(ENEMY_PERSISTENT_DAMAGE, enemyPersistentDamage);
 		bundle.put(ENEMY_RITUAL, enemyRitual);
 		bundle.put(ENEMY_DARK_SPACE, enemyDarkSpace);
 		bundle.put(ENEMY_LAST_INTENT, enemyLastIntent);
@@ -591,6 +607,8 @@ public class DeckBuilderCombat {
 		combat.shivDamageBonus = bundle.contains(SHIV_DAMAGE_BONUS) ? bundle.getInt(SHIV_DAMAGE_BONUS) : 0;
 		combat.firstShivDamageBonus = bundle.contains(FIRST_SHIV_DAMAGE_BONUS) ? bundle.getInt(FIRST_SHIV_DAMAGE_BONUS) : 0;
 		combat.shivRetain = bundle.getBoolean(SHIV_RETAIN);
+		combat.shivAllEnemies = bundle.contains(SHIV_ALL_ENEMIES) && bundle.getBoolean(SHIV_ALL_ENEMIES);
+		combat.infiniteBladesShivs = bundle.contains(INFINITE_BLADES_SHIVS) ? bundle.getInt(INFINITE_BLADES_SHIVS) : 0;
 		combat.spinningNailDamageBonus = bundle.contains(SPINNING_NAIL_DAMAGE_BONUS) ? bundle.getInt(SPINNING_NAIL_DAMAGE_BONUS) : 0;
 		combat.playerEntangle = bundle.contains(PLAYER_ENTANGLE) ? bundle.getInt(PLAYER_ENTANGLE) : 0;
 		combat.playerConsecutiveStrike = bundle.contains(PLAYER_CONSECUTIVE_STRIKE) ? bundle.getInt(PLAYER_CONSECUTIVE_STRIKE) : 0;
@@ -618,6 +636,7 @@ public class DeckBuilderCombat {
 		combat.cardsPlayedThisCombat = bundle.contains(CARDS_PLAYED_THIS_COMBAT) ? bundle.getInt(CARDS_PLAYED_THIS_COMBAT) : combat.cardsPlayedThisTurn;
 		combat.ruptureStrengthPerLoss = bundle.contains(RUPTURE_STRENGTH) ? bundle.getInt(RUPTURE_STRENGTH) : 0;
 		combat.fireseaDamagePerLoss = bundle.contains(FIRESEA_DAMAGE) ? bundle.getInt(FIRESEA_DAMAGE) : 0;
+		combat.poisonCoatDamage = bundle.contains(POISON_COAT_DAMAGE) ? bundle.getInt(POISON_COAT_DAMAGE) : 0;
 		combat.playerHPLostCountThisTurn = bundle.contains(HP_LOST_THIS_TURN) ? bundle.getInt(HP_LOST_THIS_TURN) : 0;
 		combat.playerHPLostCountThisCombat = bundle.contains(HP_LOST_THIS_COMBAT) ? bundle.getInt(HP_LOST_THIS_COMBAT) : 0;
 		combat.bonusEnergyTurns = bundle.contains(BONUS_ENERGY_TURNS) ? bundle.getInt(BONUS_ENERGY_TURNS) : 0;
@@ -644,6 +663,7 @@ public class DeckBuilderCombat {
 			combat.pendingDrawPileTypeSelect = type >= 0 && type < types.length ? types[type] : null;
 		}
 		combat.pendingDiscardHandSelectCount = bundle.contains(PENDING_DISCARD_HAND_SELECT_COUNT) ? bundle.getInt(PENDING_DISCARD_HAND_SELECT_COUNT) : 0;
+		combat.pendingDaggerThrowDiscard = bundle.contains(PENDING_DAGGER_THROW_DISCARD) && bundle.getBoolean(PENDING_DAGGER_THROW_DISCARD);
 		if (bundle.contains(PULSING_AXE_RETURNS)) {
 			restoreList(combat.pulsingAxeReturns, bundle, PULSING_AXE_RETURNS);
 		}
@@ -698,6 +718,7 @@ public class DeckBuilderCombat {
 		int[] enemyBlockReduction = bundle.contains(ENEMY_BLOCK_REDUCTION) ? bundle.getIntArray(ENEMY_BLOCK_REDUCTION) : new int[0];
 		int[] enemyVenom = bundle.contains(ENEMY_VENOM) ? bundle.getIntArray(ENEMY_VENOM) : new int[0];
 		int[] enemyDemise = bundle.contains(ENEMY_DEMISE) ? bundle.getIntArray(ENEMY_DEMISE) : new int[0];
+		int[] enemyPersistentDamage = bundle.contains(ENEMY_PERSISTENT_DAMAGE) ? bundle.getIntArray(ENEMY_PERSISTENT_DAMAGE) : new int[0];
 		int[] enemyRitual = bundle.contains(ENEMY_RITUAL) ? bundle.getIntArray(ENEMY_RITUAL) : new int[0];
 		int[] enemyDarkSpace = bundle.contains(ENEMY_DARK_SPACE) ? bundle.getIntArray(ENEMY_DARK_SPACE) : new int[0];
 		int[] enemyLastIntent = bundle.contains(ENEMY_LAST_INTENT) ? bundle.getIntArray(ENEMY_LAST_INTENT) : new int[0];
@@ -723,6 +744,7 @@ public class DeckBuilderCombat {
 			if (i < enemyBlockReduction.length) enemy.blockReduction = enemyBlockReduction[i];
 			if (i < enemyVenom.length) enemy.venom = enemyVenom[i];
 			if (i < enemyDemise.length) enemy.demise = enemyDemise[i];
+			if (i < enemyPersistentDamage.length) enemy.persistentDamage = enemyPersistentDamage[i];
 			if (i < enemyRitual.length) enemy.ritual = enemyRitual[i];
 			if (i < enemyDarkSpace.length) enemy.darkSpace = enemyDarkSpace[i];
 			if (i < enemyLastIntent.length) enemy.lastIntent = enemyLastIntent[i];
@@ -770,6 +792,9 @@ public class DeckBuilderCombat {
 				addToHand(code);
 			}
 			pulsingAxeReturns.clear();
+		}
+		for (int i = 0; i < infiniteBladesShivs; i++) {
+			addShivToHand(false);
 		}
 		firstBlockDoubleUsedThisTurn = false;
 		playerTurnStrength = 0;
@@ -1094,7 +1119,7 @@ public class DeckBuilderCombat {
 			int currentHandIndex = currentHandIndexForPlayedCard(handIndex, cardCode);
 			if (currentHandIndex < 0) return result.build();
 			hand.remove(currentHandIndex);
-			if (card == DeckCard.SHIV) {
+			if (isShivCard(card)) {
 				firstShivUsed = true;
 			}
 			if (card.type == DeckCardType.POWER) {
@@ -1112,6 +1137,8 @@ public class DeckBuilderCombat {
 				int cleanCode = DeckCardCode.withoutCostOverride(cardCode);
 				if (card == DeckCard.GLIDE) {
 					discardPile.add(DeckCardCode.withCostOverride(cardCode, cost + 1));
+				} else if (card == DeckCard.SECRET_PLAN) {
+					discardPile.add(DeckCardCode.withCostOverride(cleanCode, Math.max(0, cost - 1)));
 				} else if (!castOnDraw && nostalgiaActive && !nostalgiaUsedThisTurn
 						&& (card.type == DeckCardType.ATTACK || card.type == DeckCardType.SKILL)) {
 					nostalgiaUsedThisTurn = true;
@@ -1245,7 +1272,7 @@ public class DeckBuilderCombat {
 		if (playerDamageReduction > 0) {
 			damage = damage * Math.max(0, 100 - playerDamageReduction) / 100;
 		}
-		if (card == DeckCard.SHIV) {
+		if (isShivCard(card)) {
 			damage += shivDamageBonus;
 			if (!firstShivUsed) {
 				damage += firstShivDamageBonus;
@@ -1284,6 +1311,23 @@ public class DeckBuilderCombat {
 		} else {
 			discardPile.add(cardCode);
 		}
+	}
+
+	public void addShivToHand(boolean upgraded) {
+		int shivCode = DeckCard.SHIV.code();
+		if (upgraded) shivCode = DeckCardCode.upgrade(shivCode);
+		if (shivRetain) shivCode = DeckCardCode.withKeyword(shivCode, DeckCardKeyword.RETAIN);
+		addToHand(shivCode);
+	}
+
+	public void addSpecialShivToHand() {
+		int shivCode = DeckCard.SPECIAL_SHIV.code();
+		if (shivRetain) shivCode = DeckCardCode.withKeyword(shivCode, DeckCardKeyword.RETAIN);
+		addToHand(shivCode);
+	}
+
+	public boolean isShivCard(DeckCard card) {
+		return card == DeckCard.SHIV || card == DeckCard.SPECIAL_SHIV;
 	}
 
 	private void moveRandomDrawPileCardToHand(boolean zeroCostThisTurn) {
@@ -1491,6 +1535,11 @@ public class DeckBuilderCombat {
 		if (dealt > 0) {
 			lastDamageEvents.add(DamageEvent.enemy(enemyIndex(target), dealt, target.hp));
 		}
+		if (attackCard && dealt > 0 && poisonCoatDamage > 0 && target.alive()) {
+			if (applyEnemyDebuff(target)) {
+				target.persistentDamage += poisonCoatDamage;
+			}
+		}
 		if (!target.alive()) {
 			playKillCount++;
 			for (DeckCombatEnemy other : enemies) {
@@ -1520,6 +1569,19 @@ public class DeckBuilderCombat {
 			int thornDamage = Math.max(0, target.thorns - thornBlocked);
 			if (thornDamage > 0) loseHP(thornDamage);
 		}
+		return dealt;
+	}
+
+	private int applyPersistentDamageAtEnemyTurnStart(DeckCombatEnemy enemy) {
+		if (enemy == null || !enemy.alive() || enemy.persistentDamage <= 0) return 0;
+		int amount = enemy.persistentDamage;
+		int dealt = Math.min(amount, enemy.hp);
+		enemy.hp = Math.max(0, enemy.hp - amount);
+		enemy.persistentDamage = Math.max(0, enemy.persistentDamage - 1);
+		if (dealt > 0) {
+			lastEnemyEndTurnDamageEvents.add(DamageEvent.enemy(enemyIndex(enemy), dealt, enemy.hp));
+		}
+		if (!enemy.alive()) playKillCount++;
 		return dealt;
 	}
 
@@ -1721,7 +1783,7 @@ public class DeckBuilderCombat {
 			DeckCard handCard = DeckCard.byCode(code);
 			if (handCard.hasKeyword(code, DeckCardKeyword.TRANSIENT)) {
 				exhaustCard(cleanedCode);
-			} else if (retainHandTurns > 0 || handCard.hasKeyword(code, DeckCardKeyword.RETAIN) || (handCard == DeckCard.SHIV && shivRetain)
+			} else if (retainHandTurns > 0 || handCard.hasKeyword(code, DeckCardKeyword.RETAIN) || (isShivCard(handCard) && shivRetain)
 					|| (turn == 1 && DeckBuilderRun.hasRelic(DeckRelic.RINGING_TRIANGLE))) {
 				retained.add(cleanedCode);
 			} else {
@@ -1796,6 +1858,8 @@ public class DeckBuilderCombat {
 		for (DeckCombatEnemy enemy : enemies) {
 			if (!enemy.alive()) continue;
 			enemy.block = 0;
+			applyPersistentDamageAtEnemyTurnStart(enemy);
+			if (!enemy.alive()) continue;
 			if (enemy.kind == DeckEnemy.LARGE_SLIME && !enemy.splitUsed && enemy.hp <= enemy.ht / 2) {
 				enemy.splitUsed = true;
 				int splitHp = Math.max(1, enemy.hp);

@@ -33,6 +33,7 @@ public class DeckCombatEnemy {
 	public int blockReduction;
 	public int venom;
 	public int demise;
+	public int persistentDamage;
 	public int ritual;
 	public int darkSpace;
 	public int lastIntent;

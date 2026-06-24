@@ -575,9 +575,9 @@ public enum Rankings {
 			} else if (cause == null) {
 				return Messages.get(this, "something");
 			} else if (cause == DeckBattleScene.DeckBuilderRetire.class) {
-				return "덱빌딩 모드에서 리타이어!";
+				return "카드 배틀에서 리타이어!";
 			} else if (cause == DeckBattleScene.DeckBuilderVictory.class) {
-				return "덱빌딩 모드 클리어!";
+				return "카드 배틀 클리어!";
 			} else {
 				String result = Messages.get(cause, "rankings_desc", (Messages.get(cause, "name")));
 				if (result.contains(Messages.NO_TEXT_FOUND)){

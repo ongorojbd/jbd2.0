@@ -49,6 +49,13 @@ public enum DeckCard {
 			return damage + upgradeLevel(code) * 2;
 		}
 	},
+	SPECIAL_SHIV(151, "전갈탄", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 5, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.SPIRIT_ARROW, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.SpecialShivDamage()) {
+		@Override
+		public int damage(int code) {
+			return damage + upgradeLevel(code) * 2;
+		}
+	},
 	SCORPION_THROW(9, "전갈 투척", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 1, 0, 0, 0, 0, false, ItemSpriteSheet.SPIRIT_BOW, HeroClass.HUNTRESS, 1) {
 		@Override
 		public int draw(int code) {
@@ -73,6 +80,27 @@ public enum DeckCard {
 			return shivs + upgradeLevel(code);
 		}
 	},
+	LIFE_UNDERSTANDING(152, "생명 이해", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_HOLDER, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.AddSpecialShivs()),
+	BLADE_FAN(153, "칼날 부채", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.HOLSTER, HeroClass.HUNTRESS, 4,
+			new DeckCardEffects.BladeFanEffect()) {
+		@Override public int shivs(int code) { return upgradeLevel(code) > 0 ? 5 : 4; }
+	},
+	BLADE_DANCE(154, "검무", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.DAGGER, HeroClass.HUNTRESS, 3) {
+		@Override public int shivs(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
+	},
+	INFINITE_BLADES(155, "무한의 검날", DeckCardType.POWER, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.InfiniteBladesEffect()) {
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.VANGUARD && upgradeLevel(code) > 0) return true;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+	SECRET_PLAN(156, "비책", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_MANNAZ, HeroClass.HUNTRESS, 3) {
+		@Override public int shivs(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
+	},
+	HIDDEN_DAGGER(157, "숨겨진 단검", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.HiddenDaggerEffect()),
 
 	ROTATING_NAIL(15, "회전하는 손톱", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.RANDOM_ENEMY, 1, 3, 0, 1, 0, 0, 0, keywords(DeckCardKeyword.CAST_ON_DRAW, DeckCardKeyword.EXHAUST), false, Talent.J43, HeroClass.JOHNNY, 0),
 	TUSK_EQUIPMENT_DISC(16, "터스크의 장비 DISC", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.AIM), false, ItemSpriteSheet.ARTIFACT_TUSK1, HeroClass.JOHNNY, 0,
@@ -658,7 +686,10 @@ public enum DeckCard {
 	NEMESIS(149, "천적", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 15, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.CROSSBOW,
 			new DeckCardEffects.NemesisEffect()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 15; }
-	};
+	},
+
+	POISON_COAT(150, "독 바르기", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.POISON_DART, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.PoisonCoatEffect());
 
 	public final int id;
 	public final String title;

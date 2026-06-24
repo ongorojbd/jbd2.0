@@ -248,6 +248,8 @@ public class DeckBattleScene extends PixelScene {
                     enemy -> enemy.kind == DeckEnemy.LAGAVULIN ? 0 : enemy.venom),
             new EnemyStatusBuffSpec(BuffIndicator.POISON, 0.55f, 0.25f, 0.85f, "종언", "적의 턴 종료 시 이 수치만큼 체력을 잃습니다.",
                     enemy -> enemy.demise),
+            new EnemyStatusBuffSpec(BuffIndicator.POISON, 0.35f, 0.85f, 0.35f, "지속 피해", "적의 턴 시작 시 보호막을 무시하고 이 수치만큼 피해를 받은 뒤 1 감소합니다.",
+                    enemy -> enemy.persistentDamage),
             new EnemyStatusBuffSpec(BuffIndicator.IMMUNITY, "정화의 보호막", "상태이상에 걸릴 때 정화의 보호막을 1 차감하고 그 효과를 무효화합니다.",
                     enemy -> enemy.artifact),
             new EnemyStatusBuffSpec(BuffIndicator.BLESS, "축복", "체력 피해를 받을 때 피해를 1로 줄입니다. 턴이 끝날 때마다 1 감소합니다.",
@@ -725,7 +727,7 @@ public class DeckBattleScene extends PixelScene {
         if (combat.playerDead()) {
             updatePlayerHpUi();
             Sample.INSTANCE.play(Assets.Sounds.DEATH);
-            log("패배했습니다. 덱빌딩 맵으로 돌아갑니다.");
+            log("패배했습니다. 랭킹 화면으로 돌아갑니다.");
             addEffect(new DelayedActionEffect(0.24f, new Runnable() {
                 @Override
                 public void run() {
@@ -1273,6 +1275,10 @@ public class DeckBattleScene extends PixelScene {
             showStratagemSelectWindow();
             return;
         }
+        if (combat.pendingDaggerThrowDiscard && !selectingForDaggerThrowDiscard) {
+            restoreDaggerThrowDiscardSelection();
+            return;
+        }
         combatLocked = false;
         for (CardButton button : cardButtons) {
             button.destroy();
@@ -1680,10 +1686,11 @@ public class DeckBattleScene extends PixelScene {
             int code = DeckCardCode.withoutCostOverride(combat.hand.remove(idx));
             combat.discardPile.add(code);
             log("단검 투척: 카드를 1장 버렸습니다.");
-            saveCombatState();
         }
         pureSelectedIndices.clear();
         selectingForDaggerThrowDiscard = false;
+        combat.pendingDaggerThrowDiscard = false;
+        saveCombatState();
         hidePureSelectionBanner();
         refresh();
     }
@@ -2321,6 +2328,18 @@ public class DeckBattleScene extends PixelScene {
     }
 
     private void beginDaggerThrowDiscardSelection() {
+        if (combat.hand.isEmpty()) {
+            combat.pendingDaggerThrowDiscard = false;
+            saveCombatState();
+            refresh();
+            return;
+        }
+        combat.pendingDaggerThrowDiscard = true;
+        saveCombatState();
+        restoreDaggerThrowDiscardSelection();
+    }
+
+    private void restoreDaggerThrowDiscardSelection() {
         selectingForDaggerThrowDiscard = true;
         pureHandIndex = -1;
         pureSelectedIndices.clear();
@@ -5041,20 +5060,21 @@ public class DeckBattleScene extends PixelScene {
         if (step == 0) {
             // 1단계: 공격(ATTACK) 카드 소개
             showTutorialMessage(
-                    "덱빌딩 튜토리얼 — 공격 카드\n\n" +
-                            "공격(ATTACK) 카드는 적에게 직접 피해를 주는 카드입니다.\n\n" +
-                            "에너지(좌하단 수치)를 소비해 카드를 사용합니다. 카드 좌상단의 숫자가 소모 에너지입니다.\n" +
-                            "적 이름 아래 빨간 숫자는 다음 턴에 받을 피해 예고입니다.\n\n" +
-                            "공격 카드를 눌러 적에게 피해를 주세요.");
+                    "카드 타입 — 공격 카드\n\n" +
+                            "먼저 공격 카드 설명부터 들어둬!\n\n" +
+                            "공격 카드는 적에게 직접 피해를 퍼붓는 카드야! 카드 상단의 숫자가 소모 에너지니까 잘 봐둬!\n\n" +
+                            "그리고 하나 더—— 적 하단의 예고 텍스트!! " +
+                            "다음 턴에 받을 피해를 미리 알려주는 거야. 이걸 무시하면 큰코다친다고!!\n\n" +
+                            "자, 공격 카드를 내서 한 방 먹여봐!!");
         } else if (step >= 3 && step < 8 && combat.turn >= 2) {
             // 2턴~, 세 타입 모두 사용 완료 후 물약 튜토리얼
             DeckBuilderRun.tutorialStep = 8;
             showTutorialMessage(
                     "물약 안내\n\n" +
-                            "화면 상단 HUD에 물약 슬롯이 있습니다.\n\n" +
-                            "물약은 전투 중 언제든지 사용할 수 있는 일회성 아이템입니다. " +
-                            "시작 물약 '화염 물약'은 모든 적에게 피해를 10 줍니다.\n\n" +
-                            "위기에 처했을 때나 결정적인 순간에 전략적으로 사용하세요!");
+                            "화면 상단에 물약 슬롯이 보이지?!\n\n" +
+                            "물약은 전투 중 언제든지 쓸 수 있는 일회성 아이템이야! " +
+                            "지금 갖고 있는 '화염 물약'은 모든 적에게 피해를 10이나 준다고!\n\n" +
+                            "위기의 순간, 아니면 결정적인 한 방이 필요할 때 전략적으로 쓰는거야. 잊지 마!!");
         }
     }
 
@@ -5084,19 +5104,19 @@ public class DeckBattleScene extends PixelScene {
         if (step == 0 && card.type != DeckCardType.ATTACK) {
             showTutorialMessage(
                     "지금은 공격 카드를 사용할 차례입니다.\n\n" +
-                            "공격(ATTACK) 타입 카드를 골라 적에게 피해를 주세요.");
+                            "공격 타입 카드를 골라 적에게 피해를 주세요.");
             return false;
         }
         if (step == 1 && card.type != DeckCardType.SKILL) {
             showTutorialMessage(
                     "이제 보조 카드를 사용할 차례입니다.\n\n" +
-                            "보조(SKILL) 타입 카드를 골라 사용해 보세요.");
+                            "보조 타입 카드를 골라 사용해 보세요.");
             return false;
         }
         if (step == 2 && card.type != DeckCardType.POWER) {
             showTutorialMessage(
                     "이제 지속 카드를 사용할 차례입니다.\n\n" +
-                            "지속(POWER) 타입 카드를 골라 사용해 보세요.");
+                            "지속 타입 카드를 골라 사용해 보세요.");
             return false;
         }
         return true;
@@ -5108,27 +5128,25 @@ public class DeckBattleScene extends PixelScene {
         if (step == 0 && card.type == DeckCardType.ATTACK) {
             DeckBuilderRun.tutorialStep = 1;
             showTutorialMessage(
-                    "잘했습니다! 공격 카드로 적에게 피해를 주었습니다.\n\n" +
-                            "다음은 보조(SKILL) 카드입니다.\n" +
-                            "보조 카드는 방어, 드로우 등 다양한 지원 효과를 가집니다. " +
-                            "보호막 카드를 사용하면 적의 피해를 먼저 흡수합니다.\n\n" +
+                    "잘했습니다! 공격 카드로 적에게 피해를 주었습니다. 다음은 보조 카드입니다.\n\n" +
+                            "보조 카드는 방어, 드로우 등 다양한 지원 효과를 가진 카드입니다. " +
+                            "한 번 잃은 체력은 되찾기 어려운 만큼, 보조 카드를 통해 적의 피해를 최소화하는 전략이 가장 중요합니다!\n\n" +
                             "손패에서 보조 카드를 사용해 보세요.");
         } else if (step == 1 && card.type == DeckCardType.SKILL) {
             DeckBuilderRun.tutorialStep = 2;
             showTutorialMessage(
-                    "좋습니다! 보조 카드를 사용했습니다.\n\n" +
-                            "다음은 지속(POWER) 카드입니다.\n" +
-                            "지속 카드는 전투가 끝날 때까지 지속되는 강화 효과를 제공합니다. " +
-                            "한번 사용하면 전투 내내 효과가 유지됩니다.\n\n" +
+                    "좋습니다! 보조 카드를 사용해서 적의 피해를 방어할 수 있게 되었습니다. 다음은 지속 카드입니다.\n\n" +
+                            "지속 카드는 한 번 쓰면 전투가 끝날 때까지 효과가 지속되는 카드입니다.\n\n" +
+                            "사용한 지속 카드는 버린 카드로 들어가지 않고 해당 전투에서 사라집니다.\n\n" +
                             "손패에서 지속 카드를 찾아 사용해 보세요.");
         } else if (step == 2 && card.type == DeckCardType.POWER) {
             DeckBuilderRun.tutorialStep = 3;
             showTutorialMessage(
-                    "훌륭합니다! 세 가지 카드 타입을 모두 사용해보셨습니다.\n\n" +
-                            "[카드 순환]\n" +
-                            "카드를 모두 사용하면 버린 카드들이 자동으로 다시 섞여 새 덱이 됩니다. " +
-                            "덱이 작을수록 강한 카드를 더 자주 뽑을 수 있습니다.\n\n" +
-                            "이제 자유롭게 카드를 사용해 적을 쓰러뜨려 보세요!");
+                    "훌륭합니다! 세 가지 카드 타입을 모두 사용했습니다!\n\n" +
+                            "[카드 순환 방식]\n" +
+                            "사용하거나 턴 종료 시 남은 카드는 모두 버린 카드로 이동합니다. " +
+                            "뽑을 카드가 바닥나면 버린 카드를 자동으로 다시 섞어서 남은 카드에 채워넣습니다.\n\n" +
+                            "이제 자유롭게 카드를 써서 적을 쓰러뜨려 보세요!");
         }
     }
 
@@ -5146,21 +5164,23 @@ public class DeckBattleScene extends PixelScene {
         DeckBuilderRun.tutorialMode = false;
         // addToFront: 마지막에 추가한 창이 가장 위에 표시됨
         // 카드 보상 안내를 먼저 추가 > 전리품 창 바로 위에 위치
+        // 카드 보상 안내
         showTutorialMessage(
-                "카드 보상\n\n" +
-                        "전투 후에는 3장의 카드 중 1장을 선택해 덱에 추가할 수 있습니다.\n\n" +
-                        "[조언]\n" +
-                        "카드를 무조건 추가하는 것이 항상 좋지는 않습니다. 덱이 커질수록 원하는 카드를 뽑기 어려워집니다. " +
-                        "25장 이하의 작은 덱을 유지하면 강한 카드를 더 자주 쓸 수 있습니다.\n\n" +
-                        "카드를 고르고 나면 튜토리얼이 완료됩니다!");
+                        "전투 후에는 여러 카드 중 1장을 골라 덱에 추가할 수 있습니다!\n\n" +
+                        "[카드 고르는 팁]\n" +
+                        "카드 보상에는 영웅의 전용 카드와 어떤 영웅이든 사용할 수 있는 공용 카드가 등장합니다." +
+                        "카드를 무조건 추가하는 것이 항상 좋지는 않습니다. 덱이 커질수록 원하는 카드를 뽑기 어려워집니다.\n\n" +
+                        "단순히 강한 카드보다, 각각의 시너지가 맞는 카드를 고르는걸 잊지 마세요!\n\n" +
+                        "카드를 고르면 튜토리얼이 끝납니다. 여기까지 잘 따라오셨어요!");
+
         // 물약 안내를 2턴에 보여주지 못했다면 여기서 보충
         if (DeckBuilderRun.tutorialStep < 8) {
             showTutorialMessage(
                     "물약 안내\n\n" +
-                            "화면 상단 HUD에 물약 슬롯이 있습니다.\n\n" +
-                            "물약은 전투 중 언제든지 사용할 수 있는 일회성 아이템입니다. " +
-                            "'화염 물약'은 모든 적에게 피해를 10 줍니다.\n\n" +
-                            "위기에 처했을 때나 결정적인 순간에 전략적으로 사용하세요!");
+                            "화면 상단에 물약 슬롯이 보이시나요?\n\n" +
+                            "물약은 전투 중 언제든지 사용할 수 있는 유용한 일회성 아이템입니다. " +
+                            "갖고 있는 '화염 물약'은 모든 적에게 피해를 10 줍니다.\n\n" +
+                            "위기에 처했을 때나 결정적인 순간에 전략적으로 물약을 사용하세요!");
         }
     }
 

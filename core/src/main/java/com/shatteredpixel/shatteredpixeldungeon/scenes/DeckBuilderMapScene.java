@@ -100,7 +100,7 @@ public class DeckBuilderMapScene extends PixelScene {
 		addRunHud(insets);
 		addExitButton(insets, w);
 
-		IconTitle title = new IconTitle(Icons.STAIRS.get(), "덱빌딩 경로");
+		IconTitle title = new IconTitle(Icons.STAIRS.get(), "지도");
 		title.setSize(200, 0);
 		title.setPos(insets.left + (w - insets.left - insets.right - title.reqWidth()) / 2f, insets.top + 4);
 		align(title);
@@ -173,13 +173,15 @@ public class DeckBuilderMapScene extends PixelScene {
 		if (DeckBuilderRun.tutorialMode && !DeckBuilderRun.tutorialMapMessageShown) {
 			DeckBuilderRun.tutorialMapMessageShown = true;
 			addToFront(new WndMessage(
-					"덱빌딩 모드에 오신 것을 환영합니다!\n\n" +
-					"[목표]\n" +
-					"각 런이 제공하는 랜덤한 구성요소를 헤쳐나가며, 주어진 카드와 유물로 이길 수 있는 덱을 만드는 것이 목표입니다. " +
-					"처음에는 어려워 보이겠지만, 카드 간의 시너지를 파악한다면 항상 이길 수 있는 길이 있습니다!\n\n" +
-					"[지도 경로]\n" +
-					"지도에서 노드를 선택해 다음 행선지를 결정합니다. 전투, 엘리트, 상점, 이벤트, 휴식, 보물 등 다양한 경로가 있으며, 보스를 쓰러뜨리면 한 층을 클리어합니다.\n\n" +
-					"아래 노드를 클릭해 첫 번째 전투를 시작해 보세요!"));
+					"카드 배틀 튜토리얼에 오신 것을 환영합니다!\n\n" +
+							"[목표]\n" +
+							"게임마다 랜덤하게 주어지는 카드와 유물로 이길 수 있는 덱을 만드는 것이 목표입니다. " +
+							"처음엔 어려워 보일 수 있지만, 카드 간의 시너지를 파악한다면 이길 수 있는 길이 있습니다!\n\n" +
+							"[지도 경로]\n" +
+							"경로를 선택해 다음 행선지를 결정하세요. " +
+							"전투, 강적, 상점, 이벤트, 휴식, 보물 등 다양한 경로가 있으며, 보스를 쓰러뜨리면 하나의 계층이 클리어됩니다.\n\n" +
+							"다음 경로를 클릭해 첫 번째 전투를 시작해 보세요!"
+			));
 			saveMapState();
 		}
 	}

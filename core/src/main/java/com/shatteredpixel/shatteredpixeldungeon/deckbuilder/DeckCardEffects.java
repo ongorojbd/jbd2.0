@@ -106,6 +106,27 @@ public class DeckCardEffects {
 		}
 	}
 
+	public static class SpecialShivDamage extends Damage {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			for (DeckCombatEnemy target : targets(combat, card)) {
+				int damage = combat.cardDamage(card, cardCode, target);
+				int dealt = combat.damageEnemy(target, damage, true);
+				int attackDown = 0;
+				if (combat.applyEnemyDebuff(target)) {
+					attackDown = 1;
+					target.attackDown += attackDown;
+				}
+				result.addHit(combat.enemyIndex(target), dealt, 0, attackDown);
+			}
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return DeckCardText.damageRulesText(card, cardCode, combat) + " 공격력 저하를 1 부여합니다.";
+		}
+	}
+
 	public static class Block implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
@@ -357,17 +378,100 @@ public class DeckCardEffects {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			for (int i = 0; i < card.shivs(cardCode); i++) {
-				int shivCode = DeckCard.SHIV.code();
-				if (combat.shivRetain) {
-					shivCode = DeckCardCode.withKeyword(shivCode, DeckCardKeyword.RETAIN);
-				}
-				combat.addToHand(shivCode);
+				combat.addShivToHand(false);
 			}
 		}
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
 			return "전갈탄을 " + card.shivs(cardCode) + "장 손에 가져옵니다.";
+		}
+	}
+
+	public static class AddSpecialShivs implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int count = DeckCardCode.upgradeLevel(cardCode) > 0 ? 3 : 2;
+			for (int i = 0; i < count; i++) {
+				combat.addSpecialShivToHand();
+			}
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int count = DeckCardCode.upgradeLevel(cardCode) > 0 ? 3 : 2;
+			return "피해량이 1 높고, 공격력 저하 1을 부여하는 전갈탄을 " + count + "장 손으로 가져옵니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "전갈탄 2 > 3";
+		}
+	}
+
+	public static class BladeFanEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.shivAllEnemies = true;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "전갈탄이 이제 모든 적을 대상으로 합니다.";
+		}
+	}
+
+	public static class InfiniteBladesEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.infiniteBladesShivs++;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "내 턴 시작 시, 전갈탄을 1장 손으로 가져옵니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "선천성 추가";
+		}
+	}
+
+	public static class HiddenDaggerEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckCardPlayContext context) {
+			int toDiscard = Math.min(2, Math.max(0, context.combat.hand.size() - 1));
+			for (int i = 0; i < toDiscard; i++) {
+				ArrayList<Integer> candidates = new ArrayList<>();
+				for (int h = 0; h < context.combat.hand.size(); h++) {
+					if (h != context.handIndex) candidates.add(h);
+				}
+				if (candidates.isEmpty()) break;
+				int idx = candidates.get(Random.Int(candidates.size()));
+				int code = DeckCardCode.withoutCostOverride(context.combat.hand.remove(idx));
+				context.combat.discardPile.add(code);
+				if (idx < context.handIndex) context.combat.currentPlayHandIndexShift--;
+			}
+			boolean upgraded = DeckCardCode.upgradeLevel(context.effectiveCardCode) > 0;
+			for (int i = 0; i < 2; i++) {
+				context.combat.addShivToHand(upgraded);
+			}
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			boolean upgraded = DeckCardCode.upgradeLevel(cardCode) > 0;
+			return "카드를 2장 버립니다. " + (upgraded ? "강화된 전갈탄" : "전갈탄") + "을 2장 손으로 가져옵니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "전갈탄 > 강화된 전갈탄";
 		}
 	}
 
@@ -1474,6 +1578,22 @@ public class DeckCardEffects {
 		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) { return "피해 6 > 9"; }
 	}
 
+	public static class PoisonCoatEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.poisonCoatDamage += DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+		}
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			return "공격 카드가 막히지 않은 피해를 줄 때마다, 지속 피해를 " + amount + " 부여합니다.";
+		}
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "지속 피해 1 > 2";
+		}
+	}
+
 	public static class BloodWallEffect implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
@@ -2247,6 +2367,7 @@ public class DeckCardEffects {
 			if (enemy.blockReduction > 0) count++;
 			if (enemy.venom > 0) count++;
 			if (enemy.demise > 0) count++;
+			if (enemy.persistentDamage > 0) count++;
 			return count;
 		}
 	}
@@ -2581,7 +2702,7 @@ public class DeckCardEffects {
 
 	private static ArrayList<DeckCombatEnemy> targets(DeckBuilderCombat combat, DeckCard card) {
 		ArrayList<DeckCombatEnemy> targets = new ArrayList<>();
-		if (card.target == DeckCardTarget.ALL_ENEMIES) {
+		if ((combat.shivAllEnemies && combat.isShivCard(card)) || card.target == DeckCardTarget.ALL_ENEMIES) {
 			targets.addAll(combat.aliveEnemies());
 		} else if (card.target == DeckCardTarget.RANDOM_ENEMY) {
 			ArrayList<DeckCombatEnemy> alive = combat.aliveEnemies();
