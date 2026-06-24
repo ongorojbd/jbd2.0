@@ -63,7 +63,7 @@ public class DeckRunStart {
 		if (DeckBuilderRun.tutorialMode) {
 			addTutorialDeck();
 			DeckBuilderRun.startingRelicChosen = true;
-			DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.STRENGTH, DeckBuilderRun.MAX_POTION_SLOTS);
+			DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.EXPLOSIVE_AMPHULE, DeckBuilderRun.MAX_POTION_SLOTS);
 		} else {
 			DeckStartingProfile.addStartingDeck(DeckBuilderRun.deck, heroClass);
 			addStartingPotions();

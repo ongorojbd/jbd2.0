@@ -391,7 +391,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_CREAM_SPIN, 22, "무차별 회전"));
 
 	public static final DeckEnemyIntent CREAM_RAGE = register(strengthIntent(
-			DeckBuilderCombat.RESULT_CREAM_RAGE, 1, "공격력"));
+			DeckBuilderCombat.RESULT_CREAM_RAGE, 3, "공격력"));
 
 	public final int id;
 	private final IntentAction action;

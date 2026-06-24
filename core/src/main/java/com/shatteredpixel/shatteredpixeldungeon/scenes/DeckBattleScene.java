@@ -181,6 +181,7 @@ public class DeckBattleScene extends PixelScene {
     private Window hudPopupWindow;
     private float spriteScale;
     private boolean rewardOpen;
+    private int tutorialMessageLocks;
     private boolean endingRun;
     private ArrayList<Float> pendingDiscardStartsX = new ArrayList<>();
     private ArrayList<Float> pendingDiscardStartsY = new ArrayList<>();
@@ -483,7 +484,7 @@ public class DeckBattleScene extends PixelScene {
         endTurn = new RedButton("턴 종료", 7) {
             @Override
             protected void onClick() {
-                if (combatLocked) return;
+                if (combatLocked || tutorialMessageOpen()) return;
                 if (startEnemyTurn()) return;
                 int result = combat.endTurn();
 	                saveCombatState();
@@ -524,7 +525,7 @@ public class DeckBattleScene extends PixelScene {
         targetButton = new RedButton("대상 변경", 6) {
             @Override
             protected void onClick() {
-                if (combatLocked) return;
+                if (combatLocked || tutorialMessageOpen()) return;
                 selectNextTarget();
             }
         };
@@ -1688,7 +1689,7 @@ public class DeckBattleScene extends PixelScene {
     }
 
     private void playCard(int index) {
-        if (combatLocked || index < 0 || index >= combat.hand.size()) {
+        if (combatLocked || tutorialMessageOpen() || index < 0 || index >= combat.hand.size()) {
             return;
         }
         int cardCode = combat.hand.get(index);
@@ -2413,7 +2414,7 @@ public class DeckBattleScene extends PixelScene {
 
             @Override
             public boolean canUsePotion() {
-                return !rewardOpen;
+                return !rewardOpen && !combatLocked && !tutorialMessageOpen();
             }
         });
         runHud.setRect(insets.left + 4, insets.top + 4, 150, 20);
@@ -2432,7 +2433,7 @@ public class DeckBattleScene extends PixelScene {
     }
 
     private void usePotion(int slot, DeckPotion potion) {
-        if (combatLocked || rewardOpen || potion == null) return;
+        if (combatLocked || rewardOpen || tutorialMessageOpen() || potion == null) return;
         int potionHeal = DeckBuilderRun.onPotionUsed();
         if (potionHeal > 0) {
             spawnFloatingText("체력 +" + potionHeal, playerCenterX(), playerCenterY() - 42, 0xFF66FF99);
@@ -5039,43 +5040,63 @@ public class DeckBattleScene extends PixelScene {
         int step = DeckBuilderRun.tutorialStep;
         if (step == 0) {
             // 1단계: 공격(ATTACK) 카드 소개
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "덱빌딩 튜토리얼 — 공격 카드\n\n" +
                             "공격(ATTACK) 카드는 적에게 직접 피해를 주는 카드입니다.\n\n" +
                             "에너지(좌하단 수치)를 소비해 카드를 사용합니다. 카드 좌상단의 숫자가 소모 에너지입니다.\n" +
                             "적 이름 아래 빨간 숫자는 다음 턴에 받을 피해 예고입니다.\n\n" +
-                            "공격 카드를 눌러 적에게 피해를 주세요."));
+                            "공격 카드를 눌러 적에게 피해를 주세요.");
         } else if (step >= 3 && step < 8 && combat.turn >= 2) {
             // 2턴~, 세 타입 모두 사용 완료 후 물약 튜토리얼
             DeckBuilderRun.tutorialStep = 8;
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "물약 안내\n\n" +
                             "화면 상단 HUD에 물약 슬롯이 있습니다.\n\n" +
                             "물약은 전투 중 언제든지 사용할 수 있는 일회성 아이템입니다. " +
-                            "시작 물약 '힘의 물약'은 공격력을 2 얻습니다.\n\n" +
-                            "위기에 처했을 때나 결정적인 순간에 전략적으로 사용하세요!"));
+                            "시작 물약 '화염 물약'은 모든 적에게 피해를 10 줍니다.\n\n" +
+                            "위기에 처했을 때나 결정적인 순간에 전략적으로 사용하세요!");
         }
+    }
+
+    private boolean tutorialMessageOpen() {
+        return tutorialMessageLocks > 0;
+    }
+
+    private void showTutorialMessage(String text) {
+        tutorialMessageLocks++;
+        combatLocked = true;
+        ShatteredPixelDungeon.scene().addToFront(new WndMessage(text) {
+            @Override
+            public void hide() {
+                super.hide();
+                tutorialMessageLocks = Math.max(0, tutorialMessageLocks - 1);
+                if (!tutorialMessageOpen() && !rewardOpen) {
+                    combatLocked = false;
+                    refresh();
+                }
+            }
+        });
     }
 
     private boolean tutorialAllowsCard(DeckCard card, int cardCode) {
         if (!DeckBuilderRun.tutorialMode) return true;
         int step = DeckBuilderRun.tutorialStep;
         if (step == 0 && card.type != DeckCardType.ATTACK) {
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "지금은 공격 카드를 사용할 차례입니다.\n\n" +
-                            "공격(ATTACK) 타입 카드를 골라 적에게 피해를 주세요."));
+                            "공격(ATTACK) 타입 카드를 골라 적에게 피해를 주세요.");
             return false;
         }
         if (step == 1 && card.type != DeckCardType.SKILL) {
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "이제 보조 카드를 사용할 차례입니다.\n\n" +
-                            "보조(SKILL) 타입 카드를 골라 사용해 보세요."));
+                            "보조(SKILL) 타입 카드를 골라 사용해 보세요.");
             return false;
         }
         if (step == 2 && card.type != DeckCardType.POWER) {
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "이제 지속 카드를 사용할 차례입니다.\n\n" +
-                            "지속(POWER) 타입 카드를 골라 사용해 보세요."));
+                            "지속(POWER) 타입 카드를 골라 사용해 보세요.");
             return false;
         }
         return true;
@@ -5086,28 +5107,28 @@ public class DeckBattleScene extends PixelScene {
         int step = DeckBuilderRun.tutorialStep;
         if (step == 0 && card.type == DeckCardType.ATTACK) {
             DeckBuilderRun.tutorialStep = 1;
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "잘했습니다! 공격 카드로 적에게 피해를 주었습니다.\n\n" +
                             "다음은 보조(SKILL) 카드입니다.\n" +
                             "보조 카드는 방어, 드로우 등 다양한 지원 효과를 가집니다. " +
                             "보호막 카드를 사용하면 적의 피해를 먼저 흡수합니다.\n\n" +
-                            "손패에서 보조 카드를 사용해 보세요."));
+                            "손패에서 보조 카드를 사용해 보세요.");
         } else if (step == 1 && card.type == DeckCardType.SKILL) {
             DeckBuilderRun.tutorialStep = 2;
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "좋습니다! 보조 카드를 사용했습니다.\n\n" +
                             "다음은 지속(POWER) 카드입니다.\n" +
                             "지속 카드는 전투가 끝날 때까지 지속되는 강화 효과를 제공합니다. " +
                             "한번 사용하면 전투 내내 효과가 유지됩니다.\n\n" +
-                            "손패에서 지속 카드를 찾아 사용해 보세요."));
+                            "손패에서 지속 카드를 찾아 사용해 보세요.");
         } else if (step == 2 && card.type == DeckCardType.POWER) {
             DeckBuilderRun.tutorialStep = 3;
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "훌륭합니다! 세 가지 카드 타입을 모두 사용해보셨습니다.\n\n" +
                             "[카드 순환]\n" +
                             "카드를 모두 사용하면 버린 카드들이 자동으로 다시 섞여 새 덱이 됩니다. " +
                             "덱이 작을수록 강한 카드를 더 자주 뽑을 수 있습니다.\n\n" +
-                            "이제 자유롭게 카드를 사용해 적을 쓰러뜨려 보세요!"));
+                            "이제 자유롭게 카드를 사용해 적을 쓰러뜨려 보세요!");
         }
     }
 
@@ -5125,21 +5146,21 @@ public class DeckBattleScene extends PixelScene {
         DeckBuilderRun.tutorialMode = false;
         // addToFront: 마지막에 추가한 창이 가장 위에 표시됨
         // 카드 보상 안내를 먼저 추가 > 전리품 창 바로 위에 위치
-        ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+        showTutorialMessage(
                 "카드 보상\n\n" +
                         "전투 후에는 3장의 카드 중 1장을 선택해 덱에 추가할 수 있습니다.\n\n" +
                         "[조언]\n" +
                         "카드를 무조건 추가하는 것이 항상 좋지는 않습니다. 덱이 커질수록 원하는 카드를 뽑기 어려워집니다. " +
                         "25장 이하의 작은 덱을 유지하면 강한 카드를 더 자주 쓸 수 있습니다.\n\n" +
-                        "카드를 고르고 나면 튜토리얼이 완료됩니다!"));
+                        "카드를 고르고 나면 튜토리얼이 완료됩니다!");
         // 물약 안내를 2턴에 보여주지 못했다면 여기서 보충
         if (DeckBuilderRun.tutorialStep < 8) {
-            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+            showTutorialMessage(
                     "물약 안내\n\n" +
                             "화면 상단 HUD에 물약 슬롯이 있습니다.\n\n" +
                             "물약은 전투 중 언제든지 사용할 수 있는 일회성 아이템입니다. " +
-                            "'힘의 물약'은 공격력을 2 얻습니다.\n\n" +
-                            "위기에 처했을 때나 결정적인 순간에 전략적으로 사용하세요!"));
+                            "'화염 물약'은 모든 적에게 피해를 10 줍니다.\n\n" +
+                            "위기에 처했을 때나 결정적인 순간에 전략적으로 사용하세요!");
         }
     }
 
@@ -7288,7 +7309,7 @@ public class DeckBattleScene extends PixelScene {
             if (card().unplayable(cardCode())) {
                 return false;
             }
-            return !combatLocked && handIndex < combat.hand.size() && combat.cardCost(cardCode()) <= combat.energy;
+            return !combatLocked && !tutorialMessageOpen() && handIndex < combat.hand.size() && combat.cardCost(cardCode()) <= combat.energy;
         }
 
         @Override
@@ -7334,7 +7355,7 @@ public class DeckBattleScene extends PixelScene {
                 showCardInfo(cardCode());
                 return;
             }
-            if (combatLocked) return;
+            if (combatLocked || tutorialMessageOpen()) return;
             activeTouch = true;
             super.onPointerDown();
             homeX = x;
