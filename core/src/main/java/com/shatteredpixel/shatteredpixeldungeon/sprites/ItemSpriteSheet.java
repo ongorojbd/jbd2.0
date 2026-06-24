@@ -966,6 +966,7 @@ public class ItemSpriteSheet {
     public static final int H2 = DOCUMENTS + 12;
     public static final int H3 = DOCUMENTS + 13;
     public static final int HS = DOCUMENTS + 14;
+    public static final int DECK = DOCUMENTS + 15;
 
     static {
         assignItemRect(GUIDE_PAGE, 8, 8);
@@ -982,6 +983,7 @@ public class ItemSpriteSheet {
         assignItemRect(H2, 16, 16);
         assignItemRect(H3, 16, 16);
         assignItemRect(HS, 16, 16);
+        assignItemRect(DECK, 16, 12);
     }
 
     //for smaller 8x8 icons that often accompany an item sprite

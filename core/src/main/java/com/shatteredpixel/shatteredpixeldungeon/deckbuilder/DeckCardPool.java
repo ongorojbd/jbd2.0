@@ -52,6 +52,11 @@ public class DeckCardPool {
 		return classOnly || neutralOnly || !classCard || card.deckClass == heroClass;
 	}
 
+	public static boolean isOtherClassRewardCard(DeckCard card, HeroClass heroClass) {
+		if (card == null || card.deckClass == null || card.deckClass == heroClass) return false;
+		return isRewardCard(card, card.deckClass, true, false);
+	}
+
 	public static DeckCard[] rewardPool() {
 		return rewardPool(null, false, false);
 	}

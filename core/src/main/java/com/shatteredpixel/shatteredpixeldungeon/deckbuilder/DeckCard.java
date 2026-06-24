@@ -285,7 +285,7 @@ public enum DeckCard {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 15; }
 	},
 
-	BRAND(62, "낙인", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_TIWAZ, HeroClass.WARRIOR, 0,
+	BRAND(62, "낙인", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_TIWAZ, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.BrandEffect()),
 
 	INDOMITABLE(63, "불굴", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.POTION_GOLDEN, HeroClass.WARRIOR, 0,
@@ -562,7 +562,7 @@ public enum DeckCard {
 	ODD_COMIC_BOOK(125, "기묘한 만화책", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_HOLDER,
 			new DeckCardEffects.OddComicBookDamage()),
 
-	CLUBBING(126, "몽둥이질", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 3, 32, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE) {
+	CLUBBING(126, "몽둥이질", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 3, 32, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 42 : 32; }
 	},
 
@@ -624,13 +624,40 @@ public enum DeckCard {
 	},
 
 	SOUL_TOLL(142, "영혼 징수", DeckCardType.CURSE, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.PERMANENT), false, ItemSpriteSheet.ARTIFACT_CHAINS,
-			new DeckCardEffects.TextOnly("이 카드는 덱에서 제거할 수 없습니다.")) {
+			new DeckCardEffects.TextOnly("사용불가.")) {
 		@Override public boolean unplayable(int code) { return true; }
 	},
 
 	ASHEN_STRIKE(143, "잿빛 타격", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER,
 			new DeckCardEffects.AshenStrikeEffect()) {
 		@Override public int damage(int code) { return 6; }
+	},
+
+	HARVEST(144, "수확", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 3, 27, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.RETAIN), true, ItemSpriteSheet.SICKLE) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 33 : 27; }
+	},
+
+	CONCLUSION(145, "결론", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.ALL_ENEMIES, 1, 12, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_TIWAZ,
+			new DeckCardEffects.ConclusionEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 16 : 12; }
+	},
+
+	BURIAL(146, "매장", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 4, 52, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 63 : 52; }
+	},
+
+	BLASPHEMY(147, "모독", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 13, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), true, ItemSpriteSheet.SCROLL_NAUDIZ) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 17 : 13; }
+	},
+
+	DAGGER_THROW(148, "단검 투척", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 9, 0, 1, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER,
+			new DeckCardEffects.DaggerThrowEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 12 : 9; }
+	},
+
+	NEMESIS(149, "천적", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 15, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.CROSSBOW,
+			new DeckCardEffects.NemesisEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 15; }
 	};
 
 	public final int id;

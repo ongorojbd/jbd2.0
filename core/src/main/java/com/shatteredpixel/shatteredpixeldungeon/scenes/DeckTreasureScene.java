@@ -131,14 +131,14 @@ public class DeckTreasureScene extends PixelScene {
 
 	private int chestIcon() {
 		if (chest == 2) return ItemSpriteSheet.CRYSTAL_CHEST;
-		if (chest == 1) return ItemSpriteSheet.EBONY_CHEST;
-		return ItemSpriteSheet.LOCKED_CHEST;
+		if (chest == 1) return ItemSpriteSheet.LOCKED_CHEST;
+		return ItemSpriteSheet.CHEST;
 	}
 
 	private String chestName() {
-		if (chest == 2) return "큰 상자";
-		if (chest == 1) return "중간 상자";
-		return "작은 상자";
+		if (chest == 2) return "SPW 재단의 청색 투하물";
+		if (chest == 1) return "SPW 재단의 금색 투하물";
+		return "SPW 재단의 투하물";
 	}
 
 	private void takeRelic() {

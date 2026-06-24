@@ -201,10 +201,10 @@ public class DeckEnemyIntent {
 			(combat, enemy, remainingBlock) -> {
 				enemy.ritual += 2;
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
-						combat.enemyIndex(enemy), 0, false, "주문 (도탄 사격 +2)"));
+						combat.enemyIndex(enemy), 0, false, "주문 (광물화 +2)"));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 도탄 사격 +2"));
+			enemy -> "예고: 광물화 +2"));
 
 	public static final DeckEnemyIntent DARK_STRIKE = register(simpleAttack(
 			DeckBuilderCombat.RESULT_DARK_STRIKE, 9, "어둠의 타격"));
@@ -277,7 +277,7 @@ public class DeckEnemyIntent {
 				enemy.strength += 2;
 				return attack.toTurnResult(false);
 			},
-			enemy -> "예고: " + damageText(enemy, 7) + " 피해 + 공격력"));
+			enemy -> "예고: " + damageText(enemy, 7) + " 피해 + 공격력 +2"));
 
 	public static final DeckEnemyIntent EXPEL_BLAST = register(multiAttack(
 			DeckBuilderCombat.RESULT_EXPEL_BLAST, 2, 5, "방출 폭발"));
@@ -293,7 +293,7 @@ public class DeckEnemyIntent {
 
 	// 시생인
 	public static final DeckEnemyIntent POWER_DANCE = register(strengthIntent(
-			DeckBuilderCombat.RESULT_POWER_DANCE, 2, "힘의 춤"));
+			DeckBuilderCombat.RESULT_POWER_DANCE, 2, "공격력"));
 
 	public static final DeckEnemyIntent BOOMERANG = register(multiAttack(
 			DeckBuilderCombat.RESULT_BOOMERANG, 2, 2, "부메랑"));

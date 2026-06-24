@@ -407,7 +407,7 @@ public class DeckRestScene extends PixelScene {
 		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
 		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
 		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "공격력 " + card.strength(cardCode) + " > " + card.strength(upgraded));
-		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "단도 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
+		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "전갈탄 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
 		return text.length() > 0 ? text : "강화 효과가 아직 정의되지 않았습니다.";
 	}
 

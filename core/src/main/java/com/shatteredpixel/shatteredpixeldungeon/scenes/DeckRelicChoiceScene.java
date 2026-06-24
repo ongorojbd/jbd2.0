@@ -646,8 +646,8 @@ public class DeckRelicChoiceScene extends PixelScene {
 	private void showOtherClassCardRewardWindow() {
 		com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass = DeckBuilderRun.heroClass();
 		ArrayList<DeckCard> pool = new ArrayList<>();
-		for (DeckCard c : DeckCard.rewardPool()) {
-			if (!DeckCardPool.isNeutralCard(c) && c.deckClass != heroClass) pool.add(c);
+		for (DeckCard c : DeckCard.values()) {
+			if (DeckCardPool.isOtherClassRewardCard(c, heroClass)) pool.add(c);
 		}
 		for (int i = pool.size() - 1; i > 0; i--) {
 			int j = Random.Int(i + 1);
@@ -787,6 +787,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		private ColorBlock edge;
 		private ColorBlock face;
 		private ItemSprite art;
+		private TalentIcon talentArt;
 		private RenderedTextBlock cost;
 		private RenderedTextBlock titleText;
 
@@ -797,7 +798,6 @@ public class DeckRelicChoiceScene extends PixelScene {
 			shadow = new ColorBlock(1, 1, 0xFF000000); shadow.am = 0.38f; add(shadow);
 			edge = new ColorBlock(1, 1, 0xFFFFFFFF); add(edge);
 			face = new ColorBlock(1, 1, 0xFF262626); add(face);
-			art = new ItemSprite(); add(art);
 			cost = renderTextBlock(7); add(cost);
 			titleText = renderTextBlock(5); add(titleText);
 		}
@@ -807,9 +807,27 @@ public class DeckRelicChoiceScene extends PixelScene {
 			DeckCard card = DeckCard.byCode(cardCode);
 			shadow.x = x + 2; shadow.y = y + 2; shadow.size(width, height);
 			edge.color(card.type.borderColor); edge.x = x; edge.y = y; edge.size(width, height); edge.am = 0.92f;
-			face.color(card.rarity.faceColor); face.x = x + 2; face.y = y + 2; face.size(width - 4, height - 4); face.am = 0.94f;
-			art.view(card.icon(), null); art.scale.set(1.1f);
-			art.x = x + (width - art.width()) / 2f; art.y = y + height * 0.30f; align(art);
+			face.color(DeckCardPool.isNeutralCard(card) || !card.reward ? card.rarity.faceColor : card.classFaceColor());
+			face.x = x + 2; face.y = y + 2; face.size(width - 4, height - 4); face.am = 0.94f;
+			if (card.talentIcon != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) remove(talentArt);
+				talentArt = new TalentIcon(card.talentIcon);
+				add(talentArt);
+				talentArt.scale.set(0.95f);
+				talentArt.x = x + (width - talentArt.width()) / 2f;
+				talentArt.y = y + height * 0.30f;
+				align(talentArt);
+			} else {
+				if (talentArt != null) talentArt.visible = false;
+				if (art == null) {
+					art = new ItemSprite(card.icon());
+					add(art);
+				}
+				art.visible = true;
+				art.view(card.icon(), null); art.scale.set(1.1f);
+				art.x = x + (width - art.width()) / 2f; art.y = y + height * 0.30f; align(art);
+			}
 			cost.text(String.valueOf(card.cost(cardCode))); cost.hardlight(0xFFFFD84D); cost.setPos(x + 3, y + 3);
 			titleText.text(card.title(cardCode)); titleText.hardlight(0xFFFFFFFF); titleText.maxWidth((int) width - 5);
 			titleText.setPos(x + (width - titleText.width()) / 2f, y + height - titleText.height() - 4);

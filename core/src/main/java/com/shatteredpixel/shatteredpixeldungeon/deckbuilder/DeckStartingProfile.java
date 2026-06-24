@@ -27,7 +27,9 @@ public class DeckStartingProfile {
 	static {
 		register(HeroClass.WARRIOR,
 				card(DeckCard.STRIKE, 1),
-				card(DeckCard.POTION_SELECTION_BOX, 6));
+				card(DeckCard.SHITTIM_BOX, 8),
+				card(DeckCard.RELIC_SELECTION_BOX, 1),
+				card(DeckCard.POTION_SELECTION_BOX, 1));
 
 		register(HeroClass.MAGE,
 				card(DeckCard.STRIKE, 5),

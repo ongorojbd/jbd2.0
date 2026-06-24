@@ -96,12 +96,12 @@ public class DeckDiscover {
                 return DeckCard.rewardPool(heroClass, true, false);
             case NEUTRAL_ONLY:
                 return DeckCard.rewardPool(null, false, true);
-            case OTHER_CLASS:
-                ArrayList<DeckCard> other = new ArrayList<>();
-                for (DeckCard c : DeckCard.rewardPool()) {
-                    if (DeckCardPool.isNeutralCard(c) || c.deckClass != heroClass) other.add(c);
-                }
-                return other.toArray(new DeckCard[0]);
+			case OTHER_CLASS:
+				ArrayList<DeckCard> other = new ArrayList<>();
+				for (DeckCard c : DeckCard.values()) {
+					if (DeckCardPool.isOtherClassRewardCard(c, heroClass)) other.add(c);
+				}
+				return other.toArray(new DeckCard[0]);
             case FROM_DECK:
                 if (combat != null) {
                     ArrayList<DeckCard> seen = new ArrayList<>();

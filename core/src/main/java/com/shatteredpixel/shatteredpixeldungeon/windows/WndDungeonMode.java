@@ -37,6 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.utils.DeviceCompat;
@@ -77,7 +79,7 @@ public class WndDungeonMode extends Window {
         int posItem = 0;
 
         for (Mode mode : Mode.values()) {
-            Image icon = Icons.get(mode.icon);
+            Image icon = mode.getIcon();
             ModeButton modeButton = new ModeButton(mode.desc(), 6, mode);
             modeButton.icon(icon);
             modeButton.multiline = true;
@@ -117,21 +119,26 @@ public class WndDungeonMode extends Window {
     }
 
     private enum Mode {
-        NORMAL("normal", Icons.ENTER, Dungeon.GameMode.NORMAL),
-        DIO_CASTLE("dio_castle", Icons.NEWS, Dungeon.GameMode.DIO_CASTLE),
-        TENDENCY("tendency", Icons.NEWS, Dungeon.GameMode.TENDENCY),
-        DECKBUILDER("deckbuilder", Icons.TALENT, Dungeon.GameMode.DECKBUILDER),
-        DECKBUILDER_TUTORIAL("deckbuilder_tutorial", Icons.TALENT, Dungeon.GameMode.DECKBUILDER_TUTORIAL);
+        NORMAL("normal", 0, Dungeon.GameMode.NORMAL) {
+            @Override
+            public Image getIcon() { return Icons.get(Icons.ENTER); }
+        },
+        DIO_CASTLE("dio_castle", ItemSpriteSheet.SUNDIAL, Dungeon.GameMode.DIO_CASTLE),
+        TENDENCY("tendency", ItemSpriteSheet.TENS, Dungeon.GameMode.TENDENCY),
+        DECKBUILDER("deckbuilder", ItemSpriteSheet.DECK, Dungeon.GameMode.DECKBUILDER),
+        DECKBUILDER_TUTORIAL("deckbuilder_tutorial", ItemSpriteSheet.DECK, Dungeon.GameMode.DECKBUILDER_TUTORIAL);
 
         private final String messageKey;
-        private final Icons icon;
+        private final int sprite;
         private final Dungeon.GameMode gameMode;
 
-        Mode(String messageKey, Icons icon, Dungeon.GameMode gameMode) {
+        Mode(String messageKey, int sprite, Dungeon.GameMode gameMode) {
             this.messageKey = messageKey;
-            this.icon = icon;
+            this.sprite = sprite;
             this.gameMode = gameMode;
         }
+
+        public Image getIcon() { return new ItemSprite(sprite, null); }
 
         private boolean canStart() {
             switch (this) {
@@ -149,19 +156,19 @@ public class WndDungeonMode extends Window {
             switch (this) {
                 case DIO_CASTLE:
                     ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
-                            Icons.get(Icons.NEWS),
+                            new ItemSprite(ItemSpriteSheet.SUNDIAL, null),
                             Messages.get(WndDungeonMode.class, messageKey),
                             Messages.get(WndDungeonMode.class, "dio_locked")));
                     break;
                 case TENDENCY:
                     ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
-                            Icons.get(Icons.NEWS),
+                            new ItemSprite(ItemSpriteSheet.TENS, null),
                             Messages.get(HeroSelectScene.class, "tendency_mode"),
                             Messages.get(HeroSelectScene.class, "tendency_nowin")));
                     break;
                 case DECKBUILDER:
                     ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
-                            Icons.get(Icons.NEWS),
+                            new ItemSprite(ItemSpriteSheet.DECK, null),
                             Messages.get(HeroSelectScene.class, "deckbuilder_mode"),
                             Messages.get(HeroSelectScene.class, "deckbuilder_nowin")));
                     break;

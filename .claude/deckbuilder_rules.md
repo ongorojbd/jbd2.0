@@ -875,6 +875,51 @@ EventChoiceButton("떠난다", ...)                    → leaveEvent()
 6. 시작 카드면 `DeckStartingProfile`에 추가
 7. 카테고리 필요 시 `DeckCardCategoryTable` 갱신
 
+#### 자동 수치 효과와 전용 effect 중복 금지
+
+`DeckCard`의 기본 수치 필드는 자동으로 효과와 텍스트를 만든다.
+
+- `damage > 0`이면 `DeckCard.effects()`가 `Damage` effect를 자동 추가한다.
+- `block > 0`이면 `Block` effect를 자동 추가한다.
+- `draw > 0`이면 `Draw` effect를 자동 추가한다.
+- `DeckCardText.rulesText()`는 이 자동 effect들의 문장을 그대로 카드 설명에 붙인다.
+
+따라서 새 카드를 추가할 때는 아래 중 하나만 선택한다.
+
+1. **기본 수치 필드 사용**
+   - 피해/보호막/드로우는 `DeckCard` 숫자 필드에 넣는다.
+   - 전용 `DeckCardEffect`에는 추가 효과 설명만 넣는다.
+   - 예: `damage=9`, `draw=1`이면 전용 effect의 `rulesText()`에는 `"카드를 1장 버립니다."`만 작성한다.
+
+2. **전용 effect가 모든 효과를 직접 처리**
+   - `DeckCard`의 `damage`, `block`, `draw`는 `0`으로 둔다.
+   - 전용 `apply()`와 `rulesText()`가 피해/보호막/드로우까지 모두 책임진다.
+   - 동적 피해, 조건부 반복, 손패/더미 조작처럼 자동 effect로 표현하기 어려울 때 사용한다.
+
+금지 예:
+
+```java
+DAGGER_THROW(..., damage=9, draw=1, ..., new DaggerThrowEffect())
+// DaggerThrowEffect.rulesText():
+// "피해를 9 줍니다. 카드를 1장 뽑습니다. 카드를 1장 버립니다."
+```
+
+위처럼 작성하면 실제 텍스트가 `피해/드로우`를 두 번 출력한다.
+
+새 카드 추가 후 반드시 확인:
+
+```java
+DeckCardText.rulesText(card, card.code(), combat);
+DeckCardText.upgradePreviewText(card.code());
+```
+
+중복 문장 체크 키워드:
+
+- `피해를 ... 줍니다.`
+- `카드를 ...장 뽑습니다.`
+- `보호막을 ... 얻습니다.`
+- 강화 미리보기의 `피해/드로우/보호막` 중복
+
 ### 유물 추가
 
 1. `DeckRelic` enum에 추가

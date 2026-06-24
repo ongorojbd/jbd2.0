@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public enum DeckRelic {
 
-	NEW_LEAF("하트 2", "획득 시, 덱의 카드 1장이 무작위로 변환됩니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	NEW_LEAF("하트 2", "획득 시, 덱의 카드 1장이 무작위로 변환됩니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			ArrayList<Integer> transformable = new ArrayList<>();
 			for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
@@ -40,57 +40,57 @@ public enum DeckRelic {
 			DeckBuilderRun.deck.set(idx, filtered.get(Random.Int(filtered.size())).code());
 		}
 	},
-	SMALL_CAPSULE("다이아 A", "획득 시, 무작위 유물을 1개 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	SMALL_CAPSULE("다이아 A", "획득 시, 무작위 유물을 1개 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckRelic relic = randomAvailable((DeckRelic) null);
 			if (relic != null) DeckBuilderRun.addRelic(relic);
 		}
 	},
-	STONE_HUMIDIFIER("하트 3", "휴식 장소에서 휴식을 취할 때마다, 최대 체력이 5 증가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN),
-	LEAD_PAPERWEIGHT("클로버 2", "중립 카드 2장 중 1장을 선택해 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	STONE_HUMIDIFIER("하트 3", "휴식 장소에서 휴식을 취할 때마다, 최대 체력이 5 증가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
+	LEAD_PAPERWEIGHT("클로버 2", "중립 카드 2장 중 1장을 선택해 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() { DeckBuilderRun.pendingNeutralDiscover = true; }
 	},
-	LOST_COFFER("다이아 7", "획득 시, 카드 보상을 1번 획득하고, 무작위 포션을 1개 생성합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	LOST_COFFER("다이아 7", "획득 시, 카드 보상을 1번 획득하고, 무작위 포션을 1개 생성합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.pendingCardReward = true;
 			DeckPotion[] potions = DeckPotion.values();
 			DeckBuilderRun.addPotion(potions[Random.Int(potions.length)]);
 		}
 	},
-	PRECISE_SCISSORS("스페이드 4", "덱에서 카드를 1장 제거합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	PRECISE_SCISSORS("스페이드 4", "덱에서 카드를 1장 제거합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() { DeckBuilderRun.pendingCardRemove = true; }
 	},
-	BOOMING_CONCH("클로버 5", "강적 전투 시작 시, 카드를 추가로 2장 뽑고 에너지를 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN),
-	LAVA_ROCK("다이아 10", "1막의 보스가 보상으로 유물을 2개 제공합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN),
-	GOLDEN_PEARL("다이아 9", "획득 시, 골드를 150 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	BOOMING_CONCH("클로버 5", "강적 전투 시작 시, 카드를 추가로 2장 뽑고 에너지를 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
+	LAVA_ROCK("다이아 10", "1막의 보스가 보상으로 유물을 2개 제공합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
+	GOLDEN_PEARL("다이아 9", "획득 시, 골드를 150 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() { DeckBuilderRun.gainGold(150); }
 	},
-	POMANDER("클로버 6", "덱의 카드를 1장 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	POMANDER("클로버 6", "덱의 카드를 1장 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() { DeckBuilderRun.pendingCardUpgrade = true; }
 	},
-	NEOWS_TALISMAN("하트 J", "획득 시, STRIKE 1장과 GUARD 1장을 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	NEOWS_TALISMAN("하트 J", "획득 시, 기본 무기 1장과 기본 브로치 1장을 강화합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			upgradeFirstInDeck(DeckCard.STRIKE);
 			upgradeFirstInDeck(DeckCard.GUARD);
 		}
 	},
-	NEOWS_LAMENT("스페이드 2", "획득 시, 덱에 오시리스신을 1장 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	NEOWS_LAMENT("스페이드 2", "획득 시, 덱에 오시리스신을 1장 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.addCard(DeckCard.OSIRIS_GOD);
 		}
 	},
-	PHIAL_HOLSTER("하트 9", "획득 시, 무작위 포션 3개를 획득합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	PHIAL_HOLSTER("하트 9", "획득 시, 무작위 포션 3개를 획득합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckPotion[] potions = DeckPotion.values();
 			for (int i = 0; i < 3; i++) DeckBuilderRun.addPotion(potions[Random.Int(potions.length)]);
 		}
 	},
-	KALEIDOSCOPE("다이아 J", "획득 시, 다른 캐릭터 색상 카드를 2번 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	KALEIDOSCOPE("다이아 J", "획득 시, 다른 캐릭터 색상 카드를 2번 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() { DeckBuilderRun.pendingOtherClassCardReward = 2; }
 	},
-	FISHING_ROD("클로버 3", "일반 전투 3번마다 덱의 무작위 카드 1장이 강화됩니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN),
+	FISHING_ROD("클로버 3", "일반 전투 3번마다 덱의 무작위 카드 1장이 강화됩니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
 
-	LEAFY_POULTICE("스페이드 Q", "획득 시, STRIKE 1장과 GUARD 1장이 무작위로 변환됩니다. 최대 체력을 12 잃습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	LEAFY_POULTICE("스페이드 Q", "획득 시, STRIKE 1장과 GUARD 1장이 무작위로 변환됩니다. 최대 체력을 12 잃습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			transformFirstInDeck(DeckCard.STRIKE);
 			transformFirstInDeck(DeckCard.GUARD);
@@ -98,7 +98,7 @@ public enum DeckRelic {
 			DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHP, DeckBuilderRun.playerHT);
 		}
 	},
-	STARTER_LARGE_CAPSULE("다이아 Q", "획득 시, 무작위 유물을 2개 얻습니다. 기본 무기 1장과 기본 브로치 1장을 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	STARTER_LARGE_CAPSULE("다이아 Q", "획득 시, 무작위 유물을 2개 얻습니다. 기본 무기 1장과 기본 브로치 1장을 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			for (int i = 0; i < 2; i++) {
 				DeckRelic relic = randomAvailable((DeckRelic) null);
@@ -108,44 +108,44 @@ public enum DeckRelic {
 			DeckBuilderRun.addCard(DeckCard.GUARD);
 		}
 	},
-	HEFTY_TABLET("스페이드 3", "획득 시, 덱에 무작위 희귀 카드 3장 중 1장을 선택해 추가하고, 점액투성이를 1장 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	HEFTY_TABLET("스페이드 3", "획득 시, 덱에 무작위 희귀 카드 3장 중 1장을 선택해 추가하고, 점액투성이를 1장 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.addCard(DeckCard.SLIMY);
 			DeckBuilderRun.pendingRareCardChoice++;
 		}
 	},
-	PRECARIOUS_SHEARS("스페이드 8", "획득 시, 덱에서 카드를 2장 제거하고 피해를 16 받습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	PRECARIOUS_SHEARS("스페이드 8", "획득 시, 덱에서 카드를 2장 제거하고 피해를 16 받습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.playerHP = Math.max(1, DeckBuilderRun.playerHP - 16);
 			DeckBuilderRun.pendingCardRemoveCount += 2;
 		}
 	},
-	SILVER_CRUCIBLE("다이아 K", "처음 3번의 카드 보상이 강화된 상태로 지급됩니다. 처음으로 여는 보물 상자가 비어 있습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	SILVER_CRUCIBLE("다이아 K", "처음 3번의 카드 보상이 강화된 상태로 지급됩니다. 처음으로 여는 보물 상자가 비어 있습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.upgradedCardRewardCount += 3;
 			DeckBuilderRun.firstTreasureEmpty = true;
 		}
 	},
-	CURSED_PEARL("스페이드 K", "덱에 영혼 징수를 1장 추가합니다. 골드를 333 획득합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	CURSED_PEARL("스페이드 K", "덱에 영혼 징수를 1장 추가합니다. 골드를 333 획득합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.addCard(DeckCard.SOUL_TOLL);
 			DeckBuilderRun.gainGold(333);
 		}
 	},
-	CLUBS_ACE("클로버 A", "앞으로 3번의 전투 동안 적의 체력이 1이 됩니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	CLUBS_ACE("클로버 A", "앞으로 3번의 전투 동안 적의 체력이 1이 됩니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.enemyOneHpBattles += 3;
 		}
 	},
 
-	HEARTS_ACE("하트 A", "모든 골드를 잃고 희귀 공용 카드 보상을 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	HEARTS_ACE("하트 A", "모든 골드를 잃고 희귀 공용 카드 보상을 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.gold = 0;
 			DeckBuilderRun.pendingRareNeutralCardChoice++;
 		}
 	},
 
-	NEOWS_BONES("스페이드 A", "획득 시, 무작위 시작 유물 2개를 획득합니다. 무작위 저주 카드를 1장 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	NEOWS_BONES("스페이드 A", "획득 시, 무작위 시작 유물 2개를 획득합니다. 무작위 저주 카드를 1장 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			ArrayList<Integer> seen = new ArrayList<>();
 			for (int i = 0; i < 2; i++) {
@@ -163,7 +163,7 @@ public enum DeckRelic {
 		}
 	},
 
-	NUTRITIOUS_OYSTER("하트 K", "최대 체력이 11 증가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	NUTRITIOUS_OYSTER("하트 K", "최대 체력이 11 증가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override
 		public void onAcquire() {
 			DeckBuilderRun.playerHT += 11;
@@ -216,7 +216,7 @@ public enum DeckRelic {
 	KUSARIGAMA("화염 폭탄", "한 턴에 공격 카드를 3장 사용할 때마다, 무작위 적에게 피해를 6 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.FIRE_BOMB),
 	TUNING_FORK("정화 폭탄", "보조 카드를 10장 사용할 때마다, 보호막을 7 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.HOLY_BOMB),
 
-	ARCANE_SCROLL("조커", "획득 시 덱에 내 캐릭터 색상 희귀 카드 1장을 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.WONDROUS_RESIN) {
+	ARCANE_SCROLL("조커", "획득 시 덱에 내 캐릭터 색상 희귀 카드 1장을 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override
 		public void onAcquire() {
 			HeroClass heroClass = DeckBuilderRun.heroClass();
@@ -249,7 +249,7 @@ public enum DeckRelic {
 	VALENTINE_MEMORY_DISC("퍼니 밸런타인의 기억 DISC", "두 번째 턴 시작 시, 보호막을 14 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_NAUDIZ),
 	POCOLOCO_MEMORY_DISC("포코로코의 기억 DISC", "덱에 카드를 추가할 때마다, 골드를 15 얻습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.EXOTIC_BERKANAN),
 	SPEED_STONE_MASK("신속의 돌가면", "카드를 5장 소멸시킬 때마다, 카드를 1장 뽑습니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_AGATE),
-	SUSPICIOUS_TEA("수상한 차", "카드 보상에서 건너뛰기를 선택하면 최대 체력이 2 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.BREW_CAUSTIC),
+	SUSPICIOUS_TEA("수상한 차", "카드 보상에서 건너뛰기를 선택하면 최대 체력이 2 증가합니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.CHOC_AMULET),
 	STRENGTH_ARM_STONE_MASK("완력의 돌가면", "한 턴에 보조 카드를 3장 사용할 때마다, 모든 적에게 피해를 5 줍니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.UNCOMMON, ItemSpriteSheet.RING_DIAMOND),
 
 	DIVER_DOWN("다이버 다운", "체력이 0이 될 때, 최대 체력의 50%만큼 체력을 회복합니다. 한 번만 발동합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ANKH),
@@ -266,7 +266,7 @@ public enum DeckRelic {
 	SAINT_TORSO("성인의 동체부", "휴식 장소에 탐색 선택지가 추가됩니다. 탐색을 선택하면 무작위 유물을 획득할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.PARCHMENT_SCRAP),
 	NIGHT_RULER("밤의 지배자", "세 번째 턴 시작 시, 추가 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SUNDIAL),
 	TOORU_DOLL("토오루의 인형", "일곱번째 턴 종료 시, 모든 적에게 피해를 52 줍니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.MIMIC_TOOTH),
-	GOO_GOO_DOLLS("구구 돌즈", "세 번째 턴 시작 시, 방어도를 18 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.FERRET_TUFT),
+	GOO_GOO_DOLLS("구구 돌즈", "세 번째 턴 시작 시, 보호막을 18 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.FERRET_TUFT),
 	SHORT_KEY_NO_2("쇼트 키 No. 2", "매 전투마다 처음으로 적에게 해로운 효과를 부여하는 카드를 사용 시, 효과가 2배가 됩니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.CHAOTIC_CENSER),
 	BLACK_PEARL("검은 진주", "한 턴에 공격 카드를 3장 사용할 때마다, 방어력 증가를 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RECLAIM_TRAP),
 	CHERRY_DECORATION("체리 장식", "턴 종료 시 남은 에너지가 사라지지 않습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SALT_CUBE),
