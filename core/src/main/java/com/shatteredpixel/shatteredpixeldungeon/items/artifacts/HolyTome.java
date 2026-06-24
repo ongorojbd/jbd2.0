@@ -348,16 +348,16 @@ public class HolyTome extends Artifact {
 	private void onJ65SpellUsed(Hero hero) {
 		j65Uses++;
 		if (hero.sprite != null) {
-			hero.sprite.showStatus(CharSprite.WARNING, j65Uses + "/5");
+			hero.sprite.showStatus(CharSprite.WARNING, j65Uses + "/8");
 		}
-		if (j65Uses < 5) {
+		if (j65Uses < 8) {
 			return;
 		}
 
 		if (summonJ65Ally(hero)) {
 			j65Uses = 0;
 		} else {
-			j65Uses = 4;
+			j65Uses = 7;
 		}
 	}
 

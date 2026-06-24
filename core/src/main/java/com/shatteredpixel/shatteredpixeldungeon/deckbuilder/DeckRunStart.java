@@ -129,9 +129,6 @@ public class DeckRunStart {
 	}
 
 	private static void addStartingPotions() {
-		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.DUPLICATOR, DeckBuilderRun.MAX_POTION_SLOTS);
-		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.DISTILLED_CHAOS, DeckBuilderRun.MAX_POTION_SLOTS);
-		DeckRunInventory.addPotion(DeckBuilderRun.potions, DeckPotion.OROBIC_ACID, DeckBuilderRun.MAX_POTION_SLOTS);
 	}
 
 	private static void addTutorialDeck() {

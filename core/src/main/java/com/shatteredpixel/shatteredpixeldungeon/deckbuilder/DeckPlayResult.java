@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class DeckPlayResult {
 
-	public static final DeckPlayResult INVALID = new DeckPlayResult(false, null, 0, 0, 0, 0, 0, 0, 0, false, false, new ArrayList<Hit>(), new ArrayList<Shuffle>());
+	public static final DeckPlayResult INVALID = new DeckPlayResult(false, null, 0, 0, 0, 0, 0, 0, 0, false, false, new ArrayList<Hit>(), new ArrayList<Shuffle>(), 0);
 
 	public final boolean played;
 	public final DeckCard card;
@@ -32,8 +32,9 @@ public class DeckPlayResult {
 	public final boolean isRandomPlay;
 	public final ArrayList<Hit> hits;
 	public final ArrayList<Shuffle> shuffles;
+	public final int gold;
 
-	public DeckPlayResult(boolean played, DeckCard card, int damage, int block, int draw, int vulnerable, int strength, int dexterity, int heal, boolean exhausted, boolean isRandomPlay, ArrayList<Hit> hits, ArrayList<Shuffle> shuffles) {
+	public DeckPlayResult(boolean played, DeckCard card, int damage, int block, int draw, int vulnerable, int strength, int dexterity, int heal, boolean exhausted, boolean isRandomPlay, ArrayList<Hit> hits, ArrayList<Shuffle> shuffles, int gold) {
 		this.played = played;
 		this.card = card;
 		this.damage = damage;
@@ -47,6 +48,7 @@ public class DeckPlayResult {
 		this.isRandomPlay = isRandomPlay;
 		this.hits = hits;
 		this.shuffles = shuffles;
+		this.gold = gold;
 	}
 
 	public static class Hit {
@@ -88,6 +90,7 @@ public class DeckPlayResult {
 		public boolean isRandomPlay;
 		public ArrayList<Hit> hits = new ArrayList<>();
 		public ArrayList<Shuffle> shuffles = new ArrayList<>();
+		public int gold;
 		private int currentWave = 0;
 
 		public Builder(DeckCard card) {
@@ -119,7 +122,7 @@ public class DeckPlayResult {
 		}
 
 		public DeckPlayResult build() {
-			return new DeckPlayResult(true, card, damage, block, draw, vulnerable, strength, dexterity, heal, exhausted, isRandomPlay, hits, shuffles);
+			return new DeckPlayResult(true, card, damage, block, draw, vulnerable, strength, dexterity, heal, exhausted, isRandomPlay, hits, shuffles, gold);
 		}
 	}
 }

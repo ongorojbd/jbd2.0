@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardCode;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardKeyword;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardPool;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRewardPolicy;
@@ -223,6 +224,10 @@ public class DeckRelicChoiceScene extends PixelScene {
 			showRareCardChoiceWindow();
 			return;
 		}
+		if (DeckBuilderRun.pendingRareNeutralCardChoice > 0) {
+			showRareNeutralCardChoiceWindow();
+			return;
+		}
 		if (DeckBuilderRun.pendingOtherClassCardReward > 0) {
 			showOtherClassCardRewardWindow();
 			return;
@@ -245,6 +250,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		DeckCard[] pool = DeckCard.rewardPool(DeckBuilderRun.heroClass(), false, false);
 		int currentCode = DeckBuilderRun.deck.get(deckIndex);
 		DeckCard current = DeckCard.byCode(currentCode);
+		if (current.hasKeyword(currentCode, DeckCardKeyword.PERMANENT)) return;
 		ArrayList<DeckCard> filtered = new ArrayList<>();
 		for (DeckCard c : pool) {
 			if (c != current) filtered.add(c);
@@ -260,9 +266,18 @@ public class DeckRelicChoiceScene extends PixelScene {
 		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
 			int code = DeckBuilderRun.deck.get(i);
 			if (upgradableOnly && DeckCardCode.upgrade(code) == code) continue;
+			if (!isUpgrade && DeckCard.byCode(code).hasKeyword(code, DeckCardKeyword.PERMANENT)) continue;
 			indices.add(i);
 		}
 		if (indices.isEmpty()) {
+			if (isUpgrade) {
+				DeckBuilderRun.pendingCardUpgrade = false;
+			} else {
+				DeckBuilderRun.pendingCardTransform = false;
+				DeckBuilderRun.pendingCardRemove = false;
+				DeckBuilderRun.pendingCardRemoveCount = 0;
+			}
+			saveRun();
 			processPendingRelicEvent();
 			return;
 		}
@@ -451,6 +466,59 @@ public class DeckRelicChoiceScene extends PixelScene {
 		addToFront(win);
 	}
 
+	private void showRareNeutralCardChoiceWindow() {
+		ArrayList<DeckCard> pool = new ArrayList<>();
+		for (DeckCard c : DeckCard.rewardPool()) {
+			if (c.rarity == DeckCardRarity.RARE && DeckCardPool.isNeutralCard(c)) pool.add(c);
+		}
+		for (int i = pool.size() - 1; i > 0; i--) {
+			int j = Random.Int(i + 1);
+			DeckCard tmp = pool.get(i); pool.set(i, pool.get(j)); pool.set(j, tmp);
+		}
+		final DeckCard[] choices = pool.subList(0, Math.min(3, pool.size())).toArray(new DeckCard[0]);
+
+		final Window win = new Window() {
+			@Override public void onBackPressed() {}
+		};
+		int cols = Math.min(3, choices.length);
+		int cardW = 42, cardH = 54, gap = 8;
+		int contentW = cols * cardW + (cols - 1) * gap;
+		int width = Math.max(160, contentW + 20);
+		int pos = 7;
+
+		RenderedTextBlock title = renderTextBlock("희귀 공용 카드 선택", 9);
+		title.hardlight(Window.TITLE_COLOR);
+		title.setPos((width - title.width()) / 2f, pos);
+		win.add(title);
+		pos += 17;
+
+		RenderedTextBlock desc = renderTextBlock("덱에 추가할 카드를 선택합니다.", 5);
+		desc.hardlight(0xFFAAAFA4);
+		desc.maxWidth(width - 14);
+		desc.setPos((width - desc.width()) / 2f, pos);
+		win.add(desc);
+		pos += (int) desc.height() + 8;
+
+		int startX = (width - contentW) / 2;
+		for (int i = 0; i < choices.length; i++) {
+			final DeckCard card = choices[i];
+			MiniCardButton btn = new MiniCardButton(card.code()) {
+				@Override protected void onClick() {
+					DeckBuilderRun.addCard(card);
+					DeckBuilderRun.pendingRareNeutralCardChoice--;
+					saveRun();
+					win.hide();
+					processPendingRelicEvent();
+				}
+			};
+			btn.setRect(startX + i * (cardW + gap), pos, cardW, cardH);
+			win.add(btn);
+		}
+		pos += cardH + 8;
+		win.resize(width, pos);
+		addToFront(win);
+	}
+
 	private void showNeutralDiscoverWindow() {
 		DeckCard[] pool = DeckCard.rewardPool(null, false, true);
 		ArrayList<DeckCard> shuffled = new ArrayList<>();
@@ -579,7 +647,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass = DeckBuilderRun.heroClass();
 		ArrayList<DeckCard> pool = new ArrayList<>();
 		for (DeckCard c : DeckCard.rewardPool()) {
-			if (DeckCardPool.isNeutralCard(c) || c.deckClass != heroClass) pool.add(c);
+			if (!DeckCardPool.isNeutralCard(c) && c.deckClass != heroClass) pool.add(c);
 		}
 		for (int i = pool.size() - 1; i > 0; i--) {
 			int j = Random.Int(i + 1);

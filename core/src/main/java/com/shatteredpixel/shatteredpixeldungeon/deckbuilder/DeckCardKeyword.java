@@ -22,7 +22,8 @@ public enum DeckCardKeyword {
 	THROW(16, "_투척_", "손패의 가장 왼쪽 또는 가장 오른쪽에서 사용하면 강화 효과가 발동합니다."),
 	VANGUARD(32, "_선봉_", "전투 시작 시 첫 패에 들어옵니다."),
 	TRANSIENT(64, "_일시적_", "내 턴이 끝날 때 손에 들고 있다면 소멸합니다."),
-	ZERO_COST(128, "", "");
+	ZERO_COST(128, "", ""),
+	PERMANENT(256, "_영구_", "이 카드는 덱에서 제거하거나 변환할 수 없습니다.");
 
 	public final int bit;
 	public final String label;

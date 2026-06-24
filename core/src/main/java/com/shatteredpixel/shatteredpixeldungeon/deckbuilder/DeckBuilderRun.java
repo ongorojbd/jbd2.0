@@ -73,6 +73,8 @@ public class DeckBuilderRun {
 	public static boolean pendingCardUpgrade;
 	public static int pendingOtherClassCardReward;
 	public static int pendingRareCardChoice;
+	public static int pendingRareNeutralCardChoice;
+	public static int enemyOneHpBattles;
 	// Fishing Rod: counts normal combats toward next random card upgrade
 	public static int fishingRodProgress;
 	// Silver Crucible: upgrade card picked from reward; first treasure empty
@@ -128,6 +130,8 @@ public class DeckBuilderRun {
 		pendingCardUpgrade = false;
 		pendingOtherClassCardReward = 0;
 		pendingRareCardChoice = 0;
+		pendingRareNeutralCardChoice = 0;
+		enemyOneHpBattles = 0;
 		fishingRodProgress = 0;
 		upgradedCardRewardCount = 0;
 		firstTreasureEmpty = false;

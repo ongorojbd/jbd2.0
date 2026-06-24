@@ -585,7 +585,53 @@ public enum DeckCard {
 			new DeckCardEffects.RelicSelectionBoxEffect()),
 
 	POTION_SELECTION_BOX(131, "물약 선택 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.POTION_HOLDER,
-			new DeckCardEffects.PotionSelectionBoxEffect());
+			new DeckCardEffects.PotionSelectionBoxEffect()),
+
+	END_OF_PACT(132, "조약의 끝", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.ALL_ENEMIES, 0, 17, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_TIWAZ,
+			new DeckCardEffects.EndOfPactEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 23 : 17; }
+	},
+
+	BURNING_PACT(133, "불타는 조약", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_KAUNAN,
+			new DeckCardEffects.BurningPactEffect()),
+
+	FIREPOWER_AMP(134, "화력 증폭", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_FIREBOLT,
+			new DeckCardEffects.FirepowerAmpEffect()),
+
+	SECOND_WIND(135, "기사회생", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_BERKANAN,
+			new DeckCardEffects.SecondWindEffect()),
+
+	NUMBNESS(136, "무감각", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_MAIL,
+			new DeckCardEffects.NumbnessEffect()),
+
+	HELLFIRE(137, "지옥불", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 2, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.POTION_CRIMSON,
+			new DeckCardEffects.HellfireEffect()),
+
+	DEMON_EYE(138, "악마의 눈", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.RING_RUBY,
+			new DeckCardEffects.DemonEyeEffect()),
+
+	DARK_EMBRACE(139, "어둠의 포옹", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_CORRUPTION,
+			new DeckCardEffects.DarkEmbraceEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 1 : 2; }
+	},
+
+	FORGOTTEN_RITUAL(140, "잊힌 의식", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ,
+			new DeckCardEffects.ForgottenRitualEffect()),
+
+	MULTI_HIT(141, "난타", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE,
+			new DeckCardEffects.PummelEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 6 : 4; }
+	},
+
+	SOUL_TOLL(142, "영혼 징수", DeckCardType.CURSE, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.PERMANENT), false, ItemSpriteSheet.ARTIFACT_CHAINS,
+			new DeckCardEffects.TextOnly("이 카드는 덱에서 제거할 수 없습니다.")) {
+		@Override public boolean unplayable(int code) { return true; }
+	},
+
+	ASHEN_STRIKE(143, "잿빛 타격", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER,
+			new DeckCardEffects.AshenStrikeEffect()) {
+		@Override public int damage(int code) { return 6; }
+	};
 
 	public final int id;
 	public final String title;

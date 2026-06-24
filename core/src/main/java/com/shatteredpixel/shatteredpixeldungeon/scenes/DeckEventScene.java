@@ -380,8 +380,11 @@ public class DeckEventScene extends PixelScene {
 		ArrayList<Integer> choices = new ArrayList<>();
 		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
 			int code = DeckBuilderRun.deck.get(i);
-			if (DeckCardPool.isQuest(DeckCard.byCode(code))) continue;
+			DeckCard card = DeckCard.byCode(code);
+			if (DeckCardPool.isQuest(card)) continue;
 			if (cardSelectionMode == MODE_UPGRADE && DeckCard.upgrade(code) == code) continue;
+			if ((cardSelectionMode == MODE_REMOVE || cardSelectionMode == MODE_TRANSFORM)
+					&& card.hasKeyword(code, DeckCardKeyword.PERMANENT)) continue;
 			choices.add(i);
 		}
 		return choices;
@@ -1037,7 +1040,9 @@ public class DeckEventScene extends PixelScene {
 	private void transformRandomCards(int count) {
 		ArrayList<Integer> indices = new ArrayList<>();
 		for (int i = 0; i < DeckBuilderRun.deck.size(); i++) {
-			if (DeckCardPool.isQuest(DeckCard.byCode(DeckBuilderRun.deck.get(i)))) continue;
+			int code = DeckBuilderRun.deck.get(i);
+			DeckCard card = DeckCard.byCode(code);
+			if (DeckCardPool.isQuest(card) || card.hasKeyword(code, DeckCardKeyword.PERMANENT)) continue;
 			indices.add(i);
 		}
 		for (int i = 0; i < count && !indices.isEmpty(); i++) {
@@ -1049,7 +1054,9 @@ public class DeckEventScene extends PixelScene {
 
 	private void transformCard(int deckIndex) {
 		DeckCard[] pool = DeckCard.rewardPool(DeckBuilderRun.heroClass(), false, false);
-		DeckCard current = DeckCard.byCode(DeckBuilderRun.deck.get(deckIndex));
+		int currentCode = DeckBuilderRun.deck.get(deckIndex);
+		DeckCard current = DeckCard.byCode(currentCode);
+		if (current.hasKeyword(currentCode, DeckCardKeyword.PERMANENT)) return;
 		ArrayList<DeckCard> filtered = new ArrayList<>();
 		for (DeckCard c : pool) { if (c != current) filtered.add(c); }
 		if (filtered.isEmpty()) return;

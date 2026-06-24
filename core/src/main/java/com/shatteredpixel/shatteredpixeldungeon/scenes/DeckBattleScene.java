@@ -157,6 +157,7 @@ public class DeckBattleScene extends PixelScene {
     private RenderedTextBlock wandSelectionTitle;
     private RenderedTextBlock wandSelectionSubtitle;
     private boolean selectingForPure;
+    private boolean selectingForBurningPact;
     private boolean touchOfInsanityActive;
     private int touchOfInsanitySlot;
     private int pureHandIndex;
@@ -220,7 +221,7 @@ public class DeckBattleScene extends PixelScene {
                     combat -> combat.playerArtifact),
             new PlayerBuffSpec(BuffIndicator.BLESS, "축복", "체력 피해를 받을 때 피해를 1로 줄입니다. 턴이 시작될 때마다 1 감소합니다.",
                     combat -> combat.playerBlessed),
-            new PlayerBuffSpec(BuffIndicator.HEALING, "재생", "매 턴 시작 시 이 수치만큼 보호막을 얻습니다.",
+            new PlayerBuffSpec(BuffIndicator.HEALING, "재생", "턴이 끝날 때마다 이 수치만큼 보호막을 얻습니다. 체력 피해를 받을 때마다 1 감소합니다.",
                     combat -> combat.playerRegen),
             new PlayerBuffSpec(BuffIndicator.TIME, 1f, 0.45f, 0.05f, "오렌지 폭탄", "표시된 턴 수가 0이 되면 모든 적에게 폭탄 피해를 줍니다.",
                     DeckBuilderCombat::orangeBombTimer)
@@ -303,8 +304,9 @@ public class DeckBattleScene extends PixelScene {
                     selectingWandForStaff = false;
                     hideWandSelectionBanner();
                     refresh();
-                } else if (selectingForPure || touchOfInsanityActive) {
+                } else if (selectingForPure || selectingForBurningPact || touchOfInsanityActive) {
                     selectingForPure = false;
+                    selectingForBurningPact = false;
                     touchOfInsanityActive = false;
                     hidePureSelectionBanner();
                     pureSelectedIndices.clear();
@@ -461,6 +463,8 @@ public class DeckBattleScene extends PixelScene {
             protected void onClick() {
                 if (selectingForPure) {
                     confirmPureSelection();
+                } else if (selectingForBurningPact) {
+                    confirmBurningPactSelection();
                 } else if (touchOfInsanityActive) {
                     confirmTouchOfInsanity();
                 } else if (gamblerBrewActive) {
@@ -666,6 +670,10 @@ public class DeckBattleScene extends PixelScene {
             }
         }
 	        int result = combat.endTurn();
+	        if (combat.lastTurnEndRegenBlock > 0) {
+	            spawnFloatingText("+보호막 " + combat.lastTurnEndRegenBlock + " (재생)", playerCenterX(), playerCenterY() - 42, 0xFF99EEFF);
+	            updatePlayerHpUi();
+	        }
 	        spawnPoisonDartDamageEffect();
 	        spawnPriceOfSinDamageEffect();
 	        float orangeBombDelay = spawnOrangeBombExplosionEffects(0.08f);
@@ -735,6 +743,7 @@ public class DeckBattleScene extends PixelScene {
                     if (combat.won()) {
                         showReward();
                     } else {
+                        if (!combat.playerDead()) combat.startTurnState();
                         needsHandDraw = true;
                         showPlayerTurnTitle();
                     }
@@ -1284,6 +1293,7 @@ public class DeckBattleScene extends PixelScene {
         discardCounter.maxWidth(counterW - 4);
         discardCounter.setPos(discardCounterBg.x + (discardCounterBg.width() - discardCounter.width()) / 2f, textY);
         refreshPlayerBuffs();
+        if (runHud != null) runHud.refresh();
 
         positionActorHud();
 
@@ -1428,6 +1438,32 @@ public class DeckBattleScene extends PixelScene {
         selectionBackdropArea.active = true;
     }
 
+    private void showBurningPactSelectionBanner() {
+        int w = Camera.main.width;
+        int h = Camera.main.height;
+        int shadeH = 44;
+        pureSelectionShade.size(w, shadeH);
+        pureSelectionShade.y = (h - shadeH) / 2f;
+        pureSelectionShade.visible = true;
+
+        pureSelectionAccent.color(0xFFFF8A4A);
+        pureSelectionAccent.y = pureSelectionShade.y + shadeH;
+        pureSelectionAccent.visible = true;
+
+        pureSelectionTitle.text("소멸할 카드 1장을 선택하세요.");
+        pureSelectionTitle.hardlight(0xFFFF8A4A);
+        pureSelectionTitle.setPos((w - pureSelectionTitle.width()) / 2f, pureSelectionShade.y + 6);
+        pureSelectionTitle.visible = true;
+
+        pureSelectionSubtitle.visible = false;
+
+        pureSelectorConfirm.text("확인 (0/1)");
+        pureSelectorConfirm.setRect((w - 90) / 2f, pureSelectionTitle.bottom() + 4, 90, 14);
+        pureSelectorConfirm.visible = true;
+
+        selectionBackdropArea.active = true;
+    }
+
     private void showTouchOfInsanityBanner() {
         int w = Camera.main.width;
         int h = Camera.main.height;
@@ -1465,6 +1501,8 @@ public class DeckBattleScene extends PixelScene {
 
     private void updatePureConfirmButton() {
         if (touchOfInsanityActive) {
+            pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/1)");
+        } else if (selectingForBurningPact) {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/1)");
         } else if (gamblerBrewActive) {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "장 교환)");
@@ -1565,7 +1603,7 @@ public class DeckBattleScene extends PixelScene {
         for (int idx : pureSelectedIndices) {
             int code = combat.hand.get(idx);
             combat.hand.remove(idx);
-            combat.exhaustPile.add(code);
+            combat.exhaustCard(code);
             float[] pos = idxToPos.get(idx);
             addEffect(new ExhaustEffect(pos[0], pos[1]));
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
@@ -1574,6 +1612,33 @@ public class DeckBattleScene extends PixelScene {
         selectingForPure = false;
         hidePureSelectionBanner();
         executePlayCard(adjustedPureIndex, -1);
+    }
+
+    private void confirmBurningPactSelection() {
+        if (pureSelectedIndices.isEmpty()) return;
+        Map<Integer, float[]> idxToPos = new LinkedHashMap<>();
+        for (int idx : pureSelectedIndices) {
+            float ex = idx < cardButtons.size() ? cardButtons.get(idx).centerX() : playerCenterX();
+            float ey = idx < cardButtons.size() ? cardButtons.get(idx).centerY() : playerCenterY();
+            idxToPos.put(idx, new float[]{ex, ey});
+        }
+        int adjustedIndex = pureHandIndex;
+        for (int idx : pureSelectedIndices) {
+            if (idx < pureHandIndex) adjustedIndex--;
+        }
+        java.util.Collections.sort(pureSelectedIndices, java.util.Collections.reverseOrder());
+        for (int idx : pureSelectedIndices) {
+            int code = combat.hand.get(idx);
+            combat.hand.remove(idx);
+            combat.exhaustCard(code);
+            float[] pos = idxToPos.get(idx);
+            addEffect(new ExhaustEffect(pos[0], pos[1]));
+            Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        }
+        pureSelectedIndices.clear();
+        selectingForBurningPact = false;
+        hidePureSelectionBanner();
+        executePlayCard(adjustedIndex, -1);
     }
 
     private void playCard(int index) {
@@ -1598,6 +1663,15 @@ public class DeckBattleScene extends PixelScene {
             pureSelectedIndices.clear();
             pureMaxSelect = DeckCard.upgradeLevel(cardCode) > 0 ? 5 : 3;
             showPureSelectionBanner();
+            refresh();
+            return;
+        }
+        if (card == DeckCard.BURNING_PACT && combat.hand.size() > 1) {
+            selectingForBurningPact = true;
+            pureHandIndex = index;
+            pureSelectedIndices.clear();
+            pureMaxSelect = 1;
+            showBurningPactSelectionBanner();
             refresh();
             return;
         }
@@ -1633,6 +1707,10 @@ public class DeckBattleScene extends PixelScene {
         }
         if (runHud != null && DeckBuilderRun.potions.size() != potionCountBefore) {
             runHud.refresh();
+        }
+        if (result.gold > 0) {
+            spawnFloatingText("+" + result.gold + " 골드", playerCenterX(), playerCenterY() - 30, 0xFFFFD84D);
+            if (runHud != null) runHud.refresh();
         }
         advanceTutorialAfterCard(card, cardCode);
 
@@ -2573,9 +2651,10 @@ public class DeckBattleScene extends PixelScene {
                 DeckBuilderRun.removePotion(slot);
                 if (runHud != null) runHud.refresh();
                 Sample.INSTANCE.play(Assets.Sounds.DRINK);
+                combat.playerPermanentThorns += 3;
                 combat.playerThorns += 3;
                 spawnFloatingText("반격 +3", playerCenterX(), playerCenterY() - 24, 0xFFFFB36B);
-                log(potion.title + ": 반격을 3 얻었습니다.");
+                log(potion.title + ": 반격을 3 얻었습니다. (영구)");
                 saveCombatState();
                 refresh();
                 break;
@@ -5875,8 +5954,9 @@ public class DeckBattleScene extends PixelScene {
             refresh();
             return;
         }
-        if (selectingForPure || touchOfInsanityActive) {
+        if (selectingForPure || selectingForBurningPact || touchOfInsanityActive) {
             selectingForPure = false;
+            selectingForBurningPact = false;
             touchOfInsanityActive = false;
             hidePureSelectionBanner();
             pureSelectedIndices.clear();
@@ -7122,7 +7202,7 @@ public class DeckBattleScene extends PixelScene {
                 int code = cardCode();
                 return DeckCard.maxCharge(code) > 0;
             }
-            if (selectingForPure) {
+            if (selectingForPure || selectingForBurningPact) {
                 return handIndex != pureHandIndex;
             }
             if (touchOfInsanityActive) {
@@ -7130,6 +7210,12 @@ public class DeckBattleScene extends PixelScene {
             }
             if (gamblerBrewActive) {
                 return true;
+            }
+            if (card() == DeckCard.BURNING_PACT && combat.hand.size() <= 1) {
+                return false;
+            }
+            if (card() == DeckCard.END_OF_PACT && combat.exhaustPile.size() < 3) {
+                return false;
             }
             if (card().unplayable(cardCode())) {
                 return false;
@@ -7140,11 +7226,11 @@ public class DeckBattleScene extends PixelScene {
         @Override
         protected void layout() {
             super.layout();
-            if ((selectingForPure || touchOfInsanityActive || gamblerBrewActive) && pureSelectedIndices.contains(handIndex)) {
+            if ((selectingForPure || selectingForBurningPact || touchOfInsanityActive || gamblerBrewActive) && pureSelectedIndices.contains(handIndex)) {
                 edge.color(0xFFA8F26A);
                 edge.am = 1.0f;
                 face.am = 0.92f;
-            } else if (!selectingForPure && !gamblerBrewActive && !selectingWandForStaff
+            } else if (!selectingForPure && !selectingForBurningPact && !gamblerBrewActive && !selectingWandForStaff
                     && combat != null && card().conditionMet(cardCode(), combat)) {
                 edge.color(0xFFA8F26A);
                 edge.am = 1.0f;
@@ -7169,7 +7255,7 @@ public class DeckBattleScene extends PixelScene {
                 showCardInfo(cardCode());
                 return;
             }
-            if (selectingForPure || touchOfInsanityActive || gamblerBrewActive) {
+            if (selectingForPure || selectingForBurningPact || touchOfInsanityActive || gamblerBrewActive) {
                 activeTouch = true;
                 super.onPointerDown();
                 homeX = x;
@@ -7194,7 +7280,7 @@ public class DeckBattleScene extends PixelScene {
         @Override
         protected void onDrag(PointerEvent event) {
             if (selectingWandForStaff) return;
-            if (selectingForPure || touchOfInsanityActive || gamblerBrewActive) return;
+            if (selectingForPure || selectingForBurningPact || touchOfInsanityActive || gamblerBrewActive) return;
             if (!activeTouch || !enabled()) return;
             float dx = event.current.x - event.start.x;
             float dy = event.current.y - event.start.y;
@@ -7217,7 +7303,7 @@ public class DeckBattleScene extends PixelScene {
                 if (clickReady) onClick();
                 return;
             }
-            if (selectingForPure || touchOfInsanityActive || gamblerBrewActive) {
+            if (selectingForPure || selectingForBurningPact || touchOfInsanityActive || gamblerBrewActive) {
                 if (clickReady) {
                     clickReady = false;
                     onClick();
@@ -7249,9 +7335,10 @@ public class DeckBattleScene extends PixelScene {
                 }
                 return;
             }
-            if (selectingForPure) {
+            if (selectingForPure || selectingForBurningPact) {
                 if (handIndex == pureHandIndex) {
                     selectingForPure = false;
+                    selectingForBurningPact = false;
                     hidePureSelectionBanner();
                     pureSelectedIndices.clear();
                     refresh();
@@ -7260,6 +7347,7 @@ public class DeckBattleScene extends PixelScene {
                     if (pureSelectedIndices.contains(idx)) {
                         pureSelectedIndices.remove(idx);
                     } else if (pureSelectedIndices.size() < pureMaxSelect) {
+                        if (selectingForBurningPact) pureSelectedIndices.clear();
                         pureSelectedIndices.add(idx);
                     }
                     updatePureConfirmButton();

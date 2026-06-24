@@ -1046,6 +1046,332 @@ public class DeckCardEffects {
 		@Override public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) { return text; }
 	}
 
+	public static class FirepowerAmpEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckCardPlayContext context) {
+			int exhausted = exhaustMatchingHandCards(context, null);
+			boolean upgraded = DeckCardCode.upgradeLevel(context.effectiveCardCode) > 0;
+			for (int i = 0; i < exhausted; i++) {
+				context.combat.addRandomRewardCardToHand(upgraded);
+			}
+			context.result.exhausted = context.result.exhausted || exhausted > 0;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			String text = "손에 있는 모든 카드를 소멸시킵니다. 소멸시킨 카드 1장당 무작위 카드 1장을 손으로 가져옵니다.";
+			if (DeckCardCode.upgradeLevel(cardCode) > 0) text += " 가져오는 카드가 강화됩니다.";
+			return text;
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "가져오는 카드 강화";
+		}
+	}
+
+	public static class BurningPactEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int count = DeckCardCode.upgradeLevel(cardCode) > 0 ? 3 : 2;
+			combat.draw(count);
+			result.draw += count;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int count = DeckCardCode.upgradeLevel(cardCode) > 0 ? 3 : 2;
+			return "카드를 1장 소멸시킵니다. 카드를 " + count + "장 뽑습니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "드로우 2 > 3";
+		}
+	}
+
+	public static class SecondWindEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckCardPlayContext context) {
+			int blockPerCard = DeckCardCode.upgradeLevel(context.effectiveCardCode) > 0 ? 7 : 5;
+			int exhausted = exhaustMatchingHandCards(context, new HandCardPredicate() {
+				@Override
+				public boolean matches(DeckCard card) {
+					return card.type != DeckCardType.ATTACK;
+				}
+			});
+			if (exhausted > 0) {
+				context.result.block += context.combat.gainBlock(blockPerCard * exhausted);
+				context.result.exhausted = true;
+			}
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 7 : 5;
+			return "손에 있는 공격이 아닌 모든 카드를 소멸시킵니다. 소멸시킨 카드 1장당 보호막을 " + block + " 얻습니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "보호막 5 > 7";
+		}
+	}
+
+	public static class NumbnessEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.numbnessBlock += DeckCardCode.upgradeLevel(cardCode) > 0 ? 4 : 3;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 4 : 3;
+			return "카드가 소멸될 때마다, 보호막을 " + block + " 얻습니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "보호막 3 > 4";
+		}
+	}
+
+	public static class HellfireEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckCardPlayContext context) {
+			int exhausted = exhaustMatchingHandCards(context, null);
+			int baseDamage = DeckCardCode.upgradeLevel(context.effectiveCardCode) > 0 ? 10 : 7;
+			for (int i = 0; i < exhausted; i++) {
+				if (i > 0) context.result.nextWave();
+				for (DeckCombatEnemy target : targets(context.combat, context.card)) {
+					int damage = context.combat.cardDamageFromBase(context.card, context.effectiveCardCode, target, baseDamage);
+					int dealt = context.combat.damageEnemy(target, damage, true);
+					context.result.addAttackHit(context.combat.enemyIndex(target), dealt);
+				}
+			}
+			context.result.exhausted = context.result.exhausted || exhausted > 0;
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int damage = DeckCardCode.upgradeLevel(cardCode) > 0 ? 10 : 7;
+			return "손에 있는 모든 카드를 소멸시킵니다. 소멸시킨 카드 1장당 피해를 " + damage + " 줍니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "피해 7 > 10";
+		}
+	}
+
+	public static class DemonEyeEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 11 : 8;
+			int totalBlock = block;
+			if (combat.cardsExhaustedThisTurn > 0) totalBlock += block;
+			result.block += combat.gainBlockFromCard(totalBlock);
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 11 : 8;
+			return "보호막을 " + DeckCardText.blockValue(block, combat) + " 얻습니다. 이번 턴 동안 소멸시킨 카드가 있다면 보호막을 추가로 " + DeckCardText.blockValue(block, combat) + " 얻습니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "기본 및 추가 보호막 8 > 11";
+		}
+
+		@Override
+		public boolean conditionMet(DeckBuilderCombat combat, DeckCard card, int cardCode) {
+			return combat.cardsExhaustedThisTurn > 0;
+		}
+	}
+
+	public static class DarkEmbraceEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.darkEmbraceDraw++;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "카드가 소멸될 때마다, 카드를 1장 뽑습니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "비용 2 > 1";
+		}
+	}
+
+	public static class ForgottenRitualEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			result.exhausted = true;
+			if (combat.cardsExhaustedThisTurn <= 0) return;
+			int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? 4 : 3;
+			combat.energy = Math.min(DeckBuilderRun.MAX_ENERGY_CAP, combat.energy + amount);
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? 4 : 3;
+			return "이번 턴에 카드를 소멸시켰다면, " + amount + " 에너지를 얻습니다. 소멸.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "에너지 3 > 4";
+		}
+
+		@Override
+		public boolean conditionMet(DeckBuilderCombat combat, DeckCard card, int cardCode) {
+			return combat.cardsExhaustedThisTurn > 0;
+		}
+	}
+
+	public static class EndOfPactEffect extends Damage {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			if (combat.exhaustPile.size() < 3) return;
+			super.apply(combat, card, cardCode, result);
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "소멸된 카드 더미에 카드가 3장 이상 있을 때만 사용할 수 있습니다. 모든 적에게 피해를 " + DeckCardText.damageValue(card, cardCode, combat) + " 줍니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "피해 17 > 23";
+		}
+
+		@Override
+		public boolean conditionMet(DeckBuilderCombat combat, DeckCard card, int cardCode) {
+			return combat.exhaustPile.size() >= 3;
+		}
+	}
+
+	public static class PummelEffect extends Damage {
+		@Override
+		public void apply(DeckCardPlayContext context) {
+			int bonusDamage = exhaustRandomAttackFromHand(context);
+			int baseDamage = context.card.damage(context.effectiveCardCode) + bonusDamage;
+			for (int i = 0; i < 2; i++) {
+				if (i > 0) context.result.nextWave();
+				for (DeckCombatEnemy target : targets(context.combat, context.card)) {
+					int damage = context.combat.cardDamageFromBase(context.card, context.effectiveCardCode, target, baseDamage);
+					int dealt = context.combat.damageEnemy(target, damage, true);
+					context.result.addAttackHit(context.combat.enemyIndex(target), dealt);
+				}
+			}
+		}
+
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+		}
+
+		private int exhaustRandomAttackFromHand(DeckCardPlayContext context) {
+			ArrayList<Integer> candidates = new ArrayList<>();
+			for (int i = 0; i < context.combat.hand.size(); i++) {
+				if (i == context.handIndex) continue;
+				int code = context.combat.hand.get(i);
+				DeckCard handCard = DeckCard.byCode(code);
+				if (handCard.type == DeckCardType.ATTACK && !handCard.unplayable(code)) {
+					candidates.add(i);
+				}
+			}
+			if (candidates.isEmpty()) return 0;
+			int idx = candidates.get(Random.Int(candidates.size()));
+			int code = context.combat.hand.get(idx);
+			DeckCard handCard = DeckCard.byCode(code);
+			int bonusDamage = handCard.damage(code);
+			context.result.draw += context.combat.exhaustCard(code);
+			context.combat.hand.remove(idx);
+			if (idx < context.handIndex) {
+				context.combat.currentPlayHandIndexShift--;
+			}
+			context.result.exhausted = true;
+			return bonusDamage;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "피해를 " + DeckCardText.damageValue(card, cardCode, combat) + "씩 2번 줍니다. 손에 있는 무작위 공격 카드 1장을 소멸시키고, 그 카드의 피해량을 이 카드에 추가합니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "피해 4 > 6";
+		}
+	}
+
+	public static class AshenStrikeEffect extends Damage {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			for (DeckCombatEnemy target : targets(combat, card)) {
+				int damage = combat.cardDamageFromBase(card, cardCode, target, baseDamage(cardCode, combat));
+				int dealt = combat.damageEnemy(target, damage, true);
+				result.addAttackHit(combat.enemyIndex(target), dealt);
+			}
+		}
+
+		private int baseDamage(int cardCode, DeckBuilderCombat combat) {
+			int perCard = DeckCardCode.upgradeLevel(cardCode) > 0 ? 4 : 3;
+			return 6 + combat.exhaustPile.size() * perCard;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int perCard = DeckCardCode.upgradeLevel(cardCode) > 0 ? 4 : 3;
+			if (combat == null) return "피해를 6 줍니다. 소멸된 카드 더미에 있는 카드 1장당 피해량이 " + perCard + " 증가합니다.";
+			int damage = combat.cardDamageFromBase(card, cardCode, combat.target(), baseDamage(cardCode, combat));
+			return "피해를 " + damage + " 줍니다. 소멸된 카드 더미에 있는 카드 1장당 피해량이 " + perCard + " 증가합니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "소멸된 카드당 피해 3 > 4";
+		}
+	}
+
+	private interface HandCardPredicate {
+		boolean matches(DeckCard card);
+	}
+
+	private static int exhaustMatchingHandCards(DeckCardPlayContext context, HandCardPredicate predicate) {
+		int exhausted = 0;
+		for (int i = context.combat.hand.size() - 1; i >= 0; i--) {
+			if (i == context.handIndex) continue;
+			int code = context.combat.hand.get(i);
+			DeckCard card = DeckCard.byCode(code);
+			if (predicate != null && !predicate.matches(card)) continue;
+			context.result.draw += context.combat.exhaustCard(code);
+			context.combat.hand.remove(i);
+			if (i < context.handIndex) {
+				context.combat.currentPlayHandIndexShift--;
+			}
+			exhausted++;
+		}
+		return exhausted;
+	}
+
 	public static class RuptureEffect implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
@@ -1871,7 +2197,9 @@ public class DeckCardEffects {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
 			if (combat.playKillCount > 0) {
-				DeckBuilderRun.gainGold(DeckCardCode.upgradeLevel(cardCode) > 0 ? 25 : 20);
+				int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? 25 : 20;
+				DeckBuilderRun.gainGold(amount);
+				result.gold += amount;
 			}
 		}
 

@@ -82,6 +82,8 @@ public class DeckBuilderRunBundle {
 	private static final String PENDING_OTHER_CLASS_REWARD    = "deckbuilder_pending_other_class_reward";
 	private static final String PENDING_CARD_REMOVE_COUNT     = "deckbuilder_pending_card_remove_count";
 	private static final String PENDING_RARE_CARD_CHOICE      = "deckbuilder_pending_rare_card_choice";
+	private static final String PENDING_RARE_NEUTRAL_CHOICE   = "deckbuilder_pending_rare_neutral_choice";
+	private static final String ENEMY_ONE_HP_BATTLES          = "deckbuilder_enemy_one_hp_battles";
 	private static final String FISHING_ROD_PROGRESS         = "deckbuilder_fishing_rod_progress";
 	private static final String UPGRADED_CARD_REWARD_COUNT   = "deckbuilder_upgraded_card_reward_count";
 	private static final String FIRST_TREASURE_EMPTY         = "deckbuilder_first_treasure_empty";
@@ -130,6 +132,8 @@ public class DeckBuilderRunBundle {
 		bundle.put(PENDING_OTHER_CLASS_REWARD, DeckBuilderRun.pendingOtherClassCardReward);
 		bundle.put(PENDING_CARD_REMOVE_COUNT,  DeckBuilderRun.pendingCardRemoveCount);
 		bundle.put(PENDING_RARE_CARD_CHOICE,   DeckBuilderRun.pendingRareCardChoice);
+		bundle.put(PENDING_RARE_NEUTRAL_CHOICE, DeckBuilderRun.pendingRareNeutralCardChoice);
+		bundle.put(ENEMY_ONE_HP_BATTLES,       DeckBuilderRun.enemyOneHpBattles);
 		bundle.put(FISHING_ROD_PROGRESS,       DeckBuilderRun.fishingRodProgress);
 		bundle.put(UPGRADED_CARD_REWARD_COUNT, DeckBuilderRun.upgradedCardRewardCount);
 		bundle.put(FIRST_TREASURE_EMPTY,       DeckBuilderRun.firstTreasureEmpty);
@@ -184,8 +188,10 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.pendingCardUpgrade          = bundle.getBoolean(PENDING_CARD_UPGRADE);
 		DeckBuilderRun.pendingOtherClassCardReward = bundle.contains(PENDING_OTHER_CLASS_REWARD) ? bundle.getInt(PENDING_OTHER_CLASS_REWARD) : 0;
 		DeckBuilderRun.pendingCardRemoveCount      = bundle.contains(PENDING_CARD_REMOVE_COUNT)  ? bundle.getInt(PENDING_CARD_REMOVE_COUNT)  : 0;
-		DeckBuilderRun.pendingRareCardChoice       = bundle.contains(PENDING_RARE_CARD_CHOICE)   ? bundle.getInt(PENDING_RARE_CARD_CHOICE)   : 0;
-		DeckBuilderRun.fishingRodProgress          = bundle.contains(FISHING_ROD_PROGRESS)       ? bundle.getInt(FISHING_ROD_PROGRESS)       : 0;
+		DeckBuilderRun.pendingRareCardChoice       = bundle.contains(PENDING_RARE_CARD_CHOICE)    ? bundle.getInt(PENDING_RARE_CARD_CHOICE)    : 0;
+		DeckBuilderRun.pendingRareNeutralCardChoice = bundle.contains(PENDING_RARE_NEUTRAL_CHOICE) ? bundle.getInt(PENDING_RARE_NEUTRAL_CHOICE) : 0;
+		DeckBuilderRun.enemyOneHpBattles           = bundle.contains(ENEMY_ONE_HP_BATTLES)        ? bundle.getInt(ENEMY_ONE_HP_BATTLES)        : 0;
+		DeckBuilderRun.fishingRodProgress          = bundle.contains(FISHING_ROD_PROGRESS)        ? bundle.getInt(FISHING_ROD_PROGRESS)        : 0;
 		DeckBuilderRun.upgradedCardRewardCount     = bundle.contains(UPGRADED_CARD_REWARD_COUNT) ? bundle.getInt(UPGRADED_CARD_REWARD_COUNT) : 0;
 		DeckBuilderRun.firstTreasureEmpty          = bundle.getBoolean(FIRST_TREASURE_EMPTY);
 		DeckBuilderRun.lifeBombCardsAdded          = bundle.contains(LIFE_BOMB_CARDS_ADDED) ? bundle.getInt(LIFE_BOMB_CARDS_ADDED) : 0;
