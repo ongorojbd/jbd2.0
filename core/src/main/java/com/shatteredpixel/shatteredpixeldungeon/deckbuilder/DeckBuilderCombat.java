@@ -196,6 +196,7 @@ public class DeckBuilderCombat {
 	private static final String PENDING_DISCARD_HAND_SELECT_COUNT = "pending_discard_hand_select_count";
 	private static final String PENDING_DAGGER_THROW_DISCARD = "pending_dagger_throw_discard";
 	private static final String IMPOSTING_PRESENCE_DAMAGE = "imposting_presence_damage";
+	private static final String SNAKE_FORM_DAMAGE = "snake_form_damage";
 	private static final String GUARD_BLOCK_BONUS = "guard_block_bonus";
 	private static final String AUTOMATION_COUNT = "automation_count";
 	private static final String AUTOMATION_DRAWS_COUNTER = "automation_draws_counter";
@@ -297,6 +298,7 @@ public class DeckBuilderCombat {
 	public int pendingDiscardHandSelectCount = 0;
 	public boolean pendingDaggerThrowDiscard = false;
 	public int impostingPresenceDamage = 0;
+	public int snakeFormDamage = 0;
 	public int guardBlockBonus = 0;
 	public int automationCount = 0;
 	public int automationDrawsSinceLastTrigger = 0;
@@ -479,6 +481,7 @@ public class DeckBuilderCombat {
 			bundle.put(PULSING_AXE_RETURNS, toArray(pulsingAxeReturns));
 		}
 		bundle.put(IMPOSTING_PRESENCE_DAMAGE, impostingPresenceDamage);
+		bundle.put(SNAKE_FORM_DAMAGE, snakeFormDamage);
 		bundle.put(GUARD_BLOCK_BONUS, guardBlockBonus);
 		bundle.put(AUTOMATION_COUNT, automationCount);
 		bundle.put(AUTOMATION_DRAWS_COUNTER, automationDrawsSinceLastTrigger);
@@ -668,6 +671,7 @@ public class DeckBuilderCombat {
 			restoreList(combat.pulsingAxeReturns, bundle, PULSING_AXE_RETURNS);
 		}
 		combat.impostingPresenceDamage = bundle.contains(IMPOSTING_PRESENCE_DAMAGE) ? bundle.getInt(IMPOSTING_PRESENCE_DAMAGE) : 0;
+		combat.snakeFormDamage = bundle.contains(SNAKE_FORM_DAMAGE) ? bundle.getInt(SNAKE_FORM_DAMAGE) : 0;
 		combat.guardBlockBonus = bundle.contains(GUARD_BLOCK_BONUS) ? bundle.getInt(GUARD_BLOCK_BONUS) : 0;
 		combat.automationCount = bundle.contains(AUTOMATION_COUNT) ? bundle.getInt(AUTOMATION_COUNT) : 0;
 		combat.automationDrawsSinceLastTrigger = bundle.contains(AUTOMATION_DRAWS_COUNTER) ? bundle.getInt(AUTOMATION_DRAWS_COUNTER) : 0;
@@ -1171,6 +1175,15 @@ public class DeckBuilderCombat {
 			for (DeckCombatEnemy enemy : aliveEnemies()) {
 				int dealt = damageEnemy(enemy, impostingPresenceDamage, false);
 				if (dealt > 0) result.addHit(enemyIndex(enemy), dealt, 0);
+			}
+		}
+
+		if (!castOnDraw && snakeFormDamage > 0) {
+			ArrayList<DeckCombatEnemy> alive = aliveEnemies();
+			if (!alive.isEmpty()) {
+				DeckCombatEnemy snakeTarget = alive.get(Random.Int(alive.size()));
+				int dealt = damageEnemy(snakeTarget, snakeFormDamage, false);
+				if (dealt > 0) result.addHit(enemyIndex(snakeTarget), dealt, 0);
 			}
 		}
 

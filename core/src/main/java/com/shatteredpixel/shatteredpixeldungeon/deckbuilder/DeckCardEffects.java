@@ -2133,6 +2133,26 @@ public class DeckCardEffects {
 		}
 	}
 
+	// 구렁이의 형상: 카드 사용 때마다 무작위 적에게 피해
+	public static class SnakeFormEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int damage = DeckCardCode.upgradeLevel(cardCode) > 0 ? 6 : 4;
+			combat.snakeFormDamage += damage;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int damage = DeckCardCode.upgradeLevel(cardCode) > 0 ? 6 : 4;
+			return "카드를 사용할 때마다, 무작위 적에게 피해를 " + damage + " 줍니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "피해 4 > 6";
+		}
+	}
+
 	// 고정시키기: GUARD 카드 추가 보호막
 	public static class AnchorEffect implements DeckCardEffect {
 		private final int base;

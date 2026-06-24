@@ -102,6 +102,9 @@ public enum DeckCard {
 	HIDDEN_DAGGER(157, "숨겨진 단검", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.HiddenDaggerEffect()),
 
+	SNAKE_FORM(158, "구렁이의 형상", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ELIXIR_DRAGON,
+			new DeckCardEffects.SnakeFormEffect()),
+
 	ROTATING_NAIL(15, "회전하는 손톱", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.RANDOM_ENEMY, 1, 3, 0, 1, 0, 0, 0, keywords(DeckCardKeyword.CAST_ON_DRAW, DeckCardKeyword.EXHAUST), false, Talent.J43, HeroClass.JOHNNY, 0),
 	TUSK_EQUIPMENT_DISC(16, "터스크의 장비 DISC", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.AIM), false, ItemSpriteSheet.ARTIFACT_TUSK1, HeroClass.JOHNNY, 0,
 			new DeckCardEffects.ShuffleIntoDrawPile(ROTATING_NAIL, 5)) {
