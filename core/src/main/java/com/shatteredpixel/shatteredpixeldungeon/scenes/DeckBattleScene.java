@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.FetidRatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollTricksterSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GreatCrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HermitCrabSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatKingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeSprite;
@@ -159,6 +160,7 @@ public class DeckBattleScene extends PixelScene {
     private boolean selectingForPure;
     private boolean selectingForBurningPact;
     private boolean selectingForDaggerThrowDiscard;
+    private boolean selectingForPendingExhaust;
     private boolean touchOfInsanityActive;
     private int touchOfInsanitySlot;
     private int pureHandIndex;
@@ -209,7 +211,7 @@ public class DeckBattleScene extends PixelScene {
                     combat -> combat.playerWeak),
             new PlayerBuffSpec(BuffIndicator.CORRUPT, "피해 증폭", "받는 공격 피해가 50% 증가합니다. 턴이 시작될 때마다 1 감소합니다.",
                     combat -> combat.playerVulnerable),
-            new PlayerBuffSpec(BuffIndicator.ROOTS, "얽힘", "공격 카드 비용이 1 증가합니다. 턴이 끝날 때마다 1 감소합니다.",
+            new PlayerBuffSpec(BuffIndicator.PARALYSIS, "자석화", "공격 카드 비용이 1 증가합니다. 턴이 끝날 때마다 1 감소합니다.",
                     combat -> combat.playerEntangle),
             new PlayerBuffSpec(BuffIndicator.UPGRADE, 1f, 0f, 0f, "연속 타격", "공격 카드의 피해가 이 수치만큼 증가합니다. 공격 이외의 카드를 사용하면 소멸합니다.",
                     combat -> combat.playerConsecutiveStrike),
@@ -308,7 +310,7 @@ public class DeckBattleScene extends PixelScene {
                     selectingWandForStaff = false;
                     hideWandSelectionBanner();
                     refresh();
-                } else if (selectingForDaggerThrowDiscard) {
+                } else if (selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
                     return;
                 } else if (selectingForPure || selectingForBurningPact || touchOfInsanityActive) {
                     selectingForPure = false;
@@ -473,6 +475,8 @@ public class DeckBattleScene extends PixelScene {
                     confirmBurningPactSelection();
                 } else if (selectingForDaggerThrowDiscard) {
                     confirmDaggerThrowDiscardSelection();
+                } else if (selectingForPendingExhaust) {
+                    confirmPendingExhaustSelection();
                 } else if (touchOfInsanityActive) {
                     confirmTouchOfInsanity();
                 } else if (gamblerBrewActive) {
@@ -719,7 +723,17 @@ public class DeckBattleScene extends PixelScene {
 
     private void resolveEnemyTurnAfterWands(final int result) {
         if (combat.won()) {
-            showReward();
+            log(enemyTurnLog(result));
+            spawnEnemyActions();
+            float attackDelay = Math.max(0.36f, 0.62f + combat.lastEnemyActions.size() * 0.08f);
+            float endTurnDelay = spawnEnemyEndTurnDamageEffects(attackDelay);
+            float totalDelay = Math.max(attackDelay, endTurnDelay);
+            addEffect(new DelayedActionEffect(totalDelay, new Runnable() {
+                @Override
+                public void run() {
+                    showReward();
+                }
+            }));
             return;
         }
 
@@ -1275,8 +1289,12 @@ public class DeckBattleScene extends PixelScene {
             showStratagemSelectWindow();
             return;
         }
-        if (combat.pendingDaggerThrowDiscard && !selectingForDaggerThrowDiscard) {
+        if ((combat.pendingDaggerThrowDiscard || combat.pendingHandDiscardSelectCount > 0) && !selectingForDaggerThrowDiscard) {
             restoreDaggerThrowDiscardSelection();
+            return;
+        }
+        if (combat.pendingHandExhaustSelectCount > 0 && !selectingForPendingExhaust) {
+            restorePendingExhaustSelection();
             return;
         }
         combatLocked = false;
@@ -1488,14 +1506,42 @@ public class DeckBattleScene extends PixelScene {
         pureSelectionAccent.y = pureSelectionShade.y + shadeH;
         pureSelectionAccent.visible = true;
 
-        pureSelectionTitle.text("버릴 카드 1장을 선택하세요.");
+        int count = Math.max(1, combat.pendingHandDiscardSelectCount);
+        pureSelectionTitle.text("버릴 카드 " + count + "장을 선택하세요.");
         pureSelectionTitle.hardlight(0xFFFFD84D);
         pureSelectionTitle.setPos((w - pureSelectionTitle.width()) / 2f, pureSelectionShade.y + 6);
         pureSelectionTitle.visible = true;
 
         pureSelectionSubtitle.visible = false;
 
-        pureSelectorConfirm.text("확인 (0/1)");
+        pureSelectorConfirm.text("확인 (0/" + count + ")");
+        pureSelectorConfirm.setRect((w - 90) / 2f, pureSelectionTitle.bottom() + 4, 90, 14);
+        pureSelectorConfirm.visible = true;
+
+        selectionBackdropArea.active = true;
+    }
+
+    private void showPendingExhaustSelectionBanner() {
+        int w = Camera.main.width;
+        int h = Camera.main.height;
+        int shadeH = 44;
+        pureSelectionShade.size(w, shadeH);
+        pureSelectionShade.y = (h - shadeH) / 2f;
+        pureSelectionShade.visible = true;
+
+        pureSelectionAccent.color(0xFFFF8A4A);
+        pureSelectionAccent.y = pureSelectionShade.y + shadeH;
+        pureSelectionAccent.visible = true;
+
+        int count = Math.max(1, combat.pendingHandExhaustSelectCount);
+        pureSelectionTitle.text("소멸할 카드 " + count + "장을 선택하세요.");
+        pureSelectionTitle.hardlight(0xFFFF8A4A);
+        pureSelectionTitle.setPos((w - pureSelectionTitle.width()) / 2f, pureSelectionShade.y + 6);
+        pureSelectionTitle.visible = true;
+
+        pureSelectionSubtitle.visible = false;
+
+        pureSelectorConfirm.text("확인 (0/" + count + ")");
         pureSelectorConfirm.setRect((w - 90) / 2f, pureSelectionTitle.bottom() + 4, 90, 14);
         pureSelectorConfirm.visible = true;
 
@@ -1540,8 +1586,12 @@ public class DeckBattleScene extends PixelScene {
     private void updatePureConfirmButton() {
         if (touchOfInsanityActive) {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/1)");
-        } else if (selectingForBurningPact || selectingForDaggerThrowDiscard) {
+        } else if (selectingForBurningPact) {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/1)");
+        } else if (selectingForDaggerThrowDiscard) {
+            pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/" + pureMaxSelect + ")");
+        } else if (selectingForPendingExhaust) {
+            pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/" + pureMaxSelect + ")");
         } else if (gamblerBrewActive) {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "장 교환)");
         } else {
@@ -1680,16 +1730,50 @@ public class DeckBattleScene extends PixelScene {
     }
 
     private void confirmDaggerThrowDiscardSelection() {
-        if (pureSelectedIndices.isEmpty()) return;
-        int idx = pureSelectedIndices.get(0);
-        if (idx >= 0 && idx < combat.hand.size()) {
-            int code = DeckCardCode.withoutCostOverride(combat.hand.remove(idx));
-            combat.discardPile.add(code);
-            log("단검 투척: 카드를 1장 버렸습니다.");
+        if (pureSelectedIndices.size() < pureMaxSelect) return;
+        java.util.Collections.sort(pureSelectedIndices, java.util.Collections.reverseOrder());
+        int discarded = 0;
+        for (int idx : pureSelectedIndices) {
+            if (idx >= 0 && idx < combat.hand.size()) {
+                int code = DeckCardCode.withoutCostOverride(combat.hand.remove(idx));
+                combat.discardPile.add(code);
+                discarded++;
+            }
         }
         pureSelectedIndices.clear();
         selectingForDaggerThrowDiscard = false;
         combat.pendingDaggerThrowDiscard = false;
+        combat.pendingHandDiscardSelectCount = 0;
+        log("카드를 " + discarded + "장 버렸습니다.");
+        saveCombatState();
+        hidePureSelectionBanner();
+        refresh();
+    }
+
+    private void confirmPendingExhaustSelection() {
+        if (pureSelectedIndices.size() < pureMaxSelect) return;
+        Map<Integer, float[]> idxToPos = new LinkedHashMap<>();
+        for (int idx : pureSelectedIndices) {
+            float ex = idx < cardButtons.size() ? cardButtons.get(idx).centerX() : playerCenterX();
+            float ey = idx < cardButtons.size() ? cardButtons.get(idx).centerY() : playerCenterY();
+            idxToPos.put(idx, new float[]{ex, ey});
+        }
+        java.util.Collections.sort(pureSelectedIndices, java.util.Collections.reverseOrder());
+        int exhausted = 0;
+        for (int idx : pureSelectedIndices) {
+            if (idx >= 0 && idx < combat.hand.size()) {
+                int code = DeckCardCode.withoutCostOverride(combat.hand.remove(idx));
+                combat.exhaustCard(code);
+                float[] pos = idxToPos.get(idx);
+                addEffect(new ExhaustEffect(pos[0], pos[1]));
+                Sample.INSTANCE.play(Assets.Sounds.BURNING);
+                exhausted++;
+            }
+        }
+        pureSelectedIndices.clear();
+        selectingForPendingExhaust = false;
+        combat.pendingHandExhaustSelectCount = 0;
+        log("카드를 " + exhausted + "장 소멸시켰습니다.");
         saveCombatState();
         hidePureSelectionBanner();
         refresh();
@@ -2110,7 +2194,7 @@ public class DeckBattleScene extends PixelScene {
             return;
         }
 
-        if (card == DeckCard.FORESIGHT && combat.pendingHandCardToDrawPileTop) {
+        if (combat.pendingHandCardToDrawPileTop) {
             combat.pendingHandCardToDrawPileTop = false;
             if (result.draw > 0) {
                 spawnDrawPileEffects(result.draw, 0.08f);
@@ -2122,6 +2206,44 @@ public class DeckBattleScene extends PixelScene {
                 @Override
                 public void run() {
                     showForesightHandSelectWindow(0);
+                }
+            }));
+            return;
+        }
+
+        if (combat.pendingDiscardToDrawPileTop) {
+            combat.pendingDiscardToDrawPileTop = false;
+            final ArrayList<Integer> discardSnapshot = new ArrayList<>(combat.discardPile);
+            if (result.block > 0) {
+                spawnShieldEffect(playerCenterX(), playerCenterY(), "+" + result.block);
+            }
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
+            log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.25f, fd), new Runnable() {
+                @Override
+                public void run() {
+                    if (discardSnapshot.isEmpty()) {
+                        refresh();
+                    } else {
+                        showHeadbuttDiscardSelectWindow(discardSnapshot, 0);
+                    }
+                }
+            }));
+            return;
+        }
+
+        if (combat.pendingDiscardHandSelectCount > 0 && card != DeckCard.OSIRIS_GOD) {
+            if (result.block > 0) {
+                spawnShieldEffect(playerCenterX(), playerCenterY(), "+" + result.block);
+            }
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
+            log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.1f, fd), new Runnable() {
+                @Override
+                public void run() {
+                    showDiscardToHandSelectWindow(combat.pendingDiscardHandSelectCount, 0);
                 }
             }));
             return;
@@ -2163,7 +2285,12 @@ public class DeckBattleScene extends PixelScene {
             addEffect(new DelayedActionEffect(Math.max(0.12f, fd), new Runnable() {
                 @Override
                 public void run() {
-                    showPotionSelectionBoxWindow(0);
+                    if (DeckBuilderRun.potions.size() >= DeckBuilderRun.maxPotionSlots()) {
+                        addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
+                        refresh();
+                    } else {
+                        showPotionSelectionBoxWindow(0);
+                    }
                 }
             }));
             return;
@@ -2285,8 +2412,9 @@ public class DeckBattleScene extends PixelScene {
         String autoPlaySuffix = buildRandomPlayLog(combat.lastAutoPlayResults);
         finishDelay = Math.max(finishDelay, spawnAutoPlayEffects());
         log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode) + autoPlaySuffix);
-        final boolean endTurnAfterCard = card == DeckCard.CONCLUSION;
-        final boolean discardAfterCard = card == DeckCard.DAGGER_THROW && !combat.hand.isEmpty();
+        final boolean endTurnAfterCard = card == DeckCard.CONCLUSION || combat.endTurnRequested;
+        if (endTurnAfterCard) combat.endTurnRequested = false;
+        final boolean discardAfterCard = (card == DeckCard.DAGGER_THROW || combat.pendingHandDiscardSelectCount > 0) && !combat.hand.isEmpty();
         if (combat.playerDead()) {
             updatePlayerHpUi();
             addEffect(new DelayedActionEffect(0.45f, new Runnable() {
@@ -2330,11 +2458,14 @@ public class DeckBattleScene extends PixelScene {
     private void beginDaggerThrowDiscardSelection() {
         if (combat.hand.isEmpty()) {
             combat.pendingDaggerThrowDiscard = false;
+            combat.pendingHandDiscardSelectCount = 0;
             saveCombatState();
             refresh();
             return;
         }
         combat.pendingDaggerThrowDiscard = true;
+        if (combat.pendingHandDiscardSelectCount <= 0) combat.pendingHandDiscardSelectCount = 1;
+        combat.pendingHandDiscardSelectCount = Math.min(combat.pendingHandDiscardSelectCount, combat.hand.size());
         saveCombatState();
         restoreDaggerThrowDiscardSelection();
     }
@@ -2343,8 +2474,24 @@ public class DeckBattleScene extends PixelScene {
         selectingForDaggerThrowDiscard = true;
         pureHandIndex = -1;
         pureSelectedIndices.clear();
-        pureMaxSelect = 1;
+        if (combat.pendingHandDiscardSelectCount <= 0) combat.pendingHandDiscardSelectCount = 1;
+        pureMaxSelect = Math.min(combat.pendingHandDiscardSelectCount, combat.hand.size());
         showDaggerThrowDiscardBanner();
+        refresh();
+    }
+
+    private void restorePendingExhaustSelection() {
+        if (combat.hand.isEmpty()) {
+            combat.pendingHandExhaustSelectCount = 0;
+            saveCombatState();
+            refresh();
+            return;
+        }
+        selectingForPendingExhaust = true;
+        pureHandIndex = -1;
+        pureSelectedIndices.clear();
+        pureMaxSelect = Math.min(Math.max(1, combat.pendingHandExhaustSelectCount), combat.hand.size());
+        showPendingExhaustSelectionBanner();
         refresh();
     }
 
@@ -4280,7 +4427,8 @@ public class DeckBattleScene extends PixelScene {
                 protected void onClick() {
                     if (!DeckBuilderRun.addPotion(picked)) {
                         win.hide();
-                        addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
+                        DeckBattleScene.this.addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
+                        refresh();
                         return;
                     }
                     Sample.INSTANCE.play(Assets.Sounds.ITEM);
@@ -4997,6 +5145,7 @@ public class DeckBattleScene extends PixelScene {
         if (DeckBuilderRun.hasRelic(DeckRelic.MEAT_ON_THE_BONE) && DeckBuilderRun.playerHP * 2 <= DeckBuilderRun.playerHT) {
             DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHT, DeckBuilderRun.playerHP + 12);
         }
+        combat.applyCombatRewardBonuses();
         saveCombatState();
         Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
         boolean useFullRewardScreen = true;
@@ -5072,9 +5221,9 @@ public class DeckBattleScene extends PixelScene {
             showTutorialMessage(
                     "물약 안내\n\n" +
                             "화면 상단에 물약 슬롯이 보이지?!\n\n" +
-                            "물약은 전투 중 언제든지 쓸 수 있는 일회성 아이템이야! " +
+                            "물약은 전투 중 언제든지 쓸 수 있는 일회성 아이템이야!" +
                             "지금 갖고 있는 '화염 물약'은 모든 적에게 피해를 10이나 준다고!\n\n" +
-                            "위기의 순간, 아니면 결정적인 한 방이 필요할 때 전략적으로 쓰는거야. 잊지 마!!");
+                            "위기의 순간, 아니면 결정적인 한 방이 필요할 때 전략적으로 쓰는거야. 잊지 마!");
         }
     }
 
@@ -5289,7 +5438,7 @@ public class DeckBattleScene extends PixelScene {
             pos += 29;
         }
 
-        DeckRewardRow cardRow = new DeckRewardRow(com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet.WONDROUS_RESIN, "덱에 추가할 카드를 선택하세요") {
+        DeckRewardRow cardRow = new DeckRewardRow(ItemSpriteSheet.DECK, "덱에 추가할 카드를 선택하세요") {
             @Override
             protected void onClick() {
                 if (claimed) return;
@@ -5403,7 +5552,7 @@ public class DeckBattleScene extends PixelScene {
                 if (potionRow.claimed) return;
                 if (!DeckBuilderRun.addPotion(potion)) {
                     win.hide();
-                    addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
+                    DeckBattleScene.this.addToFront(new WndMessage("포션\n\n빈 포션 슬롯이 없습니다."));
                     return;
                 }
                 Sample.INSTANCE.play(Assets.Sounds.ITEM);
@@ -6060,7 +6209,7 @@ public class DeckBattleScene extends PixelScene {
             refresh();
             return;
         }
-        if (selectingForDaggerThrowDiscard) {
+        if (selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
             return;
         }
         if (selectingForPure || selectingForBurningPact || touchOfInsanityActive) {
@@ -7311,7 +7460,7 @@ public class DeckBattleScene extends PixelScene {
                 int code = cardCode();
                 return DeckCard.maxCharge(code) > 0;
             }
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard) {
+            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
                 return handIndex != pureHandIndex;
             }
             if (touchOfInsanityActive) {
@@ -7335,11 +7484,11 @@ public class DeckBattleScene extends PixelScene {
         @Override
         protected void layout() {
             super.layout();
-            if ((selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || touchOfInsanityActive || gamblerBrewActive) && pureSelectedIndices.contains(handIndex)) {
+            if ((selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) && pureSelectedIndices.contains(handIndex)) {
                 edge.color(0xFFA8F26A);
                 edge.am = 1.0f;
                 face.am = 0.92f;
-            } else if (!selectingForPure && !selectingForBurningPact && !selectingForDaggerThrowDiscard && !gamblerBrewActive && !selectingWandForStaff
+            } else if (!selectingForPure && !selectingForBurningPact && !selectingForDaggerThrowDiscard && !selectingForPendingExhaust && !gamblerBrewActive && !selectingWandForStaff
                     && combat != null && card().conditionMet(cardCode(), combat)) {
                 edge.color(0xFFA8F26A);
                 edge.am = 1.0f;
@@ -7364,7 +7513,7 @@ public class DeckBattleScene extends PixelScene {
                 showCardInfo(cardCode());
                 return;
             }
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || touchOfInsanityActive || gamblerBrewActive) {
+            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) {
                 activeTouch = true;
                 super.onPointerDown();
                 homeX = x;
@@ -7389,7 +7538,7 @@ public class DeckBattleScene extends PixelScene {
         @Override
         protected void onDrag(PointerEvent event) {
             if (selectingWandForStaff) return;
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || touchOfInsanityActive || gamblerBrewActive) return;
+            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) return;
             if (!activeTouch || !enabled()) return;
             float dx = event.current.x - event.start.x;
             float dy = event.current.y - event.start.y;
@@ -7412,7 +7561,7 @@ public class DeckBattleScene extends PixelScene {
                 if (clickReady) onClick();
                 return;
             }
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || touchOfInsanityActive || gamblerBrewActive) {
+            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) {
                 if (clickReady) {
                     clickReady = false;
                     onClick();
@@ -7444,11 +7593,12 @@ public class DeckBattleScene extends PixelScene {
                 }
                 return;
             }
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard) {
+            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
                 if (handIndex == pureHandIndex) {
                     selectingForPure = false;
                     selectingForBurningPact = false;
                     selectingForDaggerThrowDiscard = false;
+                    selectingForPendingExhaust = false;
                     hidePureSelectionBanner();
                     pureSelectedIndices.clear();
                     refresh();
@@ -7457,7 +7607,7 @@ public class DeckBattleScene extends PixelScene {
                     if (pureSelectedIndices.contains(idx)) {
                         pureSelectedIndices.remove(idx);
                     } else if (pureSelectedIndices.size() < pureMaxSelect) {
-                        if (selectingForBurningPact || selectingForDaggerThrowDiscard) pureSelectedIndices.clear();
+                        if (selectingForBurningPact || ((selectingForDaggerThrowDiscard || selectingForPendingExhaust) && pureMaxSelect <= 1)) pureSelectedIndices.clear();
                         pureSelectedIndices.add(idx);
                     }
                     updatePureConfirmButton();

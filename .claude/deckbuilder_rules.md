@@ -456,13 +456,13 @@ result.addAttackHit(combat.enemyIndex(target), dealt3); // wave 2 → 0.50초 �
 | `playerWeak` | **공격력 저하** | 내 공격 카드 피해 25% 감소 | `startTurnState()`에서 `--` |
 | `playerBlockReduction` | **방어력 저하** | 보호막 획득 카드 효율 25% 감소 (스택 수 무관 flat) | `endTurn()`에서 `--` |
 | `playerDamageReduction` | **유아화** | 내 전체 딜 `(100-N)%`로 감소 | 감소 없음 (전투 내내 지속) |
-| `playerEntangle` | **뒤얽힘** | 공격 카드 비용 +1 | `endTurn()`에서 `--` |
+| `playerEntangle` | **자석화** | 공격 카드 비용 +1 | `endTurn()`에서 `--` |
 
 **중요:** `playerBlockReduction`은 스택이 쌓여도 항상 flat 25% 감소이고, 스택 수 = 지속 턴 수다. (예: 2스택 = 2턴간 25% 감소, 50%가 아님)
 
 ### 인텐트 예고 텍스트 규칙
 
-- **디버프 부여**: `"공격력 저하 N 부여"`, `"방어력 저하 부여 (N턴)"`, `"유아화 부여"`, `"뒤얽힘 N 부여"`
+- **디버프 부여**: `"공격력 저하 N 부여"`, `"방어력 저하 부여 (N턴)"`, `"유아화 부여"`, `"자석화 N 부여"`
 - **덱에 상태이상 카드 삽입**: `"독침 N장 섞어 넣음"`, `"점액투성이 N장 섞어 넣음"`, `"따개비 N장 섞어 넣음"`
 - 효과 수치 설명(-25% 등)은 예고 텍스트에 포함하지 않는다.
 - `blockReduction(id, amount)` 헬퍼: `amount`가 지속 턴 수이므로 `"방어력 저하 부여 (N턴)"` 형식 사용.
@@ -1054,7 +1054,7 @@ boolean hasRelic = DeckBuilderRun.hasRelic(DeckRelic.BLACK_STAR);
 | 방어력 저하 | 플레이어 | `playerBlockReduction` | 보호막 획득량이 스택당 25% 감소 | 턴 종료 시 1 감소 | `PLAYER_STATUS_BUFFS` |
 | 정화의 보호막 | 플레이어 | `playerArtifact` | 상태이상을 받을 때 1 소모하고 무효화 | `applyPlayerDebuff()`에서 소모 | `PLAYER_STATUS_BUFFS` |
 | 축복 | 플레이어 | `playerBlessed` | 체력 피해를 받을 때 피해를 1로 제한 | 턴 시작 시 1 감소 | `PLAYER_STATUS_BUFFS` |
-| 얽힘 | 플레이어 | `playerEntangle` | 공격 카드 비용 +1 | 턴 종료 시 1 감소 | `PLAYER_STATUS_BUFFS` |
+| 자석화 | 플레이어 | `playerEntangle` | 공격 카드 비용 +1 | 턴 종료 시 1 감소 | `PLAYER_STATUS_BUFFS` |
 | 유아화 | 플레이어 | `playerDamageReduction` | 공격 카드 피해 30% 감소 | 별도 지속값 | `PLAYER_STATUS_BUFFS` |
 | 반격 | 플레이어 | `playerThorns` | 적이 체력 피해를 주면 반격 피해 | 턴 종료 후 0 | `PLAYER_STATUS_BUFFS` |
 | 피해 증폭 | 적 | `vulnerable` | 받는 공격 피해 1.5배 | 적 행동 후 1 감소 | `ENEMY_STATUS_BUFFS` |

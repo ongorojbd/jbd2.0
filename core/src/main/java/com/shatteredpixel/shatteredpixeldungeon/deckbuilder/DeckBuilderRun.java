@@ -244,9 +244,9 @@ public class DeckBuilderRun {
 			reward.relicClaimed = new boolean[0];
 			reward.potion = -1;
 			reward.cards = new int[]{
-					DeckCard.BASH.ordinal(),
-					DeckCard.RIPPLE_WALL.ordinal(),
-					DeckCard.IGNITE.ordinal()
+					DeckCard.BASH.id,
+					DeckCard.RIPPLE_WALL.id,
+					DeckCard.IGNITE.id
 			};
 			reward.goldClaimed = true;
 			reward.potionClaimed = true;
@@ -306,7 +306,7 @@ public class DeckBuilderRun {
 		cardRareOffset = cardReward.nextCardRareOffset;
 		reward.cards = new int[cardReward.choices.length];
 		for (int i = 0; i < cardReward.choices.length; i++) {
-			reward.cards[i] = cardReward.choices[i].ordinal();
+			reward.cards[i] = cardReward.choices[i].id;
 		}
 		reward.goldClaimed = false;
 		reward.potionClaimed = false;

@@ -236,7 +236,7 @@ public class DeckEnemyIntent {
 				if (combat.applyPlayerDebuff()) combat.playerEntangle += 1;
 				return attack.toTurnResult(false);
 			},
-			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 뒤얽힘 1 부여"));
+			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 자석화 1 부여"));
 
 	public static final DeckEnemyIntent CHOMP = register(simpleAttack(
 			DeckBuilderCombat.RESULT_CHOMP, 16, "물어뜯기"));
@@ -497,7 +497,7 @@ public class DeckEnemyIntent {
 
 	private static int damageText(DeckCombatEnemy enemy, int baseDamage) {
 		int damage = Math.max(0, baseDamage + enemy.strength);
-		if (enemy.attackDown > 0) damage = damage * 3 / 4;
+		if (enemy.attackDown > 0) damage = enemy.debuffDoubleTurns > 0 ? damage / 2 : damage * 3 / 4;
 		return damage;
 	}
 

@@ -39,6 +39,8 @@ public class DeckCombatEnemy {
 	public int lastIntent;
 	public boolean splitUsed;
 	public int blessed;
+	public int debuffDoubleTurns;
+	public int strangleHpLoss;
 
 	public DeckCombatEnemy(DeckEnemy kind, int depth) {
 		this.kind = kind;

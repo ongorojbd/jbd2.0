@@ -36,6 +36,14 @@ public class DeckStartingProfile {
 				card(DeckCard.GUARD, 4),
 				card(DeckCard.MAGE_STAFF, 1));
 
+		register(HeroClass.DUELIST,
+				card(DeckCard.ROYALTY, 1),
+				card(DeckCard.VOID_FORM, 1),
+				card(DeckCard.STONE_ARMOR, 1),
+				card(DeckCard.PRECISE_SHOT, 1),
+				card(DeckCard.GUARD, 3)
+		);
+
 		register(HeroClass.HUNTRESS,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),

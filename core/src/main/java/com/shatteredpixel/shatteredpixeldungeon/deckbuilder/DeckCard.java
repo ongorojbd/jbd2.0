@@ -105,6 +105,298 @@ public enum DeckCard {
 	SNAKE_FORM(158, "구렁이의 형상", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ELIXIR_DRAGON,
 			new DeckCardEffects.SnakeFormEffect()),
 
+	MENTAL_OVERFLOW(159, "정신 폭주", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_RAIDO,
+			new DeckCardEffects.MentalOverflowEffect()),
+
+	DOMAIN(160, "권역", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DomainEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 2 : 3; }
+	},
+
+	PREPARED(161, "예비", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_HOLDER,
+			new DeckCardEffects.DrawThenDiscardEffect(1, 2, 1, 2)),
+
+	BACKFLIP(162, "공중제비", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 2, 0, 0, 0, 0, true, ItemSpriteSheet.ELIXIR_FEATHER) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 8 : 5; }
+	},
+
+	CALCULATED_GAMBLE(163, "계산된 도박", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.CRYSTAL_KEY,
+			new DeckCardEffects.CalculatedGambleEffect()) {
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.RETAIN && upgradeLevel(code) > 0) return true;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	ESCAPE_PLAN(164, "탈출구", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_MANNAZ,
+			new DeckCardEffects.EscapePlanEffect(3, 5)),
+
+	ACROBATICS(165, "곡예", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ELIXIR_FEATHER,
+			new DeckCardEffects.DrawThenDiscardEffect(3, 4, 1, 1)),
+
+	ADRENALINE(166, "아드레날린", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.POTION_CRIMSON,
+			new DeckCardEffects.AdrenalineEffect()),
+
+	TOOLS_OF_THE_TRADE(167, "작업 도구", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARTIFACT_TOOLKIT,
+			new DeckCardEffects.ToolsOfTheTradeEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 0 : 1; }
+	},
+
+	SWEEPING_BEAM(168, "광선 휩쓸기", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.ALL_ENEMIES, 1, 6, 0, 1, 0, 0, 0, 0, true, ItemSpriteSheet.WAND_DISINTEGRATION) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 9 : 6; }
+	},
+
+	REBOOT(169, "다시 시작", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.RestartEffect()),
+
+	MACHINE_LEARNING(170, "기계학습", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ,
+			new DeckCardEffects.MachineLearningEffect()) {
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.VANGUARD && upgradeLevel(code) > 0) return true;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	PHOTON_SLASH(171, "광자 베기", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 10, 0, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.HandToDrawPileTopEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
+		@Override public int draw(int code) { return upgradeLevel(code) > 0 ? 2 : 1; }
+	},
+
+	FAINT_LIGHT(172, "희미한 빛", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 3, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.HandToDrawPileTopEffect()) {
+		@Override public int draw(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
+	},
+
+	PROPHECY(173, "예언", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 6, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int draw(int code) { return upgradeLevel(code) > 0 ? 9 : 6; }
+	},
+
+	PALE_BLUE_DOT(174, "창백한 푸른 점", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.PaleBlueDotEffect()),
+
+	DICTATORSHIP(175, "독재", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DictatorshipEffect()) {
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.VANGUARD && upgradeLevel(code) > 0) return true;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	DEFLECT(176, "흘려보내기", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 8, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 11 : 8; }
+	},
+
+	EXTORTION(177, "갈취", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ExtortionEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 9 : 6; }
+	},
+
+	BATTLE_HYPNOSIS(178, "전투 최면", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.BattleHypnosisEffect()),
+
+	BATTLE_DRUMS(179, "전투의 북소리", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 2, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.BattleDrumsEffect()),
+
+	OFFERING(180, "제물", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.OfferingEffect()),
+
+	DEFIANCE(181, "반항", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 0, 6, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AttackDown(1, 1)) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 9 : 6; }
+	},
+
+	DELAY(182, "지연", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 11, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.NextTurnEnergyEffect(1, 2)) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 13 : 11; }
+	},
+
+	DEATH_DANCE(183, "죽음의 무도", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DeathDanceEffect()),
+
+	IMMORTALITY(184, "불사", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 7, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ShuffleCopyToDiscardEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 9 : 7; }
+	},
+
+	SURVIVOR(185, "생존자", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 8, 0, 0, 0, 0, 0, false, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.SurvivorDiscardEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 11 : 8; }
+	},
+
+	DASH(186, "돌진", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 10, 10, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
+	},
+
+	BLUR(187, "흐릿함", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.BlurEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 8 : 5; }
+	},
+
+	LEG_SWEEP(188, "다리 걸기", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 0, 11, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AttackDown(2, 3)) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 14 : 11; }
+	},
+
+	SHADOW_STEALTH(189, "그림자 은신", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ShadowStealthEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 0 : 1; }
+	},
+
+	AFTERIMAGE(190, "잔상", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AfterimageEffect()) {
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.VANGUARD && upgradeLevel(code) > 0) return true;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	RECHARGE_BATTERY(191, "배터리 충전", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 7, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.NextTurnEnergyEffect(1, 1)) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 10 : 7; }
+	},
+
+	HOLOGRAM(192, "홀로그램", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 3, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.HologramEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 5 : 3; }
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.EXHAUST && upgradeLevel(code) > 0) return false;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	BOOT_SEQUENCE(193, "부팅 과정", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 10, 0, 0, 0, 0, keywords(DeckCardKeyword.VANGUARD, DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
+	},
+
+	GENETIC_ALGORITHM(194, "유전 알고리즘", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 1, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.GeneticAlgorithmEffect()) {
+		@Override public int block(int code) { return (upgradeLevel(code) > 0 ? 1 : 1) + DeckCardCode.auxValue(code); }
+	},
+
+	COSMIC_INDIFFERENCE(195, "우주적 무관심", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 6, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DiscardToDrawTopEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 9 : 6; }
+	},
+
+	LIGHT_STREAM(196, "빛의 흐름", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 2, 0, 11, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.NextTurnBlockEffect(5, 7)) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 13 : 11; }
+	},
+
+	PARTICLE_WALL(197, "입자 벽", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, -1, 0, 9, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 12 : 9; }
+	},
+
+	AUTHORITY_EXERCISE(198, "권위 행사", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 7, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AuthorityEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 8 : 7; }
+	},
+
+	I_AM_INVINCIBLE(199, "나는 무적이다", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 10, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
+	},
+
+	RAGE(200, "격노", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.RageBlockEffect()),
+
+	TAUNT(201, "도발", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 0, 7, 0, 1, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 8 : 7; }
+		@Override public int vulnerable(int code) { return upgradeLevel(code) > 0 ? 2 : 1; }
+	},
+
+	INVINCIBLE(202, "무적", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 30, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 40 : 30; }
+	},
+
+	ABSOLUTE_POWER(203, "절대적인 힘", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AbsolutePowerEffect()),
+
+	ENERGY_DRAIN(204, "기력 흡수", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 10, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.UpgradeRandomDiscardEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 12 : 10; }
+	},
+
+	GRAVE_EXPLOSION(205, "무덤 폭발", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.HologramEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 6 : 4; }
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.EXHAUST && upgradeLevel(code) > 0) return false;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	DECAY_ATTACK(206, "쇠락", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 10, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DecayEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 12 : 10; }
+	},
+
+	DEATH_MARCH(207, "죽음의 행진", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DeathMarchEffect()) {
+		@Override public int damage(int code) { return (upgradeLevel(code) > 0 ? 9 : 8) + (upgradeLevel(code) > 0 ? 6 : 4) * (DeckBuilderRun.currentCombat == null ? 0 : DeckBuilderRun.currentCombat.cardsDrawnThisTurn); }
+	},
+
+	MISERY(208, "비참함", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 0, 7, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.MiseryEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 9 : 7; }
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.RETAIN && upgradeLevel(code) > 0) return true;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	EXTERMINATE(209, "척결", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, -1, 11, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.RETAIN), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.XMultiHitEffect(11, 14)) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 14 : 11; }
+	},
+
+	NEUTRALIZE(210, "무력화", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 3, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AttackDown(1, 2)) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
+	},
+
+	DAGGER_SPRAY(211, "단검 분사", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.ALL_ENEMIES, 1, 4, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DoubleAllEnemiesEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 6 : 4; }
+	},
+
+	SUCKER_PUNCH(212, "불의의 일격", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AttackDown(1, 2)) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 10 : 8; }
+	},
+
+	SKEWER(213, "꼬챙이", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, -1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.XMultiHitEffect(8, 11)) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 11 : 8; }
+	},
+
+	BETRAYAL(214, "배신", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 0, 11, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.VANGUARD, DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 15 : 11; }
+	},
+
+	PRECISE_CUT(215, "정밀한 베기", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 0, 13, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int damage(int code) {
+			int base = upgradeLevel(code) > 0 ? 16 : 13;
+			return Math.max(0, base - Math.max(0, (DeckBuilderRun.currentCombat == null ? 1 : DeckBuilderRun.currentCombat.hand.size()) - 1) * 2);
+		}
+	},
+
+	FINISHER(216, "마무리", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.FinisherEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 8 : 6; }
+	},
+
+	STRANGLE(217, "목 조르기", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.StrangleEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 10 : 8; }
+	},
+
+	FLECHETTES(218, "프레췌", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 5, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.FlechettesEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 7 : 5; }
+	},
+
 	ROTATING_NAIL(15, "회전하는 손톱", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.RANDOM_ENEMY, 1, 3, 0, 1, 0, 0, 0, keywords(DeckCardKeyword.CAST_ON_DRAW, DeckCardKeyword.EXHAUST), false, Talent.J43, HeroClass.JOHNNY, 0),
 	TUSK_EQUIPMENT_DISC(16, "터스크의 장비 DISC", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.AIM), false, ItemSpriteSheet.ARTIFACT_TUSK1, HeroClass.JOHNNY, 0,
 			new DeckCardEffects.ShuffleIntoDrawPile(ROTATING_NAIL, 5)) {
@@ -145,7 +437,7 @@ public enum DeckCard {
 			return 2;
 		}
 	},
-	MAGE_STAFF(22, "마법사의 지팡이", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.MAGES_STAFF,
+	MAGE_STAFF(22, "마법사의 지팡이", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.MAGES_STAFF,
 			new DeckCardEffects.MageStaff()),
 
 	DRAMATIC_ENTRANCE(23, "극적인 입장", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 0, 11, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.VANGUARD, DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_NAUDIZ) {
@@ -692,7 +984,204 @@ public enum DeckCard {
 	},
 
 	POISON_COAT(150, "독 바르기", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.POISON_DART, HeroClass.HUNTRESS, 0,
-			new DeckCardEffects.PoisonCoatEffect());
+			new DeckCardEffects.PoisonCoatEffect()),
+
+	POUNCE(219, "덮치기", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 14, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.PounceEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 14; }
+	},
+
+	PRECISE_SHOT(220, "정밀 사격", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 3, 15, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.PreciseShotEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 19 : 15; }
+	},
+
+	GRAND_FINALE(221, "대단원의 막", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.ALL_ENEMIES, 0, 60, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.TextOnly("남은 카드가 없을 때만 사용할 수 있습니다.")) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 75 : 60; }
+		@Override public boolean unplayable(int code) {
+			return DeckBuilderRun.currentCombat != null && !DeckBuilderRun.currentCombat.drawPile.isEmpty();
+		}
+	},
+
+	ASSASSINATION(222, "암살", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 0, 10, 0, 0, 1, 0, 0, keywords(DeckCardKeyword.VANGUARD, DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
+		@Override public int vulnerable(int code) { return upgradeLevel(code) > 0 ? 2 : 1; }
+	},
+
+	KILL(223, "살해", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 3, 1, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.KillEffect()) {
+		@Override public int damage(int code) { return 1 + (DeckBuilderRun.currentCombat == null ? 0 : DeckBuilderRun.currentCombat.cardsDrawnThisCombat); }
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 2 : 3; }
+	},
+
+	LASER_POINTER(224, "레이저 포인터", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 3, 0, 0, 1, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
+		@Override public int vulnerable(int code) { return upgradeLevel(code) > 0 ? 2 : 1; }
+	},
+
+	GOUGE(225, "후벼 파기", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 3, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.GougeEffect()) {
+		@Override public int damage(int code) { return (upgradeLevel(code) > 0 ? 4 : 3) + (DeckBuilderRun.currentCombat == null ? 0 : DeckBuilderRun.currentCombat.gougeDamageBonus); }
+	},
+
+	SYNTHESIS(226, "합성", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 14, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.SynthesisEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 14; }
+	},
+
+	HELIX_PIERCE(227, "나선 관통", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.HelixPierceEffect()) {
+		@Override public int damage(int code) { return (upgradeLevel(code) > 0 ? 5 : 3) * (DeckBuilderRun.currentCombat == null ? 0 : DeckBuilderRun.currentCombat.energySpentThisTurn); }
+	},
+
+	MOON_BAPTISM(228, "달의 세례", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 0, 4, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.MoonBaptismEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 5 : 4; }
+	},
+
+	KINGS_PUNCH(229, "왕의 주먹", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.KingsPunchText()) {
+		@Override public int damage(int code) { return (upgradeLevel(code) > 0 ? 10 : 8) + DeckCardCode.auxValue(code) * (upgradeLevel(code) > 0 ? 6 : 4); }
+	},
+
+	DOMINANCE(230, "패권", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 15, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.NextTurnEnergyEffect(2, 3)) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 18 : 15; }
+	},
+
+	KINGS_KICK(231, "왕의 발차기", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 4, 27, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.TextOnly("이 카드를 뽑을 때마다, 이 카드의 비용이 1 감소합니다.")) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 35 : 27; }
+	},
+
+	SO_IT_SHALL_BE(232, "그렇게 하라", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 0, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.TextOnly("한 턴에 보조 카드를 3장 사용할 때마다, 이 카드를 손으로 가져옵니다.")) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 9 : 6; }
+	},
+
+	BOMBARDMENT(233, "포격", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 3, 18, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.TextOnly("내 턴 시작 시, 소멸된 카드 더미에서 사용됩니다.")) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 24 : 18; }
+	},
+
+	ANGER(234, "분노", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ShuffleCopyToDiscardEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 8 : 6; }
+	},
+
+	MELTING_PUNCH(235, "녹아내리는 주먹", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 10, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.MeltingPunchEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 14 : 10; }
+	},
+
+	THUNDER(236, "천둥", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.ALL_ENEMIES, 1, 4, 0, 0, 1, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 7 : 4; }
+	},
+
+	EMBER(237, "잿불", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 2, 18, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ExhaustRandomHandCardEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 24 : 18; }
+	},
+
+	RAMPAGE(238, "광란", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 9, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.RampageEffect()) {
+		@Override public int damage(int code) { return 9 + DeckCardCode.auxValue(code) * (upgradeLevel(code) > 0 ? 9 : 5); }
+	},
+
+	DISMANTLE(239, "해체", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DismantleEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 10 : 8; }
+	},
+
+	COME_AT_ME(240, "덤벼라!", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 5, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ComeAtMeEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 6 : 5; }
+		@Override public int strength(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
+	},
+
+	MERCILESS(241, "무자비", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 14, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.MercilessEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 14; }
+	},
+
+	UPPERCUT(242, "어퍼컷", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 12, 0, 0, 1, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AttackDown(1, 2)) {
+		@Override public int vulnerable(int code) { return upgradeLevel(code) > 0 ? 2 : 1; }
+	},
+
+	TRAMPLE(243, "짓밟기", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 3, 12, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.TextOnly("이번 턴 동안 사용한 공격 카드 1장당 비용이 1 감소합니다.")) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 15 : 12; }
+		@Override public int cost(int code) { return Math.max(0, 3 - (DeckBuilderRun.currentCombat == null ? 0 : DeckBuilderRun.currentCombat.attackCardsThisTurn)); }
+	},
+
+	FEED(244, "포식", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 1, 10, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.FeedEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 12 : 10; }
+	},
+
+	HEMOKINESIS(245, "난도질", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 3, 15, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.HemokinesisEffect()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 15; }
+	},
+
+	WISP(246, "위습", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.WispEffect()) {
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			return keyword == DeckCardKeyword.RETAIN && upgradeLevel(code) > 0 || super.hasKeyword(code, keyword);
+		}
+	},
+
+	LIFE_SUPPORT(247, "연명", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.LifeSupportEffect()),
+
+	FRIENDSHIP(248, "우정", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.FriendshipEffect()),
+
+	ENERGIZER(249, "에너자이저", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.EnergizerEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 0 : 1; }
+	},
+
+	CAPTURE(250, "포집", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.CaptureEffect()),
+
+	SUBROUTINE(251, "서브루틴", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.SubroutineEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 0 : 1; }
+	},
+
+	OVERCLOCK(252, "임계 초과", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.GainEnergyEffect(4, 6)),
+
+	ORBIT(253, "궤도", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.OrbitEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 1 : 2; }
+	},
+
+	READY_FOR_FIGHT(254, "싸움 준비", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ReadyForFightEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 1 : 2; }
+	},
+
+	HEART_OF_FIRE(255, "불의 심장", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.HeartOfFireEffect()),
+
+	ROYALTY(256, "로열티", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.RoyaltyEffect()),
+
+	VOID_FORM(257, "공허의 형상", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.VoidFormEffect()) {
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.TRANSIENT && upgradeLevel(code) > 0) return false;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	STONE_ARMOR(258, "돌 갑옷", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.RegenEffect(4, 6))
+	;
 
 	public final int id;
 	public final String title;
@@ -888,6 +1377,10 @@ public enum DeckCard {
 			else if (e instanceof DeckCardEffects.Draw) hasDraw = true;
 			else if (e instanceof DeckCardEffects.Strength) hasStrength = true;
 			else if (e instanceof DeckCardEffects.AddShivs) hasShivs = true;
+			if (e instanceof DeckCardEffects.ComeAtMeEffect) {
+				hasDamage = true;
+				hasStrength = true;
+			}
 		}
 		if (damage(code) > 0 && this != STAFF && !hasDamage) effects.add(new DeckCardEffects.Damage());
 		if (block(code) > 0 && !hasBlock) effects.add(new DeckCardEffects.Block());

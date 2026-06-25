@@ -552,7 +552,7 @@ public class DeckShopScene extends PixelScene {
 	}
 	private String offerTitle(DeckShop.Offer offer) {
 		if (offer.type == DeckShop.CARD) return DeckCard.values()[offer.id].title(DeckCard.values()[offer.id].code());
-		if (offer.type == DeckShop.POTION) return DeckPotion.byId(offer.id).title;
+		if (offer.type == DeckShop.POTION) { DeckPotion p = DeckPotion.byId(offer.id); return p != null ? p.title : ""; }
 		if (offer.type == DeckShop.RELIC) return DeckRelic.byId(offer.id).title;
 		return "카드 제거";
 	}
@@ -574,7 +574,7 @@ public class DeckShopScene extends PixelScene {
 			DeckCard card = DeckCard.values()[offer.id];
 			return DeckCardText.rulesAndKeywordText(card, card.code());
 		}
-		if (offer.type == DeckShop.POTION) return DeckPotion.byId(offer.id).description;
+		if (offer.type == DeckShop.POTION) { DeckPotion p = DeckPotion.byId(offer.id); return p != null ? p.description : ""; }
 		if (offer.type == DeckShop.RELIC) return DeckRelic.byId(offer.id).description;
 		return "카드 한 장을 덱에서 제거합니다.";
 	}
