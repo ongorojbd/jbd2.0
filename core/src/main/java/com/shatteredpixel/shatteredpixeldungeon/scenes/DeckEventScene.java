@@ -14,6 +14,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
 import com.watabou.noosa.audio.Music;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
@@ -110,26 +111,26 @@ public class DeckEventScene extends PixelScene {
 
 	private static final DeckEventDef[] EVENT_DEFS = {
 			new DeckEventDef(UPGRADE_SHRINE, "강화 성소", "강화 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 강화한다.", ICON_TALENT, HOST_BLACKSMITH),
-			new DeckEventDef(PURIFIER, "정화 성소", "정화 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 제거한다.", ItemSpriteSheet.OBLIVION_SHARD, HOST_ALCHEMIST),
-			new DeckEventDef(TRANSMOGRIFIER, "변환 성소", "변환 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 카드풀 내 무작위 카드로 변화시킨다.", ItemSpriteSheet.SCROLL_MANNAZ, HOST_WARLOCK),
-			new DeckEventDef(GOLDEN_SHRINE, "황금 성소", "고대의 영혼을 기리는 공들인 성소가 놓여 있다.", ItemSpriteSheet.GOLD, HOST_IMP, 50, false),
-			new DeckEventDef(BLUE_WOMAN, "파란 옷의 여자", "어두운 곳에서 시야가 밝아지자, 어떤 여성이 다짜고짜 외친다.\n\n\"포션 사세요, 당장!\"", ItemSpriteSheet.POTION_AZURE, HOST_BUTTERFLY, 50, false),
-			new DeckEventDef(LABORATORY, "연구실", "먼지가 쌓인 연구실이 있다. 선반에는 각종 포션이 놓여 있다.", ItemSpriteSheet.POTION_IVORY, HOST_ALBINO),
-			new DeckEventDef(DUPLICATOR, "복제 성소", "복제 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 복제한다.", ItemSpriteSheet.ARTIFACT_SPELLBOOK, HOST_TRICKSTER),
-			new DeckEventDef(SHINING_LIGHT, "밝은 빛", "알 수 없는 밝은 빛이 앞을 가로막고 있다.", ItemSpriteSheet.ARTIFACT_CHALICE1, HOST_BUTTERFLY2),
-			new DeckEventDef(CLERIC, "성직자", "낡은 제의를 걸친 성직자가 앉아 있다.\n\n\"도움이 필요한가?\"", ItemSpriteSheet.ARTIFACT_CHALICE2, HOST_GEOMANCER, 35, false),
-			new DeckEventDef(WORLD_OF_GOOP, "끈적이 천지", "바닥이 온통 끈적이는 슬라임 덩어리로 가득 차 있다.", ItemSpriteSheet.DEWDROP, HOST_CAUSTIC_SLIME, 50, false),
-			new DeckEventDef(LIVING_WALL, "살아있는 벽", "갑자기 살아있는 벽이 등장하여 길을 막는다.\n\n\"망각, 변화, 성장. 셋 중 하나를 고르라.\"", ItemSpriteSheet.SEED_EARTHROOT, HOST_LASHER),
-			new DeckEventDef(BIG_FISH, "월척", "천장에서 바나나, 도넛, 상자가 내려와 있고 부스럭거리는 소리가 들린다. 아무래도 하나만 선택할 수 있는 듯하다.", ItemSpriteSheet.RATION, HOST_PIRANHA),
-			new DeckEventDef(SHAPESHIFTER_FOREST, "변성체의 숲", "결정화된 나무들로 가득한 숲에서 변성체 무리가 당신을 반깁니다.\n\n구석에서 무리와 어울리지 못한 외톨이 한 마리가 불안해하고 있습니다.", ItemSpriteSheet.ARTIFACT_HORN1, HOST_SLIME, 100, false),
-			new DeckEventDef(UNREST_SITE, "불안한 휴식 장소", "한적한 휴식 장소를 발견했습니다. 불을 피우자 불길이 옆으로 퍼져 기름진 숲을 향해 번져 갑니다.", ItemSpriteSheet.TORCH, HOST_GHOST, 0, true),
-			new DeckEventDef(THIS_OR_THAT, "이거 아님 저거?", "근처의 구멍에서 갑자기, 보물이 담긴 수상한 자루와 명백히 저주받은 유물을 움켜진 손이 튀어나옵니다.\n\n\"이거... 아님 저거?\"\n날카롭게 긁어대는 목소리가 아래쪽에서 속삭입니다.", ItemSpriteSheet.GOLD, HOST_IMP),
-			new DeckEventDef(JUNGLE_MAZE_ADVENTURE, "정글 미로 탐험", "당신은 공터에서 거대한 미로를 내려다보며 손짓하고 있는 오합지졸 모험가 무리를 만났습니다.\n\n함께 나아가면 더 수월하겠지만, 얻는 전리품은 나눠야 할 것입니다.", ItemSpriteSheet.MAP0, HOST_TRICKSTER),
-			new DeckEventDef(AROMA_OF_CHAOS, "혼돈의 향기", "울창한 덤불을 헤치고 나와 공터에 다다른 당신은, 정체를 알 수 없는 그리움에 사로잡힙니다.\n\n꽃 향기와 썩은 냄새, 그리고 전혀 다른 어떤 향기가 한데 뒤섞여 풍겨옵니다.", ItemSpriteSheet.SEED_STARFLOWER, HOST_BUTTERFLY2),
-			new DeckEventDef(DOORS_OF_LIGHT_AND_DARK, "빛과 어둠의 문", "방금 전까지만 해도 존재하지 않았던 출입구가 어느새 생겨나 있습니다.\n\n안으로 들어서자, 희미하게 빛나는 두 개의 문과 잘 차려입은 문지기가 보입니다.", ItemSpriteSheet.GOLDEN_KEY, HOST_WARLOCK),
-			new DeckEventDef(MAUSOLEUM, "영묘", "검은 안개가 새어 나오는 관이 있다.", ItemSpriteSheet.TOMB, HOST_GHOST),
-			new DeckEventDef(WHISPERING_HOLLOW, "속삭이는 골짜기", "당신은 죽은 나무들로 이뤄진 골짜기를 지나던 중, 우연히 뼈처럼 새하얀 색의 나무 한 그루를 발견합니다. 무언가를 보호하는 갈비뼈처럼 안쪽으로 휘어진 가지에는, 점토 장식이 매달려 있습니다.\n\n정말 소름끼치는 나무입니다. 나무는 속삭입니다.\n\n...거래하라.....", ItemSpriteSheet.SEED_EARTHROOT, HOST_LASHER, 50, false),
-			new DeckEventDef(AVDOL_GHOST, "무함마드 압둘의 유령", "나도 한때 이 카이로 사막을 탐험했지만, 어느 스탠드의 습격으로 목숨을 잃었다..\n\n이제 난 이곳에 갇혀 복수를 이루기 전까진 떠날 수 없지..\n\n다음에 만나는 강적을 없애줘.. 그 놈이 내 목숨을 앗아갔으니..", ItemSpriteSheet.SCROLL_LAGUZ, HOST_GHOST),
+			new DeckEventDef(PURIFIER, "정화 성소", "정화 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 제거한다.", ICON_TALENT, HOST_ALCHEMIST),
+			new DeckEventDef(TRANSMOGRIFIER, "변환 성소", "변환 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 카드풀 내 무작위 카드로 변화시킨다.", ICON_TALENT, HOST_WARLOCK),
+			new DeckEventDef(GOLDEN_SHRINE, "황금 성소", "고대의 영혼을 기리는 공들인 성소가 놓여 있다.", ICON_TALENT, HOST_IMP, 50, false),
+			new DeckEventDef(BLUE_WOMAN, "파란 옷의 여자", "어두운 곳에서 시야가 밝아지자, 어떤 여성이 다짜고짜 외친다.\n\n\"포션 사세요, 당장!\"", ICON_TALENT, HOST_BUTTERFLY, 50, false),
+			new DeckEventDef(LABORATORY, "연구실", "먼지가 쌓인 연구실이 있다. 선반에는 각종 포션이 놓여 있다.", ICON_TALENT, HOST_ALBINO),
+			new DeckEventDef(DUPLICATOR, "복제 성소", "복제 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 복제한다.", ICON_TALENT, HOST_TRICKSTER),
+			new DeckEventDef(SHINING_LIGHT, "밝은 빛", "알 수 없는 밝은 빛이 앞을 가로막고 있다.", ICON_TALENT, HOST_BUTTERFLY2),
+			new DeckEventDef(CLERIC, "성직자", "낡은 제의를 걸친 성직자가 앉아 있다.\n\n\"도움이 필요한가?\"", ICON_TALENT, HOST_GEOMANCER, 35, false),
+			new DeckEventDef(WORLD_OF_GOOP, "끈적이 천지", "바닥이 온통 끈적이는 슬라임 덩어리로 가득 차 있다.", ICON_TALENT, HOST_CAUSTIC_SLIME, 50, false),
+			new DeckEventDef(LIVING_WALL, "살아있는 벽", "갑자기 살아있는 벽이 등장하여 길을 막는다.\n\n\"망각, 변화, 성장. 셋 중 하나를 고르라.\"", ICON_TALENT, HOST_LASHER),
+			new DeckEventDef(BIG_FISH, "월척", "천장에서 바나나, 도넛, 상자가 내려와 있고 부스럭거리는 소리가 들린다. 아무래도 하나만 선택할 수 있는 듯하다.", ICON_TALENT, HOST_PIRANHA),
+			new DeckEventDef(SHAPESHIFTER_FOREST, "변성체의 숲", "결정화된 나무들로 가득한 숲에서 변성체 무리가 당신을 반깁니다.\n\n구석에서 무리와 어울리지 못한 외톨이 한 마리가 불안해하고 있습니다.", ICON_TALENT, HOST_SLIME, 100, false),
+			new DeckEventDef(UNREST_SITE, "불안한 휴식 장소", "한적한 휴식 장소를 발견했습니다. 불을 피우자 불길이 옆으로 퍼져 기름진 숲을 향해 번져 갑니다.", ICON_TALENT, HOST_GHOST, 0, true),
+			new DeckEventDef(THIS_OR_THAT, "이거 아님 저거?", "근처의 구멍에서 갑자기, 보물이 담긴 수상한 자루와 명백히 저주받은 유물을 움켜진 손이 튀어나옵니다.\n\n\"이거... 아님 저거?\"\n날카롭게 긁어대는 목소리가 아래쪽에서 속삭입니다.", ICON_TALENT, HOST_IMP),
+			new DeckEventDef(JUNGLE_MAZE_ADVENTURE, "정글 미로 탐험", "당신은 공터에서 거대한 미로를 내려다보며 손짓하고 있는 오합지졸 모험가 무리를 만났습니다.\n\n함께 나아가면 더 수월하겠지만, 얻는 전리품은 나눠야 할 것입니다.", ICON_TALENT, HOST_TRICKSTER),
+			new DeckEventDef(AROMA_OF_CHAOS, "혼돈의 향기", "울창한 덤불을 헤치고 나와 공터에 다다른 당신은, 정체를 알 수 없는 그리움에 사로잡힙니다.\n\n꽃 향기와 썩은 냄새, 그리고 전혀 다른 어떤 향기가 한데 뒤섞여 풍겨옵니다.", ICON_TALENT, HOST_BUTTERFLY2),
+			new DeckEventDef(DOORS_OF_LIGHT_AND_DARK, "빛과 어둠의 문", "왠지 모르겠지만 스탠드 능력은 다른 스탠드 능력과 인력처럼 서로를 끌어당겨..\n\n여기서 얘기하기도 좀 그러니까 내 방으로 올래?", ICON_TALENT, HOST_WARLOCK),
+			new DeckEventDef(MAUSOLEUM, "영묘", "검은 안개가 새어 나오는 관이 있다.", ICON_TALENT, HOST_GHOST),
+			new DeckEventDef(WHISPERING_HOLLOW, "속삭이는 골짜기", "당신은 죽은 나무들로 이뤄진 골짜기를 지나던 중, 우연히 뼈처럼 새하얀 색의 나무 한 그루를 발견합니다. 무언가를 보호하는 갈비뼈처럼 안쪽으로 휘어진 가지에는, 점토 장식이 매달려 있습니다.\n\n정말 소름끼치는 나무입니다. 나무는 속삭입니다.\n\n...거래하라.....", ICON_TALENT, HOST_LASHER, 50, false),
+			new DeckEventDef(AVDOL_GHOST, "무함마드 압둘의 유령", "나도 한때 이 카이로 사막을 탐험했지만, 어느 스탠드의 습격으로 목숨을 잃었다..\n\n이제 난 이곳에 갇혀 복수를 이루기 전까진 떠날 수 없지..\n\n다음에 만나는 강적을 없애줘.. 그 놈이 내 목숨을 앗아갔으니..", ICON_TALENT, HOST_GHOST),
 	};
 
 	private static final int MODE_UPGRADE   = 0;
@@ -921,7 +922,7 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private void addDoorsOfLightAndDarkButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
-		EventChoiceButton light = new EventChoiceButton("빛의 문", "무작위 카드를 2장 강화합니다.", 0xFFFFEE88) {
+		EventChoiceButton light = new EventChoiceButton("피아노의 유령", "무작위 카드를 2장 강화합니다.", 0xFFFFEE88) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				upgradeRandomCards(2);
@@ -933,7 +934,7 @@ public class DeckEventScene extends PixelScene {
 		light.setRect(buttonX, prayY, buttonW, buttonH);
 		add(light);
 
-		EventChoiceButton dark = new EventChoiceButton("어둠의 문", "덱에서 카드를 1장 제거합니다.", 0xFF8FE6FF) {
+		EventChoiceButton dark = new EventChoiceButton("권총의 유령", "덱에서 카드를 1장 제거합니다.", 0xFF8FE6FF) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				cardSelectionMode = MODE_REMOVE;
@@ -1145,7 +1146,7 @@ public class DeckEventScene extends PixelScene {
 			switch (host) {
 				case HOST_BLACKSMITH:    return new BlacksmithSprite();
 				case HOST_ALCHEMIST:     return new AlchemistSprite();
-				case HOST_WARLOCK:       return new WarlockSprite();
+				case HOST_WARLOCK:       return new EmporioSprite();
 				case HOST_IMP:           return new ImpSprite();
 				case HOST_BUTTERFLY:     return new ButterflySprite();
 				case HOST_ALBINO:        return new AlbinoSprite();

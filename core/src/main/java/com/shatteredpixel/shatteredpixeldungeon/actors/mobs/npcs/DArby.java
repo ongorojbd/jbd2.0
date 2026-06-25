@@ -161,7 +161,7 @@ public class DArby extends NPC {
 							GameScene.show(new WndCoinGame());
 								// spw16 증가 제거 - 게임 결과가 나올 때 증가하도록 WndCoinGame에서 처리
 							Sample.INSTANCE.play(Assets.Sounds.DA2);
-							Music.INSTANCE.play(Assets.Music.YUUKI, true);
+							Music.INSTANCE.play(Assets.Music.ELITE, true);
 						} else if (index == 1) {
 							// 규칙 설명
 							GameScene.show(new WndOptions(

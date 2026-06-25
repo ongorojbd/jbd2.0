@@ -80,26 +80,26 @@ public enum DeckCard {
 			return shivs + upgradeLevel(code);
 		}
 	},
-	LIFE_UNDERSTANDING(152, "생명 이해", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_HOLDER, HeroClass.HUNTRESS, 0,
+	LIFE_UNDERSTANDING(152, "생명 이해", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, Talent.SEER_SHOT, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.AddSpecialShivs()),
-	BLADE_FAN(153, "칼날 부채", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.HOLSTER, HeroClass.HUNTRESS, 4,
+	BLADE_FAN(153, "화살의 선택", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, Talent.J55, HeroClass.HUNTRESS, 4,
 			new DeckCardEffects.BladeFanEffect()) {
 		@Override public int shivs(int code) { return upgradeLevel(code) > 0 ? 5 : 4; }
 	},
-	BLADE_DANCE(154, "검무", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.DAGGER, HeroClass.HUNTRESS, 3) {
+	BLADE_DANCE(154, "생명 창조", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, Talent.LIQUID_NATURE, HeroClass.HUNTRESS, 3) {
 		@Override public int shivs(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
 	},
-	INFINITE_BLADES(155, "무한의 검날", DeckCardType.POWER, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER, HeroClass.HUNTRESS, 0,
+	INFINITE_BLADES(155, "생명의 에너지", DeckCardType.POWER, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, Talent.NATURES_AID, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.InfiniteBladesEffect()) {
 		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
 			if (keyword == DeckCardKeyword.VANGUARD && upgradeLevel(code) > 0) return true;
 			return super.hasKeyword(code, keyword);
 		}
 	},
-	SECRET_PLAN(156, "비책", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_MANNAZ, HeroClass.HUNTRESS, 3) {
+	SECRET_PLAN(156, "전선 뱀", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, Talent.NATURES_BOUNTY, HeroClass.HUNTRESS, 3) {
 		@Override public int shivs(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
 	},
-	HIDDEN_DAGGER(157, "숨겨진 단검", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER, HeroClass.HUNTRESS, 0,
+	HIDDEN_DAGGER(157, "생명 순환", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, Talent.BARKSKIN, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.HiddenDaggerEffect()),
 
 	SNAKE_FORM(158, "구렁이의 형상", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ELIXIR_DRAGON,
@@ -480,7 +480,7 @@ public enum DeckCard {
 		public boolean unplayable(int code) { return true; }
 	},
 
-	FOUNDATION_BOX(30, "재단의 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.WONDROUS_RESIN,
+	FOUNDATION_BOX(30, "SPW 재단의 보급 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SUPPLY_RATION,
 			new DeckCardEffects.Discover(new DeckDiscover(DeckDiscover.Pool.ALL, true))) {
 		@Override
 		public boolean hasKeyword(int code, DeckCardKeyword keyword) {
@@ -1180,7 +1180,59 @@ public enum DeckCard {
 	},
 
 	STONE_ARMOR(258, "돌 갑옷", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
-			new DeckCardEffects.RegenEffect(4, 6))
+			new DeckCardEffects.RegenEffect(4, 6)),
+
+	DECENT_STRATEGY(259, "괜찮은 전략", DeckCardType.POWER, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DecentStrategyEffect()),
+
+	SPEEDSTER(260, "스피드스터", DeckCardType.POWER, DeckCardRarity.COMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.SpeedsterEffect()) {
+		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
+			if (keyword == DeckCardKeyword.VANGUARD && upgradeLevel(code) > 0) return true;
+			return super.hasKeyword(code, keyword);
+		}
+	},
+
+	TRACK(261, "추적", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.TrackEffect()) {
+		@Override public int cost(int code) { return DeckCardCode.upgradeLevel(code) > 0 ? 1 : 2; }
+	},
+
+	DEMON_FORM(262, "악마의 형상", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DemonFormEffect()),
+
+	CORRUPTION(263, "타락", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.CorruptionEffect()) {
+		@Override public int cost(int code) { return DeckCardCode.upgradeLevel(code) > 0 ? 2 : 3; }
+	},
+
+	DIZZINESS(264, "어지러움", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), false, ItemSpriteSheet.ELIXIR_FEATHER) {
+		@Override public boolean unplayable(int code) { return true; }
+	},
+
+	HOLLOW(265, "공허", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), false, ItemSpriteSheet.DEWDROP) {
+		@Override public boolean unplayable(int code) { return true; }
+	},
+
+	BURN(266, "화상", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.POTION_CRIMSON) {
+		@Override public boolean unplayable(int code) { return true; }
+	},
+
+	INJURY(267, "부상", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.MOB_HOLDER) {
+		@Override public boolean unplayable(int code) { return true; }
+	},
+
+	RUSHED_EXIT(268, "가속 이탈", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_PLATE,
+			new DeckCardEffects.RushedExitEffect()),
+
+	TURBO(269, "터보", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_RAIDO,
+			new DeckCardEffects.TurboEffect()),
+
+	OVERCLOCK_BOOST(270, "오버클럭", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_HOLDER,
+			new DeckCardEffects.OverclockBoostEffect()),
+
+	FORCED_PUSH(271, "강행 돌파", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_PLATE,
+			new DeckCardEffects.ForcedPushEffect())
 	;
 
 	public final int id;
@@ -1267,7 +1319,7 @@ public enum DeckCard {
 	}
 
 	public int code() {
-		return id;
+		return DeckCardCode.baseCode(id);
 	}
 
 	public String title(int code) {

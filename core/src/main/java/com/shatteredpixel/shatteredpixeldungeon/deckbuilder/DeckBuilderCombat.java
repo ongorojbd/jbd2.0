@@ -251,6 +251,10 @@ public class DeckBuilderCombat {
 	private static final String VOID_FORM_FREE_CARDS = "void_form_free_cards";
 	private static final String VOID_FORM_FREE_CARDS_THIS_TURN = "void_form_free_cards_this_turn";
 	private static final String END_TURN_REQUESTED = "end_turn_requested";
+	private static final String STRATEGY_RETAIN_COUNT = "strategy_retain_count";
+	private static final String SPEEDSTER_DAMAGE = "speedster_damage";
+	private static final String TRACK_ATTACK_DOWN = "track_attack_down";
+	private static final String CORRUPTION_COUNT = "corruption_count";
 
 	public final int nodeType;
 	public final int depth;
@@ -397,6 +401,11 @@ public class DeckBuilderCombat {
 	public int voidFormFreeCards = 0;
 	public int voidFormFreeCardsThisTurn = 0;
 	public boolean endTurnRequested = false;
+	public int strategyRetainCount = 0;
+	public int speedsterDamage = 0;
+	public int trackAttackDown = 0;
+	public int corruptionCount = 0;
+	public ArrayList<Integer> endTurnSelectedRetainIndices = new ArrayList<>();
 	public ArrayList<Integer> orangeBombTimers = new ArrayList<>();
 	public ArrayList<Integer> orangeBombDamages = new ArrayList<>();
 
@@ -418,6 +427,7 @@ public class DeckBuilderCombat {
 	public int lastOrangeBombTotalDamage;
 	public int lastOrangeBombExplosions;
 	public int lastPriceOfSinDamage;
+	public int lastTurnEndBurnDamage;
 	public int lastCombatBreathingBlock;
 
 	public DeckBuilderCombat(int nodeType, int depth, ArrayList<Integer> deck) {
@@ -613,6 +623,10 @@ public class DeckBuilderCombat {
 		bundle.put(VOID_FORM_FREE_CARDS, voidFormFreeCards);
 		bundle.put(VOID_FORM_FREE_CARDS_THIS_TURN, voidFormFreeCardsThisTurn);
 		bundle.put(END_TURN_REQUESTED, endTurnRequested);
+		bundle.put(STRATEGY_RETAIN_COUNT, strategyRetainCount);
+		bundle.put(SPEEDSTER_DAMAGE, speedsterDamage);
+		bundle.put(TRACK_ATTACK_DOWN, trackAttackDown);
+		bundle.put(CORRUPTION_COUNT, corruptionCount);
 		if (!orangeBombTimers.isEmpty()) {
 			bundle.put(ORANGE_BOMB_TIMERS, toArray(orangeBombTimers));
 			bundle.put(ORANGE_BOMB_DAMAGES, toArray(orangeBombDamages));
@@ -847,6 +861,10 @@ public class DeckBuilderCombat {
 		combat.voidFormFreeCards = bundle.contains(VOID_FORM_FREE_CARDS) ? bundle.getInt(VOID_FORM_FREE_CARDS) : 0;
 		combat.voidFormFreeCardsThisTurn = bundle.contains(VOID_FORM_FREE_CARDS_THIS_TURN) ? bundle.getInt(VOID_FORM_FREE_CARDS_THIS_TURN) : 0;
 		combat.endTurnRequested = bundle.contains(END_TURN_REQUESTED) && bundle.getBoolean(END_TURN_REQUESTED);
+		combat.strategyRetainCount = bundle.contains(STRATEGY_RETAIN_COUNT) ? bundle.getInt(STRATEGY_RETAIN_COUNT) : 0;
+		combat.speedsterDamage = bundle.contains(SPEEDSTER_DAMAGE) ? bundle.getInt(SPEEDSTER_DAMAGE) : 0;
+		combat.trackAttackDown = bundle.contains(TRACK_ATTACK_DOWN) ? bundle.getInt(TRACK_ATTACK_DOWN) : 0;
+		combat.corruptionCount = bundle.contains(CORRUPTION_COUNT) ? bundle.getInt(CORRUPTION_COUNT) : 0;
 		if (bundle.contains(ORANGE_BOMB_TIMERS)) {
 			restoreList(combat.orangeBombTimers, bundle, ORANGE_BOMB_TIMERS);
 			restoreList(combat.orangeBombDamages, bundle, ORANGE_BOMB_DAMAGES);
@@ -1351,7 +1369,7 @@ public class DeckBuilderCombat {
 			if (card.type == DeckCardType.POWER) {
 				// Powers are removed from the current combat, but not from the run deck.
 				if (!castOnDraw) powersPlayed.add(DeckCardCode.withoutCostOverride(cardCode));
-			} else if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST)) {
+		} else if (card.hasKeyword(cardCode, DeckCardKeyword.EXHAUST) || (!castOnDraw && card.type == DeckCardType.SKILL && corruptionCount > 0)) {
 				result.draw += exhaustCard(DeckCardCode.withoutCostOverride(cardCode));
 				result.exhausted = true;
 				if (!castOnDraw && !burningSticksFired && card.type == DeckCardType.SKILL && DeckBuilderRun.hasRelic(DeckRelic.BURNING_STICKS)) {
@@ -1539,6 +1557,9 @@ public class DeckBuilderCombat {
 		if (target != null && target.vulnerable > 0) {
 			damage = target.debuffDoubleTurns > 0 ? damage * 2 : (damage * 3 + 1) / 2;
 		}
+		if (card.type == DeckCardType.ATTACK && target != null && target.attackDown > 0 && trackAttackDown > 0) {
+			damage *= 2;
+		}
 		if (playerDamageReduction > 0) {
 			damage = damage * Math.max(0, 100 - playerDamageReduction) / 100;
 		}
@@ -1570,6 +1591,7 @@ public class DeckBuilderCombat {
 		if (card == DeckCard.PRECISE_SHOT) cost -= skillCardsThisTurn;
 		if (card.type == DeckCardType.ATTACK && nextAttackZeroCost) return 0;
 		if (card.type == DeckCardType.ATTACK && playerEntangle > 0) cost += 1;
+		if (card.type == DeckCardType.SKILL && corruptionCount > 0) return 0;
 		if (card.type == DeckCardType.SKILL && nextSkillZeroCost) return 0;
 		if (card.type == DeckCardType.POWER && nextPowerZeroCost) return 0;
 		cost += cardCostIncreaseThisTurn;
@@ -2034,6 +2056,7 @@ public class DeckBuilderCombat {
 		lastOrangeBombTotalDamage = 0;
 		lastOrangeBombExplosions = 0;
 		lastPriceOfSinDamage = 0;
+		lastTurnEndBurnDamage = 0;
 		lastCombatBreathingBlock = 0;
 		for (int code : hand) {
 			if (DeckCard.byCode(code) == DeckCard.POISON_DART) {
@@ -2079,6 +2102,13 @@ public class DeckBuilderCombat {
 			if (DeckCard.byCode(code) == DeckCard.PRICE_OF_SIN) {
 				int sinLost = loseHP(6);
 				lastPriceOfSinDamage += sinLost;
+				if (playerDead()) return lastTurnEndStatusDamage;
+			}
+		}
+		for (int code : hand) {
+			if (DeckCard.byCode(code) == DeckCard.BURN) {
+				int burnLost = loseHP(2);
+				lastTurnEndBurnDamage += burnLost;
 				if (playerDead()) return lastTurnEndStatusDamage;
 			}
 		}
@@ -2144,18 +2174,20 @@ public class DeckBuilderCombat {
 		}
 
 		ArrayList<Integer> retained = new ArrayList<>();
-		for (int code : hand) {
+		for (int i = 0; i < hand.size(); i++) {
+			int code = hand.get(i);
 			int cleanedCode = DeckCardCode.withoutCostOverride(code);
 			DeckCard handCard = DeckCard.byCode(code);
 			if (handCard.hasKeyword(code, DeckCardKeyword.TRANSIENT)) {
 				exhaustCard(cleanedCode);
-			} else if (retainHandTurns > 0 || handCard.hasKeyword(code, DeckCardKeyword.RETAIN) || (isShivCard(handCard) && shivRetain)
+			} else if (endTurnSelectedRetainIndices.contains(i) || retainHandTurns > 0 || handCard.hasKeyword(code, DeckCardKeyword.RETAIN) || (isShivCard(handCard) && shivRetain)
 					|| (turn == 1 && DeckBuilderRun.hasRelic(DeckRelic.RINGING_TRIANGLE))) {
 				retained.add(cleanedCode);
 			} else {
 				discardPile.add(cleanedCode);
 			}
 		}
+		endTurnSelectedRetainIndices.clear();
 		hand.clear();
 		hand.addAll(retained);
 		if (retainHandTurns > 0) retainHandTurns--;
@@ -2393,7 +2425,7 @@ public class DeckBuilderCombat {
 	public boolean draw(int count) {
 		boolean drew = false;
 		for (int i = 0; i < count; i++) {
-			if (drawOneAndReturnCode() < 0) return drew;
+			if (drawOneAndReturnCode() == -1) return drew;
 			drew = true;
 		}
 		return drew;
@@ -2410,6 +2442,11 @@ public class DeckBuilderCombat {
 		drawn = applyDrawnCardTriggers(drawn);
 		cardsDrawnThisTurn++;
 		cardsDrawnThisCombat++;
+		if (speedsterDamage > 0) {
+			for (DeckCombatEnemy enemy : aliveEnemies()) {
+				damageEnemy(enemy, speedsterDamage, false);
+			}
+		}
 		if (automationCount > 0) {
 			automationDrawsSinceLastTrigger++;
 			if (automationDrawsSinceLastTrigger >= 10) {
@@ -2437,6 +2474,9 @@ public class DeckBuilderCombat {
 		if (card == DeckCard.KINGS_KICK) {
 			int currentCost = cardCost(cardCode);
 			return DeckCardCode.withCostOverride(cardCode, Math.max(0, currentCost - 1));
+		}
+		if (card == DeckCard.HOLLOW) {
+			energy = Math.max(0, energy - 1);
 		}
 		return cardCode;
 	}

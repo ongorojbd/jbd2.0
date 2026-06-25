@@ -61,7 +61,7 @@ public enum DeckRelic {
 		@Override public void onAcquire() { DeckBuilderRun.pendingCardRemove = true; }
 	},
 	BOOMING_CONCH("클로버 5", "강적 전투 시작 시, 카드를 추가로 2장 뽑고 에너지를 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
-	LAVA_ROCK("다이아 10", "1막의 보스가 보상으로 유물을 2개 제공합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
+	LAVA_ROCK("다이아 10", "1계층의 보스가 보상으로 유물을 2개 제공합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
 	GOLDEN_PEARL("다이아 9", "획득 시, 골드를 150 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() { DeckBuilderRun.gainGold(150); }
 	},
@@ -90,7 +90,7 @@ public enum DeckRelic {
 	},
 	FISHING_ROD("클로버 3", "일반 전투 3번마다 덱의 무작위 카드 1장이 강화됩니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
 
-	LEAFY_POULTICE("스페이드 Q", "획득 시, STRIKE 1장과 GUARD 1장이 무작위로 변환됩니다. 최대 체력을 12 잃습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
+	LEAFY_POULTICE("스페이드 Q", "획득 시, 기본 무기 1장과 기본 브로치 1장이 무작위로 변환됩니다. 최대 체력을 12 잃습니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			transformFirstInDeck(DeckCard.STRIKE);
 			transformFirstInDeck(DeckCard.GUARD);

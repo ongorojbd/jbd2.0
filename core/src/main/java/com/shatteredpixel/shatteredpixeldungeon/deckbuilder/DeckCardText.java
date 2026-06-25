@@ -30,6 +30,18 @@ public class DeckCardText {
 		if (card == DeckCard.BARNACLE) {
 			return "사용불가. " + DeckCardKeyword.TRANSIENT.label + ".";
 		}
+		if (card == DeckCard.DIZZINESS) {
+			return "사용불가. " + DeckCardKeyword.TRANSIENT.label + ".";
+		}
+		if (card == DeckCard.HOLLOW) {
+			return "사용불가. " + DeckCardKeyword.TRANSIENT.label + ". 이 카드를 뽑을 때마다, 에너지를 1 잃습니다.";
+		}
+		if (card == DeckCard.BURN) {
+			return "사용불가. 내 턴 종료 시 이 카드가 손에 있다면, 피해를 2 받습니다.";
+		}
+		if (card == DeckCard.INJURY) {
+			return "사용불가.";
+		}
 		String text = "";
 		for (DeckCardEffect effect : card.effects(cardCode)) {
 			text += appendSentence(text, effect.rulesText(card, cardCode, combat));

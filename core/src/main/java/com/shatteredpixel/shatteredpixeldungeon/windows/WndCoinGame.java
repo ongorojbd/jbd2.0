@@ -397,10 +397,10 @@ public class WndCoinGame extends Window {
 		if (waterRatio < 0.67f) {
 			waterColor = 0xFF4488FF; // 파란색 (100 미만)
 		} else if (waterRatio < 0.83f) {
-			Music.INSTANCE.play(Assets.Music.HALLS_BOSS, true);
+			Music.INSTANCE.play(Assets.Music.ELITE, true);
 			waterColor = 0xFFFFAA00; // 주황색 (100~124)
 		} else {
-			Music.INSTANCE.play(Assets.Music.KOICHI, true);
+			Music.INSTANCE.play(Assets.Music.ELITE, true);
 			waterColor = 0xFFFF4444; // 빨간색 (125 이상, 위험)
 		}
 

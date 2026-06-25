@@ -441,18 +441,6 @@ public class DeckCardEffects {
 	public static class HiddenDaggerEffect implements DeckCardEffect {
 		@Override
 		public void apply(DeckCardPlayContext context) {
-			int toDiscard = Math.min(2, Math.max(0, context.combat.hand.size() - 1));
-			for (int i = 0; i < toDiscard; i++) {
-				ArrayList<Integer> candidates = new ArrayList<>();
-				for (int h = 0; h < context.combat.hand.size(); h++) {
-					if (h != context.handIndex) candidates.add(h);
-				}
-				if (candidates.isEmpty()) break;
-				int idx = candidates.get(Random.Int(candidates.size()));
-				int code = DeckCardCode.withoutCostOverride(context.combat.hand.remove(idx));
-				context.combat.discardPile.add(code);
-				if (idx < context.handIndex) context.combat.currentPlayHandIndexShift--;
-			}
 			boolean upgraded = DeckCardCode.upgradeLevel(context.effectiveCardCode) > 0;
 			for (int i = 0; i < 2; i++) {
 				context.combat.addShivToHand(upgraded);
@@ -541,7 +529,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			String text = "버린 카드 더미에 있는 모든 전갈탄을 선택한 적에게 사용합니다.";
+			String text = "소멸된 카드 더미에 있는 모든 전갈탄을 선택한 적에게 사용합니다.";
 			return DeckCardCode.upgradeLevel(cardCode) > 0 ? text + " 강화된 전갈탄으로 사용합니다." : text;
 		}
 
@@ -2149,7 +2137,7 @@ public class DeckCardEffects {
 			while (true) {
 				int before = context.combat.hand.size();
 				int drawn = context.combat.drawOneAndReturnCode();
-				if (drawn < 0) break;
+				if (drawn == -1) break;
 				if (context.combat.hand.size() > before) context.result.draw++;
 				if (DeckCard.byCode(drawn).type != DeckCardType.ATTACK) break;
 			}
@@ -3585,6 +3573,93 @@ public class DeckCardEffects {
 		}
 	}
 
+	public static class DecentStrategyEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.strategyRetainCount += DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int count = DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			return "내 턴 종료 시, 카드를 최대 " + count + "장까지 보존합니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "보존 1장 > 2장";
+		}
+	}
+
+	public static class SpeedsterEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.speedsterDamage += 2;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "내 턴 동안 카드를 뽑을 때마다, 모든 적에게 피해를 2 줍니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "선봉 부여";
+		}
+	}
+
+	public static class TrackEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.trackAttackDown++;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "공격력 저하 상태의 적이 공격 카드로 받는 피해가 2배가 됩니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "비용 2 > 1";
+		}
+	}
+
+	public static class DemonFormEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.strengthPerTurn += DeckCardCode.upgradeLevel(cardCode) > 0 ? 3 : 2;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int amount = DeckCardCode.upgradeLevel(cardCode) > 0 ? 3 : 2;
+			return "내 턴 시작 시, 공격력을 " + amount + " 얻습니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "공격력 2 > 3";
+		}
+	}
+
+	public static class CorruptionEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			combat.corruptionCount++;
+		}
+
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			return "보조 카드의 비용이 0이 됩니다. 보조 카드를 사용할 때마다 그 카드를 소멸시킵니다.";
+		}
+
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "비용 3 > 2";
+		}
+	}
+
 	public static class RipAndTearEffect implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
@@ -4039,6 +4114,79 @@ public class DeckCardEffects {
 		@Override
 		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
 			return "비용 3 > 2";
+		}
+	}
+
+	public static class RushedExitEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 9 : 6;
+			result.block += combat.gainBlockFromCard(block);
+			combat.discardPile.add(DeckCard.DIZZINESS.code());
+		}
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 9 : 6;
+			return "보호막을 " + block + " 얻습니다. 버린 카드 더미에 어지러움을 1장 추가합니다.";
+		}
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "보호막 6 > 9";
+		}
+	}
+
+	public static class TurboEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int energy = DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			combat.gainEnergy(energy);
+			combat.discardPile.add(DeckCard.HOLLOW.code());
+		}
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int energy = DeckCardCode.upgradeLevel(cardCode) > 0 ? 2 : 1;
+			return energy + " 에너지를 얻습니다. 버린 카드 더미에 공허를 1장 추가합니다.";
+		}
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "에너지 1 > 2";
+		}
+	}
+
+	public static class OverclockBoostEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int draw = DeckCardCode.upgradeLevel(cardCode) > 0 ? 3 : 2;
+			result.draw += drawCards(combat, draw);
+			combat.discardPile.add(DeckCard.BURN.code());
+		}
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int draw = DeckCardCode.upgradeLevel(cardCode) > 0 ? 3 : 2;
+			return "카드를 " + draw + "장 뽑습니다. 버린 카드 더미에 화상을 1장 추가합니다.";
+		}
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "드로우 2 > 3";
+		}
+	}
+
+	public static class ForcedPushEffect implements DeckCardEffect {
+		@Override
+		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
+			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 17 : 13;
+			result.block += combat.gainBlockFromCard(block);
+			combat.discardPile.add(DeckCard.INJURY.code());
+			combat.discardPile.add(DeckCard.INJURY.code());
+		}
+		@Override
+		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
+			int block = DeckCardCode.upgradeLevel(cardCode) > 0 ? 17 : 13;
+			return "보호막을 " + block + " 얻습니다. 버린 카드 더미에 부상을 2장 추가합니다.";
+		}
+		@Override
+		public String upgradePreviewText(DeckCard card, int cardCode, int upgradedCode) {
+			return "보호막 13 > 17";
 		}
 	}
 

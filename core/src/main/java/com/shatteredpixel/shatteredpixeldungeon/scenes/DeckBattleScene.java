@@ -74,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StowerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SwarmSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpeedwagonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ZombieSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
@@ -160,7 +161,9 @@ public class DeckBattleScene extends PixelScene {
     private boolean selectingForPure;
     private boolean selectingForBurningPact;
     private boolean selectingForDaggerThrowDiscard;
+    private boolean selectingForHiddenDagger;
     private boolean selectingForPendingExhaust;
+    private boolean selectingForStrategyRetain;
     private boolean touchOfInsanityActive;
     private int touchOfInsanitySlot;
     private int pureHandIndex;
@@ -288,7 +291,9 @@ public class DeckBattleScene extends PixelScene {
             Game.reportException(e);
         }
 
-        if (combat.depth >= 17 && Statistics.deckBuilderMapNode == DeckBuilderMap.BOSS) {
+        if (Statistics.deckBuilderMapNode == DeckBuilderMap.ELITE) {
+            Music.INSTANCE.play(Assets.Music.ELITE, true);
+        } else if (combat.depth >= 17 && Statistics.deckBuilderMapNode == DeckBuilderMap.BOSS) {
             Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
         } else if (combat.depth <= 16) {
             Music.INSTANCE.playTracks(SewerLevel.SEWER_TRACK_LIST, SewerLevel.SEWER_TRACK_CHANCES, false);
@@ -312,9 +317,11 @@ public class DeckBattleScene extends PixelScene {
                     refresh();
                 } else if (selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
                     return;
-                } else if (selectingForPure || selectingForBurningPact || touchOfInsanityActive) {
+                } else if (selectingForPure || selectingForBurningPact || selectingForHiddenDagger || selectingForStrategyRetain || touchOfInsanityActive) {
                     selectingForPure = false;
                     selectingForBurningPact = false;
+                    selectingForHiddenDagger = false;
+                    selectingForStrategyRetain = false;
                     touchOfInsanityActive = false;
                     hidePureSelectionBanner();
                     pureSelectedIndices.clear();
@@ -473,10 +480,14 @@ public class DeckBattleScene extends PixelScene {
                     confirmPureSelection();
                 } else if (selectingForBurningPact) {
                     confirmBurningPactSelection();
+                } else if (selectingForHiddenDagger) {
+                    confirmHiddenDaggerSelection();
                 } else if (selectingForDaggerThrowDiscard) {
                     confirmDaggerThrowDiscardSelection();
                 } else if (selectingForPendingExhaust) {
                     confirmPendingExhaustSelection();
+                } else if (selectingForStrategyRetain) {
+                    confirmStrategyRetainSelection();
                 } else if (touchOfInsanityActive) {
                     confirmTouchOfInsanity();
                 } else if (gamblerBrewActive) {
@@ -496,6 +507,7 @@ public class DeckBattleScene extends PixelScene {
 	                saveCombatState();
 	                spawnPoisonDartDamageEffect();
 	                spawnPriceOfSinDamageEffect();
+	                spawnBurnDamageEffect();
 	                float orangeBombDelay = spawnOrangeBombExplosionEffects(0.0f);
 	                spawnUnanimatedEnemyDamageEvents(orangeBombDelay);
 	                spawnEnemyActions();
@@ -657,10 +669,28 @@ public class DeckBattleScene extends PixelScene {
     }
 
     private boolean startEnemyTurn() {
+        if (beginStrategyRetainSelectionIfNeeded()) return true;
         combatLocked = true;
         hideCardInfo();
         resolveEnemyTurn();
         return true;
+    }
+
+    private boolean beginStrategyRetainSelectionIfNeeded() {
+        if (selectingForStrategyRetain || combat.strategyRetainCount <= 0 || combat.hand.isEmpty()) return false;
+        pureSelectedIndices.clear();
+        pureHandIndex = -1;
+        pureMaxSelect = Math.min(combat.strategyRetainCount, combat.hand.size());
+        selectingForStrategyRetain = true;
+        showStrategyRetainSelectionBanner();
+        refresh();
+        return true;
+    }
+
+    private void finishEnemyTurnAfterStrategyRetain() {
+        combatLocked = true;
+        hideCardInfo();
+        resolveEnemyTurn();
     }
 
     private void resolveEnemyTurn() {
@@ -670,7 +700,7 @@ public class DeckBattleScene extends PixelScene {
         ArrayList<Float> transientExhaustY = new ArrayList<>();
         for (int i = 0; i < combat.hand.size(); i++) {
             int code = combat.hand.get(i);
-            if (retainedAtEndTurn(code)) continue;
+            if (retainedAtEndTurn(i, code)) continue;
             float cx = i < cardButtons.size() ? cardButtons.get(i).centerX() : Camera.main.width / 2f;
             float cy = i < cardButtons.size() ? cardButtons.get(i).centerY() : handY + CARD_H / 2f;
             if (DeckCard.byCode(code).hasKeyword(code, DeckCardKeyword.TRANSIENT)) {
@@ -688,6 +718,7 @@ public class DeckBattleScene extends PixelScene {
 	        }
 	        spawnPoisonDartDamageEffect();
 	        spawnPriceOfSinDamageEffect();
+	        spawnBurnDamageEffect();
 	        float orangeBombDelay = spawnOrangeBombExplosionEffects(0.08f);
 	        float relicDamageDelay = spawnUnanimatedDamageEvents(new ArrayList<DeckPlayResult>(), Math.max(0.12f, orangeBombDelay));
         pendingTurnEndAutoPlayLog = buildRandomPlayLog(combat.lastTurnEndAutoPlayResults);
@@ -1548,6 +1579,58 @@ public class DeckBattleScene extends PixelScene {
         selectionBackdropArea.active = true;
     }
 
+    private void showHiddenDaggerSelectionBanner() {
+        int w = Camera.main.width;
+        int h = Camera.main.height;
+        int shadeH = 44;
+        pureSelectionShade.size(w, shadeH);
+        pureSelectionShade.y = (h - shadeH) / 2f;
+        pureSelectionShade.visible = true;
+
+        pureSelectionAccent.color(0xFFFFD84D);
+        pureSelectionAccent.y = pureSelectionShade.y + shadeH;
+        pureSelectionAccent.visible = true;
+
+        pureSelectionTitle.text("버릴 카드 2장을 선택하세요.");
+        pureSelectionTitle.hardlight(0xFFFFD84D);
+        pureSelectionTitle.setPos((w - pureSelectionTitle.width()) / 2f, pureSelectionShade.y + 6);
+        pureSelectionTitle.visible = true;
+
+        pureSelectionSubtitle.visible = false;
+
+        pureSelectorConfirm.text("확인 (0/" + pureMaxSelect + ")");
+        pureSelectorConfirm.setRect((w - 90) / 2f, pureSelectionTitle.bottom() + 4, 90, 14);
+        pureSelectorConfirm.visible = true;
+
+        selectionBackdropArea.active = true;
+    }
+
+    private void showStrategyRetainSelectionBanner() {
+        int w = Camera.main.width;
+        int h = Camera.main.height;
+        int shadeH = 44;
+        pureSelectionShade.size(w, shadeH);
+        pureSelectionShade.y = (h - shadeH) / 2f;
+        pureSelectionShade.visible = true;
+
+        pureSelectionAccent.color(0xFF9EE6FF);
+        pureSelectionAccent.y = pureSelectionShade.y + shadeH;
+        pureSelectionAccent.visible = true;
+
+        pureSelectionTitle.text("보존할 카드를 최대 " + pureMaxSelect + "장 선택하세요.");
+        pureSelectionTitle.hardlight(0xFF9EE6FF);
+        pureSelectionTitle.setPos((w - pureSelectionTitle.width()) / 2f, pureSelectionShade.y + 6);
+        pureSelectionTitle.visible = true;
+
+        pureSelectionSubtitle.visible = false;
+
+        pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/" + pureMaxSelect + ")");
+        pureSelectorConfirm.setRect((w - 90) / 2f, pureSelectionTitle.bottom() + 4, 90, 14);
+        pureSelectorConfirm.visible = true;
+
+        selectionBackdropArea.active = true;
+    }
+
     private void showTouchOfInsanityBanner() {
         int w = Camera.main.width;
         int h = Camera.main.height;
@@ -1590,7 +1673,11 @@ public class DeckBattleScene extends PixelScene {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/1)");
         } else if (selectingForDaggerThrowDiscard) {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/" + pureMaxSelect + ")");
+        } else if (selectingForHiddenDagger) {
+            pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/" + pureMaxSelect + ")");
         } else if (selectingForPendingExhaust) {
+            pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/" + pureMaxSelect + ")");
+        } else if (selectingForStrategyRetain) {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "/" + pureMaxSelect + ")");
         } else if (gamblerBrewActive) {
             pureSelectorConfirm.text("확인 (" + pureSelectedIndices.size() + "장 교환)");
@@ -1729,6 +1816,28 @@ public class DeckBattleScene extends PixelScene {
         executePlayCard(adjustedIndex, -1);
     }
 
+    private void confirmHiddenDaggerSelection() {
+        if (pureSelectedIndices.size() < pureMaxSelect) return;
+        int adjustedIndex = pureHandIndex;
+        for (int idx : pureSelectedIndices) {
+            if (idx < pureHandIndex) adjustedIndex--;
+        }
+        java.util.Collections.sort(pureSelectedIndices, java.util.Collections.reverseOrder());
+        int discarded = 0;
+        for (int idx : pureSelectedIndices) {
+            if (idx >= 0 && idx < combat.hand.size()) {
+                int code = DeckCardCode.withoutCostOverride(combat.hand.remove(idx));
+                combat.discardPile.add(code);
+                discarded++;
+            }
+        }
+        pureSelectedIndices.clear();
+        selectingForHiddenDagger = false;
+        hidePureSelectionBanner();
+        log("移대뱶瑜?" + discarded + "??踰꾨졇?듬땲??");
+        executePlayCard(adjustedIndex, -1);
+    }
+
     private void confirmDaggerThrowDiscardSelection() {
         if (pureSelectedIndices.size() < pureMaxSelect) return;
         java.util.Collections.sort(pureSelectedIndices, java.util.Collections.reverseOrder());
@@ -1779,6 +1888,15 @@ public class DeckBattleScene extends PixelScene {
         refresh();
     }
 
+    private void confirmStrategyRetainSelection() {
+        combat.endTurnSelectedRetainIndices.clear();
+        combat.endTurnSelectedRetainIndices.addAll(pureSelectedIndices);
+        pureSelectedIndices.clear();
+        selectingForStrategyRetain = false;
+        hidePureSelectionBanner();
+        finishEnemyTurnAfterStrategyRetain();
+    }
+
     private void playCard(int index) {
         if (combatLocked || tutorialMessageOpen() || index < 0 || index >= combat.hand.size()) {
             return;
@@ -1810,6 +1928,15 @@ public class DeckBattleScene extends PixelScene {
             pureSelectedIndices.clear();
             pureMaxSelect = 1;
             showBurningPactSelectionBanner();
+            refresh();
+            return;
+        }
+        if (card == DeckCard.HIDDEN_DAGGER && combat.hand.size() > 1) {
+            selectingForHiddenDagger = true;
+            pureHandIndex = index;
+            pureSelectedIndices.clear();
+            pureMaxSelect = Math.min(2, combat.hand.size() - 1);
+            showHiddenDaggerSelectionBanner();
             refresh();
             return;
         }
@@ -1885,7 +2012,7 @@ public class DeckBattleScene extends PixelScene {
         } else if (card == DeckCard.SCORPION_THROW) {
             Sample.INSTANCE.play(Assets.Sounds.PLANT);
             cardUseSoundPlayed = true;
-        } else if (card == DeckCard.SHIV) {
+        } else if (card == DeckCard.SHIV || card == DeckCard.SPECIAL_SHIV) {
             Sword.giorno();
             cardUseSoundPlayed = true;
         } else if (card == DeckCard.ROTATING_NAIL) {
@@ -3447,6 +3574,9 @@ public class DeckBattleScene extends PixelScene {
         if (combat.lastPriceOfSinDamage > 0) {
             text += " 죄의 대가로 " + combat.lastPriceOfSinDamage + " 피해를 받았습니다.";
         }
+        if (combat.lastTurnEndBurnDamage > 0) {
+            text += " 화상으로 " + combat.lastTurnEndBurnDamage + " 피해를 받았습니다.";
+        }
         if (combat.lastOrangeBombTotalDamage > 0) {
             text += " 오렌지 폭탄 폭발! 총 " + combat.lastOrangeBombTotalDamage + " 피해.";
         }
@@ -3953,6 +4083,11 @@ public class DeckBattleScene extends PixelScene {
 		spawnPlayerDamageImpact(combat.lastPriceOfSinDamage, "죄의 대가");
 	}
 
+	private void spawnBurnDamageEffect() {
+		if (combat.lastTurnEndBurnDamage <= 0) return;
+		spawnPlayerDamageImpact(combat.lastTurnEndBurnDamage, "화상");
+	}
+
     private void spawnShieldEffect(float x, float y, String text) {
         playGuard(playerSprite);
         playerGuardTime = 0.34f;
@@ -4214,6 +4349,52 @@ public class DeckBattleScene extends PixelScene {
         addToFront(win);
     }
 
+    private void showShittimBoxCardDetailWindow(final Window selectWin, final DeckCard card) {
+        final Window win = new DeckRewardWindow();
+        int width = 170;
+        int pos = 7;
+
+        RenderedTextBlock title = renderTextBlock(cardDetailTitle(card, card.code()), 8);
+        title.hardlight(Window.TITLE_COLOR);
+        title.setPos((width - title.width()) / 2f, pos);
+        win.add(title);
+        pos += 16;
+
+        RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesAndKeywordText(card, card.code(), combat), 6);
+        desc.maxWidth(width - 14);
+        desc.hardlight(0xFFD8D1BD);
+        desc.setPos(7, pos);
+        win.add(desc);
+        pos += (int) desc.height() + 8;
+
+        RedButton take = new RedButton("가져오기", 6) {
+            @Override
+            protected void onClick() {
+                Sample.INSTANCE.play(Assets.Sounds.ITEM);
+                combat.addToHand(card.code());
+                saveCombatState();
+                win.hide();
+                selectWin.hide();
+                refresh();
+            }
+        };
+        take.setRect(7, pos, 74, 18);
+        win.add(take);
+
+        RedButton back = new RedButton("돌아가기", 6) {
+            @Override
+            protected void onClick() {
+                win.hide();
+            }
+        };
+        back.setRect(width - 81, pos, 74, 18);
+        win.add(back);
+        pos += 24;
+
+        win.resize(width, pos);
+        addToFront(win);
+    }
+
     private void showShittimBoxSelectWindow(final String filter, final int page) {
         final DeckCard[] all = DeckCard.values();
         final ArrayList<DeckCard> filtered = new ArrayList<>();
@@ -4266,10 +4447,7 @@ public class DeckBattleScene extends PixelScene {
 
                 @Override
                 protected void onClick() {
-                    combat.addToHand(picked.code());
-                    saveCombatState();
-                    win.hide();
-                    refresh();
+                    showShittimBoxCardDetailWindow(win, picked);
                 }
             };
             btn.setRect(startX + col * (SB_CARD_W + SB_CARD_GAP), pos, SB_CARD_W, SB_CARD_H);
@@ -5211,9 +5389,7 @@ public class DeckBattleScene extends PixelScene {
             showTutorialMessage(
                     "카드 타입 — 공격 카드\n\n" +
                             "먼저 공격 카드 설명부터 들어둬!\n\n" +
-                            "공격 카드는 적에게 직접 피해를 퍼붓는 카드야! 카드 상단의 숫자가 소모 에너지니까 잘 봐둬!\n\n" +
-                            "그리고 하나 더—— 적 하단의 예고 텍스트!! " +
-                            "다음 턴에 받을 피해를 미리 알려주는 거야. 이걸 무시하면 큰코다친다고!!\n\n" +
+                            "공격 카드는 적에게 직접 피해를 가하는 카드다! 카드 상단의 숫자가 소모 에너지니까 잘 봐두라고!\n\n" +
                             "자, 공격 카드를 내서 한 방 먹여봐!!");
         } else if (step >= 3 && step < 8 && combat.turn >= 2) {
             // 2턴~, 세 타입 모두 사용 완료 후 물약 튜토리얼
@@ -5252,20 +5428,20 @@ public class DeckBattleScene extends PixelScene {
         int step = DeckBuilderRun.tutorialStep;
         if (step == 0 && card.type != DeckCardType.ATTACK) {
             showTutorialMessage(
-                    "지금은 공격 카드를 사용할 차례입니다.\n\n" +
-                            "공격 타입 카드를 골라 적에게 피해를 주세요.");
+                    "지금은 공격 카드를 사용할 차례야.\n\n" +
+                            "손에서 공격 타입 카드를 골라서 내봐!");
             return false;
         }
         if (step == 1 && card.type != DeckCardType.SKILL) {
             showTutorialMessage(
-                    "이제 보조 카드를 사용할 차례입니다.\n\n" +
-                            "보조 타입 카드를 골라 사용해 보세요.");
+                    "이제 보조 카드를 사용할 차례야.\n\n" +
+                            "손에서 보조 타입 카드를 골라서 내봐!");
             return false;
         }
         if (step == 2 && card.type != DeckCardType.POWER) {
             showTutorialMessage(
-                    "이제 지속 카드를 사용할 차례입니다.\n\n" +
-                            "지속 타입 카드를 골라 사용해 보세요.");
+                    "이제 지속 카드를 사용할 차례야.\n\n" +
+                            "손에서 지속 타입 카드를 골라서 내봐!");
             return false;
         }
         return true;
@@ -5277,25 +5453,26 @@ public class DeckBattleScene extends PixelScene {
         if (step == 0 && card.type == DeckCardType.ATTACK) {
             DeckBuilderRun.tutorialStep = 1;
             showTutorialMessage(
-                    "잘했습니다! 공격 카드로 적에게 피해를 주었습니다. 다음은 보조 카드입니다.\n\n" +
-                            "보조 카드는 방어, 드로우 등 다양한 지원 효과를 가진 카드입니다. " +
-                            "한 번 잃은 체력은 되찾기 어려운 만큼, 보조 카드를 통해 적의 피해를 최소화하는 전략이 가장 중요합니다!\n\n" +
-                            "손패에서 보조 카드를 사용해 보세요.");
+                    "잘했어! 공격 카드를 잘 사용했군! 다음은 보조 카드야!\n\n" +
+                            "보조 카드는 방어, 드로우.. 다양한 지원 효과를 가진 카드야!" +
+                            "체력 회복 수단은 한정적이기 때문에 보조 카드를 통해 적의 피해를 최소화하는 전략이 가장 중요해!\n\n" +
+                            "적 밑에 뜨는 숫자도 봐둬. 그게 다음 턴에 받을 피해야. 미리 보고 대비하면 훨씬 편하겠지?\n\n" +
+                            "손패에서 보조 카드를 찾아 써봐!");
         } else if (step == 1 && card.type == DeckCardType.SKILL) {
             DeckBuilderRun.tutorialStep = 2;
             showTutorialMessage(
-                    "좋습니다! 보조 카드를 사용해서 적의 피해를 방어할 수 있게 되었습니다. 다음은 지속 카드입니다.\n\n" +
-                            "지속 카드는 한 번 쓰면 전투가 끝날 때까지 효과가 지속되는 카드입니다.\n\n" +
-                            "사용한 지속 카드는 버린 카드로 들어가지 않고 해당 전투에서 사라집니다.\n\n" +
-                            "손패에서 지속 카드를 찾아 사용해 보세요.");
+                    "그렇지! 이제 적 공격도 좀 막을 수 있겠네. 다음은 지속 카드야!\n\n" +
+                            "지속 카드는 말 그대로 한 번 쓰면 전투가 끝날 때까지 효과가 계속 지속되는 카드야.\n\n" +
+                            "그리고 이게 중요해! 한 번 쓴 지속 카드는 버린 카드로 가지 않고, 그 전투에서 깔끔하게 사라진다!\n\n" +
+                            "손패에서 지속 카드를 찾아 써봐!");
         } else if (step == 2 && card.type == DeckCardType.POWER) {
             DeckBuilderRun.tutorialStep = 3;
             showTutorialMessage(
-                    "훌륭합니다! 세 가지 카드 타입을 모두 사용했습니다!\n\n" +
+                    "세 가지 카드 타입을 전부 써봤어! 대단해 죠스타 씨!\n\n" +
                             "[카드 순환 방식]\n" +
-                            "사용하거나 턴 종료 시 남은 카드는 모두 버린 카드로 이동합니다. " +
-                            "뽑을 카드가 바닥나면 버린 카드를 자동으로 다시 섞어서 남은 카드에 채워넣습니다.\n\n" +
-                            "이제 자유롭게 카드를 써서 적을 쓰러뜨려 보세요!");
+                            "카드가 어떻게 도는지도 알려줄게. 쓰거나 남은 카드는 턴이 끝날 때 전부 버린 카드 더미로 이동하지!" +
+                            "뽑을 카드가 바닥나면 버린 카드를 다시 섞어서 남은 카드에 채워주니까 걱정 안 해도 된다는 말씀!\n\n" +
+                            "이제 마음껏 카드를 써봐!");
         }
     }
 
@@ -5315,21 +5492,21 @@ public class DeckBattleScene extends PixelScene {
         // 카드 보상 안내를 먼저 추가 > 전리품 창 바로 위에 위치
         // 카드 보상 안내
         showTutorialMessage(
-                        "전투 후에는 여러 카드 중 1장을 골라 덱에 추가할 수 있습니다!\n\n" +
+                        "전투가 끝나면, 카드 보상을 하나 선택해서 덱에 넣을 수 있어!\n\n" +
                         "[카드 고르는 팁]\n" +
-                        "카드 보상에는 영웅의 전용 카드와 어떤 영웅이든 사용할 수 있는 공용 카드가 등장합니다." +
-                        "카드를 무조건 추가하는 것이 항상 좋지는 않습니다. 덱이 커질수록 원하는 카드를 뽑기 어려워집니다.\n\n" +
-                        "단순히 강한 카드보다, 각각의 시너지가 맞는 카드를 고르는걸 잊지 마세요!\n\n" +
-                        "카드를 고르면 튜토리얼이 끝납니다. 여기까지 잘 따라오셨어요!");
+                        "여기 나오는 카드 중엔 해당 영웅의 전용 카드도 있고, 아무나 쓰는 공용 카드도 있어." +
+                        "그런데 무조건 다 챙기는 게 좋은 건 아니야. 덱이 두꺼워질수록 정작 원하는 카드는 잘 안 나오거든.\n\n" +
+                        "그냥 강해 보이는 카드보다, 지금 덱이랑 잘 맞는 카드를 고르는 게 좋아.\n\n" +
+                        "카드 하나 고르면 튜토리얼도 여기서 끝이야. 그럼 스피드왜건은 쿨하게 떠나주지! 앞으로 건투를 빌게!");
 
         // 물약 안내를 2턴에 보여주지 못했다면 여기서 보충
         if (DeckBuilderRun.tutorialStep < 8) {
             showTutorialMessage(
-                    "물약 안내\n\n" +
-                            "화면 상단에 물약 슬롯이 보이시나요?\n\n" +
-                            "물약은 전투 중 언제든지 사용할 수 있는 유용한 일회성 아이템입니다. " +
-                            "갖고 있는 '화염 물약'은 모든 적에게 피해를 10 줍니다.\n\n" +
-                            "위기에 처했을 때나 결정적인 순간에 전략적으로 물약을 사용하세요!");
+                    "참, 물약 얘기를 빼먹었네.\n\n" +
+                            "화면 위쪽에 물약 슬롯 보이지?\n\n" +
+                            "물약은 전투 중 언제든 쓸 수 있는 유용한 일회성 아이템이야!" +
+                            "지금 가지고 있는 '화염 물약'은 모든 적에게 피해를 10이나 줄 수 있는거 같은데?\n\n" +
+                            "위기에 처했을 때나 결정적인 순간에 전략적으로 물약을 써먹으라고!");
         }
     }
 
@@ -5817,6 +5994,10 @@ public class DeckBattleScene extends PixelScene {
         return card.hasKeyword(cardCode, DeckCardKeyword.RETAIN) || (card == DeckCard.SHIV && combat.shivRetain);
     }
 
+    private boolean retainedAtEndTurn(int handIndex, int cardCode) {
+        return combat.endTurnSelectedRetainIndices.contains(handIndex) || retainedAtEndTurn(cardCode);
+    }
+
     private void log(String text) {
         logText.text(text);
     }
@@ -6184,6 +6365,19 @@ public class DeckBattleScene extends PixelScene {
                 }
             };
         }
+        if (kind == DeckEnemy.GEB_GOD) {
+            return new SpeedwagonSprite() {
+                @Override
+                public void die() {
+                    play(die);
+                }
+
+                @Override
+                public synchronized void onComplete(Animation anim) {
+                    if (anim == attack || anim == run) idle();
+                }
+            };
+        }
         // 매핑되지 않은 적의 기본 스프라이트
         return new RatSprite() {
             @Override
@@ -6212,9 +6406,11 @@ public class DeckBattleScene extends PixelScene {
         if (selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
             return;
         }
-        if (selectingForPure || selectingForBurningPact || touchOfInsanityActive) {
+        if (selectingForPure || selectingForBurningPact || selectingForHiddenDagger || selectingForStrategyRetain || touchOfInsanityActive) {
             selectingForPure = false;
             selectingForBurningPact = false;
+            selectingForHiddenDagger = false;
+            selectingForStrategyRetain = false;
             touchOfInsanityActive = false;
             hidePureSelectionBanner();
             pureSelectedIndices.clear();
@@ -7460,7 +7656,7 @@ public class DeckBattleScene extends PixelScene {
                 int code = cardCode();
                 return DeckCard.maxCharge(code) > 0;
             }
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
+            if (selectingForPure || selectingForBurningPact || selectingForHiddenDagger || selectingForStrategyRetain || selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
                 return handIndex != pureHandIndex;
             }
             if (touchOfInsanityActive) {
@@ -7484,11 +7680,11 @@ public class DeckBattleScene extends PixelScene {
         @Override
         protected void layout() {
             super.layout();
-            if ((selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) && pureSelectedIndices.contains(handIndex)) {
+            if ((selectingForPure || selectingForBurningPact || selectingForHiddenDagger || selectingForStrategyRetain || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) && pureSelectedIndices.contains(handIndex)) {
                 edge.color(0xFFA8F26A);
                 edge.am = 1.0f;
                 face.am = 0.92f;
-            } else if (!selectingForPure && !selectingForBurningPact && !selectingForDaggerThrowDiscard && !selectingForPendingExhaust && !gamblerBrewActive && !selectingWandForStaff
+            } else if (!selectingForPure && !selectingForBurningPact && !selectingForHiddenDagger && !selectingForStrategyRetain && !selectingForDaggerThrowDiscard && !selectingForPendingExhaust && !gamblerBrewActive && !selectingWandForStaff
                     && combat != null && card().conditionMet(cardCode(), combat)) {
                 edge.color(0xFFA8F26A);
                 edge.am = 1.0f;
@@ -7513,7 +7709,7 @@ public class DeckBattleScene extends PixelScene {
                 showCardInfo(cardCode());
                 return;
             }
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) {
+            if (selectingForPure || selectingForBurningPact || selectingForHiddenDagger || selectingForStrategyRetain || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) {
                 activeTouch = true;
                 super.onPointerDown();
                 homeX = x;
@@ -7538,7 +7734,7 @@ public class DeckBattleScene extends PixelScene {
         @Override
         protected void onDrag(PointerEvent event) {
             if (selectingWandForStaff) return;
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) return;
+            if (selectingForPure || selectingForBurningPact || selectingForHiddenDagger || selectingForStrategyRetain || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) return;
             if (!activeTouch || !enabled()) return;
             float dx = event.current.x - event.start.x;
             float dy = event.current.y - event.start.y;
@@ -7561,7 +7757,7 @@ public class DeckBattleScene extends PixelScene {
                 if (clickReady) onClick();
                 return;
             }
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) {
+            if (selectingForPure || selectingForBurningPact || selectingForHiddenDagger || selectingForStrategyRetain || selectingForDaggerThrowDiscard || selectingForPendingExhaust || touchOfInsanityActive || gamblerBrewActive) {
                 if (clickReady) {
                     clickReady = false;
                     onClick();
@@ -7593,10 +7789,12 @@ public class DeckBattleScene extends PixelScene {
                 }
                 return;
             }
-            if (selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
+            if (selectingForPure || selectingForBurningPact || selectingForHiddenDagger || selectingForStrategyRetain || selectingForDaggerThrowDiscard || selectingForPendingExhaust) {
                 if (handIndex == pureHandIndex) {
                     selectingForPure = false;
                     selectingForBurningPact = false;
+                    selectingForHiddenDagger = false;
+                    selectingForStrategyRetain = false;
                     selectingForDaggerThrowDiscard = false;
                     selectingForPendingExhaust = false;
                     hidePureSelectionBanner();

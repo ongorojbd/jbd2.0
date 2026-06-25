@@ -27,7 +27,7 @@ public enum DeckEnemy {
 		}
 	},
 
-	GEB_GOD("테스트용 적", 50, 5, true),
+	GEB_GOD("로버트 E.O. 스피드왜건", 40, 5, true),
 	HORUS("호루스신", 44, 9, false),
 	CREAM("크림", 226, 0, false) {
 		@Override

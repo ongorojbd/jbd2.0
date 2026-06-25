@@ -142,7 +142,7 @@ public class Assets {
         public static final String SEWERS_2 = "music/sewers_2.ogg";
 
         public static final String SEWERS_TENSE = "music/sewers_tense.ogg";
-        public static final String DRAGON = "music/dragon.ogg";
+
         public static final String SEWERS_BOSS = "music/sewers_boss.ogg";
 
         public static final String PRISON_1 = "music/prison_1.ogg";
@@ -167,6 +167,7 @@ public class Assets {
         public static final String DIOLOWHP = "music/diolowhp.ogg";
         public static final String LABS_BOSS = "music/labs_boss.ogg";
         public static final String EMPO = "music/empo.ogg";
+        public static final String ELITE = "music/elite.ogg";
 
         public static final String DIO_1 = "music/dio_1.ogg";
 
