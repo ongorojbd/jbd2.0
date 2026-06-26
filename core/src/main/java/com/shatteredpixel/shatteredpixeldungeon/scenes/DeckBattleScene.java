@@ -41,10 +41,13 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPlayResult;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotion;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotionPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
+import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BeeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CausticSlimeSprite;
@@ -108,6 +111,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DeckBattleScene extends PixelScene {
+
+    private static final boolean DECKBUILDER_BETA_LIMITS = true;
 
     private int CARD_W;
     private int CARD_H;
@@ -2321,12 +2326,32 @@ public class DeckBattleScene extends PixelScene {
             return;
         }
 
+        if (combat.pendingHandCopySelectCopies > 0) {
+            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
+            log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
+            if (resolveTerminalAfterPassiveDamage(fd)) return;
+            addEffect(new DelayedActionEffect(Math.max(0.18f, fd), new Runnable() {
+                @Override
+                public void run() {
+                    showDualWieldHandSelectWindow(combat.pendingHandCopySelectCopies, 0);
+                }
+            }));
+            return;
+        }
+
         if (combat.pendingHandCardToDrawPileTop) {
             combat.pendingHandCardToDrawPileTop = false;
             if (result.draw > 0) {
                 spawnDrawPileEffects(result.draw, 0.08f);
             }
-            float fd = spawnUnanimatedDamageEvents(result, 0.12f);
+            float fd = 0f;
+            for (DeckPlayResult.Hit hit : result.hits) {
+                if (hit.isAttack) {
+                    spawnCardAttack(card, startX, startY, hit);
+                    fd = Math.max(fd, 0.38f);
+                }
+            }
+            fd = Math.max(fd, spawnUnanimatedDamageEvents(result, 0.12f));
             log(card.title(logCardCode) + ": " + cardRulesText(card, logCardCode));
             if (resolveTerminalAfterPassiveDamage(fd)) return;
             addEffect(new DelayedActionEffect(Math.max(0.25f, fd), new Runnable() {
@@ -3856,10 +3881,10 @@ public class DeckBattleScene extends PixelScene {
                     Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH);
                     addEffect(new ImpactEffect(enemyCenterX(target), enemyCenterY(target), card == DeckCard.ROTATING_NAIL ? 0xFFFFD0F0 : 0xFFFFC05A));
                 }
-                spawnFloatingText("-" + hit.damage, enemyCenterX(target), enemyCenterY(target) - 16, 0xFFFF705A);
+                if (hit.damage > 0) spawnFloatingText("-" + hit.damage, enemyCenterX(target), enemyCenterY(target) - 16, 0xFFFF705A);
                 target.name.text(target.enemy.name + "  " + capturedHp + "/" + target.enemy.ht);
                 target.hp.size(ACTOR_HP_W * capturedHp / (float) target.enemy.ht, ACTOR_HP_H);
-                if (!target.enemy.alive()) {
+                if (!target.enemy.alive() && target.hpBg.visible) {
                     playDeath(target.sprite);
                     hideEnemyUI(target);
                 }
@@ -4241,6 +4266,113 @@ public class DeckBattleScene extends PixelScene {
                 protected void onClick() {
                     win.hide();
                     showArmamentsHandUpgradeWindow(currentPage + 1);
+                }
+            };
+            next.enable(currentPage < maxPage);
+            next.setRect(width - 68, pos, 58, 18);
+            win.add(next);
+            pos += 23;
+        }
+
+        win.resize(width, pos + 4);
+        addToFront(win);
+    }
+
+    private void showDualWieldHandSelectWindow(final int copies, final int page) {
+        final ArrayList<Integer> selectable = new ArrayList<>();
+        for (int code : combat.hand) {
+            DeckCardType t = DeckCard.byCode(code).type;
+            if (t == DeckCardType.ATTACK || t == DeckCardType.POWER) {
+                selectable.add(code);
+            }
+        }
+        if (selectable.isEmpty()) {
+            combat.pendingHandCopySelectCopies = 0;
+            saveCombatState();
+            refresh();
+            return;
+        }
+
+        final int DW_CARD_W = 42;
+        final int DW_CARD_H = 54;
+        final int DW_CARD_GAP = 5;
+        final int DW_CARDS_PER_PAGE = 4;
+        final int total = selectable.size();
+        final int maxPage = Math.max(0, (total - 1) / DW_CARDS_PER_PAGE);
+        final int currentPage = Math.max(0, Math.min(page, maxPage));
+        final int first = currentPage * DW_CARDS_PER_PAGE;
+        final int count = Math.min(DW_CARDS_PER_PAGE, total - first);
+        final int totalCardW = count * DW_CARD_W + (count - 1) * DW_CARD_GAP;
+        final int width = Math.max(196, totalCardW + 20);
+
+        final Window win = new Window() {
+            @Override
+            public void onBackPressed() {
+            }
+        };
+
+        int pos = 7;
+        RenderedTextBlock title = renderTextBlock("복사할 카드를 선택하세요.", 8);
+        title.hardlight(Window.TITLE_COLOR);
+        title.maxWidth(width - 14);
+        title.setPos((width - title.width()) / 2f, pos);
+        win.add(title);
+        pos += (int) title.height() + 8;
+
+        final int startX = (width - totalCardW) / 2;
+        for (int i = 0; i < count; i++) {
+            final int snapIndex = first + i;
+            final int code = selectable.get(snapIndex);
+            final int col = i;
+            CardViewButton btn = new CardViewButton() {
+                @Override
+                protected DeckCard card() {
+                    return DeckCard.byCode(code);
+                }
+
+                @Override
+                protected int cardCode() {
+                    return code;
+                }
+
+                @Override
+                protected void onClick() {
+                    combat.pendingHandCopySelectCopies = 0;
+                    for (int c = 0; c < copies; c++) {
+                        combat.addToHand(code);
+                    }
+                    saveCombatState();
+                    win.hide();
+                    refresh();
+                }
+            };
+            btn.setRect(startX + col * (DW_CARD_W + DW_CARD_GAP), pos, DW_CARD_W, DW_CARD_H);
+            win.add(btn);
+        }
+        pos += DW_CARD_H + 9;
+
+        if (maxPage > 0) {
+            RedButton prev = new RedButton("이전", 6) {
+                @Override
+                protected void onClick() {
+                    win.hide();
+                    showDualWieldHandSelectWindow(copies, currentPage - 1);
+                }
+            };
+            prev.enable(currentPage > 0);
+            prev.setRect(10, pos, 58, 18);
+            win.add(prev);
+
+            RenderedTextBlock pageText = renderTextBlock((currentPage + 1) + " / " + (maxPage + 1), 6);
+            pageText.hardlight(0xFFD8D1BD);
+            pageText.setPos((width - pageText.width()) / 2f, pos + 5);
+            win.add(pageText);
+
+            RedButton next = new RedButton("다음", 6) {
+                @Override
+                protected void onClick() {
+                    win.hide();
+                    showDualWieldHandSelectWindow(copies, currentPage + 1);
                 }
             };
             next.enable(currentPage < maxPage);
@@ -5497,7 +5629,7 @@ public class DeckBattleScene extends PixelScene {
                         "여기 나오는 카드 중엔 해당 영웅의 전용 카드도 있고, 아무나 쓰는 공용 카드도 있어." +
                         "그런데 무조건 다 챙기는 게 좋은 건 아니야. 덱이 두꺼워질수록 정작 원하는 카드는 잘 안 나오거든.\n\n" +
                         "그냥 강해 보이는 카드보다, 지금 덱이랑 잘 맞는 카드를 고르는 게 좋아.\n\n" +
-                        "카드 하나 고르면 튜토리얼도 여기서 끝이야. 그럼 스피드왜건은 쿨하게 떠나주지! 앞으로 건투를 빌게!");
+                        "카드 하나 고르면 튜토리얼도 여기서 끝이야. 그럼 스피드왜건은 쿨하게 떠나주지!");
 
         // 물약 안내를 2턴에 보여주지 못했다면 여기서 보충
         if (DeckBuilderRun.tutorialStep < 8) {
@@ -5903,6 +6035,10 @@ public class DeckBattleScene extends PixelScene {
         DeckBuilderRun.clearCombat();
         Statistics.deckBuilderMapNode = DeckBuilderMap.NONE;
         if (bossCleared) {
+            if (DECKBUILDER_BETA_LIMITS && Dungeon.depth == DeckBuilderMap.bossDepthForAct(1)) {
+                showDeckBuilderBetaCompleteMessage();
+                return;
+            }
             if (DeckBuilderMap.isFinalBossDepth(Dungeon.depth)) {
                 finishRunVictory();
                 return;
@@ -5933,6 +6069,44 @@ public class DeckBattleScene extends PixelScene {
         DeckBuilderMapScene.curTransition = transition;
         saveCombatState();
         Game.switchScene(DeckBuilderMapScene.class);
+    }
+
+    private void showDeckBuilderBetaCompleteMessage() {
+        if (endingRun) return;
+        endingRun = true;
+        combatLocked = true;
+        hideCardInfo();
+        Window win = new WndMessage(
+                "카드 배틀 모드는 아직 베타 버전입니다.\n\n" +
+                "현재 빌드의 카드 배틀 모드는 17층 보스까지 플레이할 수 있습니다.\n\n" +
+                "이 메시지를 클릭하면 엔딩으로 이동합니다.") {
+            {
+                Button clickArea = new Button() {
+                    @Override
+                    protected void onClick() {
+                        hide();
+                        finishDeckBuilderBetaVictory();
+                    }
+                };
+                clickArea.setRect(0, 0, PixelScene.uiCamera.width, PixelScene.uiCamera.height);
+                add(clickArea);
+            }
+
+            @Override
+            public void onBackPressed() {
+                hide();
+                finishDeckBuilderBetaVictory();
+            }
+        };
+        addToFront(win);
+    }
+
+    private void finishDeckBuilderBetaVictory() {
+        if (Dungeon.hero != null) {
+            Dungeon.win(Amulet.class);
+        }
+        Dungeon.deleteGame(GamesInProgress.curSlot, true);
+        Game.switchScene(SurfaceScene.class);
     }
 
     private void finishRunVictory() {
@@ -6946,8 +7120,7 @@ public class DeckBattleScene extends PixelScene {
 
         private final ColorBlock edge;
         private final ColorBlock face;
-        private final ItemSprite art;
-        private final TalentIcon talentArt;
+        private final Image art;
         private final float cx;
         private final float cy;
 
@@ -6959,18 +7132,19 @@ public class DeckBattleScene extends PixelScene {
             add(edge);
             face = new ColorBlock(1, 1, card.rarity.faceColor);
             add(face);
-            if (card.talentIcon != null) {
-                art = null;
-                talentArt = new TalentIcon(card.talentIcon);
-                talentArt.scale.set(1.4f);
-                add(talentArt);
+            Image tmp = null;
+            if (card.trapIcon != null) {
+                try { tmp = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance()); } catch (Exception ignored) {}
+            } else if (card.buffIconInt() >= 0) {
+                try { tmp = new BuffIcon(card.buffIconInt(), true); } catch (Exception ignored) {}
+            } else if (card.talentIcon != null) {
+                tmp = new TalentIcon(card.talentIcon);
             } else {
-                talentArt = null;
-                art = new ItemSprite(card.icon());
-                art.visible = card.icon() != 0;
-                art.scale.set(1.4f);
-                add(art);
+                tmp = new ItemSprite(card.icon());
+                tmp.visible = card.icon() != 0;
             }
+            art = tmp;
+            if (art != null) { art.scale.set(1.4f); add(art); }
             updateEffect(0);
         }
 
@@ -6996,11 +7170,6 @@ public class DeckBattleScene extends PixelScene {
                 art.y = cy - art.height() / 2f;
                 art.am = alpha;
             }
-            if (talentArt != null) {
-                talentArt.x = cx - talentArt.width() / 2f;
-                talentArt.y = cy - talentArt.height() / 2f;
-                talentArt.am = alpha;
-            }
         }
     }
 
@@ -7013,7 +7182,7 @@ public class DeckBattleScene extends PixelScene {
         private final float ty;
         private final ColorBlock edge;
         private final ColorBlock face;
-        private final ItemSprite art;
+        private final Image art;
 
         private FlyingCardEffect(DeckCard card, float sx, float sy, float tx, float ty) {
             super(0.28f);
@@ -7026,8 +7195,18 @@ public class DeckBattleScene extends PixelScene {
             add(edge);
             face = new ColorBlock(1, 1, card.rarity.faceColor);
             add(face);
-            art = new ItemSprite(card.icon());
-            art.visible = card.icon() != 0;
+            Image tmp = null;
+            if (card.trapIcon != null) {
+                try { tmp = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance()); } catch (Exception ignored) {}
+            } else if (card.buffIconInt() >= 0) {
+                try { tmp = new BuffIcon(card.buffIconInt(), true); } catch (Exception ignored) {}
+            } else if (card.talentIcon != null) {
+                tmp = new TalentIcon(card.talentIcon);
+            } else {
+                tmp = new ItemSprite(card.icon());
+                tmp.visible = card.icon() != 0;
+            }
+            art = tmp != null ? tmp : new ItemSprite(0);
             art.scale.set(1.2f);
             updateEffect(0);
             add(art);
@@ -7064,7 +7243,7 @@ public class DeckBattleScene extends PixelScene {
         private final ColorBlock face;
         private final ColorBlock streakA;
         private final ColorBlock streakB;
-        private final ItemSprite art;
+        private final Image art;
 
         private ShuffleIntoDrawPileEffect(DeckCard card, float sx, float sy, float tx, float ty) {
             super(0.38f);
@@ -7081,8 +7260,18 @@ public class DeckBattleScene extends PixelScene {
             add(streakA);
             streakB = new ColorBlock(1, 1, 0xFFFF9AE8);
             add(streakB);
-            art = new ItemSprite(card.icon());
-            art.visible = card.icon() != 0;
+            Image tmp = null;
+            if (card.trapIcon != null) {
+                try { tmp = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance()); } catch (Exception ignored) {}
+            } else if (card.buffIconInt() >= 0) {
+                try { tmp = new BuffIcon(card.buffIconInt(), true); } catch (Exception ignored) {}
+            } else if (card.talentIcon != null) {
+                tmp = new TalentIcon(card.talentIcon);
+            } else {
+                tmp = new ItemSprite(card.icon());
+                tmp.visible = card.icon() != 0;
+            }
+            art = tmp != null ? tmp : new ItemSprite(0);
             art.scale.set(1.0f);
             updateEffect(0);
             add(art);
@@ -7885,6 +8074,8 @@ public class DeckBattleScene extends PixelScene {
         protected ItemSprite art;
         protected Image spriteArt;
         protected TalentIcon talentArt;
+        protected Image trapArt;
+        protected Image buffArt;
         protected RenderedTextBlock cost;
         protected RenderedTextBlock title;
         protected RenderedTextBlock typeLabel;
@@ -8000,6 +8191,8 @@ public class DeckBattleScene extends PixelScene {
             if (card == DeckCard.SLIMY) {
                 if (art != null) art.visible = false;
                 if (talentArt != null) talentArt.visible = false;
+                if (trapArt != null) trapArt.visible = false;
+                if (buffArt != null) buffArt.visible = false;
                 spriteArt.visible = true;
                 spriteArt.texture(Assets.Sprites.RAT);
                 TextureFilm gnollFilm = new TextureFilm(spriteArt.texture, 16, 15);
@@ -8011,6 +8204,8 @@ public class DeckBattleScene extends PixelScene {
             } else if (card == DeckCard.PRICE_OF_SIN) {
                 if (art != null) art.visible = false;
                 if (talentArt != null) talentArt.visible = false;
+                if (trapArt != null) trapArt.visible = false;
+                if (buffArt != null) buffArt.visible = false;
                 spriteArt.visible = true;
                 spriteArt.texture(Assets.Sprites.CIVIL);
                 TextureFilm gnollFilm = new TextureFilm(spriteArt.texture, 12, 17);
@@ -8021,6 +8216,8 @@ public class DeckBattleScene extends PixelScene {
                 align(spriteArt);
             } else if (card.talentIcon != null) {
                 if (art != null) art.visible = false;
+                if (trapArt != null) trapArt.visible = false;
+                if (buffArt != null) buffArt.visible = false;
                 spriteArt.visible = false;
                 if (talentArt != null) {
                     remove(talentArt);
@@ -8032,8 +8229,44 @@ public class DeckBattleScene extends PixelScene {
                 talentArt.y = artPanel.y + (artPanel.height() - talentArt.height()) / 2f;
                 align(talentArt);
                 talentArt.visible = true;
+            } else if (card.trapIcon != null) {
+                if (art != null) art.visible = false;
+                if (talentArt != null) talentArt.visible = false;
+                if (buffArt != null) buffArt.visible = false;
+                spriteArt.visible = false;
+                if (trapArt != null) remove(trapArt);
+                try {
+                    trapArt = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance());
+                } catch (Exception ignored) { trapArt = null; }
+                if (trapArt != null) {
+                    trapArt.scale.set(1.25f);
+                    trapArt.x = artPanel.x + (artPanel.width() - trapArt.width()) / 2f;
+                    trapArt.y = artPanel.y + (artPanel.height() - trapArt.height()) / 2f;
+                    align(trapArt);
+                    trapArt.visible = true;
+                    add(trapArt);
+                }
+            } else if (card.buffIconInt() >= 0) {
+                if (art != null) art.visible = false;
+                if (talentArt != null) talentArt.visible = false;
+                if (trapArt != null) trapArt.visible = false;
+                spriteArt.visible = false;
+                if (buffArt != null) remove(buffArt);
+                try {
+                    buffArt = new BuffIcon(card.buffIconInt(), true);
+                } catch (Exception ignored) { buffArt = null; }
+                if (buffArt != null) {
+                    buffArt.scale.set(1.25f);
+                    buffArt.x = artPanel.x + (artPanel.width() - buffArt.width()) / 2f;
+                    buffArt.y = artPanel.y + (artPanel.height() - buffArt.height()) / 2f;
+                    align(buffArt);
+                    buffArt.visible = true;
+                    add(buffArt);
+                }
             } else {
                 if (talentArt != null) talentArt.visible = false;
+                if (trapArt != null) trapArt.visible = false;
+                if (buffArt != null) buffArt.visible = false;
                 if (art == null) {
                     art = new ItemSprite(card.icon());
                     art.visible = false;

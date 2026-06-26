@@ -69,9 +69,7 @@ public class DeckWandCards {
 			damageRandomEnemy(combat, stored * wand.damage(wandCode), result);
 			return;
 		}
-		for (int i = 0; i < maxCharge(wandCode); i++) {
-			applyWandEffects(combat, wand, wandCode, result);
-		}
+		applyWandEffects(combat, wand, wandCode, result);
 	}
 
 	private static void triggerWands(DeckBuilderCombat combat, TriggerTiming timing, ArrayList<DeckPlayResult> results) {
@@ -144,9 +142,13 @@ public class DeckWandCards {
 		if (wand == DeckCard.HORUS_WAND) {
 			DeckCombatEnemy enemy = randomEnemy(combat);
 			if (enemy != null) {
-				if (combat.applyEnemyDebuff(enemy)) enemy.attackDown++;
+				int attackDown = 0;
+				if (combat.applyEnemyDebuff(enemy)) {
+					enemy.attackDown++;
+					attackDown = 1;
+				}
 				int dealt = combat.damageEnemy(enemy, 2, false);
-				result.addAttackHit(combat.enemyIndex(enemy), dealt);
+				result.addHit(combat.enemyIndex(enemy), dealt, 0, attackDown);
 			}
 			return true;
 		}
@@ -165,6 +167,7 @@ public class DeckWandCards {
 		}
 		if (wand == DeckCard.TUSK2_WAND) {
 			combat.addToDrawPile(DeckCard.ROTATING_NAIL.code(), 2, true);
+			result.addShuffle(DeckCard.ROTATING_NAIL, 2);
 			return true;
 		}
 		return false;

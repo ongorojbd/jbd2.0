@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRewardPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DArbySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
@@ -38,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
@@ -788,6 +791,8 @@ public class DeckRelicChoiceScene extends PixelScene {
 		private ColorBlock face;
 		private ItemSprite art;
 		private TalentIcon talentArt;
+		private Image trapArt;
+		private Image buffArt;
 		private RenderedTextBlock cost;
 		private RenderedTextBlock titleText;
 
@@ -811,6 +816,8 @@ public class DeckRelicChoiceScene extends PixelScene {
 			face.x = x + 2; face.y = y + 2; face.size(width - 4, height - 4); face.am = 0.94f;
 			if (card.talentIcon != null) {
 				if (art != null) art.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
 				if (talentArt != null) remove(talentArt);
 				talentArt = new TalentIcon(card.talentIcon);
 				add(talentArt);
@@ -818,8 +825,42 @@ public class DeckRelicChoiceScene extends PixelScene {
 				talentArt.x = x + (width - talentArt.width()) / 2f;
 				talentArt.y = y + height * 0.30f;
 				align(talentArt);
+			} else if (card.trapIcon != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
+				if (trapArt != null) remove(trapArt);
+				try {
+					trapArt = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance());
+				} catch (Exception ignored) { trapArt = null; }
+				if (trapArt != null) {
+					trapArt.scale.set(1.1f);
+					trapArt.x = x + (width - trapArt.width()) / 2f;
+					trapArt.y = y + height * 0.30f;
+					align(trapArt);
+					trapArt.visible = true;
+					add(trapArt);
+				}
+			} else if (card.buffIconInt() >= 0) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) remove(buffArt);
+				try {
+					buffArt = new BuffIcon(card.buffIconInt(), true);
+				} catch (Exception ignored) { buffArt = null; }
+				if (buffArt != null) {
+					buffArt.scale.set(1.1f);
+					buffArt.x = x + (width - buffArt.width()) / 2f;
+					buffArt.y = y + height * 0.30f;
+					align(buffArt);
+					buffArt.visible = true;
+					add(buffArt);
+				}
 			} else {
 				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
 				if (art == null) {
 					art = new ItemSprite(card.icon());
 					add(art);
@@ -844,6 +885,8 @@ public class DeckRelicChoiceScene extends PixelScene {
 		private ItemSprite art;
 		private Image spriteArt;
 		private TalentIcon talentArt;
+		private Image trapArt;
+		private Image buffArt;
 		private RenderedTextBlock cost;
 		private RenderedTextBlock title;
 		private RenderedTextBlock typeLabel;
@@ -924,6 +967,8 @@ public class DeckRelicChoiceScene extends PixelScene {
 			if (card == DeckCard.SLIMY) {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
 				spriteArt.visible = true;
 				spriteArt.texture(Assets.Sprites.RAT);
 				TextureFilm film = new TextureFilm(spriteArt.texture, 16, 15);
@@ -934,6 +979,8 @@ public class DeckRelicChoiceScene extends PixelScene {
 				align(spriteArt);
 			} else if (card.talentIcon != null) {
 				if (art != null) art.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
 				spriteArt.visible = false;
 				if (talentArt != null) remove(talentArt);
 				talentArt = new TalentIcon(card.talentIcon);
@@ -942,8 +989,44 @@ public class DeckRelicChoiceScene extends PixelScene {
 				talentArt.x = artPanel.x + (artPanel.width() - talentArt.width()) / 2f;
 				talentArt.y = artPanel.y + (artPanel.height() - talentArt.height()) / 2f;
 				align(talentArt);
+			} else if (card.trapIcon != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
+				spriteArt.visible = false;
+				if (trapArt != null) remove(trapArt);
+				try {
+					trapArt = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance());
+				} catch (Exception ignored) { trapArt = null; }
+				if (trapArt != null) {
+					trapArt.scale.set(1.15f);
+					trapArt.x = artPanel.x + (artPanel.width() - trapArt.width()) / 2f;
+					trapArt.y = artPanel.y + (artPanel.height() - trapArt.height()) / 2f;
+					align(trapArt);
+					trapArt.visible = true;
+					add(trapArt);
+				}
+			} else if (card.buffIconInt() >= 0) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				spriteArt.visible = false;
+				if (buffArt != null) remove(buffArt);
+				try {
+					buffArt = new BuffIcon(card.buffIconInt(), true);
+				} catch (Exception ignored) { buffArt = null; }
+				if (buffArt != null) {
+					buffArt.scale.set(1.15f);
+					buffArt.x = artPanel.x + (artPanel.width() - buffArt.width()) / 2f;
+					buffArt.y = artPanel.y + (artPanel.height() - buffArt.height()) / 2f;
+					align(buffArt);
+					buffArt.visible = true;
+					add(buffArt);
+				}
 			} else {
 				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
 				if (art == null) {
 					art = new ItemSprite(card.icon());
 					add(art);

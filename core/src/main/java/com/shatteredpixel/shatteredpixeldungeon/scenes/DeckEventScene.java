@@ -31,6 +31,8 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRewardPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlchemistSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
@@ -53,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -112,7 +115,7 @@ public class DeckEventScene extends PixelScene {
 	private static final DeckEventDef[] EVENT_DEFS = {
 			new DeckEventDef(UPGRADE_SHRINE, "강화 성소", "강화 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 강화한다.", ICON_TALENT, HOST_BLACKSMITH),
 			new DeckEventDef(PURIFIER, "정화 성소", "정화 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 제거한다.", ICON_TALENT, HOST_ALCHEMIST),
-			new DeckEventDef(TRANSMOGRIFIER, "변환 성소", "변환 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 카드풀 내 무작위 카드로 변화시킨다.", ICON_TALENT, HOST_WARLOCK),
+			new DeckEventDef(TRANSMOGRIFIER, "변환 성소", "변환 성소가 놓여 있다.\n\n기도하면 카드 한 장을 선택해 카드풀 내 무작위 카드로 변환시킨다.", ICON_TALENT, HOST_WARLOCK),
 			new DeckEventDef(GOLDEN_SHRINE, "황금 성소", "고대의 영혼을 기리는 공들인 성소가 놓여 있다.", ICON_TALENT, HOST_IMP, 50, false),
 			new DeckEventDef(BLUE_WOMAN, "파란 옷의 여자", "어두운 곳에서 시야가 밝아지자, 어떤 여성이 다짜고짜 외친다.\n\n\"포션 사세요, 당장!\"", ICON_TALENT, HOST_BUTTERFLY, 50, false),
 			new DeckEventDef(LABORATORY, "연구실", "먼지가 쌓인 연구실이 있다. 선반에는 각종 포션이 놓여 있다.", ICON_TALENT, HOST_ALBINO),
@@ -120,7 +123,7 @@ public class DeckEventScene extends PixelScene {
 			new DeckEventDef(SHINING_LIGHT, "밝은 빛", "알 수 없는 밝은 빛이 앞을 가로막고 있다.", ICON_TALENT, HOST_BUTTERFLY2),
 			new DeckEventDef(CLERIC, "성직자", "낡은 제의를 걸친 성직자가 앉아 있다.\n\n\"도움이 필요한가?\"", ICON_TALENT, HOST_GEOMANCER, 35, false),
 			new DeckEventDef(WORLD_OF_GOOP, "끈적이 천지", "바닥이 온통 끈적이는 슬라임 덩어리로 가득 차 있다.", ICON_TALENT, HOST_CAUSTIC_SLIME, 50, false),
-			new DeckEventDef(LIVING_WALL, "살아있는 벽", "갑자기 살아있는 벽이 등장하여 길을 막는다.\n\n\"망각, 변화, 성장. 셋 중 하나를 고르라.\"", ICON_TALENT, HOST_LASHER),
+			new DeckEventDef(LIVING_WALL, "살아있는 벽", "갑자기 살아있는 벽이 등장하여 길을 막는다.\n\n\"망각, 변환, 성장. 셋 중 하나를 고르라.\"", ICON_TALENT, HOST_LASHER),
 			new DeckEventDef(BIG_FISH, "월척", "천장에서 바나나, 도넛, 상자가 내려와 있고 부스럭거리는 소리가 들린다. 아무래도 하나만 선택할 수 있는 듯하다.", ICON_TALENT, HOST_PIRANHA),
 			new DeckEventDef(SHAPESHIFTER_FOREST, "변성체의 숲", "결정화된 나무들로 가득한 숲에서 변성체 무리가 당신을 반깁니다.\n\n구석에서 무리와 어울리지 못한 외톨이 한 마리가 불안해하고 있습니다.", ICON_TALENT, HOST_SLIME, 100, false),
 			new DeckEventDef(UNREST_SITE, "불안한 휴식 장소", "한적한 휴식 장소를 발견했습니다. 불을 피우자 불길이 옆으로 퍼져 기름진 숲을 향해 번져 갑니다.", ICON_TALENT, HOST_GHOST, 0, true),
@@ -207,8 +210,21 @@ public class DeckEventScene extends PixelScene {
 			float groupW = Math.min(usableW - 20, host.width() + hostGap + buttonW);
 			float groupX = insets.left + (usableW - groupW) / 2f;
 			host.x = groupX;
-			prayY = Math.min(h - insets.bottom - buttonStackH - 14, Math.max(body.bottom() + 18, body.bottom() + 42));
 			buttonX = Math.min(groupX + host.width() + hostGap, insets.left + usableW - buttonW - 8);
+			float bodyMaxW = Math.max(70, Math.min(230, buttonX - insets.left - 18));
+			body.maxWidth((int)bodyMaxW);
+			body.setPos(insets.left + Math.max(0, (buttonX - insets.left - body.width()) / 2f), title.bottom() + 14);
+			align(body);
+			float minButtonY = body.bottom() + 12;
+			float maxButtonY = h - insets.bottom - buttonStackH - 14;
+			if (maxButtonY < minButtonY && buttonCount >= 3) {
+				buttonGap = Math.min(buttonGap, 4);
+				float availableH = h - insets.bottom - minButtonY - 14;
+				buttonH = Math.max(20, Math.min(buttonH, (availableH - buttonGap * (buttonCount - 1)) / buttonCount));
+				buttonStackH = buttonH * buttonCount + buttonGap * (buttonCount - 1);
+				maxButtonY = h - insets.bottom - buttonStackH - 14;
+			}
+			prayY = maxButtonY >= minButtonY ? maxButtonY : Math.max(body.bottom() + 4, maxButtonY);
 			host.y = prayY + (buttonStackH - host.height()) / 2f;
 			host.visible = true;
 		} else {
@@ -275,7 +291,7 @@ public class DeckEventScene extends PixelScene {
 		switch (eventType) {
 			case UPGRADE_SHRINE: return "카드 한 장을 선택해 강화합니다.";
 			case PURIFIER:       return "카드 한 장을 선택해 제거합니다.";
-			default:             return "카드 한 장을 선택해 무작위 카드로 변화시킵니다.";
+			default:             return "카드 한 장을 선택해 무작위 카드로 변환시킵니다.";
 		}
 	}
 
@@ -721,7 +737,7 @@ public class DeckEventScene extends PixelScene {
 		forget.setRect(buttonX, prayY, buttonW, buttonH);
 		add(forget);
 
-		EventChoiceButton change = new EventChoiceButton("변화", "카드 한 장을 선택해 무작위 카드로 변화시킵니다.", 0xFFD478E8) {
+		EventChoiceButton change = new EventChoiceButton("변환", "카드 한 장을 선택해 무작위 카드로 변환시킵니다.", 0xFFD478E8) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				cardSelectionMode = MODE_TRANSFORM;
@@ -786,7 +802,7 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private void addShapeshifterForestButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
-		EventChoiceButton crowd = new EventChoiceButton("무리", "모든 골드를 잃습니다. 덱의 카드 중 2장을 무작위로 변화시킵니다.", 0xFFD478E8) {
+		EventChoiceButton crowd = new EventChoiceButton("무리", "모든 골드를 잃습니다. 덱의 카드 중 2장을 무작위로 변환시킵니다.", 0xFFD478E8) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckBuilderRun.gold = 0;
@@ -900,7 +916,7 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private void addAromaOfChaosButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
-		EventChoiceButton submit = new EventChoiceButton("향기에 몸을 맡긴다", "덱에 있는 카드를 1장 변화시킵니다.", 0xFFD478E8) {
+		EventChoiceButton submit = new EventChoiceButton("향기에 몸을 맡긴다", "덱에 있는 카드를 1장 변환시킵니다.", 0xFFD478E8) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				cardSelectionMode = MODE_TRANSFORM;
@@ -984,7 +1000,7 @@ public class DeckEventScene extends PixelScene {
 		tradeGold.setRect(buttonX, prayY, buttonW, buttonH);
 		add(tradeGold);
 
-		EventChoiceButton embrace = new EventChoiceButton("나무를 끌어안는다", "체력을 9 잃습니다. 변화시킬 카드를 1장 선택합니다.", 0xFFD478E8) {
+		EventChoiceButton embrace = new EventChoiceButton("나무를 끌어안는다", "체력을 9 잃습니다. 변환시킬 카드를 1장 선택합니다.", 0xFFD478E8) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - 9);
@@ -1229,6 +1245,8 @@ public class DeckEventScene extends PixelScene {
 		private ItemSprite art;
 		private Image spriteArt;
 		private TalentIcon talentArt;
+		private Image trapArt;
+		private Image buffArt;
 		private RenderedTextBlock cost;
 		private RenderedTextBlock title;
 		private RenderedTextBlock typeLabel;
@@ -1319,6 +1337,8 @@ public class DeckEventScene extends PixelScene {
 				align(spriteArt);
 			} else if (card.talentIcon != null) {
 				if (art != null) art.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
 				spriteArt.visible = false;
 				if (talentArt != null) remove(talentArt);
 				talentArt = new TalentIcon(card.talentIcon);
@@ -1327,8 +1347,44 @@ public class DeckEventScene extends PixelScene {
 				talentArt.x = artPanel.x + (artPanel.width() - talentArt.width()) / 2f;
 				talentArt.y = artPanel.y + (artPanel.height() - talentArt.height()) / 2f;
 				align(talentArt);
+			} else if (card.trapIcon != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
+				spriteArt.visible = false;
+				if (trapArt != null) remove(trapArt);
+				try {
+					trapArt = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance());
+				} catch (Exception ignored) { trapArt = null; }
+				if (trapArt != null) {
+					trapArt.scale.set(1.15f);
+					trapArt.x = artPanel.x + (artPanel.width() - trapArt.width()) / 2f;
+					trapArt.y = artPanel.y + (artPanel.height() - trapArt.height()) / 2f;
+					align(trapArt);
+					trapArt.visible = true;
+					add(trapArt);
+				}
+			} else if (card.buffIconInt() >= 0) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				spriteArt.visible = false;
+				if (buffArt != null) remove(buffArt);
+				try {
+					buffArt = new BuffIcon(card.buffIconInt(), true);
+				} catch (Exception ignored) { buffArt = null; }
+				if (buffArt != null) {
+					buffArt.scale.set(1.15f);
+					buffArt.x = artPanel.x + (artPanel.width() - buffArt.width()) / 2f;
+					buffArt.y = artPanel.y + (artPanel.height() - buffArt.height()) / 2f;
+					align(buffArt);
+					buffArt.visible = true;
+					add(buffArt);
+				}
 			} else {
 				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
 				if (art == null) {
 					art = new ItemSprite(card.icon());
 					add(art);

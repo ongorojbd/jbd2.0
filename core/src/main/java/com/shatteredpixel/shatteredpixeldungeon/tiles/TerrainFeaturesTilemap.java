@@ -61,7 +61,7 @@ public class TerrainFeaturesTilemap extends DungeonTilemap {
 	}
 
 	protected int getTileVisual(int pos, int tile, boolean flat){
-		if (traps.get(pos) != null){
+		if (traps != null && traps.get(pos) != null){
 			Trap trap = traps.get(pos);
 			if (!trap.visible)
 				return -1;
@@ -69,7 +69,7 @@ public class TerrainFeaturesTilemap extends DungeonTilemap {
 				return (trap.active ? trap.color : Trap.BLACK) + (trap.shape * 16);
 		}
 
-		if (plants.get(pos) != null){
+		if (plants != null && plants.get(pos) != null){
 			return plants.get(pos).image + 7*16;
 		}
 
@@ -99,7 +99,8 @@ public class TerrainFeaturesTilemap extends DungeonTilemap {
 		RectF uv = instance.tileset.get((trap.active ? trap.color : Trap.BLACK) + (trap.shape * 16));
 		if (uv == null) return null;
 
-		Image img = new Image( instance.texture );
+		// TextureCache.get()로 항상 현재 로드된 텍스처를 사용 (오래된 instance의 texture 재사용 방지)
+		Image img = new Image( com.watabou.gltextures.TextureCache.get(Assets.Environment.TERRAIN_FEATURES) );
 		img.frame(uv);
 		return img;
 	}

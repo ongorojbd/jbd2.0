@@ -16,6 +16,8 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public enum DeckCard {
 	GUARD(1, "무당벌레 브로치", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, false, ItemSpriteSheet.ARMOR_CLOTH,
 			new DeckCardEffects.GuardBonusEffect()),
 	BASH(2, "파문 커터", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 8, 0, 0, 2, 0, 0, 0, false, ItemSpriteSheet.THROWING_STONE),
-	VACCINE_SNAKE(3, "백신 뱀", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 9, 0, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SHORTSWORD) {
+	VACCINE_SNAKE(3, "백신 뱀", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 9, 0, 1, 0, 0, 0, 0, true, WornDartTrap.class) {
 		@Override
 		public int damage(int code) {
 			return upgradeLevel(code) > 0 ? 10 : 9;
@@ -40,7 +42,7 @@ public enum DeckCard {
 	STAFF(4, "지팡이", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.QUARTERSTAFF,
 			new DeckCardEffects.StaffEffect()),
 	RIPPLE_WALL(5, "개구리", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 4, 1, 0, 0, 0, 0, true, ItemSpriteSheet.DEWDROP),
-	SLIMY(6, "익사", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 1, 0, 0, 1, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.MOB_HOLDER),
+	SLIMY(6, "익사", DeckCardType.STATUS, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 1, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.MOB_HOLDER),
 	IGNITE(7, "강화의 DISC", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 2, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ),
 
 	SHIV(8, "전갈탄", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 4, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.SPIRIT_ARROW, HeroClass.HUNTRESS, 0) {
@@ -102,7 +104,7 @@ public enum DeckCard {
 	HIDDEN_DAGGER(157, "생명 순환", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, Talent.BARKSKIN, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.HiddenDaggerEffect()),
 
-	SNAKE_FORM(158, "구렁이의 형상", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ELIXIR_DRAGON,
+	SNAKE_FORM(158, "귀도 미스타", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ELIXIR_DRAGON, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.SnakeFormEffect()),
 
 	MENTAL_OVERFLOW(159, "정신 폭주", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_RAIDO,
@@ -219,10 +221,8 @@ public enum DeckCard {
 		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 9 : 7; }
 	},
 
-	SURVIVOR(185, "생존자", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 8, 0, 0, 0, 0, 0, false, ItemSpriteSheet.SCROLL_GYFU,
-			new DeckCardEffects.SurvivorDiscardEffect()) {
-		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 11 : 8; }
-	},
+	SURVIVOR(185, "생존자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.SurvivorRemakeEffect()),
 
 	DASH(186, "돌진", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 10, 10, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
@@ -244,7 +244,7 @@ public enum DeckCard {
 		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 0 : 1; }
 	},
 
-	AFTERIMAGE(190, "잔상", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+	AFTERIMAGE(190, "파시오네 뱃지", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.AfterimageEffect()) {
 		@Override public boolean hasKeyword(int code, DeckCardKeyword keyword) {
 			if (keyword == DeckCardKeyword.VANGUARD && upgradeLevel(code) > 0) return true;
@@ -285,8 +285,9 @@ public enum DeckCard {
 		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 13 : 11; }
 	},
 
-	PARTICLE_WALL(197, "입자 벽", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, -1, 0, 9, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
-		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 12 : 9; }
+	PARTICLE_WALL(197, "입자 벽", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, -1, 0, 6, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ParticleWallEffect()) {
+		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 9 : 6; }
 	},
 
 	AUTHORITY_EXERCISE(198, "권위 행사", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 7, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
@@ -294,7 +295,8 @@ public enum DeckCard {
 		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 8 : 7; }
 	},
 
-	I_AM_INVINCIBLE(199, "나는 무적이다", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 10, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU) {
+	I_AM_INVINCIBLE(199, "나는 무적이다", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 10, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.IAmInvincibleEffect()) {
 		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
 	},
 
@@ -362,8 +364,13 @@ public enum DeckCard {
 	},
 
 	SUCKER_PUNCH(212, "불의의 일격", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
-			new DeckCardEffects.AttackDown(1, 2)) {
+			new DeckCardEffects.AttackDown(1, 2),
+			new DeckCardEffects.TextOnly("현재 체력이 소수면 비용이 0이 됩니다.")) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 10 : 8; }
+		@Override public int cost(int code) { return isPrime(DeckBuilderRun.playerHP) ? 0 : 1; }
+		@Override public boolean conditionMet(int code, DeckBuilderCombat combat) {
+			return combat != null && isPrime(DeckBuilderRun.playerHP);
+		}
 	},
 
 	SKEWER(213, "꼬챙이", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, -1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
@@ -387,7 +394,7 @@ public enum DeckCard {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 8 : 6; }
 	},
 
-	STRANGLE(217, "목 조르기", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+	STRANGLE(217, "목 조르기", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.StrangleEffect()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 10 : 8; }
 	},
@@ -431,13 +438,13 @@ public enum DeckCard {
 	},
 
 	MAGIC_MISSILE_WAND(21, "마탄의 마법 막대", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.RANDOM_ENEMY, 1, 2, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.RETAIN), true, ItemSpriteSheet.WAND_MAGIC_MISSILE,
-			new DeckCardEffects.TurnStrength(1)) {
+			new DeckCardEffects.MagicMissileWandEffect()) {
 		@Override
 		public int damage(int code) {
 			return 2;
 		}
 	},
-	MAGE_STAFF(22, "마법사의 지팡이", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.MAGES_STAFF,
+	MAGE_STAFF(22, "에이자의 적석", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 4, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.MAGES_STAFF,
 			new DeckCardEffects.MageStaff()),
 
 	DRAMATIC_ENTRANCE(23, "극적인 입장", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.ALL_ENEMIES, 0, 11, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.VANGUARD, DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_NAUDIZ) {
@@ -489,63 +496,63 @@ public enum DeckCard {
 		}
 	},
 
-	WEAKNESS_STAB(31, "약점 찌르기", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.THROWING_STONE, HeroClass.WARRIOR, 0,
+	WEAKNESS_STAB(31, "파문 전도", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 8, 0, 0, 0, 0, 0, 0, true, Talent.ENRAGED_CATALYST, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Damage(), new DeckCardEffects.WeaknessStabBonus()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 13 : 8; }
 	},
 
-	BARRAGE(32, "연격 난사", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.ALL_ENEMIES, 1, 10, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.HOLSTER, HeroClass.WARRIOR, 0,
+	BARRAGE(32, "불붙은 장갑", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.ALL_ENEMIES, 1, 10, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.HOLSTER, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Damage(), new DeckCardEffects.BarrageBonus()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 12 : 10; }
 	},
 
-	FLOW_SLASH(33, "흐름 베기", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 10, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SHORTSWORD, HeroClass.WARRIOR, 0,
+	FLOW_SLASH(33, "파문의 회복력", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 10, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SHORTSWORD, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Damage(), new DeckCardEffects.FlowSlashBonus()),
 
-	ACCEL_STAB(34, "가속 찌르기", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 4, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WORN_SHORTSWORD, HeroClass.WARRIOR, 0,
+	ACCEL_STAB(34, "줌 펀치", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 0, 4, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.WORN_SHORTSWORD, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Damage(), new DeckCardEffects.AccelStabBonus()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 7 : 4; }
 	},
 
-	HYPERVENTILATE(35, "과호흡", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 12, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
+	HYPERVENTILATE(35, "심선맥질주", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 12, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Damage(), new DeckCardEffects.HyperventilateBonus()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 16 : 12; }
 	},
 
-	THORN_STANCE(36, "가시 자세", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 12, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_CLOTH, HeroClass.WARRIOR, 0,
+	THORN_STANCE(36, "흔들림 없는 용기", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 12, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_CLOTH, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Block(), new DeckCardEffects.ThornStanceBonus()) {
 		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 16 : 12; }
 	},
 
-	WEAPON_RETRIEVAL(37, "무기 회수", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 4, 5, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SHORTSWORD, HeroClass.WARRIOR, 0,
+	WEAPON_RETRIEVAL(37, "넘치는 힘", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 4, 5, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SHORTSWORD, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Damage(), new DeckCardEffects.WeaponRetrievalBonus()) {
 		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 3 : 4; }
 	},
 
-	WEAPON_DISCOVER(38, "무기 발견", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 0, 4, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.THROWING_STONE, HeroClass.WARRIOR, 0,
+	WEAPON_DISCOVER(38, "스피드왜건의 도움", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 0, 4, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.THROWING_STONE, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Damage(), new DeckCardEffects.WeaponDiscoverBonus()),
 
-	ONSLAUGHT(39, "난무", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 3, 12, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
+	ONSLAUGHT(39, "행운과 용기의 검", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 2, 12, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Damage(), new DeckCardEffects.OnslaughtBonus()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 15 : 12; }
 	},
 
-	BODY_SLAM(40, "몸통 박치기", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
+	BODY_SLAM(40, "목숨을 건 반격", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.BodySlamDamage()) {
 		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 0 : 1; }
 	},
 
-	BARRICADE(41, "바리케이드", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.HOLSTER, HeroClass.WARRIOR, 0,
+	BARRICADE(41, "최후의 에너지", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 3, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.HOLSTER, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.BarricadeEffect()) {
 		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 2 : 3; }
 	},
 
-	ENTRENCH(42, "요지부동", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_CLOTH, HeroClass.WARRIOR, 0,
+	ENTRENCH(42, "파문의 흐름", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_CLOTH, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.EntrenchEffect()) {
 		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 1 : 2; }
 	},
 
-	ARMAMENTS(43, "전투장비", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SHORTSWORD, HeroClass.WARRIOR, 0,
+	ARMAMENTS(43, "대니", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SHORTSWORD, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.Block(), new DeckCardEffects.ArmamentsBonus()) {
 		@Override public int block(int code) { return 5; }
 	},
@@ -561,7 +568,8 @@ public enum DeckCard {
 	DEBT(47, "빚", DeckCardType.CURSE, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.GOLD,
 			new DeckCardEffects.TextOnly("내 턴 종료 시 이 카드가 손에 있다면, 골드를 10 잃습니다.")),
 
-	WOUND(48, "상처", DeckCardType.CURSE, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.TORN_PAGE),
+	WOUND(48, "상처", DeckCardType.CURSE, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.TORN_PAGE,
+			new DeckCardEffects.TextOnly("사용불가.")),
 
 	CLUMSINESS(49, "서투름", DeckCardType.CURSE, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.TRANSIENT), false, ItemSpriteSheet.DART),
 
@@ -586,35 +594,35 @@ public enum DeckCard {
 
 	SPORE_INVASION(55, "포자 잠식", DeckCardType.CURSE, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), false, ItemSpriteSheet.PETRIFIED_SEED),
 
-	RUPTURE(56, "파열", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.BLOOD_VIAL, HeroClass.WARRIOR, 0,
+	RUPTURE(56, "파문의 호흡", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.BLOOD_VIAL, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.RuptureEffect()),
 
-	BLOODLETTING(57, "사혈", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.POTION_CRIMSON, HeroClass.WARRIOR, 0,
+	BLOODLETTING(57, "기적의 에너지", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.POTION_CRIMSON, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.BloodlettingEffect()),
 
-	FIRESEA(58, "불바다", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.FIRE_BOMB, HeroClass.WARRIOR, 0,
+	FIRESEA(58, "최후의 파문", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.FIRE_BOMB, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.FireseaEffect()),
 
-	BLOOD_WALL(59, "피의 벽", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_PLATE, HeroClass.WARRIOR, 0,
+	BLOOD_WALL(59, "파문의 양극", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_PLATE, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.BloodWallEffect()),
 
-	MALICE(60, "악의", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 0, 5, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER, HeroClass.WARRIOR, 0,
+	MALICE(60, "더 패션", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 0, 5, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.DAGGER, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.MaliceBonus()) {
 		@Override public int damage(int code) { return 5; }
 	},
 
-	BLOODFLOW(61, "혈류", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 15, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SWORD, HeroClass.WARRIOR, 0,
+	BLOODFLOW(61, "정신적인 폭발력", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 15, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SWORD, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.BloodflowEffect(), new DeckCardEffects.Damage()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 15; }
 	},
 
-	BRAND(62, "낙인", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_TIWAZ, HeroClass.WARRIOR, 0,
+	BRAND(62, "그 피의 운명", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_TIWAZ, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.BrandEffect()),
 
-	INDOMITABLE(63, "불굴", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.POTION_GOLDEN, HeroClass.WARRIOR, 0,
+	INDOMITABLE(63, "원기 회복", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.POTION_GOLDEN, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.IndomitableEffect()),
 
-	REND(64, "갈가리 찢기", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 2, 5, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
+	REND(64, "오버드라이브", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 2, 5, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.RendBonus()) {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 7 : 5; }
 	},
@@ -861,17 +869,18 @@ public enum DeckCard {
 	TUSK2_WAND(120, "터스크2 완드", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.RETAIN), true, ItemSpriteSheet.ARTIFACT_TUSK2,
 			new DeckCardEffects.WandTextEffect("내 턴 종료 시, 회전하는 손톱 2장을 뽑을 카드 더미에 섞어 넣습니다.")),
 
-	COMBAT_BREATHING(121, "전투 호흡", DeckCardType.POWER, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ, HeroClass.WARRIOR, 0,
+	COMBAT_BREATHING(121, "피묻은 돌가면", DeckCardType.POWER, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_NAUDIZ, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.CombatBreathingEffect()) {
 		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 5 : 3; }
 	},
 
-	BLOODY_CLOAK(122, "핏빛 망토", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARTIFACT_CLOAK, HeroClass.WARRIOR, 0,
+	BLOODY_CLOAK(122, "용기의 보호막", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARTIFACT_CLOAK, HeroClass.WARRIOR, 0,
 			new DeckCardEffects.BloodyCloakEffect()) {
 		@Override public int block(int code) { return upgradeLevel(code) > 0 ? 8 : 6; }
 	},
 
-	SLEDGEHAMMER(123, "슬레지해머", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 12, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE) {
+	SLEDGEHAMMER(123, "슬레지해머", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 12, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.GREATAXE,
+			new DeckCardEffects.SledgehammerEffect()) {
 		@Override public int damage(int code) {
 			int n = upgradeLevel(code);
 			return 12 + n * (n + 7) / 2;
@@ -983,7 +992,7 @@ public enum DeckCard {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 15; }
 	},
 
-	POISON_COAT(150, "독 바르기", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.POISON_DART, HeroClass.HUNTRESS, 0,
+	POISON_COAT(150, "이어지는 황금의 정신", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, Talent.SPIRIT_BLADES, HeroClass.HUNTRESS, 0,
 			new DeckCardEffects.PoisonCoatEffect()),
 
 	POUNCE(219, "덮치기", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 14, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
@@ -1232,7 +1241,70 @@ public enum DeckCard {
 			new DeckCardEffects.OverclockBoostEffect()),
 
 	FORCED_PUSH(271, "강행 돌파", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.ARMOR_PLATE,
-			new DeckCardEffects.ForcedPushEffect())
+			new DeckCardEffects.ForcedPushEffect()),
+
+	REAPER_SCYTHE(272, "사신의 낫", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 2, 13, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ReaperScytheEffect()) {
+		@Override public int damage(int code) { return 13 + DeckCardCode.auxValue(code); }
+	},
+	COMPOSURE(273, "냉정함", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.ComposureEffect()) {
+		@Override public int draw(int code) { return upgradeLevel(code) > 0 ? 2 : 1; }
+	},
+	BOWGUN_AMMO(274, "보우건 전용 탄환", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 16, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.Damage()) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 20 : 16; }
+	},
+	IRON_BOWGUN(275, "아이언 보우건", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.IronBowgunEffect()),
+	FLESH_TRICK(276, "살점 재주", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.FleshTrickEffect()),
+	DUAL_WIELD(277, "이도류", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.DualWieldEffect()),
+	ANTIAIRCRAFT_CANNON(278, "대공포", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.NONE, 2, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AntiaircraftCannonEffect()),
+	GIGA_DRILL_BREAK(279, "천원돌파", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, -1, 8, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.GigaDrillBreakEffect(8, 10)) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 10 : 8; }
+	},
+	HANGING(280, "매달기", DeckCardType.ATTACK, DeckCardRarity.RARE, DeckCardTarget.SINGLE, 1, 10, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.HangingEffect(10, 13)) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 13 : 10; }
+	},
+
+	POISON_STAB(281, "맹독탄", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, true, Talent.SHARED_ENCHANTMENT, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.Damage(), new DeckCardEffects.PersistentDamageEffect(3, 4)) {
+		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 8 : 6; }
+	},
+
+	DEADLY_POISON(282, "생명 융합", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.PersistentDamageEffect(5, 7)),
+
+	SNAKE_BITE(283, "뱀 물기", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 2, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.RETAIN), true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.PersistentDamageEffect(7, 10)),
+
+	OUTBREAK(284, "냉철함", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.OutbreakEffect()),
+
+	NOXIOUS_GAS(285, "생명력 주입", DeckCardType.POWER, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.NoxiousGasEffect()),
+
+	RISING_POISON(286, "한계 초월", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.RisingPoisonEffect()),
+
+	MIRAGE(287, "네아폴리스의 식사법", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.MirageEffect()) {
+		@Override public int cost(int code) { return upgradeLevel(code) > 0 ? 0 : 1; }
+	},
+
+	CATALYST(288, "판나코타 푸고", DeckCardType.POWER, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.CatalystEffect()),
+
+	CORROSIVE_WAVE(289, "끝이 없는 끝", DeckCardType.SKILL, DeckCardRarity.RARE, DeckCardTarget.NONE, 1, 0, 0, 0, 0, 0, 0, 0, true, ItemSpriteSheet.SCROLL_GYFU, HeroClass.HUNTRESS, 0,
+			new DeckCardEffects.CorrosiveWaveEffect()),
+
+	PIERCING_WAIL(290, "귀를 찢는 비명", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.ALL_ENEMIES, 1, 0, 0, 0, 0, 0, 0, keywords(DeckCardKeyword.EXHAUST), true, ItemSpriteSheet.SCROLL_GYFU,
+			new DeckCardEffects.AllEnemyTurnStrengthLossEffect(6, 8))
 	;
 
 	public final int id;
@@ -1253,50 +1325,68 @@ public enum DeckCard {
 	public final HeroClass deckClass;
 	public final int shivs;
 	public final Talent talentIcon;
+	public final Class<? extends Trap> trapIcon;
 	private final DeckCardEffect[] specialEffects;
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon) {
-		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, null, 0, (Talent)null);
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, null, null, 0, (Talent)null);
 	}
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon, DeckCardEffect... specialEffects) {
-		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, null, 0, null, specialEffects);
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, null, null, 0, null, specialEffects);
 	}
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, Talent talentIcon) {
-		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, null, 0, talentIcon);
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, null, null, 0, talentIcon);
 	}
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon, HeroClass deckClass, int shivs) {
-		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, deckClass, shivs, (Talent)null);
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, null, deckClass, shivs, (Talent)null);
 	}
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon, HeroClass deckClass, int shivs, DeckCardEffect... specialEffects) {
-		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, deckClass, shivs, null, specialEffects);
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, null, deckClass, shivs, null, specialEffects);
 	}
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, Talent talentIcon, HeroClass deckClass, int shivs) {
-		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, deckClass, shivs, talentIcon);
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, null, deckClass, shivs, talentIcon);
 	}
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, Talent talentIcon, HeroClass deckClass, int shivs, DeckCardEffect... specialEffects) {
-		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, deckClass, shivs, talentIcon, specialEffects);
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, null, deckClass, shivs, talentIcon, specialEffects);
 	}
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
 			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon, HeroClass deckClass, int shivs, Talent talentIcon) {
-		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, deckClass, shivs, talentIcon, new DeckCardEffect[0]);
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, icon, null, deckClass, shivs, talentIcon, new DeckCardEffect[0]);
+	}
+
+	// trapIcon overloads
+	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
+			 int strength, int handPenalty, int baseKeywords, boolean reward, Class<? extends Trap> trapIcon) {
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, trapIcon, null, 0, (Talent)null);
 	}
 
 	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
-			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon, HeroClass deckClass, int shivs, Talent talentIcon, DeckCardEffect... specialEffects) {
+			 int strength, int handPenalty, int baseKeywords, boolean reward, Class<? extends Trap> trapIcon, DeckCardEffect... specialEffects) {
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, trapIcon, null, 0, null, specialEffects);
+	}
+
+	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
+			 int strength, int handPenalty, int baseKeywords, boolean reward, Class<? extends Trap> trapIcon, HeroClass deckClass, int shivs) {
+		this(id, title, type, rarity, target, cost, damage, block, draw, vulnerable, strength, handPenalty, baseKeywords, reward, 0, trapIcon, deckClass, shivs, (Talent)null);
+	}
+
+	// master constructor
+	DeckCard(int id, String title, DeckCardType type, DeckCardRarity rarity, DeckCardTarget target, int cost, int damage, int block, int draw, int vulnerable,
+			 int strength, int handPenalty, int baseKeywords, boolean reward, int icon, Class<? extends Trap> trapIcon, HeroClass deckClass, int shivs, Talent talentIcon, DeckCardEffect... specialEffects) {
 		this.id = id;
 		this.title = title;
 		this.type = type;
@@ -1312,11 +1402,14 @@ public enum DeckCard {
 		this.baseKeywords = baseKeywords;
 		this.reward = reward;
 		this.icon = icon;
+		this.trapIcon = trapIcon;
 		this.deckClass = deckClass;
 		this.shivs = shivs;
 		this.talentIcon = talentIcon;
 		this.specialEffects = specialEffects == null ? new DeckCardEffect[0] : specialEffects;
 	}
+
+	public int buffIconInt() { return -1; }
 
 	public int code() {
 		return DeckCardCode.baseCode(id);
@@ -1553,6 +1646,16 @@ public enum DeckCard {
 
 	public static DeckCard rewardFallback(HeroClass heroClass) {
 		return DeckCardPool.rewardFallback(heroClass);
+	}
+
+	public static boolean isPrime(int n) {
+		if (n < 2) return false;
+		if (n == 2) return true;
+		if (n % 2 == 0) return false;
+		for (int i = 3; i * i <= n; i += 2) {
+			if (n % i == 0) return false;
+		}
+		return true;
 	}
 
 	private static int keywords(DeckCardKeyword... keywords) {

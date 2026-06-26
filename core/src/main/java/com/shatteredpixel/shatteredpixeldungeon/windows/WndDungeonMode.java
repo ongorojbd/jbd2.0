@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -53,6 +54,7 @@ public class WndDungeonMode extends Window {
     private static final int MARGIN = 2;
     private static final int BUTTON_HEIGHT = 36;
     private static final int ICON_COLUMN = 28;
+    private static final boolean DECKBUILDER_BETA_LIMITS = true;
 
     private final ArrayList<ModeButton> slots = new ArrayList<>();
     private ScrollPane modeList;
@@ -180,11 +182,23 @@ public class WndDungeonMode extends Window {
                 showLockedMessage();
                 return false;
             }
+            if (DECKBUILDER_BETA_LIMITS
+                    && (this == DECKBUILDER || this == DECKBUILDER_TUTORIAL)
+                    && !deckBuilderClassAvailable(GamesInProgress.selectedClass)) {
+                ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                        "카드 배틀 모드는 아직 베타 버전입니다.\n\n" +
+                        "현재는 죠나단, 죠르노만 선택할 수 있습니다."));
+                return false;
+            }
             if ((this == DECKBUILDER || this == DECKBUILDER_TUTORIAL) && !SPDSettings.landscape() && !DeviceCompat.isDesktop()) {
                 ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndDungeonMode.class, "deckbuilder_portrait")));
                 return false;
             }
             return true;
+        }
+
+        private boolean deckBuilderClassAvailable(HeroClass heroClass) {
+            return heroClass == HeroClass.WARRIOR || heroClass == HeroClass.HUNTRESS;
         }
 
         private void apply() {

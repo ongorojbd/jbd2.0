@@ -24,10 +24,10 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_SLIMY_INJECT,
 			(combat, enemy, remainingBlock) -> {
 				combat.discardPile.add(DeckCard.SLIMY.code());
-				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, true, "점액투성이", false, DeckCard.SLIMY, 1));
+				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, true, "뇌조직 파괴", false, DeckCard.SLIMY, 1));
 				return new TurnResult(remainingBlock, 0, true);
 			},
-			enemy -> "예고: 점액투성이 1장 섞어 넣음"));
+			enemy -> "예고: 뇌조직 파괴 1장 섞어 넣음"));
 
 	public static final DeckEnemyIntent AGE_DOWN = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_AGE_DOWN,
@@ -462,7 +462,7 @@ public class DeckEnemyIntent {
 					combat.lastEnemyActions.get(combat.lastEnemyActions.size() - 1).setShuffle(DeckCard.SLIMY, 1);
 					return attack.toTurnResult(true);
 				},
-				enemy -> "예고: " + damageText(enemy, damage) + " 피해 + 점액투성이 1장 섞어 넣음");
+				enemy -> "예고: " + damageText(enemy, damage) + " 피해 + 뇌조직 파괴 1장 섞어 넣음");
 	}
 
 	private static DeckEnemyIntent blockReduction(int id, int amount) {

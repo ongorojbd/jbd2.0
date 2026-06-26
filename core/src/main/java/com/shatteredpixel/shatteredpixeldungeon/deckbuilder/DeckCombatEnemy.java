@@ -41,6 +41,7 @@ public class DeckCombatEnemy {
 	public int blessed;
 	public int debuffDoubleTurns;
 	public int strangleHpLoss;
+	public boolean hanged;
 
 	public DeckCombatEnemy(DeckEnemy kind, int depth) {
 		this.kind = kind;

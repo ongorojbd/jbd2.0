@@ -29,6 +29,8 @@ public class DeckStartingProfile {
 				card(DeckCard.STRIKE, 1),
 				card(DeckCard.SHITTIM_BOX, 8),
 				card(DeckCard.RELIC_SELECTION_BOX, 1),
+				card(DeckCard.DECENT_STRATEGY, 1),
+				card(DeckCard.VOID_FORM, 1),
 				card(DeckCard.POTION_SELECTION_BOX, 1));
 
 		register(HeroClass.MAGE,

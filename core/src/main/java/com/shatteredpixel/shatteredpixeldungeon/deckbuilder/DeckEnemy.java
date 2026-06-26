@@ -18,7 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 
 public enum DeckEnemy {
 
-	TUTORIAL_DUMMY("튜토리얼 적", 50, 0, false) {
+	TUTORIAL_DUMMY("로버트 E.O. 스피드왜건", 50, 0, false) {
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
 			if (turn == 1) return 3;  // 1턴: 공격 없음 (ATTACK 튜토리얼)
@@ -185,10 +185,10 @@ public enum DeckEnemy {
 
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
-			int r = Random.Int(100);
-			if (r < 30) return DeckBuilderCombat.RESULT_CORROSIVE_SPIT_BIG;
-			if (r < 70) return DeckBuilderCombat.RESULT_TACKLE_BIG;
-			return DeckBuilderCombat.RESULT_LICK_BIG;
+			return slimeIntent(
+					DeckBuilderCombat.RESULT_CORROSIVE_SPIT_BIG,
+					DeckBuilderCombat.RESULT_TACKLE_BIG,
+					DeckBuilderCombat.RESULT_LICK_BIG);
 		}
 	},
 	MEDIUM_SLIME("러버즈", 28, 0, false) {
@@ -199,10 +199,10 @@ public enum DeckEnemy {
 
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
-			int r = Random.Int(100);
-			if (r < 30) return DeckBuilderCombat.RESULT_CORROSIVE_SPIT_MEDIUM;
-			if (r < 70) return DeckBuilderCombat.RESULT_TACKLE_MEDIUM;
-			return DeckBuilderCombat.RESULT_LICK_MEDIUM;
+			return slimeIntent(
+					DeckBuilderCombat.RESULT_CORROSIVE_SPIT_MEDIUM,
+					DeckBuilderCombat.RESULT_TACKLE_MEDIUM,
+					DeckBuilderCombat.RESULT_LICK_MEDIUM);
 		}
 	},
 	CLASH("클래시", 11, 0, false) {
@@ -236,12 +236,7 @@ public enum DeckEnemy {
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
 			if (turn == 1) return 12;
-			int intent;
-			do {
-				int roll = Random.Int(3);
-				intent = roll == 0 ? 12 : roll == 1 ? DeckBuilderCombat.RESULT_LASH : DeckBuilderCombat.RESULT_TACKLE;
-			} while (intent == enemy.lastIntent);
-			return intent;
+			return nonRepeatingIntent(KHNUM_PATTERN, enemy.lastIntent);
 		}
 	},
 	RAMPAGING_BULL("날뛰는 소", 56, 0, false) {
@@ -422,6 +417,11 @@ public enum DeckEnemy {
 	public final int baseHP;
 	public final int baseIntent;
 	private final boolean injectsSlimy;
+	private static final int[] KHNUM_PATTERN = new int[]{
+			12,
+			DeckBuilderCombat.RESULT_LASH,
+			DeckBuilderCombat.RESULT_TACKLE
+	};
 
 	DeckEnemy(String name, int baseHP, int baseIntent, boolean injectsSlimy) {
 		this.name = name;
@@ -444,6 +444,21 @@ public enum DeckEnemy {
 			return DeckBuilderCombat.RESULT_SLIMY_INJECT;
 		}
 		return baseIntent + Math.max(1, depth) / 2 + Random.Int(4);
+	}
+
+	private static int slimeIntent(int corrosiveSpit, int tackle, int lick) {
+		int roll = Random.Int(100);
+		if (roll < 30) return corrosiveSpit;
+		if (roll < 70) return tackle;
+		return lick;
+	}
+
+	private static int nonRepeatingIntent(int[] pattern, int lastIntent) {
+		int intent;
+		do {
+			intent = pattern[Random.Int(pattern.length)];
+		} while (intent == lastIntent);
+		return intent;
 	}
 
 	public static DeckEnemy forNode(int nodeType) {

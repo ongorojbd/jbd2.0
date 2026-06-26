@@ -70,7 +70,7 @@ public class DeckCardText {
 			}
 		}
 		if (DeckCardCode.maxCharge(cardCode) > 0) {
-			text += appendLine(text, "충전: 직접 사용할 수 없으며, 손패에 둔 상태로 정해진 시점마다 효과를 발동하고 충전을 1 잃습니다. 충전이 0이 되면 소멸합니다.");
+			text += appendLine(text, "충전: 직접 사용할 수 없으며, 정해진 시점마다 충전을 1 잃습니다. 충전이 0이 되면 소멸합니다.");
 		}
 		for (DeckCardEffect effect : card.effects(cardCode)) {
 			text += appendLine(text, effect.keywordText(card, cardCode));

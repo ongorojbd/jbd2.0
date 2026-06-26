@@ -70,6 +70,10 @@ public class DeckRunStart {
 
 			if (heroClass == HeroClass.WARRIOR) {
 				DeckRunInventory.addRelic(DeckBuilderRun.relics, DeckRelic.WAVE_RUSH);
+				DeckBuilderRun.startingRelicChosen = true;
+			} else if (heroClass == HeroClass.HUNTRESS) {
+				DeckRunInventory.addRelic(DeckBuilderRun.relics, DeckRelic.LIFE_PARTS);
+				DeckBuilderRun.startingRelicChosen = true;
 			}
 		}
 	}
