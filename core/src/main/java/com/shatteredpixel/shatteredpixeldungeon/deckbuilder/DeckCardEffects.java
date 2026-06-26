@@ -121,7 +121,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "보호막을 " + card.block(cardCode) + " X번 얻습니다.";
+			return "보호막 " + card.block(cardCode) + "을 X번 얻습니다.";
 		}
 
 		@Override

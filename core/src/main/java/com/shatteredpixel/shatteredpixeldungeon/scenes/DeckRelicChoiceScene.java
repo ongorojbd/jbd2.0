@@ -416,6 +416,60 @@ public class DeckRelicChoiceScene extends PixelScene {
 		addToFront(win);
 	}
 
+	private void showRewardCardConfirmWindow(final Window cardWin, final DeckCard card,
+			final String confirmLabel, final Callback onConfirm) {
+		final Window win = new Window();
+		int width = 190;
+		int pos = 7;
+		int cardCode = card.code();
+
+		RenderedTextBlock title = renderTextBlock(DeckCardText.detailTitle(card, cardCode), 8);
+		title.hardlight(Window.TITLE_COLOR);
+		title.maxWidth(width - 14);
+		title.setPos((width - title.width()) / 2f, pos);
+		win.add(title);
+		pos += (int) title.height() + 8;
+
+		RenderedTextBlock desc = renderTextBlock(DeckCardText.rulesAndKeywordText(card, cardCode), 6);
+		desc.maxWidth(width - 14);
+		desc.hardlight(0xFFD8D1BD);
+		desc.setPos(7, pos);
+		win.add(desc);
+		pos += (int) desc.height() + 8;
+
+		String upgradeText = DeckCardText.upgradePreviewText(cardCode);
+		if (upgradeText != null && upgradeText.length() > 0) {
+			RenderedTextBlock upgradePreview = renderTextBlock("강화 효과\n" + upgradeText, 6);
+			upgradePreview.maxWidth(width - 14);
+			upgradePreview.hardlight(0xFFD5F27A);
+			upgradePreview.setPos(7, pos);
+			win.add(upgradePreview);
+			pos += (int) upgradePreview.height() + 8;
+		}
+
+		RedButton confirm = new RedButton(confirmLabel, 6) {
+			@Override protected void onClick() {
+				onConfirm.call();
+				win.hide();
+				cardWin.hide();
+			}
+		};
+		confirm.setRect(7, pos, 82, 18);
+		win.add(confirm);
+
+		RedButton close = new RedButton("닫기", 6) {
+			@Override protected void onClick() {
+				win.hide();
+			}
+		};
+		close.setRect(width - 89, pos, 82, 18);
+		win.add(close);
+		pos += 24;
+
+		win.resize(width, pos);
+		addToFront(win);
+	}
+
 	private void showRareCardChoiceWindow() {
 		ArrayList<DeckCard> pool = new ArrayList<>();
 		for (DeckCard c : DeckCard.rewardPool()) {
@@ -442,7 +496,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		win.add(title);
 		pos += 17;
 
-		RenderedTextBlock desc = renderTextBlock("덱에 추가할 카드를 선택합니다.", 5);
+		RenderedTextBlock desc = renderTextBlock("카드를 선택하면 효과를 확인할 수 있습니다.", 5);
 		desc.hardlight(0xFFAAAFA4);
 		desc.maxWidth(width - 14);
 		desc.setPos((width - desc.width()) / 2f, pos);
@@ -454,11 +508,14 @@ public class DeckRelicChoiceScene extends PixelScene {
 			final DeckCard card = choices[i];
 			MiniCardButton btn = new MiniCardButton(card.code()) {
 				@Override protected void onClick() {
-					DeckBuilderRun.addCard(card);
-					DeckBuilderRun.pendingRareCardChoice--;
-					saveRun();
-					win.hide();
-					processPendingRelicEvent();
+					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
+						@Override public void call() {
+							DeckBuilderRun.addCard(card);
+							DeckBuilderRun.pendingRareCardChoice--;
+							saveRun();
+							processPendingRelicEvent();
+						}
+					});
 				}
 			};
 			btn.setRect(startX + i * (cardW + gap), pos, cardW, cardH);
@@ -495,7 +552,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		win.add(title);
 		pos += 17;
 
-		RenderedTextBlock desc = renderTextBlock("덱에 추가할 카드를 선택합니다.", 5);
+		RenderedTextBlock desc = renderTextBlock("카드를 선택하면 효과를 확인할 수 있습니다.", 5);
 		desc.hardlight(0xFFAAAFA4);
 		desc.maxWidth(width - 14);
 		desc.setPos((width - desc.width()) / 2f, pos);
@@ -507,11 +564,14 @@ public class DeckRelicChoiceScene extends PixelScene {
 			final DeckCard card = choices[i];
 			MiniCardButton btn = new MiniCardButton(card.code()) {
 				@Override protected void onClick() {
-					DeckBuilderRun.addCard(card);
-					DeckBuilderRun.pendingRareNeutralCardChoice--;
-					saveRun();
-					win.hide();
-					processPendingRelicEvent();
+					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
+						@Override public void call() {
+							DeckBuilderRun.addCard(card);
+							DeckBuilderRun.pendingRareNeutralCardChoice--;
+							saveRun();
+							processPendingRelicEvent();
+						}
+					});
 				}
 			};
 			btn.setRect(startX + i * (cardW + gap), pos, cardW, cardH);
@@ -549,7 +609,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		win.add(title);
 		pos += 17;
 
-		RenderedTextBlock desc = renderTextBlock("덱에 추가할 카드를 선택합니다.", 5);
+		RenderedTextBlock desc = renderTextBlock("카드를 선택하면 효과를 확인할 수 있습니다.", 5);
 		desc.hardlight(0xFFAAAFA4);
 		desc.maxWidth(width - 14);
 		desc.setPos((width - desc.width()) / 2f, pos);
@@ -561,11 +621,14 @@ public class DeckRelicChoiceScene extends PixelScene {
 			final DeckCard card = choices[i];
 			MiniCardButton btn = new MiniCardButton(card.code()) {
 				@Override protected void onClick() {
-					DeckBuilderRun.addCard(card);
-					DeckBuilderRun.pendingNeutralDiscover = false;
-					saveRun();
-					win.hide();
-					processPendingRelicEvent();
+					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
+						@Override public void call() {
+							DeckBuilderRun.addCard(card);
+							DeckBuilderRun.pendingNeutralDiscover = false;
+							saveRun();
+							processPendingRelicEvent();
+						}
+					});
 				}
 			};
 			btn.setRect(startX + i * (cardW + gap), pos, cardW, cardH);
@@ -597,7 +660,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		win.add(title);
 		pos += 17;
 
-		RenderedTextBlock desc = renderTextBlock("덱에 추가할 카드를 선택합니다.", 5);
+		RenderedTextBlock desc = renderTextBlock("카드를 선택하면 효과를 확인할 수 있습니다.", 5);
 		desc.hardlight(0xFFAAAFA4);
 		desc.maxWidth(width - 14);
 		desc.setPos((width - desc.width()) / 2f, pos);
@@ -609,12 +672,15 @@ public class DeckRelicChoiceScene extends PixelScene {
 			final DeckCard card = choices[i];
 			MiniCardButton btn = new MiniCardButton(card.code()) {
 				@Override protected void onClick() {
-					DeckBuilderRun.addCard(card);
-					DeckBuilderRun.consumeUpgradedCardReward();
-					consumePendingCardReward();
-					saveRun();
-					win.hide();
-					processPendingRelicEvent();
+					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
+						@Override public void call() {
+							DeckBuilderRun.addCard(card);
+							DeckBuilderRun.consumeUpgradedCardReward();
+							consumePendingCardReward();
+							saveRun();
+							processPendingRelicEvent();
+						}
+					});
 				}
 			};
 			btn.setRect(startX + i * (cardW + gap), pos, cardW, cardH);
@@ -676,7 +742,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		win.add(title);
 		pos += 17;
 
-		RenderedTextBlock desc = renderTextBlock("덱에 추가할 카드를 선택합니다.", 5);
+		RenderedTextBlock desc = renderTextBlock("카드를 선택하면 효과를 확인할 수 있습니다.", 5);
 		desc.hardlight(0xFFAAAFA4);
 		desc.maxWidth(width - 14);
 		desc.setPos((width - desc.width()) / 2f, pos);
@@ -688,11 +754,14 @@ public class DeckRelicChoiceScene extends PixelScene {
 			final DeckCard card = choices[i];
 			MiniCardButton btn = new MiniCardButton(card.code()) {
 				@Override protected void onClick() {
-					DeckBuilderRun.addCard(card);
-					DeckBuilderRun.pendingOtherClassCardReward--;
-					saveRun();
-					win.hide();
-					processPendingRelicEvent();
+					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
+						@Override public void call() {
+							DeckBuilderRun.addCard(card);
+							DeckBuilderRun.pendingOtherClassCardReward--;
+							saveRun();
+							processPendingRelicEvent();
+						}
+					});
 				}
 			};
 			btn.setRect(startX + i * (cardW + gap), pos, cardW, cardH);
@@ -793,6 +862,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		private TalentIcon talentArt;
 		private Image trapArt;
 		private Image buffArt;
+		private Image spriteArt;
 		private RenderedTextBlock cost;
 		private RenderedTextBlock titleText;
 
@@ -818,6 +888,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 				if (art != null) art.visible = false;
 				if (trapArt != null) trapArt.visible = false;
 				if (buffArt != null) buffArt.visible = false;
+				if (spriteArt != null) spriteArt.visible = false;
 				if (talentArt != null) remove(talentArt);
 				talentArt = new TalentIcon(card.talentIcon);
 				add(talentArt);
@@ -829,6 +900,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
 				if (buffArt != null) buffArt.visible = false;
+				if (spriteArt != null) spriteArt.visible = false;
 				if (trapArt != null) remove(trapArt);
 				try {
 					trapArt = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance());
@@ -845,6 +917,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
 				if (trapArt != null) trapArt.visible = false;
+				if (spriteArt != null) spriteArt.visible = false;
 				if (buffArt != null) remove(buffArt);
 				try {
 					buffArt = new BuffIcon(card.buffIconInt(), true);
@@ -857,10 +930,25 @@ public class DeckRelicChoiceScene extends PixelScene {
 					buffArt.visible = true;
 					add(buffArt);
 				}
+			} else if (card.charSprite != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
+				if (spriteArt == null) { spriteArt = new Image(); add(spriteArt); }
+				spriteArt.texture(card.charSprite.tex);
+				TextureFilm charFilm = new TextureFilm(spriteArt.texture, card.charSprite.w, card.charSprite.h);
+				spriteArt.frame(charFilm.get(card.charSprite.frame));
+				spriteArt.scale.set(card.charSprite.scale);
+				spriteArt.x = x + (width - spriteArt.width()) / 2f;
+				spriteArt.y = y + height * 0.30f;
+				align(spriteArt);
+				spriteArt.visible = true;
 			} else {
 				if (talentArt != null) talentArt.visible = false;
 				if (trapArt != null) trapArt.visible = false;
 				if (buffArt != null) buffArt.visible = false;
+				if (spriteArt != null) spriteArt.visible = false;
 				if (art == null) {
 					art = new ItemSprite(card.icon());
 					add(art);
@@ -964,16 +1052,16 @@ public class DeckRelicChoiceScene extends PixelScene {
 		}
 
 		private void layoutArt(DeckCard card) {
-			if (card == DeckCard.SLIMY) {
+			if (card.charSprite != null) {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
 				if (trapArt != null) trapArt.visible = false;
 				if (buffArt != null) buffArt.visible = false;
 				spriteArt.visible = true;
-				spriteArt.texture(Assets.Sprites.RAT);
-				TextureFilm film = new TextureFilm(spriteArt.texture, 16, 15);
-				spriteArt.frame(film.get(0));
-				spriteArt.scale.set(1.5f);
+				spriteArt.texture(card.charSprite.tex);
+				TextureFilm charFilm = new TextureFilm(spriteArt.texture, card.charSprite.w, card.charSprite.h);
+				spriteArt.frame(charFilm.get(card.charSprite.frame));
+				spriteArt.scale.set(card.charSprite.scale);
 				spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
 				spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
 				align(spriteArt);
@@ -1023,6 +1111,19 @@ public class DeckRelicChoiceScene extends PixelScene {
 					buffArt.visible = true;
 					add(buffArt);
 				}
+			} else if (card.charSprite != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
+				spriteArt.visible = true;
+				spriteArt.texture(card.charSprite.tex);
+				TextureFilm charFilm = new TextureFilm(spriteArt.texture, card.charSprite.w, card.charSprite.h);
+				spriteArt.frame(charFilm.get(card.charSprite.frame));
+				spriteArt.scale.set(card.charSprite.scale);
+				spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
+				spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
+				align(spriteArt);
 			} else {
 				if (talentArt != null) talentArt.visible = false;
 				if (trapArt != null) trapArt.visible = false;

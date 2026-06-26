@@ -1431,8 +1431,6 @@ public class DeckBuilderCombat {
 					discardPile.add(DeckCardCode.withCostOverride(cardCode, cost + 1));
 				} else if (card == DeckCard.SECRET_PLAN) {
 					discardPile.add(DeckCardCode.withCostOverride(cleanCode, Math.max(0, cost - 1)));
-				} else if (card == DeckCard.PARTICLE_WALL) {
-					addToHand(cleanCode);
 				} else if (!castOnDraw && nostalgiaActive && !nostalgiaUsedThisTurn
 						&& (card.type == DeckCardType.ATTACK || card.type == DeckCardType.SKILL)) {
 					nostalgiaUsedThisTurn = true;

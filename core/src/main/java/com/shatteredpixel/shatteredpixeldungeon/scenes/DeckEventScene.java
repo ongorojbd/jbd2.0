@@ -1324,14 +1324,16 @@ public class DeckEventScene extends PixelScene {
 		}
 
 		private void layoutArt(DeckCard card) {
-			if (card == DeckCard.SLIMY) {
+			if (card.charSprite != null) {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
 				spriteArt.visible = true;
-				spriteArt.texture(Assets.Sprites.RAT);
-				TextureFilm film = new TextureFilm(spriteArt.texture, 16, 15);
-				spriteArt.frame(film.get(0));
-				spriteArt.scale.set(1.5f);
+				spriteArt.texture(card.charSprite.tex);
+				TextureFilm charFilm = new TextureFilm(spriteArt.texture, card.charSprite.w, card.charSprite.h);
+				spriteArt.frame(charFilm.get(card.charSprite.frame));
+				spriteArt.scale.set(card.charSprite.scale);
 				spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
 				spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
 				align(spriteArt);

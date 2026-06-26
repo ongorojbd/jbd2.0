@@ -249,6 +249,7 @@ public enum Talent {
     J44(212, 4), J45(213, 4), J46(214, 4),
     //JoBro T4 - Ability 3
     J47(215, 4), J48(216, 4), J49(217, 4),
+    CUR(250, 4),
 
     //universal T3
     FIEND_WARP(251, 3), PACT_OF_KNOT(252, 3), CURSED_CLAW(253, 3),

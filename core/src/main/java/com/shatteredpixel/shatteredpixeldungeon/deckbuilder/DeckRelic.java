@@ -108,7 +108,7 @@ public enum DeckRelic {
 			DeckBuilderRun.addCard(DeckCard.GUARD);
 		}
 	},
-	HEFTY_TABLET("스페이드 3", "획득 시, 덱에 무작위 희귀 카드 3장 중 1장을 선택해 추가하고, 점액투성이를 1장 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
+	HEFTY_TABLET("스페이드 3", "획득 시, 덱에 무작위 희귀 카드 3장 중 1장을 선택해 추가하고, 짜증나는 저주를 1장 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckBuilderRun.addCard(DeckCard.SLIMY);
 			DeckBuilderRun.pendingRareCardChoice++;

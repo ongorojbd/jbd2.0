@@ -7137,6 +7137,10 @@ public class DeckBattleScene extends PixelScene {
                 try { tmp = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance()); } catch (Exception ignored) {}
             } else if (card.buffIconInt() >= 0) {
                 try { tmp = new BuffIcon(card.buffIconInt(), true); } catch (Exception ignored) {}
+            } else if (card.charSprite != null) {
+                tmp = new Image(); tmp.texture(card.charSprite.tex);
+                TextureFilm f = new TextureFilm(tmp.texture, card.charSprite.w, card.charSprite.h);
+                tmp.frame(f.get(card.charSprite.frame));
             } else if (card.talentIcon != null) {
                 tmp = new TalentIcon(card.talentIcon);
             } else {
@@ -7200,6 +7204,10 @@ public class DeckBattleScene extends PixelScene {
                 try { tmp = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance()); } catch (Exception ignored) {}
             } else if (card.buffIconInt() >= 0) {
                 try { tmp = new BuffIcon(card.buffIconInt(), true); } catch (Exception ignored) {}
+            } else if (card.charSprite != null) {
+                tmp = new Image(); tmp.texture(card.charSprite.tex);
+                TextureFilm f = new TextureFilm(tmp.texture, card.charSprite.w, card.charSprite.h);
+                tmp.frame(f.get(card.charSprite.frame));
             } else if (card.talentIcon != null) {
                 tmp = new TalentIcon(card.talentIcon);
             } else {
@@ -7265,6 +7273,10 @@ public class DeckBattleScene extends PixelScene {
                 try { tmp = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance()); } catch (Exception ignored) {}
             } else if (card.buffIconInt() >= 0) {
                 try { tmp = new BuffIcon(card.buffIconInt(), true); } catch (Exception ignored) {}
+            } else if (card.charSprite != null) {
+                tmp = new Image(); tmp.texture(card.charSprite.tex);
+                TextureFilm f = new TextureFilm(tmp.texture, card.charSprite.w, card.charSprite.h);
+                tmp.frame(f.get(card.charSprite.frame));
             } else if (card.talentIcon != null) {
                 tmp = new TalentIcon(card.talentIcon);
             } else {
@@ -8188,29 +8200,16 @@ public class DeckBattleScene extends PixelScene {
             artPanel.size(width - 10, artH);
             artPanel.am = enabled ? 0.30f : 0.12f;
 
-            if (card == DeckCard.SLIMY) {
+            if (card.charSprite != null) {
                 if (art != null) art.visible = false;
                 if (talentArt != null) talentArt.visible = false;
                 if (trapArt != null) trapArt.visible = false;
                 if (buffArt != null) buffArt.visible = false;
                 spriteArt.visible = true;
-                spriteArt.texture(Assets.Sprites.RAT);
-                TextureFilm gnollFilm = new TextureFilm(spriteArt.texture, 16, 15);
-                spriteArt.frame(gnollFilm.get(0));
-                spriteArt.scale.set(1.6f);
-                spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
-                spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
-                align(spriteArt);
-            } else if (card == DeckCard.PRICE_OF_SIN) {
-                if (art != null) art.visible = false;
-                if (talentArt != null) talentArt.visible = false;
-                if (trapArt != null) trapArt.visible = false;
-                if (buffArt != null) buffArt.visible = false;
-                spriteArt.visible = true;
-                spriteArt.texture(Assets.Sprites.CIVIL);
-                TextureFilm gnollFilm = new TextureFilm(spriteArt.texture, 12, 17);
-                spriteArt.frame(gnollFilm.get(0));
-                spriteArt.scale.set(1.6f);
+                spriteArt.texture(card.charSprite.tex);
+                TextureFilm charFilm = new TextureFilm(spriteArt.texture, card.charSprite.w, card.charSprite.h);
+                spriteArt.frame(charFilm.get(card.charSprite.frame));
+                spriteArt.scale.set(card.charSprite.scale);
                 spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
                 spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
                 align(spriteArt);
