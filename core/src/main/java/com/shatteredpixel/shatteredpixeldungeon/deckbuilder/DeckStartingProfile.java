@@ -26,12 +26,10 @@ public class DeckStartingProfile {
 
 	static {
 		register(HeroClass.WARRIOR,
-				card(DeckCard.STRIKE, 1),
-				card(DeckCard.SHITTIM_BOX, 8),
-				card(DeckCard.RELIC_SELECTION_BOX, 1),
-				card(DeckCard.DECENT_STRATEGY, 1),
-				card(DeckCard.VOID_FORM, 1),
-				card(DeckCard.POTION_SELECTION_BOX, 1));
+				card(DeckCard.STRIKE, 5),
+				card(DeckCard.GUARD, 4),
+				card(DeckCard.BASH, 1),
+				card(DeckCard.PREDICTION, 1));
 
 		register(HeroClass.MAGE,
 				card(DeckCard.STRIKE, 5),
@@ -52,14 +50,7 @@ public class DeckStartingProfile {
 		register(HeroClass.HUNTRESS,
 				card(DeckCard.STRIKE, 5),
 				card(DeckCard.GUARD, 4),
-				card(DeckCard.FOUNDATION_BOX, 1),
-				card(DeckCard.POISON_COAT, 1),
-				card(DeckCard.LIFE_UNDERSTANDING, 1),
-				card(DeckCard.BLADE_FAN, 1),
-				card(DeckCard.BLADE_DANCE, 1),
-				card(DeckCard.INFINITE_BLADES, 1),
-				card(DeckCard.SECRET_PLAN, 1),
-				card(DeckCard.HIDDEN_DAGGER, 1));
+				card(DeckCard.SCORPION_THROW, 1));
 
 		register(HeroClass.JOHNNY,
 				card(DeckCard.STRIKE, 5),

@@ -527,7 +527,7 @@ public class DeckShopScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				if (DeckBuilderRun.buyCardRemoval(deckIndex)) {
-					Sample.INSTANCE.play(Assets.Sounds.CURSED);
+					Sample.INSTANCE.play(Assets.Sounds.BURNING);
 					saveRun();
 					win.hide();
 					cardWindow.hide();

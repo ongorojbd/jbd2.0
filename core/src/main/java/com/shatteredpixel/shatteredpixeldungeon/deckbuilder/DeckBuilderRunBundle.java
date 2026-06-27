@@ -61,6 +61,9 @@ public class DeckBuilderRunBundle {
 	private static final String REST_PATH = "deckbuilder_rest_path";
 	private static final String REST_USED = "deckbuilder_rest_used";
 	private static final String REST_TENT_USED = "deckbuilder_rest_tent_used";
+	private static final String REST_RESTED = "deckbuilder_rest_rested";
+	private static final String REST_SMITHED = "deckbuilder_rest_smithed";
+	private static final String REST_EXPLORED = "deckbuilder_rest_explored";
 	private static final String REWARD_NODE = "deckbuilder_reward_node";
 	private static final String REWARD_DEPTH = "deckbuilder_reward_depth";
 	private static final String REWARD_PATH = "deckbuilder_reward_path";
@@ -257,6 +260,9 @@ public class DeckBuilderRunBundle {
 		bundle.put(REST_PATH, DeckBuilderRun.rest.path);
 		bundle.put(REST_USED, DeckBuilderRun.rest.used);
 		bundle.put(REST_TENT_USED, DeckBuilderRun.rest.tentUsed);
+		bundle.put(REST_RESTED, DeckBuilderRun.rest.rested);
+		bundle.put(REST_SMITHED, DeckBuilderRun.rest.smithed);
+		bundle.put(REST_EXPLORED, DeckBuilderRun.rest.explored);
 	}
 
 	private static void restoreRest(Bundle bundle) {
@@ -264,6 +270,11 @@ public class DeckBuilderRunBundle {
 		DeckBuilderRun.rest.path = bundle.contains(REST_PATH) ? bundle.getInt(REST_PATH) : -1;
 		DeckBuilderRun.rest.used = bundle.getBoolean(REST_USED);
 		DeckBuilderRun.rest.tentUsed = bundle.contains(REST_TENT_USED) && bundle.getBoolean(REST_TENT_USED);
+		DeckBuilderRun.rest.rested = bundle.contains(REST_RESTED)
+				? bundle.getBoolean(REST_RESTED)
+				: DeckBuilderRun.rest.used;
+		DeckBuilderRun.rest.smithed = bundle.contains(REST_SMITHED) && bundle.getBoolean(REST_SMITHED);
+		DeckBuilderRun.rest.explored = bundle.contains(REST_EXPLORED) && bundle.getBoolean(REST_EXPLORED);
 	}
 
 	private static void storeReward(Bundle bundle) {

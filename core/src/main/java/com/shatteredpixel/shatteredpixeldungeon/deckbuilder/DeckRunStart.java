@@ -70,10 +70,8 @@ public class DeckRunStart {
 
 			if (heroClass == HeroClass.WARRIOR) {
 				DeckRunInventory.addRelic(DeckBuilderRun.relics, DeckRelic.WAVE_RUSH);
-				DeckBuilderRun.startingRelicChosen = true;
 			} else if (heroClass == HeroClass.HUNTRESS) {
 				DeckRunInventory.addRelic(DeckBuilderRun.relics, DeckRelic.LIFE_PARTS);
-				DeckBuilderRun.startingRelicChosen = true;
 			}
 		}
 	}
@@ -137,10 +135,10 @@ public class DeckRunStart {
 
 	private static void addTutorialDeck() {
 		// 튜토리얼 고정 덱: ATTACK(STAFF/BASH) + SKILL(GUARD) + POWER(IGNITE) 각 타입 체험
-		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STAFF);
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STRIKE);
 		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.GUARD);
-		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.BASH);
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STRIKE);
 		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.IGNITE);
-		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STAFF);
+		DeckRunInventory.addCard(DeckBuilderRun.deck, DeckCard.STRIKE);
 	}
 }

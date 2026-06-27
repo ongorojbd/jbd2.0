@@ -127,8 +127,7 @@ public class WndDungeonMode extends Window {
         },
         DIO_CASTLE("dio_castle", ItemSpriteSheet.SUNDIAL, Dungeon.GameMode.DIO_CASTLE),
         TENDENCY("tendency", ItemSpriteSheet.TENS, Dungeon.GameMode.TENDENCY),
-        DECKBUILDER("deckbuilder", ItemSpriteSheet.DECK, Dungeon.GameMode.DECKBUILDER),
-        DECKBUILDER_TUTORIAL("deckbuilder_tutorial", ItemSpriteSheet.DECK, Dungeon.GameMode.DECKBUILDER_TUTORIAL);
+        DECKBUILDER("deckbuilder", ItemSpriteSheet.DECK, Dungeon.GameMode.DECKBUILDER);
 
         private final String messageKey;
         private final int sprite;
@@ -171,7 +170,7 @@ public class WndDungeonMode extends Window {
                 case DECKBUILDER:
                     ShatteredPixelDungeon.scene().addToFront(new WndTitledMessage(
                             new ItemSprite(ItemSpriteSheet.DECK, null),
-                            Messages.get(HeroSelectScene.class, "deckbuilder_mode"),
+                            Messages.get(WndDungeonMode.class, displayMessageKey()),
                             Messages.get(HeroSelectScene.class, "deckbuilder_nowin")));
                     break;
             }
@@ -183,14 +182,14 @@ public class WndDungeonMode extends Window {
                 return false;
             }
             if (DECKBUILDER_BETA_LIMITS
-                    && (this == DECKBUILDER || this == DECKBUILDER_TUTORIAL)
+                    && this == DECKBUILDER
                     && !deckBuilderClassAvailable(GamesInProgress.selectedClass)) {
                 ShatteredPixelDungeon.scene().addToFront(new WndMessage(
                         "카드 배틀 모드는 아직 베타 버전입니다.\n\n" +
                         "현재는 죠나단, 죠르노만 선택할 수 있습니다."));
                 return false;
             }
-            if ((this == DECKBUILDER || this == DECKBUILDER_TUTORIAL) && !SPDSettings.landscape() && !DeviceCompat.isDesktop()) {
+            if (this == DECKBUILDER && !SPDSettings.landscape() && !DeviceCompat.isDesktop()) {
                 ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndDungeonMode.class, "deckbuilder_portrait")));
                 return false;
             }
@@ -212,14 +211,23 @@ public class WndDungeonMode extends Window {
             } else if (this == DECKBUILDER) {
                 SPDSettings.setDeckbuilder(1);
                 SPDSettings.customSeed("");
-            } else if (this == DECKBUILDER_TUTORIAL) {
-                SPDSettings.customSeed("");
+                if (SPDSettings.getTutorial() < 1) {
+                    Dungeon.selectedMode = Dungeon.GameMode.DECKBUILDER_TUTORIAL;
+                }
             }
         }
 
         private String desc() {
-            return "_" + Messages.get(WndDungeonMode.class, messageKey) + "_\n"
-                    + Messages.get(WndDungeonMode.class, messageKey + "_desc");
+            String displayMessageKey = displayMessageKey();
+            return "_" + Messages.get(WndDungeonMode.class, displayMessageKey) + "_\n"
+                    + Messages.get(WndDungeonMode.class, displayMessageKey + "_desc");
+        }
+
+        private String displayMessageKey() {
+            if (this == DECKBUILDER && SPDSettings.getTutorial() < 1) {
+                return "deckbuilder_tutorial";
+            }
+            return messageKey;
         }
     }
 

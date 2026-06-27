@@ -565,6 +565,8 @@ public enum Rankings {
 			if (win){
 				if(depth == 5 || depth == 6){
 					return Messages.get(this, "diok");
+				} else if (depth == 17){ // 카드 배틀 엔딩
+					return Messages.get(this, "deckwon");
 				} else if (depth == 63){ // 전투조류 엔딩
 					return Messages.get(this, "tendencywon");
 				} else if (ascending){

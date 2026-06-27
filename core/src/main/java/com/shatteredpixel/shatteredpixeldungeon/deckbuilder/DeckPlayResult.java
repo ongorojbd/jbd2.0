@@ -76,10 +76,12 @@ public class DeckPlayResult {
 	public static class Shuffle {
 		public final DeckCard card;
 		public final int count;
+		public final boolean toDrawPile;
 
-		public Shuffle(DeckCard card, int count) {
+		public Shuffle(DeckCard card, int count, boolean toDrawPile) {
 			this.card = card;
 			this.count = count;
+			this.toDrawPile = toDrawPile;
 		}
 	}
 
@@ -89,6 +91,7 @@ public class DeckPlayResult {
 		public int block;
 		public int draw;
 		public int vulnerable;
+		public int attackDown;
 		public int strength;
 		public int dexterity;
 		public int heal;
@@ -118,6 +121,7 @@ public class DeckPlayResult {
 			hits.add(new Hit(enemyIndex, damage, vulnerable, attackDown, currentWave, false));
 			this.damage += damage;
 			this.vulnerable += vulnerable;
+			this.attackDown += attackDown;
 		}
 
 		public void addAttackHit(int enemyIndex, int damage) {
@@ -127,7 +131,13 @@ public class DeckPlayResult {
 
 		public void addShuffle(DeckCard card, int count) {
 			if (card != null && count > 0) {
-				shuffles.add(new Shuffle(card, count));
+				shuffles.add(new Shuffle(card, count, true));
+			}
+		}
+
+		public void addDiscardShuffle(DeckCard card, int count) {
+			if (card != null && count > 0) {
+				shuffles.add(new Shuffle(card, count, false));
 			}
 		}
 

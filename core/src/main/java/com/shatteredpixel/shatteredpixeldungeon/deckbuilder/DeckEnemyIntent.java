@@ -121,7 +121,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_CORNER,
 			(combat, enemy, remainingBlock) -> {
 				AttackResult attack = combat.performEnemyAttack(enemy, 5, remainingBlock, "구석 몰기");
-				if (combat.applyPlayerDebuff()) combat.playerWeak += 1;
+				if (combat.applyPlayerDebuff()) combat.applyPlayerWeak(1);
 				return attack.toTurnResult(false);
 			},
 			enemy -> "예고: " + damageText(enemy, 5) + " 피해 + 공격력 저하 1 부여"));
@@ -168,7 +168,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_HAUNT,
 			(combat, enemy, remainingBlock) -> {
 				for (int i = 0; i < 3; i++) combat.discardPile.add(DeckCard.BARNACLE.code());
-				if (combat.applyPlayerDebuff()) combat.playerWeak += 3;
+				if (combat.applyPlayerDebuff()) combat.applyPlayerWeak(3);
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(
 						combat.enemyIndex(enemy), 0, false, "출몰 (공격력 저하 +3)", false, DeckCard.BARNACLE, 3));
 				return new TurnResult(remainingBlock, 0, true);
@@ -179,7 +179,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_RAMMING_SPEED,
 			(combat, enemy, remainingBlock) -> {
 				AttackResult attack = combat.performEnemyAttack(enemy, 10, remainingBlock, "전속력");
-				if (combat.applyPlayerDebuff()) combat.playerWeak += 1;
+				if (combat.applyPlayerDebuff()) combat.applyPlayerWeak(1);
 				return attack.toTurnResult(false);
 			},
 			enemy -> "예고: " + damageText(enemy, 10) + " 피해 + 공격력 저하 1 부여"));
@@ -315,7 +315,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_ORB_OF_WEAKNESS,
 			(combat, enemy, remainingBlock) -> {
 				AttackResult attack = combat.performEnemyAttack(enemy, 8, remainingBlock, "나약함의 구체");
-				if (combat.applyPlayerDebuff()) combat.playerWeak += 1;
+				if (combat.applyPlayerDebuff()) combat.applyPlayerWeak(1);
 				return attack.toTurnResult(false);
 			},
 			enemy -> "예고: " + damageText(enemy, 8) + " 피해 + 공격력 저하 1 부여"));
@@ -349,7 +349,7 @@ public class DeckEnemyIntent {
 				combat.lastEnemyActions.get(combat.lastEnemyActions.size() - 1).setShuffle(DeckCard.PRICE_OF_SIN, 1);
 				return attack.toTurnResult(true);
 			},
-			enemy -> "예고: " + damageText(enemy, 7) + " 피해 + 죄의 대가 1장 버린 카드 더미에 추가"));
+			enemy -> "예고: " + damageText(enemy, 7) + " 피해 + 죄의 대가 1장 섞어 넣음"));
 
 	public static final DeckEnemyIntent FADE = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_FADE,
@@ -358,7 +358,7 @@ public class DeckEnemyIntent {
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "희미함 (축복 +2)"));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 축복 +2 획득"));
+			enemy -> "예고: 축복 +2"));
 
 	public static final DeckEnemyIntent SCREAM = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_SCREAM,
@@ -374,7 +374,7 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent CREAM_AMBUSH = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_CREAM_AMBUSH,
 			(combat, enemy, remainingBlock) -> {
-				enemy.darkSpace += 5;
+				enemy.darkSpace += 6;
 				for (int i = 0; i < 2; i++) {
 					combat.drawPile.add(DeckCard.GLIDE.code());
 					combat.discardPile.add(DeckCard.GLIDE.code());
@@ -382,7 +382,7 @@ public class DeckEnemyIntent {
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "급습 (암흑공간 +5)", false, DeckCard.GLIDE, 4));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 암흑공간 +5, 활공 4장 섞어 넣음"));
+			enemy -> "예고: 암흑공간 +6, 동료의 희생 4장 섞어 넣음"));
 
 	public static final DeckEnemyIntent CREAM_MIASMA = register(multiAttack(
 			DeckBuilderCombat.RESULT_CREAM_MIASMA, 2, 6, "아공간의 독기"));
@@ -391,7 +391,7 @@ public class DeckEnemyIntent {
 			DeckBuilderCombat.RESULT_CREAM_SPIN, 22, "무차별 회전"));
 
 	public static final DeckEnemyIntent CREAM_RAGE = register(strengthIntent(
-			DeckBuilderCombat.RESULT_CREAM_RAGE, 3, "공격력"));
+			DeckBuilderCombat.RESULT_CREAM_RAGE, 2, "공격력"));
 
 	public final int id;
 	private final IntentAction action;

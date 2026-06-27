@@ -40,6 +40,10 @@ public class DeckWandCards {
 		return maxCharge(cardCode) > 0;
 	}
 
+	public static ArrayList<DeckCard> allWandCards() {
+		return new ArrayList<>(PROFILES.keySet());
+	}
+
 	public static int maxCharge(int cardCode) {
 		return maxCharge(DeckCard.byCode(cardCode), cardCode);
 	}
@@ -128,7 +132,7 @@ public class DeckWandCards {
 			return true;
 		}
 		if (wand == DeckCard.BARRIER_WAND) {
-			result.block += combat.gainBlock(4);
+			result.block += combat.gainBlock(3);
 			damageRandomEnemy(combat, 2, result);
 			return true;
 		}
@@ -142,11 +146,7 @@ public class DeckWandCards {
 		if (wand == DeckCard.HORUS_WAND) {
 			DeckCombatEnemy enemy = randomEnemy(combat);
 			if (enemy != null) {
-				int attackDown = 0;
-				if (combat.applyEnemyDebuff(enemy)) {
-					enemy.attackDown++;
-					attackDown = 1;
-				}
+				int attackDown = combat.queueAttackDownAfterEnemyTurn(enemy, 1);
 				int dealt = combat.damageEnemy(enemy, 2, false);
 				result.addHit(combat.enemyIndex(enemy), dealt, 0, attackDown);
 			}
@@ -154,7 +154,10 @@ public class DeckWandCards {
 		}
 		if (wand == DeckCard.HEAVENS_WAND) {
 			DeckCombatEnemy enemy = randomEnemy(combat);
-			if (enemy != null && combat.applyEnemyDebuff(enemy)) enemy.vulnerable++;
+			if (enemy != null) {
+				int vulnerable = combat.queueVulnerableAfterEnemyTurn(enemy, 1);
+				result.addHit(combat.enemyIndex(enemy), 0, vulnerable);
+			}
 			return true;
 		}
 		if (wand == DeckCard.SOFT_WAND) {

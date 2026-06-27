@@ -334,10 +334,10 @@ public enum DeckRelic {
 	STRANGE_FRAGMENT("기묘한 파편", "에너지가 3 이상인 카드를 사용할 때마다, 1 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.SHARD),
 	DRAGONS_DREAM("드래곤즈 드림", "매 턴 시작 시 에너지를 1 추가로 얻습니다. 전투 시작 시 모든 적이 공격력을 1 추가로 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.GRAVE),
 
-	WAVE_RUSH("파문질주", "공격 카드를 사용할 때마다 연속 타격을 1 얻습니다. 연속 타격은 공격 이외의 카드를 사용하면 소멸합니다. 연속 타격은 공격 카드의 피해를 수치만큼 증가시킵니다. 매 전투 종료 시, 체력을 6 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.CLASS_STARTER, ItemSpriteSheet.SEAL_SHARD),
+	WAVE_RUSH("파문질주", "공격 카드를 사용할 때마다 연속 타격을 1 얻습니다. 연속 타격은 공격 이외의 카드를 사용하면 사라집니다. 매 전투 종료 시, 체력을 6 회복합니다.", DeckRelicRarity.COMMON, DeckRelicType.CLASS_STARTER, ItemSpriteSheet.SEAL_SHARD),
 
 	CHEMICAL_X("폭약 더미", "비용이 X인 카드를 사용할 때, 그 카드의 효과가 X+2 에너지를 사용한 효과로 발동됩니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.TBOMB2),
-	LIFE_PARTS("생명의 부품", "매 전투 시작 시, 카드를 추가로 2장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.CLASS_STARTER, ItemSpriteSheet.BLOOD_VIAL);
+	LIFE_PARTS("생명의 부품", "매 전투 시작 시, 카드를 추가로 2장 뽑습니다.", DeckRelicRarity.COMMON, DeckRelicType.CLASS_STARTER, ItemSpriteSheet.BOW_FRAGMENT);
 
 	public final String title;
 	public final String description;

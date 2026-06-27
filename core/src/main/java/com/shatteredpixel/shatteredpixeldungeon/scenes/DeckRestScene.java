@@ -356,7 +356,7 @@ public class DeckRestScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				if (DeckBuilderRun.smithAtRestSite(deckIndex)) {
-					Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+					Sample.INSTANCE.play(Assets.Sounds.READ);
 					saveRun();
 					win.hide();
 					cardWindow.hide();
@@ -393,22 +393,7 @@ public class DeckRestScene extends PixelScene {
 	}
 
 	private String upgradePreviewText(int cardCode) {
-		if (cardCode >= 0) return DeckCardText.upgradePreviewText(cardCode);
-		int upgraded = DeckCard.upgrade(cardCode);
-		DeckCard card = DeckCard.byCode(cardCode);
-		if (upgraded == cardCode) return "더 이상 강화할 수 없습니다.";
-		if (card == DeckCard.SPIN_TRAINING) return "회전하는 손톱 피해량 +1 > +2";
-		if (card == DeckCard.LESSON_FIVE) return "비용 2 > 1";
-
-		String text = "";
-		if (card.cost(cardCode) != card.cost(upgraded)) text += append(text, "비용 " + card.cost(cardCode) + " > " + card.cost(upgraded));
-		if (card.damage(cardCode) != card.damage(upgraded)) text += append(text, "피해 " + card.damage(cardCode) + " > " + card.damage(upgraded));
-		if (card.block(cardCode) != card.block(upgraded)) text += append(text, "보호막 " + card.block(cardCode) + " > " + card.block(upgraded));
-		if (card.draw(cardCode) != card.draw(upgraded)) text += append(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
-		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += append(text, "피해 증폭 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
-		if (card.strength(cardCode) != card.strength(upgraded)) text += append(text, "공격력 " + card.strength(cardCode) + " > " + card.strength(upgraded));
-		if (card.shivs(cardCode) != card.shivs(upgraded)) text += append(text, "전갈탄 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
-		return text.length() > 0 ? text : "강화 효과가 아직 정의되지 않았습니다.";
+		return DeckCardText.upgradePreviewText(cardCode);
 	}
 
 	private String append(String text, String value) {

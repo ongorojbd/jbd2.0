@@ -16,9 +16,11 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 import com.watabou.utils.Random;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 
+import javax.swing.plaf.basic.BasicRadioButtonMenuItemUI;
+
 public enum DeckEnemy {
 
-	TUTORIAL_DUMMY("로버트 E.O. 스피드왜건", 50, 0, false) {
+	TUTORIAL_DUMMY("로버트 E.O. 스피드왜건", 24, 0, false) {
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
 			if (turn == 1) return 3;  // 1턴: 공격 없음 (ATTACK 튜토리얼)
@@ -113,6 +115,10 @@ public enum DeckEnemy {
 	},
 	SETESH("세트신", 38, 0, false) {
 		@Override
+		public int hpForDepth(int depth) {
+			return 38 + Random.Int(3);
+		}
+		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
 			if (turn == 1) return DeckBuilderCombat.RESULT_AGE_DOWN;
 			return turn % 2 == 0 ? 7 : 13;
@@ -120,11 +126,20 @@ public enum DeckEnemy {
 	},
 	NDOUL("게브신", 55, 0, false) {
 		@Override
+		public int hpForDepth(int depth) {
+			return 55 + Random.Int(3);
+		}
+		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
 			return turn % 3 == 2 ? DeckBuilderCombat.RESULT_STRENGTH_7 : 4;
 		}
 	},
 	THE_FOOL("더 풀", 42, 0, false) {
+		@Override
+		public int hpForDepth(int depth) {
+			return 42 + Random.Int(5);
+		}
+
 		@Override
 		public int nextIntent(DeckCombatEnemy enemy, int turn, int depth, int encounterIndex) {
 			if (turn % 3 == 1) return 12;

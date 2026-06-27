@@ -69,6 +69,7 @@ public class SPDSettings extends GameSettings {
 	public static final String DIO = "dio";
 
 	public static final String BRANDO = "brando";
+	public static final String TUTORIAL = "tutorial";
 
 	public static final String JOJO = "jojo";
 	public static final String TENDENCY = "tendency";
@@ -100,6 +101,9 @@ public class SPDSettings extends GameSettings {
 
 	public static void addBrando(int value) { put(BRANDO, getInt(BRANDO, 0) + value); }
 	public static int getBrando() { return getInt(BRANDO, 0); }
+
+	public static void addTutorial(int value) { put(TUTORIAL, getInt(TUTORIAL, 0) + value); }
+	public static int getTutorial() { return getInt(TUTORIAL, 0); }
 
 	public static void addJojo(int value) { put(JOJO, getInt(JOJO, 0) + value); }
 	public static int getJojo() { return getInt(JOJO, 0); }

@@ -69,6 +69,8 @@ public class Neotel extends Item {
             hero.HP = Math.min(hero.HP + 150, hero.HT);
             Buff.affect(hero, Invisibility.class, 99f);
 
+            SPDSettings.addTutorial(-1);
+
             Chasm.heroFall(hero.pos);
             int length = Dungeon.level.length();
             int[] map = Dungeon.level.map;

@@ -50,6 +50,7 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.watabou.utils.RectF;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		DeckBuilderRun.initIfNeeded();
 
 		// Relic already chosen but pending events weren't resolved (e.g., crash recovery)
-		if (DeckBuilderRun.startingRelicChosen) {
+		if (DeckBuilderRun.startingRelicChosen && !DeckBuilderRun.needsStartingRelicChoice()) {
 			int w = Camera.main.width, h = Camera.main.height;
 			RectF insets = getCommonInsets();
 			add(new ColorBlock(w, h, 0xFF10140F));
@@ -437,16 +438,6 @@ public class DeckRelicChoiceScene extends PixelScene {
 		win.add(desc);
 		pos += (int) desc.height() + 8;
 
-		String upgradeText = DeckCardText.upgradePreviewText(cardCode);
-		if (upgradeText != null && upgradeText.length() > 0) {
-			RenderedTextBlock upgradePreview = renderTextBlock("강화 효과\n" + upgradeText, 6);
-			upgradePreview.maxWidth(width - 14);
-			upgradePreview.hardlight(0xFFD5F27A);
-			upgradePreview.setPos(7, pos);
-			win.add(upgradePreview);
-			pos += (int) upgradePreview.height() + 8;
-		}
-
 		RedButton confirm = new RedButton(confirmLabel, 6) {
 			@Override protected void onClick() {
 				onConfirm.call();
@@ -506,7 +497,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		int startX = (width - contentW) / 2;
 		for (int i = 0; i < choices.length; i++) {
 			final DeckCard card = choices[i];
-			MiniCardButton btn = new MiniCardButton(card.code()) {
+			CardChoiceButton btn = new CardChoiceButton(card.code()) {
 				@Override protected void onClick() {
 					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
 						@Override public void call() {
@@ -562,7 +553,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		int startX = (width - contentW) / 2;
 		for (int i = 0; i < choices.length; i++) {
 			final DeckCard card = choices[i];
-			MiniCardButton btn = new MiniCardButton(card.code()) {
+			CardChoiceButton btn = new CardChoiceButton(card.code()) {
 				@Override protected void onClick() {
 					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
 						@Override public void call() {
@@ -619,7 +610,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		int startX = (width - contentW) / 2;
 		for (int i = 0; i < choices.length; i++) {
 			final DeckCard card = choices[i];
-			MiniCardButton btn = new MiniCardButton(card.code()) {
+			CardChoiceButton btn = new CardChoiceButton(card.code()) {
 				@Override protected void onClick() {
 					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
 						@Override public void call() {
@@ -670,7 +661,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		int startX = (width - contentW) / 2;
 		for (int i = 0; i < choices.length; i++) {
 			final DeckCard card = choices[i];
-			MiniCardButton btn = new MiniCardButton(card.code()) {
+			CardChoiceButton btn = new CardChoiceButton(card.code()) {
 				@Override protected void onClick() {
 					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
 						@Override public void call() {
@@ -752,7 +743,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		int startX = (width - contentW) / 2;
 		for (int i = 0; i < choices.length; i++) {
 			final DeckCard card = choices[i];
-			MiniCardButton btn = new MiniCardButton(card.code()) {
+			CardChoiceButton btn = new CardChoiceButton(card.code()) {
 				@Override protected void onClick() {
 					showRewardCardConfirmWindow(win, card, "선택", new Callback() {
 						@Override public void call() {
@@ -903,7 +894,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 				if (spriteArt != null) spriteArt.visible = false;
 				if (trapArt != null) remove(trapArt);
 				try {
-					trapArt = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance());
+					trapArt = TerrainFeaturesTilemap.getTrapVisual(Reflection.newInstance(card.trapIcon));
 				} catch (Exception ignored) { trapArt = null; }
 				if (trapArt != null) {
 					trapArt.scale.set(1.1f);
@@ -930,6 +921,19 @@ public class DeckRelicChoiceScene extends PixelScene {
 					buffArt.visible = true;
 					add(buffArt);
 				}
+			} else if (card.spriteClass != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
+				if (spriteArt != null) remove(spriteArt);
+				try { spriteArt = Reflection.newInstance(card.spriteClass).forceIdling(); } catch (Exception ignored) { spriteArt = new Image(); }
+				add(spriteArt);
+				spriteArt.scale.set(1.0f);
+				spriteArt.x = x + (width - spriteArt.width()) / 2f;
+				spriteArt.y = y + height * 0.30f;
+				align(spriteArt);
+				spriteArt.visible = true;
 			} else if (card.charSprite != null) {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
@@ -1052,7 +1056,20 @@ public class DeckRelicChoiceScene extends PixelScene {
 		}
 
 		private void layoutArt(DeckCard card) {
-			if (card.charSprite != null) {
+			if (card.spriteClass != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (trapArt != null) trapArt.visible = false;
+				if (buffArt != null) buffArt.visible = false;
+				remove(spriteArt);
+				try { spriteArt = Reflection.newInstance(card.spriteClass).forceIdling(); } catch (Exception ignored) { spriteArt = new Image(); }
+				add(spriteArt);
+				spriteArt.visible = true;
+				spriteArt.scale.set(1.2f);
+				spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
+				spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
+				align(spriteArt);
+			} else if (card.charSprite != null) {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
 				if (trapArt != null) trapArt.visible = false;
@@ -1084,7 +1101,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 				spriteArt.visible = false;
 				if (trapArt != null) remove(trapArt);
 				try {
-					trapArt = TerrainFeaturesTilemap.getTrapVisual(card.trapIcon.newInstance());
+					trapArt = TerrainFeaturesTilemap.getTrapVisual(Reflection.newInstance(card.trapIcon));
 				} catch (Exception ignored) { trapArt = null; }
 				if (trapArt != null) {
 					trapArt.scale.set(1.15f);

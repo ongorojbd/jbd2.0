@@ -291,6 +291,8 @@ public class InterlevelScene extends PixelScene {
                 background = new Image(Assets.Splashes.BRANDO);
             } else if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) {
                 background = new Image(Assets.Splashes.TENDENCY);
+            } else if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) {
+                background = new Image(Assets.Splashes.TENDENCY);
             } else if (Statistics.spw8 == 1) {
                 background = new Image(Assets.Splashes.SO);
             } else {

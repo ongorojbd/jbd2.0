@@ -122,6 +122,7 @@ public class DeckBuilderCombat {
 	private static final String ENEMY_VENOM = "enemy_venom";
 	private static final String ENEMY_DEMISE = "enemy_demise";
 	private static final String ENEMY_PERSISTENT_DAMAGE = "enemy_persistent_damage";
+	private static final String ENEMY_DOOM = "enemy_doom";
 	private static final String ENEMY_RITUAL = "enemy_ritual";
 	private static final String ENEMY_DARK_SPACE = "enemy_dark_space";
 	private static final String ENEMY_LAST_INTENT = "enemy_last_intent";
@@ -131,6 +132,8 @@ public class DeckBuilderCombat {
 	private static final String ENEMY_STRANGLE_HP_LOSS = "enemy_strangle_hp_loss";
 	private static final String ENEMY_HANGED = "enemy_hanged";
 	private static final String PLAYER_BLESSED = "player_blessed";
+	private static final String PLAYER_DOOM = "player_doom";
+	private static final String MENTAL_OVERFLOW_DOOM = "mental_overflow_doom";
 	private static final String PLAYER_DAMAGE_REDUCTION = "player_damage_reduction";
 	private static final String PLAYER_BLOCK_REDUCTION = "player_block_reduction";
 	private static final String PLAYER_VULNERABLE = "player_vulnerable";
@@ -215,7 +218,6 @@ public class DeckBuilderCombat {
 	private static final String NUMBNESS_BLOCK = "numbness_block";
 	private static final String CARDS_EXHAUSTED_THIS_TURN = "cards_exhausted_this_turn";
 	private static final String DARK_EMBRACE_DRAW = "dark_embrace_draw";
-	private static final String MENTAL_OVERFLOW_DEMISE = "mental_overflow_demise";
 	private static final String DOMAIN_COUNT = "domain_count";
 	private static final String TOOLS_OF_THE_TRADE_COUNT = "tools_of_the_trade_count";
 	private static final String MACHINE_LEARNING_COUNT = "machine_learning_count";
@@ -282,6 +284,7 @@ public class DeckBuilderCombat {
 	public int playerBlockReduction;
 	public int playerVulnerable;
 	public int playerWeak;
+	private boolean skipPlayerWeakStartDecay;
 	public int playerDexterity;
 	public int playerArtifact;
 	public int playerEntangle;
@@ -339,11 +342,14 @@ public class DeckBuilderCombat {
 	public int nextTurnBlock;
 	public int preventHpLossTurns;
 	public int playerBlessed;
+	public int playerDoom;
+	public int mentalOverflowDoom;
 	public boolean pendingHandCardToDrawPileTop;
 	public int blockFromCardDisabledTurns;
 	public boolean pendingAllCardDiscover;
 	public boolean pendingAllRelicDiscover;
 	public boolean pendingAllPotionDiscover;
+	public boolean pendingUpgradeTextViewer;
 	public ArrayList<Integer> pulsingAxeReturns = new ArrayList<>();
 	public boolean pendingDrawPilePeek = false;
 	public DeckCardType pendingDrawPileTypeSelect = null;
@@ -371,7 +377,6 @@ public class DeckBuilderCombat {
 	public int darkEmbraceDraw = 0;
 	public int currentPlayHandIndexShift = 0;
 	public boolean forceGameOver = false;
-	public int mentalOverflowDemise = 0;
 	public int domainCount = 0;
 	public int toolsOfTheTradeCount = 0;
 	public int machineLearningCount = 0;
@@ -424,6 +429,8 @@ public class DeckBuilderCombat {
 	public ArrayList<Integer> endTurnSelectedRetainIndices = new ArrayList<>();
 	public ArrayList<Integer> orangeBombTimers = new ArrayList<>();
 	public ArrayList<Integer> orangeBombDamages = new ArrayList<>();
+	private ArrayList<Integer> queuedPostEnemyTurnAttackDown = new ArrayList<>();
+	private ArrayList<Integer> queuedPostEnemyTurnVulnerable = new ArrayList<>();
 
 	public ArrayList<Integer> drawPile = new ArrayList<>();
 	public ArrayList<Integer> hand = new ArrayList<>();
@@ -434,6 +441,8 @@ public class DeckBuilderCombat {
 	public ArrayList<DeckPlayResult> lastTurnEndAutoPlayResults = new ArrayList<>();
 	public ArrayList<EnemyAction> lastEnemyActions = new ArrayList<>();
 	public ArrayList<DamageEvent> lastEnemyEndTurnDamageEvents = new ArrayList<>();
+	public ArrayList<DamageEvent> lastPersistentDamageEvents = new ArrayList<>();
+	public ArrayList<DamageEvent> lastDoomKillEvents = new ArrayList<>();
 	public ArrayList<DamageEvent> lastDamageEvents = new ArrayList<>();
 	public int lastTurnEndStatusDamage;
 	public int lastTurnEndRegenBlock;
@@ -603,7 +612,6 @@ public class DeckBuilderCombat {
 		bundle.put(CARDS_EXHAUSTED_THIS_TURN, cardsExhaustedThisTurn);
 		bundle.put(DARK_EMBRACE_DRAW, darkEmbraceDraw);
 		bundle.put(DIE_ON_UNBLOCKED_ATTACK, dieOnUnblockedAttack);
-		bundle.put(MENTAL_OVERFLOW_DEMISE, mentalOverflowDemise);
 		bundle.put(DOMAIN_COUNT, domainCount);
 		bundle.put(TOOLS_OF_THE_TRADE_COUNT, toolsOfTheTradeCount);
 		bundle.put(MACHINE_LEARNING_COUNT, machineLearningCount);
@@ -684,6 +692,7 @@ public class DeckBuilderCombat {
 		int[] enemyVenom = new int[enemies.size()];
 		int[] enemyDemise = new int[enemies.size()];
 		int[] enemyPersistentDamage = new int[enemies.size()];
+		int[] enemyDoom = new int[enemies.size()];
 		int[] enemyRitual = new int[enemies.size()];
 		int[] enemyDarkSpace = new int[enemies.size()];
 		int[] enemyLastIntent = new int[enemies.size()];
@@ -711,6 +720,7 @@ public class DeckBuilderCombat {
 			enemyVenom[i] = enemy.venom;
 			enemyDemise[i] = enemy.demise;
 			enemyPersistentDamage[i] = enemy.persistentDamage;
+			enemyDoom[i] = enemy.doom;
 			enemyRitual[i] = enemy.ritual;
 			enemyDarkSpace[i] = enemy.darkSpace;
 			enemyLastIntent[i] = enemy.lastIntent;
@@ -737,6 +747,7 @@ public class DeckBuilderCombat {
 		bundle.put(ENEMY_VENOM, enemyVenom);
 		bundle.put(ENEMY_DEMISE, enemyDemise);
 		bundle.put(ENEMY_PERSISTENT_DAMAGE, enemyPersistentDamage);
+		bundle.put(ENEMY_DOOM, enemyDoom);
 		bundle.put(ENEMY_RITUAL, enemyRitual);
 		bundle.put(ENEMY_DARK_SPACE, enemyDarkSpace);
 		bundle.put(ENEMY_LAST_INTENT, enemyLastIntent);
@@ -746,6 +757,8 @@ public class DeckBuilderCombat {
 		bundle.put(ENEMY_STRANGLE_HP_LOSS, enemyStrangleHpLoss);
 		bundle.put(ENEMY_HANGED, enemyHanged);
 		bundle.put(PLAYER_BLESSED, playerBlessed);
+		bundle.put(PLAYER_DOOM, playerDoom);
+		bundle.put(MENTAL_OVERFLOW_DOOM, mentalOverflowDoom);
 	}
 
 	public static DeckBuilderCombat restoreFromBundle(Bundle bundle) {
@@ -818,6 +831,8 @@ public class DeckBuilderCombat {
 		combat.nextTurnBlock = bundle.contains(NEXT_TURN_BLOCK) ? bundle.getInt(NEXT_TURN_BLOCK) : 0;
 		combat.preventHpLossTurns = bundle.contains(PREVENT_HP_LOSS_TURNS) ? bundle.getInt(PREVENT_HP_LOSS_TURNS) : 0;
 		combat.playerBlessed = bundle.contains(PLAYER_BLESSED) ? bundle.getInt(PLAYER_BLESSED) : 0;
+		combat.playerDoom = bundle.contains(PLAYER_DOOM) ? bundle.getInt(PLAYER_DOOM) : 0;
+		combat.mentalOverflowDoom = bundle.contains(MENTAL_OVERFLOW_DOOM) ? bundle.getInt(MENTAL_OVERFLOW_DOOM) : 0;
 		combat.pendingHandCardToDrawPileTop = bundle.contains(PENDING_HAND_CARD_TO_DRAW_TOP) && bundle.getBoolean(PENDING_HAND_CARD_TO_DRAW_TOP);
 		combat.blockFromCardDisabledTurns = bundle.contains(BLOCK_FROM_CARD_DISABLED_TURNS) ? bundle.getInt(BLOCK_FROM_CARD_DISABLED_TURNS) : 0;
 		combat.pendingAllCardDiscover = bundle.contains(PENDING_ALL_CARD_DISCOVER) && bundle.getBoolean(PENDING_ALL_CARD_DISCOVER);
@@ -851,7 +866,6 @@ public class DeckBuilderCombat {
 		combat.cardsExhaustedThisTurn = bundle.contains(CARDS_EXHAUSTED_THIS_TURN) ? bundle.getInt(CARDS_EXHAUSTED_THIS_TURN) : 0;
 		combat.darkEmbraceDraw = bundle.contains(DARK_EMBRACE_DRAW) ? bundle.getInt(DARK_EMBRACE_DRAW) : 0;
 		combat.dieOnUnblockedAttack = bundle.contains(DIE_ON_UNBLOCKED_ATTACK) && bundle.getBoolean(DIE_ON_UNBLOCKED_ATTACK);
-		combat.mentalOverflowDemise = bundle.contains(MENTAL_OVERFLOW_DEMISE) ? bundle.getInt(MENTAL_OVERFLOW_DEMISE) : 0;
 		combat.domainCount = bundle.contains(DOMAIN_COUNT) ? bundle.getInt(DOMAIN_COUNT) : 0;
 		combat.toolsOfTheTradeCount = bundle.contains(TOOLS_OF_THE_TRADE_COUNT) ? bundle.getInt(TOOLS_OF_THE_TRADE_COUNT) : 0;
 		combat.machineLearningCount = bundle.contains(MACHINE_LEARNING_COUNT) ? bundle.getInt(MACHINE_LEARNING_COUNT) : 0;
@@ -936,6 +950,7 @@ public class DeckBuilderCombat {
 		int[] enemyVenom = bundle.contains(ENEMY_VENOM) ? bundle.getIntArray(ENEMY_VENOM) : new int[0];
 		int[] enemyDemise = bundle.contains(ENEMY_DEMISE) ? bundle.getIntArray(ENEMY_DEMISE) : new int[0];
 		int[] enemyPersistentDamage = bundle.contains(ENEMY_PERSISTENT_DAMAGE) ? bundle.getIntArray(ENEMY_PERSISTENT_DAMAGE) : new int[0];
+		int[] enemyDoom = bundle.contains(ENEMY_DOOM) ? bundle.getIntArray(ENEMY_DOOM) : new int[0];
 		int[] enemyRitual = bundle.contains(ENEMY_RITUAL) ? bundle.getIntArray(ENEMY_RITUAL) : new int[0];
 		int[] enemyDarkSpace = bundle.contains(ENEMY_DARK_SPACE) ? bundle.getIntArray(ENEMY_DARK_SPACE) : new int[0];
 		int[] enemyLastIntent = bundle.contains(ENEMY_LAST_INTENT) ? bundle.getIntArray(ENEMY_LAST_INTENT) : new int[0];
@@ -965,6 +980,7 @@ public class DeckBuilderCombat {
 			if (i < enemyVenom.length) enemy.venom = enemyVenom[i];
 			if (i < enemyDemise.length) enemy.demise = enemyDemise[i];
 			if (i < enemyPersistentDamage.length) enemy.persistentDamage = enemyPersistentDamage[i];
+			if (i < enemyDoom.length) enemy.doom = enemyDoom[i];
 			if (i < enemyRitual.length) enemy.ritual = enemyRitual[i];
 			if (i < enemyDarkSpace.length) enemy.darkSpace = enemyDarkSpace[i];
 			if (i < enemyLastIntent.length) enemy.lastIntent = enemyLastIntent[i];
@@ -1010,7 +1026,7 @@ public class DeckBuilderCombat {
 		if (domainCount > 0) energy = Math.min(DeckBuilderRun.MAX_ENERGY_CAP, energy + domainCount);
 		if (friendshipEnergy > 0) gainEnergy(friendshipEnergy);
 		if (heartOfFireEnergy > 0) gainEnergy(heartOfFireEnergy);
-		if (mentalOverflowDemise > 0) loseHP(mentalOverflowDemise);
+		if (mentalOverflowDoom > 0) playerDoom += mentalOverflowDoom;
 		if (strengthPerTurn > 0) playerStrength += strengthPerTurn;
 		if (preserveBlockNextTurn) {
 			preserveBlockNextTurn = false;
@@ -1050,7 +1066,11 @@ public class DeckBuilderCombat {
 		firstShivUsed = false;
 		nostalgiaUsedThisTurn = false;
 		if (playerVulnerable > 0) playerVulnerable--;
-		if (playerWeak > 0) playerWeak--;
+		if (skipPlayerWeakStartDecay) {
+			skipPlayerWeakStartDecay = false;
+		} else if (playerWeak > 0) {
+			playerWeak--;
+		}
 		if (playerBlessed > 0) playerBlessed--;
 		syncPotionlessDexterity();
 		lastDamageEvents.clear();
@@ -2004,11 +2024,17 @@ public class DeckBuilderCombat {
 			enemy.persistentDamage = Math.max(0, enemy.persistentDamage - 1);
 			if (dealt > 0) {
 				total += dealt;
-				lastEnemyEndTurnDamageEvents.add(DamageEvent.enemy(enemyIndex(enemy), dealt, enemy.hp));
+				lastPersistentDamageEvents.add(DamageEvent.enemy(enemyIndex(enemy), dealt, enemy.hp));
 			}
 		}
 		if (!enemy.alive()) playKillCount++;
 		return total;
+	}
+
+	public boolean applyDoom(DeckCombatEnemy enemy, int amount) {
+		if (enemy == null || !enemy.alive() || amount <= 0 || !applyEnemyDebuff(enemy)) return false;
+		enemy.doom += amount;
+		return true;
 	}
 
 	public boolean applyPersistentDamage(DeckCombatEnemy enemy, int amount, DeckPlayResult.Builder result) {
@@ -2097,12 +2123,55 @@ public class DeckBuilderCombat {
 		return true;
 	}
 
+	public int queueAttackDownAfterEnemyTurn(DeckCombatEnemy enemy, int amount) {
+		if (enemy == null || amount <= 0 || !enemy.alive()) return 0;
+		if (!applyEnemyDebuff(enemy)) return 0;
+		int enemyIndex = enemyIndex(enemy);
+		if (enemyIndex < 0) return 0;
+		for (int i = 0; i < amount; i++) {
+			queuedPostEnemyTurnAttackDown.add(enemyIndex);
+		}
+		return amount;
+	}
+
+	public int queueVulnerableAfterEnemyTurn(DeckCombatEnemy enemy, int amount) {
+		if (enemy == null || amount <= 0 || !enemy.alive()) return 0;
+		if (!applyEnemyDebuff(enemy)) return 0;
+		int enemyIndex = enemyIndex(enemy);
+		if (enemyIndex < 0) return 0;
+		for (int i = 0; i < amount; i++) {
+			queuedPostEnemyTurnVulnerable.add(enemyIndex);
+		}
+		return amount;
+	}
+
+	private void applyQueuedPostEnemyTurnDebuffs() {
+		for (int enemyIndex : queuedPostEnemyTurnAttackDown) {
+			if (enemyIndex < 0 || enemyIndex >= enemies.size()) continue;
+			DeckCombatEnemy enemy = enemies.get(enemyIndex);
+			if (enemy != null && enemy.alive()) enemy.attackDown++;
+		}
+		for (int enemyIndex : queuedPostEnemyTurnVulnerable) {
+			if (enemyIndex < 0 || enemyIndex >= enemies.size()) continue;
+			DeckCombatEnemy enemy = enemies.get(enemyIndex);
+			if (enemy != null && enemy.alive()) enemy.vulnerable++;
+		}
+		queuedPostEnemyTurnAttackDown.clear();
+		queuedPostEnemyTurnVulnerable.clear();
+	}
+
 	public boolean applyPlayerDebuff() {
 		if (playerArtifact > 0) {
 			playerArtifact--;
 			return false;
 		}
 		return true;
+	}
+
+	public void applyPlayerWeak(int amount) {
+		if (amount <= 0) return;
+		playerWeak += amount;
+		skipPlayerWeakStartDecay = true;
 	}
 
 	private void syncPotionlessDexterity() {
@@ -2124,6 +2193,8 @@ public class DeckBuilderCombat {
 		}
 		lastEnemyActions.clear();
 		lastEnemyEndTurnDamageEvents.clear();
+		lastPersistentDamageEvents.clear();
+		lastDoomKillEvents.clear();
 		lastTurnEndAutoPlayResults.clear();
 		lastTurnEndStatusDamage = 0;
 		lastTurnEndPoisonDarts = 0;
@@ -2134,6 +2205,8 @@ public class DeckBuilderCombat {
 		lastPriceOfSinDamage = 0;
 		lastTurnEndBurnDamage = 0;
 		lastCombatBreathingBlock = 0;
+		queuedPostEnemyTurnAttackDown.clear();
+		queuedPostEnemyTurnVulnerable.clear();
 		for (int code : hand) {
 			if (DeckCard.byCode(code) == DeckCard.POISON_DART) {
 				lastTurnEndPoisonDarts++;
@@ -2187,6 +2260,10 @@ public class DeckBuilderCombat {
 				lastTurnEndBurnDamage += burnLost;
 				if (playerDead()) return lastTurnEndStatusDamage;
 			}
+		}
+		if (playerDoom > 0 && playerDoom >= DeckBuilderRun.playerHP) {
+			DeckBuilderRun.playerHP = 0;
+			if (playerDead()) return lastTurnEndStatusDamage;
 		}
 		if (surgeActive && !won()) {
 			ArrayList<Integer> attacksInHand = new ArrayList<>();
@@ -2278,7 +2355,7 @@ public class DeckBuilderCombat {
 			if (applyPlayerDebuff()) playerBlockReduction++;
 		}
 		for (int i = 0; i < curseWeakGain; i++) {
-			if (applyPlayerDebuff()) playerWeak++;
+			if (applyPlayerDebuff()) applyPlayerWeak(1);
 		}
 		if (DeckBuilderRun.hasRelic(DeckRelic.KAWAJIRI_MEMORY_DISC) && block >= 10) {
 			ArrayList<DeckCombatEnemy> alive = aliveEnemies();
@@ -2369,8 +2446,16 @@ public class DeckBuilderCombat {
 					lastEnemyEndTurnDamageEvents.add(DamageEvent.enemy(enemyIndex(enemy), dealt, enemy.hp));
 				}
 			}
+			if (enemy.doom > 0 && enemy.alive() && enemy.doom >= enemy.hp) {
+				int dealt = enemy.hp;
+				enemy.hp = 0;
+				if (dealt > 0) {
+					lastDoomKillEvents.add(DamageEvent.enemy(enemyIndex(enemy), dealt, 0));
+				}
+			}
 		}
 		enemies.addAll(splitSpawns);
+		applyQueuedPostEnemyTurnDebuffs();
 		sanitizeTarget();
 
 		block = remainingBlock;
@@ -2414,7 +2499,11 @@ public class DeckBuilderCombat {
 		}
 		int counterDamage = 0;
 		if (enemyDamage > 0 && playerThorns > 0) {
+			int eventsBefore = lastDamageEvents.size();
 			counterDamage = damageEnemy(enemy, playerThorns, false);
+			while (lastDamageEvents.size() > eventsBefore) {
+				lastDamageEvents.remove(lastDamageEvents.size() - 1);
+			}
 		}
 		EnemyAction action = new EnemyAction(enemyIndex(enemy), damage, false, label, enemyDamage > 0 && damage == 0);
 		action.counterDamage = counterDamage;

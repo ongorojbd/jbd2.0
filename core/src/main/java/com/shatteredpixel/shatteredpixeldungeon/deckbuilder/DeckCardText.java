@@ -15,6 +15,7 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 public class DeckCardText {
 
+
 	public static String detailTitle(DeckCard card, int cardCode) {
 		return card.title(cardCode) + "(" + typeLabel(card.type) + ", " + rarityLabel(card.rarity) + "): 비용 " + costText(card, cardCode);
 	}
@@ -93,19 +94,41 @@ public class DeckCardText {
 		DeckCard card = DeckCard.byCode(cardCode);
 		if (upgraded == cardCode) return "더 이상 강화할 수 없습니다.";
 
-		String text = "";
-		if (card.cost(cardCode) != card.cost(upgraded)) text += appendLine(text, "비용 " + costText(card, cardCode) + " > " + costText(card, upgraded));
-		if (card.damage(cardCode) != card.damage(upgraded)) text += appendLine(text, "피해 " + card.damage(cardCode) + " > " + card.damage(upgraded));
-		if (card.block(cardCode) != card.block(upgraded)) text += appendLine(text, "보호막 " + card.block(cardCode) + " > " + card.block(upgraded));
-		if (card.draw(cardCode) != card.draw(upgraded)) text += appendLine(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
-		if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += appendLine(text, "피해 증폭 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
-		if (card.strength(cardCode) != card.strength(upgraded)) text += appendLine(text, "공격력 " + card.strength(cardCode) + " > " + card.strength(upgraded));
-		if (card.shivs(cardCode) != card.shivs(upgraded)) text += appendLine(text, "전갈탄 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
-		if (DeckCardCode.maxCharge(cardCode) != DeckCardCode.maxCharge(upgraded)) text += appendLine(text, "충전 " + DeckCardCode.maxCharge(cardCode) + "/" + DeckCardCode.maxCharge(cardCode) + " > " + DeckCardCode.maxCharge(upgraded) + "/" + DeckCardCode.maxCharge(upgraded));
+		// Collect upgrade text only from custom effects (skip auto-added base stat classes)
+		String effectText = "";
 		for (DeckCardEffect effect : card.effects(cardCode)) {
-			text += appendLine(text, effect.upgradePreviewText(card, cardCode, upgraded));
+			if (isBaseStatEffect(effect)) continue;
+			effectText += appendLine(effectText, effect.upgradePreviewText(card, cardCode, upgraded));
 		}
+
+		String text = "";
+		if (card.cost(cardCode) != card.cost(upgraded) && !effectText.contains("비용"))
+			text += appendLine(text, "비용 " + costText(card, cardCode) + " > " + costText(card, upgraded));
+
+		if (effectText.isEmpty()) {
+			// No custom effect text — fall back to auto stat comparison
+			if (card.damage(cardCode) != card.damage(upgraded)) text += appendLine(text, "피해 " + card.damage(cardCode) + " > " + card.damage(upgraded));
+			if (card.block(cardCode) != card.block(upgraded)) text += appendLine(text, "보호막 " + card.block(cardCode) + " > " + card.block(upgraded));
+			if (card.draw(cardCode) != card.draw(upgraded)) text += appendLine(text, "드로우 " + card.draw(cardCode) + " > " + card.draw(upgraded));
+			if (card.vulnerable(cardCode) != card.vulnerable(upgraded)) text += appendLine(text, "피해 증폭 " + card.vulnerable(cardCode) + " > " + card.vulnerable(upgraded));
+		}
+
+		if (card.strength(cardCode) != card.strength(upgraded) && !effectText.contains("공격력")) text += appendLine(text, "공격력 " + card.strength(cardCode) + " > " + card.strength(upgraded));
+		if (card.shivs(cardCode) != card.shivs(upgraded) && !effectText.contains("전갈탄")) text += appendLine(text, "전갈탄 " + card.shivs(cardCode) + " > " + card.shivs(upgraded));
+		if (DeckCardCode.maxCharge(cardCode) != DeckCardCode.maxCharge(upgraded)) text += appendLine(text, "충전 " + DeckCardCode.maxCharge(cardCode) + "/" + DeckCardCode.maxCharge(cardCode) + " > " + DeckCardCode.maxCharge(upgraded) + "/" + DeckCardCode.maxCharge(upgraded));
+		text += appendLine(text, effectText);
+
 		return text.length() > 0 ? text : "강화 효과가 아직 정의되지 않았습니다.";
+	}
+
+	private static boolean isBaseStatEffect(DeckCardEffect effect) {
+		Class<?> c = effect.getClass();
+		return c == DeckCardEffects.Damage.class
+			|| c == DeckCardEffects.Block.class
+			|| c == DeckCardEffects.Draw.class
+			|| c == DeckCardEffects.Vulnerable.class
+			|| c == DeckCardEffects.Strength.class
+			|| c == DeckCardEffects.AddShivs.class;
 	}
 
 	static int blockValue(int baseBlock, DeckBuilderCombat combat) {

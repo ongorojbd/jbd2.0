@@ -393,21 +393,17 @@ public class DeckBuilderRun {
 	public static boolean canRestAtRestSite() {
 		initRestForCurrentNode();
 		if (restHealAmount() <= 0) return false;
+		if (rest.rested) return false;
 		if (!rest.used) return true;
-		return hasRelic(DeckRelic.MINIATURE_TENT) && !rest.tentUsed;
+		return hasRelic(DeckRelic.MINIATURE_TENT) && !rest.explored;
 	}
 
 	public static boolean canSmithAtRestSite() {
 		initRestForCurrentNode();
-		boolean canUpgrade = false;
-		for (int code : deck) {
-			DeckCard card = DeckCard.byCode(code);
-			if (DeckCardPool.isStatusOrCurse(card)) continue;
-			if (DeckCardCode.upgrade(code) != code) { canUpgrade = true; break; }
-		}
-		if (!canUpgrade) return false;
+		if (!hasUpgradableDeckCard()) return false;
+		if (rest.smithed) return false;
 		if (!rest.used) return true;
-		return hasRelic(DeckRelic.MINIATURE_TENT) && !rest.tentUsed;
+		return hasRelic(DeckRelic.MINIATURE_TENT) && !rest.explored;
 	}
 
 	public static boolean restAtRestSite() {
@@ -424,7 +420,9 @@ public class DeckBuilderRun {
 			playerHT += 5;
 			playerHP = Math.min(playerHT, playerHP + 5);
 		}
-		if (rest.used) rest.tentUsed = true; else rest.used = true;
+		if (rest.used) rest.tentUsed = true;
+		rest.used = true;
+		rest.rested = true;
 		return true;
 	}
 
@@ -438,15 +436,16 @@ public class DeckBuilderRun {
 
 	public static boolean smithAtRestSite(int index) {
 		if (!canSmithAtRestSite() || !upgradeCardAt(index)) return false;
-		if (rest.used) rest.tentUsed = true; else rest.used = true;
+		if (rest.used) rest.tentUsed = true;
+		rest.used = true;
+		rest.smithed = true;
 		return true;
 	}
 
 	public static boolean canExploreAtRestSite() {
 		initRestForCurrentNode();
 		if (!hasRelic(DeckRelic.SAINT_TORSO)) return false;
-		if (!rest.used) return true;
-		return hasRelic(DeckRelic.MINIATURE_TENT) && !rest.tentUsed;
+		return !rest.used;
 	}
 
 	public static DeckRelic exploreAtRestSite() {
@@ -454,13 +453,23 @@ public class DeckBuilderRun {
 		DeckRelic relic = DeckRelic.randomAvailable(DeckRewardPolicy.rollRelicRarity());
 		if (relic == null) return null;
 		addRelic(relic);
-		if (rest.used) rest.tentUsed = true; else rest.used = true;
+		rest.used = true;
+		rest.explored = true;
 		return relic;
 	}
 
 	public static boolean restTentActionsDone() {
 		initRestForCurrentNode();
-		return rest.used && rest.tentUsed;
+		return rest.explored || (rest.rested && (rest.smithed || !hasUpgradableDeckCard()));
+	}
+
+	private static boolean hasUpgradableDeckCard() {
+		for (int code : deck) {
+			DeckCard card = DeckCard.byCode(code);
+			if (DeckCardPool.isStatusOrCurse(card)) continue;
+			if (DeckCardCode.upgrade(code) != code) return true;
+		}
+		return false;
 	}
 
 	public static void clearRest() {
@@ -620,6 +629,35 @@ public class DeckBuilderRun {
 	public static DeckRelic[] startingRelicChoices() {
 		initIfNeeded();
 		return DeckRunStart.startingRelicChoices();
+	}
+
+	public static boolean hasPendingStartingRelicEvent() {
+		return pendingCardTransform
+				|| pendingNeutralDiscover
+				|| pendingCardReward
+				|| pendingCardRewardCount > 0
+				|| pendingCardRemove
+				|| pendingCardRemoveCount > 0
+				|| pendingCardUpgrade
+				|| pendingOtherClassCardReward > 0
+				|| pendingRareCardChoice > 0
+				|| pendingRareNeutralCardChoice > 0;
+	}
+
+	public static boolean needsStartingRelicChoice() {
+		if (!startingRelicChosen) return true;
+		boolean hasChoiceRelic = false;
+		boolean hasOnlyClassStarter = !relics.isEmpty();
+		for (int relicId : relics) {
+			DeckRelic relic = DeckRelic.byId(relicId);
+			if (relic.type == DeckRelicType.STARTER || relic.type == DeckRelicType.PENALTY_STARTER) {
+				hasChoiceRelic = true;
+			}
+			if (relic.type != DeckRelicType.CLASS_STARTER) {
+				hasOnlyClassStarter = false;
+			}
+		}
+		return hasOnlyClassStarter && !hasChoiceRelic;
 	}
 
 	static void sanitizeStartingRelicChoices() {
