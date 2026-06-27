@@ -76,7 +76,7 @@ public class DeckRunInventory {
 	}
 
 	public static String relicListText(ArrayList<Integer> relics) {
-		if (relics.isEmpty()) return "획득한 유물이 없습니다.";
+		if (relics.isEmpty()) return "획득한 아이템이 없습니다.";
 		String text = "";
 		for (int id : relics) {
 			DeckRelic relic = DeckRelic.byId(id);

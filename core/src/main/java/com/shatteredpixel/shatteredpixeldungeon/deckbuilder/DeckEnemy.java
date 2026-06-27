@@ -16,8 +16,6 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 import com.watabou.utils.Random;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
 
-import javax.swing.plaf.basic.BasicRadioButtonMenuItemUI;
-
 public enum DeckEnemy {
 
 	TUTORIAL_DUMMY("로버트 E.O. 스피드왜건", 24, 0, false) {

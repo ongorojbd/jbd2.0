@@ -66,7 +66,7 @@ public class DeckTreasureScene extends PixelScene {
 		title.setPos((w - title.width()) / 2f, insets.top + 12);
 		add(title);
 
-		RenderedTextBlock text = renderTextBlock("상자가 놓여 있다.\n상자를 열어 유물을 획득한다.", 7);
+		RenderedTextBlock text = renderTextBlock("상자가 놓여 있다.\n상자를 열어 아이템을 획득한다.", 7);
 		text.hardlight(0xFFD8D1BD);
 		text.maxWidth(Math.min(220, w - (int)insets.left - (int)insets.right - 24));
 
@@ -225,7 +225,7 @@ public class DeckTreasureScene extends PixelScene {
 			title.text(relic == null ? "비어 있음" : relic.titleWithRarity());
 			title.maxWidth((int)(width - 40));
 			title.setPos(x + 31, y + 7);
-			desc.text(relic == null ? "획득할 유물이 없습니다." : relic.description);
+			desc.text(relic == null ? "획득할 아이템이 없습니다." : relic.description);
 			desc.maxWidth((int)(width - 20));
 			desc.setPos(x + 10, Math.max(y + 27, title.bottom() + 2));
 		}

@@ -284,13 +284,13 @@ public class InterlevelScene extends PixelScene {
             fadeTime = 0f;
         }
 
-        if (diocheck) {
+        if (Dungeon.deckbuilderlevel) {
+            background = new Image(Assets.Splashes.SO);
+        } else if (diocheck) {
             background = new Image(Assets.Splashes.BRANDO);
         } else {
             if (Dungeon.level instanceof DioLevel || Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel || Dungeon.level instanceof DiobossLevel || Dungeon.level instanceof ShipbossLevel) {
                 background = new Image(Assets.Splashes.BRANDO);
-            } else if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) {
-                background = new Image(Assets.Splashes.TENDENCY);
             } else if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) {
                 background = new Image(Assets.Splashes.TENDENCY);
             } else if (Statistics.spw8 == 1) {

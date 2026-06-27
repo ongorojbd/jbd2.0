@@ -64,6 +64,7 @@ public class v3_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
         add_Coming_Soon(changeInfos);
+        add_v3_7_Changes(changeInfos);
         add_v3_6_Changes(changeInfos);
         add_v3_5_Changes(changeInfos);
         add_v3_4_Changes(changeInfos);
@@ -81,6 +82,31 @@ public class v3_X_Changes {
 
         changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
                 "다음 주요 업데이트는 오시리스신 퀘스트 변경으로, 기존과 차별화된 독특한 퀘스트 방식이 될 예정입니다."));
+    }
+
+    public static void add_v3_7_Changes(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("v3.0h", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DECK), "카드 배틀 모드 추가!",
+                "새로운 모드인 _카드 배틀 모드_가 추가되었습니다!\n\n" +
+                        "덱을 구성하고, 카드를 사용해 적과 전투하며, 전투 보상과 이벤트를 통해 점점 강해지는 별도의 진행 방식을 즐길 수 있습니다.\n\n" +
+                        "카드 배틀 모드는 아직 베타 단계이며, 카드 밸런스와 적 패턴, 이벤트 구성은 계속 조정될 예정입니다.\n\n" +
+                        "처음 플레이하는 경우 카드 배틀 튜토리얼을 통해 기본 규칙을 익힐 수 있습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), "버그 수정",
+                "- 상원의원을 통해 입장할 수 있는 서브 던전에서 피해를 받지 않았던 버그를 수정했습니다.\n\n" +
+                        "- 특정 상황에서 투척 무기의 내구도가 오르는 버그를 수정했습니다."));
     }
 
     public static void add_v3_6_Changes(ArrayList<ChangeInfo> changeInfos) {

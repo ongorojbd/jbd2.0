@@ -166,7 +166,7 @@ public class DeckBuilderMapScene extends PixelScene {
 			addToFront(new WndMessage(
 					"카드 배틀 튜토리얼에 오신 것을 환영합니다!\n\n" +
 							"[목표]\n" +
-							"카드 배틀은 게임마다 랜덤하게 주어지는 카드와 유물로 이길 수 있는 덱을 만드는 로그라이크 덱빌딩 모드입니다.\n\n" +
+							"카드 배틀은 게임마다 랜덤하게 주어지는 카드와 아이템로 이길 수 있는 덱을 만드는 로그라이크 덱빌딩 모드입니다.\n\n" +
 							"[지도 경로]\n" +
 							"경로를 선택해 다음 행선지를 결정하세요. " +
 							"전투, 강적, 상점, 이벤트, 휴식, 보물 등 다양한 경로가 있으며, 보스를 쓰러뜨리면 하나의 계층이 클리어됩니다.\n\n" +
@@ -206,7 +206,7 @@ public class DeckBuilderMapScene extends PixelScene {
 		IconButton relicButton = new IconButton(Icons.BACKPACK_LRG.get()) {
 			@Override
 			protected void onClick() {
-				addToFront(new WndMessage("유물\n\n" + DeckBuilderRun.relicListText()));
+				addToFront(new WndMessage("아이템\n\n" + DeckBuilderRun.relicListText()));
 			}
 		};
 		relicButton.setRect(insets.left + 4, insets.top + 4, 20, 20);

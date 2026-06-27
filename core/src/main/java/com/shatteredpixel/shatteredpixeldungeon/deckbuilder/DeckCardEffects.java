@@ -3757,7 +3757,7 @@ public class DeckCardEffects {
 	}
 
 	// 오렌지 폭탄: 3턴 후 모든 적에게 피해
-	// 유물 선택 상자: 모든 유물 중 1개 선택 획득(디버그용)
+	// 아이템 선택 상자: 모든 아이템 중 1개 선택 획득(디버그용)
 	public static class RelicSelectionBoxEffect implements DeckCardEffect {
 		@Override
 		public void apply(DeckBuilderCombat combat, DeckCard card, int cardCode, DeckPlayResult.Builder result) {
@@ -3766,7 +3766,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "모든 유물 중 1개를 선택해 획득합니다.";
+			return "모든 아이템 중 1개를 선택해 획득합니다.";
 		}
 	}
 

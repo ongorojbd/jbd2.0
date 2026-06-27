@@ -243,7 +243,7 @@ public class DeckBattleScene extends PixelScene {
                     combat -> combat.playerVulnerable),
             new PlayerBuffSpec(BuffIndicator.PARALYSIS, "자석화", "공격 카드 비용이 1 증가합니다. 턴이 끝날 때마다 1 감소합니다.",
                     combat -> combat.playerEntangle),
-            new PlayerBuffSpec(BuffIndicator.COMBO, 1f, 0.8f, 0.35f, "연속 타격", "공격 카드의 피해가 이 수치만큼 증가합니다. 공격 이외의 카드를 사용하면 소멸합니다.",
+            new PlayerBuffSpec(BuffIndicator.COMBO, 1f, 0.8f, 0.35f, "연속 타격", "연속으로 공격 카드를 사용한 수치입니다. 공격 이외의 카드를 사용하면 소멸합니다.",
                     combat -> combat.playerConsecutiveStrike),
             new PlayerBuffSpec(BuffIndicator.TRINITY_FORM, 1f, 0.4f, 0f, "반격", "공격을 받을 때마다 대상에게 반격 수치만큼 피해를 줍니다.",
                     combat -> combat.playerThorns),
@@ -271,7 +271,7 @@ public class DeckBattleScene extends PixelScene {
             new EnemyStatusBuffSpec(BuffIndicator.DEGRADE, "방어력 저하", "보호막을 얻을 때 획득량이 감소합니다.",
                     enemy -> enemy.blockReduction),
             new EnemyStatusBuffSpec(BuffIndicator.UPGRADE, 1f, 0.5f, 0f, "공격력", "공격 피해가 이 수치만큼 증가합니다.",
-                    enemy -> enemy.strength),
+                    enemy -> Math.max(0, enemy.strength - enemy.turnStrengthLoss)),
             new EnemyStatusBuffSpec(BuffIndicator.TRINITY_FORM, 1f, 0.4f, 0f, "반격", "공격 카드로 공격한 대상에게 피해를 반격 수치만큼 되돌립니다.",
                     enemy -> enemy.thorns),
             new EnemyStatusBuffSpec(BuffIndicator.HEALING, "재생", "턴이 끝날 때마다 이 수치만큼 보호막을 얻습니다. 체력 피해를 받을 때마다 1 감소합니다.",
@@ -532,7 +532,7 @@ public class DeckBattleScene extends PixelScene {
         endTurn = new RedButton("턴 종료", 7) {
             @Override
             protected void onClick() {
-                if (combatLocked || tutorialMessageOpen()) return;
+                if (!canPressEndTurn()) return;
                 if (startEnemyTurn()) return;
                 int result = combat.endTurn();
 	                saveCombatState();
@@ -705,6 +705,16 @@ public class DeckBattleScene extends PixelScene {
         hideCardInfo();
         resolveEnemyTurn();
         return true;
+    }
+
+    private boolean canPressEndTurn() {
+        return !combatLocked && !tutorialMessageOpen() && !handSelectionOpen();
+    }
+
+    private boolean handSelectionOpen() {
+        return selectingForPure || selectingForBurningPact || selectingForDaggerThrowDiscard
+                || selectingForHiddenDagger || selectingForPendingExhaust || selectingForStrategyRetain
+                || touchOfInsanityActive || gamblerBrewActive;
     }
 
     private boolean beginStrategyRetainSelectionIfNeeded() {
@@ -1396,6 +1406,7 @@ public class DeckBattleScene extends PixelScene {
         DeckCombatEnemy target = combat.target();
         ensureEnemyViews();
         targetButton.visible = combat.enemies.size() > 1;
+        endTurn.enable(canPressEndTurn());
         refreshEnemyViews();
         enemyRoster.visible = false;
         pileStatus.visible = false;
@@ -2078,6 +2089,15 @@ public class DeckBattleScene extends PixelScene {
             cardUseSoundPlayed = true;
         } else if (card == DeckCard.GIGA_DRILL_BREAK) {
             Sample.INSTANCE.play(Assets.Sounds.HEI);
+            cardUseSoundPlayed = true;
+        } else if (card == DeckCard.MUHAMMAD_AVDOL) {
+            Sample.INSTANCE.play(Assets.Sounds.GHOST);
+            cardUseSoundPlayed = true;
+        } else if (card == DeckCard.PREDICTION) {
+            Sword.jonathanclass();
+            cardUseSoundPlayed = true;
+        } else if (card == DeckCard.GLIDE) {
+            Sample.INSTANCE.play(Assets.Sounds.BURNING);
             cardUseSoundPlayed = true;
         }
 
@@ -2783,7 +2803,7 @@ public class DeckBattleScene extends PixelScene {
         IconButton relicButton = new IconButton(Icons.BACKPACK_LRG.get()) {
             @Override
             protected void onClick() {
-                addToFront(new WndMessage("유물\n\n" + DeckBuilderRun.relicListText()));
+                addToFront(new WndMessage("아이템\n\n" + DeckBuilderRun.relicListText()));
             }
         };
         relicButton.setRect(insets.left + 4, insets.top + 4, 20, 20);
@@ -4869,7 +4889,7 @@ public class DeckBattleScene extends PixelScene {
         };
 
         int pos = 7;
-        RenderedTextBlock title = renderTextBlock("[유물 선택 상자] 획득할 유물 선택", 8);
+        RenderedTextBlock title = renderTextBlock("[아이템 선택 상자] 획득할 아이템 선택", 8);
         title.hardlight(Window.TITLE_COLOR);
         title.maxWidth(width - 14);
         title.setPos((width - title.width()) / 2f, pos);

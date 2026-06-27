@@ -133,7 +133,7 @@ public class DeckRelicChoiceScene extends PixelScene {
 		IconButton relicButton = new IconButton(Icons.BACKPACK_LRG.get()) {
 			@Override
 			protected void onClick() {
-				addToFront(new WndMessage("유물\n\n" + DeckBuilderRun.relicListText()));
+				addToFront(new WndMessage("아이템\n\n" + DeckBuilderRun.relicListText()));
 			}
 		};
 		relicButton.setRect(insets.left + 4, insets.top + 4, 20, 20);

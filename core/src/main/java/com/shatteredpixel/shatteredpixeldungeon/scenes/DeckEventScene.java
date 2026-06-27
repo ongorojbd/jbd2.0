@@ -130,7 +130,7 @@ public class DeckEventScene extends PixelScene {
 			new DeckEventDef(BIG_FISH, "에코즈의 알 방", "방 중앙에 기묘한 수풀이 있고, 방의 가장자리에 직화구이 고기와 마르게리타 피자가 놓여 있는 방을 발견했습니다.", ICON_TALENT, HOST_PIRANHA),
 			new DeckEventDef(SHAPESHIFTER_FOREST, "츠지 아야", "던전에서 츠지 아야를 마주쳤습니다.\n\n\"난 '행복한 얼굴'을 만들어주는 에스테티션이에요.\"", ICON_TALENT, HOST_SLIME, 100, false),
 			new DeckEventDef(UNREST_SITE, "식물 방", "하늘빛 이슬개구리풀과 회복풀이 자라 있는 방을 발견했습니다.\n\n회복풀을 밟자 주변의 적들이 다가오기 시작합니다. 그럼에도 불구하고 휴식을 취할까요?", ICON_TALENT, ItemSpriteSheet.SEED_SUNGRASS, true, 0, true),
-			new DeckEventDef(THIS_OR_THAT, "미로 방", "거대한 미로가 있고 미로의 한쪽 끝에 상자가 있는 방을 발견했습니다.", ICON_TALENT, ItemSpriteSheet.CHEST, true),
+			new DeckEventDef(THIS_OR_THAT, "미로 방", "거대한 미로가 있고 한쪽 끝에 상자가 있는 방을 발견했습니다.", ICON_TALENT, ItemSpriteSheet.CHEST, true),
 			new DeckEventDef(JUNGLE_MAZE_ADVENTURE, "적들이 가득 찬 방", "에니그마의 함정으로 도배되고 중앙에 상자가 놓여 있는 방을 발견했습니다.\n\n함정을 건드리면 수많은 적들이 나타날 것 같습니다..", ICON_TALENT, ItemSpriteSheet.BONES, true),
 			new DeckEventDef(AROMA_OF_CHAOS, "기억 DISC의 방", "2개의 기억 DISC가 있는 방을 발견했습니다.\n\n하나는 강화의 DISC, 다른 하나는 변환의 DISC로 보입니다.", ICON_TALENT, ItemSpriteSheet.SCROLL_KAUNAN, true),
 			new DeckEventDef(DOORS_OF_LIGHT_AND_DARK, "환영 열쇠와 상자 방", "상자 2개가 놓인 방을 발견했습니다. 상자를 열기 위해서는 환영 열쇠가 필요하지만 열쇠는 1개 뿐입니다..", ICON_TALENT, ItemSpriteSheet.CRYSTAL_KEY, true),
@@ -301,6 +301,10 @@ public class DeckEventScene extends PixelScene {
 			case PURIFIER:       return "카드 한 장을 선택해 제거합니다.";
 			default:             return "카드 한 장을 선택해 무작위 카드로 변화시킵니다.";
 		}
+	}
+
+	private String withCurrentHp(String text) {
+		return text + " (현재 체력: " + DeckBuilderRun.playerHP + " / " + DeckBuilderRun.playerHT + ")";
 	}
 
 	private void showCardSelection(int page) {
@@ -648,7 +652,7 @@ public class DeckEventScene extends PixelScene {
 
 	private void addShiningLightButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
 		int hpLoss = Math.max(1, DeckBuilderRun.playerHT / 5);
-		String enterDesc = "최대 HP의 20% (" + hpLoss + " HP)를 잃고, 덱의 카드 중 2장을 무작위로 강화합니다.";
+		String enterDesc = withCurrentHp("최대 HP의 20% (" + hpLoss + " HP)를 잃고, 덱의 카드 중 2장을 무작위로 강화합니다.");
 		EventChoiceButton enter = new EventChoiceButton("낭떠러지로 떨어진다", enterDesc, 0xFFFFEE88) {
 			@Override protected void onClick() {
 				if (resolved) return;
@@ -707,7 +711,7 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private void addWorldOfGoopButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
-		EventChoiceButton grab = new EventChoiceButton("모든 골드를 챙긴다", "75 골드를 획득하고 11 HP를 잃습니다.", 0xFFD5F27A) {
+		EventChoiceButton grab = new EventChoiceButton("모든 골드를 챙긴다", withCurrentHp("75 골드를 획득하고 11 HP를 잃습니다."), 0xFFD5F27A) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckBuilderRun.gold += 75;
@@ -794,7 +798,7 @@ public class DeckEventScene extends PixelScene {
 		donut.setRect(buttonX, prayY + buttonH + buttonGap, buttonW, buttonH);
 		add(donut);
 
-		EventChoiceButton box = new EventChoiceButton("에코즈 ACT.1과 싸운다", "무작위 유물을 1개 획득합니다. 저주 카드 '부식의 저주'를 받습니다.", 0xFFD4844A) {
+		EventChoiceButton box = new EventChoiceButton("에코즈 ACT.1과 싸운다", "무작위 아이템을 1개 획득합니다. 저주 카드 '부식의 저주'를 받습니다.", 0xFFD4844A) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckRelic relic = DeckRelic.randomAvailable(DeckRewardPolicy.rollRelicRarity());
@@ -850,7 +854,7 @@ public class DeckEventScene extends PixelScene {
 		rest.setRect(buttonX, prayY, buttonW, buttonH);
 		add(rest);
 
-		EventChoiceButton chop = new EventChoiceButton("적들과 싸운다", "최대 체력을 8 잃습니다. 무작위 유물을 1개 획득합니다.", 0xFFD5F27A) {
+		EventChoiceButton chop = new EventChoiceButton("적들과 싸운다", withCurrentHp("최대 체력을 8 잃습니다. 무작위 아이템을 1개 획득합니다."), 0xFFD5F27A) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckBuilderRun.playerHT = Math.max(1, DeckBuilderRun.playerHT - 8);
@@ -867,7 +871,7 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private void addThisOrThatButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
-		EventChoiceButton thisChoice = new EventChoiceButton("돌아간다", "체력을 6 잃습니다. 골드를 41~68 얻습니다.", 0xFFD5F27A) {
+		EventChoiceButton thisChoice = new EventChoiceButton("돌아간다", withCurrentHp("체력을 6 잃습니다. 골드를 41~68 얻습니다."), 0xFFD5F27A) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - 6);
@@ -880,7 +884,7 @@ public class DeckEventScene extends PixelScene {
 		thisChoice.setRect(buttonX, prayY, buttonW, buttonH);
 		add(thisChoice);
 
-		EventChoiceButton thatChoice = new EventChoiceButton("미로를 돌파한다", "저주 카드 '희생의 저주'를 덱에 추가합니다. 무작위 유물을 1개 얻습니다.", 0xFFD4844A) {
+		EventChoiceButton thatChoice = new EventChoiceButton("미로를 돌파한다", "저주 카드 '희생의 저주'를 덱에 추가합니다. 무작위 아이템을 1개 얻습니다.", 0xFFD4844A) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckBuilderRun.addCard(DeckCard.CLUMSINESS);
@@ -896,7 +900,7 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private void addJungleMazeAdventureButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
-		EventChoiceButton alone = new EventChoiceButton("싸운다", "골드를 135~165 얻습니다. 체력을 18 잃습니다.", 0xFFD5F27A) {
+		EventChoiceButton alone = new EventChoiceButton("싸운다", withCurrentHp("골드를 135~165 얻습니다. 체력을 18 잃습니다."), 0xFFD5F27A) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckBuilderRun.gold += 135 + Random.Int(31);
@@ -969,7 +973,7 @@ public class DeckEventScene extends PixelScene {
 	}
 
 	private void addMausoleumButtons(float buttonX, float buttonW, float prayY, float buttonH, float buttonGap) {
-		EventChoiceButton open = new EventChoiceButton("무덤을 건든다", "무작위 유물을 1개 획득합니다. 50% 확률로 저주 카드 '변위의 저주'를 받습니다.", 0xFFD4844A) {
+		EventChoiceButton open = new EventChoiceButton("무덤을 건든다", "무작위 아이템을 1개 획득합니다. 50% 확률로 저주 카드 '변위의 저주'를 받습니다.", 0xFFD4844A) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckRelic relic = DeckRelic.randomAvailable(DeckRewardPolicy.rollRelicRarity());
@@ -1009,7 +1013,7 @@ public class DeckEventScene extends PixelScene {
 		tradeGold.setRect(buttonX, prayY, buttonW, buttonH);
 		add(tradeGold);
 
-		EventChoiceButton embrace = new EventChoiceButton("큰 로카카카를 먹는다", "체력을 9 잃습니다. 변화시킬 카드를 1장 선택합니다.", 0xFFD478E8) {
+		EventChoiceButton embrace = new EventChoiceButton("큰 로카카카를 먹는다", withCurrentHp("체력을 9 잃습니다. 변화시킬 카드를 1장 선택합니다."), 0xFFD478E8) {
 			@Override protected void onClick() {
 				if (resolved) return;
 				DeckBuilderRun.playerHP = Math.max(0, DeckBuilderRun.playerHP - 9);

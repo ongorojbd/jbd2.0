@@ -15,6 +15,8 @@ package com.shatteredpixel.shatteredpixeldungeon.deckbuilder;
 
 import java.util.ArrayList;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -477,11 +479,11 @@ public class DeckBuilderCombat {
 		this.turn = 0;
 		if (DeckBuilderRun.tutorialMode) {
 			// 튜토리얼 고정 덱: ATTACK(STAFF/BASH) + SKILL(GUARD) + POWER(IGNITE) 각 타입 체험
-			this.drawPile.add(DeckCard.STAFF.code());   // ATTACK
+			this.drawPile.add(DeckCard.STRIKE.code());   // ATTACK
 			this.drawPile.add(DeckCard.GUARD.code());   // SKILL (보호막)
-			this.drawPile.add(DeckCard.BASH.code());    // ATTACK
+			this.drawPile.add(DeckCard.STRIKE.code());    // ATTACK
 			this.drawPile.add(DeckCard.IGNITE.code());  // POWER (강화의 DISC: +2 공격력)
-			this.drawPile.add(DeckCard.STAFF.code());   // ATTACK
+			this.drawPile.add(DeckCard.STRIKE.code());   // ATTACK
 		} else {
 			this.drawPile.addAll(deck);
 			if (DeckBuilderRun.hasRelic(DeckRelic.FORMAGGIO_BOTTLE)) {
@@ -2395,6 +2397,7 @@ public class DeckBuilderCombat {
 		for (DeckCombatEnemy enemy : enemies) {
 			if (enemy.kind == DeckEnemy.CREAM && enemy.alive() && enemy.darkSpace > 0) {
 				enemy.darkSpace--;
+				Sample.INSTANCE.play(Assets.Sounds.CREAM);
 				if (enemy.darkSpace <= 0) {
 					forceGameOver = true;
 					DeckBuilderRun.playerHP = 0;

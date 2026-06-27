@@ -175,7 +175,7 @@ public class DeckRestScene extends PixelScene {
 		if (DeckBuilderRun.hasRelic(DeckRelic.SAINT_TORSO)) {
 			options.add(new RestOption(
 					"탐색",
-					"성인의 동체부로 휴식 장소를 탐색해 무작위 유물을 획득합니다.",
+					"성인의 동체부로 휴식 장소를 탐색해 무작위 아이템을 획득합니다.",
 					0xFFBDA7FF,
 					DeckBuilderRun.canExploreAtRestSite(),
 					new Runnable() {
@@ -186,7 +186,7 @@ public class DeckRestScene extends PixelScene {
 							}
 							DeckRelic relic = DeckBuilderRun.exploreAtRestSite();
 							if (relic == null) {
-								addToFront(new WndMessage("탐색\n\n획득 가능한 유물이 없습니다."));
+								addToFront(new WndMessage("탐색\n\n획득 가능한 아이템이 없습니다."));
 								return;
 							}
 							Sample.INSTANCE.play(Assets.Sounds.ITEM);

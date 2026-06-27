@@ -126,10 +126,10 @@ import java.util.ArrayList;
 
 public enum DeckCard {
 
-	STRIKE(0, "행운의 검", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 100, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.WORN_SHORTSWORD),
+	STRIKE(0, "행운의 검", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 6, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.WORN_SHORTSWORD),
 	GUARD(1, "무당벌레 브로치", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 1, 0, 5, 0, 0, 0, 0, 0, false, ItemSpriteSheet.ARMOR_CLOTH,
 			new DeckCardEffects.GuardBonusEffect()),
-	BASH(2, "파문 커터", DeckCardType.ATTACK, DeckCardRarity.UNCOMMON, DeckCardTarget.SINGLE, 2, 8, 0, 0, 2, 0, 0, 0, false, ItemSpriteSheet.THROWING_STONE),
+	BASH(2, "파문 커터", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 2, 8, 0, 0, 2, 0, 0, 0, false, ItemSpriteSheet.THROWING_STONE),
 	VACCINE_SNAKE(3, "백신 뱀", DeckCardType.ATTACK, DeckCardRarity.COMMON, DeckCardTarget.SINGLE, 1, 9, 0, 1, 0, 0, 0, 0, true, ItemSpriteSheet.SHORTSWORD) {
 		@Override
 		public int damage(int code) {
@@ -1019,7 +1019,7 @@ public enum DeckCard {
 		@Override public int damage(int code) { return upgradeLevel(code) > 0 ? 4 : 3; }
 	},
 
-	RELIC_SELECTION_BOX(130, "유물 선택 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.CRYSTAL_CHEST,
+	RELIC_SELECTION_BOX(130, "아이템 선택 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.CRYSTAL_CHEST,
 			new DeckCardEffects.RelicSelectionBoxEffect()),
 
 	POTION_SELECTION_BOX(131, "물약 선택 상자", DeckCardType.SKILL, DeckCardRarity.UNCOMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.POTION_HOLDER,
@@ -1419,7 +1419,7 @@ public enum DeckCard {
 	UPGRADE_TEXT_VIEWER(291, "강화 텍스트 뷰어", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.SCROLL_HOLDER,
 			new DeckCardEffects.UpgradeTextViewerEffect()),
 
-	PREDICTION(292, "예측", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.SEAL, null, 0,
+	PREDICTION(292, "파문의 보호막", DeckCardType.SKILL, DeckCardRarity.COMMON, DeckCardTarget.NONE, 0, 0, 0, 0, 0, 0, 0, 0, false, ItemSpriteSheet.SEAL, null, 0,
 			new DeckCardEffects.TurnDexterity(2, 3))
 	;
 

@@ -65,13 +65,13 @@ Game.switchScene( SurfaceScene.class );
 | `DeckDiscover.java` | 발견 카드 풀 정책 |
 | `DeckEnemy.java` | 적 enum, HP/인텐트 패턴 |
 | `DeckEnemyIntent.java` | 인텐트 ID 실행 로직 |
-| `DeckRelic.java` | 유물 enum 및 획득 효과 |
+| `DeckRelic.java` | 아이템 enum 및 획득 효과 |
 | `DeckPotion.java` / `DeckPotionPolicy.java` | 포션 enum, 드랍 정책 |
-| `DeckRewardPolicy.java` | 카드/골드/유물/포션 보상 생성 |
+| `DeckRewardPolicy.java` | 카드/골드/아이템/포션 보상 생성 |
 | `DeckShop.java` / `DeckShopTransaction.java` | 상점 상품과 구매 처리 |
-| `DeckRunStart.java` | 새 런 초기화, 시작 유물 선택 |
+| `DeckRunStart.java` | 새 런 초기화, 시작 아이템 선택 |
 | `DeckStartingProfile.java` | 직업별 시작 덱 |
-| `DeckRunInventory.java` | 덱/유물/포션 조작 유틸 |
+| `DeckRunInventory.java` | 덱/아이템/포션 조작 유틸 |
 | `DeckWandCards.java` | 완드 카드 충전/처리 |
 
 ---
@@ -86,7 +86,7 @@ Game.switchScene( SurfaceScene.class );
 | `DeckRestScene.java` | 휴식/강화 UI |
 | `DeckTreasureScene.java` | 보물 상자 UI |
 | `DeckEventScene.java` | 조우 이벤트 UI |
-| `DeckRelicChoiceScene.java` | 시작 유물 선택과 pending 유물 이벤트 처리 |
+| `DeckRelicChoiceScene.java` | 시작 아이템 선택과 pending 아이템 이벤트 처리 |
 | `DeckRunHud.java` | 덱빌더 런 HUD |
 | `DeckRewardWindow.java` | 닫기 방지 보상 창 |
 | `DeckRewardRow.java` | 전투 보상 행 UI |
@@ -230,7 +230,7 @@ DeckCard.rewardFallback(heroClass);
 | 취약, vulnerable | 피해 증폭 |
 | 약화, weak | 공격력 저하 |
 
-내부 변수명과 저장 키는 호환성을 위해 `strength`, `vulnerable`, `weak`을 유지할 수 있지만, 카드/포션/유물/버프/로그/강화 미리보기 텍스트에는 표시 명칭을 사용한다.
+내부 변수명과 저장 키는 호환성을 위해 `strength`, `vulnerable`, `weak`을 유지할 수 있지만, 카드/포션/아이템/버프/로그/강화 미리보기 텍스트에는 표시 명칭을 사용한다.
 
 예외:
 
@@ -272,16 +272,16 @@ DeckCard.rewardFallback(heroClass);
 2. `effectiveCodeForPlay()`로 AIM/THROW/임시 키워드 반영
 3. `DeckCardEffect.apply()` 실행
 4. POWER는 전투 중 제거, EXHAUST는 `exhaustPile`, 나머지는 `discardPile`
-5. 처치/유물/카드 특수 후처리
+5. 처치/아이템/카드 특수 후처리
 
 ### 피해 연출 원칙
 
-피해 이펙트는 카드/유물/포션 개별 효과에 직접 붙이는 것보다, 실제 피해가 적용되는 공통 경로를 우선 사용한다.
+피해 이펙트는 카드/아이템/포션 개별 효과에 직접 붙이는 것보다, 실제 피해가 적용되는 공통 경로를 우선 사용한다.
 
 - 적 피해는 `DeckBuilderCombat.damageEnemy(...)`가 실제 피해량을 계산하고 `lastDamageEvents`에 기록한다.
 - 플레이어 HP 피해는 `DeckBuilderCombat.loseHP(...)`가 실제 피해량을 계산하고 `lastDamageEvents`에 기록한다.
 - `DeckBattleScene`은 카드 투사체로 이미 표시한 공격 피해를 제외하고, 남은 `lastDamageEvents`를 기본 피격 연출로 표시한다.
-- 새 카드/유물/포션이 피해를 준다면 가능하면 직접 HP를 깎지 말고 `damageEnemy(...)` 또는 `loseHP(...)`를 호출한다.
+- 새 카드/아이템/포션이 피해를 준다면 가능하면 직접 HP를 깎지 말고 `damageEnemy(...)` 또는 `loseHP(...)`를 호출한다.
 - 특수한 투사체/사운드가 필요한 카드만 별도 연출을 추가하고, 기본 피격/피해 숫자 표시는 공통 피해 이벤트 기록을 신뢰한다.
 
 ### 연타(다단 히트) 이펙트 시스템
@@ -415,7 +415,7 @@ result.addAttackHit(combat.enemyIndex(target), dealt3); // wave 2 → 0.50초 �
 - 전투 중 생성된 소멸 더미는 영구 덱에서 제거하지 않음
 - `STATUS` 카드는 런 덱에서 제거
 - `GUILT`는 전투 종료마다 진행도 증가, 조건 충족 시 제거
-- `MEAT_ON_THE_BONE` 등 전투 종료 유물 처리
+- `MEAT_ON_THE_BONE` 등 전투 종료 아이템 처리
 - `DeckCombatRewardState` 기반 보상 창 표시
 
 ---
@@ -516,7 +516,7 @@ currentCombat
 - `DeckRestState rest`
 - `DeckCombatRewardState reward`
 
-pending 유물/이벤트 필드:
+pending 아이템/이벤트 필드:
 
 - `pendingCardTransform`
 - `pendingNeutralDiscover`
@@ -590,7 +590,7 @@ pending 유물/이벤트 필드:
 
 막 구성:
 
-| 막 | 시작/유물 선택 | 일반 맵 | 보스 |
+| 막 | 시작/아이템 선택 | 일반 맵 | 보스 |
 |----|----------------|---------|------|
 | 1막 | 1층 | 2-16층 | 17층 |
 | 2막 | 18층 | 19-33층 | 34층 |
@@ -600,7 +600,7 @@ pending 유물/이벤트 필드:
 
 - `DeckBuilderRun.prepareNextAct()` 호출
 - `startingRelicChosen = false`
-- 시작 유물 선택 흐름으로 복귀
+- 시작 아이템 선택 흐름으로 복귀
 - 다음 막 첫 일반 맵으로 이어지는 transition 준비
 
 3막 보스(51층)를 클리어하면 카드 배틀 모드 승리로 처리한다.
@@ -611,7 +611,7 @@ pending 유물/이벤트 필드:
 - 내부 경로 수 `PATH_COUNT = 6`
 - 각 막의 일반 맵 시작층부터 보스까지 링크 생성
 - 보스층은 중앙 1노드만 사용
-- 1층, 18층, 35층은 맵 노드가 없는 막 시작/유물 선택 구간
+- 1층, 18층, 35층은 맵 노드가 없는 막 시작/아이템 선택 구간
 - 맵 버전이 다르거나 유효하지 않으면 재생성
 
 ---
@@ -644,14 +644,14 @@ pending 유물/이벤트 필드:
 
 - `DeckBattleScene.showCombatRewardWindow()`
 - `DeckRewardWindow`: 보상 창 닫기 방지
-- `DeckRewardRow`: 골드/유물/포션/카드 보상 행
+- `DeckRewardRow`: 골드/아이템/포션/카드 보상 행
 - `RewardCardButton`: 카드 선택 UI, 아직 `DeckBattleScene` 내부 클래스
 
 ---
 
-## 유물 시스템
+## 아이템 시스템
 
-유물은 `DeckRelic` enum에 정의된다. 새 유물을 추가할 때는 중복 등장 규칙, 보상/상점 풀, 획득 즉시 효과, pending 선택 이벤트, 저장/복원을 함께 확인한다.
+아이템은 `DeckRelic` enum에 정의된다. 새 아이템을 추가할 때는 중복 등장 규칙, 보상/상점 풀, 획득 즉시 효과, pending 선택 이벤트, 저장/복원을 함께 확인한다.
 
 `DeckRelicType`:
 
@@ -664,13 +664,13 @@ pending 유물/이벤트 필드:
 - `SHOP`
 - `ANCIENT`
 
-시작 유물:
+시작 아이템:
 
 - `STARTER`: 시작 선택지 1-2번 슬롯
 - `PENALTY_STARTER`: 시작 선택지 3번 슬롯, 강한 보상 + 패널티
 - `CLASS_STARTER`: 직업별 자동 지급
 
-대표 유물:
+대표 아이템:
 
 - 시작: `NEW_LEAF`, `SMALL_CAPSULE`, `LEAD_PAPERWEIGHT`, `LOST_COFFER`, `POMANDER`
 - 페널티 시작: `LEAFY_POULTICE`, `STARTER_LARGE_CAPSULE`, `HEFTY_TABLET`, `PRECARIOUS_SHEARS`, `SILVER_CRUCIBLE`, `CURSED_PEARL`, `NEOWS_BONES`
@@ -681,15 +681,15 @@ pending 유물/이벤트 필드:
 획득 시 즉시 효과는 `DeckRelic.onAcquire()`에서 처리한다.
 선택 UI가 필요한 효과는 pending 필드를 세팅하고 `DeckRelicChoiceScene.processPendingRelicEvent()`에서 순차 처리한다.
 
-유물 중복 규칙:
+아이템 중복 규칙:
 
-- 런에서 이미 소지한 유물은 다시 등장하거나 획득되지 않는다.
-- `DeckRunInventory.addRelic()`는 이미 소지한 유물이면 추가하지 않고 즉시 반환한다.
-- 보상/보물/시작 유물 랜덤 풀은 `DeckBuilderRun.hasRelic(relic)`로 소지 유물을 제외한다.
-- 상점 유물 상품도 소지 유물을 제외하며, 같은 상점 안에서 동일 유물을 중복 판매하지 않는다.
-- 상점처럼 한 번에 여러 유물을 생성하는 경우, 이번 생성에서 이미 고른 유물 id를 제외 목록으로 넘겨야 한다.
-- 시작 유물은 일반 보상/보물/상점 풀에 나오면 안 된다.
-- `NUTRITIOUS_OYSTER`, `ARCANE_SCROLL`는 시작 유물과 겹치므로 `rewardPool()`에서 제외한다.
+- 런에서 이미 소지한 아이템은 다시 등장하거나 획득되지 않는다.
+- `DeckRunInventory.addRelic()`는 이미 소지한 아이템이면 추가하지 않고 즉시 반환한다.
+- 보상/보물/시작 아이템 랜덤 풀은 `DeckBuilderRun.hasRelic(relic)`로 소지 아이템을 제외한다.
+- 상점 아이템 상품도 소지 아이템을 제외하며, 같은 상점 안에서 동일 아이템을 중복 판매하지 않는다.
+- 상점처럼 한 번에 여러 아이템을 생성하는 경우, 이번 생성에서 이미 고른 아이템 id를 제외 목록으로 넘겨야 한다.
+- 시작 아이템은 일반 보상/보물/상점 풀에 나오면 안 된다.
+- `NUTRITIOUS_OYSTER`, `ARCANE_SCROLL`는 시작 아이템과 겹치므로 `rewardPool()`에서 제외한다.
 
 ---
 
@@ -776,14 +776,14 @@ pending 유물/이벤트 필드:
 | `CLERIC = 8` | 성직자 | 골드 35 이상 | 35골드 회복 또는 50골드 카드 제거 |
 | `WORLD_OF_GOOP = 9` | 끈적이 천지 | 골드 50 이상 | 75골드+11HP 손실 또는 20~50골드 손실 |
 | `LIVING_WALL = 10` | 살아있는 벽 | 기본 | 제거/변환/강화 중 1개 선택 |
-| `BIG_FISH = 11` | 월척 | 기본 | 회복/최대 체력+5/유물+부식의 저주 중 1개 선택 |
+| `BIG_FISH = 11` | 월척 | 기본 | 회복/최대 체력+5/아이템+부식의 저주 중 1개 선택 |
 | `SHAPESHIFTER_FOREST = 12` | 변성체의 숲 | 골드 100 이상 | 모든 골드 손실+무작위 카드 2장 변환 또는 최대 체력+5 |
-| `UNREST_SITE = 13` | 불안한 휴식 장소 | 현재 HP 70% 미만 | 전체 회복+수면 부족 또는 최대 체력 -8+무작위 유물 |
-| `THIS_OR_THAT = 14` | 이거 아님 저거? | 기본 | HP -6+41~68골드 또는 서투름+무작위 유물 |
+| `UNREST_SITE = 13` | 불안한 휴식 장소 | 현재 HP 70% 미만 | 전체 회복+수면 부족 또는 최대 체력 -8+무작위 아이템 |
+| `THIS_OR_THAT = 14` | 이거 아님 저거? | 기본 | HP -6+41~68골드 또는 서투름+무작위 아이템 |
 | `JUNGLE_MAZE_ADVENTURE = 15` | 정글 미로 탐험 | 기본 | 135~165골드+HP -18 또는 35~65골드 |
 | `AROMA_OF_CHAOS = 16` | 혼돈의 향기 | 기본 | 카드 1장 변환 또는 카드 1장 강화 |
 | `DOORS_OF_LIGHT_AND_DARK = 17` | 빛과 어둠의 문 | 기본 | 무작위 카드 2장 강화 또는 카드 1장 제거 |
-| `MAUSOLEUM = 18` | 영묘 | 기본 | 무작위 유물 1개, 50% 확률로 몸부림 또는 떠나기 |
+| `MAUSOLEUM = 18` | 영묘 | 기본 | 무작위 아이템 1개, 50% 확률로 몸부림 또는 떠나기 |
 | `WHISPERING_HOLLOW = 19` | 속삭이는 골짜기 | 골드 50 이상 | 50골드로 무작위 포션 2개 또는 HP -9+카드 1장 변환 |
 
 ### UI 구조
@@ -837,20 +837,20 @@ EventChoiceButton("떠난다", ...)                    → leaveEvent()
 - `DeckShopState`
 - `DeckShopTransaction`
 - `DeckShopBalancePolicy`
-- 카드 구매, 유물 구매, 카드 제거
+- 카드 구매, 아이템 구매, 카드 제거
 - `shopRemoveCount`로 제거 가격 증가
-- 유물 상품은 총 3개를 생성한다.
-- 보상 유물 풀(`COMMON`/`UNCOMMON`/`RARE`, `rewardPool() == true`)에서 2개를 생성한다. 희귀도 롤은 보상 유물 희귀도 롤과 동일하다.
-- 상점 유물 풀(`DeckRelicType.SHOP`)에서 1개를 생성한다. 상점 유물은 희귀도 롤을 하지 않고 상점 유물 풀에서 무작위로 1개를 뽑는다.
-- 상점 유물 상품은 이미 소지한 유물과 같은 상점 내 이미 나온 유물을 제외한다.
-- 보상 유물 판매가: 일반 143-157G, 특별 238-262G, 희귀 285-315G.
-- 상점 유물 판매가: 143-157G.
+- 아이템 상품은 총 3개를 생성한다.
+- 보상 아이템 풀(`COMMON`/`UNCOMMON`/`RARE`, `rewardPool() == true`)에서 2개를 생성한다. 희귀도 롤은 보상 아이템 희귀도 롤과 동일하다.
+- 상점 아이템 풀(`DeckRelicType.SHOP`)에서 1개를 생성한다. 상점 아이템은 희귀도 롤을 하지 않고 상점 아이템 풀에서 무작위로 1개를 뽑는다.
+- 상점 아이템 상품은 이미 소지한 아이템과 같은 상점 내 이미 나온 아이템을 제외한다.
+- 보상 아이템 판매가: 일반 143-157G, 특별 238-262G, 희귀 285-315G.
+- 상점 아이템 판매가: 143-157G.
 - 카드 배틀 모드의 상점 가격과 전투 밸런스는 챌린지/승천 개수에 따른 보정을 받지 않는다.
 
 보물:
 
 - `DeckTreasureState`
-- 상자 등급에 따라 유물 희귀도 결정
+- 상자 등급에 따라 아이템 희귀도 결정
 - `firstTreasureEmpty`가 있으면 첫 보물 상자 비움
 
 휴식:
@@ -939,7 +939,7 @@ DeckCardText.upgradePreviewText(card.code());
 - `보호막을 ... 얻습니다.`
 - 강화 미리보기의 `피해/드로우/보호막` 중복
 
-### 유물 추가
+### 아이템 추가
 
 1. `DeckRelic` enum에 추가
 2. 타입과 희귀도 지정
@@ -958,7 +958,7 @@ DeckCardText.upgradePreviewText(card.code());
 
 1. 카드를 발견하는 효과는 `DeckDiscover` 풀 정책을 추가하거나 재사용하고, `DeckBattleScene.showDiscoverWindow()` 흐름으로 처리한다.
 2. 손패 카드를 고르는 효과는 ID 24번 `PURE`(순수)의 손패 선택 화면/흐름을 재사용한다.
-3. 포션/유물/카드마다 같은 목적의 선택 UI를 새로 만들지 않는다.
+3. 포션/아이템/카드마다 같은 목적의 선택 UI를 새로 만들지 않는다.
 
 ### 새 씬 상태 추가
 

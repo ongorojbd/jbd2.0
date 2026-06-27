@@ -40,7 +40,7 @@ public enum DeckRelic {
 			DeckBuilderRun.deck.set(idx, filtered.get(Random.Int(filtered.size())).code());
 		}
 	},
-	SMALL_CAPSULE("다이아 A", "획득 시, 무작위 유물을 1개 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
+	SMALL_CAPSULE("다이아 A", "획득 시, 무작위 아이템을 1개 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			DeckRelic relic = randomAvailable((DeckRelic) null);
 			if (relic != null) DeckBuilderRun.addRelic(relic);
@@ -61,7 +61,7 @@ public enum DeckRelic {
 		@Override public void onAcquire() { DeckBuilderRun.pendingCardRemove = true; }
 	},
 	BOOMING_CONCH("클로버 5", "강적 전투 시작 시, 카드를 추가로 2장 뽑고 에너지를 1 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
-	LAVA_ROCK("다이아 10", "1계층의 보스가 보상으로 유물을 2개 제공합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
+	LAVA_ROCK("다이아 10", "1계층의 보스가 보상으로 아이템을 2개 제공합니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK),
 	GOLDEN_PEARL("다이아 9", "획득 시, 골드를 150 얻습니다.", DeckRelicRarity.COMMON, DeckRelicType.STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() { DeckBuilderRun.gainGold(150); }
 	},
@@ -98,7 +98,7 @@ public enum DeckRelic {
 			DeckBuilderRun.playerHP = Math.min(DeckBuilderRun.playerHP, DeckBuilderRun.playerHT);
 		}
 	},
-	STARTER_LARGE_CAPSULE("다이아 Q", "획득 시, 무작위 유물을 2개 얻습니다. 기본 무기 1장과 기본 브로치 1장을 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
+	STARTER_LARGE_CAPSULE("다이아 Q", "획득 시, 무작위 아이템을 2개 얻습니다. 기본 무기 1장과 기본 브로치 1장을 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			for (int i = 0; i < 2; i++) {
 				DeckRelic relic = randomAvailable((DeckRelic) null);
@@ -145,7 +145,7 @@ public enum DeckRelic {
 		}
 	},
 
-	NEOWS_BONES("스페이드 A", "획득 시, 무작위 시작 유물 2개를 획득합니다. 무작위 저주 카드를 1장 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
+	NEOWS_BONES("스페이드 A", "획득 시, 무작위 시작 아이템 2개를 획득합니다. 무작위 저주 카드를 1장 덱에 추가합니다.", DeckRelicRarity.COMMON, DeckRelicType.PENALTY_STARTER, ItemSpriteSheet.DECK) {
 		@Override public void onAcquire() {
 			ArrayList<Integer> seen = new ArrayList<>();
 			for (int i = 0; i < 2; i++) {
@@ -261,9 +261,9 @@ public enum DeckRelic {
 	TAROT_CARD("타로 카드", "내 턴 동안 손에 카드가 없다면, 카드를 1장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.WONDROUS_RESIN),
 	OBSIDIAN("흑요석", "매 턴마다 공격, 보조, 지속 카드를 처음으로 모두 사용 시, 공격력, 방어력 증가를 1 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SUMMON_ELE),
 	VITRIOL_DEVICE("염청 장치", "지속 카드를 사용할 때마다, 손에 있는 무작위 카드 1장을 이번 턴 동안 비용 없이 사용할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.EYE_OF_NEWT),
-	SPW_FOUNDATION_LOST_ITEM("SPW재단의 유실물", "상점에서 판매하는 카드, 유물, 포션이 품절되지 않으며, 판매 금액이 20% 감소합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BONES),
+	SPW_FOUNDATION_LOST_ITEM("SPW재단의 유실물", "상점에서 판매하는 카드, 아이템, 포션이 품절되지 않으며, 판매 금액이 20% 감소합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BONES),
 	THOTH("토트신", "내 턴 동안 공격 카드를 사용하지 않았다면, 다음 턴에 추가 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RAT_SKULL),
-	SAINT_TORSO("성인의 동체부", "휴식 장소에 탐색 선택지가 추가됩니다. 탐색을 선택하면 무작위 유물을 획득할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.PARCHMENT_SCRAP),
+	SAINT_TORSO("성인의 동체부", "휴식 장소에 탐색 선택지가 추가됩니다. 탐색을 선택하면 무작위 아이템을 획득할 수 있습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.PARCHMENT_SCRAP),
 	NIGHT_RULER("밤의 지배자", "세 번째 턴 시작 시, 추가 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SUNDIAL),
 	TOORU_DOLL("토오루의 인형", "일곱번째 턴 종료 시, 모든 적에게 피해를 52 줍니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.MIMIC_TOOTH),
 	GOO_GOO_DOLLS("구구 돌즈", "세 번째 턴 시작 시, 보호막을 18 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.FERRET_TUFT),
@@ -283,7 +283,7 @@ public enum DeckRelic {
 	MAGNET("자철석", "내 턴 동안 카드를 3장 이하로 사용했다면, 다음 턴 시작 시 카드를 추가로 3장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.TELE_GRAB),
 	OPAL("자수정", "지속 카드를 사용할 때마다 체력을 2 회복합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.RETURN_BEACON),
 	DIO_BONE("DIO의 뼈", "카드가 소멸될 때마다 무작위 카드를 1장 손으로 가져옵니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.BEACON),
-	BLACK_STAR("송편", "강적이 보상으로 주는 유물이 1개 증가합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SHATTERED_CAKE),
+	BLACK_STAR("송편", "강적이 보상으로 주는 아이템이 1개 증가합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.SHATTERED_CAKE),
 	GAME_PIECE("사파이어", "파워 카드를 사용할 때마다, 카드를 1장 뽑습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.PHASE_SHIFT),
 	MEAT_ON_THE_BONE("허브", "매 전투 종료 시 남은 체력이 50% 이하라면, 체력을 12 회복합니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.ORE),
 	BEATING_REMNANT("20th 센츄리 보이", "내가 한 턴에 잃는 체력이 20을 넘을 수 없습니다.", DeckRelicRarity.RARE, DeckRelicType.RARE, ItemSpriteSheet.CEN),

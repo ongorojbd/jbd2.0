@@ -168,7 +168,7 @@ public class DeckRunHud extends Component {
 		int padding = 5;
 		int pos = 7;
 
-		RenderedTextBlock titleBlock = PixelScene.renderTextBlock("유물 목록", 9);
+		RenderedTextBlock titleBlock = PixelScene.renderTextBlock("아이템 목록", 9);
 		titleBlock.hardlight(Window.TITLE_COLOR);
 		titleBlock.setPos((width - titleBlock.width()) / 2f, pos);
 		win.add(titleBlock);
@@ -178,7 +178,7 @@ public class DeckRunHud extends Component {
 		float contentPos = 0;
 
 		if (DeckBuilderRun.relics.isEmpty()) {
-			RenderedTextBlock empty = PixelScene.renderTextBlock("획득한 유물이 없습니다.", 6);
+			RenderedTextBlock empty = PixelScene.renderTextBlock("획득한 아이템이 없습니다.", 6);
 			empty.hardlight(0xFF888888);
 			empty.setPos((width - 10 - empty.width()) / 2f, contentPos);
 			content.add(empty);

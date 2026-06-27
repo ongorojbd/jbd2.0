@@ -489,14 +489,14 @@ public class DeckEnemyIntent {
 	}
 
 	private static String attackText(DeckCombatEnemy enemy) {
-		if (enemy.intent > 0 && (enemy.strength != 0 || enemy.attackDown > 0)) {
+		if (enemy.intent > 0 && (enemy.strength != 0 || enemy.attackDown > 0 || enemy.turnStrengthLoss != 0)) {
 			return "예고: " + damageText(enemy, enemy.intent) + " 피해";
 		}
 		return "예고: " + enemy.intent + " 피해";
 	}
 
 	private static int damageText(DeckCombatEnemy enemy, int baseDamage) {
-		int damage = Math.max(0, baseDamage + enemy.strength);
+		int damage = Math.max(0, baseDamage + enemy.strength - enemy.turnStrengthLoss);
 		if (enemy.attackDown > 0) damage = enemy.debuffDoubleTurns > 0 ? damage / 2 : damage * 3 / 4;
 		return damage;
 	}
