@@ -14,46 +14,35 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Act1;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.Act1Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.So1Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.So2Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.TsujiAyaSprite;
-import com.watabou.noosa.audio.Music;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderMap;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckBuilderRun;
-import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotionPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCard;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardKeyword;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardPool;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardRarity;
-import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardTarget;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckCardText;
+import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckPotionPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRelic;
 import com.shatteredpixel.shatteredpixeldungeon.deckbuilder.DeckRewardPolicy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Act1Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlchemistSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ButterflySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.Butterfly2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CausticSlimeSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.EmporioSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollGeomancerSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollTricksterSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.PiranhaSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RotLasherSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SlimeSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.WarlockSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.So1Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.So2Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TsujiAyaSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -67,9 +56,11 @@ import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 import com.watabou.utils.RectF;
+import com.watabou.utils.Reflection;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -730,7 +721,6 @@ public class DeckEventScene extends PixelScene {
 				int loss = 20 + Random.Int(31);
 				DeckBuilderRun.gold = Math.max(0, DeckBuilderRun.gold - loss);
 				resolved = true;
-				Sample.INSTANCE.play(Assets.Sounds.EAT);
 				leaveEvent();
 			}
 		};
@@ -1350,7 +1340,35 @@ public class DeckEventScene extends PixelScene {
 		}
 
 		private void layoutArt(DeckCard card) {
-			if (card == DeckCard.SLIMY) {
+			if (card.spriteClass != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (spriteArt != null) remove(spriteArt);
+				try {
+					spriteArt = Reflection.newInstance(card.spriteClass).forceIdling();
+				} catch (Exception ignored) {
+					spriteArt = null;
+				}
+				if (spriteArt != null) {
+					add(spriteArt);
+					spriteArt.visible = true;
+					spriteArt.scale.set(1.15f);
+					spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
+					spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
+					align(spriteArt);
+				}
+			} else if (card.charSprite != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				spriteArt.visible = true;
+				spriteArt.texture(card.charSprite.tex);
+				TextureFilm film = new TextureFilm(spriteArt.texture, card.charSprite.w, card.charSprite.h);
+				spriteArt.frame(film.get(card.charSprite.frame));
+				spriteArt.scale.set(card.charSprite.scale);
+				spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
+				spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
+				align(spriteArt);
+			} else if (card == DeckCard.SLIMY) {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
 				spriteArt.visible = true;

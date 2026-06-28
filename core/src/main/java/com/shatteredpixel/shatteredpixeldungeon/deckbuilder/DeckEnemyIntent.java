@@ -156,7 +156,7 @@ public class DeckEnemyIntent {
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "영혼 흡수 (공격력 -1, 민첩 -1)"));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 영혼 흡수"));
+			enemy -> "예고: 공격력 -1, 방어력 증가 -1 부여"));
 
 	public static final DeckEnemyIntent PECK = register(multiAttack(
 			DeckBuilderCombat.RESULT_PECK, 3, 3, "쪼기"));
@@ -374,7 +374,7 @@ public class DeckEnemyIntent {
 	public static final DeckEnemyIntent CREAM_AMBUSH = register(new DeckEnemyIntent(
 			DeckBuilderCombat.RESULT_CREAM_AMBUSH,
 			(combat, enemy, remainingBlock) -> {
-				enemy.darkSpace += 6;
+				enemy.darkSpace += 5;
 				for (int i = 0; i < 2; i++) {
 					combat.drawPile.add(DeckCard.GLIDE.code());
 					combat.discardPile.add(DeckCard.GLIDE.code());
@@ -382,7 +382,7 @@ public class DeckEnemyIntent {
 				combat.lastEnemyActions.add(new DeckBuilderCombat.EnemyAction(combat.enemyIndex(enemy), 0, false, "급습 (암흑공간 +5)", false, DeckCard.GLIDE, 4));
 				return TurnResult.noChange(remainingBlock);
 			},
-			enemy -> "예고: 암흑공간 +6, 동료의 희생 4장 섞어 넣음"));
+			enemy -> "예고: 암흑공간 +5, 동료의 희생 4장 섞어 넣음"));
 
 	public static final DeckEnemyIntent CREAM_MIASMA = register(multiAttack(
 			DeckBuilderCombat.RESULT_CREAM_MIASMA, 2, 6, "아공간의 독기"));

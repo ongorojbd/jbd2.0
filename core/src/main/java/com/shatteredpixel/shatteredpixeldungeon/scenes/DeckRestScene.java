@@ -40,6 +40,7 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.RectF;
+import com.watabou.utils.Reflection;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -599,7 +600,35 @@ public class DeckRestScene extends PixelScene {
 		}
 
 		private void layoutArt(DeckCard card) {
-			if (card == DeckCard.SLIMY) {
+			if (card.spriteClass != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				if (spriteArt != null) remove(spriteArt);
+				try {
+					spriteArt = Reflection.newInstance(card.spriteClass).forceIdling();
+				} catch (Exception ignored) {
+					spriteArt = null;
+				}
+				if (spriteArt != null) {
+					add(spriteArt);
+					spriteArt.visible = true;
+					spriteArt.scale.set(1.15f);
+					spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
+					spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
+					align(spriteArt);
+				}
+			} else if (card.charSprite != null) {
+				if (art != null) art.visible = false;
+				if (talentArt != null) talentArt.visible = false;
+				spriteArt.visible = true;
+				spriteArt.texture(card.charSprite.tex);
+				TextureFilm film = new TextureFilm(spriteArt.texture, card.charSprite.w, card.charSprite.h);
+				spriteArt.frame(film.get(card.charSprite.frame));
+				spriteArt.scale.set(card.charSprite.scale);
+				spriteArt.x = artPanel.x + (artPanel.width() - spriteArt.width()) / 2f;
+				spriteArt.y = artPanel.y + (artPanel.height() - spriteArt.height()) / 2f;
+				align(spriteArt);
+			} else if (card == DeckCard.SLIMY) {
 				if (art != null) art.visible = false;
 				if (talentArt != null) talentArt.visible = false;
 				spriteArt.visible = true;

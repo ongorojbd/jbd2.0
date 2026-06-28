@@ -115,8 +115,8 @@ public class DeckRewardPolicy {
 
 	private static int classSlot(int index) {
 		if (index == 0) return 100;
-		if (index == 1) return 60;
-		if (index == 2) return 20;
+		if (index == 1) return 50;
+		if (index == 2) return 10;
 		return 0;
 	}
 
