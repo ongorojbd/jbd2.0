@@ -184,6 +184,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndFloorIntro;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoCell;
@@ -1116,6 +1117,12 @@ public class GameScene extends PixelScene {
                                 }
 
                             }
+                    );
+                } else if (Dungeon.level instanceof SewerLevel && Dungeon.depth == 2) {
+                    WndFloorIntro.show(Assets.Splashes.SEWERS,
+                            Messages.get(this, "floor2_intro_a"),
+                            Messages.get(this, "floor2_intro_b"),
+                            Messages.get(this, "floor2_intro_c")
                     );
                 } else if (Dungeon.level instanceof HallsLevel && Dungeon.depth == 21 && !isUnlocked(Badges.Badge.UNLOCK_JOHNNY) && Badges.isUnlocked(Badges.Badge.VICTORY) && Statistics.deepestFloor == 21 && Statistics.spw36 == 0) {
                     WndDialogueWithPic.dialogue(

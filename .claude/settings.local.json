@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\orogn\\\\StudioProjects\\\\jbd2.0\\\\core\\\\src\\\\main\\\\java\\\\com\\\\shatteredpixel\\\\shatteredpixeldungeon\\\\deckbuilder\" -Recurse -File)",
+      "Bash(Select-Object FullName)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\orogn\\\\StudioProjects\\\\jbd2.0\\\\core\\\\src\\\\main\\\\java\\\\com\\\\shatteredpixel\\\\shatteredpixeldungeon\\\\deckbuilder\" -Recurse -Name)",
+      "Bash(python3 -c ' *)",
+      "Bash(python -c \"print\\('hello'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(python fix_keywords.py)",
+      "Bash(del \"c:\\\\Users\\\\orogn\\\\StudioProjects\\\\jbd2.0\\\\fix_keywords.py\")",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\orogn\\\\StudioProjects\\\\jbd2.0\" -Recurse -Filter \"*Battle*\" -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\orogn\\\\StudioProjects\\\\jbd2.0\" -Directory)",
+      "Bash(Select-Object Name)"
+    ]
+  }
+}

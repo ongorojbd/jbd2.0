@@ -104,6 +104,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.SpeedWagon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Stower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tendency;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.UnseenWarden;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -2336,6 +2337,12 @@ public class Hero extends Char {
 
     private boolean walkingToVisibleTrapInFog = false;
 
+    //a downed (recovering) UnseenWarden doesn't block the hero's path - otherwise its body
+    //sitting in a 1-wide doorway would wall the player out of that room for the whole recovery
+    private static boolean blocksHeroMovement(Char ch) {
+        return ch != null && !(ch instanceof UnseenWarden && ((UnseenWarden) ch).recovering());
+    }
+
     private boolean getCloser(final int target) {
 
         if (target == pos)
@@ -2352,7 +2359,7 @@ public class Hero extends Char {
 
             path = null;
 
-            if (Actor.findChar(target) == null) {
+            if (!blocksHeroMovement(Actor.findChar(target))) {
 
                 if (Dungeon.level.passable[target] || Dungeon.level.avoid[target]) {
                     step = target;
@@ -2373,7 +2380,7 @@ public class Hero extends Char {
             else if (path.getLast() != target)
                 newPath = true;
             else {
-                if (!Dungeon.level.passable[path.get(0)] || Actor.findChar(path.get(0)) != null) {
+                if (!Dungeon.level.passable[path.get(0)] || blocksHeroMovement(Actor.findChar(path.get(0)))) {
                     newPath = true;
                 }
             }

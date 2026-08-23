@@ -40,22 +40,24 @@ public class GolemSprite extends MobSprite {
 		super();
 		
 		texture( Assets.Sprites.GOLEM );
+
+		scale.set(0.5f);
 		
-		TextureFilm frames = new TextureFilm( texture, 16, 14 );
+		TextureFilm frames = new TextureFilm( texture, 40, 40 );
 		
-		idle = new Animation( 4, true );
-		idle.frames( frames, 0, 1 );
+		idle = new Animation( 6, true );
+		idle.frames( frames, 0, 1, 2 );
 		
 		run = new Animation( 12, true );
-		run.frames( frames, 2, 3, 4, 5 );
+		run.frames( frames, 3, 4, 5, 6, 7 );
 		
 		attack = new Animation( 10, false );
-		attack.frames( frames, 6, 7, 8 );
+		attack.frames( frames, 8, 9, 10, 0 );
 
 		zap = attack.clone();
 		
 		die = new Animation( 15, false );
-		die.frames( frames, 9, 10, 11, 12, 13 );
+		die.frames( frames, 11);
 		
 		play( idle );
 	}
@@ -64,38 +66,18 @@ public class GolemSprite extends MobSprite {
 	public void link(Char ch) {
 		super.link(ch);
 
-		teleParticles = emitter();
-		teleParticles.autoKill = false;
-		teleParticles.pour(ElmoParticle.FACTORY, 0.05f);
-		teleParticles.on = false;
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		if (teleParticles != null){
-			teleParticles.pos( this );
-			teleParticles.visible = visible;
-		}
+
 	}
 
 	@Override
 	public void kill() {
 		super.kill();
 
-		if (teleParticles != null) {
-			teleParticles.on = false;
-		}
-	}
-
-	public void teleParticles(boolean value){
-		if (teleParticles != null) teleParticles.on = value;
-	}
-
-	@Override
-	public synchronized void play(Animation anim, boolean force) {
-		if (teleParticles != null) teleParticles.on = false;
-		super.play(anim, force);
 	}
 
 	@Override

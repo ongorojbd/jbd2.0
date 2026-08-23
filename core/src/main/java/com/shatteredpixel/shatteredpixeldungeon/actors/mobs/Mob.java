@@ -540,7 +540,7 @@ public abstract class Mob extends Char {
     }
 
     private boolean cellIsPathable(int cell) {
-        if (!Dungeon.level.passable[cell]) {
+        if (!Dungeon.level.passable[cell] && !canBreakThrough(cell)) {
             if (flying || buff(Amok.class) != null) {
                 if (!Dungeon.level.avoid[cell]) {
                     return false;
@@ -557,6 +557,14 @@ public abstract class Mob extends Char {
         }
 
         return true;
+    }
+
+    //lets a mob treat an otherwise-solid cell as passable (eg. a door the hero locked behind
+    //them with a Skeleton Key) - overriding move() to actually clear/break the obstacle once
+    //standing on it is strongly recommended, otherwise nothing about the cell itself changes
+    //and every other passability check elsewhere still treats it as solid
+    protected boolean canBreakThrough(int cell) {
+        return false;
     }
 
     protected boolean getCloser(int target) {

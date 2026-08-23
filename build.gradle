@@ -20,7 +20,7 @@ allprojects {
         appJavaCompatibility = JavaVersion.VERSION_11
 
         appAndroidCompileSDK = 36   //Android 15
-        appAndroidMinSDK = 21       //Android 5.0
+        appAndroidMinSDK = 24       //Android 5.0
         appAndroidTargetSDK = 36    //Android 15
 
         gdxVersion = '1.14.0'

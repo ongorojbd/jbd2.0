@@ -177,6 +177,8 @@ public class Assets {
         public static final String TENDENCY1 = "music/tendency_1.ogg";
         public static final String TENDENCY2 = "music/tendency_2.ogg";
         public static final String TENDENCY3 = "music/tendency_3.ogg";
+
+        public static final String TG_1 = "music/tg_1.ogg";
     }
 
     public static class Sounds {
@@ -466,6 +468,8 @@ public class Assets {
         public static final String D43 = "sounds/d43.mp3";
         public static final String ORAORA = "sounds/oraora.mp3";
         public static final String MUDAMUDA = "sounds/mudamuda.mp3";
+        public static final String TG1 = "sounds/tg1.mp3";
+        public static final String TG2 = "sounds/tg2.mp3";
 
         public static final String[] all = new String[]{
                 CLICK, BADGE, GOLD,
@@ -492,7 +496,7 @@ public class Assets {
                 RO1, RO2, RO3, RO4, RO5, YUKAK, TALE, NITOH, TONIO, HAMON, MINE, P1, P2, EMP, ANNA, HORSE, SHEER2, A1, B1, B2, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, WOU, WOU2, K1, K2, K3,
                 JONNY, JONNY2, JONNY3, G1, G2, G3, G4, G5, G6, G7, G8, G9, G10, G11, G12, G13, SO1, SO2, EVO1, EVO2, EVO3,
                 SPW1, SPW2, SPW3, SPW4, SPW5, SPW6, WILLA, MIH, ENYA, ENYA2, DARBY, JUDGE, NUKESAKU, REIMI, TONIO2, TONIO3, YOSHIHIRO, WS1, WS2, WS3, ROLLERDA, POL,
-                JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5, JT6, JT7, ORAORA, MUDAMUDA
+                JSL1, JSL2, JSL3, JSL4, JSF1, JSF2, JSF3, JSF4, JSF5, JT1, JT2, JT3, JT4, JT5, JT6, JT7, ORAORA, MUDAMUDA, TG1, TG2
         };
     }
 
@@ -760,5 +764,7 @@ public class Assets {
         public static final String KS2 = "sprites/ks2.png";
         public static final String KS3 = "sprites/ks3.png";
         public static final String KS4 = "sprites/ks4.png";
+
+        public static final String GIANT = "sprites/giant.png";
     }
 }

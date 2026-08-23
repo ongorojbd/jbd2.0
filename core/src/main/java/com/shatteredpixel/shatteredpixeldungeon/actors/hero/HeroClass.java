@@ -123,6 +123,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Evolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
@@ -200,7 +201,7 @@ public enum HeroClass {
             new SkeletonKey().identify().collect();
             new PotionOfHealing().identify().quantity(9999).collect();
             new PotionOfMindVision().identify().quantity(9999).collect();
-            new UV().identify().quantity(9999).collect();
+            new Willa().identify().quantity(9999).collect();
             new Pasty().collect();
             new Neotel().identify().collect();
             new TengusMask().identify().collect();

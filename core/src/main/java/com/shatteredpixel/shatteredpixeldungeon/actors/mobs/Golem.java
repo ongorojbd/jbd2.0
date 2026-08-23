@@ -125,7 +125,6 @@ public class Golem extends Mob {
 		selfTeleCooldown--;
 		enemyTeleCooldown--;
 		if (teleporting){
-			((GolemSprite)sprite).teleParticles(false);
 			if (Actor.findChar(target) == null && Dungeon.level.openSpace[target]) {
 				ScrollOfTeleportation.appear(this, target);
 				selfTeleCooldown = 30;
@@ -193,7 +192,6 @@ public class Golem extends Mob {
 				spend( 1 / speed() );
 				return moveSprite( oldPos, pos );
 			} else if (!Dungeon.bossLevel() && target != -1 && target != pos && selfTeleCooldown <= 0) {
-				((GolemSprite)sprite).teleParticles(true);
 				teleporting = true;
 				spend( 2*TICK );
 			} else {

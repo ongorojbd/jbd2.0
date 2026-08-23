@@ -97,6 +97,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyEventLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyRestLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyTreasureLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.VeiledSanctumLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
@@ -387,7 +388,7 @@ public class Dungeon {
                         tendencylevel = true;
                         level = new ArenaLevel();
                     } else {
-                        level = new SewerLevel();
+                        level = new VeiledSanctumLevel();
                     }
                     break;
                 case 2:
