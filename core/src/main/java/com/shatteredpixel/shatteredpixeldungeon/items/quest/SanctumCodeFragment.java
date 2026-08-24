@@ -36,19 +36,19 @@ public class SanctumCodeFragment extends Item {
     public boolean doPickUp(Hero hero, int pos) {
         boolean result = super.doPickUp(hero, pos);
         if (result) {
-            GLog.p("암호 조각을 발견했다: 비밀번호 " + (position + 1) + "번째 자리는 '" + digit + "'.");
+            GLog.p("암호 파일을 발견했다: 비밀번호 " + (position + 1) + "번째 자리는 '" + digit + "'.");
         }
         return result;
     }
 
     @Override
     public String name() {
-        return "임상 기록서";
+        return "암호 파일";
     }
 
     @Override
     public String desc() {
-        return "성역 아래로 내려가는 문을 열기 위한 4자리 암호 중 " + (position + 1) + "번째 자리 숫자가 적혀 있다.\n\n\"" + digit + "\"";
+        return "엘리베이터를 열기 위한 4자리 암호 중 " + (position + 1) + "번째 자리 숫자가 적혀 있다.\n\n\"" + digit + "\"";
     }
 
     @Override

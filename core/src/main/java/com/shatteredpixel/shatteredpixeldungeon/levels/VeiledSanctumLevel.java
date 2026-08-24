@@ -56,10 +56,9 @@ import java.util.HashMap;
 */
 public class VeiledSanctumLevel extends Level {
 
-    //cool, sterile tones for the overall university-hospital concept
     {
-        color1 = 0x6b8a99;
-        color2 = 0xdfe8ea;
+        color1 = 0x48763c;
+        color2 = 0x59994a;
     }
 
     public static final String[] SANCTUM_TRACK_LIST = new String[]{Assets.Music.TG_1};

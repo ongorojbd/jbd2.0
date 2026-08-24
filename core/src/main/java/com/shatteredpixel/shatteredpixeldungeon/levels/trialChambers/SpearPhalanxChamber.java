@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGuard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 
@@ -44,7 +44,7 @@ public class SpearPhalanxChamber extends TrialChamber {
         }
     }
 
-    public static class PhalanxGuard extends GnollGuard {
+    public static class PhalanxGuard extends Banshee {
         { properties.add(Property.BOSS_MINION); }
     }
 }

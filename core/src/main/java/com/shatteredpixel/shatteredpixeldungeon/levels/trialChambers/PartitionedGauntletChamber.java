@@ -1,8 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomsoldier;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcopter;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Btank;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -52,7 +50,6 @@ public class PartitionedGauntletChamber extends TrialChamber {
             int pos = Random.element(openCells);
             openCells.remove(Integer.valueOf(pos));
             elite.pos = pos;
-            elite.state = elite.HUNTING;
             level.mobs.add(elite);
         }
     }
@@ -124,15 +121,15 @@ public class PartitionedGauntletChamber extends TrialChamber {
         }
     }
 
-    public static class GauntletGuard extends Btank {
+    public static class GauntletGuard extends Banshee {
         { properties.add(Property.BOSS_MINION); }
     }
 
-    public static class GauntletShaman extends Bcomsoldier {
+    public static class GauntletShaman extends Banshee {
         { properties.add(Property.BOSS_MINION); }
     }
 
-    public static class GauntletBrute extends Bcopter {
+    public static class GauntletBrute extends Banshee {
         { properties.add(Property.BOSS_MINION); }
     }
 }

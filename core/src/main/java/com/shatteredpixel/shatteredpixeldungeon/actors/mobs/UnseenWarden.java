@@ -1,14 +1,23 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CrystalGuardianSprite;
@@ -47,7 +56,7 @@ public class UnseenWarden extends Mob {
     {
         spriteClass = GiantSprite.class;
 
-        HP = HT = 250;
+        HP = HT = 300;
         defenseSkill = 20;
 
         EXP = 0;
@@ -61,10 +70,13 @@ public class UnseenWarden extends Mob {
         properties.add(Property.BOSS);
         properties.add(Property.STATIC);
 
+        immunities.add(Sleep.class);
+        immunities.add(MagicalSleep.class);
+
         WANDERING = new RelentlessWandering();
     }
 
-    private static final int RECOVERY_PER_TURN = 25;
+    private static final int RECOVERY_PER_TURN = 20;
 
     //it doesn't start actively hunting until this many of its own turns have passed, so the
     //hero gets a breather right after entering the level instead of being chased immediately
@@ -79,8 +91,19 @@ public class UnseenWarden extends Mob {
         return recovering;
     }
 
+    //이 거리 안에 있으면 은신을 감지해서 투명화를 풀어버린다
+    private static final int INVISIBILITY_SENSE_RANGE = 8;
+
     @Override
     protected boolean act() {
+        if (distance(Dungeon.hero) <= INVISIBILITY_SENSE_RANGE && Dungeon.hero.buff(Invisibility.class) != null) {
+            Invisibility.dispel(Dungeon.hero);
+            Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+            SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
+            GLog.w(Messages.get(this, "i"));
+            Dungeon.hero.interrupt();
+        }
+
         if (recovering) {
             HP = Math.min(HT, HP + RECOVERY_PER_TURN);
             if (sprite != null && Dungeon.level.heroFOV[pos]) {
@@ -95,7 +118,12 @@ public class UnseenWarden extends Mob {
         }
 
         if (turnsAlive < HUNT_GRACE_TURNS) {
+            //유예 기간 동안은 beckon()조차 호출하지 않는다 - beckon()이 target을 플레이어 위치로
+            //갱신해버리면 아직 HUNTING이 아니어도 Wandering.continueWandering()이 그 target을
+            //향해 슬금슬금 다가가버려서, 결국 유예 기간 내내 가만히 있지 않고 접근해오게 된다
             turnsAlive++;
+            spend(TICK);
+            return true;
         }
 
         if (state == HUNTING && Random.Int(CHASE_SOUND_CHANCE) == 0 && Dungeon.level.heroFOV[pos]) {
@@ -118,8 +146,24 @@ public class UnseenWarden extends Mob {
     }
 
     @Override
+    public int drRoll() {
+        return Random.NormalIntRange(5, 10);
+    }
+
+    @Override
+    public int attackProc(Char enemy, int damage) {
+        damage = super.attackProc(enemy, damage);
+        damage += enemy.HT / 5;
+        return damage;
+    }
+
+    //항상 플레이어의 현재 이동 속도(헤이스트, 모멘텀 등 포함)에 비례해서 이 배율만큼 더 빠르다
+    private static final float SPEED_MULTIPLIER = 1.15f;
+
+    @Override
     public float speed() {
-        return super.speed() * 1.35f;
+        baseSpeed = Dungeon.hero.speed() * SPEED_MULTIPLIER;
+        return super.speed();
     }
 
     @Override

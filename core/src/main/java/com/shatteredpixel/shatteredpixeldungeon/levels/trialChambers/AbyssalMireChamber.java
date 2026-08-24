@@ -2,14 +2,14 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
 
 //a flooded archive: sunken bookshelves and broken wall stumps poke out of the water,
 //toxic gas blankets the flood, and only a few dry paths cross to the doors. a pair of
-//great crabs lurk beneath the surface.
+//sleeping banshees lurk beneath the surface.
 public class AbyssalMireChamber extends TrialChamber {
 
     {
@@ -53,7 +53,7 @@ public class AbyssalMireChamber extends TrialChamber {
         }
     }
 
-    public static class MireCrab extends GreatCrab {
+    public static class MireCrab extends Banshee {
         { properties.add(Property.BOSS_MINION); }
     }
 }

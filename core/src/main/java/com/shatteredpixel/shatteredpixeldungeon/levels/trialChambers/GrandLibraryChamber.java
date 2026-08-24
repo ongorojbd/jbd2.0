@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 
@@ -8,8 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 //bookshelf run that gives way to a barricade of fallen rubble where the ceiling caved in, with
 //a reading chair (Terrain.REGION_DECO) tucked in the nook behind it. The 4 wings are rotations
 //of the same arm, so the room reads as a proper spiral of stacks rather than a symmetric grid.
-//3 teleporting Golems (the same "library keeper" reused from the old forge chamber) roam the
-//outer aisles between wings.
+//3 sleeping Banshees roam the outer aisles between wings.
 public class GrandLibraryChamber extends TrialChamber {
 
     {
@@ -78,7 +77,7 @@ public class GrandLibraryChamber extends TrialChamber {
         return new int[]{dx, dy};
     }
 
-    public static class LibraryGolem extends Golem {
+    public static class LibraryGolem extends Banshee {
         { properties.add(Property.BOSS_MINION); }
     }
 }

@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalGuardian;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -63,7 +63,7 @@ public class CrystalWardChamber extends TrialChamber {
         }
     }
 
-    public static class WardGuardian extends CrystalGuardian {
+    public static class WardGuardian extends Banshee {
         { properties.add(Property.BOSS_MINION); }
     }
 }
