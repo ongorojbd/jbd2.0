@@ -123,6 +123,12 @@ public class UnseenWarden extends Mob {
             //향해 슬금슬금 다가가버려서, 결국 유예 기간 내내 가만히 있지 않고 접근해오게 된다
             turnsAlive++;
             spend(TICK);
+            if (turnsAlive == 9) {
+                SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
+                GLog.n(Messages.get(this, "d"));
+                Sample.INSTANCE.play(Assets.Sounds.TG1);
+                return true;
+            }
             return true;
         }
 
