@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
@@ -96,12 +97,18 @@ public class Banshee extends Mob {
 	public void die(Object cause) {
 		if (Random.Float() < REVIVE_CHANCE) {
 			HP = REVIVE_HP;
-			CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 8);
-			Buff.affect(this, Roots.class, 3f);
+			if (Dungeon.level.heroFOV[pos]) {
+				SpellSprite.show(this, SpellSprite.BERSERK);
+				CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 8);
+			}
+			spend(1f);
+			Buff.affect(this, Roots.class, 2f);
 			return;
 		} else {
 			Sample.INSTANCE.play(Assets.Sounds.TG1);
 		}
+
+
 		super.die(cause);
 	}
 

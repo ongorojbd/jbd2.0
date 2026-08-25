@@ -2,10 +2,13 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.UnseenWarden;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasuho;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SanctumCodeFragment;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.AbyssalMireChamber;
@@ -350,9 +353,11 @@ public class VeiledSanctumLevel extends Level {
 
         if (sb.toString().equals(input)) {
             sanctumCodeSolved = true;
-            GLog.p("찰칵 - 자물쇠가 풀렸다.");
+            GLog.p("엘리베이터의 잠금을 해제했다.");
         } else {
             GLog.w("비밀번호가 일치하지 않는다.");
+            ScrollOfTeleportation.teleportChar(Dungeon.hero);
+            Buff.affect(Dungeon.hero, Vertigo.class, 10f);
         }
     }
 

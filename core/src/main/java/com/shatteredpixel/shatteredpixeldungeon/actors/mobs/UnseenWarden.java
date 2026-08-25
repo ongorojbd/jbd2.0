@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -168,7 +169,13 @@ public class UnseenWarden extends Mob {
 
     @Override
     public float speed() {
-        baseSpeed = Dungeon.hero.speed() * SPEED_MULTIPLIER;
+        float mult = SPEED_MULTIPLIER;
+        //Triplespeed는 hero.speed()가 아니라 spend() 오버라이드로 적용되는 효과라
+        //hero.speed()만 봐서는 반영되지 않는다 - 따로 체크해서 워든도 2배 빨라지게 한다
+        if (Dungeon.hero.buff(Triplespeed.class) != null) {
+            mult *= 2f;
+        }
+        baseSpeed = Dungeon.hero.speed() * mult;
         return super.speed();
     }
 

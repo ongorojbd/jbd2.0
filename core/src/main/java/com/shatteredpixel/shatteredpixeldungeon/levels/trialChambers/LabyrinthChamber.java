@@ -1,16 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Maze;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
-import com.watabou.utils.Random;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -99,29 +94,12 @@ public class LabyrinthChamber extends TrialChamber {
 
     @Override
     public void placeRewards() {
-        Item prize;
-        if (Random.Int(2) == 0) {
-            prize = Generator.randomWeapon((Dungeon.depth / 5) + 1, true);
-            if (((Weapon) prize).hasCurseEnchant()) {
-                ((Weapon) prize).enchant(null);
-            }
-        } else {
-            prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
-            if (((Armor) prize).hasCurseGlyph()) {
-                ((Armor) prize).inscribe(null);
-            }
-        }
-        prize.cursed = false;
-        prize.cursedKnown = true;
-        if (Random.Int(3) == 0) {
-            prize.upgrade();
-        }
-
-        Heap heap = level.drop(prize, prizeCell);
-        heap.type = Heap.Type.CHEST;
-
+        Heap heap;
         if (bonusReward != null) {
-            level.drop(bonusReward, prizeCell);
+            heap = level.drop(bonusReward, prizeCell);
+        } else {
+            heap = level.drop(new Neoro(), prizeCell);
         }
+        heap.type = Heap.Type.CHEST;
     }
 }

@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ShockingTrap;
@@ -50,16 +49,11 @@ public class CrystalWardChamber extends TrialChamber {
 
         Painter.set(level, center, Terrain.PEDESTAL);
 
-        int centerCell = level.pointToCell(center);
         int[][] guardOffsets = {{0, -RING_RADIUS + 1}, {0, RING_RADIUS - 1}};
         for (int pos : customOffsetArray(guardOffsets)) {
             WardGuardian guardian = new WardGuardian();
             guardian.pos = pos;
             level.mobs.add(guardian);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            level.drop(Generator.randomUsingDefaults(Generator.Category.ARTIFACT), centerCell);
         }
     }
 

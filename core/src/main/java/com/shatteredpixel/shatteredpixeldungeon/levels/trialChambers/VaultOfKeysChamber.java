@@ -2,8 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
@@ -38,7 +38,7 @@ public class VaultOfKeysChamber extends TrialChamber {
         buildVault(6, 0, new int[][]{{5, -1}, {5, 1}, {6, -1}, {6, 1}, {7, -1}, {7, 0}, {7, 1}}, 5, 0);
         buildVault(-6, 0, new int[][]{{-5, -1}, {-5, 1}, {-6, -1}, {-6, 1}, {-7, -1}, {-7, 0}, {-7, 1}}, -5, 0);
 
-        int[][] keySpots = {{-2, -2}, {2, -2}, {0, 3}, {-2, 2}};
+        int[][] keySpots = {{-2, -2}, {2, -2}, {2, 2}, {-2, 2}};
         for (int pos : customOffsetArray(keySpots)) {
             level.drop(new CrystalKey(Dungeon.depth), pos);
         }
@@ -69,8 +69,7 @@ public class VaultOfKeysChamber extends TrialChamber {
         }
 
         for (int cell : cells) {
-            Item prize = Random.Int(2) == 0 ? eliteTrialPrizeItem() : trialPrizeItem();
-            level.drop(prize, cell).type = Heap.Type.CHEST;
+            level.drop(new Neoro(), cell).type = Heap.Type.CHEST;
         }
     }
 }

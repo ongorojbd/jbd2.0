@@ -1,9 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -79,54 +78,20 @@ public class TrialChamber {
         }
     }
 
-    //called by the level once for every room, after build(). Default behaviour drops a small
-    //pile of loot on the room's own pedestal, plus bonusReward (if set) as a chest. Rooms whose
-    //gimmick is its own reward layout (eg. several separately-locked chests) should override this
-    //instead of relying on the generic center-pedestal drop.
+    //called by the level once for every room, after build(). This room's pedestal gets the
+    //sanctum code fragment if it was chosen to carry one, otherwise a single Neoro - always
+    //shown as a chest either way. Rooms whose gimmick is its own reward layout (eg. several
+    //separately-locked chests) should override this instead of relying on the generic
+    //center-pedestal drop.
     public void placeRewards() {
         int cell = level.pointToCell(center);
-        Heap heap = null;
-        int n = Random.IntRange(2, 3);
-        for (int i = 0; i < n; i++) {
-            heap = level.drop(trialPrizeItem(), cell);
-        }
-        heap = level.drop(eliteTrialPrizeItem(), cell);
-
+        Heap heap;
         if (bonusReward != null) {
             heap = level.drop(bonusReward, cell);
-            heap.type = Heap.Type.CHEST;
         } else {
-            heap.setHauntedIfCursed().type = Heap.Type.SKELETON;
+            heap = level.drop(new Neoro(), cell);
         }
-    }
-
-    protected static Item trialPrizeItem() {
-        return Generator.randomUsingDefaults(Random.oneOf(
-                Generator.Category.POTION,
-                Generator.Category.SCROLL,
-                Generator.Category.FOOD,
-                Generator.Category.GOLD
-        ));
-    }
-
-    protected static Item eliteTrialPrizeItem() {
-        Item item;
-        do {
-            switch (Random.Int(3)) {
-                case 0:
-                    item = Generator.randomUsingDefaults(Generator.Category.RING);
-                    break;
-                case 1:
-                    item = Generator.randomUsingDefaults(Generator.Category.ARTIFACT);
-                    break;
-                default:
-                    item = Generator.randomUsingDefaults(Random.oneOf(
-                            Generator.Category.WEAPON,
-                            Generator.Category.ARMOR));
-                    break;
-            }
-        } while (item == null || Challenges.isItemBlocked(item));
-        return item;
+        heap.type = Heap.Type.CHEST;
     }
 
     public ArrayList<Integer> innerRoomPos() {
