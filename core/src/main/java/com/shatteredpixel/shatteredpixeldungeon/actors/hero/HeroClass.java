@@ -198,7 +198,7 @@ public enum HeroClass {
             new RingOfEnergy().identify().upgrade(9999).collect();
             new RingOfAccuracy().identify().upgrade(9999).collect();
             new PlateArmor().identify().upgrade(9999).collect();
-            new WandOfDisintegration().identify().upgrade(9999).collect();
+            new WandOfDisintegration().identify().upgrade(20).collect();
             new SkeletonKey().identify().collect();
             new PotionOfHealing().identify().quantity(9999).collect();
             new PotionOfMindVision().identify().quantity(9999).collect();

@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
@@ -397,7 +398,7 @@ public class Dungeon {
                     } else if (Statistics.spw6 > 0) {
                         level = new HumanVillageBossLevel2();
                     } else {
-                        level = new SewerLevel();
+                        level = new ColdhouseBossLevel();
                     }
                     break;
                 case 3:
