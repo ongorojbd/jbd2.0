@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.BossChallengeTester;
+import com.shatteredpixel.shatteredpixeldungeon.items.DolomitesTeeth;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Bcomdisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
@@ -151,6 +153,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDestOrb;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfKillerQueen;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AJA;
@@ -266,6 +269,7 @@ public enum Catalog {
 
 		WANDS.addItems(Generator.Category.WAND.classes);
 		WANDS.addItems(WandOfDestOrb.class);
+		WANDS.addItems(WandOfKillerQueen.class);
 
 		RINGS.addItems(Generator.Category.RING.classes);
 
@@ -321,7 +325,7 @@ public enum Catalog {
 				TrinketCatalyst.class, Stylus.class, Torch.class, Honeypot.class, Ankh.class,
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
-				LiquidMetal.class, ArcaneResin.class,
+				LiquidMetal.class, ArcaneResin.class, DolomitesTeeth.class, BossChallengeTester.class,
 				SealShard.class, BrokenStaff.class, CloakScrap.class, BrokenHilt.class, BowFragment.class, TornPage.class, Danny3.class, Ram2.class, UV.class, Drago.class, Highway.class, FormaggioBottle.class, Araki.class, Evolution.class);
 
 	}

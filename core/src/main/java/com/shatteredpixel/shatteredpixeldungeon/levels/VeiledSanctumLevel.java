@@ -11,17 +11,19 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.SanctumCodeFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
-import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.AbyssalMireChamber;
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.BlizzardVentChamber;
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.CrystalWardChamber;
-import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.GrandLibraryChamber;
+import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.GrimWardChamber;
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.LabyrinthChamber;
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.PartitionedGauntletChamber;
+import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.PiranhaPoolChamber;
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.SpearPhalanxChamber;
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.TrialChamber;
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.VaultOfKeysChamber;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSanctumCode;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
@@ -32,6 +34,7 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
 import com.watabou.utils.Reflection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /*
@@ -160,8 +163,8 @@ public class VeiledSanctumLevel extends Level {
     Class<?>[] trialClasses = {
             PartitionedGauntletChamber.class,
             CrystalWardChamber.class,
-            GrandLibraryChamber.class,
-            AbyssalMireChamber.class,
+            GrimWardChamber.class,
+            PiranhaPoolChamber.class,
             BlizzardVentChamber.class,
             SpearPhalanxChamber.class,
             VaultOfKeysChamber.class,
@@ -253,10 +256,8 @@ public class VeiledSanctumLevel extends Level {
         for (int i = 0; i < CODE_ROOMS; i++) {
             codeRoomPositions.put(outerRoomIndices[i], i);
         }
-        //the pursuer starts in one of the outer rooms - never in the hub
-        int wardenRoomIndex = outerRoomIndices[Random.Int(outerRoomIndices.length)];
-
         Point[] roomCenters = new Point[GRID_X * GRID_Y];
+        TrialChamber[] roomChambers = new TrialChamber[GRID_X * GRID_Y];
 
         for (int x = 0; x < GRID_X; x++) {
             for (int y = 0; y < GRID_Y; y++) {
@@ -276,6 +277,7 @@ public class VeiledSanctumLevel extends Level {
                 } else {
                     chamber = placeTrial(left, top, right, bottom, center);
                 }
+                roomChambers[roomIndex] = chamber;
 
                 int door = Terrain.DOOR;
 
@@ -302,6 +304,19 @@ public class VeiledSanctumLevel extends Level {
                 chamber.placeRewards();
             }
         }
+
+        //the pursuer starts in one of the outer rooms - never in the hub, and never in a room
+        //whose trap terrain would wall a walking mob in around the pedestal and cut the chase
+        ArrayList<Integer> wardenCandidates = new ArrayList<>();
+        for (int idx : outerRoomIndices) {
+            TrialChamber c = roomChambers[idx];
+            if (c == null || !c.blocksPursuer()) {
+                wardenCandidates.add(idx);
+            }
+        }
+        int wardenRoomIndex = wardenCandidates.isEmpty()
+                ? outerRoomIndices[Random.Int(outerRoomIndices.length)]
+                : wardenCandidates.get(Random.Int(wardenCandidates.size()));
 
         UnseenWarden warden = new UnseenWarden();
         warden.pos = this.pointToCell(roomCenters[wardenRoomIndex]);
@@ -334,7 +349,20 @@ public class VeiledSanctumLevel extends Level {
     }
 
     @Override
-    public boolean activateTransition(Hero hero, LevelTransition transition) {
+    public boolean activateTransition(final Hero hero, LevelTransition transition) {
+        //once you're in the sanctum there's no going back up - the only way out is down through
+        //the code-locked elevator (SURFACE is left alone so an Amulet ascension can still finish)
+        if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+                || transition.type == LevelTransition.Type.BRANCH_ENTRANCE) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndMessage(Messages.get(hero, "tendency2")));
+                }
+            });
+            return false;
+        }
+
         if (transition.type == LevelTransition.Type.BRANCH_EXIT && !sanctumCodeSolved) {
             Game.runOnRenderThread(new Callback() {
                 @Override

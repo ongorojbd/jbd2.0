@@ -19,6 +19,7 @@ public class SanctumCodeFragment extends Item {
 
     {
         image = ItemSpriteSheet.SEWER_PAGE;
+        identify();
         stackable = false;
     }
 

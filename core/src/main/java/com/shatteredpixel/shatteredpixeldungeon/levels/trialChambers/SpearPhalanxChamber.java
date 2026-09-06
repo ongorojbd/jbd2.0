@@ -34,8 +34,9 @@ public class SpearPhalanxChamber extends TrialChamber {
             Painter.set(level, pos, Terrain.WALL);
         }
 
+        //one guard at each of the four fence gaps: west, east, north, south
         int[][] guardOffsets = {
-                {-6, 0}, {6, 0}, {0, -6}, {0, 6}, {-4, -4},
+                {-6, 0}, {6, 0}, {0, -6}, {0, 6},
         };
         for (int pos : customOffsetArray(guardOffsets)) {
             PhalanxGuard guard = new PhalanxGuard();

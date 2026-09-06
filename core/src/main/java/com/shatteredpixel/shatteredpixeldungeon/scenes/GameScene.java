@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Lisa;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RatBeast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rebel;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Santana;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
@@ -98,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
@@ -151,6 +153,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.TrapperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WamuuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WhsnakeSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WouSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
@@ -1118,11 +1121,22 @@ public class GameScene extends PixelScene {
 
                             }
                     );
-                } else if (Dungeon.level instanceof SewerLevel && Dungeon.depth == 2) {
-                    WndFloorIntro.show(Assets.Splashes.SEWERS,
-                            Messages.get(this, "floor2_intro_a"),
-                            Messages.get(this, "floor2_intro_b"),
-                            Messages.get(this, "floor2_intro_c")
+                } else if (Dungeon.level instanceof ColdhouseBossLevel && Dungeon.depth == 21) {
+                    WndDialogueWithPic.dialogue(
+                            new CharSprite[]{new WouSprite(), new WouSprite(), new WouSprite(), new WouSprite()},
+                            new String[]{"아케후 사토루", "아케후 사토루", "아케후 사토루", "아케후 사토루"},
+                            new String[]{
+                                    Messages.get(RatBeast.class, "w1"),
+                                    Messages.get(RatBeast.class, "w2"),
+                                    Messages.get(RatBeast.class, "w3"),
+                                    Messages.get(RatBeast.class, "w4")
+                            },
+                            new byte[]{
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE,
+                                    WndDialogueWithPic.IDLE
+                            }
                     );
                 } else if (Dungeon.level instanceof HallsLevel && Dungeon.depth == 21 && !isUnlocked(Badges.Badge.UNLOCK_JOHNNY) && Badges.isUnlocked(Badges.Badge.VICTORY) && Statistics.deepestFloor == 21 && Statistics.spw36 == 0) {
                     WndDialogueWithPic.dialogue(

@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfKillerQueen;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -487,12 +488,18 @@ public class MagesStaff extends MeleeWeapon {
 
         @Override
         public boolean itemSelectable(Item item) {
-            return item instanceof Wand;
+            //킬러 퀸의 사격 DISC는 적석과 융합할 수 없다.
+            return item instanceof Wand && !(item instanceof WandOfKillerQueen);
         }
 
         @Override
         public void onSelect(final Item item) {
             if (item != null) {
+
+                if (item instanceof WandOfKillerQueen) {
+                    GLog.w(Messages.get(MagesStaff.class, "cant_imbue_killerqueen"));
+                    return;
+                }
 
                 if (wand == null) {
                     applyWand((Wand) item);

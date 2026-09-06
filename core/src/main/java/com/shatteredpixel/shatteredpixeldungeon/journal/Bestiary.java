@@ -177,13 +177,13 @@ public enum Bestiary {
                 Bcom.class, Bcomg.class, Skeleton.class, Thief.class, DM100.class, Guard.class, Necromancer.class,
                 Bat.class, Brute.class, Shaman.BlueShaman.class, Shaman.RedShaman.class, Shaman.PurpleShaman.class, Spinner.class, DM200.class,
                 Ghoul.class, Elemental.FireElemental.class, Elemental.FrostElemental.class, Elemental.ShockElemental.class, Warlock.class, Monk.class, Golem.class,
-                RipperDemon.class, DemonSpawner.class, Succubus.class, Eye.class, Scorpio.class, Willsonmob.class, Supression.class, Medic.class, Tank.class, Researcher.class, Soldier.class);
+                RipperDemon.class, DemonSpawner.class, Succubus.class, Eye.class, Scorpio.class, Willsonmob.class, Supression.class, Medic.class, Tank.class, Researcher.class, Soldier.class, Banshee.class);
 
         BOSSES.addEntities(Goo.class,
                 Tengu.class,
                 DM300.class, Pylon.class, Kawasiri.class,
                 DwarfKing.class,
-                YogDzewa.Larva.class, YogFist.BrightFist.class, YogDzewa.class, Beast.class, SWAT.class, WO.class, Rebel.class);
+                YogDzewa.Larva.class, YogFist.BrightFist.class, YogDzewa.class, Beast.class, SWAT.class, RatBeast.class, WO.class, Rebel.class);
 
         UNIVERSAL.addEntities(Wraith.class, Piranha.class, Mimic.class, GoldenMimic.class, Statue.class, GuardianTrap.Guardian.class, Enemytonio.class, SentryRoom.Sentry.class, EbonyMimic.class);
 

@@ -298,7 +298,7 @@ public class WndDiegoDodgeGame extends Window {
         float buttonWidth = (WIDTH - 30) / 2;
         float buttonHeight = 28;
 
-        leftButton = new RedButton("◀ " + Messages.get(this, "left")) {
+        leftButton = new RedButton("< " + Messages.get(this, "left")) {
             @Override
             protected void onPointerDown() {
                 super.onPointerDown();
@@ -318,7 +318,7 @@ public class WndDiegoDodgeGame extends Window {
         leftButton.alpha(0.5f);
         add(leftButton);
 
-        rightButton = new RedButton(Messages.get(this, "right") + " ▶") {
+        rightButton = new RedButton(Messages.get(this, "right") + " >") {
             @Override
             protected void onPointerDown() {
                 super.onPointerDown();

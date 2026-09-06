@@ -21,6 +21,11 @@ public class CrystalWardChamber extends TrialChamber {
     }
 
     @Override
+    public boolean blocksPursuer() {
+        return true; //trap-packed annulus - don't strand the pursuer in here
+    }
+
+    @Override
     public void build() {
         super.build();
 

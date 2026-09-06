@@ -104,7 +104,13 @@ public abstract class RegularLevel extends Level {
 	
 	protected Room roomEntrance;
 	protected Room roomExit;
-	
+
+	@Override
+	protected boolean assignLevelFeeling() {
+		//room-built levels are the only ones whose layout can absorb a random level feeling
+		return true;
+	}
+
 	@Override
 	protected boolean build() {
 		

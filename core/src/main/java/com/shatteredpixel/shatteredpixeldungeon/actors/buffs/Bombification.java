@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2020 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,44 +25,37 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 
-public class Roc extends FlavourBuff {
+//킬러 퀸의 사격 DISC로 부여되는 폭탄화 상태.
+//기폭 전까지 무기한 지속되며, 한 번에 오직 하나의 대상만 이 상태가 될 수 있다.
+public class Bombification extends Buff {
 
-    {
-        type = buffType.POSITIVE;
-        announced = true;
-    }
+	{
+		type = buffType.NEGATIVE;
+		announced = true;
+	}
 
-    public static final float DURATION = 50f;
+	@Override
+	public int icon() {
+		return BuffIndicator.FIRE;
+	}
 
-    @Override
-    public void fx(boolean on) {
-        if (on) target.sprite.add(CharSprite.State.KARS);
-        else target.sprite.remove(CharSprite.State.KARS);
-    }
+	@Override
+	public void tintIcon(Image icon) {
+		icon.hardlight(1f, 0.2f, 0.2f);
+	}
 
-    @Override
-    public int icon() {
-        return BuffIndicator.UPGRADE;
-    }
+	@Override
+	public void fx(boolean on) {
+		if (on) {
+			target.sprite.add(CharSprite.State.MARKED);
+		} else if (target.sprite != null) {
+			target.sprite.remove(CharSprite.State.MARKED);
+		}
+	}
 
-    @Override
-    public void tintIcon(Image icon) {
-        icon.hardlight(0, 1, 1);
-    }
-
-    @Override
-    public String toString() {
-        return Messages.get(this, "name");
-    }
-    @Override
-    public float iconFadePercent() {
-        return Math.max(0, (DURATION - visualcooldown()) / DURATION);
-    }
-    @Override
-    public String desc() {
-        return Messages.get(this, "desc", dispTurns());
-    }
-
+	@Override
+	public String desc() {
+		return Messages.get(this, "desc");
+	}
 }

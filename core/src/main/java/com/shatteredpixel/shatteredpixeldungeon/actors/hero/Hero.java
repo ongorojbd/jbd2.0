@@ -120,6 +120,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
+import com.shatteredpixel.shatteredpixeldungeon.items.DolomitesTeeth;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type;
@@ -2747,6 +2748,20 @@ public class Hero extends Char {
                     return;
                 }
             }
+        }
+
+        //돌로미테의 이빨: 소지 시 치명적 피해를 80% 확률로 무효화하고 10HP로 즉시 부활한다. (소모되지 않음)
+        if (belongings.getItem(DolomitesTeeth.class) != null
+                && Random.Float() < DolomitesTeeth.REVIVE_CHANCE) {
+            interrupt();
+            this.HP = DolomitesTeeth.REVIVE_HP;
+            PotionOfHealing.cure(this);
+
+            SpellSprite.show(this, SpellSprite.BERSERK);
+            GameScene.flash(0x80FFFFFF);
+            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+            GLog.w(Messages.get(DolomitesTeeth.class, "revive"));
+            return;
         }
 
         Ankh ankh = null;

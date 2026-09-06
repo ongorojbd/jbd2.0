@@ -66,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseRecoveryLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
@@ -389,7 +390,7 @@ public class Dungeon {
                         tendencylevel = true;
                         level = new ArenaLevel();
                     } else {
-                        level = new VeiledSanctumLevel();
+                        level = new SewerLevel();
                     }
                     break;
                 case 2:
@@ -398,7 +399,7 @@ public class Dungeon {
                     } else if (Statistics.spw6 > 0) {
                         level = new HumanVillageBossLevel2();
                     } else {
-                        level = new ColdhouseBossLevel();
+                        level = new SewerLevel();
                     }
                     break;
                 case 3:
@@ -500,6 +501,7 @@ public class Dungeon {
                     level = new HumanVillageBossLevel2();
                     break;
                 case 9:
+                case 27:
                     level = new ArenaBossLevel();
                     break;
                 case 11:
@@ -515,6 +517,7 @@ public class Dungeon {
                     level = new VaultLevel();
                     break;
                 case 20:
+                case 29:
                     level = new TempleLastLevel();
                     break;
                 case 21:
@@ -529,17 +532,25 @@ public class Dungeon {
                 case 26:
                     level = new DiobossLevel();
                     break;
-                case 27:
-                    level = new ArenaBossLevel();
-                    break;
                 case 28:
                     level = new CavesBossLevel();
                     break;
-                case 29:
-                    level = new TempleLastLevel();
-                    break;
                 case 31:
                     level = new ParallelBrawlLevel();
+                    break;
+                default:
+                    level = new DeadEndLevel();
+            }
+        } else if (branch == 2) {
+            switch (depth) {
+                case 20:
+                    level = new VeiledSanctumLevel();
+                    break;
+                case 21:
+                    level = new ColdhouseBossLevel();
+                    break;
+                case 22:
+                    level = new ColdhouseRecoveryLevel();
                     break;
                 default:
                     level = new DeadEndLevel();

@@ -52,8 +52,10 @@ public class BansheeSprite extends MobSprite {
 
 		die = new Animation( 20, false );
 		die.frames( frames, 11, 12, 13, 14, 15);
-		
+
 		play( idle );
+
+		bleedConstantly();
 	}
 
 }

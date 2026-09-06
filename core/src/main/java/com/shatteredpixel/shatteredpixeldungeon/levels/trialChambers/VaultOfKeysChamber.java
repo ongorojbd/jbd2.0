@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
@@ -13,9 +14,9 @@ import java.util.ArrayList;
 
 //inspired by the vanilla CrystalPathRoom: 4 small vaults, one on each cardinal side of the
 //room, each sealed behind its own Terrain.CRYSTAL_DOOR, with one CrystalKey lying loose per
-//vault, so a thorough sweep of the room opens all 4. No monsters here; the challenge is
-//finding all the keys, not a fight. One of the 4 chests (picked at random) is the one that
-//carries the sanctum code fragment when this room is chosen to hold one.
+//vault, so a thorough sweep of the room opens all 4. A single warden stands on the room's
+//centre; the main challenge is still finding all the keys. One of the 4 chests (picked at
+//random) is the one that carries the sanctum code fragment when this room is chosen to hold one.
 public class VaultOfKeysChamber extends TrialChamber {
 
     private final ArrayList<Integer> vaultCells = new ArrayList<>();
@@ -42,6 +43,15 @@ public class VaultOfKeysChamber extends TrialChamber {
         for (int pos : customOffsetArray(keySpots)) {
             level.drop(new CrystalKey(Dungeon.depth), pos);
         }
+
+        //a single warden standing on the room's centre, between the four vaults
+        VaultWarden warden = new VaultWarden();
+        warden.pos = level.pointToCell(center);
+        level.mobs.add(warden);
+    }
+
+    public static class VaultWarden extends Banshee {
+        { properties.add(Property.BOSS_MINION); }
     }
 
     //carves a small pocket at (ox,oy) walled in on wallOffsets, with a crystal door at

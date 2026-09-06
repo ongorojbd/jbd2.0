@@ -22,8 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BloodParticle;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.noosa.tweeners.ScaleTweener;
 import com.watabou.utils.PointF;
@@ -33,18 +35,79 @@ public class MobSprite extends CharSprite {
 
 	private static final float FADE_TIME	= 3f;
 	private static final float FALL_TIME	= 1f;
-	
+
+	//optional constant bleeding effect (opt-in per sprite via bleedConstantly())
+	private boolean bleedsConstantly = false;
+	private Emitter constantBlood;
+
+	//call from a subclass constructor to make the mob drip blood for its whole life
+	protected void bleedConstantly(){
+		bleedsConstantly = true;
+	}
+
+	private void updateConstantBlood(){
+		if (!bleedsConstantly){
+			return;
+		}
+		if (constantBlood == null){
+			//parent group isn't set at construction time, so attach lazily.
+			//use a dedicated emitter (NOT the shared GameScene.emitter() pool): its lifetime is
+			//then ours to manage, and killAndErase()-ing it can't corrupt the pool for other fx.
+			if (parent != null){
+				constantBlood = new Emitter();
+				constantBlood.autoKill = false;
+				constantBlood.pos(this);
+				parent.add(constantBlood);
+				constantBlood.pour(BloodParticle.FACTORY, 0.3f);
+			}
+		} else {
+			constantBlood.visible = visible;
+		}
+	}
+
+	//stops emission and drops any particles still in flight.
+	//safe to call from any teardown path - the emitter is private and not pooled.
+	private void clearConstantBlood(){
+		bleedsConstantly = false;
+		if (constantBlood != null){
+			constantBlood.on = false;
+			constantBlood.killAndErase();
+			constantBlood = null;
+		}
+	}
+
 	@Override
 	public void update() {
 		sleeping = ch != null && ch.isAlive() && ((Mob)ch).state == ((Mob)ch).SLEEPING;
 		super.update();
+		updateConstantBlood();
 	}
-	
+
+	@Override
+	public void die() {
+		super.die();
+		clearConstantBlood();
+	}
+
+	@Override
+	public void kill() {
+		super.kill();
+		clearConstantBlood();
+	}
+
+	//catches every remaining teardown path: mob removed without dying (Char.destroy),
+	//chasm death that skips sprite.die(), scene shutdown, etc.
+	@Override
+	public void destroy() {
+		clearConstantBlood();
+		super.destroy();
+	}
+
 	@Override
 	public void onComplete( Animation anim ) {
-		
+
 		super.onComplete( anim );
-		
+
 		if (anim == die && parent != null) {
 			parent.add( new AlphaTweener( this, 0, FADE_TIME ) {
 				@Override
@@ -54,12 +117,14 @@ public class MobSprite extends CharSprite {
 			} );
 		}
 	}
-	
+
 	public void fall() {
-		
+
 		origin.set( width / 2, height - DungeonTilemap.SIZE / 2 );
 		angularSpeed = Random.Int( 2 ) == 0 ? -720 : 720;
 		am = 1;
+
+		clearConstantBlood();
 
 		if (emo != null) {
 			emo.killAndErase();

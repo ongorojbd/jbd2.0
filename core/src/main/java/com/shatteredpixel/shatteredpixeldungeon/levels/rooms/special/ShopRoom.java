@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.BossChallengeTester;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -433,6 +434,10 @@ public class ShopRoom extends SpecialRoom {
 
         if (Random.Int(50) == 0) {
             itemsToSpawn.add(new Araki());
+        }
+
+        if (Dungeon.depth == 6) {
+            itemsToSpawn.add(new BossChallengeTester());
         }
 
         itemsToSpawn.add(new Ankh());

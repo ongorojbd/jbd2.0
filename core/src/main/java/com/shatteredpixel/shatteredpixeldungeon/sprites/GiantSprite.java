@@ -55,6 +55,8 @@ public class GiantSprite extends MobSprite {
         scale.set(1.1f);
 
         play( idle );
+
+        bleedConstantly();
     }
 
     public void crumple(){

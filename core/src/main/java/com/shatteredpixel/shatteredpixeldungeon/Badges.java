@@ -372,6 +372,11 @@ public class Badges {
         local = restore(bundle);
     }
 
+    //현재 게임(런)에서 획득한 뱃지인지 여부. 계정 전역 해금(isUnlocked)과는 별개.
+    public static boolean isLocallyUnlocked(Badge badge) {
+        return local.contains(badge);
+    }
+
     public static void saveLocal(Bundle bundle) {
         store(bundle, local);
     }

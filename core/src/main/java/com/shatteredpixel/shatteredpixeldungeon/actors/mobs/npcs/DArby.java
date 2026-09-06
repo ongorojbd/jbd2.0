@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DArbySprite;
@@ -41,6 +42,8 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 public class DArby extends NPC {
 
@@ -193,6 +196,28 @@ public class DArby extends NPC {
 		// restore sprite based on phase
 		if (Statistics.spw30 == 0) spriteClass = DArbySprite.class;
 		else spriteClass = DArbyOldSprite.class;
+	}
+
+
+	public static void spawn(CityLevel level) {
+
+		if (Random.Int( 2 ) == 0) {
+			if (Dungeon.depth == 19 && !Dungeon.bossLevel()) {
+
+				Fugo npc = new Fugo();
+				do {
+					npc.pos = level.randomRespawnCell( npc );
+				} while (
+						npc.pos == -1 ||
+								level.heaps.get( npc.pos ) != null ||
+								level.traps.get( npc.pos) != null ||
+								level.findMob( npc.pos ) != null ||
+								//The imp doesn't move, so he cannot obstruct a passageway
+								!(level.passable[npc.pos + PathFinder.CIRCLE4[0]] && level.passable[npc.pos + PathFinder.CIRCLE4[2]]) ||
+								!(level.passable[npc.pos + PathFinder.CIRCLE4[1]] && level.passable[npc.pos + PathFinder.CIRCLE4[3]]));
+				level.mobs.add( npc );
+			}
+		}
 	}
 }
 

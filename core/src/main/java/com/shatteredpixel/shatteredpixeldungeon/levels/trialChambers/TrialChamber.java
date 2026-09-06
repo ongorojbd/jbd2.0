@@ -60,6 +60,13 @@ public class TrialChamber {
         return new int[]{}; //override when isBuildWithStructure is true
     }
 
+    //true if this room lays down terrain (revealed traps, etc.) that a walking pursuer can't
+    //path across - the owning level won't start the UnseenWarden here so it can't get boxed in
+    //around the pedestal with the chase cut off.
+    public boolean blocksPursuer() {
+        return false;
+    }
+
     public void build() {
         Painter.fill(level, outerRoom, Terrain.WALL);
         Painter.fill(level, outerRoom, 1, Terrain.EMPTY);

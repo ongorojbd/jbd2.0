@@ -67,6 +67,7 @@ public class Assets {
         public static final String PRISON_EXIT = "environment/custom_tiles/prison_exit.png";
         public static final String CAVES_QUEST = "environment/custom_tiles/caves_quest.png";
         public static final String CAVES_BOSS = "environment/custom_tiles/caves_boss.png";
+        public static final String CH_BOSS = "environment/custom_tiles/ch_boss.png";
         public static final String CITY_QUEST = "environment/custom_tiles/city_quest.png";
         public static final String CITY_BOSS = "environment/custom_tiles/city_boss.png";
         public static final String HALLS_SP = "environment/custom_tiles/halls_special.png";
@@ -766,7 +767,7 @@ public class Assets {
         public static final String KS4 = "sprites/ks4.png";
 
         public static final String GIANT = "sprites/giant.png";
-
         public static final String BANSHEE = "sprites/banshee.png";
+        public static final String WOU = "sprites/wou.png";
     }
 }

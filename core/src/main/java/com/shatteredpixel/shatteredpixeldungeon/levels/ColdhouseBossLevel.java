@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -41,7 +42,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.GeyserTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.SummoningTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WouSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.YasuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RatBeast;
 //import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beast;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -88,7 +94,7 @@ public class ColdhouseBossLevel extends Level {
 		if (gooAlive){
 			Music.INSTANCE.end();
 		} else {
-			Music.INSTANCE.play(Assets.Music.SEWERS_BOSS, true);
+			Music.INSTANCE.play(Assets.Music.TG_1, true);
 		}
 
 	}
@@ -238,9 +244,13 @@ public class ColdhouseBossLevel extends Level {
 			NW++; NE--; SW++; SE--;
 		}
 
-		for (int j = 0; j < Dungeon.level.length(); j++){
-			if (Dungeon.level.traps.get(j) != null)Dungeon.level.traps.remove(j);
-
+		for (int j = 0; j < length(); j++){
+			if (traps.get(j) != null) traps.remove(j);
+			//clear the trap terrain too, otherwise a SECRET_TRAP tile with no trap object left
+			//behind NPEs in Level.pressCell when something walks onto it
+			if (map[j] == Terrain.TRAP || map[j] == Terrain.SECRET_TRAP || map[j] == Terrain.INACTIVE_TRAP){
+				map[j] = Terrain.EMPTY;
+			}
 		}
 
 		GameScene.updateMap();
@@ -363,6 +373,25 @@ public class ColdhouseBossLevel extends Level {
 	}
 
 	@Override
+	public boolean invalidHeroPos(int tile) {
+		//while the gate is still closed the hero must not end up above it or in the exit corridor
+		if (map[gate.left + gate.top*width()] == Terrain.CUSTOM_DECO){
+			Point p = cellToPoint(tile);
+			if (p.y < gate.bottom){
+				return true;
+			}
+		}
+		return super.invalidHeroPos(tile);
+	}
+
+	//the REGULAR_ENTRANCE transition is removed once the boss dies, so keep resolving
+	//the original entrance cell for bookkeeping (respawns, distance checks, etc.)
+	@Override
+	public int entrance() {
+		return 16 + 25*width();
+	}
+
+	@Override
 	public void occupyCell(Char ch) {
 		super.occupyCell( ch );
 
@@ -371,6 +400,21 @@ public class ColdhouseBossLevel extends Level {
 			seal();
 		}
 
+	}
+
+	//once you've come down here there's no going back up - the entrance is one-way
+	@Override
+	public boolean activateTransition(final Hero hero, LevelTransition transition) {
+		if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE) {
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					GameScene.show(new WndMessage(Messages.get(hero, "tendency2")));
+				}
+			});
+			return false;
+		}
+		return super.activateTransition(hero, transition);
 	}
 
 	private Mob boss;
@@ -409,7 +453,21 @@ public class ColdhouseBossLevel extends Level {
 
 			CellEmitter.get(entrance).start(Speck.factory(Speck.ROCK), 0.07f, 10);
 			Camera.main.shake(3, 0.7f);
-			Sample.INSTANCE.play(Assets.Sounds.ROCKS);
+
+			WndDialogueWithPic.dialogue(
+					new CharSprite[]{new YasuSprite(), new YasuSprite()},
+					new String[]{"히로세 야스호", "히로세 야스호"},
+					new String[]{
+							Messages.get(RatBeast.class, "w5"),
+							Messages.get(RatBeast.class, "w6"),
+					},
+					new byte[]{
+							WndDialogueWithPic.IDLE,
+							WndDialogueWithPic.IDLE
+					}
+			);
+
+			Sample.INSTANCE.play(Assets.Sounds.TG1);
 
 			boss = new RatBeast();
 			boss.state = boss.WANDERING;
@@ -433,7 +491,18 @@ public class ColdhouseBossLevel extends Level {
 		super.unseal();
 		killed = true;
 
-		set( entrance(), Terrain.ENTRANCE );
+		//the boss is dead: permanently seal the way back up instead of restoring the entrance
+		int entranceCell = entrance();
+		set( entranceCell, Terrain.WALL );
+		LevelTransition backUp = getTransition(LevelTransition.Type.REGULAR_ENTRANCE);
+		//getTransition falls back to another transition when none matches, so check the type
+		if (backUp != null && backUp.type == LevelTransition.Type.REGULAR_ENTRANCE){
+			transitions.remove(backUp);
+		}
+		if (heroFOV != null && heroFOV[entranceCell]){
+			CellEmitter.get(entranceCell).start(Speck.factory(Speck.ROCK), 0.07f, 10);
+		}
+
 		int i = 14 + 13*width();
 		for (int j = 0; j < 5; j++){
 			set( i+j, Terrain.EMPTY );
@@ -562,7 +631,8 @@ public class ColdhouseBossLevel extends Level {
 	public static class CityEntrance extends CustomTilemap{
 
 		{
-			texture = Assets.Environment.TILES_SEWERS;
+			//the entryWay/wall indices below map into the caves boss atlas, not the sewer tilesheet
+			texture = Assets.Environment.CH_BOSS;
 		}
 
 		private static short[] entryWay = new short[]{
@@ -610,7 +680,7 @@ public class ColdhouseBossLevel extends Level {
 	public static class EntranceOverhang extends CustomTilemap{
 
 		{
-			texture = Assets.Environment.TILES_SEWERS;
+			texture = Assets.Environment.CH_BOSS;
 		}
 
 		private static short[] entryWay = new short[]{
@@ -654,7 +724,8 @@ public class ColdhouseBossLevel extends Level {
 	public static class ArenaVisuals extends CustomTilemap {
 
 		{
-			texture = Assets.Environment.TILES_SEWERS;
+			//gate tile indices (32-36 open / 40-44 solid) live in the caves boss atlas
+			texture = Assets.Environment.CH_BOSS;
 		}
 
 		@Override

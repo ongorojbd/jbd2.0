@@ -27,14 +27,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ChaosCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BanditSprite;
@@ -54,6 +58,9 @@ public class Banshee extends Mob {
 	//체력이 0이 되어도 이 확률로 죽지 않고 아래 체력으로 부활한다
 	private static final float REVIVE_CHANCE = 0.8f;
 	private static final int REVIVE_HP = 30;
+
+	//플레이어가 Roc 버프 상태면 이 확률로 부활이 봉쇄되어 그대로 사망한다
+	private static final float ROC_REVIVE_SUPPRESS_CHANCE = 0.8f;
 
 	private int regenCounter = 0;
 	private static final String REGEN_COUNTER = "regen_counter";
@@ -95,7 +102,11 @@ public class Banshee extends Mob {
 
 	@Override
 	public void die(Object cause) {
-		if (Random.Float() < REVIVE_CHANCE) {
+		boolean rocSuppressed = Dungeon.hero != null
+				&& Dungeon.hero.buff(Roc.class) != null
+				&& Random.Float() < ROC_REVIVE_SUPPRESS_CHANCE;
+
+		if (!rocSuppressed && Random.Float() < REVIVE_CHANCE) {
 			HP = REVIVE_HP;
 			if (Dungeon.level.heroFOV[pos]) {
 				SpellSprite.show(this, SpellSprite.BERSERK);
@@ -108,6 +119,11 @@ public class Banshee extends Mob {
 			Sample.INSTANCE.play(Assets.Sounds.TG1);
 		}
 
+		if (Random.Int( 3 ) == 0) {
+			Dungeon.level.drop( new Gold().quantity(300), pos ).sprite.drop( pos );
+		}
+
+		Dungeon.level.drop( new StewedMeat(), pos ).sprite.drop( pos );
 
 		super.die(cause);
 	}
@@ -138,5 +154,7 @@ public class Banshee extends Mob {
     public int drRoll() {
         return Random.NormalIntRange(5, 10);
     }
+
+
 
 }

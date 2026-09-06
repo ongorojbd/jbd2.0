@@ -510,6 +510,7 @@ public class ItemSpriteSheet {
     public static final int WAND_WARDING = WANDS + 10;
     public static final int WAND_REGROWTH = WANDS + 11;
     public static final int WAND_TRANSFUSION = WANDS + 12;
+    public static final int WAND_KIRA = WANDS + 13;
 
     static {
         for (int i = WANDS; i < WANDS + 16; i++)
@@ -896,6 +897,7 @@ public class ItemSpriteSheet {
     public static final int TBOMB2 = QUEST + 12;
     public static final int UV = QUEST + 13;
     public static final int TENS = QUEST + 14;
+    public static final int TEETH = QUEST + 15;
 
     static {
         assignItemRect(SKULL, 14, 14);
@@ -914,6 +916,7 @@ public class ItemSpriteSheet {
         assignItemRect(TBOMB2, 15, 14);
         assignItemRect(UV, 15, 16);
         assignItemRect(TENS, 11, 14);
+        assignItemRect(TEETH, 12, 16);
     }
 
     private static final int BAGS = xy(1, 31);  //16 slots
@@ -932,6 +935,7 @@ public class ItemSpriteSheet {
     public static final int SPOH = BAGS + 12;
     public static final int BCOM = BAGS + 13;
     public static final int CM = BAGS + 14;
+    public static final int TG = BAGS + 15;
 
     static {
         assignItemRect(WATERSKIN, 12, 14);
@@ -949,6 +953,7 @@ public class ItemSpriteSheet {
         assignItemRect(SPOH, 14, 14);
         assignItemRect(BCOM, 14, 14);
         assignItemRect(CM, 14, 14);
+        assignItemRect(TG, 15, 14);
     }
 
     private static final int DOCUMENTS = xy(1, 32);  //16 slots

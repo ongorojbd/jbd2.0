@@ -34,12 +34,10 @@ public class ImpSprite extends MobSprite {
 		
 		texture( Assets.Sprites.IMP );
 		
-		TextureFilm frames = new TextureFilm( texture, 12, 14 );
-		
-		idle = new Animation( 10, true );
-		idle.frames( frames,
-			0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-			0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 3, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4 );
+		TextureFilm frames = new TextureFilm( texture, 13, 14 );
+
+		idle = new Animation( 1, true );
+		idle.frames( frames, 0, 0, 0, 0, 1 );
 		
 		run = new Animation( 20, true );
 		run.frames( frames, 0 );

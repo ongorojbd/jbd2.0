@@ -46,11 +46,12 @@ public class WndQteBossGame extends Window {
     private static final int COL_DIM      = 0xFF55556a;
 
     private enum Direction {
-        UP    ( "▲", 0xFF6FE3FF ),
-        DOWN  ( "▼", 0xFFFF8C5A ),
-        LEFT  ( "◀", 0xFFC792FF ),
-        RIGHT ( "▶", 0xFF7CFF8A );
+        UP    ( "상", 0xFF6FE3FF ),
+        DOWN  ( "하", 0xFFFF8C5A ),
+        LEFT  ( "좌", 0xFFC792FF ),
+        RIGHT ( "우", 0xFF7CFF8A );
 
+        // 픽셀/한글 폰트에 없는 ▲▼◀▶ 는 모바일에서 "?"로 깨지므로 한글 글자를 쓴다
         final String glyph;
         final int color;
 
@@ -60,8 +61,8 @@ public class WndQteBossGame extends Window {
         }
     }
 
-    // 버튼은 항상 이 순서로 한 줄에 배치 (물리적 방향키 배열을 가로로 편 형태)
-    private static final Direction[] BUTTON_ORDER = {Direction.LEFT, Direction.UP, Direction.DOWN, Direction.RIGHT};
+    // 버튼은 항상 이 순서로 한 줄에 배치 (상, 하, 좌, 우)
+    private static final Direction[] BUTTON_ORDER = {Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
 
     // 화면 크기 (가로/세로 모드에 맞춰 결정, 항상 최소 지원 화면보다 작게)
     private final int WIDTH;
@@ -73,6 +74,10 @@ public class WndQteBossGame extends Window {
 
     // 난이도(보스 페이즈)에 따른 제한 시간 - 순간 반응을 요구할 만큼 짧게
     private final float timeLimit;
+
+    // 연속으로 입력해야 하는 방향 수 (페이즈가 오를수록 증가)
+    private final int sequenceLength;
+    private int stepsDone = 0;
 
     // 게임 상태
     private enum GameState {
@@ -106,10 +111,15 @@ public class WndQteBossGame extends Window {
     private Callback onFail;
 
     public WndQteBossGame(int phase, Callback onSuccess, Callback onFail) {
+        this(phase, 1, onSuccess, onFail);
+    }
+
+    public WndQteBossGame(int phase, int sequenceLength, Callback onSuccess, Callback onFail) {
         super();
 
         instance = this;
 
+        this.sequenceLength = Math.max(1, sequenceLength);
         this.onSuccess = onSuccess;
         this.onFail = onFail;
 
@@ -249,10 +259,37 @@ public class WndQteBossGame extends Window {
         if (state != GameState.SHOW) return;
 
         if (pressed == target) {
-            onGameSuccess();
+            stepsDone++;
+            if (stepsDone >= sequenceLength) {
+                onGameSuccess();
+            } else {
+                nextInput();
+            }
         } else {
             onGameFail();
         }
+    }
+
+    // 다음 방향 입력으로 진행 (직전과 다른 방향을 뽑아 반응을 강제)
+    private void nextInput() {
+        Direction prev = target;
+        do {
+            target = Random.element(Direction.values());
+        } while (target == prev);
+
+        showTimer = 0f;
+
+        arrowText.text(target.glyph);
+        arrowText.hardlight(target.color);
+        arrowText.alpha(1f);
+        arrowText.setPos((WIDTH - arrowText.width()) / 2, arrowText.top());
+        slotBorder.color(target.color);
+
+        promptText.text(Messages.get(this, "go") + "  " + (stepsDone + 1) + "/" + sequenceLength);
+        promptText.hardlight(COL_GOLD);
+        promptText.setPos((WIDTH - promptText.width()) / 2, 11);
+
+        Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
     }
 
     private void onGameSuccess() {
@@ -334,7 +371,7 @@ public class WndQteBossGame extends Window {
                 arrowText.setPos((WIDTH - arrowText.width()) / 2, arrowText.top());
                 slotBorder.color(target.color);
 
-                promptText.text(Messages.get(this, "go"));
+                promptText.text(Messages.get(this, "go") + (sequenceLength > 1 ? "  1/" + sequenceLength : ""));
                 promptText.hardlight(COL_GOLD);
                 promptText.setPos((WIDTH - promptText.width()) / 2, 11);
 

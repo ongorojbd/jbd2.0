@@ -277,7 +277,7 @@ public abstract class Level implements Bundlable {
 				addItemToSpawn( new TrinketCatalyst());
 			}
 			
-			if (Dungeon.depth > 1 && !(Dungeon.tendencylevel)) { // 전투조류
+			if (Dungeon.depth > 1 && !(Dungeon.tendencylevel) && assignLevelFeeling()) { // 전투조류
 				//50% chance of getting a level feeling
 				//~7.15% chance for each feeling
 				switch (Random.Int( 14 )) {
@@ -536,7 +536,17 @@ public abstract class Level implements Bundlable {
 	}
 	
 	abstract protected boolean build();
-	
+
+	//whether this level takes part in the random "level feeling" roll (CHASM, WATER, DARK, ...).
+	//only RegularLevels can - the rest are hand-built arenas whose fixed layout can't absorb a
+	//feeling, and a CHASM feeling in particular fills their base map with Terrain.CHASM instead
+	//of Terrain.WALL, turning every un-painted wall tile into a pit. vanilla dodges this because
+	//every non-RegularLevel also sits on a Dungeon.bossLevel() depth (which skips the roll); the
+	//mod's custom boss depths (e.g. ColdhouseBossLevel at depth 2) don't, so gate on type here.
+	protected boolean assignLevelFeeling(){
+		return false;
+	}
+
 	private ArrayList<Class<?extends Mob>> mobsToSpawn = new ArrayList<>();
 	
 	public Mob createMob() {
@@ -1299,14 +1309,18 @@ public abstract class Level implements Bundlable {
 		switch (map[cell]) {
 		
 		case Terrain.SECRET_TRAP:
-			if (hard) {
-				trap = traps.get( cell );
+			trap = traps.get( cell );
+			if (trap == null) {
+				//orphaned trap tile (trap object removed but terrain left behind) - heal it
+				set( cell, Terrain.EMPTY );
+			} else if (hard) {
 				GLog.i(Messages.get(Level.class, "hidden_trap", trap.name()));
 			}
 			break;
-			
+
 		case Terrain.TRAP:
 			trap = traps.get( cell );
+			if (trap == null) set( cell, Terrain.EMPTY );
 			break;
 			
 		case Terrain.HIGH_GRASS:
