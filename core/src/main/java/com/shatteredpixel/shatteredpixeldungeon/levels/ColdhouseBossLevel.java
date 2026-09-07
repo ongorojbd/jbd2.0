@@ -101,7 +101,7 @@ public class ColdhouseBossLevel extends Level {
 
 	@Override
 	public String tilesTex() {
-		return Assets.Environment.TILES_SEWERS;
+		return Assets.Environment.TILES_TG;
 	}
 
 	@Override

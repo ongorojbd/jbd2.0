@@ -100,6 +100,9 @@ public class InterlevelScene extends PixelScene {
     public static int returnDepth;
     public static int returnBranch;
     public static int returnPos;
+    //set by BossChallengeTester before a Mode.RETURN scene switch so the destination
+    //map gets its own intro story screen, the same way Mode.DESCEND regions do
+    public static boolean bossChallengeReturn = false;
     public boolean diocheck = false;
     public boolean tendencycheck = false;
     public boolean neoLevel = false;
@@ -196,6 +199,29 @@ public class InterlevelScene extends PixelScene {
             lastRegion = region;
         }
 
+        //BossChallengeTester moves the hero via Mode.RETURN; give that destination its own intro screen
+        final boolean bossChallengeStory = mode == Mode.RETURN && bossChallengeReturn;
+        bossChallengeReturn = false;
+
+        //the sanctum branch (branch 2, depths 20-22: VeiledSanctumLevel / ColdhouseBossLevel /
+        //ColdhouseRecoveryLevel) uses its own loading splash for any move into or between those floors
+        int destDepth;
+        int destBranch;
+        switch (mode) {
+            case DESCEND: case ASCEND:
+                destDepth  = curTransition != null ? curTransition.destDepth  : Dungeon.depth;
+                destBranch = curTransition != null ? curTransition.destBranch : Dungeon.branch;
+                break;
+            case RETURN:
+                destDepth  = returnDepth;
+                destBranch = returnBranch;
+                break;
+            default:
+                destDepth  = Dungeon.depth;
+                destBranch = Dungeon.branch;
+        }
+        final boolean sanctumBranch = destBranch == 2 && destDepth >= 20 && destDepth <= 22;
+
         int loadingCenter = 400;
 
         //for portrait users, each run the splashes change what details they focus on
@@ -280,12 +306,14 @@ public class InterlevelScene extends PixelScene {
         int w = (int)(Camera.main.width - insets.left - insets.right);
         int h = (int)(Camera.main.height - insets.top - insets.bottom);
 
-        if (DeviceCompat.isDebug()){
-            fadeTime = 0f;
-        }
+//        if (DeviceCompat.isDebug()){
+//            fadeTime = 0f;
+//        }
 
         if (Dungeon.deckbuilderlevel) {
             background = new Image(Assets.Splashes.SO);
+        } else if (bossChallengeStory || sanctumBranch) {
+            background = new Image(Assets.Splashes.SANCTUM);
         } else if (diocheck) {
             background = new Image(Assets.Splashes.BRANDO);
         } else {
@@ -363,10 +391,14 @@ public class InterlevelScene extends PixelScene {
 			return;
 		}
 
-		if (mode == Mode.DESCEND && lastRegion <= 6 && !DeviceCompat.isDebug() && SPDSettings.getDio() == 0 && !tendencylevel) {
-            if (Dungeon.hero == null || (loadingDepth > Statistics.deepestFloor && loadingDepth % 5 == 1)) {
+//        if (mode == Mode.DESCEND && lastRegion <= 6 && !DeviceCompat.isDebug() && SPDSettings.getDio() == 0 && !tendencylevel) {
+		if (bossChallengeStory
+				|| (mode == Mode.DESCEND && lastRegion <= 6 && SPDSettings.getDio() == 0 && !tendencylevel)) {
+            if (bossChallengeStory || Dungeon.hero == null || (loadingDepth > Statistics.deepestFloor && loadingDepth % 5 == 1)) {
                 String messageText;
-                if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) { // 전투조류
+                if (bossChallengeStory) {
+                    messageText = Messages.get(InterlevelScene.class, "boss_challenge_message");
+                } else if ((Dungeon.hero == null && SPDSettings.getTendency() > 0) || (Dungeon.hero != null && tendencylevel)) { // 전투조류
                     messageText = Messages.get(InterlevelScene.class, "tendency_message");
                 } else {
                     messageText = Document.INTROS.pageBody(region);
@@ -388,7 +420,7 @@ public class InterlevelScene extends PixelScene {
                         timeLeft = fadeTime;
 
                         btnContinue.enable(false);
-                        Document.INTROS.readPage(region);
+                        if (!bossChallengeStory) Document.INTROS.readPage(region);
                     }
                 };
                 btnContinue.icon(Icons.STAIRS.get());
@@ -420,7 +452,7 @@ public class InterlevelScene extends PixelScene {
                                 phase = Phase.FADE_OUT;
                                 timeLeft = fadeTime;
                                 btnContinue.enable(false);
-                                Document.INTROS.readPage(region);
+                                if (!bossChallengeStory) Document.INTROS.readPage(region);
                             }
                             return true;
                         }
@@ -746,10 +778,7 @@ public class InterlevelScene extends PixelScene {
             Dungeon.init();
             GameLog.wipe();
 
-            //When debugging, we may start a game at a later depth to quickly test something
-            // if this happens, the games quickly generates all prior levels on branch 0 first,
-            // which ensures levelgen consistency with a regular game that was played to that depth.
-            if (DeviceCompat.isDebug()){
+//            if (DeviceCompat.isDebug()){
                 int trueDepth = Dungeon.depth;
                 int trueBranch = Dungeon.branch;
                 for (int i = 1; i < trueDepth + (trueBranch == 0 ? 0 : 1); i++){
@@ -762,7 +791,7 @@ public class InterlevelScene extends PixelScene {
                 }
                 Dungeon.depth = trueDepth;
                 Dungeon.branch = trueBranch;
-            }
+//            }
 
             Level level = Dungeon.newLevel();
             Dungeon.switchLevel(level, -1);

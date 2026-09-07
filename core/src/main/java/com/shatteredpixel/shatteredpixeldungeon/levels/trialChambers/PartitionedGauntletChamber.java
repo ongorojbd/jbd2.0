@@ -41,6 +41,15 @@ public class PartitionedGauntletChamber extends TrialChamber {
         //still standing open
         Painter.set(level, center, Terrain.PEDESTAL);
 
+        //createWalls() runs before the owning level paints the 4 doors and knows nothing about
+        //where they'll go, so a partition can land right against a door and seal its inner side
+        //(most visibly the hub-facing one). punch a minimal notch from each door back into the
+        //maze so every door is always usable.
+        openDoorApproach(topDoor);
+        openDoorApproach(bottomDoor);
+        openDoorApproach(leftDoor);
+        openDoorApproach(rightDoor);
+
         ArrayList<Integer> openCells = openFloorCells();
         openCells.remove(Integer.valueOf(level.pointToCell(center)));
 
@@ -51,6 +60,23 @@ public class PartitionedGauntletChamber extends TrialChamber {
             openCells.remove(Integer.valueOf(pos));
             elite.pos = pos;
             level.mobs.add(elite);
+        }
+    }
+
+    //clears a straight one-tile notch from the cell just inside a door toward the centre, until
+    //it meets the already-open maze. worst case (never happens in practice) it clears a full
+    //spoke to the centre - the maze still fills the quadrants between the spokes.
+    private void openDoorApproach(Point innerDoor) {
+        int stepX = Integer.signum(center.x - innerDoor.x);
+        int stepY = Integer.signum(center.y - innerDoor.y);
+        Point cur = new Point(innerDoor);
+        for (int i = 0; i <= Math.max(innerWidth, innerHeight) / 2; i++) {
+            if (cur.x == center.x && cur.y == center.y) break; //reached the pedestal, done
+            int cell = level.pointToCell(cur);
+            if (level.map[cell] == Terrain.EMPTY) break;
+            Painter.set(level, cell, Terrain.EMPTY);
+            cur.x += stepX;
+            cur.y += stepY;
         }
     }
 

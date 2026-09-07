@@ -346,8 +346,6 @@ public class v2_X_Changes {
 		changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.YORIHIMES_ALL_CLASSES.image), "죠기던 5주년",
 				"죠기던이 출시 후 5주년을 맞이했습니다!\n\n" +
 						"앞으로도 흥미진진한 콘텐츠와 업데이트가 기다리고 있으니, 기대해주시기 바랍니다.\n\n함께 해주셔서 진심으로 감사합니다!"));
-		changes.addButton(new ChangeButton(new Image(Assets.Sprites.TROLL, 0, 0, 9, 15), "죠니 퀘스트 & 보상 리메이크",
-				"12~14층에서 수행할 수 있는 죠니의 퀘스트가 대폭 개편되었습니다."));
 		changes.addButton(new ChangeButton(Icons.get(Icons.ENTER), "DIO의 저택 비밀 공간",
 				"DIO의 저택의 숨겨진 비밀 공간이 추가되었습니다.\n\n난이도는 어렵지만 특별한 보상을 획득할 수 있습니다."));
 		changes.addButton(new ChangeButton(new Image(Assets.Sprites.DIOBRANDO2, 0, 0, 13, 16), "디오의 성 신규 히든보스",

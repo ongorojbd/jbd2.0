@@ -142,8 +142,6 @@ public class WndQteBossGame extends Window {
 
         switch (Math.max(1, Math.min(3, phase))) {
             case 3:
-                timeLimit = 0.40f;
-                break;
             case 2:
                 timeLimit = 0.55f;
                 break;

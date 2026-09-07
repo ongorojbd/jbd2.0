@@ -64,6 +64,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.GrimWardChamber;
+import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.PartitionedGauntletChamber;
+import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.SpearPhalanxChamber;
+import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.VaultOfKeysChamber;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BurningTrap;
@@ -254,6 +258,14 @@ public enum Bestiary {
         classConversions.put(Speedwagon2.class, SpeedWagon.class);
 
         classConversions.put(Necromancer.NecroSkeleton.class, Skeleton.class);
+
+        //VeiledSanctumLevel's trial-chamber guards are all Banshee subclasses
+        classConversions.put(GrimWardChamber.GrimWardGuardian.class, Banshee.class);
+        classConversions.put(PartitionedGauntletChamber.GauntletGuard.class, Banshee.class);
+        classConversions.put(PartitionedGauntletChamber.GauntletShaman.class, Banshee.class);
+        classConversions.put(PartitionedGauntletChamber.GauntletBrute.class, Banshee.class);
+        classConversions.put(SpearPhalanxChamber.PhalanxGuard.class, Banshee.class);
+        classConversions.put(VaultOfKeysChamber.VaultWarden.class, Banshee.class);
 
         classConversions.put(TenguDartTrap.class, PoisonDartTrap.class);
         classConversions.put(GnollRockfallTrap.class, RockfallTrap.class);

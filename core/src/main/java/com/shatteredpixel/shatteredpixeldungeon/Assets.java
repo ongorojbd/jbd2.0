@@ -52,6 +52,7 @@ public class Assets {
         public static final String TILES_KEICHO = "environment/tiles_keicho.png";
         public static final String TILES_TENDENCY = "environment/tiles_tendency.png";
         public static final String TILES_TENDENCY2 = "environment/tiles_tendency2.png";
+        public static final String TILES_TG = "environment/tiles_tg.png";
 
         public static final String WATER_SEWERS = "environment/water0.png";
         public static final String WATER_PRISON = "environment/water1.png";
@@ -520,6 +521,8 @@ public class Assets {
         public static final String SO = "splashes/so.jpg";
         public static final String TENDENCY = "splashes/tendency.jpg";
         public static final String DECK1 = "splashes/deck1.jpg";
+        //BossChallengeTester: loading splash for the sanctum branch (branch 2, depths 20-22)
+        public static final String SANCTUM = "splashes/sanctum.jpg";
     }
 
     public static class Sprites {

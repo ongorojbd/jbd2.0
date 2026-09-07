@@ -57,8 +57,8 @@ import java.util.HashMap;
     SanctumCodeFragment that reveals one digit at its correct position; the other 4 outer rooms
     just hold normal loot. The code and whether it's been solved are persisted across save/load.
 
-    Placement in the game's progression (which depth/branch this hooks into) is not decided yet -
-    the LevelTransition depth offsets below are placeholders to be wired up later.
+    In the progression this sits at branch 0 depth 1 (and branch 2 depth 20); the way down is a
+    plain REGULAR_EXIT to depth+1 in the same branch, which is ColdhouseBossLevel.
 */
 public class VeiledSanctumLevel extends Level {
 
@@ -126,7 +126,7 @@ public class VeiledSanctumLevel extends Level {
 
     @Override
     public String tilesTex() {
-        return Assets.Environment.TILES_SEWERS;
+        return Assets.Environment.TILES_TG;
     }
 
     @Override
@@ -145,12 +145,11 @@ public class VeiledSanctumLevel extends Level {
                 0,
                 LevelTransition.Type.BRANCH_EXIT));
 
+        //the way down: a normal descent to depth+1 in the same branch (ColdhouseBossLevel).
+        //REGULAR_EXIT fills in destDepth = Dungeon.depth+1, destBranch = Dungeon.branch for us
         transitions.add(new LevelTransition(this,
                 exitCell(),
-                LevelTransition.Type.BRANCH_EXIT,
-                Dungeon.depth,
-                3,
-                LevelTransition.Type.BRANCH_ENTRANCE));
+                LevelTransition.Type.REGULAR_EXIT));
 
         buildLevel();
         return true;
@@ -363,7 +362,7 @@ public class VeiledSanctumLevel extends Level {
             return false;
         }
 
-        if (transition.type == LevelTransition.Type.BRANCH_EXIT && !sanctumCodeSolved) {
+        if (transition.type == LevelTransition.Type.REGULAR_EXIT && !sanctumCodeSolved) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {

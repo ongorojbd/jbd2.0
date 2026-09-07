@@ -55,12 +55,10 @@ import com.watabou.utils.Random;
 
 public class Banshee extends Mob {
 
-	//체력이 0이 되어도 이 확률로 죽지 않고 아래 체력으로 부활한다
+	//체력이 0이 되어도 이 확률로 죽지 않고 아래 체력으로 부활한다.
+	//단, 플레이어가 Roc(등가교환) 버프 상태면 부활 판정 자체를 하지 않고 그대로 사망한다.
 	private static final float REVIVE_CHANCE = 0.8f;
 	private static final int REVIVE_HP = 30;
-
-	//플레이어가 Roc 버프 상태면 이 확률로 부활이 봉쇄되어 그대로 사망한다
-	private static final float ROC_REVIVE_SUPPRESS_CHANCE = 0.8f;
 
 	private int regenCounter = 0;
 	private static final String REGEN_COUNTER = "regen_counter";
@@ -102,11 +100,9 @@ public class Banshee extends Mob {
 
 	@Override
 	public void die(Object cause) {
-		boolean rocSuppressed = Dungeon.hero != null
-				&& Dungeon.hero.buff(Roc.class) != null
-				&& Random.Float() < ROC_REVIVE_SUPPRESS_CHANCE;
+		boolean rocActive = Dungeon.hero != null && Dungeon.hero.buff(Roc.class) != null;
 
-		if (!rocSuppressed && Random.Float() < REVIVE_CHANCE) {
+		if (!rocActive && Random.Float() < REVIVE_CHANCE) {
 			HP = REVIVE_HP;
 			if (Dungeon.level.heroFOV[pos]) {
 				SpellSprite.show(this, SpellSprite.BERSERK);

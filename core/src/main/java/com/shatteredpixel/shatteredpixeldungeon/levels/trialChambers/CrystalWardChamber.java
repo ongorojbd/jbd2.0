@@ -1,20 +1,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Acidic;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ShockingTrap;
 import com.watabou.utils.Point;
 
-import java.util.ArrayList;
-
-//a square ring of wall guards an inner vault with two guarded gaps (north/south); the east/west
-//gaps are open but unguarded, rewarding careful pathing over brute force. the vault interior
-//(inside the ring, including the ring plane itself and its gaps) stays clean - the entire outer
-//annulus beyond the ring is packed edge-to-edge with hidden ShockingTraps instead.
+//the reward pedestal sits in a clean square at the centre; the whole surrounding floor out to
+//the room edge is packed edge-to-edge with REVEALED ShockingTraps - visible, but with no gap.
+//four Acidics stand at the cardinal edges of the clean vault. (the old enclosing wall ring lives
+//in GrimWardChamber now.)
 public class CrystalWardChamber extends TrialChamber {
 
-    private static final int RING_RADIUS = 4;
+    private static final int VAULT_RADIUS = 4; //clean square around the pedestal (Chebyshev distance)
 
     {
         isBuildWithStructure = false;
@@ -22,7 +20,7 @@ public class CrystalWardChamber extends TrialChamber {
 
     @Override
     public boolean blocksPursuer() {
-        return true; //trap-packed annulus - don't strand the pursuer in here
+        return true; //revealed traps everywhere outside the vault - don't strand the pursuer here
     }
 
     @Override
@@ -31,38 +29,25 @@ public class CrystalWardChamber extends TrialChamber {
 
         Painter.fill(level, innerRoom, Terrain.EMPTY);
 
-        ArrayList<Integer> vaultFloor = new ArrayList<>();
-        for (int dx = -RING_RADIUS; dx <= RING_RADIUS; dx++) {
-            for (int dy = -RING_RADIUS; dy <= RING_RADIUS; dy++) {
-                int cell = level.pointToCell(new Point(center.x + dx, center.y + dy));
-                //cardinal midpoints are left open as the vault's 4 gaps
-                if (Math.max(Math.abs(dx), Math.abs(dy)) == RING_RADIUS && dx != 0 && dy != 0) {
-                    Painter.set(level, cell, Terrain.WALL);
-                }
-                //the whole ring plane (including gaps and the wall itself) counts as "inside"
-                vaultFloor.add(cell);
-            }
-        }
-
         for (int cell : innerRoomPos()) {
-            if (vaultFloor.contains(cell)) {
-                continue;
+            Point p = level.cellToPoint(cell);
+            int cheb = Math.max(Math.abs(p.x - center.x), Math.abs(p.y - center.y));
+
+            if (cheb <= VAULT_RADIUS) {
+                continue; //clean vault floor
             }
-            Painter.set(level, cell, Terrain.SECRET_TRAP);
-            level.setTrap(new ShockingTrap().hide(), cell);
+            Painter.set(level, cell, Terrain.TRAP);
+            level.setTrap(new ShockingTrap().reveal(), cell);
         }
 
         Painter.set(level, center, Terrain.PEDESTAL);
 
-        int[][] guardOffsets = {{0, -RING_RADIUS + 1}, {0, RING_RADIUS - 1}};
-        for (int pos : customOffsetArray(guardOffsets)) {
-            WardGuardian guardian = new WardGuardian();
-            guardian.pos = pos;
-            level.mobs.add(guardian);
+        int g = VAULT_RADIUS - 1;
+        int[][] acidicOffsets = {{0, -g}, {0, g}, {-g, 0}, {g, 0}};
+        for (int pos : customOffsetArray(acidicOffsets)) {
+            Acidic acidic = new Acidic();
+            acidic.pos = pos;
+            level.mobs.add(acidic);
         }
-    }
-
-    public static class WardGuardian extends Banshee {
-        { properties.add(Property.BOSS_MINION); }
     }
 }

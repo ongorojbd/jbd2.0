@@ -283,7 +283,7 @@ public enum Catalog {
 
 		MISC_EQUIPMENT.addItems(BrokenSeal.class, SpiritBow.class, Waterskin.class, VelvetPouch.class,
 				PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, NitoDismantleHammer.class,
-				Cen.class, Amulet.class, Bcomdisc.class, Sleepcmoon.class, TendencyItem.class);
+				Cen.class, Amulet.class, Bcomdisc.class, Sleepcmoon.class, TendencyItem.class, DolomitesTeeth.class);
 
 		SPECIAL_WEAPONS.addItems(ChaosSword.class, FlameKatana.class, KSG.class, HeavyMachinegun.class,
 				LSWORD.class, DBLADE.class, MISTA.class, PINK.class, AJA.class, SnowHunter.class, Spheaven.class);

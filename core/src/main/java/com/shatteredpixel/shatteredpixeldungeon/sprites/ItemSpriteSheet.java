@@ -788,7 +788,6 @@ public class ItemSpriteSheet {
     //16 free slots
 
     private static final int SPELLS = xy(1, 27);  //16 slots
-    public static final int WILD_ENERGY = SPELLS + 13;
     public static final int PHASE_SHIFT = SPELLS + 1;
     public static final int TELE_GRAB = SPELLS + 2;
     public static final int UNSTABLE_SPELL = SPELLS + 3;
@@ -799,21 +798,22 @@ public class ItemSpriteSheet {
     public static final int RECLAIM_TRAP = SPELLS + 10;
     public static final int RETURN_BEACON = SPELLS + 11;
     public static final int SUMMON_ELE = SPELLS + 12;
+    public static final int WILD_ENERGY = SPELLS + 13;
 
 
     static {
-        assignItemRect(WILD_ENERGY, 12, 11);
-        assignItemRect(PHASE_SHIFT, 12, 11);
-        assignItemRect(TELE_GRAB, 12, 11);
+        assignItemRect(PHASE_SHIFT, 12, 12);
+        assignItemRect(TELE_GRAB, 8, 16);
         assignItemRect(UNSTABLE_SPELL, 13, 15);
-        assignItemRect(CURSE_INFUSE, 10, 15);
-        assignItemRect(MAGIC_INFUSE, 10, 15);
+        assignItemRect(CURSE_INFUSE, 12, 10);
+        assignItemRect(MAGIC_INFUSE, 8, 16);
         assignItemRect(ALCHEMIZE, 10, 13);
-        assignItemRect(RECYCLE, 10, 15);
+        assignItemRect(RECYCLE, 8, 16);
         assignItemRect(WILD_ENERGY, 8, 16);
-        assignItemRect(RECLAIM_TRAP, 11, 11);
+        assignItemRect(RECLAIM_TRAP, 10, 10);
         assignItemRect(RETURN_BEACON, 8, 16);
-        assignItemRect(SUMMON_ELE, 8, 16);
+        assignItemRect(SUMMON_ELE, 10, 16);
+        assignItemRect(WILD_ENERGY, 10, 14);
     }
 
     private static final int FOOD = xy(1, 28);  //16 slots

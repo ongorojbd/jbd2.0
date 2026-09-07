@@ -142,6 +142,12 @@ public class RatBeast extends Mob {
 	private int qteCooldown = QTE_COOLDOWNS[0];
 	private int qteChargeStep = 0;
 	public boolean qteGameActive = false;
+	//QTE 도중 게임을 나갔다 돌아온 횟수(저장됨). 1회라도 있으면 창을 다시 띄우지 않고 즉시 실패 처리해 무효화를 막는다
+	private int qteBailStrikes = 0;
+	//세션 내에서 창이 사라진 채로 흐른 보스 턴 수(저장 안 함)
+	private int qteWindowAbsentTurns = 0;
+	//창 생성 요청이 렌더 스레드에 예약된 상태(중복 생성 방지, 저장 안 함)
+	private boolean qteWindowQueued = false;
 
 	//used so resistances can differentiate between melee and magical attacks
 	public static class BarfAcid{}
@@ -155,21 +161,33 @@ public class RatBeast extends Mob {
 	public boolean act() {
 
 		if (qteGameActive) {
-			if (WndQteBossGame.instance == null) {
-				showQteGame();
+			//창이 살아있거나 생성 대기 중이면 그대로 입력을 기다린다
+			if (WndQteBossGame.instance != null || qteWindowQueued) {
+				qteWindowAbsentTurns = 0;
+				spend(Actor.TICK);
+				return true;
 			}
+
+			//창이 없다 = QTE 도중 게임을 나갔거나(로드 후) 세션 중 창이 사라짐.
+			//이탈은 곧바로 자동 실패로 처리해 QTE 무효화를 막는다.
+			qteWindowAbsentTurns++;
+			if (qteBailStrikes >= 1 || qteWindowAbsentTurns >= 3) {
+				resolveQte(false, true);
+				spend(Actor.TICK);
+				return true;
+			}
+
+			showQteGame();
 			spend(Actor.TICK);
 			return true;
 		}
 
-		if (HP <= HT*0.15f && shoulddoTransition)
+		if (HP <= HT*0.2f && shoulddoTransition)
 		{
 			GameScene.flash(0x80FFFFFF);
 
 			shoulddoTransition = false;
-			HP = (int)(HT*0.15f);
-
-			Buff.affect(this, Barrier.class).setShield(40);
+			HP = (int)(HT*0.2f);
 
 			ScrollOfTeleportation.teleportToLocation(Dungeon.hero, Dungeon.level.randomRespawnCell(Dungeon.hero));
 			ScrollOfTeleportation.teleportToLocation(this, Dungeon.level.randomRespawnCell(Dungeon.hero));
@@ -220,20 +238,26 @@ public class RatBeast extends Mob {
 				spend(Actor.TICK * 2);
 				Ballistica bolt = new Ballistica(pos, enemy.pos, Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
 
-				int dist = Random.Int(2, 3);
-				if (HP <= HT*0.5f) dist += 1;
+				int phase = qtePhase();
+
+				int dist = Random.Int(3, 5); //3 또는 4
+				if (phase >= 2) dist += 1;
+				if (phase >= 3) dist += 1;
                 if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) dist += 1;
+
+				//부식 가스 강도 - 페이즈가 오를수록 훨씬 아프게
+				int gasStrength = 3 + phase * 2;
+				//가스 구름의 부피 - 크고 오래 남아 회피를 강제한다
+				int gasVolume = 15 + phase * 5;    //20 / 25 / 30
 
 				ConeAOE cone = new ConeAOE(bolt,
 						dist,
-						80,
+						90,
 						Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
 
-				PixelScene.shake( 3, 0.2f );
+				PixelScene.shake( 4, 0.25f );
 
 				for (int cell : cone.cells) {
-
-
 
 					if (Dungeon.level.map[cell] == Terrain.WATER) {
 						Level.set(cell, Terrain.EMPTY);
@@ -246,10 +270,12 @@ public class RatBeast extends Mob {
                                 Statistics.bossScores[0] -= 50;
                             }
 
-                            ch.damage(Random.NormalIntRange(2, 9), new BarfAcid());
+                            //직격 피해 - 기본 8~16 + 페이즈당 6
+                            ch.damage(Random.NormalIntRange(8, 16) + (phase - 1) * 6, new BarfAcid());
+
                         }
 
-                        GameScene.add(Blob.seed(cell, 8, CorrosiveGas.class).setStrength(3));
+                        GameScene.add(Blob.seed(cell, gasVolume, CorrosiveGas.class).setStrength(gasStrength));
                     }
 				}
 			}
@@ -262,7 +288,7 @@ public class RatBeast extends Mob {
 
 		if (enemy != null &&
 				this.distance(enemy) < 3 &&
-				Random.Int(6) == 1 &&
+				Random.Int(5) == 1 &&
 				!chargingBarf) {
             spend(1f);
             chargingBarf = true;
@@ -381,7 +407,10 @@ public class RatBeast extends Mob {
 	}
 
 	private void showQteGame() {
-		final RatBeast boss = this;
+		//이미 창이 있거나 생성이 예약돼 있으면 중복 생성하지 않는다
+		if (qteWindowQueued || WndQteBossGame.instance != null) return;
+		qteWindowQueued = true;
+
 		final int p = qtePhase();
 		//페이즈 = 연속 입력 수 (1 -> 2 -> 3), 제한 시간도 페이즈에 따라 짧아진다
 		final int seq = p;
@@ -389,55 +418,62 @@ public class RatBeast extends Mob {
 		Game.runOnRenderThread(new Callback() {
 			@Override
 			public void call() {
+				qteWindowQueued = false;
 				GameScene.show(new WndQteBossGame(p, seq,
-						//성공 - 거대 쥐에게 1턴 Doom + Daze (피해 없음)
 						new Callback() {
 							@Override
 							public void call() {
-								qteGameActive = false;
-
-								Camera.main.shake(6, 0.6f);
-								GameScene.flash(0x8000FF00);
-
-								GLog.p(Messages.get(RatBeast.class, "qte_success"));
-								Sample.INSTANCE.play(Assets.Sounds.PUFF);
-
-								//피해 대신 1턴의 Doom + Daze - 다음 턴에 확정 딜을 넣을 창을 연다
-								Buff.affect(boss, Doom.class).setDuration(1f);
-								Buff.affect(boss, Daze.class, 1f);
-								boss.sprite.showStatus(CharSprite.NEGATIVE, "휘청...");
-
-								qteCooldown = QTE_COOLDOWNS[p - 1];
+								resolveQte(true, false);
 							}
 						},
-						//실패 - 거대 쥐 기본 공격력의 1.5배 피해 + 순간이동
 						new Callback() {
 							@Override
 							public void call() {
-								qteGameActive = false;
-
-								GameScene.flash(0x66FF0000);
-								Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-
-								GLog.n(Messages.get(RatBeast.class, "qte_fail"));
-
-								//거대 쥐 기본 공격력의 1.5배, 방어구 감쇄(drRoll) 적용
-								int dmg = Math.round(damageRoll() * 1.5f);
-								dmg -= Dungeon.hero.drRoll();
-								Dungeon.hero.damage(Math.max(dmg, 0), boss);
-
-								overwhelmAttack();
-
-								if (!Dungeon.hero.isAlive()) {
-									Dungeon.fail(RatBeast.class);
-								}
-
-								qteCooldown = QTE_COOLDOWNS[p - 1];
+								resolveQte(false, false);
 							}
 						}
 				));
 			}
 		});
+	}
+
+	//QTE 결과 처리 - 창 콜백(성공/실패)과 이탈 감지(자동 실패) 모두 여기로 모은다
+	private void resolveQte(boolean success, boolean bailed) {
+		if (!qteGameActive) return;
+		qteGameActive = false;
+		qteWindowQueued = false;
+		qteWindowAbsentTurns = 0;
+		qteBailStrikes = 0;
+
+		int p = qtePhase();
+		qteCooldown = QTE_COOLDOWNS[p - 1];
+
+		if (success) {
+			Camera.main.shake(6, 0.6f);
+			GameScene.flash(0x8000FF00);
+
+			GLog.p(Messages.get(RatBeast.class, "qte_success"));
+			Sample.INSTANCE.play(Assets.Sounds.PUFF);
+
+			//피해 대신 1턴의 Doom + Daze - 다음 턴에 확정 딜을 넣을 창을 연다
+			Buff.affect(this, Doom.class).setDuration(1f);
+			Buff.affect(this, Daze.class, 1f);
+			if (sprite != null) sprite.showStatus(CharSprite.NEGATIVE, "휘청...");
+			return;
+		}
+
+		GameScene.flash(0x66FF0000);
+		Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+		GLog.n(Messages.get(RatBeast.class, bailed ? "qte_bail" : "qte_fail"));
+
+		//이탈이든 반응 실패든 결과는 동일 - QTE 실패 전체 페널티 적용
+		//거대 쥐 기본 공격력의 1.5배, 방어구 감쇄(drRoll) 적용
+		int dmg = Math.max(0, Math.round(damageRoll() * 1.5f) - Dungeon.hero.drRoll());
+		Dungeon.hero.damage(dmg, this);
+		overwhelmAttack();
+		if (!Dungeon.hero.isAlive()) {
+			Dungeon.fail(RatBeast.class);
+		}
 	}
 
 	{
@@ -455,6 +491,7 @@ public class RatBeast extends Mob {
 	private static final String QTE_COOLDOWN     = "qteCooldown";
 	private static final String QTE_CHARGE_STEP  = "qteChargeStep";
 	private static final String QTE_GAME_ACTIVE  = "qteGameActive";
+	private static final String QTE_BAIL_STRIKES = "qteBailStrikes";
 
 
     @Override
@@ -466,6 +503,7 @@ public class RatBeast extends Mob {
 		bundle.put( QTE_COOLDOWN, qteCooldown );
 		bundle.put( QTE_CHARGE_STEP, qteChargeStep );
 		bundle.put( QTE_GAME_ACTIVE, qteGameActive );
+		bundle.put( QTE_BAIL_STRIKES, qteBailStrikes );
 
         super.storeInBundle(bundle);
 
@@ -482,6 +520,13 @@ public class RatBeast extends Mob {
 		qteCooldown = bundle.getInt( QTE_COOLDOWN );
 		qteChargeStep = bundle.getInt( QTE_CHARGE_STEP );
 		qteGameActive = bundle.getBoolean( QTE_GAME_ACTIVE );
+		qteBailStrikes = bundle.getInt( QTE_BAIL_STRIKES );
+
+		//QTE 창이 떠 있던 상태로 저장됐다 = 플레이어가 QTE 도중 게임을 나갔다.
+		//다시 진입하면 act()에서 창을 띄우지 않고 곧바로 실패로 처리한다.
+		if (qteGameActive) {
+			qteBailStrikes++;
+		}
 
 		bleeding = (HP * 2 <= HT);
 		BossHealthBar.assignBoss(this);

@@ -99,16 +99,17 @@ public class BossChallengeTester extends Item {
 
 		if (action.equals(AC_USE)) {
 
-//			if (metCount() < REQUIRED) {
-//				GLog.w(Messages.get(this, "use_fail", metCount(), REQUIRED));
-//				return;
-//			}
+			if (metCount() < REQUIRED) {
+				GLog.w(Messages.get(this, "use_fail", metCount(), REQUIRED));
+				return;
+			}
 
 			if (Dungeon.depth > 25 && Dungeon.branch == 0) {
 				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 				InterlevelScene.returnDepth = 20;
 				InterlevelScene.returnBranch = 2;
-				InterlevelScene.returnPos = -2;
+				InterlevelScene.returnPos = -1;
+				InterlevelScene.bossChallengeReturn = true;
 				Game.switchScene(InterlevelScene.class);
 
 				GLog.p(Messages.get(this, "use_success"));

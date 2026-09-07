@@ -122,6 +122,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyTreasureLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.VeiledSanctumLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -831,6 +832,10 @@ public class GameScene extends PixelScene {
                     Sample.INSTANCE.play(Assets.Sounds.SPW5);
                     GLog.n(Messages.get(Diobrando.class, "t7"));
                     add(new WndStory(Messages.get(this, "ship_title") + "\n\n" + Messages.get(this, "ship_window")).setDelays(0.4f, 0.4f));
+                }
+                //BossChallengeTester teleports here via Mode.RETURN, so the DESCEND-only intro below never fires
+                if (Dungeon.level instanceof VeiledSanctumLevel && Dungeon.depth == 20) {
+                    add(new WndStory(Messages.get(this, "tg_title") + "\n\n" + Messages.get(this, "tg_window")).setDelays(0.4f, 0.4f));
                 }
                 break;
             case DESCEND:

@@ -25,34 +25,24 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.Bt2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DArbySprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DM300Sprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DannySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GSoldierSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HermitCrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JohnnySprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RollerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkeletonSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SupressionSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -60,9 +50,10 @@ import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
 
-public class v3_X_Changes {
+public class v4_X_Changes {
 
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        add_Coming_Soon(changeInfos);
         add_v3_7_Changes(changeInfos);
         add_v3_6_Changes(changeInfos);
         add_v3_5_Changes(changeInfos);
@@ -71,6 +62,16 @@ public class v3_X_Changes {
         add_v3_2_Changes(changeInfos);
         add_v3_1_Changes(changeInfos);
         add_jolyne_Changes(changeInfos);
+    }
+
+    public static void add_Coming_Soon(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("곧 출시 예정", true, "");
+        changes.hardlight(0xCCCCCC);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
+                "다음 주요 업데이트는 오시리스신 퀘스트 변경으로, 기존과 차별화된 독특한 퀘스트 방식이 될 예정입니다."));
     }
 
     public static void add_v3_7_Changes(ArrayList<ChangeInfo> changeInfos) {
