@@ -36,8 +36,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PoisonParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.ScrollOfExtract;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -81,6 +83,9 @@ public class RatBeast extends Mob {
 		properties.add(Char.Property.DEMONIC);
 		properties.add(Char.Property.ACIDIC);
 
+		immunities.add(Sleep.class);
+		immunities.add(MagicalSleep.class);
+		immunities.add(Paralysis.class);
 	}
 
 	private static final int CHASE_SOUND_CHANCE = 8;
@@ -155,10 +160,19 @@ public class RatBeast extends Mob {
 	//QTE 반격 성공 시의 피해원 - 큰 피해 감쇄를 우회한다
 	public static class QteCounter{}
 
+	private static final int INVISIBILITY_SENSE_RANGE = 4;
 
 	@SuppressWarnings("SuspiciousIndentation")
     @Override
 	public boolean act() {
+
+		if (distance(Dungeon.hero) <= INVISIBILITY_SENSE_RANGE && Dungeon.hero.buff(Invisibility.class) != null) {
+			Invisibility.dispel(Dungeon.hero);
+			Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+			SpellSprite.show(hero, SpellSprite.VISION, 1, 0f, 0f);
+			GLog.w(Messages.get(this, "i"));
+			Dungeon.hero.interrupt();
+		}
 
 		if (qteGameActive) {
 			//창이 살아있거나 생성 대기 중이면 그대로 입력을 기다린다
@@ -242,17 +256,19 @@ public class RatBeast extends Mob {
 
 				int dist = Random.Int(3, 5); //3 또는 4
 				if (phase >= 2) dist += 1;
-				if (phase >= 3) dist += 1;
-                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) dist += 1;
+				//최종 페이즈(3)는 좁은 아레나에서 진행되므로 사거리를 더 늘리지 않는다.
+				//대신 회피 각을 좁혀(90 -> 60) 확실한 안전 방향을 남긴다.
+				int coneAngle = phase >= 3 ? 60 : 90;
 
 				//부식 가스 강도 - 페이즈가 오를수록 훨씬 아프게
 				int gasStrength = 3 + phase * 2;
-				//가스 구름의 부피 - 크고 오래 남아 회피를 강제한다
-				int gasVolume = 15 + phase * 5;    //20 / 25 / 30
+				//가스 구름의 부피 - 크고 오래 남아 회피를 강제한다.
+				//최종 페이즈는 아레나가 좁아 부피 30이면 방 전체가 덮이므로 상한을 둔다.
+				int gasVolume = phase >= 3 ? 16 : 15 + phase * 5;    //20 / 25 / 16
 
 				ConeAOE cone = new ConeAOE(bolt,
 						dist,
-						90,
+						coneAngle,
 						Ballistica.STOP_TARGET | Ballistica.STOP_SOLID | Ballistica.IGNORE_SOFT_SOLID);
 
 				PixelScene.shake( 4, 0.25f );
@@ -363,6 +379,8 @@ public class RatBeast extends Mob {
 		GameScene.bossSlain();
 
 		Camera.main.shake( 3, 1f );
+
+		Dungeon.level.drop( new ScrollOfExtract(), pos ).sprite.drop( pos );
 
 		yell(Messages.get(this, "defeated"));
 	}

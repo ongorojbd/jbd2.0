@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -73,6 +74,7 @@ public class UnseenWarden extends Mob {
 
         immunities.add(Sleep.class);
         immunities.add(MagicalSleep.class);
+        immunities.add(Paralysis.class);
 
         WANDERING = new RelentlessWandering();
     }
