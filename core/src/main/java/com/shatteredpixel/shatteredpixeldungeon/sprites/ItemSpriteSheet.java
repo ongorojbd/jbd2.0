@@ -115,7 +115,7 @@ public class ItemSpriteSheet {
 
         assignItemRect(TENGU_BOMB, 12, 12);
         assignItemRect(TENGU_SHOCKER, 11, 11);
-        assignItemRect(GEO_BOULDER, 14, 14);
+        assignItemRect(GEO_BOULDER, 16, 15);
 
         assignItemRect(SHOTGUN, 16, 8);
         assignItemRect(STURO, 16, 11);
@@ -782,6 +782,8 @@ public class ItemSpriteSheet {
         for (int i = BREWS; i < BREWS + 16; i++)
             assignItemRect(i, 12, 14);
 
+        assignItemRect(BREW_INFERNAL,   11, 13);
+        assignItemRect(BREW_BLIZZARD,   11, 13);
         assignItemRect(BREW_AQUA, 9, 11);
     }
 
@@ -799,21 +801,23 @@ public class ItemSpriteSheet {
     public static final int RETURN_BEACON = SPELLS + 11;
     public static final int SUMMON_ELE = SPELLS + 12;
     public static final int WILD_ENERGY = SPELLS + 13;
+    public static final int STATUE = SPELLS + 14;
 
 
     static {
         assignItemRect(PHASE_SHIFT, 12, 12);
-        assignItemRect(TELE_GRAB, 8, 16);
+        assignItemRect(TELE_GRAB, 14, 11);
         assignItemRect(UNSTABLE_SPELL, 13, 15);
-        assignItemRect(CURSE_INFUSE, 12, 10);
-        assignItemRect(MAGIC_INFUSE, 8, 16);
+        assignItemRect(CURSE_INFUSE, 12, 13);
+        assignItemRect(MAGIC_INFUSE, 10, 16);
         assignItemRect(ALCHEMIZE, 10, 13);
-        assignItemRect(RECYCLE, 8, 16);
+        assignItemRect(RECYCLE, 10, 16);
         assignItemRect(WILD_ENERGY, 8, 16);
         assignItemRect(RECLAIM_TRAP, 10, 10);
         assignItemRect(RETURN_BEACON, 8, 16);
         assignItemRect(SUMMON_ELE, 10, 16);
         assignItemRect(WILD_ENERGY, 10, 14);
+        assignItemRect(STATUE, 14, 14);
     }
 
     private static final int FOOD = xy(1, 28);  //16 slots
@@ -865,6 +869,7 @@ public class ItemSpriteSheet {
     public static final int CANDY_CANE = HOLIDAY_FOOD + 8;
     public static final int SPARKLING_POTION = HOLIDAY_FOOD + 9;
     public static final int RACE = HOLIDAY_FOOD + 10;
+    public static final int KEY = HOLIDAY_FOOD + 11;
 
     static {
         assignItemRect(STEAMED_FISH, 16, 12);
@@ -878,6 +883,7 @@ public class ItemSpriteSheet {
         assignItemRect(CANDY_CANE, 15, 16);
         assignItemRect(SPARKLING_POTION, 16, 15);
         assignItemRect(RACE, 16, 13);
+        assignItemRect(KEY, 8, 14);
     }
 
     private static final int QUEST = xy(1, 30);  //16 slots

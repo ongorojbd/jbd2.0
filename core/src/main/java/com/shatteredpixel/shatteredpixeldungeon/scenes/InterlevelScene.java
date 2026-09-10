@@ -306,9 +306,9 @@ public class InterlevelScene extends PixelScene {
         int w = (int)(Camera.main.width - insets.left - insets.right);
         int h = (int)(Camera.main.height - insets.top - insets.bottom);
 
-//        if (DeviceCompat.isDebug()){
-//            fadeTime = 0f;
-//        }
+        if (DeviceCompat.isDebug()){
+            fadeTime = 0f;
+        }
 
         if (Dungeon.deckbuilderlevel) {
             background = new Image(Assets.Splashes.SO);
@@ -393,7 +393,7 @@ public class InterlevelScene extends PixelScene {
 
 //        if (mode == Mode.DESCEND && lastRegion <= 6 && !DeviceCompat.isDebug() && SPDSettings.getDio() == 0 && !tendencylevel) {
 		if (bossChallengeStory
-				|| (mode == Mode.DESCEND && lastRegion <= 6 && SPDSettings.getDio() == 0 && !tendencylevel)) {
+				|| (mode == Mode.DESCEND && lastRegion <= 6 && SPDSettings.getDio() == 0 && !DeviceCompat.isDebug() && !tendencylevel)) {
             if (bossChallengeStory || Dungeon.hero == null || (loadingDepth > Statistics.deepestFloor && loadingDepth % 5 == 1)) {
                 String messageText;
                 if (bossChallengeStory) {
@@ -778,7 +778,7 @@ public class InterlevelScene extends PixelScene {
             Dungeon.init();
             GameLog.wipe();
 
-//            if (DeviceCompat.isDebug()){
+            if (DeviceCompat.isDebug()){
                 int trueDepth = Dungeon.depth;
                 int trueBranch = Dungeon.branch;
                 for (int i = 1; i < trueDepth + (trueBranch == 0 ? 0 : 1); i++){
@@ -791,7 +791,7 @@ public class InterlevelScene extends PixelScene {
                 }
                 Dungeon.depth = trueDepth;
                 Dungeon.branch = trueBranch;
-//            }
+            }
 
             Level level = Dungeon.newLevel();
             Dungeon.switchLevel(level, -1);

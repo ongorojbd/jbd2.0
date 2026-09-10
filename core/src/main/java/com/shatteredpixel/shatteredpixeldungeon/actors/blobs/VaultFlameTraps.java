@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -114,7 +115,7 @@ public class VaultFlameTraps extends Blob {
 					}
 
 					if (Dungeon.level.heroFOV[cell]) {
-						CellEmitter.get(cell).start(ElmoParticle.FACTORY, 0.02f, 10);
+						CellEmitter.get(cell).start(FlameParticle.FACTORY, 0.02f, 10);
 						playSfx = true;
 					}
 
@@ -174,7 +175,7 @@ public class VaultFlameTraps extends Blob {
 	public void use( BlobEmitter emitter ) {
 		super.use( emitter );
 		emitter.bound.set(0.4f, 0.4f, 0.6f, 0.6f);
-		emitter.pour( ElmoParticle.FACTORY, 0.3f );
+		emitter.pour( FlameParticle.FACTORY, 0.3f );
 	}
 
 	@Override

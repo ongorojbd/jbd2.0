@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 public class DwarfToken extends Item {
 	
 	{
-		image = ItemSpriteSheet.TOKEN;
+		image = ItemSpriteSheet.KEY;
 		
 		stackable = true;
 		unique = true;

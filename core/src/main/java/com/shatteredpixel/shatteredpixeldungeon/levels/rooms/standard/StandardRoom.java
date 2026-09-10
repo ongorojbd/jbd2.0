@@ -125,9 +125,6 @@ public abstract class StandardRoom extends Room {
 	//FIXME this is a very messy way of handing variable standard rooms
 	private static ArrayList<Class<?extends StandardRoom>> rooms = new ArrayList<>();
 	static {
-		rooms.add(EmptyRoom.class);
-
-
 		rooms.add(SewerPipeRoom.class);
 		rooms.add(RingRoom.class);
 		rooms.add(WaterBridgeRoom.class);
@@ -148,7 +145,6 @@ public abstract class StandardRoom extends Room {
 
 		rooms.add(HallwayRoom.class);
 		rooms.add(LibraryHallRoom.class);
-		rooms.add(StatuesRoom.class);
 		rooms.add(LibraryRingRoom.class);
 		rooms.add(StatuesRoom.class);
 		rooms.add(SegmentedLibraryRoom.class);

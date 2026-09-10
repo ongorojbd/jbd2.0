@@ -27,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class ImpStatue extends Item {
 
 	{
-		image = ItemSpriteSheet.QUARTERSTAFF;
+		image = ItemSpriteSheet.STATUE;
 
 		stackable = true;
 		unique = true;

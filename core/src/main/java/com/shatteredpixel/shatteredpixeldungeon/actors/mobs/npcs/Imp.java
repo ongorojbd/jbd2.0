@@ -86,7 +86,7 @@ public class Imp extends NPC {
 			flee();
 		} else if (!Quest.given && Dungeon.level.visited[pos]) {
 			if (!seenBefore && Dungeon.level.heroFOV[pos]) {
-				yell(Messages.get(this, "hey", Messages.titleCase(Dungeon.hero.name())));
+				yell( Messages.get(this, "hey") );
 				seenBefore = true;
 			}
 		} else {
@@ -194,8 +194,7 @@ public class Imp extends NPC {
 	}
 
 	public void flee() {
-
-		yell( Messages.get(this, "cya", Messages.titleCase(Dungeon.hero.name())) );
+		yell( Messages.get(this, "cya") );
 
 		destroy();
 		sprite.die();

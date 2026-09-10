@@ -36,6 +36,8 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Sentry1Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Sentry2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SentrySprite;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -46,7 +48,7 @@ import com.watabou.utils.Random;
 public class VaultLaser extends NPC {
 
 	{
-		spriteClass = SentrySprite.VaultLaser.class;
+		spriteClass = Sentry1Sprite.VaultScan.class;
 
 		properties.add(Char.Property.IMMOVABLE);
 	}

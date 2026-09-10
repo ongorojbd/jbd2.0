@@ -44,7 +44,7 @@ public class BossChallengeTester extends Item {
 	public static final String AC_USE = "USE";
 
 	//사용에 필요한 달성 개수
-	public static final int REQUIRED = 3;
+	public static final int REQUIRED = 2;
 
 	private static final Badges.Badge[] CHALLENGES = {
 			Badges.Badge.BOSS_CHALLENGE_1,

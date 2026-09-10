@@ -45,7 +45,6 @@ public class ImpShopkeeper extends Shopkeeper {
 		if (!seenBefore && Dungeon.level.heroFOV[pos]) {
 			if (Dungeon.hero.buff(AscensionChallenge.class) == null) {
 				yell(Messages.get(this, "greetings", Messages.titleCase(Dungeon.hero.name())));
-				Sample.INSTANCE.play(Assets.Sounds.DARBY);
 			} else {
 				yell(Messages.get(this, "greetings_ascent", Messages.titleCase(Dungeon.hero.name())));
 			}

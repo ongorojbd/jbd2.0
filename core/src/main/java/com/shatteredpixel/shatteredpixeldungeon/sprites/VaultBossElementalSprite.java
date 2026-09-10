@@ -48,7 +48,7 @@ public class VaultBossElementalSprite extends MobSprite {
 	public VaultBossElementalSprite() {
 		super();
 
-		texture( Assets.Sprites.VAULT_BOSS_ELEMENTAL );
+		texture( Assets.Sprites.FOREVER );
 
 		updateAnimations();
 	}
@@ -81,9 +81,11 @@ public class VaultBossElementalSprite extends MobSprite {
 			form = VaultBossElemental.ElementalForm.values()[Random.Int(3)];
 		}
 
-		int c = 16*form.ordinal();
+		int c = 0;
 
-		TextureFilm frames = new TextureFilm( texture, 31, 30 );
+		scale.set(0.5f);
+
+		TextureFilm frames = new TextureFilm( texture, 40, 40 );
 
 		idle = new Animation( 10, true );
 		idle.frames( frames, c+0, c+1, c+2, c+3 );

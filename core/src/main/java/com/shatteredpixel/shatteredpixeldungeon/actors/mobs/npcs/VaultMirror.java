@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TuskEquipmentDisc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -94,6 +95,9 @@ public class VaultMirror extends NPC {
 					reward = new HolyTome().upgrade(8).identify(false);
 					((HolyTome) reward).directCharge(8);
 					break;
+				case JOHNNY:
+					reward = new TuskEquipmentDisc().upgrade(8).identify(false);
+					break;
 			}
 		Random.popGenerator();
 	}
@@ -125,6 +129,9 @@ public class VaultMirror extends NPC {
 								break;
 							case CLERIC:
 								sceneText += Messages.get(VaultMirror.class, "scene_cleric");
+								break;
+							case JOHNNY:
+								sceneText += Messages.get(VaultMirror.class, "scene_johnny");
 								break;
 						}
 						sceneText += "\n\n" + Messages.get(VaultMirror.class, "scene_final");

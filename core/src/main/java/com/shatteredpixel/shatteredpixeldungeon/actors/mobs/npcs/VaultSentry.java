@@ -36,6 +36,8 @@ import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Sentry1Sprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.Sentry2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SentrySprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -48,7 +50,7 @@ import java.util.ArrayList;
 public class VaultSentry extends NPC {
 
 	{
-		spriteClass = SentrySprite.VaultScan.class;
+		spriteClass = Sentry2Sprite.VaultScan.class;
 
 		properties.add(Property.IMMOVABLE);
 	}
