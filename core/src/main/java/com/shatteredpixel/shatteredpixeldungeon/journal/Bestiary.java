@@ -52,11 +52,21 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TendencyShopkee
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TsujiAya;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary4;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.VaultLaser;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.VaultSentry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Weather;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Willson;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yukako;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultBossElemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultDM100;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultDM200;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultElemental;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultGhoul;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultGolem;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultShaman;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultSkeleton;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
@@ -207,7 +217,8 @@ public enum Bestiary {
 
         QUEST.addEntities(FetidRat.class, GnollTrickster.class, GreatCrab.class, Manhatan2.class,
                 Elemental.NewbornFireElemental.class, RotLasher.class, RotHeart.class,
-                CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGeomancer.class, GnollSapper.class, GnollGuard.class,
+                CrystalWisp.class, CrystalGuardian.class, CrystalSpire.class, GnollGuard.class, GnollSapper.class, GnollGeomancer.class,
+                VaultSkeleton.class, VaultDM100.class, VaultShaman.class, VaultDM200.class, VaultSentry.class, VaultLaser.class, VaultBossElemental.class,
                 Civil.class, Bmore.class, Diego.class, Pucci12.class, Diego21.class, Diego12.class, ZombieFour.class, ZombietBoss.class,
                 TempleLastLevel.TempleBrute.class, TempleLastLevel.TempleGuard.class, Keichomob.class);
 
@@ -239,7 +250,28 @@ public enum Bestiary {
 
     static {
 
-        classConversions.put(CorpseDust.DustWraith.class, Wraith.class);
+        classConversions.put(CorpseDust.DustWraith.class,       Wraith.class);
+
+        classConversions.put(Necromancer.NecroSkeleton.class,   Skeleton.class);
+
+        classConversions.put(TenguDartTrap.class,               PoisonDartTrap.class);
+        classConversions.put(GnollRockfallTrap.class,           RockfallTrap.class);
+
+        classConversions.put(VaultGhoul.class,                  Ghoul.class);
+        classConversions.put(VaultElemental.Fire.class,         Elemental.FireElemental.class);
+        classConversions.put(VaultElemental.Frost.class,        Elemental.FrostElemental.class);
+        classConversions.put(VaultElemental.Shock.class,        Elemental.ShockElemental.class);
+        classConversions.put(VaultGolem.class,                  Golem.class);
+
+        classConversions.put(DwarfKing.DKGhoul.class,           Ghoul.class);
+        classConversions.put(DwarfKing.DKWarlock.class,         Warlock.class);
+        classConversions.put(DwarfKing.DKMonk.class,            Monk.class);
+        classConversions.put(DwarfKing.DKGolem.class,           Golem.class);
+
+        classConversions.put(YogDzewa.YogRipper.class,          RipperDemon.class);
+        classConversions.put(YogDzewa.YogEye.class,             Eye.class);
+        classConversions.put(YogDzewa.YogScorpio.class,         Scorpio.class);
+
         classConversions.put(Rohan2.class, Rohan.class);
         classConversions.put(Rohan3.class, Rohan.class);
         classConversions.put(DestOrb.class, RotLasher.class);
@@ -257,8 +289,6 @@ public enum Bestiary {
         classConversions.put(Diego2.class, Diego.class);
         classConversions.put(Speedwagon2.class, SpeedWagon.class);
 
-        classConversions.put(Necromancer.NecroSkeleton.class, Skeleton.class);
-
         //VeiledSanctumLevel's trial-chamber guards are all Banshee subclasses
         classConversions.put(GrimWardChamber.GrimWardGuardian.class, Banshee.class);
         classConversions.put(PartitionedGauntletChamber.GauntletGuard.class, Banshee.class);
@@ -267,23 +297,12 @@ public enum Bestiary {
         classConversions.put(SpearPhalanxChamber.PhalanxGuard.class, Banshee.class);
         classConversions.put(VaultOfKeysChamber.VaultWarden.class, Banshee.class);
 
-        classConversions.put(TenguDartTrap.class, PoisonDartTrap.class);
-        classConversions.put(GnollRockfallTrap.class, RockfallTrap.class);
-
-        classConversions.put(DwarfKing.DKGhoul.class, Ghoul.class);
-        classConversions.put(DwarfKing.DKWarlock.class, Warlock.class);
-        classConversions.put(DwarfKing.DKMonk.class, Monk.class);
-        classConversions.put(DwarfKing.DKGolem.class, Golem.class);
-
         classConversions.put(YogFist.BurningFist.class, YogFist.BrightFist.class);
         classConversions.put(YogFist.SoiledFist.class, YogFist.BrightFist.class);
         classConversions.put(YogFist.RottingFist.class, YogFist.BrightFist.class);
         classConversions.put(YogFist.RustedFist.class, YogFist.BrightFist.class);
         classConversions.put(YogFist.DarkFist.class, YogFist.BrightFist.class);
 
-        classConversions.put(YogDzewa.YogRipper.class, RipperDemon.class);
-        classConversions.put(YogDzewa.YogEye.class, Eye.class);
-        classConversions.put(YogDzewa.YogScorpio.class, Scorpio.class);
     }
 
     public static boolean isSeen(Class<?> cls) {

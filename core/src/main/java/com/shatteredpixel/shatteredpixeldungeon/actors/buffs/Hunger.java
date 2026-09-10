@@ -72,8 +72,7 @@ public class Hunger extends Buff implements Hero.Doom {
 				|| Dungeon.level instanceof EmporioLevel
 				|| Dungeon.level instanceof HumanVillageBossLevel
 				|| Dungeon.level instanceof ParallelBrawlLevel
-				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null
-				|| Dungeon.level instanceof VaultLevel){
+				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null){
 			spend(TICK);
 			return true;
 		}

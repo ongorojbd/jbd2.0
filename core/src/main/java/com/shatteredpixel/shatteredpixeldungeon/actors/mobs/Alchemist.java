@@ -88,12 +88,6 @@ public class Alchemist extends Mob {
         return super.lootChance() * (float)Math.pow(1/2f, Dungeon.LimitedDrops.GOLEM_EQUIP.count);
     }
 
-    @Override
-    public void rollToDropLoot() {
-        Imp.Quest.process( this );
-        super.rollToDropLoot();
-    }
-
     public Item createLoot() {
         Dungeon.LimitedDrops.GOLEM_EQUIP.count++;
         //uses probability tables for demon halls

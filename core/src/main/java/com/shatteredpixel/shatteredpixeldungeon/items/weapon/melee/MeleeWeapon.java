@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -451,7 +452,10 @@ public class MeleeWeapon extends Weapon {
 	public int value() {
 		int price = 20 * tier;
 		if (hasGoodEnchant()) {
-			price *= 1.5;
+			price *= 1.5f;
+			if (enchantment instanceof Crystal){
+				price *= 3;
+			}
 		}
 		if (cursedKnown && (cursed || hasCurseEnchant())) {
 			price /= 2;

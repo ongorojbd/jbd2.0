@@ -86,9 +86,10 @@ public class WoundsofWar extends Artifact {
     }
 
     @Override
-    public void level(int value) {
+    public Item level(int value) {
         super.level(value);
         chargeCap = 1 + level()/5;
+        return this;
     }
 
     @Override

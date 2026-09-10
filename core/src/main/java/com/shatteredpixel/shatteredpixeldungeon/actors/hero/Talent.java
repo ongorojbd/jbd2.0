@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See thepassiveIDDisabled
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -1069,6 +1069,9 @@ public enum Talent {
         if (talent == ADVENTURERS_INTUITION && hero.pointsInTalent(ADVENTURERS_INTUITION) == 2) {
             if (hero.belongings.weapon() != null && !ShardOfOblivion.passiveIDDisabled()) {
                 hero.belongings.weapon().identify();
+            }
+            if (hero.belongings.secondWep() != null && !ShardOfOblivion.passiveIDDisabled()){
+                hero.belongings.secondWep().identify();
             }
         }
 

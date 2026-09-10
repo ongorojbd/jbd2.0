@@ -33,10 +33,10 @@ public class Assets {
 
     public static class Environment {
         public static final String TERRAIN_FEATURES = "environment/terrain_features.png";
-
-        public static final String VISUAL_GRID = "environment/visual_grid.png";
-        public static final String WALL_BLOCKING = "environment/wall_blocking.png";
-
+		public static final String RAISED_TERRAIN = "environment/raised_terrain.png";
+		public static final String VISUAL_GRID          = "environment/visual_grid.png";
+		public static final String WALL_BLOCKING        = "environment/wall_blocking.png";
+		public static final String OCCLUSION_SHADOWS    = "environment/occlusion_shadows.png";
         public static final String TILES_SEWERS = "environment/tiles_sewers.png";
         public static final String TILES_PRISON = "environment/tiles_prison.png";
         public static final String TILES_CAVES = "environment/tiles_caves.png";
@@ -60,7 +60,8 @@ public class Assets {
         public static final String WATER_CITY = "environment/water3.png";
         public static final String WATER_HALLS = "environment/water4.png";
         public static final String WATER_LABS = "environment/water5.png";
-
+		public static final String CARPET           = "environment/custom_tiles/carpet.png";
+		public static final String RAT_KING_ROOM    = "environment/custom_tiles/rat_king_room.png";
         public static final String WEAK_FLOOR = "environment/custom_tiles/weak_floor.png";
         public static final String SEWER_BOSS = "environment/custom_tiles/sewer_boss.png";
         public static final String SEWER_BOSS2= "environment/custom_tiles/sewer_boss2.png";
@@ -69,7 +70,7 @@ public class Assets {
         public static final String CAVES_QUEST = "environment/custom_tiles/caves_quest.png";
         public static final String CAVES_BOSS = "environment/custom_tiles/caves_boss.png";
         public static final String CH_BOSS = "environment/custom_tiles/ch_boss.png";
-        public static final String CITY_QUEST = "environment/custom_tiles/city_quest.png";
+		public static final String CITY_QUEST = "environment/custom_tiles/city_quest.png";
         public static final String CITY_BOSS = "environment/custom_tiles/city_boss.png";
         public static final String HALLS_SP = "environment/custom_tiles/halls_special.png";
     }
@@ -117,6 +118,7 @@ public class Assets {
         public static final String HERO_ICONS = "interfaces/hero_icons.png";
 
         public static final String RADIAL_MENU = "interfaces/radial_menu.png";
+		public static final String CHANGE_ICONS = "interfaces/change_icons.png";
     }
 
     //these points to resource bundles, not raw asset files
@@ -621,6 +623,7 @@ public class Assets {
         public static final String NINJA_LOG = "sprites/ninja_log.png";
         public static final String SPIRIT_HAWK = "sprites/spirit_hawk.png";
         public static final String RED_SENTRY = "sprites/red_sentry.png";
+		public static final String SENTRY = "sprites/sentry.png";
         public static final String CRYSTAL_WISP = "sprites/crystal_wisp.png";
         public static final String CRYSTAL_GUARDIAN = "sprites/crystal_guardian.png";
         public static final String CRYSTAL_SPIRE = "sprites/crystal_spire.png";
@@ -632,6 +635,9 @@ public class Assets {
         public static final String FUNGAL_SPINNER = "sprites/fungal_spinner.png";
         public static final String FUNGAL_SENTRY = "sprites/fungal_sentry.png";
         public static final String FUNGAL_CORE = "sprites/fungal_core.png";
+		public static final String VAULT_TOKENS_DOOR= "sprites/vault_tokens_door.png";
+		public static final String VAULT_MIRROR     = "sprites/vault_mirror.png";
+		public static final String VAULT_BOSS_ELEMENTAL= "sprites/vault_boss_elemental.png";
         public static final String SOLDIER = "sprites/soldier.png";
         public static final String RESEARCHER = "sprites/researcher.png";
         public static final String TANK = "sprites/tank.png";

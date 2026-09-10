@@ -292,7 +292,7 @@ public class MagesStaff extends MeleeWeapon {
 
         int oldStaffcharges = this.wand != null ? this.wand.curCharges : 0;
 
-        if (owner == Dungeon.hero && Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)) {
+        if (owner == Dungeon.hero && this.wand != null && Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)){
             Talent.WandPreservationCounter counter = Buff.affect(Dungeon.hero, Talent.WandPreservationCounter.class);
             if (counter.count() == 0){
                 counter.countUp(1);
@@ -501,17 +501,13 @@ public class MagesStaff extends MeleeWeapon {
                     return;
                 }
 
-                if (wand == null) {
-                    applyWand((Wand) item);
+                int newLevel;
+                int itemLevel = item.trueLevel();
+                if (itemLevel >= trueLevel()){
+                    if (trueLevel() > 0)    newLevel = itemLevel + 1;
+                    else                    newLevel = itemLevel;
                 } else {
-                    int newLevel;
-                    int itemLevel = item.trueLevel();
-                    if (itemLevel >= trueLevel()) {
-                        if (trueLevel() > 0) newLevel = itemLevel + 1;
-                        else newLevel = itemLevel;
-                    } else {
-                        newLevel = trueLevel();
-                    }
+                    newLevel = trueLevel();
 
                     String bodyText = Messages.get(MagesStaff.class, "imbue_desc");
                     if (item.isIdentified()){
@@ -523,11 +519,13 @@ public class MagesStaff extends MeleeWeapon {
                     if (!item.cursedKnown || item.cursed){
                         bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_cursed");
                     }
-                    if (Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)
-                            && Dungeon.hero.buff(Talent.WandPreservationCounter.class) == null){
-                        bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_talent");
-                    } else {
-                        bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_lost");
+                    if (wand != null) {
+                        if (Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)
+                                && Dungeon.hero.buff(Talent.WandPreservationCounter.class) == null) {
+                            bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_talent");
+                        } else {
+                            bodyText += "\n\n" + Messages.get(MagesStaff.class, "imbue_lost");
+                        }
                     }
 
                     GameScene.show(
@@ -539,7 +537,7 @@ public class MagesStaff extends MeleeWeapon {
                                 @Override
                                 protected void onSelect(int index) {
                                     if (index == 0) {
-                                        applyWand((Wand) item);
+                                        applyWand((Wand)item);
                                     }
                                 }
                             }

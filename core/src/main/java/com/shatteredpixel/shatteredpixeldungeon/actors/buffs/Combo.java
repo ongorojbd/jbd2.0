@@ -96,13 +96,15 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 		count++;
 		if (((Hero)target).hasTalent(Talent.J63)) count++;
-		comboTime = Math.max(comboTime, 5f);
+		if (comboTime <= 5f) {
+			comboTime = Math.max(comboTime, 5f);
+			initialComboTime = 5f;
+		}
 
 		if (!enemy.isAlive() || (enemy.buff(Corruption.class) != null && enemy.HP == enemy.HT)){
 			comboTime = 15f + 15f*((Hero)target).pointsInTalent(Talent.CLEAVE);
+			initialComboTime = comboTime;
 		}
-
-		initialComboTime = comboTime;
 
 		if ((getHighestMove() != null)) {
 
@@ -295,7 +297,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		if (move == ComboMove.PARRY){
 			applyJ63ComboCurse();
 			parryUsed = true;
-			comboTime = 5f;
+			comboTime = Math.max(comboTime, 5f);
 			Invisibility.dispel();
 			Buff.affect(target, ParryTracker.class, Actor.TICK);
 			((Hero)target).spendAndNext(Actor.TICK);
@@ -393,7 +395,6 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			//special on-hit effects
 			switch (moveBeingUsed) {
 				case CLOBBER:
-					if (!wasAlly) hit(enemy);
 					//trace a ballistica to our target (which will also extend past them
 					Ballistica trajectory = new Ballistica(target.pos, enemy.pos, Ballistica.STOP_TARGET);
 					//trim it to just be the part that goes past them
@@ -409,6 +410,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 							dist--;
 						}
 					}
+					if (!wasAlly) hit(enemy);
 					if (enemy.pos == oldPos) {
 						WandOfBlastWave.throwChar(enemy, trajectory, dist, true, false, hero);
 					}
@@ -471,7 +473,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				furyHitsLeft--;
 				//fury attacks as many times as you have combo count
 				if (furyHitsLeft > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
-						(wasAlly || enemy.alignment != target.alignment)){
+						hero.paralysed == 0 && (wasAlly || enemy.alignment != target.alignment)){
 					target.sprite.attack(enemy.pos, new Callback() {
 						@Override
 						public void call() {
@@ -481,7 +483,6 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				} else {
                     Sword.jclass();
 					furyHitsLeft = 0;
-					detach();
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 					ActionIndicator.clearAction(Combo.this);
 					hero.next();

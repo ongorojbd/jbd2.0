@@ -62,7 +62,6 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 	{
 		type = buffType.POSITIVE;
-		revivePersists = true;
 	}
 
 	public float energy = 0;
@@ -110,6 +109,12 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 		spend(TICK);
 		return true;
+	}
+
+	@Override
+	public void detach() {
+		super.detach();
+		ActionIndicator.clearAction();
 	}
 
 	@Override

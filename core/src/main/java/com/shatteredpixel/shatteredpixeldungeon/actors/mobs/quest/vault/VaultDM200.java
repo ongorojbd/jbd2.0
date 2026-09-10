@@ -19,46 +19,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
-import com.watabou.utils.Random;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM200;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.DM200Sprite;
 
-public class VaultRat extends VaultMob {
+public class VaultDM200 extends DM200 {
 
 	{
-		spriteClass = RatSprite.class;
+		activateSteathGameplayBehaviour();
+		spriteClass = DM200Sprite.Vault.class;
 
-		HP = HT = 8;
-		defenseSkill = 2;
+		defenseSkill = 15;
 
-		maxLvl = -2;
+		maxLvl = 30;
+		EXP = 0;
+		loot = DwarfToken.class;
+		lootChance = 1;
 	}
 
 	@Override
-	public int damageRoll() {
-		return 0;
+	public int attackSkill( Char target ) {
+		return 28;
 	}
 
 	@Override
-	public int attackSkill(Char target) {
-		return 8;
+	public float lootChance() {
+		return 1;
 	}
 
 	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 1);
-	}
-
-	@Override
-	public String name() {
-		return Messages.get(Rat.class, "name");
-	}
-
-	@Override
-	public String description() {
-		return Messages.get(Rat.class, "desc") + "\n\n" + super.description();
+	public Item createLoot() {
+		return new DwarfToken();
 	}
 }

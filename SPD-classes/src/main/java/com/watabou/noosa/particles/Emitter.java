@@ -155,8 +155,8 @@ public class Emitter extends Group {
 				y + Random.Float( height ) );
 		} else {
 			if (fillTarget) {
-				float randomWidth = Random.Float(target.width);
-				float randomHeight = Random.Float(target.height);
+				float randomWidth = Random.Float(target.width());
+				float randomHeight = Random.Float(target.height());
 				randomWidth = Math.max(0, Math.min(randomWidth, 16)); // 0 이상 16 이하로 제한
 				randomHeight = Math.max(0, Math.min(randomHeight, 16)); // 0 이상 16 이하로 제한
 

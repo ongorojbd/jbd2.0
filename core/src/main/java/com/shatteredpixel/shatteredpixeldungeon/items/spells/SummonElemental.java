@@ -168,6 +168,12 @@ public class SummonElemental extends Spell {
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		if (bundle.contains(SUMMON_CLASS)) summonClass = bundle.getClass(SUMMON_CLASS);
+
+		if (summonClass == Elemental.AllyNewBornElemental.class)    image = ItemSpriteSheet.SUMMON_ELE;
+		if (summonClass == Elemental.FireElemental.class)           image = ItemSpriteSheet.SUMMON_ELE;
+		if (summonClass == Elemental.FrostElemental.class)          image = ItemSpriteSheet.SUMMON_ELE;
+		if (summonClass == Elemental.ShockElemental.class)          image = ItemSpriteSheet.SUMMON_ELE;
+		if (summonClass == Elemental.ChaosElemental.class)          image = ItemSpriteSheet.SUMMON_ELE;
 	}
 
 	public WndBag.ItemSelector selector = new WndBag.ItemSelector() {
@@ -196,21 +202,25 @@ public class SummonElemental extends Spell {
 				Sample.INSTANCE.play(Assets.Sounds.BURNING);
 				curUser.sprite.emitter().burst( FlameParticle.FACTORY, 12 );
 				summonClass = Elemental.FireElemental.class;
+				image = ItemSpriteSheet.SUMMON_ELE;
 
 			} else if (item instanceof PotionOfFrost){
 				Sample.INSTANCE.play(Assets.Sounds.SHATTER);
 				curUser.sprite.emitter().burst( MagicMissile.MagicParticle.FACTORY, 12 );
 				summonClass = Elemental.FrostElemental.class;
+				image = ItemSpriteSheet.SUMMON_ELE;
 
 			} else if (item instanceof ScrollOfRecharging){
 				Sample.INSTANCE.play(Assets.Sounds.ZAP);
 				curUser.sprite.emitter().burst( ShaftParticle.FACTORY, 12 );
 				summonClass = Elemental.ShockElemental.class;
+				image = ItemSpriteSheet.SUMMON_ELE;
 
 			} else if (item instanceof ScrollOfTransmutation){
 				Sample.INSTANCE.play(Assets.Sounds.READ);
 				curUser.sprite.emitter().burst( RainbowParticle.BURST, 12 );
 				summonClass = Elemental.ChaosElemental.class;
+				image = ItemSpriteSheet.SUMMON_ELE;
 			}
 
 			curUser.sprite.operate(curUser.pos);

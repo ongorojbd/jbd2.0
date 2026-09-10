@@ -291,6 +291,7 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_SUPPORT_NAGGED= "support_nagged";
 	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
+	public static final String KEY_VAULT_INJURE_WARNS = "vault_injure_warns";
 	public static final String KEY_PLAYER_NICKNAME = "player_nickname";
 	
 	public static void playerNickname( String value ) {
@@ -357,6 +358,14 @@ public class SPDSettings extends GameSettings {
 		return getBoolean(KEY_VICTORY_NAGGED, false);
 	}
 
+	public static void vaultInjureWarns( int value ) {
+		put( KEY_VAULT_INJURE_WARNS, value );
+	}
+
+	public static int vaultInjureWarns() {
+		return getInt(KEY_VAULT_INJURE_WARNS, 0);
+	}
+
 	//Input
 
 	public static final String KEY_CONTROLLER_SENS  = "controller_sens";
@@ -391,8 +400,10 @@ public class SPDSettings extends GameSettings {
 		put(KEY_NEWS, value);
 	}
 
+	public static boolean newsDefault = true;
+
 	public static boolean news(){
-		return getBoolean(KEY_NEWS, true);
+		return getBoolean(KEY_NEWS, newsDefault);
 	}
 
 	public static void updates(boolean value){

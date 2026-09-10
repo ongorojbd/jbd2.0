@@ -559,8 +559,8 @@ public class Dungeon {
             level = new DeadEndLevel();
         }
 
-        //dead end levels (and vault levels for now!) get cleared, don't count as generated
-        if (!(level instanceof DeadEndLevel || level instanceof VaultLevel)){
+        //dead end levels get cleared, don't count as generated
+        if (!(level instanceof DeadEndLevel)){
             //this assumes that we will never have a depth value outside the range 0 to 999
             // or -500 to 499, etc.
             if (!generatedLevels.contains(depth + 1000 * branch)) {
@@ -634,6 +634,7 @@ public class Dungeon {
     public static boolean interfloorTeleportAllowed() {  // 텔포 못함
         if (Dungeon.level.locked
                 || Dungeon.level instanceof MiningLevel
+                || Dungeon.level instanceof VaultLevel
                 || Dungeon.level instanceof ShipbossLevel
                 || Dungeon.level instanceof HumanVillageBossLevel
                 || Dungeon.level instanceof HumanVillageBossLevel2
@@ -1162,6 +1163,10 @@ public class Dungeon {
                 if (m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL && ((Mimic) m).stealthy()) {
                     continue;
                 }
+                if (Char.hasProp(m, Char.Property.OBJECT)){
+                    continue;
+                }
+
                 BArray.or(level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited);
                 BArray.or(level.visited, level.heroFOV, m.pos - 1, 3, level.visited);
                 BArray.or(level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited);
@@ -1181,7 +1186,7 @@ public class Dungeon {
 
         for (TalismanOfForesight.CharAwareness c : hero.buffs(TalismanOfForesight.CharAwareness.class)) {
             Char ch = (Char) Actor.findById(c.charID);
-            if (ch == null || !ch.isAlive()) continue;
+            if (ch == null || !ch.isAlive() || Char.hasProp(ch, Char.Property.OBJECT)) continue;
             BArray.or(level.visited, level.heroFOV, ch.pos - 1 - level.width(), 3, level.visited);
             BArray.or(level.visited, level.heroFOV, ch.pos - 1, 3, level.visited);
             BArray.or(level.visited, level.heroFOV, ch.pos - 1 + level.width(), 3, level.visited);

@@ -275,12 +275,14 @@ public class SeedFinder {
                     }
                 }
             }
-            if(Imp.Quest.reward != null){
-                for (int j = 0; j < itemList.size(); j++) {
-                    if (Imp.Quest.reward.identify().title().toUpperCase().replaceAll(" ","").contains(itemList.get(j).toUpperCase().replaceAll(" ",""))) {
-                        if (itemsFound[j] == false) {
-                            itemsFound[j] = true;
-                            break;
+            if(!Imp.Quest.rewardOptions.isEmpty()){
+                for (Item impReward : Imp.Quest.rewardOptions) {
+                    for (int j = 0; j < itemList.size(); j++) {
+                        if (impReward.identify().title().toUpperCase().replaceAll(" ","").contains(itemList.get(j).toUpperCase().replaceAll(" ",""))) {
+                            if (itemsFound[j] == false) {
+                                itemsFound[j] = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -425,25 +427,27 @@ public class SeedFinder {
                     }
                 }
             }
-            if(Imp.Quest.reward != null){
-                for (int j = 0; j < itemList.size(); j++) {
-                    String wantingItem = itemList.get(j);
-                    boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
-                    String ring = Imp.Quest.reward.identify().title().toUpperCase();
-                    if(precise){
-                        wantingItem = wantingItem.replaceAll("\"","").toUpperCase();
-                        if (ring.equals(wantingItem)) {
-                            if (itemsFound[j] == false) {
-                                itemsFound[j] = true;
-                                break;
+            if(!Imp.Quest.rewardOptions.isEmpty()){
+                for (Item impReward : Imp.Quest.rewardOptions) {
+                    for (int j = 0; j < itemList.size(); j++) {
+                        String wantingItem = itemList.get(j);
+                        boolean precise = wantingItem.startsWith("\"")&&wantingItem.endsWith("\"");
+                        String ring = impReward.identify().title().toUpperCase();
+                        if(precise){
+                            wantingItem = wantingItem.replaceAll("\"","").toUpperCase();
+                            if (ring.equals(wantingItem)) {
+                                if (itemsFound[j] == false) {
+                                    itemsFound[j] = true;
+                                    break;
+                                }
                             }
-                        }
-                    }else{
-                        wantingItem = wantingItem.replaceAll(" ", "").toUpperCase();
-                        if (ring.replaceAll(" ","").contains(wantingItem)) {
-                            if (itemsFound[j] == false) {
-                                itemsFound[j] = true;
-                                break;
+                        }else{
+                            wantingItem = wantingItem.replaceAll(" ", "").toUpperCase();
+                            if (ring.replaceAll(" ","").contains(wantingItem)) {
+                                if (itemsFound[j] == false) {
+                                    itemsFound[j] = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -554,12 +558,14 @@ public class SeedFinder {
                 addTextQuest("[ 화이트 스네이크의 퀘스트 보상 ]", rewards, builder);
             }
 
-            if (Imp.Quest.reward != null) {
+            if (!Imp.Quest.rewardOptions.isEmpty()) {
                 ArrayList<Item> rewards = new ArrayList<>();
-                rewards.add(Imp.Quest.reward.identify());
-                Imp.Quest.complete();
+                for (Item impReward : Imp.Quest.rewardOptions) {
+                    rewards.add(impReward.identify());
+                }
+                Imp.Quest.complete(0);
 
-                addTextQuest("[ 오시리스신 퀘스트 보상 ]", rewards, builder);
+                addTextQuest("[ 가출소녀 앤 퀘스트 보상 ]", rewards, builder);
             }
 
             heaps.addAll(getMobDrops(l));

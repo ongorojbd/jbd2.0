@@ -123,9 +123,6 @@ public class Regeneration extends Buff {
 		if (lock != null && !lock.regenOn()){
 			return false;
 		}
-		if (Dungeon.level instanceof VaultLevel){
-			return false;
-		}
 		if (Dungeon.level instanceof EmporioLevel || Dungeon.level instanceof HumanVillageBossLevel){
 			return false; //this is mainly for the current test sub-level
 		}

@@ -118,8 +118,8 @@ public class SuperNovaTracker extends Buff {
 
 		} else {
 			for (int i = 0; i < Dungeon.level.length(); i++){
-				if (fieldOfView[i]){
-					target.sprite.parent.add(new TargetedCell(i, 0xFF00FF));
+				if (fieldOfView[i] && !Dungeon.level.solid[i]){
+					GameScene.targetedCell(i, Actor.TICK);
 				}
 			}
 		}
