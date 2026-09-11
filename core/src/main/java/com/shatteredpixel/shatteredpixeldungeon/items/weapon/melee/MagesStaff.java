@@ -506,6 +506,7 @@ public class MagesStaff extends MeleeWeapon {
                 if (itemLevel >= trueLevel()){
                     if (trueLevel() > 0)    newLevel = itemLevel + 1;
                     else                    newLevel = itemLevel;
+                    applyWand((Wand)item);
                 } else {
                     newLevel = trueLevel();
 

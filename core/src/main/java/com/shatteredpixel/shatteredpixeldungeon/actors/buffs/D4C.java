@@ -33,6 +33,7 @@ public class D4C extends Buff {
     {
         type = buffType.POSITIVE;
         announced = true;
+        revivePersists = true;
     }
 
     public static final float DURATION = 1_000_000;

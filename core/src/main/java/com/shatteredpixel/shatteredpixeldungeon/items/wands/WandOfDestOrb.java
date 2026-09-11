@@ -50,15 +50,9 @@ import com.watabou.utils.Random;
 public class WandOfDestOrb extends Wand {
 
     {
-        image = ItemSpriteSheet.WAND_TRANSFUSION;
-        icon = ItemSpriteSheet.Icons.POTION_DIVINE;
+        image = ItemSpriteSheet.WAND_SGB;
 
         collisionProperties = Ballistica.PROJECTILE;
-    }
-
-    @Override
-    public ItemSprite.Glowing glowing() {
-        return new ItemSprite.Glowing(0x00CCFF, 3f);
     }
 
     private boolean freeCharge = false;

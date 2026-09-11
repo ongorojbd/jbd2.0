@@ -250,6 +250,8 @@ public class VaultFinalRoom extends SpecialRoom {
 			int distance = Math.max(Math.abs(heroPos.x - lockedDoor.x), Math.abs(heroPos.y - lockedDoor.y));
 			//clear warned state if hero leaves
 			if (distance <= 3){
+				Sample.INSTANCE.play(Assets.Sounds.MIMIC);
+				GLog.n(Messages.get(VaultFinalRoom.class, "forever"));
 				Level.set(Dungeon.level.pointToCell(entryDoor), Terrain.LOCKED_DOOR);
 				GameScene.updateMap(Dungeon.level.pointToCell(entryDoor));
 				VaultBossElemental boss = new VaultBossElemental();

@@ -10,7 +10,7 @@ public class WndSanctumCode extends WndTextInput {
 
     public WndSanctumCode(VeiledSanctumLevel level) {
         super("TG 대학병원 엘리베이터",
-                "아래로 내려가려면 4자리 비밀번호가 필요하다.\n방 안의 상자들에 흩어진 힌트를 모아보자.",
+                "아래로 내려가려면 4자리 비밀번호가 필요하다.\n다른 방에 흩어진 힌트를 모아보자.",
                 "", 4, false, "확인", "취소");
         this.level = level;
     }

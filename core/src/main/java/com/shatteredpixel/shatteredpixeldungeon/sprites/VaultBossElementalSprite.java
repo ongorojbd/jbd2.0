@@ -87,14 +87,14 @@ public class VaultBossElementalSprite extends MobSprite {
 
 		TextureFilm frames = new TextureFilm( texture, 40, 40 );
 
-		idle = new Animation( 10, true );
-		idle.frames( frames, c+0, c+1, c+2, c+3 );
+		idle = new Animation( 6, true );
+		idle.frames( frames, c+0, c+1, c+2 );
 
 		run = new Animation( 12, true );
-		run.frames( frames, c+0, c+1, c+2, c+3 );
+		run.frames( frames, c+3, c+4, c+5, c+6, c+7 );
 
 		attack = new Animation( 12, false );
-		attack.frames( frames, c+4, c+5, c+6 );
+		attack.frames( frames, c+8, c+9, c+10, c+0 );
 
 		zap = attack.clone();
 

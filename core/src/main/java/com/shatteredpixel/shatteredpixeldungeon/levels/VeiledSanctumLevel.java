@@ -355,6 +355,26 @@ public class VeiledSanctumLevel extends Level {
     }
 
     @Override
+    public String tileName(int tile) {
+        switch (tile) {
+            case Terrain.REGION_DECO:
+                return Messages.get(VeiledSanctumLevel.class, "region_deco_name");
+            default:
+                return super.tileName(tile);
+        }
+    }
+
+    @Override
+    public String tileDesc(int tile) {
+        switch (tile) {
+            case Terrain.REGION_DECO:
+                return Messages.get(VeiledSanctumLevel.class, "region_deco_desc");
+            default:
+                return super.tileDesc(tile);
+        }
+    }
+
+    @Override
     public boolean activateTransition(final Hero hero, LevelTransition transition) {
         //once you're in the sanctum there's no going back up - the only way out is down through
         //the code-locked elevator (SURFACE is left alone so an Amulet ascension can still finish)

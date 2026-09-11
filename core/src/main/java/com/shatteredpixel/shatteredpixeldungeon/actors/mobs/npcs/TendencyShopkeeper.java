@@ -273,10 +273,6 @@ public class TendencyShopkeeper extends NPC {
     @Override
     public boolean interact(Char c) {
 
-        if (spriteClass == ImpSprite.class) {
-            Sample.INSTANCE.play(Assets.Sounds.DARBY);
-        }
-
         if (c != Dungeon.hero) {
             return true;
         }

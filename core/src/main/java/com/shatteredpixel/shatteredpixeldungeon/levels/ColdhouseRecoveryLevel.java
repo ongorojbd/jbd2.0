@@ -130,6 +130,26 @@ public class ColdhouseRecoveryLevel extends Level {
         }
     }
 
+    @Override
+    public String tileName(int tile) {
+        switch (tile) {
+            case Terrain.REGION_DECO:
+                return Messages.get(ColdhouseRecoveryLevel.class, "region_deco_name");
+            default:
+                return super.tileName(tile);
+        }
+    }
+
+    @Override
+    public String tileDesc(int tile) {
+        switch (tile) {
+            case Terrain.REGION_DECO:
+                return Messages.get(ColdhouseRecoveryLevel.class, "region_deco_desc");
+            default:
+                return super.tileDesc(tile);
+        }
+    }
+
     //no going back up - the waiting room only opens onto the way down
     @Override
     public boolean activateTransition(final Hero hero, LevelTransition transition) {

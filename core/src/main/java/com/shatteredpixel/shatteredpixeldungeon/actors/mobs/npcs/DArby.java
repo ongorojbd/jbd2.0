@@ -204,7 +204,7 @@ public class DArby extends NPC {
 		if (Random.Int( 2 ) == 0) {
 			if (Dungeon.depth == 19 && !Dungeon.bossLevel()) {
 
-				Fugo npc = new Fugo();
+				DArby npc = new DArby();
 				do {
 					npc.pos = level.randomRespawnCell( npc );
 				} while (

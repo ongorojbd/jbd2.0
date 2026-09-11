@@ -96,15 +96,6 @@ public class Yasuho extends NPC {
         return true;
     }
 
-    private void tell(String text) {
-        Game.runOnRenderThread(new Callback() {
-            @Override
-            public void call() {
-                GameScene.show(new WndQuest(Yasuho.this, text));
-            }
-        });
-    }
-
     @Override
     public boolean interact(Char c) {
         sprite.turnTo(pos, Dungeon.hero.pos);

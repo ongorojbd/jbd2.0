@@ -535,6 +535,8 @@ public class ColdhouseBossLevel extends Level {
 				return Messages.get(ColdhouseLevel.class, "high_grass_name");
 			case Terrain.WATER:
 				return Messages.get(ColdhouseLevel.class, "water_name");
+			case Terrain.REGION_DECO:
+				return Messages.get(ColdhouseBossLevel.class, "region_deco_name");
 			default:
 				return super.tileName( tile );
 		}
@@ -556,6 +558,8 @@ public class ColdhouseBossLevel extends Level {
 				return Messages.get(ColdhouseLevel.class, "wall_deco_desc");
 			case Terrain.BOOKSHELF:
 				return Messages.get(ColdhouseLevel.class, "bookshelf_desc");
+			case Terrain.REGION_DECO:
+				return Messages.get(ColdhouseBossLevel.class, "region_deco_desc");
 
 			default:
 				return super.tileDesc( tile );

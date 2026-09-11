@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.VaultTokenDoor;
@@ -282,6 +284,12 @@ public class EscapeCrystal extends Item {
 		detachAll(Dungeon.hero.belongings.backpack);
 		if (!Imp.Quest.isOld()) Imp.Quest.complete(score);
 
+		//볼트에 들어가며 떼어뒀던 D4C를 나올 때 다시 붙여준다.
+		if (hadD4C) {
+			Buff.affect(Dungeon.hero, D4C.class);
+			hadD4C = false;
+		}
+
 		Level.beforeTransition();
 		InterlevelScene.curTransition = new LevelTransition(Dungeon.level,
 				Dungeon.hero.pos,
@@ -356,18 +364,22 @@ public class EscapeCrystal extends Item {
 	}
 
 	public Bundle storedItems;
+	public boolean hadD4C = false;
 
 	public static String STORED_ITEMS = "stored_items";
+	public static String HAD_D4C      = "had_d4c";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(STORED_ITEMS, storedItems);
+		bundle.put(HAD_D4C, hadD4C);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		storedItems = bundle.getBundle(STORED_ITEMS);
+		hadD4C = bundle.getBoolean(HAD_D4C);
 	}
 }

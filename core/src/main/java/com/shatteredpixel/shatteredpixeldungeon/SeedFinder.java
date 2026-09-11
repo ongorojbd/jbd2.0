@@ -100,10 +100,10 @@ public class SeedFinder {
 
             for (Item i : items) {
                 if (i.cursed)
-                    builder.append("- 저주받은 ").append(i.title().toLowerCase()).append("\n");
+                    builder.append("- 저주받은 ").append(i.title()).append("\n");
 
                 else
-                    builder.append("- ").append(i.title().toLowerCase()).append("\n");
+                    builder.append("- ").append(i.title()).append("\n");
             }
 
             builder.append("\n");

@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Enrico;
@@ -186,6 +187,10 @@ public class CityLevel extends RegularLevel {
 						protected void onSelect(int index) {
 							if (index == 0){
 
+								//D4C는 볼트 내에서는 사기적이므로, 볼트에 들어가는 동안은 잠시 떼어둔다.
+								boolean hadD4C = hero.buff(D4C.class) != null;
+								if (hadD4C) Buff.detach(hero, D4C.class);
+
 								Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
 								hero.HP = hero.HT; //full heal
 
@@ -197,6 +202,7 @@ public class CityLevel extends RegularLevel {
 								}
 								if (crystal.storedItems == null){
 									crystal.storeHeroBelongings(Dungeon.hero);
+									crystal.hadD4C = hadD4C;
 								}
 								crystal.collect();
 								hero.belongings.armor = new ClothArmor();

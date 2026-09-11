@@ -511,6 +511,7 @@ public class ItemSpriteSheet {
     public static final int WAND_REGROWTH = WANDS + 11;
     public static final int WAND_TRANSFUSION = WANDS + 12;
     public static final int WAND_KIRA = WANDS + 13;
+    public static final int WAND_SGB = WANDS + 14;
 
     static {
         for (int i = WANDS; i < WANDS + 16; i++)
