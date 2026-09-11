@@ -1,11 +1,29 @@
 apply plugin: 'com.android.application'
 
+def localProps = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localProps.load(new FileInputStream(localPropsFile))
+}
+
 android {
     namespace 'com.shatteredpixel.shatteredpixeldungeon.android'
     compileSdk appAndroidCompileSDK
     compileOptions.sourceCompatibility = compileOptions.targetCompatibility = appJavaCompatibility
 
     sourceSets.main.assets.srcDirs = [new File(project(':core').projectDir, "/src/main/assets")]
+
+    signingConfigs {
+        release {
+            def storeFilePath = localProps.getProperty('release.storeFile')
+            if (storeFilePath != null) {
+                storeFile rootProject.file(storeFilePath)
+                storePassword localProps.getProperty('release.storePassword')
+                keyAlias localProps.getProperty('release.keyAlias')
+                keyPassword localProps.getProperty('release.keyPassword')
+            }
+        }
+    }
 
     androidResources {
         localeFilters += ['en', 'zh-rCN', 'ko', 'ru', 'es', 'pt', 'fr', 'de', 'zh-rTW', 'ja', 'pl',
@@ -34,6 +52,7 @@ android {
             }
         }
         release {
+            signingConfig signingConfigs.release
 
             //These lines enable R8, which is a code shrinker/optimizer/obfuscator.
             //This makes release APKs smaller and more efficient, but also makes debugging trickier

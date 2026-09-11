@@ -92,7 +92,7 @@ public class MobSpawner extends Actor {
                             Zombiedog.class));
                 } else {
                     return new ArrayList<>(Arrays.asList(
-                            VaultBossElemental.class, Rat.class, Rat.class,
+                            Rat.class, Rat.class, Rat.class,
                             Snake.class));
                 }
             case 2:

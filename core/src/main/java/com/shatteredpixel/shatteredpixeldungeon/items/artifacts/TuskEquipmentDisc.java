@@ -1497,7 +1497,8 @@ public class TuskEquipmentDisc extends Artifact {
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
-					float chargeToGain = (1f / turnsToCharge) * 0.5f;
+					//충전 속도 10% 감소
+					float chargeToGain = (1f / turnsToCharge) * 0.5f * 0.9f;
 					if (target instanceof Hero && ((Hero) target).hasTalent(Talent.J53)) {
 						chargeToGain *= 1.5f;
 					}

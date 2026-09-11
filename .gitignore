@@ -1,5 +1,11 @@
 # Built application files
 *.apk
+*.idsig
+
+# Signing keys - never commit
+*.p12
+*.jks
+*.keystore
 
 # Files for the Dalvik VM
 *.dex
@@ -18,3 +24,6 @@ local.properties
 #intellij project files
 *.iml
 *.idea
+
+# Handover doc contains real signing credentials - local only
+RELEASE_SIGNING.md

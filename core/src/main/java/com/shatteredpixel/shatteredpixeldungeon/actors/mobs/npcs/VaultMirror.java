@@ -96,7 +96,7 @@ public class VaultMirror extends NPC {
 					((HolyTome) reward).directCharge(8);
 					break;
 				case JOHNNY:
-					reward = new TuskEquipmentDisc().upgrade(8).identify(false);
+					reward = new TuskEquipmentDisc().upgrade(5).identify(false);
 					break;
 			}
 		Random.popGenerator();
