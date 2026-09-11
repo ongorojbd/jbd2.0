@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,61 +22,44 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.effects.BadgeBanner;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.AlbinoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DArbySprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.GSoldierSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HermitCrabSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.JohnnySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkeletonSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.WillcSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
+import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
 
 public class v4_X_Changes {
 
-    public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+    public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
+
         add_Coming_Soon(changeInfos);
-        add_v3_7_Changes(changeInfos);
-        add_v3_6_Changes(changeInfos);
-        add_v3_5_Changes(changeInfos);
-        add_v3_4_Changes(changeInfos);
-        add_v3_3_Changes(changeInfos);
-        add_v3_2_Changes(changeInfos);
-        add_v3_1_Changes(changeInfos);
-        add_jolyne_Changes(changeInfos);
+        add_v4_0_Changes(changeInfos);
     }
 
-    public static void add_Coming_Soon(ArrayList<ChangeInfo> changeInfos) {
+    public static void add_Coming_Soon( ArrayList<ChangeInfo> changeInfos ) {
 
-        ChangeInfo changes = new ChangeInfo("곧 출시 예정", true, "");
+        ChangeInfo changes = new ChangeInfo("출시 예정", true, "");
         changes.hardlight(0xCCCCCC);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOKEN), "17~19층 퀘스트 개편",
-                "다음 주요 업데이트는 오시리스신 퀘스트 변경으로, 기존과 차별화된 독특한 퀘스트 방식이 될 예정입니다."));
+        changes.addButton( new ChangeButton( new ItemSprite(ItemSpriteSheet.MAP), "새로운 아이템",
+                "게임플레이 콘텐츠 측면에서 다양한 아이템 카테고리에 몇 가지 새로운 아이템을 추가하는 데 집중할 예정입니다."));
     }
 
-    public static void add_v3_7_Changes(ArrayList<ChangeInfo> changeInfos) {
+    public static void add_v4_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
 
-        ChangeInfo changes = new ChangeInfo("v3.0h", true, "");
+        ChangeInfo changes = new ChangeInfo("v4.0a", true, "");
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
@@ -84,649 +67,131 @@ public class v4_X_Changes {
         changes.hardlight(Window.TITLE_COLOR);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.DECK), "카드 배틀 모드 추가!",
-                "새로운 모드인 _카드 배틀 모드_가 추가되었습니다!\n\n" +
-                        "덱을 구성하고, 카드를 사용해 적과 전투하며, 전투 보상과 이벤트를 통해 점점 강해지는 별도의 진행 방식을 즐길 수 있습니다.\n\n" +
-                        "카드 배틀 모드는 아직 베타 단계이며, 카드 밸런스와 적 패턴, 이벤트 구성은 계속 조정될 예정입니다.\n\n" +
-                        "처음 플레이하는 경우 카드 배틀 튜토리얼을 통해 기본 규칙을 익힐 수 있습니다."));
+        changes.addButton(new ChangeButton(new Image(new ImpSprite()), "신규 대규모 퀘스트",
+                "DIO의 저택 층의 퀘스트가 완전히 개편되어 역대 최대 규모의 퀘스트가 되었습니다!\n" +
+                        "\n" +
+                        "이제 DIO의 저택에서는 오시리스신 대신 가출소녀 앤이 등장하며, 위협과 보물로 가득 찬 저택 창고를 털어오라는 임무를 줍니다! 단, 원래 가지고 있던 장비는 들고 들어갈 수 없으니 주의하세요! 퀘스트 구성 요소는 다음과 같습니다:\n" +
+                        "\n" +
+                        "- 기존 던전 3개 층에 달하는 엄청난 규모의 신규 서브 지역 및 20여 종의 신규 방 추가!\n" +
+                        "- 약 10개 방에 설치된 3가지의 신규 고정형 함정 요소를 활용 가능!\n" +
+                        "- 6~19층 지역까지 아우르는 다양한 신규 변종 적들 등장!\n" +
+                        "- 저티어 보상은 쉽게, 고티어 보상은 철저한 경비를 뚫고 획득하는 독자적인 성장의 재미!\n" +
+                        "- 침입자들의 실력을 검증하기 위해 특별히 설계된 신규 보스 방!\n" +
+                        "\n" +
+                        "창고 공략에 성공하면 앤이 아이템 하나를 밖으로 가지고 나올 수 있게 허락해 줍니다! 창고 안의 수많은 아이템들은 기존 보상이었던 고강화 돌가면 못지않게 강력하지만, 선택의 폭은 훨씬 더 넓어졌습니다. 퀘스트를 마치면 예전처럼 상점을 이용할 수 있습니다."));
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TG), "히든 던전: TG 대학병원",
+                "TG 대학병원이 마침내 모습을 드러냈습니다!\n\n" +
+                        "TG 대학병원은 _죠죠 8부_를 테마로 한 _고난이도_ 던전으로, 바위 인간의 스탠드와 추적자들이 배회하고 있습니다.\n\n" +
+                        "- 최악의 난이도, 극한의 시련: 끈질기게 목숨을 노리는 바위 인간측 스탠드와 기괴한 재앙의 위협이 플레이어를 기다립니다.\n" +
+                        "- 압도적인 보상: 공략은 대단히 까다롭지만, 성공 시 강력한 특수 아이템들을 보상으로 획득할 수 있습니다.\n\n" +
+                        "TG 대학병원 입장 아이템은 6층 상점에서 구매할 수 있습니다."));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_KIRA), "신규 사격 DISC",
+                "강력한 사격 DISC인 _킬러 퀸의 사격 DISC_가 추가되었습니다!\n\n" +
+                        "킬러 퀸의 사격 DISC는 TG 대학병원에서 획득할 수 있습니다."));
+
+        changes.addButton( new ChangeButton( ChangeIcons.V40_CITY_CARPET, "환경 비주얼 개편!",
+                "죠기던의 픽셀 아트 비주얼 개편 작업이 적용되었습니다!\n" +
+                        "\n" +
+                        "이번 업데이트에서는 전체 지역에 적용되는 주요 변경 사항 하나와 DIO의 저택 및 퀘스트 방 위주의 작업이 이루어졌습니다:\n" +
+                        "\n" +
+                        "- 벽과 바닥이 만나는 경계면에 음영 효과가 추가되었습니다.\n" +
+                        "- DIO의 저택에 새로운 형태의 특수 바닥 타일이 추가되었습니다.\n" +
+                        "- 자이로 퀘스트 및 관련 그래픽이 전면 개편되었습니다.\n" +
+                        "- 화이트 스네이크 퀘스트 비주얼이 개편되었습니다.\n" +
+                        "- 하수도 나무통, 장애물, 도시의 화염 대좌 표현이 개선되었습니다."));
+        
+        changes.addButton( new ChangeButton( ChangeIcons.V40_GREATSWORD_CRYSTAL, "신규 속성 및 저주!",
+                "무기에 적용할 수 있는 4가지 신규 속성과 2가지 신규 저주가 추가되었습니다!\n" +
+                        "\n" +
+                        "- 맹독의 속성: 시간에 따라 중첩되는 중독 피해를 주는 일반 속성입니다.\n" +
+                        "- 예리한 속성: 피해량의 일부를 중첩되지 않는 출혈 피해로 전환하는 희귀 속성입니다.\n" +
+                        "- 섬뜩한 속성: 주 대상을 제외한 주변의 모든 적에게 공포를 부여하는 희귀 속성입니다.\n" +
+                        "- 수정 속성: 피해량을 높여주지만 제한된 내구도를 신경 써서 관리해야 하는 특급 속성입니다.\n" +
+                        "- 고압의 저주: 간헐적으로 물기둥을 분출시켜 플레이어와 적을 모두 튕겨내는 저주입니다.\n" +
+                        "- 경이로운 저주: 무작위 저주받은 사격 DISC 효과를 발동시키는 저주입니다."));
+
+        changes.addButton( new ChangeButton( ChangeIcons.V13_BUFF_AGGRESSION, "네놈.. 보고 있구나! 시련 리워크",
+                "네놈.. 보고 있구나! 시련의 대처 가능성과 일관성을 높이기 위해 메커니즘을 조정했습니다.\n" +
+                        "\n" +
+                        "v4.0a 이전에는 적이 플레이어를 처음 발견했을 때에만 고정된 8타일 범위 내의 다른 적들이 반응했습니다. 하지만 숙련된 플레이어들은 이 효과 자체를 아예 발동시키지 않는 편법을 많이 이용하곤 했습니다.\n" +
+                        "\n" +
+                        "이제 도전과제 매커니즘이 변경되어, 적이 플레이어를 노출하고 있는 동안 지속적으로 발동합니다. 초기 경보 범위는 2타일이지만 시간이 지남에 따라 최대 12타일까지 점차 넓어집니다. 아주 잠깐이라도 시야를 차단하면 이 범위는 다시 초기화됩니다. 이로써 전략적인 플레이의 가치는 유지하되, 직관적이고 직관적으로 대처할 수 있도록 개선했습니다.\n" +
+                        "\n" +
+                        "또한 현재 경보 범위를 한눈에 확인할 수 있는 시각적 버프 아이콘이 추가되었습니다."));
+
+        changes.addButton(new ChangeButton(new Image(new SkeletonSprite.Vault()), "신규 적 AI",
+                "새로운 퀘스트의 잠입 플레이에 맞춰 작동하는 전용 적 인공지능(AI)을 구현했습니다! 이 AI가 적용된 적들은 다음과 같은 특성을 가집니다:\n" +
+                        "\n" +
+                        "- 근처 적의 이동 경로를 벽 너머로 파악할 수 있습니다.\n" +
+                        "- 수면 상태의 적은 감지 범위가 대폭 감소합니다.\n" +
+                        "- 순찰 상태의 적은 정해진 경로를 따라 이동하며, 이동 중일 때는 후방 감지 범위가 대폭 줄어듭니다.\n" +
+                        "- 수색 상태는 순찰/수면 상태와 공격 상태 사이에 존재하는 신규 AI 상태입니다. 수색 상태의 적은 플레이어가 있던 위치로 이동하지만, 다시 발견하기 전까지는 공격하지 않습니다. 수색 중인 적은 시야를 놓치기 쉬우므로 문 뒤나 모퉁이로 숨는 플레이가 매우 효과적입니다.\n" +
+                        "- 적이 선제공격을 받으면 수색 과정을 건너뛰고 즉시 반격 모드로 전환됩니다.\n" +
+                        "\n" +
+                        "현재 이 AI는 신규 퀘스트 지역에서만 사용되며, 기존 던전의 적들은 이전과 동일하게 작동합니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), "버그 수정",
-                "- 상원의원을 통해 입장할 수 있는 서브 던전에서 피해를 받지 않았던 버그를 수정했습니다.\n\n" +
-                        "- 특정 상황에서 투척 무기의 내구도가 오르는 버그를 수정했습니다."));
-    }
+        changes.addButton( new ChangeButton( ChangeIcons.V075_LONGSWORD_CORRUPTING, "기존 속성 변경 사항",
+                "신규 속성이 추가됨에 따라, 기존 속성에 있던 몇 가지 매끄럽지 못했던 판정들을 개선했습니다:\n" +
+                        "\n" +
+                        "- 관성의 속성: 적이 다른 효과에 의해 먼저 사망하여 타격이 취소되어도, 저장된 관성 피해량이 사라지지 않도록 수정되었습니다.\n" +
+                        "- 정신 지배의 속성: 무기 자체의 직접 타격뿐만 아니라 타격 전에 추가 피해가 먼저 들어가는 경우에도 정신 지배 효과가 정상 적용됩니다.\n" +
+                        "- 음침한 속성: 무기 자체의 타격 전에 추가 피해가 먼저 들어가는 경우에도 효과가 더 일관되게 발동하도록 개선되었습니다."));
 
-    public static void add_v3_6_Changes(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("v3.0g", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.VANILLA_CAKE), "7주년 기념 업데이트",
-                "이번 업데이트는 죠죠의 기묘한 던전 출시 7주년을 기념하여 출시되었습니다.\n\n" +
-                            "지금 바로 게임 내에서 기간 한정 7주년 기념 특별 케이크를 만나보세요!"));
-        changes.addButton(new ChangeButton(new Image(new PucciSprite()), "신규 엔드 컨텐츠",
-                "천국에 도달한 DIO를 쓰러뜨린 뒤, 던전 31층에서 퍼니 밸런타인을 통해 _평행세계 난투_에 입장할 수 있습니다.\n\n" +
-                        "평행세계 난투에서는 최근 일일 랭킹 1위 기록을 바탕으로 소환된 평행세계의 플레이어들이 끝없이 등장합니다. 실제 랭커의 닉네임, 직업, 장비가 반영되며, 쓰러뜨릴수록 점점 더 강력한 상대가 나타납니다.\n\n" +
-                        "전투에서 패배하더라도 모험은 끝나지 않습니다. 한계까지 겨루고, 평행세계의 플레이어들 사이에서 자신의 힘을 시험해 보세요."));
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.J51), "보조 직업 대격변!",
-                "이번 업데이트의 메인 컨텐츠로, 파격적인\n보조 직업 전용 신규 특성 _화살의 선택_이 추가되었습니다.\n\n" +
-                        "화살의 선택 특성을 활성화하면 해당 보조 직업의 핵심 장비, 능력, 전투 방식이 크게 변화하며, 기존과는 전혀 다른 빌드와 플레이 흐름을 경험할 수 있습니다.\n\n" +
-                        "시간을 멈추고 투척 무기를 공중에 고정하거나, 능력을 무작위로 각성하거나, 황금의 회전과 파문을 새로운 방식으로 다루는 등, 화살의 선택 특성은 강력하지만, 때로는 위험한 대가를 요구합니다.\n\n" +
-                        "당신은 과연 화살의 힘을 지배할 수 있을까요?\n\n" +
-                        "화살의 선택 관련 신규 뱃지인 _선택받은 자_ 뱃지도 추가되었습니다!"));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), "버그 수정",
-                "- 전투조류 던전에서 일부 아이템/캐릭터 능력으로 위층으로 올라갈 수 있었던 버그가 수정되었습니다.\n\n" +
-                        "- 전투조류 던전에서 로긴즈 & 메시나가 도감에 등록되지 않았던 버그가 수정되었습니다.\n\n" +
-                        "- 전투조류 던전에서 일정 확률로 리사리사가 같이 동행하지 않았던 버그가 수정되었습니다.\n\n" +
-                        "- 전투조류 던전에서 범위 보상을 골라도 최대 체력이 감소하지 않았던 버그가 수정되었습니다.\n\n" +
-                        "- 전투조류 만화책을 보유하고 있어도 제 2의 폭탄으로 피해를 입을 수 있었던 버그가 수정되었습니다."));
-        changes.addButton(new ChangeButton(new Image(new GSoldierSprite()), "조우 층 변경",
-                "전투조류 던전의 조우 층에서 등장하는 적이 기존 4마리에서 3마리로 감소합니다."));
-    }
-
-    public static void add_v3_5_Changes(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("v3.0f", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new Image(new WillcSprite()), "전투조류 정식 출시!",
-                "새로운 던전 _전투조류_가 정식 업데이트되었습니다!\n\n" +
-                        "전투조류는 기존과 다른 독립적인 방식으로 진행되며, 게임 클리어 후 영웅 선택 화면의 전용 아이콘을 클릭해 입장할 수 있습니다.\n\n" +
-                        "발전된 신규 시스템과 게임 방식이 준비되어 있으니 꼭 도전해 보세요!"));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EVOLUTION), "전투조류 포인트",
-                "전투조류 던전을 클리어하면 획득할 수 있는 신규 재화인 _전투조류 포인트_가 추가되었습니다!\n\n" +
-                        "전투조류 포인트로 엠포리오의 방에 있는 에르메스에게 _잔재 선택권_ 또는 _만화책 선택권_을 구매할 수 있습니다.\n\n" +
-                        "에르메스는 경쟁 모드에서는 등장하지 않습니다."));
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.PACT_OF_KNOT), "신규 보조 직업: 완전생물",
-                "모든 캐릭터가 선택 가능한 공용 보조 직업인 _완전생물_이 추가되었습니다!\n\n" +
-                        "완전생물은 스탠드 구현의 화살 사용 시,\n_2 전투조류 포인트_를 소모하여 선택할 수 있습니다."));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HS), "신규 보조 직업: 천국에 도달한 자",
-                "모든 캐릭터가 선택 가능한 공용 보조 직업인 _천국에 도달한 자_가 추가되었습니다!\n\n" +
-                        "천국에 도달한 자는 스탠드 구현의 화살 사용 시, _5 클리어 포인트_를 소모하여 선택할 수 있습니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new Image(new SkeletonSprite()), "행드맨",
-                "만약 홀 호스가 소환한 행드맨이 공격 불가능한 위치에 있을 경우, 즉시 공격이 가능한 위치로 순간이동하게 됩니다."));
+        changes.addButton( new ChangeButton( ChangeIcons.V081_MISC, Messages.get(ChangesScene.class, "misc"),
+                "주요 변경 사항:\n" +
+                        "- 이제 체력바에 지속 피해의 총량이 시각적으로 표시됩니다.\n" +
+                        "- 등가교환의 명령 DISC의 편의성 및 UI가 개선되었습니다.\n" +
+                        "- 보스전 시 잠기는 문 위치에 있던 아이템들이 밖으로 밀려나도록 수정되었습니다.\n" +
+                        "- 다양한 코드 의존성 라이브러리가 최신 버전으로 업데이트되었습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(CharSprite.POSITIVE);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 1), "용기의 파문전사",
-                "신규 특성 _파문의 흐름_이 추가되었습니다.\n\n" +
-                        "이제 파문 에너지를 보다 능동적으로 쌓고 관리하며 전투를 주도할 수 있습니다."));
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_SANDALS), "아이템 상향",
+                "v4.0a는 신규 콘텐츠 위주의 업데이트지만, 일부 아이템 밸런스 조정도 함께 진행되었습니다. 몇몇 아이템 성능이 상향되었습니다:\n" +
+                        "\n" +
+                        "- DISC가 심어진 독개구리: 기본 피해량이 10-25에서 10-30으로 증가\n" +
+                        "\n" +
+                        "- 녹색 아기의 장비 DISC: 레벨에 따른 충전 속도 증가율 상승 (+10강 기준 최대 +50%)\n" +
+                        "- 저지먼트의 장비 DISC: 흙인형의 체력이 20+8*lvl에서 40+10*lvl로 증가하였으며, 흙인형의 공격력이 영웅처럼 힘 수치에 비례하여 증가하도록 변경\n" +
+                        "- 하베스트의 장비 DISC: 레벨에 따라 충전 속도가 증가하도록 변경 (+10강 기준 최대 +50%)\n" +
+                        "\n" +
+                        "- 용암 암석: 레벨당 변환 확률이 12.5%에서 20%로 증가\n" +
+                        "- 쇼트 키 No. 2: 적에게 실제로 유해한 가스를 분출할 확률이 훨씬 높아짐"));
 
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 1), "죠린 보조 직업",
-                "신규 특성 _끈을 이용한 방어_, _돌의 바다_, _수놓기_가 추가되었습니다.\n\n" +
-                        "죠린이 상황에 맞춰 유연하게 대응할 수 있도록 개선하고, 특성 선택의 폭을 넓혔습니다."));
+        changes.addButton(new ChangeButton(
+                new Image(Assets.Sprites.RESEARCHER, 0, 0, 12, 15), "특성/스킬 상향",
+                "일부 영웅 스킬 및 특성도 상향되었습니다:\n" +
+                        "\n" +
+                        "- 크레이지 D 능력 발현 - 연속 공격: 능력 사용 후 적 처치 시 각성의 파문전사처럼 지속 시간이 15턴 연장됨\n" +
+                        "- Crazy noisy bizarre town: 레퀴엠 브로치의 기본 소모 에너지가 50에서 35로 감소"));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
         changes.hardlight(CharSprite.NEGATIVE);
         changeInfos.add(changes);
 
-        changes.addButton(new ChangeButton(new Image(new JohnnySprite()), "죠니",
-                "'실로 머나먼 길' 시전 중 공격 상쇄 특성으로 보호막을 무한정 쌓을 수 없도록 수정되었습니다.\n\n" +
-                        "터스크 장비 DISC의 충전 속도가 -35% 감소합니다."));
-    }
-
-    public static void add_v3_4_Changes(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("v3.0e", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.JOHNNY, 1), "신규 캐릭터: 죠니!",
-                "_죠니가 드디어 7번째 플레이어블 캐릭터로 추가되었습니다!_\n\n" +
-                        "죠니는 터스크의 장비 DISC를 사용해서 조준 타이밍을 정교하게 맞출수록 위력이 증가하는 독특한 플레이 방식을 제공합니다."));
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.JOHNNY, 2), "죠니의 보조 직업",
-                "보조 직업은 두 번째 보스를 처치한 후에 선택할 수 있습니다.\n\n" +
-                        "_인간 찬가의 기수_: 인간 찬가의 기수는 슬로 댄서를 소환하여 탑승할 수 있으며, 황금의 회전 성공 시 도약 충전량을 얻어 빠르게 전장을 누빕니다.\n\n" +
-                        "_황금 회전의 스탠드사_: 황금 회전의 스탠드사는 터스크의 장비 DISC를 75% 위력으로 연속 2회 발사합니다. 또한 자이로의 레슨을 통해 황금의 회전을 발동하면, 전투에 도움이 되는 강화 효과를 얻습니다."));
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.JOHNNY, 6), "죠니 전용 레퀴엠 능력",
-                "레퀴엠 능력은 네 번째 보스를 처치한 후에 선택할 수 있습니다.\n\n" +
-                        "_실로 머나먼 길_: 죠니는 3x3 영역을 지정합니다. 3턴 후 터스크 ACT.4가 해당 영역에 강력한 피해를 가합니다.\n\n" +
-                        "_완전한 황금장방형_: 죠니는 지정한 위치에 3x3 범위의 황금장방형을 생성합니다. 황금장방형 안에 있으면 모든 근접 무기와 브로치가 강화됩니다.\n\n" +
-                        "_무한의 회전_: 죠니가 인접한 대상에게 무한의 회전 에너지를 부여하여, 원하는 방향으로 멀리 날려 보냅니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(
-                new Image(Assets.Sprites.DIEGO, 0, 0, 12, 15),
-                "디에고 브란도(평행세계) 리워크",
-                "디에고 브란도(평행세계)의 패턴이 새롭게 리워크되었습니다."
-        ));
-
-        changes.addButton(new ChangeButton(
-                new Image(Assets.Sprites.TROLL, 0, 0, 12, 15),
-                "죠니 퀘스트 변경",
-                "기존 죠니의 퀘스트를 자이로 체펠리에게 받을 수 있도록 변경되었습니다."
-        ));
-
-        changes.addButton(new ChangeButton(
-                new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION),
-                "고 비욘드의 사격 DISC 리워크",
-                "소프트&웨트 고 비욘드의 사격 DISC가 완전히 리워크되었습니다!\n\n" +
-                        "- 이제 고 비욘드를 여러개 소환하는 대신 1개만 소환합니다.\n" +
-                        "- 고 비욘드의 피해량은 소프트&웨트 고 비욘드의 사격 DISC의 강화에 비례해서 강해집니다.\n" +
-                        "- 고 비욘드가 적을 공격하면 2턴의 방어 해제를 부여합니다."
-        ));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP0),
-                "스틸 볼 런 레이스 지도 9th 보상 변경",
-                "스틸 볼 런 레이스 지도 9th의 보상이\nD4C-러브 트레인-을 강화하는 형식으로 변경되었습니다!"
-        ));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
-        changes.hardlight(CharSprite.POSITIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.AJA), "각성 무기 상향",
-                "일부 각성 무기의 피해량이 상향되었습니다:\n\n" +
-                        "- _에이자의 석가면_: 데미지가 45% 상향되었습니다.\n\n" +
-                        "- _핑크 다크의 소년_: 데미지가 30% 상향되었습니다.\n\n" +
-                        "- _섹스 피스톨즈_: 데미지가 15% 상향되었습니다.\n\n" +
-                        "- _스타 플라티나 더 월드의 주먹_: 데미지가 15% 상향되었습니다.\n\n" +
-                        "- _스타 플라티나 오버 헤븐의 주먹_: 데미지가 15% 상향되었습니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
-        changes.hardlight(CharSprite.NEGATIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP0), "스틸 볼 런 레이스",
-                "스틸 볼 런 레이스 지도 5th의 조건이\n기존 투척 무기 50회 공격에서 25회로 변경되었습니다."));
-    }
-
-    public static void add_v3_3_Changes(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("v3.0d", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(
-                new ItemSprite(ItemSpriteSheet.ARTIFACT_KEY),
-                "신규 아이템",
-                "새로운 장비 DISC와 위험한 물건이 추가되었습니다!\n\n" +
-                        "- _스무스 오퍼레이터즈의 장비 DISC_는 던전 환경을 제어할 수 있는 새로운 아이템입니다. 잠긴 문을 열거나 임시 장벽을 생성하는 등 다양한 활용이 가능합니다.\n\n" +
-                        "- 신규 위험한 물건인 _어텀 리브스_는 던전에 등장하는 아이템의 수를 늘려 주지만, 대신 아이템을 찾기 더 어렵게 만듭니다!"
-        ));
-
-        changes.addButton(new ChangeButton(new Image(new DArbySprite()), "숨겨진 장소",
-                "오시리스신 옆에 _저택의 창고_로 향하는 통로가 추가되었습니다!\n\n" +
-                        "DIO의 저택 창고로 들어가면 오시리스신의 스탠드사인 _다니엘 J. 다비_를 만날 수 있습니다."));
-
-        Image i = new Image(Assets.Sprites.DANNY, 3, 0, 18, 16);
-        i.scale.set(PixelScene.align(0.75f));
-        changes.addButton(new ChangeButton(i, "신규 NPC",
-                "- 신규 NPC인 _대니_가 추가되었습니다.\n" +
-                        "대니는 던전의 특정한 장소에서 만날 수 있습니다.\n\n" +
-                        "- 신규 NPC인 _다니엘 J. 다비_가 추가되었습니다.\n" +
-                        "다니엘 J. 다비는 DIO 저택의 창고에서 만날 수 있으며, 영혼을 건 내기를 할 수 있습니다.\n\n" +
-                        "- 또한 카이로 시내에 특수한 희귀 적이 1종 추가되었습니다."));
-
-        Image aboutIcon = Icons.get(Icons.CHALLENGE_GREY);
-        aboutIcon.hardlight(0.65f, 1.05f, 1.55f); // 밝은 하늘색
-        changes.addButton(new ChangeButton(aboutIcon, "경쟁 모드",
-                "신규 모드인 _경쟁 모드_가 추가되었습니다!\n\n" +
-                        "매일 모든 도전자에게 똑같은 던전이 주어집니다. 닉네임을 설정하고 당신의 실력을 증명하세요!\n\n" +
-                        "- 다른 플레이어들과 점수를 경쟁할 수 있습니다.\n\n" +
-                        "- Top 10 랭킹은 매일 갱신됩니다.\n\n" +
-                        "- 기회는 하루에 단 한 번!\n\n" +
-                        "- 관련 신규 배지도 1종 추가되었습니다!\n\n" +
-                        "경쟁 모드는 게임을 한 번 이상 클리어해야 해금됩니다."));
-
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.KARS, 0, 0, 14, 15), "전투조류 컨텐츠 추가",
-                "- 기둥의 사내 - 카즈가 추가되었습니다.\n\n" +
-                        "- 전체 층이 54층까지 확장되었습니다.\n\n" +
-                        "- 죽음의 웨딩 링의 지속시간이 1200턴에서 2000턴으로 증가했습니다.\n\n" +
-                        "- 청정의 물약으로 죽음의 웨딩 링을 해제할 수 있었던 버그가 수정되었습니다."));
-
-        Image i2 = Icons.get(Icons.RANDOMIZE);
-        i2.scale.set(PixelScene.align(0.85f));
-        changes.addButton(new ChangeButton(i2, "랜덤화",
-                "- 게임에 _랜덤화_ 옵션이 추가되었습니다!\n\n" +
-                        "- 해당 옵션 활성화 시 무작위 영웅과 시련이 적용되며, 게임 진행 중에는 무작위 특성, 보조 직업, 레퀴엠 능력을 적용할 수 있습니다.\n\n" +
-                        "- 이러한 요소들은 플레이에 재미와 예측 불가능함을 더해주며, 어떤 선택을 해야 할지 고민되는 플레이어에게 새로운 대안을 제공합니다.\n\n" +
-                        "또한 랜덤화 옵션을 선택하면 해금할 수 있는 _신규 배지_가 추가되었습니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(
-                new Image(Assets.Sprites.REBEL, 0, 0, 16, 16),
-                "천국DIO 리메이크",
-                "천국에 도달한 DIO가 새롭게 리메이크되었습니다!\n\n" +
-                        "- 기존에 사용되던 오래된 패턴과 효과가 전면적으로 재작업되었으며, 보다 역동적이고 균형 잡힌 전투 경험을 제공하도록 개선되었습니다."
-        ));
-
-        changes.addButton(new ChangeButton(new Image(new AlbinoSprite()), "밸런스 변경",
-                "초반 게임 밸런스를 일부 조정했습니다.\n" +
-                        "이번 변경은 주로 오버 헤븐 시련과 크눔신 때문에 발생하던 난이도 급상승을 완화하기 위한 것입니다.\n\n" +
-                        "- _오버 헤븐_\n" +
-                        "다음 적들은 더 이상 강화 개체로 등장하지 않습니다: 3층의 호루스신, 4층의 하베스트, 7층의 옐로 템퍼런스, 9층의 하이웨이 스타\n\n" +
-                        "강화 개체의 등장 확률이 기존처럼 항상 1/8로 고정되지 않고 이제 던전 깊이에 따라 최대 1/6까지 증가합니다.\n\n" +
-                        "- _크눔신_\n" +
-                        "체력이 15에서 12로 감소했습니다.\n" +
-                        "더 이상 크눔신의 피해량에 따라 출혈량이 결정되지 않으며, 출혈이 보너스 피해와 완전히 독립적으로 작동합니다."));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_CHALICE3), "하이웨이 스타의 장비 DISC",
-                "기존에는 하이웨이 스타의 장비 DISC가 플레이어에게 얼마나 피해를 주는지 직접적인 정보를 확인할 수 없어, 많은 플레이어가 인터넷에서 수치를 찾아봐야 했습니다.\n" +
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STONE_AGGRESSION), "아이템 하향",
+                "지나치게 강력한 성능을 보이던 일부 아이템들의 성능을 조정했습니다.\n" +
                         "\n" +
-                        "이제 플레이어는 하이웨이 스타의 장비 DISC가 가할 예정인 피해를 미리 확인할 수 있으며, 하이웨이 스타의 장비 DISC의 피해는 고정 수치가 아니라 -8%에서 -11% 범위 내에서 변동됩니다.\n\n이를 통해 플레이어는 피해 감소 효과가 적용되기 이전 기준으로, 자신에게 얼마나 피해가 들어올지 정확히 파악할 수 있습니다.\n" +
+                        "- 공격의 명령 DISC: 보스에게 직접 사용할 수 없도록 변경\n" +
+                        "- 신속의 돌가면: 레벨당 이동 속도 증가량이 +17.5%에서 +15%로 감소\n" +
+                        "- 어텀 리브스: 페널티가 커지고, 보너스 아이템 투명도 효과가 15%에서 10%로 감소"));
+
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.BARKSKIN), "특성/스킬 하향",
+                "일부 영웅 스킬 및 특성에 대한 밸런스 조정이 진행되었습니다:\n" +
                         "\n" +
-                        "또한 하이웨이 스타의 장비 DISC 피해량은 이제 물리 방어력뿐 아니라, 모든 종류의 피해 감소 효과에 의해 감소됩니다."));
-
-        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
-                "주요 사항:\n" +
-                        "- 위험한 물건을 선택할 수 있는 옵션이 확장되었습니다. (총 4개)\n" +
-                        "- 엔야 할멈에게 스톤 프리의 장비 DISC로 피해를 입히면 특수 배지를 얻을 수 없습니다.\n" +
-                        "- 각성의 파문전사의 연속 타격이 5 이상일 경우 적에게 공격을 맞춰도 연속 타격 지속시간이 연장되지 않습니다.\n" +
-                        "- 정원과 우물방이 잠겨있도록 변경되었습니다.\n" +
-                        "- 레이미 처치 시 아놀드가 여러 마리 나오는 버그가 수정되었습니다.\n" +
-                        "- 보이 투 맨의 가위바위보 게임이 개선되었습니다.\n" +
-                        "- 디아볼로 보스전 진입 시 디아볼로가 1턴동안 공격하지 않습니다.\n" +
-                        "- 이동 속도에 영향을 주는 상형문자가 작동 중일 때 시각 효과가 추가되었습니다.\n" +
-                        "- 보우건이 다트에 얼마의 피해를 추가하는지 확인할 수 있게 되었습니다.\n" +
-                        "- 폴포의 용액 제조 에너지가 4 -> 2로 감소, 죠죠 포인트로 교환 시 에너지 제공량이 12 -> 8로 감소합니다.\n" +
-                        "- 위험한 물건을 죠죠 포인트로 교환 시 경고문이 출력됩니다.\n" +
-                        "- 포르마조의 병에서 풀려난 적이 아무것도 하지 않는 버그가 수정되었습니다.\n" +
-                        "- 26~30층에서 스무스 오퍼레이터즈를 사용하면 튕기는 버그가 수정되었습니다.\n" +
-                        "- 천국 DIO가 여러번 나오는 버그가 수정되었습니다.\n" +
-                        "- 역행 시 플레이어가 적을 처치했는지 확실하게 확인 가능하도록 텍스트가 수정되었습니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
-        changes.hardlight(CharSprite.POSITIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.DURABLE_PROJECTILES), "투척 무기 특성 상향",
-                "투척 무기와 상호작용하는 일부 특성이 상향됩니다:\n" +
+                        "- 생명 순환: 풀을 밟을 때는 발동하지 않으며, 신규 식물 아이템을 사용할 때 발동하도록 변경, 레벨당 방어력이 영웅 레벨의 50%에서 33%로 감소\n" +
+                        "- Chase: 레퀴엠 브로치의 기본 소모 에너지가 35에서 50으로 증가\n" +
                         "\n" +
-                        "- 나이프 투척 특성의 피해량이 +1/2/3에서 +10/+20/+30% -> +15/+30/+45%가 됩니다.\n\n" +
-                        "- 생명력 주입 특성의 투척 무기 내구도 증가량이 33/50% -> 50/75%이 됩니다.\n\n" +
-                        "- 투쟁심 특성의 정확도가 +1/2/3에서 -30/-10/+10% -> -25/0/+25%이 됩니다."));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMAHAWK), "투척 무기 상향",
-                "- 자철석으로 가져올 아이템이 즉시 회수 가능한 아이템(렉킹 볼, 황금의 회전의 철구 등)일 경우 시전에 턴을 소모하지 않습니다.\n\n" +
-                        "- DIO의 나이프의 출혈 피해량이 딜 비례가 아닌 독자적인 범위를 가지도록 변경됩니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
-        changes.hardlight(CharSprite.NEGATIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOLAS), "투척 무기 하향",
-                "- 크래커 볼리의 피해량이 6-9 -> 4-9로 감소되었습니다. 강화 시 피해량은 +1-2 -> +0-2로 변경되었습니다.\n\n" +
-                        "- 노토리어스 B.I.G이 돌아올 때 필요한 턴이 4턴에서 5턴으로 증가합니다."));
-    }
-
-    public static void add_v3_2_Changes(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("v3.0c", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.THROWING_SPEAR), "투척 무기 리워크",
-                "투척 무기가 업그레이드할 가치가 있도록 대대적으로 개편되었습니다!\n" +
-                        "\n" +
-                        "- 투척 무기는 이제 3개 세트로 등장하며, 세트는 섞이지 않습니다.\n" +
-                        "- 투척 무기 기본 내구도가 3x5/8/12로 증가했습니다 (기존 2x5/10/15에서).\n" +
-                        "- 세트는 단위로 업그레이드되며 (3개 모두), 업그레이드하면 세트가 완전히 수리됩니다.\n" +
-                        "- 업그레이드는 이제 내구도를 1.5배 증가시킵니다 (기존 3배에서 감소).\n" +
-                        "- 투척 무기의 기본 업그레이드당 데미지 증가가 1티어로 감소했습니다 (기존 2티어에서).\n" +
-                        "- 세트는 속성 부여, 저주, 강화, 미식별 등이 가능합니다.\n" +
-                        "- 세트는 자연 업그레이드, 속성 부여, 또는 저주와 함께 등장할 수 있습니다.\n" +
-                        "- 몇몇 특별한 방에서 더 높은 가치의 투척 무기 세트가 등장할 확률이 있습니다.\n" +
-                        "\n" +
-                        "보우건 탄환은 이러한 변경사항의 영향을 받지 않으며, 사실상 모두 같은 세트에 속하고 여전히 업그레이드할 수 없습니다."));
-
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.STURO, 0, 0, 16, 14), "신규 던전: 전투조류",
-                "_신규 던전_이 추가되었습니다!\n" +
-                        "\n" +
-                        "- 전투조류 던전은 첫 클리어 이후 캐릭터 선택 화면에서 언제든지 선택하여 플레이할 수 있습니다!\n" +
-                        "- 기존 던전과는 다른 독립적인 진행 방식을 제공합니다.\n" +
-                        "- 새로운 적, 아이템, 그리고 환경 요소들이 포함되어 있습니다.\n" +
-                        "- 전투조류 관련 신규 뱃지도 추가되었습니다!" +
-                        "\n\n" +
-                        "베타 버전 안내:\n" +
-                        "- 현재 전투조류 던전은 베타 테스트 단계입니다.\n" +
-                        "- 밸런스 조정과 컨텐츠 추가가 지속적으로 이루어질 예정입니다.\n" +
-                        "- 플레이어 피드백을 바탕으로 추가 개선사항이 적용될 수 있습니다."));
-
-        changes.addButton(new ChangeButton(new BuffIcon(BuffIndicator.ILLUMINATED, true), "명중 및 회피 아이콘",
-                "정확도나 회피력을 변경하는 거의 모든 효과에 대해, 해당 효과가 공격 명중이나 실패의 원인일 때 표시되는 아이콘이 추가되었습니다!\n" +
-                        "\n" +
-                        "이를 통해서 다양한 버프/디버프가 명중률에 얼마나 차이를 만드는지 훨씬 쉽게 알 수 있게 됩니다.\n" +
-                        "\n" +
-                        "총 12개의 명중 아이콘과 11개의 실패 아이콘이 있습니다."));
-
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.PASSIONE, 0, 15, 12, 15), "파시오네 호위팀",
-                "- 파시오네 조직의 간부인 폴포가 이제 특정 비밀 방에서 등장합니다.\n" +
-                        "- 폴포에게 보수를 지불하면 파시오네 호위팀 중 한 명을 무작위로 고용할 수 있습니다\n" +
-                        "- 호위팀원들은 각각 고유한 능력과 특성을 가지고 있습니다"));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LIQUID_METAL), "수리 물약",
-                "수리 물약도 투척 무기의 전반적인 변경사항에 맞춰 변경되었습니다:\n" +
-                        "\n" +
-                        "- 제작법 조정: 이제 식별되고 저주받지 않은 투척 무기 세트 하나를 필요로 하며 항상 3 에너지를 소모합니다.\n" +
-                        "- 수리 물약은 이제 세트에서 분실/파손된 투척 무기를 교체할 수 있습니다 (일반적인 3개 한도까지)\n" +
-                        "- 수리 물약의 업그레이드당 증가율이 2배에서 1.33배로 감소했습니다."));
-
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.SURVIVALISTS_INTUITION), "죠르노 특성 변경",
-                "- 냉철함 특성은 이제 죠르노가 +1에서 투척 무기를 3배 속도로 식별하거나 +2에서 사용 시 즉시 식별할 수 있게 해줍니다.\n\n이전에는 +1에서 모든 아이템의 식별 속도를 1.75배, +2에서 2.5배 증가시켰습니다."));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.JOJO1), "만화책 변경",
-                "이제 만화책을 상점에 1000골드에 판매할 수 있습니다."));
-
-        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
-                "주요 사항:\n" +
-                        "- 죠니의 장비 선택 옵션이 이제 2개의 근접 무기와 1개의 갑옷에 추가로 투척 무기를 제공합니다\n" +
-                        "- 투척 무기(전갈 투척 포함)는 이제 대상을 겨누지 않으면 항상 1턴의 투척 지연이 있습니다\n" +
-                        "- 역행은 이제 천국의 DISC가 처음 약화될 때 항상 플레이어에게 알립니다\n" +
-                        "- 쇼트 키 No. 2는 더 이상 수동적인 적을 겨누지 않습니다\n" +
-                        "\n" +
-                        "투척 무기:\n" +
-                        "- 강화는 이제 공격 속도에 미치는 영향에 따라 투척 무기 내구도에 영향을 줍니다\n" +
-                        "- 폭발 저주는 이제 발동 시 투척 무기의 사용 횟수를 소모합니다\n" +
-                        "기타:\n" +
-                        "- 대부분의 튜토리얼/가이드북 텍스트를 더 간결하게 개선했습니다\n" +
-                        "- 관찰의 명령 DISC의 추측 창이 이제 어떤 아이템을 추측하는지 보여줍니다"));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
-        changes.hardlight(CharSprite.POSITIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.PROJECTILE_MOMENTUM), "투척 무기 특성 강화",
-                "투척 무기 변경의 일환으로 투척 무기와 상호작용하는 일부 특성이 강화됩니다:\n" +
-                        "\n" +
-                        "- 나이프 투척 특성의 정확도 증가가 대폭 상승하여 +1/2/3에서 +50/100/150%가 됩니다 (기존 +20/40/60%에서).\n" +
-                        "\n" +
-                        "- 자세 교정 특성은 이제 투척 무기와 전갈 투척 모두에 속성이 부여되어 있으면 두 속성 모두 발동할 수 있습니다."));
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "죠린 상향",
-                "- 동작 탐지 능력의 지속시간이 30턴에서 50턴으로 증가했습니다.\n" +
-                        "\n" +
-                        "의지의 스탠드사 버프:\n" +
-                        "- 실 펀치의 무료 사용 재사용 대기시간이 100턴에서 50턴으로 감소했습니다.\n" +
-                        "- 표적 상태는 이제 모든 능력으로 직접 대상이 된 적에게 적용됩니다."));
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "죠나단 상향",
-                "- 흔들림 없는 용기는 이제 +1/2/3에서 연속 공격 수치와 보호막의 감소를 33/67/100% 늦춥니다.\n" +
-                        "\n" +
-                        "- 연속 공격은 이제 적을 죽이면 15턴 동안 지속됩니다.\n" +
-                        "- 정신적인 폭발력의 연속 공격 지속시간 증가가 +1/2/3에서 30/45/60턴으로 증가했습니다 (기존 15/30/45턴에서)."));
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.MAGE, 6), "적석의 수호자 상향",
-                "적석의 수호자의 일부 근접 공격 효과가 더 흥미롭고 강력하게 변경되었습니다:\n" +
-                        "\n" +
-                        "- 매지션즈 레드 융합: 이제 화염을 폭발시켜 날려버릴 확률이 발생하고, 적에게 데미지를 줍니다.\n" +
-                        "- 레드 핫 칠리 페퍼 융합: 이제 번개 면역과 추가 전류 사거리를 부여합니다.\n" +
-                        "- C-MOON 융합: 이제 적에게 부여된 마비를 소모하여 큰 추가 피해를 줍니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
-        changes.hardlight(CharSprite.NEGATIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMAHAWK), "투척 무기 하향",
-                "투척 무기 리워크에 따른 조정이 있습니다.\n" +
-                        "\n" +
-                        "- 킹 크림슨의 주먹의 즉시 투척 조건이 단순한 20턴 쿨다운으로 변경되었습니다\n" +
-                        "- 완전생물의 다람쥐의 기본 데미지가 6-15에서 6-12로 감소했습니다\n" +
-                        "- 크래커 볼리의 피해 증가량이 1-3에서 1-2로 감소했습니다\n" +
-                        "- 노토리어스 B.I.G의 내구도가 8에서 5로 감소했습니다\n" +
-                        "- DIO의 나이프의 피해 증가량이 1-4에서 1-3으로 감소했습니다\n" +
-                        "- DIO의 나이프의 출혈 확률이 60%에서 33%로 감소했지만, 이제 적의 방어력을 무시하는 별도의 판정입니다\n" +
-                        "- DISC가 심어진 독개구리의 기본 데미지가 10-25에서 10-20으로 감소했습니다"));
-
-        changes.addButton(new ChangeButton(new TalentIcon(Talent.SHARED_UPGRADES), "투척 무기 특성 하향",
-                "투척 무기 변경의 일환으로 일부 특성도 너프됩니다:\n" +
-                        "\n" +
-                        "- 나이프 투척 특성의 데미지 증가율이 +1/2/3에서 +10/20/30%로 감소했습니다 (기존 +15/30/45%에서)\n" +
-                        "\n" +
-                        "- 생명력 주입 특성의 내구도 증가율이 +1/+2에서 +33%/+50%로 감소했습니다 (기존 +50%/+75%에서)\n" +
-                        "- 자세 교정 특성이 이제 투척 무기 레벨당 고정 +16.67% 데미지 증가와 +1 지속시간을 부여하지만, 특성 레벨 1/2/3에서 +33/67/100% 데미지와 +2/4/6 지속시간으로 제한됩니다."));
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.WARRIOR, 6), "용기의 파문전사 하향",
-                "- 파문 에너지의 획득 및 손실 속도가 25% 감소했습니다\n" +
-                        "- 파문 가드의 보호막이 10+2*레벨에서 8+2*레벨로 감소했습니다 (브로치의 레벨)"));
-
-    }
-
-    public static void add_v3_1_Changes(ArrayList<ChangeInfo> changeInfos) {
-
-        ChangeInfo changes = new ChangeInfo("v3.0b", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
-        changes.hardlight(CharSprite.POSITIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SEAL), "죠나단 미니 리워크",
-                "죠나단의 파문의 보호막 능력이 소규모 개편되었습니다!\n" +
-                        "\n" +
-                        "파문의 보호막은 이제 죠나단의 체력이 50% 이하일 때 재사용 대기시간과 함께 발동됩니다. 신규 플레이어들에게는 여전히 사용하기 쉬우면서도 더욱 임팩트 있고 상호작용적으로 느껴질 것입니다.",
-
-                "파문의 보호막의 상세 변경사항은 다음과 같습니다:\n" +
-                        "- 파문의 보호막은 더 이상 수동적으로 쌓이지 않으며, 이제 죠나단이 체력 50% 이하로 피해를 받기 직전에 즉시 발동됩니다.\n" +
-                        "- 최대 보호막은 이제 브로치 등급에 기반하며, 5-13까지 상승합니다.(파문의 호흡 특성으로 최대 15).\n" +
-                        "- 이 보호막은 감소하지 않지만, 전투 후 잠시 후에 사라집니다.\n" +
-                        "- 이 보호막은 150턴의 재사용 대기시간을 가지며, 사용하지 않은 보호막은 재사용 대기시간의 최대 50%를 돌려줍니다.\n" +
-                        "- 파문의 보호막은 은 이제 저주받지 않은 것으로 알려진 브로치에 부여할 수 있습니다.\n" +
-                        "- 파문의 보호막을 교체할 때, 죠나단은 이제 파문의 보호막을 교체할지 묻는 안내를 받습니다.",
-
-                "다양한 죠나단의 특성들이 조정되었습니다:\n" +
-                        "- 더 패션 특성은 이제 어떤 보호막이 깨져도 발동되며, +2/+3에서 +3/+5 추가 피해를 부여합니다.\n" +
-                        "- 파문의 호흡 특성은 변경되지 않았으며, 여전히 1 또는 2 최대 보호막을 부여합니다.\n" +
-                        "- 파문의 양극 특성은 이제 파문의 보호막을 최대 50%/75%를 충전하는 대신 최대 HP의 6.5%/10%와 일반 보호막을 부여합니다.\n" +
-                        "- 파문의 회복력 특성은 이제 파문의 보호막을 재충전하는 대신 파문의 보호막의 재사용 대기시간을 감소시킵니다.\n" +
-                        "- 각성의 파문전사는 콤보가 있는 한 파문의 보호막의 보호막을 유지합니다.\n" +
-                        "- 용기의 파문전사의 파문 에너지는 이제 자체적인 별도 보호막으로, 파문의 보호막의 최대 보호막과는 별도로 증가합니다."));
-
-        changes.addButton(new ChangeButton(Icons.STAIRS.get(), "새로운 방과 지형 유형",
-                "이번 업데이트는 새로운 방 유형이 포함되어 있습니다!\n" +
-                        "\n" +
-                        "- 새로운 지형과 장식물이 각 지역에 추가되었습니다!\n" +
-                        "- 5개의 새로운 표준 방이 이러한 새로운 장식물을 사용하여 추가되었으며, 지역당 하나씩입니다.\n" +
-                        "- 8개의 기존 표준 방이 새로운 장식물을 사용하도록 수정되었습니다.\n" +
-                        "- 10개의 새로운 입구/출구 변형 표준 방도 추가되었습니다. 지역당 두 개씩입니다.\n" +
-                        "- 보스 방도 마찬가지로 몇 곳에서 이러한 새로운 지형 유형을 사용합니다\n" +
-                        "- 평범한 빈 방은 더 이상 일반적으로 생성되지 않습니다."));
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.FERRET_TUFT), "신규 위험한 물건",
-                "신규 위험한 물건이 게임에 추가되었습니다!\n" +
-                        "\n" +
-                        "6부의 스탠드인 구구 돌즈가 새로 추가되었습니다!\n" +
-                        "\n" +
-                        "구구 돌즈를 강화하면 적을 포함한 모든 캐릭터가 추가 회피율을 얻게 됩니다! 손해처럼 보일 수 있지만, 적의 회피력에 대응하는 방법은 많다는 점을 기억하세요."));
-
-        changes.addButton(new ChangeButton(BadgeBanner.image(Badges.Badge.TAKING_THE_MICK.image), "새로운 배지",
-                "v3.0b에는 각각 특정 도전을 테마로 한 4개의 새로운 배지도 포함되어 있습니다:\n" +
-                        "\n" +
-                        "- 무엇보다도 안전이 제일은 적에 대해 지형을 사용하는 것을 요구하는 골드 등급 배지입니다.\n" +
-                        "- 등가교환의 댓가는 한 번에 많은 버프/디버프를 가지는 것을 요구하는 플래티넘 등급 배지입니다.\n" +
-                        "- 왓 어 원더풀 월드는 적을 죽이지 않고 역행에서 생존하는 것을 요구하는 다이아몬드 등급 배지입니다.\n" +
-                        "- Lesson 5는 이걸 위해..!는 매우 높은 강화 수치의 손톱탄으로 25층의 보스를 물리치는 것을 요구하는 다이아몬드 등급 배지입니다.\n" +
-                        "\n" +
-                        "리얼리티 수집 배지의 난이도도 줄였습니다. 이제 모든 희귀 적이 아닌 10종류의 희귀 적을 발견하는 것을 요구합니다."));
-
-        changes.addButton(new ChangeButton(new Image(new HermitCrabSprite()), "새로운 희귀 적",
-                "2마리의 새로운 희귀 적이 카이로 사막에 추가되었습니다:\n" +
-                        "\n" +
-                        "날뛰는 소는 예외적으로 강하지만, 전투를 경계합니다. 도발하지 않으면 공격하지 않으므로 그냥 지나가게 할 수 있지만, 희귀한 전리품을 가지고 있을 수도 있습니다...\n" +
-                        "\n" +
-                        "머라이어는 자력을 사용하는 까다로운 적입니다. 싸우기는 다소 어렵지만, 브로치를 드롭할 확률을 가지고 있습니다."));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(Icons.get(Icons.RANKINGS), "탐험 및 퀘스트 점수",
-                "다양한 점수 카테고리의 난이도 균형을 조금 더 맞추기 위해 점수 계산 방식을 조정했습니다:\n" +
-                        "\n" +
-                        "탐험 점수는 이제 완전히 탐험되지 않은 방의 수에 기반합니다. 각 층에 대해, 1/2/3개 이상의 놓친 방에 대해 점수가 50%/20%/0%로 감소합니다. '완전히 탐험된' 것으로 간주되는 기준은 변경되지 않았습니다.\n" +
-                        "\n" +
-                        "퀘스트 점수는 이제 보스 점수와 유사한 방식으로 감소될 수 있습니다. 페널티를 피하기 위해 잘 위치하도록 하세요! 이 감소에는 예고된 공격/효과와 항상 피할 수 있어야 하는 일반 공격이 포함됩니다. 공격이 때때로 피할 수 없는 경우에는 페널티가 적용되기 전에 여유가 있습니다."));
-
-        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
-                "하이라이트:\n" +
-                        "- 아이템의 사용자 정의 메모를 이제 아이템의 정보 창에서 생성하거나 편집할 수 있습니다\n" +
-                        "- 모든 물약이 이제 특정 효과의 지속시간을 새로고침합니다. 이전에는 일부 물약 효과의 지속시간이 계속 추가될 수 있었습니다\n" +
-                        "- 잃어버린 배낭에 대한 랜드마크 항목이 추가되었습니다",
-
-                "아이템:\n" +
-                        "- 자철석의 판매/에너지 가치를 약간 줄여서 고급 투척 무기를 에너지로 효과적으로 변환하는 데 사용할 수 없도록 했습니다\n" +
-                        "- 식별되지 않은 사격 DISC를 이제 에이자의 적석에 주입할 수 있습니다\n" +
-                        "- 부분적으로 식별된 아이템을 이제 저지먼트의 장비 DISC와 함께 사용할 수 있습니다\n" +
-                        "- LOCACACA 6251의 패널티가 받는 피해 증가량이 3배에서 2배로 감소되었습니다\n" +
-                        "- 이제 각성 무기는 착용 즉시 감정됩니다.\n" +
-                        "\n" +
-                        "캐릭터:\n" +
-                        "- 디아볼로의 AI가 개선되어, 이제 영웅을 공격할 수 없을 때 대상을 바꿀 수 있습니다\n" +
-                        "- 윌슨 필립스 상원의원이 게임을 한번 클리어해야 등장하도록 변경되었습니다\n" +
-                        "- 엔야 할멈을 물리치면 이제 플레이어의 악몽 디버프가 해제됩니다."));
-
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
-        changes.hardlight(CharSprite.POSITIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "죠린 버프",
-                "전체적으로 죠린은 초기 출시 이후 승률은 낮지만, 매우 인기가 높기 때문에 일부는 사람들이 아직 알아가고 있는 과정일 것으로 예상됩니다. 현재로서는 다른 것들에 비해 약한 특정 죠린 메커니즘에 대한 버프에 집중하고 있습니다.\n" +
-                        "\n" +
-                        "기본 직업:\n" +
-                        "- 실 펀치의 기본 피해가 2-6에서 2-8로 증가\n" +
-                        "- 절단 실 & 뫼비우스의 띠가 이제 즉시 시전됩니다\n" +
-                        "- 실 그물의 지속시간이 4에서 5로 증가\n" +
-                        "- 동작 탐지가 이제 즉시 시전됩니다\n" +
-                        "\n" +
-                        "결착의 스탠드사:\n" +
-                        "- 신속 꿰매기의 치유량이 10/15/20에서 15/20/25로 증가\n" +
-                        "- 불굴의 근성의 피해 저항이 15%/23%/30%에서 20%/30%/40%로 증가",
-
-                "의지의 스탠드사:\n" +
-                        "- 표적 상태의 추가 피해가 레벨에서 5+레벨로 증가\n" +
-                        "- 실 전개가 이제 표적 상태를 발동하고 다시 적용합니다\n" +
-                        "- 1000구다!의 재사용 대기시간이 50에서 30으로 감소\n" +
-                        "- 폭우의 치유량이 10에서 15로 증가\n" +
-                        "- 폭우의 속박 시간이 1턴에서 2턴으로 증가\n" +
-                        "- 수갑 데스매치가 이제 즉시 시전됩니다\n" +
-                        "\n" +
-                        "스탠드 전개:\n" +
-                        "- 전투 개입의 지속시간 연장이 1/2/3/4에서 3/4/5/6으로 증가\n" +
-                        "- 광역 실 전개의 추가 피해가 능력 당 5-10에서 능력 당 +33%로 증가\n" +
-                        "\n" +
-                        "동료의 유대:\n" +
-                        "- 전담 방어의 지속시간이 6/8/10/12에서 10/13/17/20으로 증가"));
-
-        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
-        changes.hardlight(CharSprite.NEGATIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "죠린 너프",
-                "몇 가지 죠린 능력의 일부가 조정되었습니다:\n" +
-                        "\n" +
-                        "- 빈틈 노리기 특성의 피해가 +4/+6에서 +3/+5로 감소\n" +
-                        "- 징벌방의 식사법의 충전량 획득이 +1/+1.5에서 +0.67/+1로 감소\n" +
-                        "- 잠행이 더 이상 즉시 시전되지 않습니다\n" +
-                        "- 실 결계의 범위가 이제 30으로 제한됩니다\n" +
-                        "- \"실\"을 뻗으면!의 충전 비용이 1에서 2로 증가\n" +
-                        "- 엄폐의 충전 비용이 1에서 2로 증가했지만, 지속시간이 +50%로 증가"));
-
-    }
-
-    private static void add_jolyne_Changes(ArrayList<ChangeInfo> changeInfos) {
-        ChangeInfo changes = new ChangeInfo("v3.0a", true, "");
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-
-        changes = new ChangeInfo("새로운 요소", false, null);
-        changes.hardlight(CharSprite.POSITIVE);
-        changeInfos.add(changes);
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 1), "신규 캐릭터: 죠린!",
-                "_죠린이 드디어 6번째 플레이어블 캐릭터로 추가되었습니다!_\n\n" +
-                        "죠린은 스톤 프리의 장비 DISC를 사용해서 다양한 상황에 능숙하게 대처할 수 있습니다.\n\n" +
-                        "죠린은 다른 캐릭터와 다른 독특한 해금 조건을 가지고 있습니다."));
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 2), "죠린의 보조 직업",
-                "보조 직업은 두 번째 보스를 처치한 후에 선택할 수 있습니다.\n\n" +
-                        "_의지의 스탠드사_: 의지의 스탠드사는 강력한 장거리 능력을 얻고, 강화된 실 펀치를 사용할 수 있습니다.\n\n" +
-                        "_결착의 스탠드사_: 결착의 스탠드사는 근접 전투와 무기 및 방어구와의 연계에 중점을 둔 다양하고 강력한 능력을 얻습니다."));
-        changes.addButton(new ChangeButton(HeroSprite.avatar(HeroClass.CLERIC, 6), "죠린 전용 레퀴엠 능력",
-                "레퀴엠 능력은 네 번째 보스를 처치한 후에 선택할 수 있습니다.\n\n" +
-                        "_스탠드 전개_: 죠린은 스탠드 전개를 통해서 몸을 실로 변형하고 새로운 능력, 추가 공격 범위, 보호막을 얻습니다.\n\n" +
-                        "_버닝 다운 더 하우스_: 엠포리오의 도움으로 버닝 다운 더 하우스의 능력을 사용할 수 있습니다.\n\n" +
-                        "_동료의 유대_: 기존 동료를 강화하거나 스톤 프리를 소환할 수 있습니다."));
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.VAMPIRE, 0, 0, 12, 16), "미니 던전 추가",
-                "신규 미니 던전인 _쌍두룡의 방_이 추가되었습니다!"));
-        changes.addButton(new ChangeButton(new Image(Assets.Sprites.WILLSON, 0, 0, 23, 14), "신규 npc",
-                "이제 오시리스신의 지도가 아닌 카이로 시내에 있는 상원의원을 통해서 미니 던전에 입장할 수 있습니다."));
-
-
-        changes = new ChangeInfo("변경", false, null);
-        changes.hardlight(CharSprite.WARNING);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(Icons.DISPLAY.get(), "UI 및 그래픽 개선",
-                "이제 게임 진행 화면에서 최대 6개의 진행 중인 게임이 표시되고 정렬 옵션이 추가되었습니다."));
-        changes.addButton(new ChangeButton(new BuffIcon(BuffIndicator.LOCKED_FLOOR, true), "보스 컷씬 추가",
-                "이제 각 보스에 전용 컷씬이 추가됩니다."));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CM), "편의성 개선",
-                "메이드 인 헤븐의 장비 DISC의 전 단계인, C-MOON(각성)의 DISC의 능력이 추가되었습니다.\n\n" +
-                        "이제 로한과 도박을 할 때 보유 골드와 획득 골드가 출력됩니다.\n\n" +
-                        "시드 검색 및 시드 분석이 클리어 포인트를 소모하는 방식으로 변경되었습니다."));
-
-        changes = new ChangeInfo("상향", false, null);
-        changes.hardlight(Window.TITLE_COLOR);
-        changeInfos.add(changes);
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.CHAOTIC_CENSER), "위험한 물건 상향",
-                "쇼트 키 No. 2: 적이 있을 때만 가스를 방출하도록 변경되었습니다.\n\n" +
-                        "헤이 야!: 대미지 증가율이 향상되었습니다.\n\n" +
-                        "초콜릿 디스코: 함정 탐지 기능이 추가되었습니다.\n\n" +
-                        "낡은 워크맨: 식별 기능이 개선되었습니다."));
-
-        changes = new ChangeInfo("하향", false, null);
-        changes.hardlight(CharSprite.NEGATIVE);
-        changeInfos.add(changes);
-
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MOSSY_CLUMP), "위험한 물건 하향",
-                "개구리 가죽: 잔디 바닥 생성 확률이 감소되었습니다.(1/3 잔디, 2/3 물)"));
+                        "신규 퀘스트 전용 맞춤 조정 사항:\n" +
+                        "- 흔들림 없는 용기: 파문의 보호막이 필요하도록 변경됨\n" +
+                        "- 수복의 스탠드사: 부활하거나 창고 지역에 입장할 때 에너지가 유지되지 않도록 변경"));
 
     }
 

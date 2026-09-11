@@ -1380,11 +1380,12 @@ public class Hero extends Char {
             Heap heap = Dungeon.level.heaps.get(dst);
             if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
 
+                boolean subFloorBlocksKeys = Dungeon.branch != 0 && !Dungeon.level.keysWorkAcrossBranches();
                 boolean noKey = false;
                 if (heap.type == Type.LOCKED_CHEST){
-                    noKey = Dungeon.branch != 0 || Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1;
+                    noKey = subFloorBlocksKeys || Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1;
                 } else if (heap.type == Type.CRYSTAL_CHEST){
-                    noKey = Dungeon.branch != 0 || Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1;
+                    noKey = subFloorBlocksKeys || Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1;
                 }
 
                 if (noKey){
@@ -1432,7 +1433,7 @@ public class Hero extends Char {
             boolean hasKey = false;
             int door = Dungeon.level.map[doorCell];
 
-            if (Dungeon.branch != 0) {
+            if (Dungeon.branch != 0 && !Dungeon.level.keysWorkAcrossBranches()) {
 
                 //keys currently do not apply to sub-floors
                 hasKey = false;
@@ -2212,6 +2213,11 @@ public class Hero extends Char {
         if (this.buff(Drowsy.class) != null) {
             Buff.detach(this, Drowsy.class);
             GLog.w(Messages.get(this, "pain_resist"));
+        }
+
+        //돌로미테의 이빨 소지 시 받는 피해 15% 증폭
+        if (belongings.getItem(DolomitesTeeth.class) != null) {
+            dmg = Math.round(dmg * 1.15f);
         }
 
         //temporarily assign to a float to avoid rounding a bunch
@@ -3072,7 +3078,7 @@ public class Hero extends Char {
                 Buff.affect(this, Hunger.class).affectHunger(-4);
             } else if (Dungeon.level.distance(pos, doorCell) <= 1) {
                 boolean hasKey = true;
-                if (Dungeon.branch != 0){
+                if (Dungeon.branch != 0 && !Dungeon.level.keysWorkAcrossBranches()){
                     hasKey = false; //keys currently do not work in sub-floors
                 } else if (door == Terrain.LOCKED_DOOR) {
                     hasKey = Notes.remove(new IronKey(Dungeon.depth));
@@ -3128,13 +3134,15 @@ public class Hero extends Char {
                     Sample.INSTANCE.play( Assets.Sounds.ITEM );
                 } else if (heap.type == Type.LOCKED_CHEST){
                     //keys currently do not work in sub-floors
-                    hasKey = Dungeon.branch == 0 && Notes.remove(new GoldenKey(Dungeon.depth));
+                    hasKey = (Dungeon.branch == 0 || Dungeon.level.keysWorkAcrossBranches())
+                            && Notes.remove(new GoldenKey(Dungeon.depth));
                     if (hasKey && keyUseTrack != null){
                         keyUseTrack.processGoldLockOpened();
                     }
                 } else if (heap.type == Type.CRYSTAL_CHEST){
                     //keys currently do not work in sub-floors
-                    hasKey = Dungeon.branch == 0 && Notes.remove(new CrystalKey(Dungeon.depth));
+                    hasKey = (Dungeon.branch == 0 || Dungeon.level.keysWorkAcrossBranches())
+                            && Notes.remove(new CrystalKey(Dungeon.depth));
                     if (hasKey && keyUseTrack != null){
                         keyUseTrack.processCrystalLockOpened();
                     }

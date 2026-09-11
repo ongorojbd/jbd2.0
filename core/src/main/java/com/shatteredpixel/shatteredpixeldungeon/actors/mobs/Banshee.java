@@ -94,7 +94,7 @@ public class Banshee extends Mob {
 	@Override
 	public int attackProc(Char enemy, int damage) {
 		damage = super.attackProc(enemy, damage);
-		damage += enemy.HT / 8;
+		damage += enemy.HT / 10;
 		return damage;
 	}
 

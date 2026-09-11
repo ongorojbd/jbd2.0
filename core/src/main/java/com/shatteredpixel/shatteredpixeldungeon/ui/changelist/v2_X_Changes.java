@@ -270,9 +270,6 @@ public class v2_X_Changes {
 				"일부 위험한 물건에 기존 시련의 능력이 추가됨에 따라, 초콜릿 디스코, 자유인의 광상곡 시련이 삭제되었습니다."));
 		changes.addButton(new ChangeButton(Icons.get(Icons.AUDIO), "캐릭터 보이스 추가",
 				"일부 캐릭터들의 음성이 추가되었습니다."));
-		changes.addButton(new ChangeButton(new Image(Assets.Sprites.IMP, 0, 0, 12, 14), "오시리스신",
-				"게임을 한번 클리어한 상태일 경우만 지도를 떨어트리도록 변경되었습니다.\n\n지도를 떨어트릴 확률이 1/2로 변경되었습니다.\n\n신규 지도를 떨어트릴 확률이 추가되었습니다."));
-
 		changes = new ChangeInfo("상향", false, null);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);

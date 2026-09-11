@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KarsSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.NewSantana2Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -38,7 +39,7 @@ public class VaultShaman extends Shaman {
 
 	{
 		activateSteathGameplayBehaviour();
-		spriteClass = KarsSprite.class;
+		spriteClass = NewSantana2Sprite.class;
 
 		defenseSkill = 18;
 

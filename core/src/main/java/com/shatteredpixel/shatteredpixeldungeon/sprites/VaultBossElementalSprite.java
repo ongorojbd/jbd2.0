@@ -99,7 +99,7 @@ public class VaultBossElementalSprite extends MobSprite {
 		zap = attack.clone();
 
 		die = new Animation( 15, false );
-		die.frames( frames, c+7, c+8, c+9, c+10, c+11, c+12, c+13, c+12 );
+		die.frames( frames, c+11 );
 
 		operate = attack.clone();
 

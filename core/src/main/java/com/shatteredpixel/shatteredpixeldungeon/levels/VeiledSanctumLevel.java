@@ -75,6 +75,13 @@ public class VeiledSanctumLevel extends Level {
         Music.INSTANCE.playTracks(SANCTUM_TRACK_LIST, SANCTUM_TRACK_CHANCES, false);
     }
 
+    //this level (and its VaultOfKeysChamber) can appear on branch 2 as well as branch 0,
+    //so keys placed here need to keep working even though branch != 0
+    @Override
+    public boolean keysWorkAcrossBranches() {
+        return true;
+    }
+
     public static final int GRID_TOP_MARGIN    = 2; //distance between the top wall and the room grid
     public static final int GRID_BOTTOM_MARGIN = 2; //distance between the room grid and the bottom wall
     public static final int GRID_X             = 3; //room grid width, at least 1

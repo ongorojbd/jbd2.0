@@ -263,6 +263,9 @@ public class VaultFinalRoom extends SpecialRoom {
 				boss.setElementalForm(boss.curForm()); //re-assert default form for particle fx
 				Dungeon.level.seal();
 				lockTriggered = true;
+				//playLevelMusic() checks locked+BossHealthBar state, so this also
+				//resolves correctly if the scene is recreated mid-fight (e.g. load game)
+				Dungeon.level.playLevelMusic();
 			} else if (distance == 4 && warnState < 2) {
 				GLog.n(Messages.get(VaultFinalRoom.class, "final_warning"));
 				Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);

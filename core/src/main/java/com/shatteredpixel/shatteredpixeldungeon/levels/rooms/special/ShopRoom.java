@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
@@ -436,7 +437,7 @@ public class ShopRoom extends SpecialRoom {
             itemsToSpawn.add(new Araki());
         }
 
-        if (Dungeon.depth == 6) {
+        if (Dungeon.depth == 6 && Badges.isUnlocked(Badges.Badge.VICTORY)) {
             itemsToSpawn.add(new BossChallengeTester());
         }
 

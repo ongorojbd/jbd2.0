@@ -28,10 +28,29 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseRecoveryLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel2;
+import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LabsBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LabsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastShopLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.NewLastLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ParallelBrawlLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.PhantomLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ShipbossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TempleLastLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyEventLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TendencyTreasureLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.VeiledSanctumLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.watabou.noosa.Image;
@@ -80,37 +99,69 @@ public class TerrainFeaturesTilemap extends DungeonTilemap {
 		if (Dungeon.level instanceof Dio2Level || Dungeon.level instanceof Dio2bossLevel || tendencylevel) stage = 0; // 전투조류
 		stage = Math.min(stage, 4);
 
+		//these levels each draw their own complete decorative terrain art in their own custom
+		// tileset (tilesTex()), so the shared depth-region overlay below is skipped for them -
+		// otherwise whichever vanilla region their depth happens to fall into gets drawn on top.
+		boolean ownDecorAssets = Dungeon.level instanceof VeiledSanctumLevel
+				|| Dungeon.level instanceof ColdhouseBossLevel
+				|| Dungeon.level instanceof ColdhouseRecoveryLevel
+				|| Dungeon.level instanceof ShipbossLevel
+				|| Dungeon.level instanceof DiobossLevel
+				|| Dungeon.level instanceof Dio2bossLevel
+				|| Dungeon.level instanceof LabsLevel
+				|| Dungeon.level instanceof LabsBossLevel
+				|| Dungeon.level instanceof ArenaBossLevel
+				|| Dungeon.level instanceof ParallelBrawlLevel
+				|| Dungeon.level instanceof HumanVillageBossLevel
+				|| Dungeon.level instanceof HumanVillageBossLevel2
+				|| Dungeon.level instanceof NewLastLevel
+				|| Dungeon.level instanceof PhantomLevel
+				|| Dungeon.level instanceof TempleLastLevel
+				|| Dungeon.level instanceof EmporioLevel
+				|| Dungeon.level instanceof Emp2Level
+				|| Dungeon.level instanceof JolyneBossLevel
+				|| Dungeon.level instanceof TendencyEventLevel
+				|| Dungeon.level instanceof TendencyTreasureLevel;
+
 		if (tile == Terrain.HIGH_GRASS){
+			if (ownDecorAssets) return -1;
 			if (DungeonTileSheet.getVisualWithAlts(DungeonTileSheet.RAISED_HIGH_GRASS, pos) == DungeonTileSheet.RAISED_HIGH_GRASS_ALT){
 				return 128 + 16*stage + 1;
 			} else {
 				return 128 + 16*stage;
 			}
 		} else if (tile == Terrain.FURROWED_GRASS){
+			if (ownDecorAssets) return -1;
 			if (DungeonTileSheet.getVisualWithAlts(DungeonTileSheet.RAISED_FURROWED_GRASS, pos) == DungeonTileSheet.RAISED_FURROWED_ALT){
 				return 130 + 16*stage + 1;
 			} else {
 				return 130 + 16*stage;
 			}
 		} else if (tile == Terrain.GRASS) {
+			if (ownDecorAssets) return -1;
 			if (DungeonTileSheet.getVisualWithAlts(DungeonTileSheet.GRASS, pos) == DungeonTileSheet.GRASS_ALT){
 				return 132 + 16*stage + 1;
 			} else {
 				return 132 + 16*stage;
 			}
 		} else if (tile == Terrain.BARRICADE) {
+			if (ownDecorAssets) return -1;
 			return 134 + 16*stage;
 
 		} else if (tile == Terrain.ALCHEMY) {
+			if (ownDecorAssets) return -1;
 			return 135 + 16*stage;
 
 		} else if (tile == Terrain.STATUE || tile == Terrain.STATUE_SP) {
+			if (ownDecorAssets) return -1;
 			return 136 + 16*stage;
 
 		} else if (tile == Terrain.REGION_DECO) {
+			if (ownDecorAssets) return -1;
 			return 137 + 16 * stage;
 
 		} else if (tile == Terrain.REGION_DECO_ALT) {
+			if (ownDecorAssets) return -1;
 			return 138 + 16 * stage;
 
 		} else if (tile == Terrain.EMBERS) {

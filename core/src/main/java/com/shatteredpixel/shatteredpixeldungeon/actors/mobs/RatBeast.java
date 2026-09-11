@@ -86,6 +86,7 @@ public class RatBeast extends Mob {
 		immunities.add(Sleep.class);
 		immunities.add(MagicalSleep.class);
 		immunities.add(Paralysis.class);
+		immunities.add(Vertigo.class);
 	}
 
 	private static final int CHASE_SOUND_CHANCE = 8;
@@ -305,7 +306,8 @@ public class RatBeast extends Mob {
 		if (enemy != null &&
 				this.distance(enemy) < 3 &&
 				Random.Int(5) == 1 &&
-				!chargingBarf) {
+				!chargingBarf &&
+				qtePhase() < 3) { //최종 페이즈에서는 부식 가스 패턴을 사용하지 않는다
             spend(1f);
             chargingBarf = true;
             sprite.emitter().start(PoisonParticle.SPLASH, 0.1f, 10);

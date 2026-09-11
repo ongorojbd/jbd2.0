@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Triplespeed;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -75,6 +76,7 @@ public class UnseenWarden extends Mob {
         immunities.add(Sleep.class);
         immunities.add(MagicalSleep.class);
         immunities.add(Paralysis.class);
+        immunities.add(Vertigo.class);
 
         WANDERING = new RelentlessWandering();
     }
@@ -162,7 +164,7 @@ public class UnseenWarden extends Mob {
     @Override
     public int attackProc(Char enemy, int damage) {
         damage = super.attackProc(enemy, damage);
-        damage += enemy.HT / 5;
+        damage += enemy.HT / 6;
         return damage;
     }
 

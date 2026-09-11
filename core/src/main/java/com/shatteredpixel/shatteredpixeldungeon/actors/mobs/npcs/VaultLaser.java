@@ -85,6 +85,9 @@ public class VaultLaser extends NPC {
 			Ballistica beam = new Ballistica(pos, laserDirs[laserDirIdx], Ballistica.STOP_SOLID);
 			boolean visible = false;
 			boolean observe = false;
+
+			sprite.attack(pos);
+
 			for (int cell : beam.subPath(1, beam.dist)){
 				if (Dungeon.level.heroFOV[cell]){
 					visible = true;

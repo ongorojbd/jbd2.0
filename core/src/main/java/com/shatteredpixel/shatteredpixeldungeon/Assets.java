@@ -41,6 +41,7 @@ public class Assets {
         public static final String TILES_PRISON = "environment/tiles_prison.png";
         public static final String TILES_CAVES = "environment/tiles_caves.png";
         public static final String TILES_CITY = "environment/tiles_city.png";
+        public static final String TILES_VAULT = "environment/tiles_vault.png";
         public static final String TILES_HALLS = "environment/tiles_halls.png";
         public static final String TILES_CAVES_CRYSTAL = "environment/tiles_caves_crystal.png";
         public static final String TILES_CAVES_GNOLL = "environment/tiles_caves_gnoll.png";
@@ -718,6 +719,7 @@ public class Assets {
         public static final String ZOMBIEB = "sprites/zombieb.png";
         public static final String ZOMBIESOL = "sprites/zombiesoldier.png";
         public static final String NEWSANTANA = "sprites/newsantana.png";
+        public static final String NEWSANTANA2 = "sprites/newsantana2.png";
         public static final String NIKU = "sprites/niku.png";
 
         public static final String SPEEDWAGON = "sprites/speedwagon.png";

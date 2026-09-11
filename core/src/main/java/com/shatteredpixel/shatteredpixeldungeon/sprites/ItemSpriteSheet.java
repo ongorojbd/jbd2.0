@@ -802,6 +802,7 @@ public class ItemSpriteSheet {
     public static final int SUMMON_ELE = SPELLS + 12;
     public static final int WILD_ENERGY = SPELLS + 13;
     public static final int STATUE = SPELLS + 14;
+    public static final int MAP = SPELLS + 15;
 
 
     static {
@@ -818,6 +819,7 @@ public class ItemSpriteSheet {
         assignItemRect(SUMMON_ELE, 10, 16);
         assignItemRect(WILD_ENERGY, 10, 14);
         assignItemRect(STATUE, 14, 14);
+        assignItemRect(MAP, 14, 14);
     }
 
     private static final int FOOD = xy(1, 28);  //16 slots

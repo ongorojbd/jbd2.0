@@ -32,7 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class VaultBeacon extends Spell {
 
 	{
-		image = ItemSpriteSheet.RETURN_BEACON;
+		image = ItemSpriteSheet.MAP;
 
 		stackable = true;
 		unique = true;
@@ -47,11 +47,11 @@ public class VaultBeacon extends Spell {
 		}
 	}
 
-	private static final ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF );
-
-	@Override
-	public ItemSprite.Glowing glowing() {
-		return WHITE;
-	}
+//	private static final ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF );
+//
+//	@Override
+//	public ItemSprite.Glowing glowing() {
+//		return WHITE;
+//	}
 
 }

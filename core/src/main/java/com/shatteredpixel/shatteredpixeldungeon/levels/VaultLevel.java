@@ -109,6 +109,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
@@ -124,7 +125,16 @@ public class VaultLevel extends CityLevel {
 
 	@Override
 	public void playLevelMusic() {
-		Music.INSTANCE.play(Assets.Music.ELITE, true);
+		if (locked && BossHealthBar.isAssigned()) {
+			Music.INSTANCE.play(Assets.Music.YUUKI, true);
+		} else {
+			Music.INSTANCE.play(Assets.Music.ELITE, true);
+		}
+	}
+
+	@Override
+	public String tilesTex() {
+		return Assets.Environment.TILES_VAULT;
 	}
 
 	@Override

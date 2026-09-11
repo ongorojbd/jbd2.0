@@ -1667,6 +1667,12 @@ public abstract class Level implements Bundlable {
 		return (float)Math.sqrt(Math.pow(Math.abs( ax - bx ), 2) + Math.pow(Math.abs( ay - by ), 2));
 	}
 
+	//keys currently do not work in sub-floors (Dungeon.branch != 0) by default,
+	//but some levels (eg. VeiledSanctumLevel on branch 2) need them to work regardless
+	public boolean keysWorkAcrossBranches(){
+		return false;
+	}
+
 	//usually just if a cell is solid, but other cases exist too
 	public boolean invalidHeroPos( int tile ){
 		int flags = Terrain.flags[map[tile]];
