@@ -7,6 +7,13 @@
 -keep class * extends com.watabou.glscripts.Script { *; }
 -keep class * implements com.watabou.utils.Bundlable { *; }
 
+# TrialChamber (VeiledSanctumLevel's trial rooms) is instantiated via Reflection.newInstance()
+# from a Class<?>[] array, but it isn't Bundlable/Gizmo/Script, so it isn't covered by the rules
+# above. Without this, R8 can strip its no-arg constructors in release builds, silently breaking
+# Reflection.newInstance() (it swallows the exception and returns null) and leaving every trial
+# room in the level empty.
+-keep class com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.** { *; }
+
 # retained to support meaningful stack traces
 # note that the mapping file must be referenced in order to make sense of line numbers
 # mapping file can be found in core/build/outputs/mapping after running a release build

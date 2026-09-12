@@ -146,7 +146,7 @@ public class v4_X_Changes {
                         "- 이제 체력바에 지속 피해의 총량이 시각적으로 표시됩니다.\n" +
                         "- 등가교환의 명령 DISC의 편의성 및 UI가 개선되었습니다.\n" +
                         "- 보스전 시 잠기는 문 위치에 있던 아이템들이 밖으로 밀려나도록 수정되었습니다.\n" +
-                        "- 다양한 코드 의존성 라이브러리가 최신 버전으로 업데이트되었습니다."));
+                        "- 에이자의 적석에 사격 DISC가 융합되지 않던 버그가 수정되었습니다."));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
         changes.hardlight(CharSprite.POSITIVE);

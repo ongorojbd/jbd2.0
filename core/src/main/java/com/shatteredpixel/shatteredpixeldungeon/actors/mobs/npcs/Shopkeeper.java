@@ -43,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShopkeeperSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CurrencyIndicator;
@@ -268,10 +267,6 @@ public class Shopkeeper extends NPC {
 
 	@Override
 	public boolean interact(Char c) {
-
-		if(spriteClass == ImpSprite.class) {
-			Sample.INSTANCE.play(Assets.Sounds.DA3);
-		}
 
 		if (c != Dungeon.hero) {
 			return true;
