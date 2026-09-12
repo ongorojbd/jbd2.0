@@ -337,6 +337,7 @@ public class Dungeon {
         Wandmaker.Quest.reset();
         Blacksmith.Quest.reset();
         Imp.Quest.reset();
+        Dio2bossLevel.resetCompletion();
 
         hero = new Hero();
         hero.live();

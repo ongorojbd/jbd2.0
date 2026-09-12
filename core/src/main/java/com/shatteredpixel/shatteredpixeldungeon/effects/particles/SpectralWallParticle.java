@@ -57,27 +57,23 @@ public class SpectralWallParticle extends PixelParticle {
 		}
 	};
 
-	// SkeletonKey용 연한 노란색 방벽 Factory
+	// SkeletonKey용 연한 노란색 방벽 Factory - FACTORY와 완전히 동일한 모양/빈도, 색상만 다름
 	public static final Emitter.Factory KEY_WALL_FACTORY = new Emitter.Factory() {
 		@Override
 		public void emit( Emitter emitter, int index, float x, float y ) {
 			//scale frequency roughly to the size of the bricks used
-			int type = 1 + Dungeon.depth/5;
-			if (type > 5) type = 5;
+			int type = 1 + (Dungeon.depth-1)/5;
+			type = (int)GameMath.gate(1, type, 5);
 
+			//some regions use fewer particles because they are bigger
 			switch (type){
-				case 1:
-					if (Random.Int(2) != 0) return;
-					break;
 				case 2:
-					if (Random.Int(3) != 0) return;
-					break;
-				case 3:
-					break;
-				case 4:
+					//3/5 chance for a particle in prison
+					if (Random.Int(5) >= 3) return;
 					break;
 				case 5:
-					if (Random.Int(4) != 0) return;
+					//2/5 chance for a particle in halls
+					if (Random.Int(5) >= 2) return;
 					break;
 			}
 
@@ -137,9 +133,9 @@ public class SpectralWallParticle extends PixelParticle {
 				yScale = 5;
 				break;
 			case 4:
-				this.x = Math.round(x/4)*4;
-				this.y = Math.round(y/4)*4 - 6;
-				this.x += Math.round(this.y % 16)/4f - 2;
+				this.x = Math.round(x/5)*5;
+				this.y = Math.round(y/5)*5 - 6;
+				this.x += Math.round(this.y % 16)/5f - 2;
 				color(ColorMath.interpolate(0xd0bca3, 0xa38d81));
 				xScale = 4;
 				yScale = 4;
@@ -154,12 +150,12 @@ public class SpectralWallParticle extends PixelParticle {
 		}
 	}
 
-	// SkeletonKey용 연한 노란색 방벽
+	// SkeletonKey용 연한 노란색 방벽 - reset()과 완전히 동일한 위치/크기 로직, 색상만 다름
 	public void resetKeyWall( float x, float y ) {
 		revive();
 
-		type = 1 + Dungeon.depth/5;
-		if (type > 5) type = 5;
+		type = 1 + (Dungeon.depth-1)/5;
+		type = (int)GameMath.gate(1, type, 5);
 
 		this.x = x;
 		this.y = y;
@@ -173,29 +169,39 @@ public class SpectralWallParticle extends PixelParticle {
 				this.y = Math.round(y/4)*4 - 6;
 				this.x += Math.round(this.y % 8)/4f - 1;
 				color(ColorMath.random(0xFFFFE0, 0xFFF8DC));
+				xScale = 6;
+				yScale = 3;
 				break;
 			case 2:
 				this.x = Math.round(x/7)*7;
 				this.y = Math.round(y/6)*6 - 6;
 				this.x += Math.round(this.y % 8)/4f - 1;
 				color(ColorMath.random(0xFFFFE0, 0xFFF8DC));
+				xScale = 6;
+				yScale = 5;
 				break;
 			case 3:
 				this.y -= 6;
 				float colorScale = (this.x%16)/16 + (this.y%16)/16;
 				if (colorScale > 1f) colorScale = 2f - colorScale;
 				color(ColorMath.interpolate(0xFFFFE0, 0xFFF8DC, colorScale));
+				xScale = 5;
+				yScale = 5;
 				break;
 			case 4:
-				this.x = Math.round(x/4)*4;
-				this.y = Math.round(y/4)*4 - 6;
-				this.x += Math.round(this.y % 16)/4f - 2;
+				this.x = Math.round(x/5)*5;
+				this.y = Math.round(y/5)*5 - 6;
+				this.x += Math.round(this.y % 16)/5f - 2;
 				color(ColorMath.interpolate(0xFFFFE0, 0xFFF8DC));
+				xScale = 4;
+				yScale = 4;
 				break;
 			case 5:
 				this.x = Math.round(x/4)*4;
 				this.y = Math.round((y+8)/16)*16 - 14;
 				color(ColorMath.interpolate(0xFFFFE0, 0xFFF8DC));
+				xScale = 4;
+				yScale = 20;
 				break;
 		}
 	}

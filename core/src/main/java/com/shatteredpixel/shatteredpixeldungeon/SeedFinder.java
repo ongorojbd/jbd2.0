@@ -286,6 +286,7 @@ public class SeedFinder {
                         }
                     }
                 }
+                Imp.Quest.rewardOptions.clear();
             }
 
             for (Heap h : heaps) {
@@ -452,6 +453,7 @@ public class SeedFinder {
                         }
                     }
                 }
+                Imp.Quest.rewardOptions.clear();
             }
 
             for (Heap h : heaps) {
@@ -566,6 +568,7 @@ public class SeedFinder {
                 Imp.Quest.complete(0);
 
                 addTextQuest("[ 가출소녀 앤 퀘스트 보상 ]", rewards, builder);
+                Imp.Quest.rewardOptions.clear();
             }
 
             heaps.addAll(getMobDrops(l));

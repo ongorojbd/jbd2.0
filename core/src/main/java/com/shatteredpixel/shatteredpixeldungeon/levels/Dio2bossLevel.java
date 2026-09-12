@@ -177,11 +177,25 @@ public class Dio2bossLevel extends Level {
     @Override
     public void occupyCell(Char ch) {
 
-        if (map[bottomDoor] != Terrain.LOCKED_DOOR && ch.pos < bottomDoor && ch == Dungeon.hero) {
+        if (!isCompleted && map[bottomDoor] != Terrain.LOCKED_DOOR && ch.pos < bottomDoor && ch == Dungeon.hero) {
             seal();
         }
 
         super.occupyCell(ch);
+    }
+
+    //true once the boss reward has been handed out - guards against the boss (and its reward)
+    //being granted more than once, e.g. by dying and reviving right after the kill
+    public static boolean rewardGiven() {
+        return isCompleted;
+    }
+
+    public static void giveReward() {
+        isCompleted = true;
+    }
+
+    public static void resetCompletion() {
+        isCompleted = false;
     }
 
 

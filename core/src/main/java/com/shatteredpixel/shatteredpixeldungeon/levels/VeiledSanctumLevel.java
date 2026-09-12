@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.UnseenWarden;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasuho;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.SanctumCodeFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -22,8 +23,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.TrialChambe
 import com.shatteredpixel.shatteredpixeldungeon.levels.trialChambers.VaultOfKeysChamber;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSanctumCode;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
@@ -376,14 +380,29 @@ public class VeiledSanctumLevel extends Level {
 
     @Override
     public boolean activateTransition(final Hero hero, LevelTransition transition) {
-        //once you're in the sanctum there's no going back up - the only way out is down through
-        //the code-locked elevator (SURFACE is left alone so an Amulet ascension can still finish)
+        //going back up through the entrance returns the hero to the main dungeon
+        //(SURFACE is left alone so an Amulet ascension can still finish)
         if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
                 || transition.type == LevelTransition.Type.BRANCH_ENTRANCE) {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
-                    GameScene.show(new WndMessage(Messages.get(hero, "tendency2")));
+                    GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.TG),
+                            Messages.titleCase(Messages.get(Bmap.class, "7")),
+                            Messages.get(Bmap.class, "8"),
+                            Messages.get(Bmap.class, "yes"),
+                            Messages.get(Bmap.class, "no")) {
+                        @Override
+                        protected void onSelect(int index) {
+                            if (index == 0) {
+                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                                InterlevelScene.returnDepth = 26;
+                                InterlevelScene.returnBranch = 0;
+                                InterlevelScene.returnPos = -1;
+                                Game.switchScene(InterlevelScene.class);
+                            }
+                        }
+                    });
                 }
             });
             return false;

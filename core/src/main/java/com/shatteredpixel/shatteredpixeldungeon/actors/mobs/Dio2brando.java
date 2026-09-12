@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.Smask;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Dioprize;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.ChillingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -508,8 +509,13 @@ public class Dio2brando extends Mob {
 
         super.die(cause);
 
-        Dungeon.level.drop(new Dioprize(), itemPlace2).sprite.drop(itemPlace2);
-        Dungeon.level.drop(new Rmap(), itemPlace2).sprite.drop(itemPlace2);
+        //guards against getting the reward more than once, e.g. by dying and reviving
+        //(with an Ankh or similar) right after landing the killing blow
+        if (!Dio2bossLevel.rewardGiven()) {
+            Dio2bossLevel.giveReward();
+            Dungeon.level.drop(new Dioprize(), itemPlace2).sprite.drop(itemPlace2);
+            Dungeon.level.drop(new Rmap(), itemPlace2).sprite.drop(itemPlace2);
+        }
 
         yell(Messages.get(this, "6"));
 

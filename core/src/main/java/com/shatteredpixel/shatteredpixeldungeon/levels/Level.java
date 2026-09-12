@@ -1336,11 +1336,12 @@ public abstract class Level implements Bundlable {
 		switch (map[cell]) {
 
 		case Terrain.SECRET_TRAP:
-			trap = traps.get( cell );
-			if (trap == null) {
+			Trap hiddenTrap = traps.get( cell );
+			if (hiddenTrap == null) {
 				//orphaned trap tile (trap object removed but terrain left behind) - heal it
 				set( cell, Terrain.EMPTY );
 			} else if (hard) {
+				trap = hiddenTrap;
 				GLog.i(Messages.get(Level.class, "hidden_trap", trap.name()));
 			}
 			break;
