@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DiobossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel2;
 import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneBossLevel;
@@ -120,6 +121,7 @@ public class TerrainFeaturesTilemap extends DungeonTilemap {
 				|| Dungeon.level instanceof EmporioLevel
 				|| Dungeon.level instanceof Emp2Level
 				|| Dungeon.level instanceof JolyneBossLevel
+				|| Dungeon.level instanceof HospitalLevel
 				|| Dungeon.level instanceof TendencyEventLevel
 				|| Dungeon.level instanceof TendencyTreasureLevel;
 

@@ -28,7 +28,9 @@ import static com.watabou.utils.PathFinder.distance;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -136,6 +138,14 @@ public class Diobrando2 extends Mob {
         int dmgTaken = preHP - HP;
 
         super.damage(dmg, src);
+
+        //the sealed floor's LockedFloor drains 1/turn from 50 and shuts off HP regen and wand
+        //charging once empty - refill it as the boss takes damage, like the other bosses do
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+            else                                                    lock.addTime(dmg*1.5f);
+        }
 
         if (Phase==0 && HP < 90) {
             Phase = 1;

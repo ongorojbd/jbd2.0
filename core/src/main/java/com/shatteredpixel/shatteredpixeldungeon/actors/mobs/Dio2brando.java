@@ -25,7 +25,9 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 import static com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel.itemPlace2;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
@@ -162,6 +164,14 @@ public class Dio2brando extends Mob {
         int preHP = HP;
 
         super.damage(dmg, src);
+
+        //the sealed floor's LockedFloor drains 1/turn from 50 and shuts off HP regen and wand
+        //charging once empty - refill it as the boss takes damage, like the other bosses do
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
+            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+            else                                                    lock.addTime(dmg*1.5f);
+        }
 
         if (Phase == 1 && HP < 400) {
             Phase = 2;

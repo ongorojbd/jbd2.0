@@ -587,6 +587,7 @@ public class Assets {
         public static final String EVO = "sprites/evo.png";
         public static final String WARLOCK = "sprites/warlock.png";
         public static final String GOLEM = "sprites/golem.png";
+        public static final String AMBULANCE = "sprites/drill_big.png";
 
         public static final String STATUE = "sprites/statue.png";
         public static final String SUCCUBUS = "sprites/succubus.png";

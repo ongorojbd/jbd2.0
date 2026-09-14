@@ -134,6 +134,14 @@ public class RatBeast extends Mob {
 		}
 
 		super.damage(dmg, src);
+
+		//the sealed floor's LockedFloor drains 1/turn from 50 and shuts off HP regen and wand
+		//charging once empty - every other boss refills it as it takes damage, this one didn't
+		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+		if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
+			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
+			else                                                    lock.addTime(dmg*1.5f);
+		}
 	}
 
 	public boolean chargingBarf;

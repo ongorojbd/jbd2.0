@@ -131,6 +131,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.services.rankings.Ranking;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AmbulanceSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DiscardedItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DoppioDialogSprite;
@@ -1875,8 +1876,21 @@ public class GameScene extends PixelScene {
                 scene.mobs.sort(new Comparator() {
                     @Override
                     public int compare(Object a, Object b) {
+                        //oversized sprites (e.g. AmbulanceSprite) always draw behind everything
+                        //else, otherwise their y+height() would dwarf normal mobs/hero and they'd
+                        //always sort on top regardless of actual tile position - ported from
+                        //Tower Pixel Dungeon's DrillSprite/DrillBigSprite special-case
+                        if (a instanceof AmbulanceSprite) {
+                            if (b instanceof AmbulanceSprite) {
+                                return (int) Math.signum((((Visual) a).y + ((Visual) a).height())
+                                        - (((Visual) b).y + ((Visual) b).height()));
+                            }
+                            return -1;
+                        } else if (b instanceof AmbulanceSprite) {
+                            return 1;
+                        }
                         //elements that aren't visual go to the end of the list
-                        if (a instanceof Visual && b instanceof Visual) {
+                        else if (a instanceof Visual && b instanceof Visual) {
                             return (int) Math.signum((((Visual) a).y + ((Visual) a).height())
                                     - (((Visual) b).y + ((Visual) b).height()));
                         } else if (a instanceof Visual) {
