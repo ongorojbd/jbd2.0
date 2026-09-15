@@ -136,7 +136,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfKillerQueen;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
@@ -201,6 +203,7 @@ public enum HeroClass {
             new RingOfEnergy().identify().upgrade(9999).collect();
             new RingOfAccuracy().identify().upgrade(9999).collect();
             new PlateArmor().identify().upgrade(9999).collect();
+            new WandOfWarding().identify().upgrade(9999).collect();
             new WandOfDisintegration().identify().upgrade(20).collect();
             new SkeletonKey().identify().collect();
             new PotionOfHealing().identify().quantity(9999).collect();

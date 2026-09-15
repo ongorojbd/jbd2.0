@@ -27,10 +27,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -439,7 +441,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 							ch.sprite.flash();
 
 							if (!ch.isAlive() && hero.hasTalent(Talent.LETHAL_DEFENSE)) {
-								Buff.affect(hero, BrokenSeal.WarriorShield.class).reduceCooldown(hero.pointsInTalent(Talent.LETHAL_DEFENSE)/3f);
+								applyLethalDefense(hero);
 							}
 						}
 					}
@@ -498,10 +500,21 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 		if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
 			if (hero.hasTalent(Talent.LETHAL_DEFENSE)){
-				Buff.affect(hero, BrokenSeal.WarriorShield.class).reduceCooldown(hero.pointsInTalent(Talent.LETHAL_DEFENSE)/3f);
+				applyLethalDefense(hero);
 			}
 		}
 
+	}
+
+	//듀얼리스트는 파문의 보호막이 없으므로 무기 능력 충전으로 대체
+	private static void applyLethalDefense(Hero hero) {
+		int points = hero.pointsInTalent(Talent.LETHAL_DEFENSE);
+		if (hero.heroClass == HeroClass.DUELIST) {
+			//1/1.5/2 charges
+			Buff.affect(hero, MeleeWeapon.Charger.class).gainCharge(0.5f + 0.5f*points);
+		} else {
+			Buff.affect(hero, BrokenSeal.WarriorShield.class).reduceCooldown(points/3f);
+		}
 	}
 
 	private void applyJ63ComboCurse() {

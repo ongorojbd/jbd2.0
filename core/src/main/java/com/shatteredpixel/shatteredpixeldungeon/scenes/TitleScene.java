@@ -40,8 +40,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.SteelBallRunEvent;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
@@ -226,6 +228,27 @@ public class TitleScene extends PixelScene {
 		if (Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
 			SPDSettings.victoryNagged(true);
 			add(new WndVictoryCongrats());
+		}
+
+		if (!SPDSettings.sbr2nd3rdStageEventNagged() && SteelBallRunEvent.isActive()) {
+			SPDSettings.sbr2nd3rdStageEventNagged(true);
+			add(new WndTitledMessage(
+					Icons.get(Icons.TALENT),
+					"[이벤트] 스틸 볼 런 2nd & 3rd STAGE 공개 기념",
+					"9월 25일, 스틸 볼 런 애니메이션 2nd & 3rd STAGE 공개를 기념하여 특별한 이벤트가 시작됩니다! " +
+					"이번 레이스에서는 보조 직업 선택 시, _각 영웅별로 정해진 다른 영웅의 보조 직업_을 선택할 수 있습니다.\n" +
+					"\n새로운 직업 조합으로 던전을 횡단해 보세요!" +
+					"\n\n" +
+					"_죠나단_ -> 수복의 스탠드사\n" +
+					"_죠셉_ -> 인간 찬가의 기수\n" +
+					"_죠타로_ -> 의지의 스탠드사\n" +
+					"_죠스케_ -> 각성의 파문전사\n" +
+					"_죠르노_ -> 속도의 스탠드사\n" +
+					"_죠린_ -> 생명 창조의 스탠드사\n" +
+					"_죠니_ -> 긍지의 파문전사\n" +
+					"\n" +
+					"이벤트 기간: 2026년 9월 25일 ~ 2026년 12월 4일"
+			));
 		}
 
 		fadeIn();

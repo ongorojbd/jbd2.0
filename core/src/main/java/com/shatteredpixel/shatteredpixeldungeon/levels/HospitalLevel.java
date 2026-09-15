@@ -33,23 +33,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Patient;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -75,7 +69,7 @@ public class HospitalLevel extends Level {
         viewDistance = 40;
     }
 
-    public static final String[] SANCTUM_TRACK_LIST = new String[]{Assets.Music.KOICHI};
+    public static final String[] SANCTUM_TRACK_LIST = new String[]{Assets.Music.PRISON_1};
     public static final float[] SANCTUM_TRACK_CHANCES = new float[]{1f};
 
     @Override
@@ -83,20 +77,22 @@ public class HospitalLevel extends Level {
         Music.INSTANCE.playTracks(SANCTUM_TRACK_LIST, SANCTUM_TRACK_CHANCES, false);
     }
 
-    //matches Tower Pixel Dungeon's Arena18 corridor dimensions
-    private static final int WIDTH = 500;
-    private static final int HEIGHT = 30;
+    //Arena18 is 500 wide for 15 waves; 6 sections end around column 200, so 250 is enough
+    private static final int WIDTH = 250;
+    //Arena18 is 30 tall. Everything below is still laid out in its 30-row coordinates and
+    //shifted up by ROW_SHIFT through cellAt()/setAt()/fillAt(), which clips whatever falls
+    //outside. 27 tall with a -2 shift puts the hero's riding row (original row 15 -> row 13)
+    //exactly in the middle: 12 floor rows above and below. The original itself sits one row
+    //low (14 above / 13 below).
+    private static final int HEIGHT = 27;
+    private static final int ROW_SHIFT = -2;
 
-    //matches Arena18's maxWaves - wave 5/10/14 trigger the special sections below
-    private static final int MAX_WAVES = 15;
+    //sections are built in a fixed order (see buildSectionForWave), one of each template;
+    //the level completes on the next section trigger after the last one
+    private static final int SECTION_COUNT = 6;
 
     private int entranceCell;
     private int exitCell;
-
-    //matches Arena18's startLvl/startGold and doStuffEndwave()'s per-wave gold
-    private static final int START_LVL = 20;
-    private static final int START_GOLD = 3300;
-    private static final int WAVE_END_GOLD = 600;
 
     private int wave = 0;
 
@@ -104,7 +100,9 @@ public class HospitalLevel extends Level {
     //movement to once every 2 turns, stepcount counts real advances and triggers the next
     //section at 32, active gates movement until the drill starts up.
     //GenDrill sets stepcount = 26 up front, so the very first section arrives after only 6
-    //advances instead of a full 32, and activates itself at counter == 101.
+    //advances instead of a full 32. GenDrill activates at counter == 101; this level uses
+    //START_DELAY instead.
+    private static final int START_DELAY = 5;
     private int counter = 0;
     private int stepcount = 26;
     private boolean active = false;
@@ -138,11 +136,11 @@ public class HospitalLevel extends Level {
         setSize(WIDTH, HEIGHT);
         //setSize already fills everything with WALL - only the starting room gets carved,
         //matching Arena18.build()'s "Painter.fill(this, 1, 1, 15, 28, EMPTY)" starting room
-        Painter.fill(this, 1, 1, 15, 28, Terrain.EMPTY);
+        fillAt(1, 1, 15, 28, Terrain.EMPTY);
         scatterDeco(1, 15);
 
         //Arena18 puts the amulet pedestal at 7 + WIDTH*15 and the hero at amuletCell + 1
-        entranceCell = 15 * WIDTH + 8;
+        entranceCell = cellAt(8, 15);
 
         transitions.add(new LevelTransition(this,
                 entranceCell,
@@ -152,8 +150,8 @@ public class HospitalLevel extends Level {
                 LevelTransition.Type.BRANCH_EXIT));
         map[entranceCell] = Terrain.ENTRANCE;
 
-        //blocked until completeLevel() carves the final stretch and opens it
-        exitCell = 15 * WIDTH + (WIDTH - 3);
+        //placeholder - completeLevel() moves this next to wherever the ambulance stops
+        exitCell = cellAt(WIDTH - 3, 15);
         transitions.add(new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT));
 
         return true;
@@ -161,16 +159,17 @@ public class HospitalLevel extends Level {
 
     @Override
     protected void createMobs() {
-        //Arena18.initNpcs() does this: hero.lvl = startLvl, updateHT, gold += startGold,
-        //and seals the level so the run has to be played out
-        Dungeon.hero.lvl = START_LVL;
-        Dungeon.hero.updateHT(true);
-        Dungeon.gold += START_GOLD;
+        //seals the level so the run has to be played out, like Arena18.initNpcs()
         seal();
+
+        //hero stands still for the first 40 turns. This runs inside Dungeon.newLevel() after
+        //Actor.clear(); Actor.add() later does "time += now" with now == 0, so the 40 carries
+        //over instead of being reset when the hero is added to the new level.
+        Dungeon.hero.spend(40f);
 
         //GenDrill spawns at "amuletCell - WIDTH - WIDTH - 3" = two rows up, three columns left
         ambulance = new Ambulance();
-        ambulance.pos = (15 * WIDTH + 7) - WIDTH - WIDTH - 3;
+        ambulance.pos = cellAt(7 - 3, 15 - 2);
         mobs.add(ambulance);
 
         //rides inside the box stepForward() carries along each step, on the amulet pedestal row
@@ -207,9 +206,8 @@ public class HospitalLevel extends Level {
         grindTerrainAhead();
 
         counter++;
-        //GenDrill.act() applies the WaveBuff at counter == 101, which is what flips DrillBig's
-        //"active" flag - i.e. the drill sits still for the first 101 turns, then starts up
-        if (counter == 101) {
+        //the ambulance sits still until counter reaches START_DELAY, then starts moving
+        if (counter == START_DELAY) {
             active = true;
         }
         if (counter >= 2 && active) {
@@ -225,20 +223,16 @@ public class HospitalLevel extends Level {
         stepcount++;
 
         if (stepcount == 32) {
-            buildSectionForWave(wave);
-            wave++;
             stepcount = 0;
-            if (wave > MAX_WAVES) {
+            //the trigger after the last section ends the level, so the last section still
+            //gets a full 32-step cycle to be fought through
+            if (wave >= SECTION_COUNT) {
                 completeLevel();
                 return;
             }
+            buildSectionForWave(wave);
+            wave++;
         }
-        //Arena18's endWave() checkpoint - doStuffEndwave() hands out 600 gold per wave
-        if (stepcount == 25) {
-            Dungeon.gold += WAVE_END_GOLD;
-            GLog.w("+" + WAVE_END_GOLD + " gold");
-        }
-
         //GenDrill re-links heap sprites every move, otherwise dropped items visually lag behind
         for (Heap heap : heaps.valueList()) {
             if (heap.sprite != null) {
@@ -278,11 +272,21 @@ public class HospitalLevel extends Level {
         }
         GameScene.updateMap(ambulance.pos);
 
-        //hero.pos just changed outside of the hero's own turn, so nothing else would recompute
-        //FOV/fog for the new position until their next real action - force it now
-        if (heroMoved) {
-            Dungeon.observe();
+        //the ambulance (and possibly the hero) just moved outside the hero's own turn, so
+        //refresh the shared vision now rather than on the hero's next action
+        refreshAmbulanceVision();
+    }
+
+    //Ambulance is in the shared-vision lists in Level.updateFieldOfView() and Dungeon.observe()
+    //(same as SpiritHawk.HawkAlly), which merge its fieldOfView into the hero's. Mobs normally
+    //refresh fieldOfView in Char.act(), but Ambulance.act() doesn't call super.act(), so it has
+    //to be recomputed here whenever the ambulance moves or the terrain around it changes.
+    private void refreshAmbulanceVision() {
+        if (ambulance.fieldOfView == null || ambulance.fieldOfView.length != length()) {
+            ambulance.fieldOfView = new boolean[length()];
         }
+        updateFieldOfView(ambulance, ambulance.fieldOfView);
+        Dungeon.observe();
     }
 
     private void shove(Char ch) {
@@ -348,38 +352,67 @@ public class HospitalLevel extends Level {
             //permanently black no matter how much terrain is broken open.
             buildFlagMaps();
             cleanWalls();
-            Dungeon.observe();
+            refreshAmbulanceVision();
             GameScene.updateFog();
             GameScene.updateMap();
         }
     }
 
-    //mirrors Arena18.GenDrill.moveForward()'s wave-based template choice exactly:
-    //wave==5 -> buildLine, wave==10 -> buildGolem, wave==14 -> buildGates, else random.
+    //fixed order instead of Arena18's random pick: the three regular sections first, then the
+    //three special ones in the same order the original reaches them (line, golem, gates).
     //x is taken from the ambulance's current column + 10, exactly like the original's
     //"pos % WIDTH + 10" - the section then paints from x+5 onward, i.e. 15+ columns ahead of
     //the ambulance, so the wall in between still has to be ground through and the new area
     //reveals gradually instead of popping in on top of the player.
-    private void buildSectionForWave(int forWave) {
+    private void buildSectionForWave(int index) {
         int x = ambulance.pos % width() + 10;
 
-        if (forWave == 5) {
-            buildLine(x);
-        } else if (forWave == 10) {
-            buildGolem(x);
-        } else if (forWave == 14) {
-            buildGates(x);
-        } else {
-            switch (Random.IntRange(1, 3)) {
-                case 1: buildTown(x); break;
-                case 2: buildGraveyard(x); break;
-                case 3: buildParade(x); break;
-            }
+        switch (index) {
+            case 0: buildTown(x); break;
+            case 1: buildGraveyard(x); break;
+            case 2: buildParade(x); break;
+            case 3: buildLine(x); break;
+            case 4: buildGolem(x); break;
+            case 5: buildGates(x); break;
         }
 
         scatterDeco(x, 30);
         buildFlagMaps();
         GameScene.updateMap();
+    }
+
+    //The section templates below keep Arena18's 30-row coordinates. These helpers shift those
+    //rows by ROW_SHIFT onto this shorter map and clip anything that lands outside the interior.
+    private int cellAt(int x, int y) {
+        int row = y + ROW_SHIFT;
+        if (x < 1 || x > WIDTH - 2 || row < 1 || row > HEIGHT - 2) return -1;
+        return x + row * width();
+    }
+
+    private void setAt(int x, int y, int terrain) {
+        int cell = cellAt(x, y);
+        if (cell != -1) map[cell] = terrain;
+    }
+
+    private void fillAt(int x, int y, int w, int h, int terrain) {
+        int left = Math.max(1, x);
+        int right = Math.min(WIDTH - 2, x + w - 1);
+        int top = Math.max(1, y + ROW_SHIFT);
+        int bottom = Math.min(HEIGHT - 2, y + ROW_SHIFT + h - 1);
+        if (left > right || top > bottom) return;
+        Painter.fill(this, left, top, right - left + 1, bottom - top + 1, terrain);
+    }
+
+    //passable cells in [x0, x1) x [y0, y1), in template coordinates
+    private ArrayList<Integer> passableCells(int x0, int x1, int y0, int y1) {
+        ArrayList<Integer> cells = new ArrayList<>();
+        for (int x = x0; x < x1; x++) {
+            for (int y = y0; y < y1; y++) {
+                int cell = cellAt(x, y);
+                if (cell != -1 && passable[cell]) cells.add(cell);
+            }
+        }
+        return cells;
     }
 
     //litters plain floor with EMPTY_DECO (dust/debris tiles). Same flags as EMPTY, so it only
@@ -397,50 +430,18 @@ public class HospitalLevel extends Level {
 
     private void buildGraveyard(int x) {
         //original uses BARRICADE here, but this block sits directly in the ambulance's path
-        //(rows 11-20, it drives along row 13) so it reads as plain wall being bored through
-        Painter.fill(this, x, 11, 5, 10, Terrain.WALL);
-        Painter.fill(this, x + 5, 1, 25, 28, Terrain.GRASS);
+        //so it reads as plain wall being bored through
+        fillAt(x, 11, 5, 10, Terrain.WALL);
+        fillAt(x + 5, 1, 25, 28, Terrain.GRASS);
         for (int x1 = x; x1 < x + 25; x1 += 5) {
             for (int y1 = 15; y1 < 26; y1 += 10) {
-                if (Random.Float() > 0.2f) map[x1 + width() * y1] = Terrain.STATUE;
+                if (Random.Float() > 0.2f) setAt(x1, y1, Terrain.STATUE);
             }
         }
         buildFlagMaps();
         GameScene.updateMap();
 
-        ArrayList<Integer> candidates = new ArrayList<>();
-        for (int x1 = x + 5; x1 < x + 20; x1++) {
-            for (int y1 = 1; y1 < 28; y1++) {
-                if (passable[x1 + width() * y1]) candidates.add(x1 + width() * y1);
-            }
-        }
-
-        dropMany(Heap.Type.TOMB, candidates,
-                Generator.random(Generator.Category.SCROLL),
-                Generator.random(Generator.Category.POTION),
-                Generator.random(Generator.Category.SCROLL),
-                Generator.random(Generator.Category.POTION),
-                Generator.random(Generator.Category.SCROLL),
-                Generator.random(Generator.Category.POTION),
-                Generator.random(Generator.Category.SCROLL),
-                Generator.random(Generator.Category.POTION),
-                Generator.random(Generator.Category.SCROLL),
-                Generator.random(Generator.Category.POTION));
-
-        dropMany(Heap.Type.TOMB, candidates,
-                Generator.random(Generator.Category.WAND).upgrade(3),
-                Generator.random(Generator.Category.WAND).upgrade(3),
-                Generator.random(Generator.Category.WAND).upgrade(3),
-                Generator.random(Generator.Category.RING).upgrade(3),
-                Generator.random(Generator.Category.RING).upgrade(3),
-                Generator.random(Generator.Category.RING).upgrade(3));
-
-        candidates.clear();
-        for (int x1 = x; x1 < x + 25; x1++) {
-            for (int y1 = 1; y1 < 28; y1++) {
-                if (passable[x1 + width() * y1]) candidates.add(x1 + width() * y1);
-            }
-        }
+        ArrayList<Integer> candidates = passableCells(x, x + 25, 1, 28);
 
         //ported verbatim from Arena18.buildGraveyard(), including the original's own quirk of
         //re-rolling Random.Float() at each check (not reusing one roll) - same (wave+1)*N counts
@@ -456,52 +457,27 @@ public class HospitalLevel extends Level {
     }
 
     private void buildParade(int x) {
-        Painter.fill(this, x, 10, 5, 10, Terrain.GRASS);
-        Painter.fill(this, x + 5, 1, 25, 28, Terrain.EMPTY);
-        Painter.fill(this, x + 5, 10, 25, 10, Terrain.EMPTY);
+        fillAt(x, 10, 5, 10, Terrain.GRASS);
+        fillAt(x + 5, 1, 25, 28, Terrain.EMPTY);
+        fillAt(x + 5, 10, 25, 10, Terrain.EMPTY);
         buildFlagMaps();
         for (int x1 = x + 5; x1 < x + 25; x1 += 3) {
             for (int y1 = 10; y1 < 21; y1 += 9) {
-                map[x1 + width() * y1] = Terrain.STATUE_SP;
+                setAt(x1, y1, Terrain.STATUE_SP);
             }
         }
         for (int x1 = x + 5; x1 < x + 25; x1++) {
             for (int y1 = 1; y1 < 23; y1 += 15) {
-                if (Random.Float() > 0.5f) map[x1 + width() * y1] = Terrain.HIGH_GRASS;
+                if (Random.Float() > 0.5f) setAt(x1, y1, Terrain.HIGH_GRASS);
             }
         }
         for (int x1 = x + 5; x1 < x + 25; x1 += 3) {
             for (int y1 = 1; y1 < 23; y1 += 10) {
-                if (Random.Float() > 0.95f) map[x1 + width() * y1] = Terrain.WALL_DECO;
+                if (Random.Float() > 0.95f) setAt(x1, y1, Terrain.WALL_DECO);
             }
         }
 
-        ArrayList<Integer> candidates = new ArrayList<>();
-        for (int x1 = x + 5; x1 < x + 20; x1++) {
-            for (int y1 = 1; y1 < 28; y1++) {
-                if (passable[x1 + width() * y1]) candidates.add(x1 + width() * y1);
-            }
-        }
-
-        //original also drops 5x SpawnerWall here (tower item, out of scope). BOMB isn't a
-        //Generator category in jbd2.0, so plain Bombs stand in for the 6 the original rolls.
-        dropMany(candidates,
-                Generator.random(Generator.Category.SEED),
-                new Bomb(), new Bomb(), new Bomb(), new Bomb(), new Bomb(), new Bomb(),
-                Generator.random(Generator.Category.MIS_T3),
-                Generator.random(Generator.Category.ARMOR),
-                Generator.random(Generator.Category.FOOD),
-                Generator.random(Generator.Category.FOOD),
-                Generator.random(Generator.Category.FOOD),
-                Generator.random(Generator.Category.FOOD),
-                Generator.random(Generator.Category.FOOD));
-
-        candidates.clear();
-        for (int x1 = x; x1 < x + 25; x1++) {
-            for (int y1 = 1; y1 < 29; y1++) {
-                if (passable[x1 + width() * y1]) candidates.add(x1 + width() * y1);
-            }
-        }
+        ArrayList<Integer> candidates = passableCells(x, x + 25, 1, 29);
 
         //ported verbatim from Arena18.buildParade() - every 5th is the Frost one, rest Fire
         if (Random.Float() > 0.5f) {
@@ -515,29 +491,25 @@ public class HospitalLevel extends Level {
     }
 
     private void buildLine(int x) {
-        Painter.fill(this, x, 15, 5, 10, Terrain.WALL);
-        Painter.fill(this, x + 5, 1, 25, 28, Terrain.EMPTY);
-        Painter.fill(this, x + 19, 8, 1, 14, Terrain.PEDESTAL);
+        fillAt(x, 15, 5, 10, Terrain.WALL);
+        fillAt(x + 5, 1, 25, 28, Terrain.EMPTY);
+        fillAt(x + 19, 8, 1, 14, Terrain.PEDESTAL);
         buildFlagMaps();
         GameScene.updateMap();
 
         //original drops 3 tower spawners here (out of scope), then lays the barricades
         for (int x1 = x; x1 < x + 13; x1 += 2) {
             for (int y1 = 8; y1 < 28; y1 += 13) {
-                map[x1 + width() * y1] = Terrain.BARRICADE;
+                setAt(x1, y1, Terrain.BARRICADE);
             }
         }
 
         //TPD lines the lane with 8 fixed LineCannon turrets (a TowerCannon1 subclass) - no
         //tower-defense turret class exists here, so 8 fixed Warlocks hold the line instead,
         //keeping the original's exact count even though the mob type has to differ
-        int[] lineCells = new int[8];
-        int i = 0;
         for (int yb = 8; yb < 24; yb += 2) {
-            lineCells[i++] = x + 20 + yb * width();
-        }
-        for (int cell : lineCells) {
-            if (cell < 0 || cell >= length() || !passable[cell]) continue;
+            int cell = cellAt(x + 20, yb);
+            if (cell == -1 || !passable[cell]) continue;
             Warlock guard = new Warlock();
             guard.pos = cell;
             guard.state = guard.HUNTING;
@@ -547,25 +519,25 @@ public class HospitalLevel extends Level {
     }
 
     private void buildGolem(int x) {
-        Painter.fill(this, x, 10, 5, 10, Terrain.WALL);
-        Painter.fill(this, x + 5, 1, 25, 28, Terrain.EMPTY);
+        fillAt(x, 10, 5, 10, Terrain.WALL);
+        fillAt(x + 5, 1, 25, 28, Terrain.EMPTY);
         buildFlagMaps();
         for (int x1 = x; x1 < x + 25; x1 += 3) {
             for (int y1 = 8; y1 < 24; y1 += 12) {
-                map[x1 + width() * y1] = Terrain.BARRICADE;
+                setAt(x1, y1, Terrain.BARRICADE);
             }
         }
-        Painter.fill(this, x + 19, 8, 1, 15, Terrain.BARRICADE);
-        Painter.fill(this, x + 15, 12, 1, 15, Terrain.BARRICADE);
-        Painter.fill(this, x + 11, 8, 1, 15, Terrain.BARRICADE);
+        fillAt(x + 19, 8, 1, 15, Terrain.BARRICADE);
+        fillAt(x + 15, 12, 1, 15, Terrain.BARRICADE);
+        fillAt(x + 11, 8, 1, 15, Terrain.BARRICADE);
         buildFlagMaps();
         GameScene.updateMap();
 
         //ported verbatim from Arena18.buildGolem(): 8 fixed golem shooters (yb=8..15), no
         //wave scaling in the original either
         for (int yb = 8; yb < 16; yb++) {
-            int cell = x + 20 + yb * width();
-            if (cell < 0 || cell >= length() || !passable[cell]) continue;
+            int cell = cellAt(x + 20, yb);
+            if (cell == -1 || !passable[cell]) continue;
             Golem crossbow = new Golem();
             crossbow.pos = cell;
             crossbow.state = crossbow.HUNTING;
@@ -575,43 +547,31 @@ public class HospitalLevel extends Level {
     }
 
     private void buildGates(int x) {
-        Painter.fill(this, x, 10, 5, 10, Terrain.WATER);
-        Painter.fill(this, x + 5, 1, 25, 23, Terrain.EMPTY);
-        Painter.fill(this, x + 5, 10, 25, 5, Terrain.EMPTY);
-        Painter.fill(this, x + 5, 20, 25, 5, Terrain.EMPTY);
-        Painter.fill(this, x + 25, 10, 5, 10, Terrain.WALL);
-        Painter.fill(this, x + 25, 13, 5, 4, Terrain.EMPTY);
+        fillAt(x, 10, 5, 10, Terrain.WATER);
+        fillAt(x + 5, 1, 25, 23, Terrain.EMPTY);
+        fillAt(x + 5, 10, 25, 5, Terrain.EMPTY);
+        fillAt(x + 5, 20, 25, 5, Terrain.EMPTY);
+        fillAt(x + 25, 10, 5, 10, Terrain.WALL);
+        fillAt(x + 25, 13, 5, 4, Terrain.EMPTY);
         buildFlagMaps();
-
-        ArrayList<Integer> candidates = new ArrayList<>();
-        for (int x1 = x + 5; x1 < x + 20; x1++) {
-            for (int y1 = 1; y1 < 29; y1++) {
-                if (passable[x1 + width() * y1]) candidates.add(x1 + width() * y1);
-            }
-        }
 
         for (int x1 = x + 5; x1 < x + 25; x1 += 3) {
             for (int y1 = 10; y1 < 21; y1 += 10) {
-                map[x1 + width() * y1] = Terrain.STATUE_SP;
+                setAt(x1, y1, Terrain.STATUE_SP);
             }
         }
         for (int x1 = x + 5; x1 < x + 25; x1 += 3) {
             for (int y1 = 1; y1 < 23; y1 += 10) {
-                if (Random.Float() > 0.8f) map[x1 + width() * y1] = Terrain.WATER;
+                if (Random.Float() > 0.8f) setAt(x1, y1, Terrain.WATER);
             }
         }
         for (int x1 = x + 5; x1 < x + 25; x1 += 3) {
             for (int y1 = 1; y1 < 23; y1 += 10) {
-                if (Random.Float() > 0.95f) map[x1 + width() * y1] = Terrain.STATUE_SP;
+                if (Random.Float() > 0.95f) setAt(x1, y1, Terrain.STATUE_SP);
             }
         }
 
-        candidates.clear();
-        for (int x1 = x; x1 < x + 25; x1++) {
-            for (int y1 = 1; y1 < 29; y1++) {
-                if (passable[x1 + width() * y1]) candidates.add(x1 + width() * y1);
-            }
-        }
+        ArrayList<Integer> candidates = passableCells(x, x + 25, 1, 29);
         //ported verbatim from Arena18.buildGates(): wave*2 golems
         spawnWandering(candidates, wave * 2, Golem.class);
 
@@ -620,57 +580,31 @@ public class HospitalLevel extends Level {
     }
 
     private void buildTown(int x) {
-        Painter.fill(this, x + 5, 1, 25, 28, Terrain.EMPTY);
+        fillAt(x + 5, 1, 25, 28, Terrain.EMPTY);
         for (int x1 = x + 5; x1 < x + 25; x1++) {
             for (int y1 = 1; y1 < 25; y1 += 3) {
                 if (Random.Float() > 0.94f) {
                     //original uses Random.Int(lo,hi), which is exclusive of hi
                     int w = Random.Int(6, 8);
                     int h = Random.Int(4, 6);
-                    Painter.fill(this, x1, y1, w, h, Terrain.WALL);
-                    Painter.fill(this, x1, y1 + h / 2, w, 1, Terrain.EMPTY);
-                    Painter.fill(this, x1 + 1, y1 + 1, w - 2, h - 2, Terrain.EMPTY);
+                    fillAt(x1, y1, w, h, Terrain.WALL);
+                    fillAt(x1, y1 + h / 2, w, 1, Terrain.EMPTY);
+                    fillAt(x1 + 1, y1 + 1, w - 2, h - 2, Terrain.EMPTY);
                 }
             }
         }
         buildFlagMaps();
         GameScene.updateMap();
 
-        ArrayList<Integer> candidates = new ArrayList<>();
-        for (int x1 = x + 5; x1 < x + 20; x1++) {
-            for (int y1 = 5; y1 < 25; y1++) {
-                if (passable[x1 + width() * y1]) candidates.add(x1 + width() * y1);
-            }
-        }
+        ArrayList<Integer> candidates = passableCells(x, x + 25, 1, 29);
 
-        dropMany(Heap.Type.CHEST, candidates,
-                Generator.random(Generator.Category.WEAPON),
-                Generator.random(Generator.Category.WEAPON),
-                Generator.random(Generator.Category.WEAPON),
-                Generator.random(Generator.Category.WEAPON),
-                Generator.random(Generator.Category.WEAPON),
-                Generator.random(Generator.Category.MIS_T1),
-                Generator.random(Generator.Category.MIS_T2),
-                Generator.random(Generator.Category.MIS_T3),
-                Generator.random(Generator.Category.ARMOR));
-
-        drop(new GoldenKey(Dungeon.depth), Random.element(candidates));
-        drop(new GoldenKey(Dungeon.depth), Random.element(candidates));
-        drop(Generator.random(Generator.Category.ARMOR).identify().upgrade(3), Random.element(candidates)).type = Heap.Type.LOCKED_CHEST;
-        drop(Generator.random(Generator.Category.WEAPON).identify().upgrade(3), Random.element(candidates)).type = Heap.Type.LOCKED_CHEST;
-
-        candidates.clear();
-        for (int x1 = x; x1 < x + 25; x1++) {
-            for (int y1 = 1; y1 < 29; y1++) {
-                if (passable[x1 + width() * y1]) candidates.add(x1 + width() * y1);
-            }
-        }
-
-        //ported verbatim from Arena18.buildTown(), same re-rolled Random.Float() at each check
+        //ported from Arena18.buildTown(), same re-rolled Random.Float() at each check. The
+        //original's middle branch spawns Statues; jbd2.0's Statue needs createWeapon() after
+        //construction (weapon is null otherwise and canAttack() crashes), so Monks stand in.
         if (Random.Float() > 0.66f) {
             spawnWandering(candidates, Math.round((wave / 1.5f + 1) * 4), Monk.class);
         } else if (Random.Float() > 0.66f) {
-            spawnWandering(candidates, (wave + 1) * 2, Statue.class);
+            spawnWandering(candidates, (wave + 1) * 2, Monk.class);
         } else {
             spawnWandering(candidates, wave / 4 + 1, Senior.class);
         }
@@ -711,24 +645,24 @@ public class HospitalLevel extends Level {
         }
     }
 
-    private void dropMany(ArrayList<Integer> candidates, Item... items) {
-        dropMany(Heap.Type.HEAP, candidates, items);
-    }
-
-    private void dropMany(Heap.Type type, ArrayList<Integer> candidates, Item... items) {
-        if (candidates.isEmpty()) return;
-        for (Item item : items) {
-            drop(item, Random.element(candidates)).type = type;
-        }
-    }
-
     private void completeLevel() {
         completed = true;
         unseal();
-        //carve a plain path the rest of the way to the exit in case section-building hasn't
-        //reached it yet, so the now-open exit is actually reachable
-        int startCol = Math.max(1, Math.min(ambulance.pos % width(), WIDTH - 20));
-        Painter.fill(this, startCol, 13, (WIDTH - 2) - startCol, 4, Terrain.EMPTY);
+
+        //the run ends wherever the ambulance got to, so move the exit just ahead of it and
+        //carve a straight path there instead of leaving it at the far end of the corridor
+        int ambCol = ambulance.pos % width();
+        int exitCol = Math.min(ambCol + 15, WIDTH - 3);
+        LevelTransition oldExit = getTransition(LevelTransition.Type.REGULAR_EXIT);
+        //getTransition() falls back to the entrance when no match exists - don't remove that
+        if (oldExit != null && oldExit.type == LevelTransition.Type.REGULAR_EXIT) {
+            transitions.remove(oldExit);
+        }
+        exitCell = cellAt(exitCol, 15);
+        transitions.add(new LevelTransition(this, exitCell, LevelTransition.Type.REGULAR_EXIT));
+
+        int startCol = Math.max(1, Math.min(ambCol, exitCol));
+        fillAt(startCol, 13, exitCol - startCol + 1, 4, Terrain.EMPTY);
         buildFlagMaps();
         cleanWalls();
         set(exitCell, Terrain.EXIT);

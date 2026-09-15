@@ -154,6 +154,9 @@ public abstract class ClericSpell {
 
 			} else if (cleric.subClass == HeroSubClass.PALADIN){
 				spells.add(Smite.INSTANCE);
+
+			} else if (cleric.subClass == HeroSubClass.WARDEN){
+				spells.add(GreenBirth.INSTANCE);
 			}
 
 			if (cleric.hasTalent(Talent.CLEANSE)){
@@ -240,6 +243,7 @@ public abstract class ClericSpell {
 		spells.add(Cleanse.INSTANCE);
 		spells.add(Radiance.INSTANCE);
 		spells.add(Smite.INSTANCE);
+		spells.add(GreenBirth.INSTANCE);
 		spells.add(LayOnHands.INSTANCE);
 		spells.add(AuraOfProtection.INSTANCE);
 		spells.add(WallOfLight.INSTANCE);

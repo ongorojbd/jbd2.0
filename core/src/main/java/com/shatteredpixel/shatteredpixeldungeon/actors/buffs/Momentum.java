@@ -23,7 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
@@ -67,7 +70,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 			freerunCooldown--;
 		}
 
-		if (freerunCooldown == 0 && !freerunning() && target.invisible > 0 && Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH) >= 1){
+		if (freerunCooldown == 0 && !freerunning() && speedyStealthActive() && Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH) >= 1){
 			momentumStacks = Math.min(momentumStacks + 2, 10);
 			movedLastTurn = true;
 			ActionIndicator.setAction(this);
@@ -75,7 +78,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		}
 
 		if (freerunTurns > 0){
-			if (target.invisible == 0 || Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH) < 2) {
+			if (!speedyStealthActive() || Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH) < 2) {
 				freerunTurns--;
 			}
 		} else if (!movedLastTurn){
@@ -110,11 +113,25 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 	public float speedMultiplier(){
 		if (freerunning()){
 			return 2;
-		} else if (target.invisible > 0 && Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH) == 3){
+		} else if (speedyStealthActive() && Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH) == 3){
 			return 2;
 		} else {
 			return 1;
 		}
+	}
+
+	//헌트리스는 은신하기 어려우므로 헤쳐나가지 않은 수풀 위에 있거나 식물을 밟은 직후에도 은신 중으로 취급
+	private boolean speedyStealthActive() {
+		if (target.invisible > 0) return true;
+		if (!(target instanceof Hero) || ((Hero) target).heroClass != HeroClass.HUNTRESS) return false;
+		int terrain = Dungeon.level.map[target.pos];
+		return terrain == Terrain.HIGH_GRASS
+				|| terrain == Terrain.FURROWED_GRASS
+				|| target.buff(PlantStealthTracker.class) != null;
+	}
+
+	public static class PlantStealthTracker extends FlavourBuff {
+		public static final float DURATION = 3f;
 	}
 	
 	public int evasionBonus( int heroLvl, int excessArmorStr ){

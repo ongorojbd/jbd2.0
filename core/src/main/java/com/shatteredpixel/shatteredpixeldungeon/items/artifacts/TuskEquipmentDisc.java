@@ -31,6 +31,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
@@ -527,6 +529,7 @@ public class TuskEquipmentDisc extends Artifact {
 		// 데미지 적용
 		boolean wasAlive = target.isAlive();
 		target.damage(damage, this);
+		applyWarlockSoulMark(hero, target);
         Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 
 		// 레벨 10일 때 RadioactiveMutation 부여 (3턴)
@@ -583,7 +586,7 @@ public class TuskEquipmentDisc extends Artifact {
 			if (horseRiding != null) {
 				horseRiding.addLeapCharge();
 			}
-			
+
 			// TacticalScope 활성화 상태에서 Perfect 성공 시 무작위 강화 버프 부여
 			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive scopeActive = 
 				hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope.ScopeActive.class);
@@ -841,6 +844,7 @@ public class TuskEquipmentDisc extends Artifact {
 		boolean targetAlive = target != null && target.isAlive();
 		if (targetAlive) {
 			target.damage(damage, this);
+			applyWarlockSoulMark(hero, target);
 			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 
 			if (level() >= 10) {
@@ -929,6 +933,7 @@ public class TuskEquipmentDisc extends Artifact {
 		boolean targetAlive = target != null && target.isAlive();
 		if (targetAlive) {
 			target.damage(damage, this);
+			applyWarlockSoulMark(hero, target);
 			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 
 			if (level() >= 10) {
@@ -1105,6 +1110,16 @@ public class TuskEquipmentDisc extends Artifact {
 		}
 	}
 
+	//죠니가 이벤트로 긍지의 파문전사를 선택한 경우: 적을 공격하면 사격 DISC와 같은 확률로 파문 주입 (DISC 레벨을 사격 DISC 강화수치로 취급)
+	private void applyWarlockSoulMark(Hero hero, Char target) {
+		if (hero.heroClass != HeroClass.JOHNNY || hero.subClass != HeroSubClass.WARLOCK) return;
+		if (target == null || target == hero || !target.isAlive()) return;
+		if (Random.Float() > (Math.pow(0.92f, level() + 1) - 0.07f)) {
+			SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + level());
+			Sample.INSTANCE.play(Assets.Sounds.BURNING);
+		}
+	}
+
 	private void grantGoldenSpinEffects(Hero hero, Char target) {
 		if (level() >= 6) {
 			Buff.affect(hero, Barrier.class).setShield(20);
@@ -1216,6 +1231,7 @@ public class TuskEquipmentDisc extends Artifact {
 		// 데미지 적용
 		boolean wasAlive = target.isAlive();
 		target.damage(damage, this);
+		applyWarlockSoulMark(hero, target);
 
 		if (!wasAlive || !target.isAlive()) {
 			if (hero.hasTalent(Talent.J23)) {

@@ -27,7 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -65,6 +68,9 @@ public abstract class Plant implements Bundlable {
 			((Hero) ch).interrupt();
 			if(((Hero) ch).hasTalent(Talent.BARKSKIN)){
 				Barkskin.conditionallyAppend(ch, (((Hero) ch).lvl* ((Hero) ch).pointsInTalent(Talent.BARKSKIN))/3, 1 );
+			}
+			if (((Hero) ch).heroClass == HeroClass.HUNTRESS && ((Hero) ch).hasTalent(Talent.SPEEDY_STEALTH)) {
+				Buff.prolong(ch, Momentum.PlantStealthTracker.class, Momentum.PlantStealthTracker.DURATION);
 			}
 		}
 

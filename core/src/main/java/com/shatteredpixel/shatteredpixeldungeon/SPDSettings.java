@@ -291,6 +291,7 @@ public class SPDSettings extends GameSettings {
 
 	public static final String KEY_SUPPORT_NAGGED= "support_nagged";
 	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
+	public static final String KEY_SBR_2ND_3RD_STAGE_EVENT_NAGGED = "sbr_2nd_3rd_stage_event_nagged";
 	public static final String KEY_VAULT_INJURE_WARNS = "vault_injure_warns";
 	public static final String KEY_PLAYER_NICKNAME = "player_nickname";
 	
@@ -356,6 +357,14 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean victoryNagged() {
 		return getBoolean(KEY_VICTORY_NAGGED, false);
+	}
+
+	public static void sbr2nd3rdStageEventNagged( boolean value ) {
+		put( KEY_SBR_2ND_3RD_STAGE_EVENT_NAGGED, value );
+	}
+
+	public static boolean sbr2nd3rdStageEventNagged() {
+		return getBoolean(KEY_SBR_2ND_3RD_STAGE_EVENT_NAGGED, false);
 	}
 
 	public static void vaultInjureWarns( int value ) {

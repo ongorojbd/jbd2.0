@@ -32,9 +32,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.InvokerEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TacticalScope;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -131,6 +133,14 @@ public class TengusMask extends Item {
         }
 
         if (way == HeroSubClass.PRIEST) {
+            if (curUser.heroClass != HeroClass.CLERIC) {
+                HolyTome tome = new HolyTome();
+                tome.identify();
+                if (!tome.collect()) {
+                    Dungeon.level.drop(tome, curUser.pos).sprite.drop();
+                }
+                GLog.i(Messages.get(Hero.class, "you_now_have", tome.name()));
+            }
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new JojoSprite()},
                     new String[]{"죠린"},

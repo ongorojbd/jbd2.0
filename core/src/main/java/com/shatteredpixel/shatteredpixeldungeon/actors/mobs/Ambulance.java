@@ -49,23 +49,10 @@ public class Ambulance extends Mob {
 
     @Override
     public boolean canInteract(Char c) {
-        //lets the hero (or the Patient riding along) walk onto/off of the ambulance's cell
-        return Dungeon.level.adjacent(pos, c.pos);
-    }
-
-    @Override
-    public boolean interact(Char c) {
-        //swap places instead of the default Char.interact(), which refuses to swap when
-        //either side is IMMOVABLE - that block is meant for real obstacles, not this "you can
-        //stand on the vehicle" case
-        int oldPos = pos;
-        pos = c.pos;
-        c.pos = oldPos;
-        Dungeon.level.occupyCell(this);
-        Dungeon.level.occupyCell(c);
-        if (sprite != null) sprite.place(pos);
-        if (c.sprite != null) c.sprite.place(c.pos);
-        return true;
+        //same as DrillBig. Swapping places with the hero used to move the ambulance's anchor
+        //cell, which shifted the Patient and the shove box relative to the sprite. Riding along
+        //is handled by HospitalLevel.stepForward()'s box instead.
+        return false;
     }
 
     @Override

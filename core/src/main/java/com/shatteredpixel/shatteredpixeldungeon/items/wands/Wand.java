@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -245,6 +247,17 @@ public abstract class Wand extends Item {
             SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + wandLevel);
 
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
+        }
+
+        //마법사가 이벤트로 기수를 선택한 경우: 황금의 회전 대신 파문 주입과 같은 확률로 도약 충전량 획득
+        if (target.alignment == Char.Alignment.ENEMY
+                && Dungeon.hero.heroClass == HeroClass.MAGE
+                && Dungeon.hero.subClass == HeroSubClass.RIDER
+                && Random.Float() > (Math.pow(0.92f, (wandLevel * chargesUsed) + 1) - 0.07f)) {
+            HorseRiding horseRiding = Dungeon.hero.buff(HorseRiding.class);
+            if (horseRiding != null) {
+                horseRiding.addLeapCharge();
+            }
         }
 
         if (Dungeon.hero.subClass == HeroSubClass.PRIEST && target.buff(GuidingLight.Illuminated.class) != null) {
@@ -802,6 +815,18 @@ public abstract class Wand extends Item {
 
             curUser.busy();
 
+            //마법사가 이벤트로 기수를 선택한 경우: 말을 이용한 회전 +3의 터스크 DISC 효과를 에이자의 적석으로 대체
+            //대상이 사망하면 투척 무기가 바닥에 떨어지므로 피해 적용 전에 회수
+            if (curUser.heroClass == HeroClass.MAGE && !curUser.belongings.contains(activeWand)
+                    && curUser.buff(HorseRiding.class) != null
+                    && curUser.pointsInTalent(Talent.J34) >= 3) {
+                Char pinned = Actor.findChar(target);
+                if (pinned == null) pinned = Actor.findChar(cell);
+                if (pinned != null && pinned != curUser) {
+                    retrievePinnedWeapons(curUser, pinned);
+                }
+            }
+
             if (curUser.heroClass == HeroClass.MAGE && !curUser.belongings.contains(activeWand)) {
 
                 if (SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof ClothArmor || SPDSettings.getSkin2() == 1 && hero.belongings.armor() instanceof MageArmor) {
@@ -932,6 +957,20 @@ public abstract class Wand extends Item {
             return Messages.get(Wand.class, "prompt");
         }
     };
+
+    private static void retrievePinnedWeapons(Hero hero, Char ch) {
+        PinCushion pins;
+        while ((pins = ch.buff(PinCushion.class)) != null) {
+            Item item = pins.grabOne();
+            if (item.collect(hero.belongings.backpack)) {
+                GameScene.pickUp(item, ch.pos);
+                Sample.INSTANCE.play(Assets.Sounds.ITEM);
+            } else {
+                Dungeon.level.drop(item, ch.pos).sprite.drop();
+                break;
+            }
+        }
+    }
 
     private void applyJ64SoulMark(int target, int cell) {
         Char ch = Actor.findChar(target);

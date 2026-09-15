@@ -111,6 +111,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SturoSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.UltimateSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.utils.SteelBallRunEvent;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
@@ -855,6 +856,13 @@ public enum Talent {
             String j51Desc = Messages.get(this, name() + ".desc_j51");
             if (!j51Desc.equals(Messages.NO_TEXT_FOUND)) {
                 return j51Desc;
+            }
+        }
+        if (Dungeon.hero != null) {
+            String crossDesc = Messages.get(this, name() + ".desc_cross");
+            if (!crossDesc.equals(Messages.NO_TEXT_FOUND)
+                    && SteelBallRunEvent.isEventTalent(Dungeon.hero.heroClass, this)) {
+                return crossDesc;
             }
         }
         if (metamorphed) {

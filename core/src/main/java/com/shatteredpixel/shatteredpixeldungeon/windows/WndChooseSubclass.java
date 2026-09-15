@@ -37,18 +37,24 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.utils.SteelBallRunEvent;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class WndChooseSubclass extends Window {
 	
 	private static final int WIDTH		= 130;
 	private static final float GAP		= 2;
-	
+
+	private ScrollPane list;
+
 	public WndChooseSubclass(final TengusMask tome, final Hero hero ) {
 		
 		super();
@@ -104,7 +110,16 @@ public class WndChooseSubclass extends Window {
 
 		float pos = message.bottom() + 3*GAP;
 
-		for (HeroSubClass subCls : hero.heroClass.subClasses()){
+		list = new ScrollPane(new Component());
+		add(list);
+		Component content = list.content();
+
+		ArrayList<HeroSubClass> subClasses = selectableSubClasses(hero);
+		float listPos = 0;
+		float peekHeight = 0;
+
+		for (int i = 0; i < subClasses.size(); i++){
+			final HeroSubClass subCls = subClasses.get(i);
 			RedButton btnCls = new RedButton( subCls.shortDesc(), 6 ) {
 				@Override
 				protected void onClick() {
@@ -140,8 +155,8 @@ public class WndChooseSubclass extends Window {
 			btnCls.leftJustify = true;
 			btnCls.multiline = true;
 			btnCls.setSize(WIDTH-20, btnCls.reqHeight()+2);
-			btnCls.setRect( 0, pos, WIDTH-20, btnCls.reqHeight()+2);
-			add( btnCls );
+			btnCls.setRect( 0, listPos, WIDTH-20, btnCls.reqHeight()+2);
+			content.add( btnCls );
 
 			if (canChoose(subCls)) {
 				IconButton clsInfo = new IconButton(Icons.get(Icons.INFO)){
@@ -151,11 +166,21 @@ public class WndChooseSubclass extends Window {
 					}
 				};
 				clsInfo.setRect(WIDTH-20, btnCls.top() + (btnCls.height()-20)/2, 20, 20);
-				add(clsInfo);
+				content.add(clsInfo);
 			}
 
-			pos = btnCls.bottom() + GAP;
+			//4번째 버튼을 절반만 보여줘서 아래에 선택지가 더 있음을 알림
+			if (i == 3) peekHeight = btnCls.top() + btnCls.height()/2f;
+
+			listPos = btnCls.bottom() + GAP;
 		}
+		content.setSize(WIDTH, listPos);
+
+		float maxListHeight = PixelScene.uiCamera.height - pos - 18 - GAP - 24;
+		float listHeight = Math.min(listPos, maxListHeight);
+		if (subClasses.size() > 4) listHeight = Math.min(listHeight, peekHeight);
+		float listTop = pos;
+		pos += listHeight + GAP;
 
 		RedButton btnCancel = new RedButton( Messages.get(this, "cancel") ) {
 			@Override
@@ -165,8 +190,16 @@ public class WndChooseSubclass extends Window {
 		};
 		btnCancel.setRect( 0, pos, WIDTH, 18 );
 		add( btnCancel );
-		
+
+		//ScrollPane은 배치 시점의 창 카메라 기준으로 화면 좌표를 계산하므로 창 크기를 먼저 확정해야 함
 		resize( WIDTH, (int)btnCancel.bottom() );
+		list.setRect(0, listTop, WIDTH, listHeight);
+	}
+
+	@Override
+	public void offset(int xOffset, int yOffset) {
+		super.offset(xOffset, yOffset);
+		list.setPos(list.left(), list.top()); //triggers layout
 	}
 
 	private static boolean canChoose(HeroSubClass subCls) {
@@ -176,9 +209,18 @@ public class WndChooseSubclass extends Window {
 		return subCls != HeroSubClass.SUMMONER || SPDSettings.getToken() >= 2;
 	}
 
+	private static ArrayList<HeroSubClass> selectableSubClasses(Hero hero) {
+		ArrayList<HeroSubClass> result = new ArrayList<>(Arrays.asList(hero.heroClass.subClasses()));
+		HeroSubClass bonus = SteelBallRunEvent.bonusSubClass(hero.heroClass);
+		if (bonus != null && SteelBallRunEvent.isActive() && !result.contains(bonus)) {
+			result.add(2, bonus);
+		}
+		return result;
+	}
+
 	private static HeroSubClass[] availableSubClasses(Hero hero) {
 		ArrayList<HeroSubClass> result = new ArrayList<>();
-		for (HeroSubClass subCls : hero.heroClass.subClasses()) {
+		for (HeroSubClass subCls : selectableSubClasses(hero)) {
 			if (canChoose(subCls)) {
 				result.add(subCls);
 			}

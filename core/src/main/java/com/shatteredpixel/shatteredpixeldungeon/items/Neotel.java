@@ -127,6 +127,10 @@ public class Neotel extends Item {
 
             GLog.h("경쟁 모드 제한 및 기록이 초기화되었습니다.");
 
+            // 이벤트 배너 재확인 가능하도록 초기화
+            SPDSettings.sbr2nd3rdStageEventNagged(false);
+            GLog.h("이벤트 배너 확인 여부가 초기화되었습니다.");
+
             // 시크릿 팩터 페이지를 미획득 상태로 되돌림
 //            Document.SEWERS_GUARD.deletePage("j1");
 //            Document.SEWERS_GUARD.deletePage("j2");

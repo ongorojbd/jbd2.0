@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.utils.SteelBallRunEvent;
 import com.watabou.noosa.Game;
 
 public enum HeroSubClass {
@@ -78,7 +79,19 @@ public enum HeroSubClass {
 				return Messages.get(this, name()+"_hidden_short_desc");
 			}
 		}
-		return Messages.get(this, name()+"_short_desc");
+		return eventText(name()+"_short_desc");
+	}
+
+	//이벤트로 다른 영웅이 선택한 보조 직업은 _cross 문구가 있으면 그것을 사용
+	private String eventText(String key) {
+		if (Game.scene() instanceof GameScene && Dungeon.hero != null
+				&& SteelBallRunEvent.bonusSubClass(Dungeon.hero.heroClass) == this) {
+			String cross = Messages.get(this, key + "_cross");
+			if (!cross.equals(Messages.NO_TEXT_FOUND)) {
+				return cross;
+			}
+		}
+		return Messages.get(this, key);
 	}
 
 	public String desc() {
@@ -94,7 +107,7 @@ public enum HeroSubClass {
 			}
 			return desc;
 		} else {
-			return Messages.get(this, name() + "_desc");
+			return eventText(name() + "_desc");
 		}
 	}
 
