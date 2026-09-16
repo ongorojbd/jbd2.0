@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ArenaBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseLoungeLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseRecoveryLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2bossLevel;
@@ -106,6 +107,7 @@ public class TerrainFeaturesTilemap extends DungeonTilemap {
 		boolean ownDecorAssets = Dungeon.level instanceof VeiledSanctumLevel
 				|| Dungeon.level instanceof ColdhouseBossLevel
 				|| Dungeon.level instanceof ColdhouseRecoveryLevel
+				|| Dungeon.level instanceof ColdhouseLoungeLevel
 				|| Dungeon.level instanceof ShipbossLevel
 				|| Dungeon.level instanceof DiobossLevel
 				|| Dungeon.level instanceof Dio2bossLevel

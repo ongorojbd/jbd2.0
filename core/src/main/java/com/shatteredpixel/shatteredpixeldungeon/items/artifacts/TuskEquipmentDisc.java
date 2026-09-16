@@ -93,7 +93,7 @@ public class TuskEquipmentDisc extends Artifact {
 	private int perfectCount = 0;
 	private int j59Damage = 3;
 	private int j53UseCount = 0;
-	private static final int J59_MAX_DAMAGE = 25;
+	private static final int J59_MAX_DAMAGE = 20;
 	private static final float J59_CHARGE_COST = 0.25f;
 	private static final float J53_J59_MISSILE_SPEED = 420f;
 

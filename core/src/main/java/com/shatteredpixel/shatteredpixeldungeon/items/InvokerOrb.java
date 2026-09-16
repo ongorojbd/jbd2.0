@@ -78,7 +78,7 @@ public abstract class InvokerOrb extends Item {
 
                 Sample.INSTANCE.play(Assets.Sounds.BURNING);
 
-                hero.damage( 1, new DarkBolt());
+                hero.damage( 2, new DarkBolt());
                 if (!hero.isAlive()) {
                     Badges.validateDeathFromFriendlyMagic();
                     Dungeon.fail( this );

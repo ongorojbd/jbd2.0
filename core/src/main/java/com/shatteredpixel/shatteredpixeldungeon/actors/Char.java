@@ -989,13 +989,13 @@ public abstract class Char extends Actor {
             damage *= 1.67f;
         }
         if (this.buff(Triplespeed.class) != null) {
-            dmg *= 1.35f;
+            damage *= 1.5f;
         }
         if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null) {
             damage *= 1.25f;
         }
         if (buff(Roc.class) != null) {
-            dmg *= 2f;
+            damage *= 2f;
         }
 
 		//two separate things can convert dmg to bleed, we handle that here

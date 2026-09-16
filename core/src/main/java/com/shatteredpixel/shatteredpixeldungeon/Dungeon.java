@@ -66,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseLoungeLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.ColdhouseRecoveryLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Dio2Level;
@@ -76,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Emp2Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.EmporioLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HumanVillageBossLevel2;
 import com.shatteredpixel.shatteredpixeldungeon.levels.JolyneBossLevel;
@@ -391,7 +393,7 @@ public class Dungeon {
                         tendencylevel = true;
                         level = new ArenaLevel();
                     } else {
-                        level = new SewerLevel();
+                        level = new ColdhouseLoungeLevel();
                     }
                     break;
                 case 2:
@@ -552,6 +554,9 @@ public class Dungeon {
                     break;
                 case 22:
                     level = new ColdhouseRecoveryLevel();
+                    break;
+                case 23:
+                    level = new ColdhouseLoungeLevel();
                     break;
                 default:
                     level = new DeadEndLevel();

@@ -268,6 +268,10 @@ public class CloakOfShadows extends Artifact {
 					float turnsToCharge = (45 - missing);
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
 					float chargeToGain = (1f / turnsToCharge);
+					if (target instanceof Hero && ((Hero) target).hasTalent(Talent.J52)) {
+						//the time-stop DISC rework costs 20% of the cloak's natural recharge speed
+						chargeToGain *= 0.8f;
+					}
 					if (!isEquipped(Dungeon.hero)){
 						chargeToGain *= 0.75f*Dungeon.hero.pointsInTalent(Talent.LIGHT_CLOAK)/3f;
 					}

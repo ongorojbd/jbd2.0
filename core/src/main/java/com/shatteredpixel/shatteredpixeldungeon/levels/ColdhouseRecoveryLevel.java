@@ -8,7 +8,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RecoveryWardNurse;
-import com.shatteredpixel.shatteredpixeldungeon.items.BossChallengeTester;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Bmap;
@@ -16,11 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Callback;
@@ -150,7 +145,10 @@ public class ColdhouseRecoveryLevel extends Level {
         }
     }
 
-    //no going back up - the waiting room only opens onto the way down
+    //no going back up - the waiting room only opens onto the way down. The exit used to end
+    //the branch here with a "next floor still under construction" prompt (see
+    //ColdhouseLoungeLevel, which now carries that prompt instead) - a plain REGULAR_EXIT now
+    //just descends normally into depth 23.
     @Override
     public boolean activateTransition(final Hero hero, LevelTransition transition) {
         if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
@@ -161,31 +159,6 @@ public class ColdhouseRecoveryLevel extends Level {
                     GameScene.show(new WndMessage(Messages.get(hero, "tendency2")));
                 }
             });
-            return false;
-        }
-        if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
-            Game.runOnRenderThread(new Callback() {
-                @Override
-                public void call() {
-                    GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.TG),
-                            Messages.get(BossChallengeTester.class, "1"),
-                            Messages.get(BossChallengeTester.class, "2"),
-                            Messages.get(BossChallengeTester.class, "3"),
-                            Messages.get(BossChallengeTester.class, "4")) {
-                        @Override
-                        protected void onSelect(int index) {
-                            if (index == 0) {
-                                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-                                InterlevelScene.returnDepth = 26;
-                                InterlevelScene.returnBranch = 0;
-                                InterlevelScene.returnPos = -1;
-                                Game.switchScene(InterlevelScene.class);
-                            }
-                        }
-                    });
-                }
-            });
-            //기본 하강 전환을 막는다 - 실제 이동은 위 창의 onSelect가 담당
             return false;
         }
         return super.activateTransition(hero, transition);

@@ -203,8 +203,9 @@ public class InterlevelScene extends PixelScene {
         final boolean bossChallengeStory = mode == Mode.RETURN && bossChallengeReturn;
         bossChallengeReturn = false;
 
-        //the sanctum branch (branch 2, depths 20-22: VeiledSanctumLevel / ColdhouseBossLevel /
-        //ColdhouseRecoveryLevel) uses its own loading splash for any move into or between those floors
+        //the sanctum branch (branch 2, depths 20-23: VeiledSanctumLevel / ColdhouseBossLevel /
+        //ColdhouseRecoveryLevel / ColdhouseLoungeLevel) uses its own loading splash for any move
+        //into or between those floors
         int destDepth;
         int destBranch;
         switch (mode) {
@@ -220,7 +221,7 @@ public class InterlevelScene extends PixelScene {
                 destDepth  = Dungeon.depth;
                 destBranch = Dungeon.branch;
         }
-        final boolean sanctumBranch = destBranch == 2 && destDepth >= 20 && destDepth <= 22;
+        final boolean sanctumBranch = destBranch == 2 && destDepth >= 20 && destDepth <= 23;
 
         int loadingCenter = 400;
 
