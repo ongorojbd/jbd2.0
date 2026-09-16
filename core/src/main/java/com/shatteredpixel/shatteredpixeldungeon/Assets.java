@@ -644,7 +644,8 @@ public class Assets {
         public static final String VAULT_LASER = "sprites/vaultlaser.png";
         public static final String VAULT_SENTRY = "sprites/vaultsentry.png";
         public static final String VAULT_MIRROR = "sprites/vault_mirror.png";
-        public static final String VAULT_BOSS_ELEMENTAL = "sprites/vault_boss_elemental.png";
+        public static final String VENDING = "sprites/vending.png";
+        public static final String SPIDERMIND = "sprites/spider_mind.png";
         public static final String SOLDIER = "sprites/soldier.png";
         public static final String RESEARCHER = "sprites/researcher.png";
         public static final String TANK = "sprites/tank.png";

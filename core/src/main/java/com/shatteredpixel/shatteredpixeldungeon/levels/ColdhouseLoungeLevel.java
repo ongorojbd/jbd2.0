@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SpecialVendingMachine;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
 import com.shatteredpixel.shatteredpixeldungeon.items.BossChallengeTester;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -62,7 +63,7 @@ public class ColdhouseLoungeLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.INSTANCE.play(Assets.Music.TG_1, true);
+        Music.INSTANCE.play(Assets.Music.EMPO, true);
     }
 
     //hand-built arena: never take part in the random level feeling roll (a CHASM feeling would
@@ -96,7 +97,16 @@ public class ColdhouseLoungeLevel extends Level {
         transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
         transitions.add(new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT));
 
+        placeYasu(exit);
+
         return true;
+    }
+
+    //Yasu, standing just off the exit stairs, one tile up and one tile to the left of them
+    private void placeYasu(int exit) {
+        Yasu npc = new Yasu();
+        npc.pos = exit - WIDTH - 1;
+        mobs.add(npc);
     }
 
     //everything solid here is furniture the hero walks around; the central aisle from the
@@ -104,18 +114,14 @@ public class ColdhouseLoungeLevel extends Level {
     private void decorate() {
         paintWindows();
         paintPillars();
-        paintPlanters();
         paintSeating();
         paintVendingCorner();
         paintFloor();
     }
 
-    //a single runner down the central aisle, plus a sparse scatter over whatever plain floor
-    //is left, the kiosk's included. Runs last so the kiosk's own floor pass doesn't wipe it out.
+    //a sparse, irregular scatter of clutter over whatever plain floor is left, the kiosk's
+    //included. Runs last so the kiosk's own floor pass doesn't wipe it out.
     private void paintFloor() {
-        for (int y = 3; y <= HEIGHT - 4; y++) {
-            Painter.set(this, WIDTH / 2 + y * WIDTH, Terrain.EMPTY_DECO);
-        }
         for (int cell = 0; cell < length(); cell++) {
             if (map[cell] == Terrain.EMPTY && Random.Float() < 0.04f) {
                 map[cell] = Terrain.EMPTY_DECO;
@@ -143,19 +149,6 @@ public class ColdhouseLoungeLevel extends Level {
             Painter.set(this, x + 2 * WIDTH, Terrain.STATUE_SP);
             Painter.set(this, x + (HEIGHT - 3) * WIDTH, Terrain.STATUE_SP);
         }
-    }
-
-    //a planter in each corner, with something taller growing out of the middle of it
-    private void paintPlanters() {
-        paintPlanter(1, 1);
-        paintPlanter(WIDTH - 3, 1);
-        paintPlanter(1, HEIGHT - 3);
-        paintPlanter(WIDTH - 3, HEIGHT - 3);
-    }
-
-    private void paintPlanter(int left, int top) {
-        Painter.fill(this, left, top, 2, 2, Terrain.GRASS);
-        Painter.set(this, left + top * WIDTH, Terrain.HIGH_GRASS);
     }
 
     //two identical seating pods down the left side, mirrored about the room's midline: a pair
