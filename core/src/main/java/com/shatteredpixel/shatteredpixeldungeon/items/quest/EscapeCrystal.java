@@ -26,6 +26,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PolpoBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.VaultTokenDoor;
@@ -284,10 +289,30 @@ public class EscapeCrystal extends Item {
 		detachAll(Dungeon.hero.belongings.backpack);
 		if (!Imp.Quest.isOld()) Imp.Quest.complete(score);
 
-		//볼트에 들어가며 떼어뒀던 D4C를 나올 때 다시 붙여준다.
+		//볼트에 들어가며 떼어뒀던 버프들을 나올 때 다시 붙여준다.
 		if (hadD4C) {
 			Buff.affect(Dungeon.hero, D4C.class);
 			hadD4C = false;
+		}
+		if (hadHoly1) {
+			Buff.affect(Dungeon.hero, Holy1.class);
+			hadHoly1 = false;
+		}
+		if (hadHoly2) {
+			Buff.affect(Dungeon.hero, Holy2.class);
+			hadHoly2 = false;
+		}
+		if (hadHoly3) {
+			Buff.affect(Dungeon.hero, Holy3.class);
+			hadHoly3 = false;
+		}
+		if (hadPolpoBuff) {
+			Buff.affect(Dungeon.hero, PolpoBuff.class);
+			hadPolpoBuff = false;
+		}
+		if (hadKawasiribuff) {
+			Buff.affect(Dungeon.hero, Kawasiribuff.class);
+			hadKawasiribuff = false;
 		}
 
 		Level.beforeTransition();
@@ -365,15 +390,30 @@ public class EscapeCrystal extends Item {
 
 	public Bundle storedItems;
 	public boolean hadD4C = false;
+	public boolean hadHoly1 = false;
+	public boolean hadHoly2 = false;
+	public boolean hadHoly3 = false;
+	public boolean hadPolpoBuff = false;
+	public boolean hadKawasiribuff = false;
 
-	public static String STORED_ITEMS = "stored_items";
-	public static String HAD_D4C      = "had_d4c";
+	public static String STORED_ITEMS      = "stored_items";
+	public static String HAD_D4C           = "had_d4c";
+	public static String HAD_HOLY1         = "had_holy1";
+	public static String HAD_HOLY2         = "had_holy2";
+	public static String HAD_HOLY3         = "had_holy3";
+	public static String HAD_POLPOBUFF     = "had_polpobuff";
+	public static String HAD_KAWASIRIBUFF  = "had_kawasiribuff";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(STORED_ITEMS, storedItems);
 		bundle.put(HAD_D4C, hadD4C);
+		bundle.put(HAD_HOLY1, hadHoly1);
+		bundle.put(HAD_HOLY2, hadHoly2);
+		bundle.put(HAD_HOLY3, hadHoly3);
+		bundle.put(HAD_POLPOBUFF, hadPolpoBuff);
+		bundle.put(HAD_KAWASIRIBUFF, hadKawasiribuff);
 	}
 
 	@Override
@@ -381,5 +421,10 @@ public class EscapeCrystal extends Item {
 		super.restoreFromBundle(bundle);
 		storedItems = bundle.getBundle(STORED_ITEMS);
 		hadD4C = bundle.getBoolean(HAD_D4C);
+		hadHoly1 = bundle.getBoolean(HAD_HOLY1);
+		hadHoly2 = bundle.getBoolean(HAD_HOLY2);
+		hadHoly3 = bundle.getBoolean(HAD_HOLY3);
+		hadPolpoBuff = bundle.getBoolean(HAD_POLPOBUFF);
+		hadKawasiribuff = bundle.getBoolean(HAD_KAWASIRIBUFF);
 	}
 }

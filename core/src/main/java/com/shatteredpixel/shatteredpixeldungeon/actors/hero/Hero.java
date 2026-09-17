@@ -898,7 +898,7 @@ public class Hero extends Char {
 		if (Dungeon.hero.buff(HorseRiding.class) != null) {
 			float speedBonus = 0.10f; // 기본 10%
 			if (hasTalent(Talent.J35)) {
-				speedBonus += 0.10f * pointsInTalent(Talent.J35); // 탤런트당 +10%
+				speedBonus += 0.15f * pointsInTalent(Talent.J35); // 탤런트당 +15%
 			}
 			speed *= (1 + speedBonus);
 		}

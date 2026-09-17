@@ -28,7 +28,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PolpoBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Enrico;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DArby;
@@ -187,9 +192,19 @@ public class CityLevel extends RegularLevel {
 						protected void onSelect(int index) {
 							if (index == 0){
 
-								//D4C는 볼트 내에서는 사기적이므로, 볼트에 들어가는 동안은 잠시 떼어둔다.
+								//D4C 및 일부 강력한 버프는 볼트 내에서는 사기적이므로, 볼트에 들어가는 동안은 잠시 떼어둔다.
 								boolean hadD4C = hero.buff(D4C.class) != null;
 								if (hadD4C) Buff.detach(hero, D4C.class);
+								boolean hadHoly1 = hero.buff(Holy1.class) != null;
+								if (hadHoly1) Buff.detach(hero, Holy1.class);
+								boolean hadHoly2 = hero.buff(Holy2.class) != null;
+								if (hadHoly2) Buff.detach(hero, Holy2.class);
+								boolean hadHoly3 = hero.buff(Holy3.class) != null;
+								if (hadHoly3) Buff.detach(hero, Holy3.class);
+								boolean hadPolpoBuff = hero.buff(PolpoBuff.class) != null;
+								if (hadPolpoBuff) Buff.detach(hero, PolpoBuff.class);
+								boolean hadKawasiribuff = hero.buff(Kawasiribuff.class) != null;
+								if (hadKawasiribuff) Buff.detach(hero, Kawasiribuff.class);
 
 								Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
 								hero.HP = hero.HT; //full heal
@@ -203,6 +218,11 @@ public class CityLevel extends RegularLevel {
 								if (crystal.storedItems == null){
 									crystal.storeHeroBelongings(Dungeon.hero);
 									crystal.hadD4C = hadD4C;
+									crystal.hadHoly1 = hadHoly1;
+									crystal.hadHoly2 = hadHoly2;
+									crystal.hadHoly3 = hadHoly3;
+									crystal.hadPolpoBuff = hadPolpoBuff;
+									crystal.hadKawasiribuff = hadKawasiribuff;
 								}
 								crystal.collect();
 								hero.belongings.armor = new ClothArmor();

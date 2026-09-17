@@ -134,8 +134,8 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
         // J33 ?ㅻ윴?? ?щ줈 ?꾩꽌 諛⑹뼱??利앷?
         if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.J33)) {
             int talentLevel = Dungeon.hero.pointsInTalent(Talent.J33);
-            int minBonus = talentLevel; // 1, 2, 3
-            int maxBonus = talentLevel * 6; // 6, 12, 18
+            int minBonus = talentLevel * 2; // 2, 4, 6
+            int maxBonus = talentLevel * 8; // 8, 16, 24
             baseDR += Random.NormalIntRange(minBonus, maxBonus);
         }
 
