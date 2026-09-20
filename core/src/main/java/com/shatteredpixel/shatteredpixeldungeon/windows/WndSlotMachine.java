@@ -49,6 +49,7 @@ import com.watabou.utils.Random;
 public class WndSlotMachine extends Window {
 
     public static final int COST = 500;
+    public static final int MAX_PULLS = 10; //per run, tracked in Statistics.slotPulls
 
     //payouts, easiest to tune from here. JACKPOT also dispenses an upgrade scroll.
     private static final int PAYOUT_JACKPOT = 2500;  //three coins
@@ -141,7 +142,7 @@ public class WndSlotMachine extends Window {
         add(resultText);
         layoutResult();
 
-        spinButton = new RedButton(Messages.get(this, "spin", COST)) {
+        spinButton = new RedButton("") {
             @Override
             protected void onClick() {
                 if (state == State.SPINNING) return;
@@ -189,15 +190,17 @@ public class WndSlotMachine extends Window {
             spinButton.enable(false);
             return;
         }
-        spinButton.text(Messages.get(this, "spin", COST));
-        spinButton.enable(Dungeon.gold >= COST);
+        boolean pullsLeft = Statistics.slotPulls < MAX_PULLS;
+        spinButton.text(Messages.get(this, pullsLeft ? "spin" : "spin_out", COST, Statistics.slotPulls, MAX_PULLS));
+        spinButton.enable(pullsLeft && Dungeon.gold >= COST);
     }
 
     private void startSpin() {
-        if (Dungeon.gold < COST) {
+        if (Dungeon.gold < COST || Statistics.slotPulls >= MAX_PULLS) {
             return;
         }
 
+        Statistics.slotPulls++;
         Dungeon.gold -= COST;
         Statistics.goldCollected -= COST;
         Sample.INSTANCE.play(Assets.Sounds.GOLD);

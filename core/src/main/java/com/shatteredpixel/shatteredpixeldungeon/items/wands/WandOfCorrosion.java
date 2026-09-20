@@ -81,9 +81,9 @@ public class WandOfCorrosion extends Wand {
 	@Override
 	public void fx(Ballistica bolt, Callback callback) {
 		MagicMissile.boltFromChar(
-				curUser.sprite.parent,
+				zapSprite().parent,
 				MagicMissile.CORROSION,
-				curUser.sprite,
+				zapSprite(),
 				bolt.collisionPos,
 				callback);
 		Sample.INSTANCE.play(Assets.Sounds.ZAP);

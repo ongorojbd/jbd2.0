@@ -787,5 +787,6 @@ public class Assets {
         public static final String GIANT = "sprites/giant.png";
         public static final String BANSHEE = "sprites/banshee.png";
         public static final String WOU = "sprites/wou.png";
+        public static final String JADE_WARDEN = "sprites/jade_warden.png";
     }
 }

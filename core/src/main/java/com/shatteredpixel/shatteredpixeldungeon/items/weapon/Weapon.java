@@ -88,6 +88,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.utils.SteelBallRunEvent;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -157,7 +158,7 @@ abstract public class Weapon extends KindOfWeapon {
             if (attacker instanceof Hero && isEquipped((Hero) attacker)
                     && attacker.buff(HolyWeapon.HolyWepBuff.class) != null){
                 if (enchantment != null &&
-                        (((Hero) attacker).subClass == HeroSubClass.PALADIN || hasCurseEnchant())){
+                        (SteelBallRunEvent.holyKeepsEnchant(attacker) || hasCurseEnchant())){
                     damage = enchantment.proc(this, attacker, defender, damage);
                 }
                 if (defender.isAlive() && trinityEnchant != null){
@@ -461,7 +462,7 @@ abstract public class Weapon extends KindOfWeapon {
     @Override
     public String name() {
         if (isEquipped(Dungeon.hero) && !hasCurseEnchant() && Dungeon.hero.buff(HolyWeapon.HolyWepBuff.class) != null
-                && (Dungeon.hero.subClass != HeroSubClass.PALADIN || enchantment == null)){
+                && (!SteelBallRunEvent.holyKeepsEnchant(Dungeon.hero) || enchantment == null)){
             return Messages.get(HolyWeapon.class, "ench_name", super.name());
         } else {
             return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.name(super.name()) : super.name();
@@ -531,7 +532,7 @@ abstract public class Weapon extends KindOfWeapon {
                 && owner instanceof Hero
                 && isEquipped((Hero) owner)
                 && owner.buff(HolyWeapon.HolyWepBuff.class) != null
-                && ((Hero) owner).subClass != HeroSubClass.PALADIN) {
+                && !SteelBallRunEvent.holyKeepsEnchant(owner)) {
             return false;
         } else if (owner.buff(BodyForm.BodyFormBuff.class) != null
                 && owner.buff(BodyForm.BodyFormBuff.class).enchant() != null
@@ -558,7 +559,7 @@ abstract public class Weapon extends KindOfWeapon {
     @Override
     public ItemSprite.Glowing glowing() {
         if (isEquipped(Dungeon.hero) && !hasCurseEnchant() && Dungeon.hero.buff(HolyWeapon.HolyWepBuff.class) != null
-                && (Dungeon.hero.subClass != HeroSubClass.PALADIN || enchantment == null)){
+                && (!SteelBallRunEvent.holyKeepsEnchant(Dungeon.hero) || enchantment == null)){
             return HOLY;
         } else {
             return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.glowing() : null;

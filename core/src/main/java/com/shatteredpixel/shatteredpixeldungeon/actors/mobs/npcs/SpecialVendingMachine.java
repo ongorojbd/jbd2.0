@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -65,6 +66,17 @@ public class SpecialVendingMachine extends NPC {
     @Override
     public boolean interact(Char c) {
         if (c != Dungeon.hero) {
+            return true;
+        }
+
+        if (Statistics.slotPulls >= WndSlotMachine.MAX_PULLS) {
+            Game.runOnRenderThread(new Callback() {
+                @Override
+                public void call() {
+                    GameScene.show(new WndQuest(SpecialVendingMachine.this,
+                            Messages.get(SpecialVendingMachine.class, "exhausted", Statistics.slotPulls, WndSlotMachine.MAX_PULLS)));
+                }
+            });
             return true;
         }
 

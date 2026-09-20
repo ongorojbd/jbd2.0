@@ -471,7 +471,9 @@ public abstract class Char extends Actor {
                 if (this == hero && hero.hasTalent(Talent.SEARING_LIGHT)) {
                     dmg += 1 + 2 * hero.pointsInTalent(Talent.SEARING_LIGHT);
                 }
-                if (this != hero && hero.subClass == HeroSubClass.PRIEST) {
+                //클레릭 외의 영웅이 이벤트로 의지의 스탠드사를 선택한 경우, 본인의 공격도 표적을 터뜨린다
+                if (hero.subClass == HeroSubClass.PRIEST
+                        && (this != hero || hero.heroClass != HeroClass.CLERIC)) {
                     enemy.damage(5 + Dungeon.hero.lvl, GuidingLight.INSTANCE);
                 }
             }

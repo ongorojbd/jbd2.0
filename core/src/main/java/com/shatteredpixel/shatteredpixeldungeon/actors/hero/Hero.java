@@ -313,6 +313,14 @@ public class Hero extends Char {
 
     public boolean ready = false;
     public boolean damageInterrupt = true;
+    //true while Level.autoWaitHero() is passing our turns for us, the same way resting does
+    public boolean autoWaiting = false;
+    //set by interrupt() only while we were auto-waiting, cleared by ready(). Hands control back
+    //once when an auto-waited turn is interrupted (e.g. a hit from something we can't see),
+    //instead of that interrupt being swallowed by the next auto-waited turn. It deliberately
+    //does NOT arm on interrupts taken while the player is already in control - doing that cost
+    //a wasted turn before the ride could resume after every fight.
+    public boolean autoWaitInterrupted = false;
     public HeroAction curAction = null;
     public HeroAction lastAction = null;
 
@@ -984,12 +992,14 @@ public class Hero extends Char {
 
     @Override
     public void spend(float time) {
-
+        //taking a turn gives the hero a fresh window of real time to act in
+        if (time > 0) GameScene.resetTurnTimer();
         super.spend(time);
     }
 
     @Override
     public void spendConstant(float time) {
+        if (time > 0) GameScene.resetTurnTimer();
         super.spendConstant(time);
     }
 
@@ -1042,6 +1052,13 @@ public class Hero extends Char {
         if (curAction == null) {
 
             if (resting) {
+                spendConstant(TIME_TO_REST);
+                next();
+            } else if (!autoWaitInterrupted && Dungeon.level.autoWaitHero(this)) {
+                //the level is passing our turn for us (e.g. riding the ambulance). checkVisibleMobs
+                //above has already refreshed visibleEnemies, so this stops on its own the moment
+                //something worth reacting to shows up
+                autoWaiting = true;
                 spendConstant(TIME_TO_REST);
                 next();
             } else {
@@ -1109,12 +1126,15 @@ public class Hero extends Char {
 
     public void busy() {
         ready = false;
+        GameScene.pauseTurnTimer();
     }
 
     private void ready() {
         if (sprite.looping()) sprite.idle();
         curAction = null;
         damageInterrupt = true;
+        autoWaiting = false;
+        autoWaitInterrupted = false;
         waitOrPickup = false;
         ready = true;
         canSelfTrample = true;
@@ -1168,6 +1188,7 @@ public class Hero extends Char {
         curAction = null;
         GameScene.resetKeyHold();
         resting = false;
+        if (autoWaiting) autoWaitInterrupted = true;
     }
 
     public void resume() {

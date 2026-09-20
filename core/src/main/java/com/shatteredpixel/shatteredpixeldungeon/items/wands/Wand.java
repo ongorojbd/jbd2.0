@@ -151,6 +151,34 @@ public abstract class Wand extends Item {
 
     public abstract void onZap(Ballistica attack);
 
+    //the char a wand's bolt is drawn from. Normally the caster, but HospitalLevel's turrets
+    //fire wands on the hero's behalf, and the bolt has to leave the turret rather than the
+    //hero standing somewhere else on the deck. fx() overrides read it through zapSprite().
+    private static Char zapSource = null;
+
+    public static CharSprite zapSprite() {
+        return zapSource != null && zapSource.sprite != null ? zapSource.sprite : curUser.sprite;
+    }
+
+    //fires a wand from something that isn't the hero, with that source's own visuals and
+    //sounds. curUser still points at the hero, so kills and exp are credited to them.
+    public static void zapFromSource(final Wand wand, Char source, final Ballistica bolt, final Callback onLand) {
+        curUser = Dungeon.hero;
+        zapSource = source;
+        try {
+            wand.fx(bolt, new Callback() {
+                @Override
+                public void call() {
+                    curUser = Dungeon.hero;
+                    wand.onZap(bolt);
+                    if (onLand != null) onLand.call();
+                }
+            });
+        } finally {
+            zapSource = null;
+        }
+    }
+
     public abstract void onHit(MagesStaff staff, Char attacker, Char defender, int damage);
 
     //not affected by enchantment proc chance changers
@@ -485,9 +513,9 @@ public abstract class Wand extends Item {
     }
 
     public void fx(Ballistica bolt, Callback callback) {
-        MagicMissile.boltFromChar(curUser.sprite.parent,
+        MagicMissile.boltFromChar(zapSprite().parent,
                 MagicMissile.MAGIC_MISSILE,
-                curUser.sprite,
+                zapSprite(),
                 bolt.collisionPos,
                 callback);
         Sample.INSTANCE.play(Assets.Sounds.ZAP);

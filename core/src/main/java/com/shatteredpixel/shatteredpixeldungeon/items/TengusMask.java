@@ -36,7 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jolyne3;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.JolyneStoneFree;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -133,24 +133,21 @@ public class TengusMask extends Item {
         }
 
         if (way == HeroSubClass.PRIEST) {
+            //클레릭이 아니면 스톤 프리 DISC 대신 죠린이 동료로 합류해 주문을 대신 시전한다
             if (curUser.heroClass != HeroClass.CLERIC) {
-                HolyTome tome = new HolyTome();
-                tome.identify();
-                if (!tome.collect()) {
-                    Dungeon.level.drop(tome, curUser.pos).sprite.drop();
-                }
-                GLog.i(Messages.get(Hero.class, "you_now_have", tome.name()));
+                JolyneStoneFree.summon(curUser);
+            } else {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new JojoSprite()},
+                        new String[]{"죠린"},
+                        new String[]{
+                                Messages.get(Jolyne3.class, "s1")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE
+                        }
+                );
             }
-            WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new JojoSprite()},
-                    new String[]{"죠린"},
-                    new String[]{
-                            Messages.get(Jolyne3.class, "s1")
-                    },
-                    new byte[]{
-                            WndDialogueWithPic.IDLE
-                    }
-            );
         } else if (way == HeroSubClass.PALADIN) {
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new JojoSprite()},
@@ -162,7 +159,7 @@ public class TengusMask extends Item {
                             WndDialogueWithPic.IDLE
                     }
             );
-        }  else if (way == HeroSubClass.RIDER) {
+        } else if (way == HeroSubClass.RIDER && Dungeon.hero.heroClass == HeroClass.JOHNNY) {
             Buff.affect(curUser, HorseRiding.class).set();
             WndDialogueWithPic.dialogue(
                     new CharSprite[]{new BlacksmithSprite()},
@@ -178,8 +175,8 @@ public class TengusMask extends Item {
             InvokerEnergy.energy = 0;
             Buff.affect(curUser, InvokerEnergy.class);
             // 3개 오브를 인벤토리에 지급하고 퀵슬롯에 등록
-            InvokerOrb.QuasOrb  quas  = new InvokerOrb.QuasOrb();
-            InvokerOrb.WexOrb   wex   = new InvokerOrb.WexOrb();
+            InvokerOrb.QuasOrb quas = new InvokerOrb.QuasOrb();
+            InvokerOrb.WexOrb wex = new InvokerOrb.WexOrb();
             InvokerOrb.ExortOrb exort = new InvokerOrb.ExortOrb();
 
             if (quas.doPickUp(Dungeon.hero)) {

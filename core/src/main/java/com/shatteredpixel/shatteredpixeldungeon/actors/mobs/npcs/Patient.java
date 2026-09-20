@@ -21,13 +21,20 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LisaSprite; //placeholder sprite, swap out later
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YasuSprite;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 
 /**
  * The escorted NPC riding on the Ambulance in HospitalLevel. If this dies for real, the hero
@@ -55,6 +62,39 @@ public class Patient extends Mob {
     @Override
     protected boolean act() {
         spend(TICK);
+        return true;
+    }
+
+    //talking to the patient before the ambulance has left is how the hero starts it
+    @Override
+    public boolean interact(Char c) {
+        if (c != Dungeon.hero || !(Dungeon.level instanceof HospitalLevel)) {
+            return true;
+        }
+
+        final HospitalLevel level = (HospitalLevel) Dungeon.level;
+        if (level.hasDeparted()) {
+            return true;
+        }
+
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                GameScene.show(new WndOptions(sprite(),
+                        Messages.titleCase(name()),
+                        Messages.get(Patient.this, "depart_prompt"),
+                        Messages.get(Patient.this, "depart_yes"),
+                        Messages.get(Patient.this, "depart_no")) {
+                    @Override
+                    protected void onSelect(int index) {
+                        if (index == 0) {
+                            level.depart();
+                            Music.INSTANCE.play(Assets.Music.TENDENCY1, true);
+                        }
+                    }
+                });
+            }
+        });
         return true;
     }
 

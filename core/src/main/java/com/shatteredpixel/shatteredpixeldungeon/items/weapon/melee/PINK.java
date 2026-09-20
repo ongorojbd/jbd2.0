@@ -3,11 +3,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -64,26 +63,9 @@ public class PINK extends MeleeWeapon {
                 Char ch = Actor.findChar(cell);
                 if (ch != null && !(ch instanceof Hero) && ch instanceof Mob && ch.alignment != Char.Alignment.ALLY) {
                     if (!ch.isImmune(Corruption.class)) {
-                        boolean chance = true;
-
-                        if (chance) Buff.affect(ch, Corruption.class);
-
-                        boolean droppingLoot = ch.alignment != Char.Alignment.ALLY;
-
-                        if (ch.buff(Corruption.class) != null) {
-                            if (droppingLoot) ((Mob) ch).rollToDropLoot();
-                            Statistics.enemiesSlain++;
-                            Badges.validateMonstersSlain();
-                            Statistics.qualifiedForNoKilling = false;
-                            if (((Mob) ch).EXP > 0 && curUser.lvl <= ((Mob) ch).maxLvl) {
-                                curUser.sprite.showStatus(CharSprite.POSITIVE, Messages.get(((Mob) ch), "exp", ((Mob) ch).EXP));
-                                curUser.earnExp(((Mob) ch).EXP, ((Mob) ch).getClass());
-                            } else {
-                                curUser.earnExp(0, ((Mob) ch).getClass());
-                            }
-                        }
+                        //전투조류 토벌 보상 판정까지 포함된 표준 처리를 사용한다
+                        AllyBuff.affectAndLoot((Mob) ch, hero, Corruption.class);
                     }
-
                 }
             }
         }

@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.utils;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -42,6 +44,19 @@ public class SteelBallRunEvent {
 
 	public static HeroSubClass bonusSubClass(HeroClass cls) {
 		return BONUS_SUBCLASSES.get(cls);
+	}
+
+	//클레릭이 아닌 영웅이 이벤트로 선택한 의지의 스탠드사
+	public static boolean isEventPriest(Char ch) {
+		return ch instanceof Hero
+				&& ((Hero) ch).subClass == HeroSubClass.PRIEST
+				&& ((Hero) ch).heroClass != HeroClass.CLERIC;
+	}
+
+	//스톤 프리 DISC의 무기/방어구 부여가 기존 마법부여를 덮어쓰지 않는 영웅
+	public static boolean holyKeepsEnchant(Char ch) {
+		return (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.PALADIN)
+				|| isEventPriest(ch);
 	}
 
 	//이벤트 종료 후에도 이미 선택한 보조 직업은 유지되므로 기간과 무관하게 판정

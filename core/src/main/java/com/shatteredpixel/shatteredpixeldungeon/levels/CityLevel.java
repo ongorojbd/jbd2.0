@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PolpoBuff;
@@ -205,6 +206,16 @@ public class CityLevel extends RegularLevel {
 								if (hadPolpoBuff) Buff.detach(hero, PolpoBuff.class);
 								boolean hadKawasiribuff = hero.buff(Kawasiribuff.class) != null;
 								if (hadKawasiribuff) Buff.detach(hero, Kawasiribuff.class);
+								//말 체력과 도약 충전 횟수는 버프 자체에 들어있으므로 값도 함께 챙겨둔다.
+								HorseRiding riding = hero.buff(HorseRiding.class);
+								boolean hadHorseRiding = riding != null;
+								int horseRidingHP = 0;
+								int horseRidingLeapCharges = 0;
+								if (hadHorseRiding) {
+									horseRidingHP = riding.getHorseHP();
+									horseRidingLeapCharges = riding.getLeapCharges();
+									Buff.detach(hero, HorseRiding.class);
+								}
 
 								Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
 								hero.HP = hero.HT; //full heal
@@ -223,6 +234,9 @@ public class CityLevel extends RegularLevel {
 									crystal.hadHoly3 = hadHoly3;
 									crystal.hadPolpoBuff = hadPolpoBuff;
 									crystal.hadKawasiribuff = hadKawasiribuff;
+									crystal.hadHorseRiding = hadHorseRiding;
+									crystal.horseRidingHP = horseRidingHP;
+									crystal.horseRidingLeapCharges = horseRidingLeapCharges;
 								}
 								crystal.collect();
 								hero.belongings.armor = new ClothArmor();

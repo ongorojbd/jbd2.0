@@ -841,7 +841,10 @@ public abstract class Mob extends Char {
 
     @Override
     public int defenseSkill(Char enemy) {
-        if (buff(GuidingLight.Illuminated.class) != null && Dungeon.hero.heroClass == HeroClass.CLERIC) {
+        //이벤트로 의지의 스탠드사를 선택한 다른 영웅도 클레릭과 같은 필중 효과를 받는다
+        if (buff(GuidingLight.Illuminated.class) != null
+                && (Dungeon.hero.heroClass == HeroClass.CLERIC
+                || Dungeon.hero.subClass == HeroSubClass.PRIEST)) {
             //if the attacker is the cleric, they must be using a weapon they have the str for
             if (enemy instanceof Hero) {
                 Hero h = (Hero) enemy;

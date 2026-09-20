@@ -184,15 +184,15 @@ public class WandOfLightning extends DamageWand {
 			}
 
 			affected.add( ch );
-			arcs.add( new Lightning.Arc(curUser.sprite.center(), ch.sprite.center()));
+			arcs.add( new Lightning.Arc(zapSprite().center(), ch.sprite.center()));
 			arc(ch);
 		} else {
-			arcs.add( new Lightning.Arc(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(bolt.collisionPos)));
+			arcs.add( new Lightning.Arc(zapSprite().center(), DungeonTilemap.raisedTileCenterToWorld(bolt.collisionPos)));
 			CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
 		}
 
 		//don't want to wait for the effect before processing damage.
-		curUser.sprite.parent.addToFront( new Lightning( arcs, null ) );
+		zapSprite().parent.addToFront( new Lightning( arcs, null ) );
 		Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
 		callback.call();
 	}

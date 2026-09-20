@@ -125,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPas
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Evolution;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Willa;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
@@ -208,7 +209,7 @@ public enum HeroClass {
             new SkeletonKey().identify().collect();
             new PotionOfHealing().identify().quantity(9999).collect();
             new PotionOfMindVision().identify().quantity(9999).collect();
-            new PotionOfHaste().identify().quantity(9999).collect();
+            new Neoro().identify().quantity(9999).collect();
             new WandOfKillerQueen().identify().collect();
             new DolomitesTeeth().identify().collect();
             new ScrollOfUpgrade().identify().quantity(9999).collect();

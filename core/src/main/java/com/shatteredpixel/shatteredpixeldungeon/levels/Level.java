@@ -634,6 +634,14 @@ public abstract class Level implements Bundlable {
 		return null;
 	}
 
+	//lets a level pass the hero's turn for them while nothing needs their input, e.g. while
+	//they are riding along on something that moves on its own. This works like resting: the
+	//turns fast-forward and the hero isn't 'ready', so control comes back either when this
+	//returns false or when something interrupts the hero (damage, a new enemy coming into view).
+	public boolean autoWaitHero( Hero hero ){
+		return false;
+	}
+
 	//returns true if we immediately transition, false otherwise
 	public boolean activateTransition(Hero hero, LevelTransition transition){
 		if (locked){

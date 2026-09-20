@@ -17,6 +17,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimePressure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -106,7 +107,7 @@ public class Neotel extends Item {
 
             Statistics.spw36 = 3;
 
-            for (int lvl = hero.lvl; lvl < 20; lvl++) {
+            for (int lvl = hero.lvl; lvl < 30; lvl++) {
                 Potion expPotion = new PotionOfExperience();
                 expPotion.apply(hero);
             }

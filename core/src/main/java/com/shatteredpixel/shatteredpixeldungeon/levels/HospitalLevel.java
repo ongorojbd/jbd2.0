@@ -26,28 +26,33 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Alpha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ambulance;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gamma;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Senior;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.AmbulanceTurret;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Patient;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTurretWand;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -56,7 +61,8 @@ import java.util.ArrayList;
  * fighting off waves of enemies. This is a direct port of Tower Pixel Dungeon's Arena18
  * ("Storm the gates") - same corridor size, same DrillBig/GenDrill step-driven movement and
  * section-building timing (stepcount 32 -> next section + wave++, matching
- * Arena18.GenDrill.moveForward() exactly), same per-section monster counts. Not wired into
+ * Arena18.GenDrill.moveForward() exactly). The monster line-up is this game's own - see
+ * SECTION_SPAWNS. Not wired into
  * real branch/depth progression yet - launched only via the debug button in WndGame.
  */
 public class HospitalLevel extends Level {
@@ -69,7 +75,7 @@ public class HospitalLevel extends Level {
         viewDistance = 40;
     }
 
-    public static final String[] SANCTUM_TRACK_LIST = new String[]{Assets.Music.PRISON_1};
+    public static final String[] SANCTUM_TRACK_LIST = new String[]{Assets.Music.TG_1};
     public static final float[] SANCTUM_TRACK_CHANCES = new float[]{1f};
 
     @Override
@@ -81,28 +87,45 @@ public class HospitalLevel extends Level {
     private static final int WIDTH = 250;
     //Arena18 is 30 tall. Everything below is still laid out in its 30-row coordinates and
     //shifted up by ROW_SHIFT through cellAt()/setAt()/fillAt(), which clips whatever falls
-    //outside. 27 tall with a -2 shift puts the hero's riding row (original row 15 -> row 13)
-    //exactly in the middle: 12 floor rows above and below. The original itself sits one row
-    //low (14 above / 13 below).
-    private static final int HEIGHT = 27;
-    private static final int ROW_SHIFT = -2;
+    //outside. ROW_SHIFT is derived from HEIGHT so the hero's riding row (original row 15) always
+    //lands in the middle of the floor rows: with an odd HEIGHT there are (HEIGHT - 3) / 2 floor
+    //rows above and below it (21 tall -> 9 each side). Change HEIGHT alone to resize; the map
+    //shrinks or grows equally top and bottom.
+    private static final int HEIGHT = 15;
+    private static final int ROW_SHIFT = (HEIGHT - 1) / 2 - 15;
 
     //sections are built in a fixed order (see buildSectionForWave), one of each template;
     //the level completes on the next section trigger after the last one
     private static final int SECTION_COUNT = 6;
+
+    //fixed mob line-up per section, in buildSectionForWave() order. columns follow SPAWN_TYPES.
+    //Banshee is placed at even intervals (see placeBanshees), the rest scatter over free floor.
+    @SuppressWarnings("unchecked")
+    private static final Class<? extends Mob>[] SPAWN_TYPES = new Class[]{
+            Banshee.class, Alpha.class, Beta.class, Gamma.class};
+    private static final int[][] SECTION_SPAWNS = {
+            //Banshee, Alpha, Beta, Gamma
+            {4,  0,  0,  0},
+            {0, 30,  0,  0},
+            {0, 15, 15,  0},
+            {0,  0, 30,  0},
+            {0,  0, 15, 15},
+            {0,  0,  0, 30},
+    };
+    private static final int BANSHEE = 0;
 
     private int entranceCell;
     private int exitCell;
 
     private int wave = 0;
 
-    //matches DrillBig's own "counter"/"stepcount"/"active" fields exactly: counter throttles
-    //movement to once every 2 turns, stepcount counts real advances and triggers the next
-    //section at 32, active gates movement until the drill starts up.
+    //matches DrillBig's own "counter"/"stepcount"/"active" fields: counter throttles movement to
+    //once every 2 moving turns, stepcount counts real advances and triggers the next section at
+    //32, active gates movement. GenDrill starts itself at counter == 101; here active stays
+    //false until the hero tells the Patient to depart (see depart).
     //GenDrill sets stepcount = 26 up front, so the very first section arrives after only 6
-    //advances instead of a full 32. GenDrill activates at counter == 101; this level uses
-    //START_DELAY instead.
-    private static final int START_DELAY = 5;
+    //advances instead of a full 32.
+    private static final float HERO_WAIT_ON_DEPART = 30f;
     private int counter = 0;
     private int stepcount = 26;
     private boolean active = false;
@@ -112,6 +135,14 @@ public class HospitalLevel extends Level {
     private Ambulance ambulance;
     private Patient patient;
 
+    //the turret whose wand prompt is open. Deliberately not saved: a game reloaded mid-choice
+    //finds the turret still unarmed and asks again.
+    private AmbulanceTurret pendingTurret;
+
+    //how many turrets have been armed so far, which picks the patient's next line
+    private static final int TURRET_LINES = 6;
+    private int turretLine = 0;
+
     private static final String WAVE = "wave";
     private static final String COUNTER = "counter";
     private static final String STEPCOUNT = "stepcount";
@@ -119,6 +150,7 @@ public class HospitalLevel extends Level {
     private static final String COMPLETED = "completed";
     private static final String AMBULANCE = "ambulance";
     private static final String PATIENT = "patient";
+    private static final String TURRET_LINE = "turret_line";
 
     @Override
     public String tilesTex() {
@@ -137,10 +169,11 @@ public class HospitalLevel extends Level {
         //setSize already fills everything with WALL - only the starting room gets carved,
         //matching Arena18.build()'s "Painter.fill(this, 1, 1, 15, 28, EMPTY)" starting room
         fillAt(1, 1, 15, 28, Terrain.EMPTY);
+        paintEdgeRows(1, 15);
         scatterDeco(1, 15);
 
         //Arena18 puts the amulet pedestal at 7 + WIDTH*15 and the hero at amuletCell + 1
-        entranceCell = cellAt(8, 15);
+        entranceCell = cellAt(6, 15);
 
         transitions.add(new LevelTransition(this,
                 entranceCell,
@@ -162,11 +195,6 @@ public class HospitalLevel extends Level {
         //seals the level so the run has to be played out, like Arena18.initNpcs()
         seal();
 
-        //hero stands still for the first 40 turns. This runs inside Dungeon.newLevel() after
-        //Actor.clear(); Actor.add() later does "time += now" with now == 0, so the 40 carries
-        //over instead of being reset when the hero is added to the new level.
-        Dungeon.hero.spend(40f);
-
         //GenDrill spawns at "amuletCell - WIDTH - WIDTH - 3" = two rows up, three columns left
         ambulance = new Ambulance();
         ambulance.pos = cellAt(7 - 3, 15 - 2);
@@ -176,6 +204,101 @@ public class HospitalLevel extends Level {
         patient = new Patient();
         patient.pos = ambulance.pos + 3 + 2 * width();
         mobs.add(patient);
+
+        //one turret is already bolted on before the hero sets off; its wand is chosen on the
+        //first turn, once there is a scene to show the prompt in (see onAmbulanceTurn)
+        installTurret(false);
+    }
+
+    //adds a turret to the first free spot on the deck. Turrets ride along on their own because
+    //stepForward() shoves the whole deck. The wand is picked separately, by promptPendingWand().
+    private void installTurret(boolean levelIsLive) {
+        int cell = freeDeckCell();
+        if (cell == -1) return;
+
+        AmbulanceTurret turret = new AmbulanceTurret();
+        turret.pos = cell;
+        //GameScene.add() does the mobs.add() itself, and only works once the scene exists.
+        //occupyCell() reads Dungeon.level (via Blob.volumeAt), which is still null while the
+        //level is being generated - the ambulance and patient are placed without it too.
+        if (levelIsLive) {
+            GameScene.add(turret);
+            occupyCell(turret);
+        } else {
+            mobs.add(turret);
+        }
+    }
+
+    //a turret without a wand is inert, so the choice is offered as soon as one exists and there
+    //is a scene to show it in. Driven from onAmbulanceTurn() so it also covers the opening
+    //turret, which is built during level generation.
+    //GameScene.showingWindow() is no good as a guard here: the prompt is queued onto the render
+    //thread, so it does not exist yet on the turns right after it was asked for - and several
+    //of those can go by in one frame while autoWaitHero is passing the hero's turns. Tracking
+    //the turret waiting on an answer instead is exact, and it self-clears once one is given.
+    private void promptPendingWand() {
+        if (pendingTurret != null) {
+            if (pendingTurret.wand() == null) return;
+            pendingTurret = null;
+
+            //the patient works through TURRET_LINES in order, one per turret armed - a run
+            //installs exactly that many, so each line is heard once and they escalate
+            if (patient != null && patient.isAlive()) {
+                patient.yell( Messages.get( Patient.class, "turret_wand_" + (turretLine % TURRET_LINES + 1) ) );
+            }
+            turretLine++;
+        }
+
+        for (Mob mob : mobs.toArray(new Mob[0])) {
+            if (mob instanceof AmbulanceTurret && ((AmbulanceTurret) mob).wand() == null) {
+                if (chooseWandFor((AmbulanceTurret) mob)) {
+                    pendingTurret = (AmbulanceTurret) mob;
+                }
+                return;
+            }
+        }
+    }
+
+    //the deck is the same 6x5 box stepForward() carries along. Turrets fill the top and bottom
+    //rows first so the middle of the deck stays walkable - they are IMMOVABLE, and the hero
+    //cannot swap past one.
+    private int freeDeckCell() {
+        if (ambulance == null) return -1;
+        int ax = ambulance.pos % width();
+        int ay = ambulance.pos / width();
+
+        //along the deck's two rails, front first and a cell apart (columns 5/3/1 hold one turret
+        //each per rail, which is exactly the six a run installs). The columns in between and
+        //the inner rows are only a fallback - packing turrets side by side would wall the deck
+        //off, since they are IMMOVABLE and the hero cannot swap past one.
+        for (int[] rows : new int[][]{{0, 4}, {1, 3, 2}}) {
+            for (int dx : new int[]{5, 3, 1, 4, 2, 0}) {
+                for (int dy : rows) {
+                    int x = ax + dx;
+                    int y = ay + dy;
+                    if (x < 1 || x > WIDTH - 2 || y < 1 || y > HEIGHT - 2) continue;
+                    int cell = x + y * width();
+                    if (!passable[cell]) continue;
+                    if (Actor.findChar(cell) != null) continue;
+                    return cell;
+                }
+            }
+        }
+        return -1;
+    }
+
+    //true if a prompt was actually put up for this turret
+    private boolean chooseWandFor(final AmbulanceTurret turret) {
+        final ArrayList<Wand> choices = AmbulanceTurret.rollChoices(3);
+        if (choices.isEmpty()) return false;
+
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                GameScene.show(new WndTurretWand(turret, choices));
+            }
+        });
+        return true;
     }
 
     @Override
@@ -187,6 +310,43 @@ public class HospitalLevel extends Level {
     @Override
     public Actor addRespawner() {
         return null;
+    }
+
+    public boolean hasDeparted() {
+        return active || completed;
+    }
+
+    //the box stepForward() carries along with the ambulance - anything standing in it rides
+    //instead of being left behind
+    public boolean isRiding(Char ch) {
+        if (ambulance == null || ch == null) return false;
+        int dx = ch.pos % width() - ambulance.pos % width();
+        int dy = ch.pos / width() - ambulance.pos / width();
+        return dx >= 0 && dx <= 5 && dy >= 0 && dy <= 4;
+    }
+
+    //while the hero is riding along with nothing in sight there is nothing for them to decide,
+    //so their turns are passed for them and the stretch between sections plays out at travel
+    //speed. Hero.act() re-checks this every turn, so control comes back the moment an enemy
+    //comes into view or the hero takes a hit.
+    @Override
+    public boolean autoWaitHero(Hero hero) {
+        if (!active || completed) return false;
+        //don't drive on while the hero is still picking a turret's wand. This checks the
+        //turret itself rather than pendingTurret, which isn't cleared until the next ambulance
+        //turn - and no ambulance turn can happen while this is holding the hero at the prompt
+        if (pendingTurret != null && pendingTurret.wand() == null) return false;
+        if (!isRiding(hero)) return false;
+        if (hero.visibleEnemies() > 0) return false;
+        return true;
+    }
+
+    //end of the Patient's depart prompt: the ambulance rolls out and the hero stands still for
+    //HERO_WAIT_ON_DEPART turns while it does. Departure is one-way, there is no stopping again.
+    public void depart() {
+        if (hasDeparted()) return;
+        active = true;
+        Dungeon.hero.spendAndNext(HERO_WAIT_ON_DEPART);
     }
 
     //called every turn by Ambulance.act() - mirrors DrillBig.act(): grind the wall ahead every
@@ -205,12 +365,13 @@ public class HospitalLevel extends Level {
 
         grindTerrainAhead();
 
+        promptPendingWand();
+
+        //parked until the hero says go
+        if (!active) return;
+
         counter++;
-        //the ambulance sits still until counter reaches START_DELAY, then starts moving
-        if (counter == START_DELAY) {
-            active = true;
-        }
-        if (counter >= 2 && active) {
+        if (counter >= 2) {
             counter = 0;
             stepForward();
         }
@@ -230,6 +391,11 @@ public class HospitalLevel extends Level {
                 completeLevel();
                 return;
             }
+            //building section N means wave N-1 has been survived, so that clear earns a turret.
+            //The first section is the start of wave 0, not the end of anything.
+            if (wave > 0) {
+                installTurret(true);
+            }
             buildSectionForWave(wave);
             wave++;
         }
@@ -241,24 +407,15 @@ public class HospitalLevel extends Level {
             }
         }
 
-        int xd = ambulance.pos % width();
-        int yd = ambulance.pos / width();
-
         for (Mob mob : mobs) {
             if (mob == ambulance) continue;
-            int x = mob.pos % width();
-            int y = mob.pos / width();
-            if (x - xd >= 0 && x - xd <= 5 && y - yd >= 0 && y - yd <= 4) {
+            if (isRiding(mob)) {
                 shove(mob);
             }
         }
 
-        Char hero = Dungeon.hero;
-        int xh = hero.pos % width();
-        int yh = hero.pos / width();
-        boolean heroMoved = xh - xd >= 0 && xh - xd <= 5 && yh - yd >= 0 && yh - yd <= 4;
-        if (heroMoved) {
-            shove(hero);
+        if (isRiding(Dungeon.hero)) {
+            shove(Dungeon.hero);
         }
 
         shove(ambulance);
@@ -376,9 +533,68 @@ public class HospitalLevel extends Level {
             case 5: buildGates(x); break;
         }
 
+        paintEdgeRows(x, 30);
         scatterDeco(x, 30);
         buildFlagMaps();
         GameScene.updateMap();
+
+        spawnSection(index, x);
+    }
+
+    //Places SECTION_SPAWNS[index]'s mobs over the section's painted area (columns x+5..x+29).
+    //Banshees go first at fixed intervals; the others then scatter over the remaining free
+    //cells, one mob per cell.
+    private void spawnSection(int index, int x) {
+        ArrayList<Integer> free = passableCells(x + 5, x + 30, 1, 29);
+        int[] counts = SECTION_SPAWNS[index];
+
+        for (int type = 0; type < SPAWN_TYPES.length; type++) {
+            if (type == BANSHEE) {
+                placeBanshees(free, x, counts[type]);
+                continue;
+            }
+            for (int i = 0; i < counts[type] && !free.isEmpty(); i++) {
+                addMob(SPAWN_TYPES[type], free.remove(Random.Int(free.size())));
+            }
+        }
+    }
+
+    //evenly spaced across the section, alternating between an upper and a lower row so they
+    //don't form one line. A target cell that is blocked (Town's houses) falls back to the
+    //closest free cell.
+    private void placeBanshees(ArrayList<Integer> free, int x, int count) {
+        for (int i = 0; i < count; i++) {
+            int col = x + 5 + Math.round(25 * (i + 0.5f) / count);
+            int row = (i % 2 == 0) ? 8 : 22;
+            int cell = nearestFree(free, col, row);
+            if (cell == -1) continue;
+            free.remove((Integer) cell);
+            addMob(SPAWN_TYPES[BANSHEE], cell);
+        }
+    }
+
+    private int nearestFree(ArrayList<Integer> free, int x, int y) {
+        int best = -1;
+        int bestDist = Integer.MAX_VALUE;
+        for (int cell : free) {
+            int dx = cell % width() - x;
+            int dy = cell / width() - (y + ROW_SHIFT);
+            int dist = dx * dx + dy * dy;
+            if (dist < bestDist) {
+                bestDist = dist;
+                best = cell;
+            }
+        }
+        return best;
+    }
+
+    private void addMob(Class<? extends Mob> cls, int cell) {
+        Mob mob = Reflection.newInstance(cls);
+        if (mob == null) return;
+        mob.pos = cell;
+        mob.state = mob.WANDERING;
+        GameScene.add(mob);
+        occupyCell(mob);
     }
 
     //The section templates below keep Arena18's 30-row coordinates. These helpers shift those
@@ -415,6 +631,21 @@ public class HospitalLevel extends Level {
         return cells;
     }
 
+    //paints the corridor's outermost floor rows with EMPTY_SP, so the route reads as a road
+    //with edges instead of one flat expanse. Purely cosmetic: EMPTY_SP copies EMPTY's flags,
+    //and grindTerrainAhead() already leaves it alone rather than blasting it to embers. Runs
+    //before scatterDeco() so the band doesn't get littered with debris tiles.
+    private void paintEdgeRows(int x, int w) {
+        for (int x1 = Math.max(1, x); x1 < Math.min(WIDTH - 1, x + w); x1++) {
+            for (int y1 : new int[]{1, HEIGHT - 2}) {
+                int cell = x1 + y1 * width();
+                if (map[cell] == Terrain.EMPTY || map[cell] == Terrain.EMPTY_DECO) {
+                    map[cell] = Terrain.EMPTY_SP;
+                }
+            }
+        }
+    }
+
     //litters plain floor with EMPTY_DECO (dust/debris tiles). Same flags as EMPTY, so it only
     //changes how the floor looks.
     private void scatterDeco(int x, int w) {
@@ -432,7 +663,7 @@ public class HospitalLevel extends Level {
         //original uses BARRICADE here, but this block sits directly in the ambulance's path
         //so it reads as plain wall being bored through
         fillAt(x, 11, 5, 10, Terrain.WALL);
-        fillAt(x + 5, 1, 25, 28, Terrain.GRASS);
+        fillAt(x + 5, 1, 25, 28, Terrain.EMPTY);
         for (int x1 = x; x1 < x + 25; x1 += 5) {
             for (int y1 = 15; y1 < 26; y1 += 10) {
                 if (Random.Float() > 0.2f) setAt(x1, y1, Terrain.STATUE);
@@ -440,24 +671,10 @@ public class HospitalLevel extends Level {
         }
         buildFlagMaps();
         GameScene.updateMap();
-
-        ArrayList<Integer> candidates = passableCells(x, x + 25, 1, 28);
-
-        //ported verbatim from Arena18.buildGraveyard(), including the original's own quirk of
-        //re-rolling Random.Float() at each check (not reusing one roll) - same (wave+1)*N counts
-        if (Random.Float() > 0.66f) {
-            spawnWandering(candidates, (wave + 1) * 20, Wraith.class);
-        } else if (Random.Float() > 0.66f) {
-            //TPD alternates Skeleton/SkeletonArmored every 6th - no SkeletonArmored here, plain
-            //Skeleton stands in for it
-            spawnWandering(candidates, (wave + 1) * 8, Skeleton.class);
-        } else {
-            spawnAlternating(candidates, (wave + 1) * 5, 5, Skeleton.class, Warlock.class);
-        }
     }
 
     private void buildParade(int x) {
-        fillAt(x, 10, 5, 10, Terrain.GRASS);
+        fillAt(x, 10, 5, 10, Terrain.EMPTY);
         fillAt(x + 5, 1, 25, 28, Terrain.EMPTY);
         fillAt(x + 5, 10, 25, 10, Terrain.EMPTY);
         buildFlagMaps();
@@ -477,15 +694,6 @@ public class HospitalLevel extends Level {
             }
         }
 
-        ArrayList<Integer> candidates = passableCells(x, x + 25, 1, 29);
-
-        //ported verbatim from Arena18.buildParade() - every 5th is the Frost one, rest Fire
-        if (Random.Float() > 0.5f) {
-            spawnWandering(candidates, (wave + 1) * 4, Elemental.ShockElemental.class);
-        } else {
-            spawnAlternating(candidates, (wave + 1) * 4, 5, Elemental.FrostElemental.class, Elemental.FireElemental.class);
-        }
-
         buildFlagMaps();
         GameScene.updateMap();
     }
@@ -497,24 +705,10 @@ public class HospitalLevel extends Level {
         buildFlagMaps();
         GameScene.updateMap();
 
-        //original drops 3 tower spawners here (out of scope), then lays the barricades
         for (int x1 = x; x1 < x + 13; x1 += 2) {
             for (int y1 = 8; y1 < 28; y1 += 13) {
                 setAt(x1, y1, Terrain.BARRICADE);
             }
-        }
-
-        //TPD lines the lane with 8 fixed LineCannon turrets (a TowerCannon1 subclass) - no
-        //tower-defense turret class exists here, so 8 fixed Warlocks hold the line instead,
-        //keeping the original's exact count even though the mob type has to differ
-        for (int yb = 8; yb < 24; yb += 2) {
-            int cell = cellAt(x + 20, yb);
-            if (cell == -1 || !passable[cell]) continue;
-            Warlock guard = new Warlock();
-            guard.pos = cell;
-            guard.state = guard.HUNTING;
-            GameScene.add(guard);
-            occupyCell(guard);
         }
     }
 
@@ -532,18 +726,6 @@ public class HospitalLevel extends Level {
         fillAt(x + 11, 8, 1, 15, Terrain.BARRICADE);
         buildFlagMaps();
         GameScene.updateMap();
-
-        //ported verbatim from Arena18.buildGolem(): 8 fixed golem shooters (yb=8..15), no
-        //wave scaling in the original either
-        for (int yb = 8; yb < 16; yb++) {
-            int cell = cellAt(x + 20, yb);
-            if (cell == -1 || !passable[cell]) continue;
-            Golem crossbow = new Golem();
-            crossbow.pos = cell;
-            crossbow.state = crossbow.HUNTING;
-            GameScene.add(crossbow);
-            occupyCell(crossbow);
-        }
     }
 
     private void buildGates(int x) {
@@ -571,10 +753,6 @@ public class HospitalLevel extends Level {
             }
         }
 
-        ArrayList<Integer> candidates = passableCells(x, x + 25, 1, 29);
-        //ported verbatim from Arena18.buildGates(): wave*2 golems
-        spawnWandering(candidates, wave * 2, Golem.class);
-
         buildFlagMaps();
         GameScene.updateMap();
     }
@@ -595,54 +773,6 @@ public class HospitalLevel extends Level {
         }
         buildFlagMaps();
         GameScene.updateMap();
-
-        ArrayList<Integer> candidates = passableCells(x, x + 25, 1, 29);
-
-        //ported from Arena18.buildTown(), same re-rolled Random.Float() at each check. The
-        //original's middle branch spawns Statues; jbd2.0's Statue needs createWeapon() after
-        //construction (weapon is null otherwise and canAttack() crashes), so Monks stand in.
-        if (Random.Float() > 0.66f) {
-            spawnWandering(candidates, Math.round((wave / 1.5f + 1) * 4), Monk.class);
-        } else if (Random.Float() > 0.66f) {
-            spawnWandering(candidates, (wave + 1) * 2, Monk.class);
-        } else {
-            spawnWandering(candidates, wave / 4 + 1, Senior.class);
-        }
-
-        buildFlagMaps();
-        GameScene.updateMap();
-    }
-
-    private void spawnWandering(ArrayList<Integer> candidates, int count, Class<? extends Mob> cls) {
-        if (candidates.isEmpty()) return;
-        for (int i = 0; i < count; i++) {
-            try {
-                Mob mob = cls.newInstance();
-                mob.pos = Random.element(candidates);
-                mob.state = mob.WANDERING;
-                GameScene.add(mob);
-                occupyCell(mob);
-            } catch (Exception e) {
-                //shouldn't happen - all of these have plain no-arg constructors
-            }
-        }
-    }
-
-    //ported pattern from Arena18's "i % n == 0 ? classA : classB" alternating spawn loops
-    private void spawnAlternating(ArrayList<Integer> candidates, int count, int everyNth, Class<? extends Mob> mainCls, Class<? extends Mob> altCls) {
-        if (candidates.isEmpty()) return;
-        for (int i = 0; i < count; i++) {
-            Class<? extends Mob> cls = (i % everyNth == 0) ? mainCls : altCls;
-            try {
-                Mob mob = cls.newInstance();
-                mob.pos = Random.element(candidates);
-                mob.state = mob.WANDERING;
-                GameScene.add(mob);
-                occupyCell(mob);
-            } catch (Exception e) {
-                //shouldn't happen - all of these have plain no-arg constructors
-            }
-        }
     }
 
     private void completeLevel() {
@@ -680,6 +810,7 @@ public class HospitalLevel extends Level {
         bundle.put(COMPLETED, completed);
         bundle.put(AMBULANCE, ambulance);
         bundle.put(PATIENT, patient);
+        bundle.put(TURRET_LINE, turretLine);
     }
 
     @Override
@@ -692,5 +823,6 @@ public class HospitalLevel extends Level {
         completed = bundle.getBoolean(COMPLETED);
         ambulance = (Ambulance) bundle.get(AMBULANCE);
         patient = (Patient) bundle.get(PATIENT);
+        turretLine = bundle.getInt(TURRET_LINE);
     }
 }

@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.D4C;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy1;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Holy3;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HorseRiding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Kawasiribuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PolpoBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -314,6 +315,12 @@ public class EscapeCrystal extends Item {
 			Buff.affect(Dungeon.hero, Kawasiribuff.class);
 			hadKawasiribuff = false;
 		}
+		if (hadHorseRiding) {
+			HorseRiding riding = Buff.affect(Dungeon.hero, HorseRiding.class);
+			riding.set(horseRidingHP);
+			riding.setLeapCharges(horseRidingLeapCharges);
+			hadHorseRiding = false;
+		}
 
 		Level.beforeTransition();
 		InterlevelScene.curTransition = new LevelTransition(Dungeon.level,
@@ -395,6 +402,9 @@ public class EscapeCrystal extends Item {
 	public boolean hadHoly3 = false;
 	public boolean hadPolpoBuff = false;
 	public boolean hadKawasiribuff = false;
+	public boolean hadHorseRiding = false;
+	public int horseRidingHP = 0;
+	public int horseRidingLeapCharges = 0;
 
 	public static String STORED_ITEMS      = "stored_items";
 	public static String HAD_D4C           = "had_d4c";
@@ -403,6 +413,9 @@ public class EscapeCrystal extends Item {
 	public static String HAD_HOLY3         = "had_holy3";
 	public static String HAD_POLPOBUFF     = "had_polpobuff";
 	public static String HAD_KAWASIRIBUFF  = "had_kawasiribuff";
+	public static String HAD_HORSERIDING   = "had_horseriding";
+	public static String HORSERIDING_HP    = "horseriding_hp";
+	public static String HORSERIDING_LEAP  = "horseriding_leap";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
@@ -414,6 +427,9 @@ public class EscapeCrystal extends Item {
 		bundle.put(HAD_HOLY3, hadHoly3);
 		bundle.put(HAD_POLPOBUFF, hadPolpoBuff);
 		bundle.put(HAD_KAWASIRIBUFF, hadKawasiribuff);
+		bundle.put(HAD_HORSERIDING, hadHorseRiding);
+		bundle.put(HORSERIDING_HP, horseRidingHP);
+		bundle.put(HORSERIDING_LEAP, horseRidingLeapCharges);
 	}
 
 	@Override
@@ -426,5 +442,8 @@ public class EscapeCrystal extends Item {
 		hadHoly3 = bundle.getBoolean(HAD_HOLY3);
 		hadPolpoBuff = bundle.getBoolean(HAD_POLPOBUFF);
 		hadKawasiribuff = bundle.getBoolean(HAD_KAWASIRIBUFF);
+		hadHorseRiding = bundle.getBoolean(HAD_HORSERIDING);
+		horseRidingHP = bundle.getInt(HORSERIDING_HP);
+		horseRidingLeapCharges = bundle.getInt(HORSERIDING_LEAP);
 	}
 }

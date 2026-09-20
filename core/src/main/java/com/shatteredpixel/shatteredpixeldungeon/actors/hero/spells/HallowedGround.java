@@ -136,7 +136,7 @@ public class HallowedGround extends TargetedClericSpell {
 
 	}
 
-	private void affectChar( Char ch ){
+	public void affectChar( Char ch ){
 		if (ch.alignment == Char.Alignment.ALLY){
 
 			if (ch == Dungeon.hero || ch.HP == ch.HT){

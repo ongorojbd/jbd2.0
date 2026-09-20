@@ -70,6 +70,10 @@ public class HorseRiding extends Buff implements ActionIndicator.Action, Hero.Do
     public int getLeapCharges() {
         return leapCharges;
     }
+
+    public int getHorseHP() {
+        return horseHP;
+    }
     
     public void setLeapCharges(int charges) {
         this.leapCharges = Math.min(charges, MAX_LEAP_CHARGES);

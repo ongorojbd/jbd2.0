@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.utils.SteelBallRunEvent;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
@@ -394,7 +395,7 @@ public class MeleeWeapon extends Weapon {
 		}
 
 		if (isEquipped(Dungeon.hero) && !hasCurseEnchant() && Dungeon.hero.buff(HolyWeapon.HolyWepBuff.class) != null
-				&& (Dungeon.hero.subClass != HeroSubClass.PALADIN || enchantment == null)){
+				&& (!SteelBallRunEvent.holyKeepsEnchant(Dungeon.hero) || enchantment == null)){
 			info += "\n\n" + Messages.capitalize(Messages.get(Weapon.class, "enchanted", Messages.get(HolyWeapon.class, "ench_name", Messages.get(Enchantment.class, "enchant"))));
 			info += " " + Messages.get(HolyWeapon.class, "ench_desc");
 		} else if (enchantment != null && (cursedKnown || !enchantment.curse())){

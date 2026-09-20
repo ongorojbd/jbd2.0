@@ -73,6 +73,7 @@ public class Statistics {
     public static int duwang;
     public static int duwang2;
     public static int duwang3;
+    public static int slotPulls;
     public static int spw1;
     public static int spw2;
     public static int spw3;
@@ -204,6 +205,7 @@ public class Statistics {
         duwang = 0;
         duwang2 = 0;
         duwang3 = 0;
+        slotPulls = 0;
         spw1 = 0;
         spw2 = 0;
         spw3 = 0;
@@ -315,6 +317,7 @@ public class Statistics {
     private static final String DUWANG = "duwang";
     private static final String DUWANG2 = "duwang2";
     private static final String DUWANG3 = "duwang3";
+    private static final String SLOTPULLS = "slotPulls";
     private static final String SPW1 = "spw1";
     private static final String SPW2 = "spw2";
     private static final String SPW3 = "spw3";
@@ -442,6 +445,7 @@ public class Statistics {
         bundle.put(DUWANG, duwang);
         bundle.put(DUWANG2, duwang2);
         bundle.put(DUWANG3, duwang3);
+        bundle.put(SLOTPULLS, slotPulls);
         bundle.put(SPW1, spw1);
         bundle.put(SPW2, spw2);
         bundle.put(SPW3, spw3);
@@ -578,6 +582,7 @@ public class Statistics {
         duwang = bundle.getInt(DUWANG);
         duwang2 = bundle.getInt(DUWANG2);
         duwang3 = bundle.getInt(DUWANG3);
+        slotPulls = bundle.getInt(SLOTPULLS);
         spw1 = bundle.getInt(SPW1);
         spw2 = bundle.getInt(SPW2);
         spw3 = bundle.getInt(SPW3);

@@ -78,6 +78,7 @@ public class StatusPane extends Component {
 
 	private BusyIndicator busy;
 	private CircleArc counter;
+	private CircleArc timeCounter;
 
 	private boolean large;
 
@@ -186,6 +187,12 @@ public class StatusPane extends Component {
 		counter = new CircleArc(18, 4.25f);
 		counter.color( 0x808080, true );
 		counter.show(this, busy.center(), 0f);
+
+		//shows how much real time is left in the hero's turn, see TimePressure
+		timeCounter = new CircleArc(18, 4.25f);
+		timeCounter.color( 0xCC0000, true );
+		timeCounter.show(this, busy.center(), 0f);
+		timeCounter.visible = false;
 	}
 
 	@Override
@@ -288,6 +295,7 @@ public class StatusPane extends Component {
 		}
 
 		counter.point(busy.center());
+		timeCounter.point(busy.center());
 	}
 	
 	private static final int[] warningColors = new int[]{0x660000, 0xCC0000, 0x660000};
@@ -389,6 +397,12 @@ public class StatusPane extends Component {
 		}
 
 		counter.setSweep((1f - Actor.now()%1f)%1f);
+
+		float timeLeft = GameScene.turnTimerPercent();
+		timeCounter.visible = timeLeft >= 0;
+		if (timeCounter.visible) {
+			timeCounter.setSweep(1f - timeLeft);
+		}
 		updateArrowChoiceAura();
 	}
 
@@ -412,6 +426,7 @@ public class StatusPane extends Component {
 		compass.alpha(value);
 		busy.alpha(value);
 		counter.alpha(value);
+		timeCounter.alpha(value);
 	}
 
 	public void showStarParticles(){

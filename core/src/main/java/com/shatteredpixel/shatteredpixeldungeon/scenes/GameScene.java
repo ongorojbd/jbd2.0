@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ThunderImbue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimePressure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Wedding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Wedding2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -333,6 +334,9 @@ public class GameScene extends PixelScene {
                 Camera.main.setFollowDeadzone(0.9f);
                 break;
         }
+
+        turnTimerPaused = true;
+        resetTurnTimer();
 
         RectF insets = getCommonInsets();
         //we want to check if large is the same as blocking here
@@ -1640,6 +1644,27 @@ public class GameScene extends PixelScene {
 
     private static float waterOfs = 0;
 
+    //real time the hero has left to act on their current turn, see TimePressure
+    private static boolean turnTimerPaused = true;
+    private static float turnTimer = 0;
+    private static float turnTimerMax = 0;
+
+    public static void resetTurnTimer() {
+        turnTimerMax = TimePressure.heroTimeLimit();
+        turnTimer = turnTimerMax;
+    }
+
+    public static void pauseTurnTimer() {
+        turnTimerPaused = true;
+    }
+
+    //1 when the hero has all of their time left, 0 when it has run out.
+    //-1 if the hero isn't under any time pressure right now
+    public static float turnTimerPercent() {
+        if (turnTimerPaused || turnTimerMax <= 0) return -1;
+        return Math.max(0, turnTimer / turnTimerMax);
+    }
+
     @Override
     public synchronized void update() {
         lastOffset = null;
@@ -1661,6 +1686,21 @@ public class GameScene extends PixelScene {
         super.update();
 
         if (notifyDelay > 0) notifyDelay -= Game.elapsed;
+
+        float timeLimit = TimePressure.heroTimeLimit();
+        if (timeLimit <= 0) {
+            turnTimerMax = 0;
+        } else if (!turnTimerPaused && Dungeon.hero.ready && Dungeon.hero.isAlive()) {
+            if (turnTimerMax != timeLimit) {
+                turnTimerMax = timeLimit;
+                turnTimer = Math.min(turnTimer, timeLimit);
+            }
+            turnTimer -= Game.elapsed;
+            if (turnTimer <= 0) {
+                resetTurnTimer();
+                Dungeon.hero.rest(false);
+            }
+        }
 
         if (!Emitter.freezeEmitters) {
             waterOfs -= 5 * Game.elapsed;
@@ -2589,6 +2629,9 @@ public class GameScene extends PixelScene {
     }
 
     public static void ready() {
+        if (Dungeon.hero != null && Dungeon.hero.ready) {
+            turnTimerPaused = false;
+        }
         selectCell(defaultCellListener);
         QuickSlotButton.cancel();
         InventoryPane.cancelTargeting();
