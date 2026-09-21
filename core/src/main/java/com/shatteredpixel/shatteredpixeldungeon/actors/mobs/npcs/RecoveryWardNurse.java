@@ -143,7 +143,7 @@ public class RecoveryWardNurse extends NPC {
             GLog.p(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", reward.name())));
         }
 
-        yell("나는 밑에서 기다리고 있을게!");
+        yell("나는 차에서 기다리고 있을게!");
 
         destroy();
         sprite.die();

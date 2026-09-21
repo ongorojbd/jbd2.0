@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ColdhouseExitGuide;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RecoveryWardNurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -84,13 +85,20 @@ public class ColdhouseRecoveryLevel extends Level {
         int entrance = entranceCell();
         int exit = exitCell();
         map[entrance] = Terrain.ENTRANCE;
-        map[exit] = Terrain.EXIT;
+        //no visible stairs here - the LevelTransition is still registered below (so the compass
+        //and level.exit() still resolve normally), it's just no longer tied to a stair tile.
+        //ColdhouseExitGuide, standing on this cell, fires it herself when talked to.
+        map[exit] = Terrain.EMPTY;
         transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
         transitions.add(new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT));
 
         RecoveryWardNurse nurse = new RecoveryWardNurse();
         nurse.pos = WIDTH / 2 + 5 * WIDTH;
         mobs.add(nurse);
+
+        ColdhouseExitGuide exitGuide = new ColdhouseExitGuide();
+        exitGuide.pos = exit;
+        mobs.add(exitGuide);
 
         return true;
     }
