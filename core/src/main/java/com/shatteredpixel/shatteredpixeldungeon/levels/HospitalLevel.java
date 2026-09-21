@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Alpha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ambulance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DoobieWah;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gamma;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.AmbulanceTurret;
@@ -45,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTurretWand;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
@@ -139,6 +142,11 @@ public class HospitalLevel extends Level {
     //finds the turret still unarmed and asks again.
     private AmbulanceTurret pendingTurret;
 
+    //the opening turret's prompt, and the wand picked in it but not bolted on yet. Neither is
+    //saved: a game reloaded before the turret went on finds an empty deck and asks again.
+    private boolean openingPromptOpen = false;
+    private volatile Wand openingWand = null;
+
     //how many turrets have been armed so far, which picks the patient's next line
     private static final int TURRET_LINES = 6;
     private int turretLine = 0;
@@ -151,6 +159,9 @@ public class HospitalLevel extends Level {
     private static final String AMBULANCE = "ambulance";
     private static final String PATIENT = "patient";
     private static final String TURRET_LINE = "turret_line";
+    private static final String BOSS_SPAWNED = "boss_spawned";
+
+    private boolean bossSpawned = false;
 
     @Override
     public String tilesTex() {
@@ -205,54 +216,85 @@ public class HospitalLevel extends Level {
         patient.pos = ambulance.pos + 3 + 2 * width();
         mobs.add(patient);
 
-        //one turret is already bolted on before the hero sets off; its wand is chosen on the
-        //first turn, once there is a scene to show the prompt in (see onAmbulanceTurn)
-        installTurret(false);
+        //no turret yet - the opening one is bolted on only once its wand has been picked, after
+        //the ambulance sets off (see promptPendingWand)
     }
 
     //adds a turret to the first free spot on the deck. Turrets ride along on their own because
-    //stepForward() shoves the whole deck. The wand is picked separately, by promptPendingWand().
-    private void installTurret(boolean levelIsLive) {
+    //stepForward() shoves the whole deck. Only ever called while the level is live - GameScene
+    //and occupyCell() both need Dungeon.level to be set.
+    private AmbulanceTurret installTurret(Wand wand) {
         int cell = freeDeckCell();
-        if (cell == -1) return;
+        if (cell == -1) return null;
 
         AmbulanceTurret turret = new AmbulanceTurret();
         turret.pos = cell;
-        //GameScene.add() does the mobs.add() itself, and only works once the scene exists.
-        //occupyCell() reads Dungeon.level (via Blob.volumeAt), which is still null while the
-        //level is being generated - the ambulance and patient are placed without it too.
-        if (levelIsLive) {
-            GameScene.add(turret);
-            occupyCell(turret);
-        } else {
-            mobs.add(turret);
-        }
+        turret.setWand(wand);
+        GameScene.add(turret);
+        occupyCell(turret);
+        return turret;
     }
 
-    //a turret without a wand is inert, so the choice is offered as soon as one exists and there
-    //is a scene to show it in. Driven from onAmbulanceTurn() so it also covers the opening
-    //turret, which is built during level generation.
-    //GameScene.showingWindow() is no good as a guard here: the prompt is queued onto the render
+    private boolean hasTurret() {
+        for (Mob mob : mobs) {
+            if (mob instanceof AmbulanceTurret) return true;
+        }
+        return false;
+    }
+
+    //the patient works through TURRET_LINES in order, one per turret armed - a run installs
+    //exactly that many, so each line is heard once and they escalate
+    private void announceTurretArmed() {
+        if (patient != null && patient.isAlive()) {
+            patient.yell( Messages.get( Patient.class, "turret_wand_" + (turretLine % TURRET_LINES + 1) ) );
+        }
+        turretLine++;
+    }
+
+    //Offers every wand choice the ambulance is owed, one at a time. Driven from
+    //onAmbulanceTurn(), i.e. from the actor thread: the prompt's answer lands on the render
+    //thread, so it is only recorded there and acted on here on the next turn.
+    //GameScene.showingWindow() is no good as a guard: the prompt is queued onto the render
     //thread, so it does not exist yet on the turns right after it was asked for - and several
     //of those can go by in one frame while autoWaitHero is passing the hero's turns. Tracking
-    //the turret waiting on an answer instead is exact, and it self-clears once one is given.
+    //what is waiting on an answer instead is exact, and it self-clears once one is given.
     private void promptPendingWand() {
+        //the opening turret: nothing is on the deck until its wand has been chosen
+        if (openingWand != null) {
+            installTurret(openingWand);
+            openingWand = null;
+            openingPromptOpen = false;
+            announceTurretArmed();
+            return;
+        }
+        if (openingPromptOpen) return;
+        if (!hasTurret()) {
+            openingPromptOpen = showWandChoice(new WndTurretWand.Listener() {
+                @Override
+                public void onChosen(Wand wand) {
+                    openingWand = wand;
+                }
+            });
+            return;
+        }
+
+        //turrets earned by clearing a wave are bolted on first and armed afterwards
         if (pendingTurret != null) {
             if (pendingTurret.wand() == null) return;
             pendingTurret = null;
-
-            //the patient works through TURRET_LINES in order, one per turret armed - a run
-            //installs exactly that many, so each line is heard once and they escalate
-            if (patient != null && patient.isAlive()) {
-                patient.yell( Messages.get( Patient.class, "turret_wand_" + (turretLine % TURRET_LINES + 1) ) );
-            }
-            turretLine++;
+            announceTurretArmed();
         }
 
         for (Mob mob : mobs.toArray(new Mob[0])) {
             if (mob instanceof AmbulanceTurret && ((AmbulanceTurret) mob).wand() == null) {
-                if (chooseWandFor((AmbulanceTurret) mob)) {
-                    pendingTurret = (AmbulanceTurret) mob;
+                final AmbulanceTurret turret = (AmbulanceTurret) mob;
+                if (showWandChoice(new WndTurretWand.Listener() {
+                    @Override
+                    public void onChosen(Wand wand) {
+                        turret.setWand(wand);
+                    }
+                })) {
+                    pendingTurret = turret;
                 }
                 return;
             }
@@ -287,15 +329,15 @@ public class HospitalLevel extends Level {
         return -1;
     }
 
-    //true if a prompt was actually put up for this turret
-    private boolean chooseWandFor(final AmbulanceTurret turret) {
+    //true if a prompt was actually put up
+    private boolean showWandChoice(final WndTurretWand.Listener listener) {
         final ArrayList<Wand> choices = AmbulanceTurret.rollChoices(3);
         if (choices.isEmpty()) return false;
 
         Game.runOnRenderThread(new Callback() {
             @Override
             public void call() {
-                GameScene.show(new WndTurretWand(turret, choices));
+                GameScene.show(new WndTurretWand(choices, listener));
             }
         });
         return true;
@@ -336,9 +378,26 @@ public class HospitalLevel extends Level {
         //turret itself rather than pendingTurret, which isn't cleared until the next ambulance
         //turn - and no ambulance turn can happen while this is holding the hero at the prompt
         if (pendingTurret != null && pendingTurret.wand() == null) return false;
+        if (openingPromptOpen && openingWand == null) return false;
         if (!isRiding(hero)) return false;
-        if (hero.visibleEnemies() > 0) return false;
+        if (enemyNear(hero)) return false;
         return true;
+    }
+
+    //how close a visible enemy has to be before the ride hands control back. This level sees
+    //almost the whole corridor (viewDistance 40 plus the ambulance's own vision), so "any enemy
+    //in view" stopped the ride for stragglers left far behind or wanderers that never close in
+    //- and once stopped, the ambulance only moves as fast as the player presses keys.
+    private static final int AUTO_WAIT_RADIUS = 8;
+
+    private boolean enemyNear(Hero hero) {
+        if (hero.fieldOfView == null) return false;
+        for (Mob mob : mobs.toArray(new Mob[0])) {
+            if (mob.alignment != Char.Alignment.ENEMY || !mob.isAlive()) continue;
+            if (!hero.fieldOfView[mob.pos]) continue;
+            if (distance(hero.pos, mob.pos) <= AUTO_WAIT_RADIUS) return true;
+        }
+        return false;
     }
 
     //end of the Patient's depart prompt: the ambulance rolls out and the hero stands still for
@@ -363,12 +422,23 @@ public class HospitalLevel extends Level {
             lock.addTime(1f);
         }
 
-        grindTerrainAhead();
+        //the drill's wedge reaches 9 columns ahead and cells are plain indices, so near the
+        //right edge it would wrap onto the far left of the next row. A long boss fight can drive
+        //that far; the ambulance just stops at the end of the road and the fight goes on there.
+        boolean atRoadEnd = ambulance.pos % width() + 10 > WIDTH - 2;
 
-        promptPendingWand();
+        if (!atRoadEnd) {
+            grindTerrainAhead();
+        }
 
         //parked until the hero says go
         if (!active) return;
+
+        //only once the ambulance is rolling - the opening turret's wand is picked on the way
+        //out, not the moment the hero arrives
+        promptPendingWand();
+
+        if (atRoadEnd) return;
 
         counter++;
         if (counter >= 2) {
@@ -385,19 +455,22 @@ public class HospitalLevel extends Level {
 
         if (stepcount == 32) {
             stepcount = 0;
-            //the trigger after the last section ends the level, so the last section still
-            //gets a full 32-step cycle to be fought through
+            //the trigger after the last section brings on the boss, so the last section still
+            //gets a full cycle to be fought through. From then on the ambulance just keeps
+            //driving; the level clears when the boss falls (onBossDefeated), not on a trigger.
             if (wave >= SECTION_COUNT) {
-                completeLevel();
-                return;
+                if (!bossSpawned) {
+                    spawnBoss();
+                }
+            } else {
+                //building section N means wave N-1 has been survived, so that clear earns a
+                //turret. The first section is the start of wave 0, not the end of anything.
+                if (wave > 0) {
+                    installTurret(null);
+                }
+                buildSectionForWave(wave);
+                wave++;
             }
-            //building section N means wave N-1 has been survived, so that clear earns a turret.
-            //The first section is the start of wave 0, not the end of anything.
-            if (wave > 0) {
-                installTurret(true);
-            }
-            buildSectionForWave(wave);
-            wave++;
         }
         //GenDrill re-links heap sprites every move, otherwise dropped items visually lag behind
         for (Heap heap : heaps.valueList()) {
@@ -775,6 +848,52 @@ public class HospitalLevel extends Level {
         GameScene.updateMap();
     }
 
+    //Doobie Wah! comes up the bored-out corridor behind the ambulance, a little way back from the
+    //deck, so the turrets get a look at it as it closes in rather than it popping up among them
+    private void spawnBoss() {
+        bossSpawned = true;
+
+        int ax = ambulance.pos % width();
+        int ay = ambulance.pos / width();
+        int best = -1;
+        int bestDist = Integer.MAX_VALUE;
+        for (int x = Math.max(1, ax - 14); x <= ax - 6; x++) {
+            for (int y = 1; y < HEIGHT - 1; y++) {
+                int cell = x + y * width();
+                if (!passable[cell] || Actor.findChar(cell) != null) continue;
+                int dist = Math.abs(x - (ax - 10)) + Math.abs(y - (ay + 2));
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best = cell;
+                }
+            }
+        }
+        if (best == -1) return;
+
+        DoobieWah boss = new DoobieWah();
+        boss.pos = best;
+        GameScene.add(boss);
+        boss.aggro(Dungeon.hero);
+
+        GLog.n(Messages.get(HospitalLevel.class, "boss_spawn"));
+        Music.INSTANCE.play(Assets.Music.PRISON_BOSS, true);
+
+        //same story-card intro GameScene uses for special floors, explaining the boss's gimmick
+        Game.runOnRenderThread(new Callback() {
+            @Override
+            public void call() {
+                GameScene.show(new WndStory(Messages.get(HospitalLevel.class, "boss_title")
+                        + "\n\n" + Messages.get(HospitalLevel.class, "boss_window"))
+                        .setDelays(0.4f, 0.4f));
+            }
+        });
+    }
+
+    public void onBossDefeated() {
+        if (completed) return;
+        completeLevel();
+    }
+
     private void completeLevel() {
         completed = true;
         unseal();
@@ -811,6 +930,7 @@ public class HospitalLevel extends Level {
         bundle.put(AMBULANCE, ambulance);
         bundle.put(PATIENT, patient);
         bundle.put(TURRET_LINE, turretLine);
+        bundle.put(BOSS_SPAWNED, bossSpawned);
     }
 
     @Override
@@ -824,5 +944,6 @@ public class HospitalLevel extends Level {
         ambulance = (Ambulance) bundle.get(AMBULANCE);
         patient = (Patient) bundle.get(PATIENT);
         turretLine = bundle.getInt(TURRET_LINE);
+        bossSpawned = bundle.getBoolean(BOSS_SPAWNED);
     }
 }

@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.AmblanceSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CivilSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.YasuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -19,7 +20,7 @@ import com.watabou.utils.Callback;
 public class ColdhouseExitGuide extends NPC {
 
     {
-        spriteClass = CivilSprite.class;
+        spriteClass = AmblanceSprite.class;
         properties.add(Property.IMMOVABLE);
     }
 
@@ -55,8 +56,8 @@ public class ColdhouseExitGuide extends NPC {
             @Override
             public void call() {
                 GameScene.show(new WndOptions(
-                        sprite(),
-                        Messages.titleCase(name()),
+                        new YasuSprite(),
+                        Messages.get(Yasu.class, "name"),
                         Messages.get(ColdhouseExitGuide.class, "0"),
                         Messages.get(ColdhouseExitGuide.class, "1"),
                         Messages.get(ColdhouseExitGuide.class, "2")) {

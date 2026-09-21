@@ -1,7 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EarthParticle;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.particles.Emitter;
 
 public abstract class SpiderMindSprite extends MobSprite {
 
@@ -43,10 +46,68 @@ public abstract class SpiderMindSprite extends MobSprite {
         }
     }
 
+    //Beta burrows (see actors.mobs.Beta). The sheet has no submerge frames, so while it is
+    //underground the body is hidden and only a trail of earth particles shows where it is.
     public static class Beta extends SpiderMindSprite {
+
+        private Emitter particles;
+        private boolean submerged = false;
+
         @Override
         protected int texOffset() {
             return 16;
+        }
+
+        public void setSubmerge() {
+            submerged = true;
+            if (particles != null) particles.on = true;
+        }
+
+        public void setEmerge() {
+            submerged = false;
+            alpha(1f);
+            if (particles != null) {
+                particles.on = false;
+                particles.revive();
+            }
+        }
+
+        @Override
+        public void link(Char ch) {
+            super.link(ch);
+
+            if (particles == null) {
+                particles = emitter();
+                particles.pour(EarthParticle.FACTORY, 0.06f);
+                particles.on = false;
+                particles.revive();
+            }
+
+            if (ch instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta
+                    && ((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta) ch).digging) {
+                setSubmerge();
+            }
+        }
+
+        @Override
+        public void update() {
+            super.update();
+
+            //re-applied every frame: flashes and other tints reset the colour (alpha included)
+            if (submerged) alpha(0f);
+            if (particles != null) particles.visible = visible;
+        }
+
+        @Override
+        public void die() {
+            super.die();
+            if (particles != null) particles.on = false;
+        }
+
+        @Override
+        public void kill() {
+            super.kill();
+            if (particles != null) particles.killAndErase();
         }
     }
 

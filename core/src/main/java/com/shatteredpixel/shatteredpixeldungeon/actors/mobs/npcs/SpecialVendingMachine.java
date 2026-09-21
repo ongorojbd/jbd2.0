@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PylonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SlotSprite;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSlotMachine;
 import com.watabou.noosa.Game;
@@ -38,7 +39,7 @@ import com.watabou.utils.Callback;
 public class SpecialVendingMachine extends NPC {
 
     {
-        spriteClass = PylonSprite.class;
+        spriteClass = SlotSprite.class;
         properties.add(Property.IMMOVABLE);
         properties.add(Property.INORGANIC);
     }

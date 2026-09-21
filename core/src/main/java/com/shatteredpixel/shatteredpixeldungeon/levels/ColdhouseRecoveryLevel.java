@@ -70,7 +70,7 @@ public class ColdhouseRecoveryLevel extends Level {
     }
 
     private int exitCell() {
-        return WIDTH / 2 + 1 * WIDTH;
+        return WIDTH / 2 + 3 * WIDTH;
     }
 
     @Override

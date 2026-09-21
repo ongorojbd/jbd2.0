@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
@@ -385,6 +386,9 @@ public abstract class Actor implements Bundlable {
 	
 	public static synchronized Char findChar( int pos ) {
 		for (Char ch : chars){
+			//a burrowed Beta is underground: it can't be hit or targeted, and others can walk
+			//over it. Skipping rather than stopping lets whoever is on top of it be found.
+			if (ch instanceof Beta && ((Beta) ch).digging) continue;
 			if (ch.pos == pos)
 				return ch;
 		}

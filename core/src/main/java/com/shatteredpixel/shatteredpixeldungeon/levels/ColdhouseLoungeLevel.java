@@ -173,16 +173,16 @@ public class ColdhouseLoungeLevel extends Level {
 
         //the odd one out stands at the head of the row, on open floor so it can be talked to
         SpecialVendingMachine slots = new SpecialVendingMachine();
-        slots.pos = WIDTH - 2 + 3 * WIDTH;
+        slots.pos = WIDTH - 7 + 8 * WIDTH;
         mobs.add(slots);
 
         //sized so the stock forms a ring one tile in from the edges with the shopkeeper standing
         //in the hollow at its centre - i.e. behind a counter of goods, machines at their back.
         //ShopRoom.placeItems() only ever fills that one ring before giving up and scattering the
         //rest, so the rect has to be big enough for the whole stock list to fit around it.
-        VendingMachineShopRoom kiosk = new VendingMachineShopRoom();
-        kiosk.set(11, 3, WIDTH - 3, HEIGHT - 4);
-        kiosk.paint(this);
+//        VendingMachineShopRoom kiosk = new VendingMachineShopRoom();
+//        kiosk.set(11, 3, WIDTH - 3, HEIGHT - 4);
+//        kiosk.paint(this);
     }
 
     @Override

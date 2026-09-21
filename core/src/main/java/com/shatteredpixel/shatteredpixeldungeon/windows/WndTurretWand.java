@@ -2,7 +2,6 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.AmbulanceTurret;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel;
@@ -30,10 +29,16 @@ public class WndTurretWand extends Window {
 	private static final int BTN_GAP = 5;
 	private static final int GAP = 2;
 
-	private final AmbulanceTurret turret;
+	//receives the wand once it is confirmed. Runs on the render thread, so it should only record
+	//the choice - anything that touches the level is left for the actor thread to pick up.
+	public interface Listener {
+		void onChosen(Wand wand);
+	}
 
-	public WndTurretWand(AmbulanceTurret turret, ArrayList<Wand> choices) {
-		this.turret = turret;
+	private final Listener listener;
+
+	public WndTurretWand(ArrayList<Wand> choices, Listener listener) {
+		this.listener = listener;
 
 		IconTitle titlebar = new IconTitle();
 		titlebar.icon(new ItemSprite(ItemSpriteSheet.WAND_MAGIC_MISSILE));
@@ -70,7 +75,7 @@ public class WndTurretWand extends Window {
 		resize(WIDTH, (int) (message.top() + message.height() + 2 * BTN_GAP + BTN_SIZE));
 	}
 
-	//the turret is already bolted on, so there is no walking away without arming it
+	//a turret is owed either way, so there is no walking away without picking its wand
 	@Override
 	public void onBackPressed() {
 	}
@@ -85,7 +90,7 @@ public class WndTurretWand extends Window {
 				protected void onClick() {
 					WndTurretWandInfo.this.hide();
 					WndTurretWand.this.hide();
-					turret.setWand((Wand) wand);
+					listener.onChosen((Wand) wand);
 					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				}
 			};

@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -129,6 +130,8 @@ public class AmbulanceTurret extends NPC {
 
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 			if (!mob.isAlive() || mob.alignment != Alignment.ENEMY) continue;
+			//a burrowed Beta can't be hit, a shot at it would just sail through
+			if (mob instanceof Beta && ((Beta) mob).digging) continue;
 
 			int dist = Dungeon.level.distance(pos, mob.pos);
 			if (dist > RANGE || dist >= bestDist) continue;

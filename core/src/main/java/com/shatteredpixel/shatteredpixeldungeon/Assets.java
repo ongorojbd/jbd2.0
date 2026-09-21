@@ -248,6 +248,7 @@ public class Assets {
         public static final String ROCKS = "sounds/rocks.mp3";
         public static final String BURNING = "sounds/burning.mp3";
         public static final String FALLING = "sounds/falling.mp3";
+        public static final String DIG = "sounds/digging.mp3";
         public static final String GHOST = "sounds/ghost.mp3";
         public static final String SECRET = "sounds/secret.mp3";
         public static final String BONES = "sounds/bones.mp3";
@@ -486,7 +487,7 @@ public class Assets {
 
                 DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
                 CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
-                TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
+                TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, DIG, GHOST, SECRET, BONES,
                 BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP, GUITAR, FF, OH, OH1, OH2, OVERDRIVE, SP,
                 HAHAH, ZAWARUDO, NANI, TBOMB, SHEER, CREAM, DIAVOLO, DIAVOLO1, DIAVOLO2, DIAVOLO3, STANDO, CRAZYDIO, YAREYARE, PLATINUM, ORA, DORA, NANIDI, D1, D2, DIEGO, DIEGO2,
                 JONATHAN1, JONATHAN2, JONATHAN3, JONATHAN4, JONATHAN5, JONATHAN6, JONATHAN7, JONATHAN8,
@@ -788,5 +789,7 @@ public class Assets {
         public static final String BANSHEE = "sprites/banshee.png";
         public static final String WOU = "sprites/wou.png";
         public static final String JADE_WARDEN = "sprites/jade_warden.png";
+        public static final String DOOBIE = "sprites/doobie.png";
+        public static final String SLOT = "sprites/slot.png";
     }
 }

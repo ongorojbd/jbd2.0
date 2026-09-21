@@ -2365,7 +2365,11 @@ public class Hero extends Char {
             if (resting) {
                 Dungeon.observe();
             }
-            interrupt();
+            //while the level is driving us along, it decides whether a newly seen enemy is close
+            //enough to stop for - one that just came into view far away is not
+            if (!autoWaiting || !Dungeon.level.autoWaitHero(this)) {
+                interrupt();
+            }
         }
 
         visibleEnemies = visible;
