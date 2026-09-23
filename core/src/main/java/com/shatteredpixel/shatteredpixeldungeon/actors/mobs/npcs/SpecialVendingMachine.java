@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PylonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SlotSprite;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSlotMachine;
 import com.watabou.noosa.Game;
@@ -85,8 +86,21 @@ public class SpecialVendingMachine extends NPC {
             Game.runOnRenderThread(new Callback() {
                 @Override
                 public void call() {
-                    GameScene.show(new WndQuest(SpecialVendingMachine.this,
-                            Messages.get(SpecialVendingMachine.class, "broke", WndSlotMachine.COST)));
+                    GameScene.show(new WndOptions(sprite(), Messages.titleCase(name()),
+                            Messages.get(SpecialVendingMachine.class, "broke", WndSlotMachine.COST),
+                            Messages.get(SpecialVendingMachine.class, "sell"),
+                            Messages.get(SpecialVendingMachine.class, "cancel")) {
+                        @Override
+                        protected void onSelect(int index) {
+                            super.onSelect(index);
+                            //let the hero sell an item for gold; reuses the shopkeeper's
+                            //sell flow, which works fine with no Shopkeeper instance around
+                            //(buyback history is just skipped in that case)
+                            if (index == 0) {
+                                Shopkeeper.sell();
+                            }
+                        }
+                    });
                 }
             });
             return true;

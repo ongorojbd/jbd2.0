@@ -1535,7 +1535,7 @@ public enum Talent {
         }
 
         if (hero.hasTalent(Talent.J32) && hero.heroClass != HeroClass.JOHNNY && enemy.buff(RadioactiveMutation.class) == null) {
-            if (Random.Float() < 0.03f) {
+            if (Random.Float() < 0.10f) {
                 Buff.affect(enemy, RadioactiveMutation.class).set(6-hero.pointsInTalent(Talent.J32));
             }
         }

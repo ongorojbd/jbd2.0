@@ -169,11 +169,11 @@ public class TuskEquipmentDisc extends Artifact {
 					int talentLevel = hero.pointsInTalent(Talent.J32);
 					float hpCostPercent;
 					if (talentLevel == 1) {
-						hpCostPercent = 0.15f; // 15%
+						hpCostPercent = 0.08f; // 8%
 					} else if (talentLevel == 2) {
-						hpCostPercent = 0.10f; // 10%
+						hpCostPercent = 0.06f; // 6%
 					} else { // talentLevel >= 3
-						hpCostPercent = 0.05f; // 5%
+						hpCostPercent = 0.04f; // 4%
 					}
 					int hpCost = Math.max(1, (int)(hero.HT * hpCostPercent));
 					hero.damage(hpCost, this);

@@ -393,7 +393,7 @@ public class Dungeon {
                         tendencylevel = true;
                         level = new ArenaLevel();
                     } else {
-                        level = new ColdhouseRecoveryLevel();
+                        level = new ColdhouseLoungeLevel();
                     }
                     break;
                 case 2:

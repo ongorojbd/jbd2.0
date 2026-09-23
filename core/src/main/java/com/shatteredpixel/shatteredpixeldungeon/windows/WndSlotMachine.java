@@ -25,7 +25,36 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Araki;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo1;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo2;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo3;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo4;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo5;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo6;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo7;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo8;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Jojo9;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscA;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscB;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscC;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscD;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscE;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscF;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscG;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BossdiscH;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kinga;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingc;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingm;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kings;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingt;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Kingw;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Xray;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAdvanceguard;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -51,24 +80,16 @@ public class WndSlotMachine extends Window {
     public static final int COST = 500;
     public static final int MAX_PULLS = 10; //per run, tracked in Statistics.slotPulls
 
-    //payouts, easiest to tune from here. JACKPOT also dispenses an upgrade scroll.
-    private static final int PAYOUT_JACKPOT = 2500;  //three coins
-    private static final int PAYOUT_STAR    = 2000;  //three stars
-    private static final int PAYOUT_TRIPLE  = 1500;  //three snacks
-    private static final int PAYOUT_TRIPLE2 = 1000;  //three drinks
-
+    //all four symbols now dispense items instead of gold on a triple/pair - see finishSpin().
     private static final int SYMBOLS = 4;
     private static final int DRINK = 0, SNACK = 1, COIN = 2, STAR = 3;
     private static final int[] SYMBOL_ICONS = {
-            ItemSpriteSheet.DEWDROP,
-            ItemSpriteSheet.RATION,
-            ItemSpriteSheet.GOLD,
-            ItemSpriteSheet.GOLDEN_KEY
+            ItemSpriteSheet.MAGIC_INFUSE,
+            ItemSpriteSheet.RO1,
+            ItemSpriteSheet.SALT_CUBE,
+            ItemSpriteSheet.TRINKET_CATA
     };
-    //a pair's payout depends on which symbol it was - rarer/pricier symbols pay more, same
-    //ranking as the triples above
-    private static final int[] PAYOUT_PAIR = {150, 200, 400, 300}; //indexed by DRINK/SNACK/COIN/STAR
-    private static final String[] SYMBOL_NAME_KEYS = {"symbol_drink", "symbol_snack", "symbol_coin", "symbol_star"};
+    private static final String[] SYMBOL_NAME_KEYS = {"symbol_topaz", "symbol_rocacaca", "symbol_saltcube", "symbol_catalyst"};
 
     private static final float REEL_STOP_INTERVAL = 1.1f;
     private static final float REEL_TENSION_DELAY = 1.6f; //extra wait on reel 3 when 1 and 2 match
@@ -285,31 +306,61 @@ public class WndSlotMachine extends Window {
         int color;
 
         if (allSame && finalSymbols[0] == COIN) {
-            payout = PAYOUT_JACKPOT;
-            message = Messages.get(this, "jackpot", payout);
+            //salt cube triple (jackpot) dispenses a random boss disc instead of gold
+            payout = 0;
+            message = Messages.get(this, "jackpot_item");
             color = 0xFFFF44;
             Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
-            giveItem(new ScrollOfUpgrade());
+            giveItem(randomBossdisc());
         } else if (allSame && finalSymbols[0] == STAR) {
-            payout = PAYOUT_STAR;
-            message = Messages.get(this, "triple", payout);
+            //trinket catalyst triple drops a random Araki relic instead of gold
+            payout = 0;
+            message = Messages.get(this, "triple_item");
             color = 0xFFDD44;
             Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
+            giveRandomArakiRelic();
         } else if (allSame && finalSymbols[0] == SNACK) {
-            payout = PAYOUT_TRIPLE;
-            message = Messages.get(this, "triple", payout);
+            //rocacaca triple dispenses 5 of a random reward instead of gold
+            payout = 0;
+            message = Messages.get(this, "triple_item");
             color = 0x44FF44;
             Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
+            giveRandomRocacacaReward(5);
         } else if (allSame) {
-            payout = PAYOUT_TRIPLE2;
-            message = Messages.get(this, "triple", payout);
+            //magic infuse triple dispenses an actual Magical Infusion instead of gold
+            payout = 0;
+            message = Messages.get(this, "triple_item");
             color = 0x44FF44;
             Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
-        } else if (pairSymbol != -1) {
-            payout = PAYOUT_PAIR[pairSymbol];
-            message = Messages.get(this, "pair", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]), payout);
+            giveItem(new MagicalInfusion().identify());
+        } else if (pairSymbol == DRINK) {
+            //same deal for the pair, but a lesser Stone of Enchantment instead
+            payout = 0;
+            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]));
             color = 0x88FF88;
             Sample.INSTANCE.play(Assets.Sounds.ITEM);
+            giveItem(new StoneOfEnchantment().identify());
+        } else if (pairSymbol == SNACK) {
+            //same random reward pool as the triple, but just 1 instead of 5
+            payout = 0;
+            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]));
+            color = 0x88FF88;
+            Sample.INSTANCE.play(Assets.Sounds.ITEM);
+            giveRandomRocacacaReward(1);
+        } else if (pairSymbol == COIN) {
+            //salt cube pair dispenses a Wild Energy instead of gold
+            payout = 0;
+            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]));
+            color = 0x88FF88;
+            Sample.INSTANCE.play(Assets.Sounds.ITEM);
+            giveItem(new WildEnergy().identify());
+        } else if (pairSymbol == STAR) {
+            //trinket catalyst pair dispenses 2 Telekinetic Grabs instead of gold
+            payout = 0;
+            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]));
+            color = 0x88FF88;
+            Sample.INSTANCE.play(Assets.Sounds.ITEM);
+            giveItem(new TelekineticGrab().identify().quantity(2));
         } else {
             payout = 0;
             message = Messages.get(this, "lose");
@@ -335,6 +386,113 @@ public class WndSlotMachine extends Window {
             Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop();
         } else {
             GLog.i(Messages.get(this, "dispensed", item.name()));
+        }
+    }
+
+    //salt cube jackpot's reward pool - one random boss disc, identified same as when mobs drop them
+    private Item randomBossdisc() {
+        switch (Random.Int(8)) {
+            case 0:
+                return new BossdiscA().identify();
+            case 1:
+                return new BossdiscB().identify();
+            case 2:
+                return new BossdiscC().identify();
+            case 3:
+                return new BossdiscD().identify();
+            case 4:
+                return new BossdiscE().identify();
+            case 5:
+                return new BossdiscF().identify();
+            case 6:
+                return new BossdiscG().identify();
+            case 7: default:
+                return new BossdiscH().identify();
+        }
+    }
+
+    //trinket catalyst triple's reward pool - always drops on the floor rather than trying to
+    //pick up first, and always calls out the relic via GLog.h, same as Araki's own quest drops
+    private void giveRandomArakiRelic() {
+        Item item;
+        String key;
+        switch (Random.Int(9)) {
+            case 0:
+                item = new Jojo1();
+                key = "1";
+                break;
+            case 1:
+                item = new Jojo2();
+                key = "2";
+                break;
+            case 2:
+                item = new Jojo3();
+                key = "3";
+                break;
+            case 3:
+                item = new Jojo4();
+                key = "4";
+                break;
+            case 4:
+                item = new Jojo5();
+                key = "5";
+                break;
+            case 5:
+                item = new Jojo6();
+                key = "6";
+                break;
+            case 6:
+                item = new Jojo7();
+                key = "7";
+                break;
+            case 7:
+                item = new Jojo8();
+                key = "8";
+                break;
+            case 8: default:
+                item = new Jojo9();
+                key = "9";
+                break;
+        }
+        Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
+        GLog.h(Messages.get(Araki.class, key));
+    }
+
+    //rocacaca's reward pool - one random item from the set, at the given quantity
+    private void giveRandomRocacacaReward(int quantity) {
+        Item item;
+        switch (Random.Int(8)) {
+            case 0:
+                item = new Kingt();
+                break;
+            case 1:
+                item = new StoneOfAdvanceguard();
+                break;
+            case 2:
+                item = new Xray();
+                break;
+            case 3:
+                item = new Kings();
+                break;
+            case 4:
+                item = new Kingm();
+                break;
+            case 5:
+                item = new Kingw();
+                break;
+            case 6:
+                item = new Kingc();
+                break;
+            case 7: default:
+                item = new Kinga();
+                break;
+        }
+        item.quantity(quantity);
+
+        if (item.doPickUp(Dungeon.hero)) {
+            GLog.p(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", item.name())));
+        } else {
+            Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop();
         }
     }
 
