@@ -77,7 +77,6 @@ public class Abomination2 extends Mob {
 			int dmg = Random.NormalIntRange(12, 20);
 			enemy.damage(dmg, new CursedBolt());
 
-			// 명중 시 무작위 저주 완드 효과 발동(희귀도 고정: 커먼 풀만 사용)
 			Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET);
 			CursedWand.randomValidCommonEffect(null, this, aim, false).effect(null, this, aim, false);
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {

@@ -30,12 +30,12 @@ public class GreenBirth extends ClericSpell {
 
 	@Override
 	public int icon() {
-		return HeroIcon.WARDEN;
+		return HeroIcon.JOLYNE_NEW4;
 	}
 
 	@Override
 	public float chargeUse(Hero hero) {
-		return 2;
+		return 1;
 	}
 
 	@Override

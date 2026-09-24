@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Teq;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.U3;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Vitaminc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.WO;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gamma;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ZombieBrute3;
@@ -147,6 +148,7 @@ public class AntiMagic extends Armor.Glyph {
         RESISTS.add(Shaman.EarthenBolt.class);
         RESISTS.add(CrystalWisp.LightBeam.class);
         RESISTS.add(Warlock.DarkBolt.class);
+        RESISTS.add(Gamma.StoneBolt.class);
         RESISTS.add(SpwSoldier.DarkBolt.class);
         RESISTS.add(ZombieBrute3.AcidBolt.class);
         RESISTS.add(Btank.DarkBolt.class);

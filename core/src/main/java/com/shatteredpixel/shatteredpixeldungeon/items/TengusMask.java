@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.JojoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChooseSubclass;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
@@ -136,6 +137,18 @@ public class TengusMask extends Item {
             //클레릭이 아니면 스톤 프리 DISC 대신 죠린이 동료로 합류해 주문을 대신 시전한다
             if (curUser.heroClass != HeroClass.CLERIC) {
                 JolyneStoneFree.summon(curUser);
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new TankSprite(), new JojoSprite()},
+                        new String[]{"죠타로", "죠린"},
+                        new String[]{
+                                Messages.get(Jolyne3.class, "6"),
+                                Messages.get(Jolyne3.class, "7")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.IDLE,
+                                WndDialogueWithPic.IDLE
+                        }
+                );
             } else {
                 WndDialogueWithPic.dialogue(
                         new CharSprite[]{new JojoSprite()},
@@ -159,18 +172,20 @@ public class TengusMask extends Item {
                             WndDialogueWithPic.IDLE
                     }
             );
-        } else if (way == HeroSubClass.RIDER && Dungeon.hero.heroClass == HeroClass.JOHNNY) {
+        } else if (way == HeroSubClass.RIDER) {
             Buff.affect(curUser, HorseRiding.class).set();
-            WndDialogueWithPic.dialogue(
-                    new CharSprite[]{new BlacksmithSprite()},
-                    new String[]{"죠니"},
-                    new String[]{
-                            Messages.get(Jolyne3.class, "s3")
-                    },
-                    new byte[]{
-                            WndDialogueWithPic.RUN
-                    }
-            );
+            if (Dungeon.hero.heroClass == HeroClass.JOHNNY) {
+                WndDialogueWithPic.dialogue(
+                        new CharSprite[]{new BlacksmithSprite()},
+                        new String[]{"죠니"},
+                        new String[]{
+                                Messages.get(Jolyne3.class, "s3")
+                        },
+                        new byte[]{
+                                WndDialogueWithPic.RUN
+                        }
+                );
+            }
         } else if (way == HeroSubClass.INVOKER) {
             InvokerEnergy.energy = 0;
             Buff.affect(curUser, InvokerEnergy.class);

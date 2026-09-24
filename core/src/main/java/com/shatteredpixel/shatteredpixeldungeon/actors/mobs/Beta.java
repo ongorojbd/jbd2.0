@@ -5,10 +5,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SpiderMindSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -27,18 +30,29 @@ public class Beta extends Mob {
     {
         spriteClass = SpiderMindSprite.Beta.class;
 
-        HP = HT = 12;
-        defenseSkill = 4;
+        HP = HT = 70;
+        defenseSkill = 15;
 
-        EXP = 2;
-        maxLvl = 8;
+        EXP = 6;
+        maxLvl = 30;
 
         HUNTING = new Hunting();
+
+        //a single scroll shouldn't wipe a whole section of the swarm
+        immunities.add(ScrollOfRetribution.class);
+        immunities.add(ScrollOfPsionicBlast.class);
     }
 
     public boolean digging = false;
 
     private static final String DIGGING = "digging";
+
+    @Override
+    public int attackProc(Char enemy, int damage) {
+        damage = super.attackProc(enemy, damage);
+        damage += enemy.HT / 10;
+        return damage;
+    }
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -59,17 +73,17 @@ public class Beta extends Mob {
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(1, 6);
+        return Random.NormalIntRange(35, 55);
     }
 
     @Override
     public int attackSkill(Char target) {
-        return 10;
+        return 48;
     }
 
     @Override
     public int drRoll() {
-        return super.drRoll() + Random.NormalIntRange(0, 2);
+        return super.drRoll() + Random.NormalIntRange(5, 12);
     }
 
     @Override
@@ -123,7 +137,7 @@ public class Beta extends Mob {
             CellEmitter.get(pos + n).burst(SmokeParticle.FACTORY, 5);
             Char ch = Actor.findChar(pos + n);
             if (ch != null && ch.isAlive()) {
-                Buff.affect(ch, Slow.class, 2f);
+                Buff.affect(ch, Hex.class, 2f);
             }
         }
     }

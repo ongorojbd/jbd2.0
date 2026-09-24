@@ -102,7 +102,7 @@ public class WndCredits extends Window {
 		CreditsBlock wata = new CreditsBlock(true, WATA_COLOR,
 				"To Be Countinued....",
 				Icons.WATA.get(),
-				"Next Update : 3.0f",
+				"Next Update : 4.0c",
 				"",
 				"");
 		wata.setRect(OFFSET, pos, WIDTH - 20, 0);

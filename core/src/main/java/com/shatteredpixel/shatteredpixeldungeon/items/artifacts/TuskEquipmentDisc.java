@@ -799,7 +799,7 @@ public class TuskEquipmentDisc extends Artifact {
 		if (goldenSpin) {
 			damage *= 2;
 			if (hero.hasTalent(Talent.J38)) {
-				damage = Math.round(damage * (1f + 0.25f * hero.pointsInTalent(Talent.J38)));
+				damage = Math.round(damage * (1f + 0.15f * hero.pointsInTalent(Talent.J38)));
 			}
 		}
 
@@ -1305,7 +1305,7 @@ public class TuskEquipmentDisc extends Artifact {
 	// 
 	// 보너스 적용 순서:
 	//   1. 기본 데미지 범위에서 랜덤 생성
-	//   2. Perfect만 J38 탤런트 적용 (+25%/+50%/+75%)
+	//   2. Perfect만 J38 탤런트 적용 (+15%/+30%/+45%)
 	//   3. STANDO 2발 모드일 경우 모든 데미지 × 0.75
 	public int calculateDamage(String hitType, Char target) {
 		int lvl = level();
@@ -1318,11 +1318,11 @@ public class TuskEquipmentDisc extends Artifact {
 				int minDmg = Math.round((7 + 4 * lvl) * 0.8f);
 				baseDamage = Random.NormalIntRange(Math.min(minDmg, maxDmg), maxDmg);
 				
-				// J38 탤런트: Perfect 데미지 증가 (+25%/+50%/+75%)
+				// J38 탤런트: Perfect 데미지 증가 (+15%/+30%/+45%)
 				Hero hero = Dungeon.hero;
 					if (hero != null && hero.hasTalent(Talent.J38)) {
 						int talentLevel = hero.pointsInTalent(Talent.J38);
-						float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
+						float damageBonus = 0.15f * talentLevel; // 레벨당 +15%
 						baseDamage = Math.round(baseDamage * (1f + damageBonus));
 					}
 					break;
@@ -1452,11 +1452,11 @@ public class TuskEquipmentDisc extends Artifact {
 					int baseMinDmg = Math.min(perfectMinDmg, perfectMaxDmg);
 					int baseMaxDmg = perfectMaxDmg;
 					
-					// J38 탤런트: Perfect 데미지 증가 적용 (+25%/+50%/+75%)
+					// J38 탤런트: Perfect 데미지 증가 적용 (+15%/+30%/+45%)
 					Hero hero = Dungeon.hero;
 					if (hero != null && hero.hasTalent(Talent.J38)) {
 						int talentLevel = hero.pointsInTalent(Talent.J38);
-						float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
+						float damageBonus = 0.15f * talentLevel; // 레벨당 +15%
 						baseMinDmg = Math.round(baseMinDmg * (1f + damageBonus));
 						baseMaxDmg = Math.round(baseMaxDmg * (1f + damageBonus));
 					}
@@ -1480,11 +1480,11 @@ public class TuskEquipmentDisc extends Artifact {
 					int baseMinDmg = Math.min(perfectMinDmg, perfectMaxDmg);
 					int baseMaxDmg = perfectMaxDmg;
 					
-					// J38 탤런트: Perfect 데미지 증가 적용 (+25%/+50%/+75%)
+					// J38 탤런트: Perfect 데미지 증가 적용 (+15%/+30%/+45%)
 					Hero hero = Dungeon.hero;
 					if (hero != null && hero.hasTalent(Talent.J38)) {
 						int talentLevel = hero.pointsInTalent(Talent.J38);
-						float damageBonus = 0.25f * talentLevel; // 레벨당 +25%
+						float damageBonus = 0.15f * talentLevel; // 레벨당 +15%
 						baseMinDmg = Math.round(baseMinDmg * (1f + damageBonus));
 						baseMaxDmg = Math.round(baseMaxDmg * (1f + damageBonus));
 					}

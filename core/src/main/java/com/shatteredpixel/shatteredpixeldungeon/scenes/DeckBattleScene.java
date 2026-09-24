@@ -471,12 +471,12 @@ public class DeckBattleScene extends PixelScene {
         wandSelectionAccent.visible = false;
         add(wandSelectionAccent);
 
-        wandSelectionTitle = renderTextBlock("발사할 완드를 손패에서 선택하세요.", 9);
+        wandSelectionTitle = renderTextBlock("발사할 사격 DISC를 손패에서 선택하세요.", 9);
         wandSelectionTitle.hardlight(0xFFC07AFF);
         wandSelectionTitle.visible = false;
         add(wandSelectionTitle);
 
-        wandSelectionSubtitle = renderTextBlock("(지팡이를 다시 누르면 취소됩니다)", 6);
+        wandSelectionSubtitle = renderTextBlock("(에이자의 적석을 다시 누르면 취소됩니다)", 6);
         wandSelectionSubtitle.hardlight(0xFFD8D1BD);
         wandSelectionSubtitle.visible = false;
         add(wandSelectionSubtitle);

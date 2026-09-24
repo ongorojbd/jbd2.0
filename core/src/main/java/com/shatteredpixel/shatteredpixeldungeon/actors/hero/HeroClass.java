@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.He
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ShrBomb;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
+import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.BossChallengeTester;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.DolomitesTeeth;
@@ -124,6 +125,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMys
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Evolution;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Maga;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Map3;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Neoro;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Shr;
@@ -199,25 +201,25 @@ public enum HeroClass {
 
         new ScrollOfIdentify().identify();
 
-        if (DeviceCompat.isDebug()) {
-            new RingOfMight().identify().upgrade(9999).collect();
-            new RingOfEnergy().identify().upgrade(9999).collect();
-            new RingOfAccuracy().identify().upgrade(9999).collect();
-            new PlateArmor().identify().upgrade(9999).collect();
-            new WandOfWarding().identify().upgrade(9999).collect();
-            new WandOfDisintegration().identify().upgrade(20).collect();
-            new SkeletonKey().identify().collect();
-            new PotionOfHealing().identify().quantity(9999).collect();
-            new PotionOfMindVision().identify().quantity(9999).collect();
-            new Neoro().identify().quantity(9999).collect();
-            new WandOfKillerQueen().identify().collect();
-            new DolomitesTeeth().identify().collect();
-            new ScrollOfUpgrade().identify().quantity(9999).collect();
-            new BossChallengeTester().quantity(2).collect();
-            new Neotel().identify().collect();
-            new TengusMask().identify().collect();
-            new KingsCrown().identify().collect();
-        }
+//        if (DeviceCompat.isDebug()) {
+//            new RingOfMight().identify().upgrade(9999).collect();
+//            new RingOfEnergy().identify().upgrade(9999).collect();
+//            new RingOfAccuracy().identify().upgrade(9999).collect();
+//            new PlateArmor().identify().upgrade(9999).collect();
+//            new WandOfLightning().identify().upgrade(9999).collect();
+//            new WandOfDisintegration().identify().upgrade(9999).collect();
+//            new PotionOfHealing().identify().quantity(9999).collect();
+//            new PotionOfMindVision().identify().quantity(9999).collect();
+//            new Neoro().identify().quantity(9999).collect();
+//            new WandOfKillerQueen().identify().collect();
+//            new ScrollOfUpgrade().identify().quantity(9999).collect();
+//            new BossChallengeTester().quantity(2).collect();
+//            new Maga().quantity(12).collect();
+//            new Neotel().identify().collect();
+//            new Ankh().identify().collect();
+//            new TengusMask().identify().collect();
+//            new KingsCrown().identify().collect();
+//        }
 
         switch (this) {
             case WARRIOR:

@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta;
@@ -12,11 +13,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.TurretSprite;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
@@ -39,10 +45,20 @@ public class AmbulanceTurret extends NPC {
 	//the wand is always mounted at this level, regardless of what the hero carries
 	public static final int WAND_LEVEL = 5;
 
-	//attack wands only. The rest of Generator's pool either does no damage (Regrowth), hurts
-	//the hero through curUser (Transfusion), or nests turrets inside turrets (Warding).
+	//how many wands the pick-a-wand window offers. The window lays itself out from the number of
+	//choices it is handed, so this is the only place to change it.
+	public static final int WAND_CHOICES = 2;
+
+	//shield a transfusion turret hands out, and the wand levels a warding turret lends
+	private static final int SHIELD = 15;
+	private static final int WARDING_BONUS = 2;
+
+	//Wands that fire their own effect at whatever is in range. Living Earth is in here: its armor
+	//and guardian go to curUser, i.e. the hero, which is a fine thing for a turret to do. Left
+	//out entirely is Regrowth (does no damage); Transfusion and Warding get their own behaviour
+	//below instead, since Transfusion's own effect would bleed the hero through curUser.
 	@SuppressWarnings("unchecked")
-	private static final Class<? extends Wand>[] POOL = new Class[]{
+	private static final Class<? extends Wand>[] ATTACK_POOL = new Class[]{
 			WandOfMagicMissile.class,
 			WandOfLightning.class,
 			WandOfDisintegration.class,
@@ -50,7 +66,16 @@ public class AmbulanceTurret extends NPC {
 			WandOfCorrosion.class,
 			WandOfBlastWave.class,
 			WandOfFrost.class,
-			WandOfPrismaticLight.class};
+			WandOfPrismaticLight.class,
+			WandOfCorruption.class,
+			WandOfLivingEarth.class};
+
+	//Wands whose turret does something other than shoot. They keep the wand's name and sprite,
+	//but the effect is the turret's own - see supportTurn() and wandLevel().
+	@SuppressWarnings("unchecked")
+	private static final Class<? extends Wand>[] SUPPORT_POOL = new Class[]{
+			WandOfTransfusion.class,
+			WandOfWarding.class};
 
 	{
 		spriteClass = TurretSprite.class;
@@ -72,7 +97,8 @@ public class AmbulanceTurret extends NPC {
 	//picks `count` distinct wands from the pool, each already at WAND_LEVEL and identified
 	public static ArrayList<Wand> rollChoices(int count) {
 		ArrayList<Class<? extends Wand>> remaining = new ArrayList<>();
-		Collections.addAll(remaining, POOL);
+		Collections.addAll(remaining, ATTACK_POOL);
+		Collections.addAll(remaining, SUPPORT_POOL);
 
 		ArrayList<Wand> choices = new ArrayList<>();
 		while (choices.size() < count && !remaining.isEmpty()) {
@@ -83,6 +109,18 @@ public class AmbulanceTurret extends NPC {
 			choices.add(w);
 		}
 		return choices;
+	}
+
+	//what a wand will actually do once it is mounted. Support wands ignore their own effect, so
+	//their real description would be wrong in the pick-a-wand window.
+	public static String turretInfo(Wand wand) {
+		if (wand instanceof WandOfTransfusion) {
+			return Messages.get(AmbulanceTurret.class, "info_transfusion", RANGE, FIRE_INTERVAL, SHIELD);
+		}
+		if (wand instanceof WandOfWarding) {
+			return Messages.get(AmbulanceTurret.class, "info_warding", WARDING_BONUS);
+		}
+		return wand.info();
 	}
 
 	public void setWand(Wand wand) {
@@ -102,11 +140,61 @@ public class AmbulanceTurret extends NPC {
 	@Override
 	public String description() {
 		if (wand == null) return Messages.get(this, "desc");
+		if (wand instanceof WandOfTransfusion) {
+			return Messages.get(this, "desc_transfusion", wand.name(), RANGE, FIRE_INTERVAL, SHIELD);
+		}
+		if (wand instanceof WandOfWarding) {
+			return Messages.get(this, "desc_warding", wand.name(), WARDING_BONUS);
+		}
 		return Messages.get(this, "desc_wand", wand.name(), RANGE, FIRE_INTERVAL);
+	}
+
+	//a warding turret does nothing itself, it lends its levels to every other turret's wand
+	private int wandLevel() {
+		int bonus = 0;
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+			if (mob == this || !(mob instanceof AmbulanceTurret)) continue;
+			if (((AmbulanceTurret) mob).wand instanceof WandOfWarding) bonus += WARDING_BONUS;
+		}
+		return WAND_LEVEL + bonus;
+	}
+
+	//support turrets don't shoot: they run an effect of their own every FIRE_INTERVAL turns
+	private boolean isSupport() {
+		return wand instanceof WandOfTransfusion || wand instanceof WandOfWarding;
+	}
+
+	private void supportTurn() {
+		if (!(wand instanceof WandOfTransfusion)) return;
+
+		for (Char ch : Actor.chars().toArray(new Char[0])) {
+			//only the two that matter: the other turrets and the ambulance can't use it, and
+			//shielding corrupted enemies would just drag the fight out
+			if (ch != Dungeon.hero && !(ch instanceof Patient)) continue;
+			if (!ch.isAlive()) continue;
+			if (Dungeon.level.distance(pos, ch.pos) > RANGE) continue;
+
+			//tops the barrier back up to SHIELD rather than adding to it - stacking every two
+			//turns would leave the hero sitting behind an ever-growing wall of shield
+			Barrier barrier = Buff.affect(ch, Barrier.class);
+			if (barrier.shielding() < SHIELD) {
+				barrier.setShield(SHIELD);
+			}
+		}
+		if (sprite != null) sprite.zap(pos);
 	}
 
 	@Override
 	protected boolean act() {
+		if (isSupport()) {
+			if (--cooldown <= 0) {
+				cooldown = FIRE_INTERVAL;
+				supportTurn();
+			}
+			spend(TICK);
+			return true;
+		}
+
 		if (wand != null && --cooldown <= 0) {
 			Char target = nearestTarget();
 			if (target != null) {
@@ -151,6 +239,9 @@ public class AmbulanceTurret extends NPC {
 	//ones - it just redirects their origin to this turret instead of the hero.
 	private boolean fireAt(Char target) {
 		final Ballistica shot = new Ballistica(pos, target.pos, wand.collisionProperties(target.pos));
+
+		//re-applied per shot: nearby warding turrets raise the level this wand fires at
+		wand.level(wandLevel());
 
 		if (sprite != null) sprite.zap(shot.collisionPos);
 

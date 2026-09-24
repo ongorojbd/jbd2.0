@@ -24,6 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -47,12 +51,14 @@ public class Patient extends Mob {
     {
         spriteClass = YasuSprite.class; //TODO placeholder, replace with a dedicated sprite later
 
-        HP = HT = 60;
+        HP = HT = 500;
         defenseSkill = 0;
 
         alignment = Alignment.ALLY;
         state = PASSIVE;
         properties.add(Property.IMMOVABLE);
+        immunities.add(Corrosion.class);
+        immunities.add(Burning.class);
     }
 
     private boolean canCauseGameOver = true;
@@ -89,13 +95,17 @@ public class Patient extends Mob {
                     protected void onSelect(int index) {
                         if (index == 0) {
                             level.depart();
-                            Music.INSTANCE.play(Assets.Music.TENDENCY1, true);
                         }
                     }
                 });
             }
         });
         return true;
+    }
+
+    @Override
+    public String description() {
+        return super.description() + "\n" + Messages.get(this, "p1", HP, HT);
     }
 
     @Override
@@ -114,7 +124,12 @@ public class Patient extends Mob {
 
         if (canCauseGameOver) {
             yell(Messages.get(this, "death"));
-            Dungeon.hero.die(this);
+            //test level: losing the patient sends the hero home instead of ending the run
+            if (Dungeon.level instanceof HospitalLevel) {
+                ((HospitalLevel) Dungeon.level).failEscort();
+            } else {
+                Dungeon.hero.die(this);
+            }
         }
     }
 

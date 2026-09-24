@@ -67,6 +67,7 @@ import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 /*
     The special vending machine's slot minigame (see SpecialVendingMachine). Pay COST gold for
@@ -78,7 +79,7 @@ import com.watabou.utils.Random;
 public class WndSlotMachine extends Window {
 
     public static final int COST = 500;
-    public static final int MAX_PULLS = 10; //per run, tracked in Statistics.slotPulls
+    public static final int MAX_PULLS = 8; //per run, tracked in Statistics.slotPulls
 
     //all four symbols now dispense items instead of gold on a triple/pair - see finishSpin().
     private static final int SYMBOLS = 4;
@@ -301,76 +302,64 @@ public class WndSlotMachine extends Window {
         else if (finalSymbols[1] == finalSymbols[2]) pairSymbol = finalSymbols[1];
         else if (finalSymbols[0] == finalSymbols[2]) pairSymbol = finalSymbols[0];
 
-        int payout;
         String message;
         int color;
+        Item reward = null;
 
-        if (allSame && finalSymbols[0] == COIN) {
-            //salt cube triple (jackpot) dispenses a random boss disc instead of gold
-            payout = 0;
-            message = Messages.get(this, "jackpot_item");
-            color = 0xFFFF44;
-            Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
-            giveItem(randomBossdisc());
-        } else if (allSame && finalSymbols[0] == STAR) {
-            //trinket catalyst triple drops a random Araki relic instead of gold
-            payout = 0;
-            message = Messages.get(this, "triple_item");
-            color = 0xFFDD44;
-            Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
-            giveRandomArakiRelic();
-        } else if (allSame && finalSymbols[0] == SNACK) {
-            //rocacaca triple dispenses 5 of a random reward instead of gold
-            payout = 0;
-            message = Messages.get(this, "triple_item");
-            color = 0x44FF44;
-            Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
-            giveRandomRocacacaReward(5);
-        } else if (allSame) {
-            //magic infuse triple dispenses an actual Magical Infusion instead of gold
-            payout = 0;
-            message = Messages.get(this, "triple_item");
-            color = 0x44FF44;
-            Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
-            giveItem(new MagicalInfusion().identify());
-        } else if (pairSymbol == DRINK) {
-            //same deal for the pair, but a lesser Stone of Enchantment instead
-            payout = 0;
-            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]));
+        if (allSame) {
+            int symbol = finalSymbols[0];
+            switch (symbol) {
+                case COIN: //jackpot: a random boss disc
+                    message = Messages.get(this, "jackpot_item");
+                    color = 0xFFFF44;
+                    Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
+                    reward = giveItem(randomBossdisc());
+                    break;
+                case STAR: //a random Araki relic, called out same as Araki's own quest drops
+                    message = Messages.get(this, "triple_item");
+                    color = 0xFFDD44;
+                    Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
+                    reward = giveRandomArakiRelic();
+                    break;
+                case SNACK: //5 of a random rocacaca reward
+                    message = Messages.get(this, "triple_item");
+                    color = 0x44FF44;
+                    Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
+                    reward = giveItem(randomRocacacaReward(5));
+                    break;
+                default: //DRINK: a Magical Infusion
+                    message = Messages.get(this, "triple_item");
+                    color = 0x44FF44;
+                    Sample.INSTANCE.play(Assets.Sounds.LEVELUP);
+                    reward = giveItem(new MagicalInfusion().identify());
+                    break;
+            }
+        } else if (pairSymbol != -1) {
             color = 0x88FF88;
             Sample.INSTANCE.play(Assets.Sounds.ITEM);
-            giveItem(new StoneOfEnchantment().identify());
-        } else if (pairSymbol == SNACK) {
-            //same random reward pool as the triple, but just 1 instead of 5
-            payout = 0;
-            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]));
-            color = 0x88FF88;
-            Sample.INSTANCE.play(Assets.Sounds.ITEM);
-            giveRandomRocacacaReward(1);
-        } else if (pairSymbol == COIN) {
-            //salt cube pair dispenses a Wild Energy instead of gold
-            payout = 0;
-            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]));
-            color = 0x88FF88;
-            Sample.INSTANCE.play(Assets.Sounds.ITEM);
-            giveItem(new WildEnergy().identify());
-        } else if (pairSymbol == STAR) {
-            //trinket catalyst pair dispenses 2 Telekinetic Grabs instead of gold
-            payout = 0;
-            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]));
-            color = 0x88FF88;
-            Sample.INSTANCE.play(Assets.Sounds.ITEM);
-            giveItem(new TelekineticGrab().identify().quantity(2));
+            switch (pairSymbol) {
+                case DRINK: //a Stone of Enchantment
+                    reward = giveItem(new StoneOfEnchantment().identify());
+                    break;
+                case SNACK: //1 of a random rocacaca reward
+                    reward = giveItem(randomRocacacaReward(1));
+                    break;
+                case COIN: //a Wild Energy
+                    reward = giveItem(new WildEnergy().identify());
+                    break;
+                default: //STAR: 2 Telekinetic Grabs
+                    reward = giveItem(new TelekineticGrab().identify().quantity(2));
+                    break;
+            }
+            message = Messages.get(this, "pair_item", Messages.get(this, SYMBOL_NAME_KEYS[pairSymbol]), rewardName(reward));
+            reward = null; //already named in the message
         } else {
-            payout = 0;
             message = Messages.get(this, "lose");
             color = 0xFF6666;
         }
 
-        if (payout > 0) {
-            Dungeon.gold += payout;
-            Statistics.goldCollected += payout;
-            Sample.INSTANCE.play(Assets.Sounds.GOLD);
+        if (reward != null) {
+            message += "\n" + Messages.get(this, "reward", rewardName(reward));
         }
 
         resultText.text(message);
@@ -381,119 +370,55 @@ public class WndSlotMachine extends Window {
         refreshButton();
     }
 
-    private void giveItem(Item item) {
+    private String rewardName(Item item) {
+        return item.quantity() > 1 ? item.name() + " x" + item.quantity() : item.name();
+    }
+
+    //every reward goes through here: picked up if there's room, dropped at the hero's feet if not
+    private Item giveItem(Item item) {
         if (!item.doPickUp(Dungeon.hero)) {
-            Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop();
-        } else {
-            GLog.i(Messages.get(this, "dispensed", item.name()));
+            Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
         }
+        GLog.i(Messages.get(this, "dispensed", item.name()));
+        return item;
+    }
+
+    private static <T extends Item> T randomOf(Class<? extends T>[] pool) {
+        return Reflection.newInstance(pool[Random.Int(pool.length)]);
     }
 
     //salt cube jackpot's reward pool - one random boss disc, identified same as when mobs drop them
+    @SuppressWarnings("unchecked")
     private Item randomBossdisc() {
-        switch (Random.Int(8)) {
-            case 0:
-                return new BossdiscA().identify();
-            case 1:
-                return new BossdiscB().identify();
-            case 2:
-                return new BossdiscC().identify();
-            case 3:
-                return new BossdiscD().identify();
-            case 4:
-                return new BossdiscE().identify();
-            case 5:
-                return new BossdiscF().identify();
-            case 6:
-                return new BossdiscG().identify();
-            case 7: default:
-                return new BossdiscH().identify();
-        }
+        Class<? extends Item>[] pool = new Class[]{
+                BossdiscA.class, BossdiscB.class, BossdiscC.class, BossdiscD.class,
+                BossdiscE.class, BossdiscF.class, BossdiscG.class, BossdiscH.class
+        };
+        return randomOf(pool).identify();
     }
 
-    //trinket catalyst triple's reward pool - always drops on the floor rather than trying to
-    //pick up first, and always calls out the relic via GLog.h, same as Araki's own quest drops
-    private void giveRandomArakiRelic() {
-        Item item;
-        String key;
-        switch (Random.Int(9)) {
-            case 0:
-                item = new Jojo1();
-                key = "1";
-                break;
-            case 1:
-                item = new Jojo2();
-                key = "2";
-                break;
-            case 2:
-                item = new Jojo3();
-                key = "3";
-                break;
-            case 3:
-                item = new Jojo4();
-                key = "4";
-                break;
-            case 4:
-                item = new Jojo5();
-                key = "5";
-                break;
-            case 5:
-                item = new Jojo6();
-                key = "6";
-                break;
-            case 6:
-                item = new Jojo7();
-                key = "7";
-                break;
-            case 7:
-                item = new Jojo8();
-                key = "8";
-                break;
-            case 8: default:
-                item = new Jojo9();
-                key = "9";
-                break;
-        }
-        Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop(Dungeon.hero.pos);
-        GLog.h(Messages.get(Araki.class, key));
+    //trinket catalyst triple's reward pool - one random Araki relic, plus the same GLog.h
+    //call-out Araki's own quest drops use
+    @SuppressWarnings("unchecked")
+    private Item giveRandomArakiRelic() {
+        Class<? extends Item>[] pool = new Class[]{
+                Jojo1.class, Jojo2.class, Jojo3.class, Jojo4.class, Jojo5.class,
+                Jojo6.class, Jojo7.class, Jojo8.class, Jojo9.class
+        };
+        int index = Random.Int(pool.length);
+        Item relic = giveItem(Reflection.newInstance(pool[index]));
+        GLog.h(Messages.get(Araki.class, String.valueOf(index + 1)));
+        return relic;
     }
 
     //rocacaca's reward pool - one random item from the set, at the given quantity
-    private void giveRandomRocacacaReward(int quantity) {
-        Item item;
-        switch (Random.Int(8)) {
-            case 0:
-                item = new Kingt();
-                break;
-            case 1:
-                item = new StoneOfAdvanceguard();
-                break;
-            case 2:
-                item = new Xray();
-                break;
-            case 3:
-                item = new Kings();
-                break;
-            case 4:
-                item = new Kingm();
-                break;
-            case 5:
-                item = new Kingw();
-                break;
-            case 6:
-                item = new Kingc();
-                break;
-            case 7: default:
-                item = new Kinga();
-                break;
-        }
-        item.quantity(quantity);
-
-        if (item.doPickUp(Dungeon.hero)) {
-            GLog.p(Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", item.name())));
-        } else {
-            Dungeon.level.drop(item, Dungeon.hero.pos).sprite.drop();
-        }
+    @SuppressWarnings("unchecked")
+    private Item randomRocacacaReward(int quantity) {
+        Class<? extends Item>[] pool = new Class[]{
+                Kingt.class, StoneOfAdvanceguard.class, Xray.class, Kings.class,
+                Kingm.class, Kingw.class, Kingc.class, Kinga.class
+        };
+        return randomOf(pool).quantity(quantity);
     }
 
     //no walking away mid-pull

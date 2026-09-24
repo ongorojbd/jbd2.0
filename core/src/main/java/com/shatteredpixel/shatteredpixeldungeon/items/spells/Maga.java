@@ -4,9 +4,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Acidic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Alpha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bandit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bcomg;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gamma;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Boytwo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Genkaku;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Jonny;
@@ -52,7 +55,7 @@ public class Maga extends Spell {
     protected void onCast(Hero hero) {
 
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof Bandit || mob instanceof Mandom || mob instanceof Senior || mob instanceof RipperDemon || mob instanceof Vitaminc || mob instanceof Scorpio || mob instanceof Acidic || mob instanceof Newgenkaku || mob instanceof Newcmoon || mob instanceof Mih || mob instanceof Jonny ||  mob instanceof Genkaku  ||  mob instanceof Whsnake ||  mob instanceof Whsnake2 ||  mob instanceof SentryRoom.Sentry ||  mob instanceof Bcom ||  mob instanceof Bcomg ||  mob instanceof Boytwo ||  mob instanceof Stower) {
+            if (mob instanceof Bandit || mob instanceof Mandom || mob instanceof Senior || mob instanceof RipperDemon || mob instanceof Vitaminc || mob instanceof Scorpio || mob instanceof Acidic || mob instanceof Newgenkaku || mob instanceof Newcmoon || mob instanceof Mih || mob instanceof Jonny ||  mob instanceof Genkaku  ||  mob instanceof Whsnake ||  mob instanceof Whsnake2 ||  mob instanceof SentryRoom.Sentry ||  mob instanceof Bcom ||  mob instanceof Bcomg ||  mob instanceof Boytwo ||  mob instanceof Stower||  mob instanceof Alpha ||  mob instanceof Beta ||  mob instanceof Gamma) {
                 mob.destroy();
                 mob.sprite.killAndErase();
                 Dungeon.level.mobs.remove(mob);

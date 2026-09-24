@@ -89,6 +89,9 @@ public class ColdhouseRecoveryLevel extends Level {
         //and level.exit() still resolve normally), it's just no longer tied to a stair tile.
         //ColdhouseExitGuide, standing on this cell, fires it herself when talked to.
         map[exit] = Terrain.EMPTY;
+        //alchemy pots five tiles to the left and right of the entrance, on the same row
+        map[entrance - 5] = Terrain.ALCHEMY;
+        map[entrance + 5] = Terrain.ALCHEMY;
         transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
         transitions.add(new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT));
 

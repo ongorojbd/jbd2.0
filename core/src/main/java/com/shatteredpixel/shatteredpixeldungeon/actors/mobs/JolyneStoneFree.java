@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.StoneFreeString;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -304,7 +305,6 @@ public class JolyneStoneFree extends DirectableAlly {
 		}
 
 		sprite.showStatus(CharSprite.WARNING, Messages.get(this, "prayer"));
-		Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 		sprite.emitter().start(Speck.factory(Speck.UP), 0.15f, 4);
 	}
 
@@ -364,19 +364,24 @@ public class JolyneStoneFree extends DirectableAlly {
 
 	@Override
 	public void targetChar(Char ch) {
+		Sample.INSTANCE.play(Assets.Sounds.JSF1);
+		yell(Messages.get(Jolyne3.class, "t"));
 		super.targetChar(ch);
 		directedEnemy = ch;
 	}
 
 	@Override
 	public void followHero() {
+		Sample.INSTANCE.play(Assets.Sounds.JT5);
+		yell(Messages.get(Jolyne3.class, "f"));
 		super.followHero();
 		directedEnemy = null;
 	}
 
 	@Override
 	public void defendPos(int cell) {
-		super.defendPos(cell);
+		Sample.INSTANCE.play(Assets.Sounds.B2);
+		yell(Messages.get(Jolyne3.class, "d"));
 		directedEnemy = null;
 	}
 
@@ -402,6 +407,15 @@ public class JolyneStoneFree extends DirectableAlly {
 	}
 
 	public static void summon(Hero hero) {
+		//지시용 아이템은 처음 합류할 때 한 번만 지급한다
+		if (hero.belongings.getItem(StoneFreeString.class) == null) {
+			StoneFreeString string = new StoneFreeString();
+			string.identify();
+			if (!string.collect()) {
+				Dungeon.level.drop(string, hero.pos).sprite.drop();
+			}
+		}
+
 		ArrayList<Integer> spawnPoints = new ArrayList<>();
 		for (int offset : PathFinder.NEIGHBOURS8) {
 			int cell = hero.pos + offset;

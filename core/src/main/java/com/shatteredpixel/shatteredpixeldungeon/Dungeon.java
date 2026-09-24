@@ -393,7 +393,7 @@ public class Dungeon {
                         tendencylevel = true;
                         level = new ArenaLevel();
                     } else {
-                        level = new ColdhouseLoungeLevel();
+                        level = new SewerLevel();
                     }
                     break;
                 case 2:
@@ -402,7 +402,7 @@ public class Dungeon {
                     } else if (Statistics.spw6 > 0) {
                         level = new HumanVillageBossLevel2();
                     } else {
-                        level = new HospitalLevel();
+                        level = new SewerLevel();
                     }
                     break;
                 case 3:
@@ -556,6 +556,9 @@ public class Dungeon {
                     level = new ColdhouseRecoveryLevel();
                     break;
                 case 23:
+                    level = new HospitalLevel();
+                    break;
+                case 24:
                     level = new ColdhouseLoungeLevel();
                     break;
                 default:

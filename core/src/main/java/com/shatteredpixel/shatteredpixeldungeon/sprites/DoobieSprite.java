@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Abomination2;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DoobieWah;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -30,8 +31,19 @@ public class DoobieSprite extends MobSprite {
 
         play(idle);
 
-        scale.set(1.3f);
+        scale.set(DoobieWah.BASE_SCALE);
 
+    }
+
+    //re-read every frame rather than set on damage: the boss grows as its health drops, and
+    //this way nothing that resets the sprite can leave it at the wrong size
+    @Override
+    public void update() {
+        super.update();
+
+        if (ch instanceof DoobieWah) {
+            scale.set(((DoobieWah) ch).sizeScale());
+        }
     }
 
 }

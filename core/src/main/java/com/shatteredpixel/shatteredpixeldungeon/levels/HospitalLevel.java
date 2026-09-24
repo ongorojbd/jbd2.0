@@ -31,27 +31,37 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Alpha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ambulance;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Banshee;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Beta;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DM300;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DoobieWah;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gamma;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.AmbulanceTurret;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Patient;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.TuskBestiary2;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.KiraSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TankSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.YasuSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndDialogueWithPic;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTurretWand;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
@@ -83,11 +93,21 @@ public class HospitalLevel extends Level {
 
     @Override
     public void playLevelMusic() {
-        Music.INSTANCE.playTracks(SANCTUM_TRACK_LIST, SANCTUM_TRACK_CHANCES, false);
+        //the waiting-room track only covers the stop before departure; once the ambulance is
+        //rolling the drive theme takes over, and the boss brings its own. All three are picked
+        //from level state, so reloading a save mid-run resumes the right one.
+        if (bossSpawned && !bossDefeated && !completed) {
+            Music.INSTANCE.play(Assets.Music.PRISON_BOSS, true);
+        } else if (active && !completed) {
+            Music.INSTANCE.play(Assets.Music.CIV, true);
+        } else {
+            Music.INSTANCE.playTracks(SANCTUM_TRACK_LIST, SANCTUM_TRACK_CHANCES, false);
+        }
     }
 
-    //Arena18 is 500 wide for 15 waves; 6 sections end around column 200, so 250 is enough
-    private static final int WIDTH = 250;
+    //Arena18 is 500 wide for 15 waves. The six sections here run out around column 200; the rest
+    //is road for the boss chase, which stops once the ambulance reaches the end of the map.
+    private static final int WIDTH = 280;
     //Arena18 is 30 tall. Everything below is still laid out in its 30-row coordinates and
     //shifted up by ROW_SHIFT through cellAt()/setAt()/fillAt(), which clips whatever falls
     //outside. ROW_SHIFT is derived from HEIGHT so the hero's riding row (original row 15) always
@@ -147,6 +167,10 @@ public class HospitalLevel extends Level {
     private boolean openingPromptOpen = false;
     private volatile Wand openingWand = null;
 
+    //the wands currently on offer. Saved, so the same hand comes back after a reload instead of
+    //being rolled again
+    private ArrayList<Wand> pendingChoices = new ArrayList<>();
+
     //how many turrets have been armed so far, which picks the patient's next line
     private static final int TURRET_LINES = 6;
     private int turretLine = 0;
@@ -156,12 +180,18 @@ public class HospitalLevel extends Level {
     private static final String STEPCOUNT = "stepcount";
     private static final String ACTIVE = "active";
     private static final String COMPLETED = "completed";
-    private static final String AMBULANCE = "ambulance";
-    private static final String PATIENT = "patient";
     private static final String TURRET_LINE = "turret_line";
     private static final String BOSS_SPAWNED = "boss_spawned";
+    private static final String BOSS_DEFEATED = "boss_defeated";
+    private static final String PENDING_CHOICES = "pending_choices";
 
     private boolean bossSpawned = false;
+
+    //boss is down but the ambulance is still rolling toward the end of the road
+    private boolean bossDefeated = false;
+
+    //set once the run is over, so a second death (hero and patient on the same turn) is ignored
+    private boolean escortFailed = false;
 
     @Override
     public String tilesTex() {
@@ -232,6 +262,7 @@ public class HospitalLevel extends Level {
         turret.setWand(wand);
         GameScene.add(turret);
         occupyCell(turret);
+        Bestiary.setSeen(AmbulanceTurret.class);
         return turret;
     }
 
@@ -264,6 +295,7 @@ public class HospitalLevel extends Level {
             installTurret(openingWand);
             openingWand = null;
             openingPromptOpen = false;
+            pendingChoices.clear();
             announceTurretArmed();
             return;
         }
@@ -282,6 +314,7 @@ public class HospitalLevel extends Level {
         if (pendingTurret != null) {
             if (pendingTurret.wand() == null) return;
             pendingTurret = null;
+            pendingChoices.clear();
             announceTurretArmed();
         }
 
@@ -331,7 +364,12 @@ public class HospitalLevel extends Level {
 
     //true if a prompt was actually put up
     private boolean showWandChoice(final WndTurretWand.Listener listener) {
-        final ArrayList<Wand> choices = AmbulanceTurret.rollChoices(3);
+        //rolled once and kept until it is answered: leaving and reloading in front of the window
+        //used to deal a fresh hand, which let the offer be re-rolled at will
+        if (pendingChoices.isEmpty()) {
+            pendingChoices = AmbulanceTurret.rollChoices(AmbulanceTurret.WAND_CHOICES);
+        }
+        final ArrayList<Wand> choices = pendingChoices;
         if (choices.isEmpty()) return false;
 
         Game.runOnRenderThread(new Callback() {
@@ -352,6 +390,17 @@ public class HospitalLevel extends Level {
     @Override
     public Actor addRespawner() {
         return null;
+    }
+
+    //no leaving until Doobie Wah! is down. seal() already blocks this, but it reads better with
+    //a reason, and it keeps holding if the floor is ever unsealed some other way.
+    @Override
+    public boolean activateTransition(Hero hero, LevelTransition transition) {
+        if (!completed) {
+            GLog.w(Messages.get(HospitalLevel.class, "no_exit"));
+            return false;
+        }
+        return super.activateTransition(hero, transition);
     }
 
     public boolean hasDeparted() {
@@ -405,6 +454,7 @@ public class HospitalLevel extends Level {
     public void depart() {
         if (hasDeparted()) return;
         active = true;
+        playLevelMusic();
         Dungeon.hero.spendAndNext(HERO_WAIT_ON_DEPART);
     }
 
@@ -438,7 +488,11 @@ public class HospitalLevel extends Level {
         //out, not the moment the hero arrives
         promptPendingWand();
 
-        if (atRoadEnd) return;
+        if (atRoadEnd) {
+            //journey's end: the boss is down and there is no more road, so the ride is over
+            if (bossDefeated) completeLevel();
+            return;
+        }
 
         counter++;
         if (counter >= 2) {
@@ -875,28 +929,89 @@ public class HospitalLevel extends Level {
         GameScene.add(boss);
         boss.aggro(Dungeon.hero);
 
+        Sample.INSTANCE.play(Assets.Sounds.MIMIC);
         GLog.n(Messages.get(HospitalLevel.class, "boss_spawn"));
-        Music.INSTANCE.play(Assets.Music.PRISON_BOSS, true);
+        //bossSpawned is set above, so this picks the boss track
+        playLevelMusic();
+
+        WndDialogueWithPic.dialogue(
+                new CharSprite[]{new YasuSprite(), new YasuSprite()},
+                new String[]{"히로세 야스호", "히로세 야스호"},
+                new String[]{
+                        Messages.get(DoobieWah.class, "1"),
+                        Messages.get(DoobieWah.class, "2")
+                },
+                new byte[]{
+                        WndDialogueWithPic.IDLE,
+                        WndDialogueWithPic.IDLE
+                }
+        );
 
         //same story-card intro GameScene uses for special floors, explaining the boss's gimmick
+//        Game.runOnRenderThread(new Callback() {
+//            @Override
+//            public void call() {
+//                GameScene.show(new WndStory(Messages.get(HospitalLevel.class, "boss_title")
+//                        + "\n\n" + Messages.get(HospitalLevel.class, "boss_window"))
+//                        .setDelays(0.4f, 0.4f));
+//            }
+//        });
+    }
+
+    //test-level behaviour: nobody actually dies here. Losing the patient - or going down
+    //yourself - just ends the run and drops the hero back into the main dungeon.
+    public boolean failEscort() {
+        if (escortFailed) return true;
+        escortFailed = true;
+
+        //the floor is sealed while the escort runs; leaving by scene switch skips the usual
+        //transition, so the lock has to be lifted by hand
+        unseal();
+        LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+        if (lock != null) lock.detach();
+
         Game.runOnRenderThread(new Callback() {
             @Override
             public void call() {
-                GameScene.show(new WndStory(Messages.get(HospitalLevel.class, "boss_title")
-                        + "\n\n" + Messages.get(HospitalLevel.class, "boss_window"))
-                        .setDelays(0.4f, 0.4f));
+                GameScene.show(new WndStory(Messages.get(HospitalLevel.class, "fail_window")) {
+                    @Override
+                    public void hide() {
+                        super.hide();
+                        returnToDungeon();
+                    }
+                }.setDelays(0.4f, 0.4f));
             }
         });
+        return true;
     }
 
+    private static void returnToDungeon() {
+        Hero hero = Dungeon.hero;
+        if (hero != null) {
+            hero.HP = Math.max(1, hero.HP);
+        }
+        Level.beforeTransition();
+        InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+        InterlevelScene.returnDepth = 26;
+        InterlevelScene.returnBranch = 0;
+        InterlevelScene.returnPos = -1;
+        Game.switchScene(InterlevelScene.class);
+    }
+
+    //the boss falling doesn't end the level: the ambulance drives on to the end of the road, and
+    //only there does the ride wrap up (see onAmbulanceTurn)
     public void onBossDefeated() {
         if (completed) return;
-        completeLevel();
+        bossDefeated = true;
+        //drop back to the driving theme for the last stretch
+        playLevelMusic();
     }
 
     private void completeLevel() {
         completed = true;
         unseal();
+        //back off the boss track now that it is over
+        playLevelMusic();
 
         //the run ends wherever the ambulance got to, so move the exit just ahead of it and
         //carve a straight path there instead of leaving it at the far end of the corridor
@@ -917,6 +1032,19 @@ public class HospitalLevel extends Level {
         set(exitCell, Terrain.EXIT);
         GameScene.updateMap();
         Dungeon.observe();
+
+        //the escort is over: the patient says her piece and then she, the turrets and the
+        //ambulance itself all bow out, the same quiet exit RecoveryWardNurse makes
+        if (patient != null && patient.isAlive()) {
+            patient.yell(Messages.get(HospitalLevel.class, "arrive"));
+        }
+
+        for (Mob mob : mobs.toArray(new Mob[0])) {
+            if (!(mob instanceof Patient) && !(mob instanceof Ambulance)
+                    && !(mob instanceof AmbulanceTurret)) continue;
+            mob.destroy();
+            if (mob.sprite != null) mob.sprite.die();
+        }
     }
 
     @Override
@@ -927,10 +1055,12 @@ public class HospitalLevel extends Level {
         bundle.put(STEPCOUNT, stepcount);
         bundle.put(ACTIVE, active);
         bundle.put(COMPLETED, completed);
-        bundle.put(AMBULANCE, ambulance);
-        bundle.put(PATIENT, patient);
+        //the ambulance and patient are not bundled here: they already ride along in mobs, and
+        //storing them again would restore a second, detached copy of each
         bundle.put(TURRET_LINE, turretLine);
         bundle.put(BOSS_SPAWNED, bossSpawned);
+        bundle.put(BOSS_DEFEATED, bossDefeated);
+        bundle.put(PENDING_CHOICES, pendingChoices);
     }
 
     @Override
@@ -941,9 +1071,23 @@ public class HospitalLevel extends Level {
         stepcount = bundle.getInt(STEPCOUNT);
         active = bundle.getBoolean(ACTIVE);
         completed = bundle.getBoolean(COMPLETED);
-        ambulance = (Ambulance) bundle.get(AMBULANCE);
-        patient = (Patient) bundle.get(PATIENT);
+        //pick the real ones back out of mobs. Reading them from the bundle handed back copies
+        //that were in neither mobs nor the actor list, so the level was steering a ghost
+        //ambulance and could never find the patient again
+        ambulance = null;
+        patient = null;
+        for (Mob mob : mobs) {
+            if (mob instanceof Ambulance) ambulance = (Ambulance) mob;
+            else if (mob instanceof Patient) patient = (Patient) mob;
+        }
+
         turretLine = bundle.getInt(TURRET_LINE);
         bossSpawned = bundle.getBoolean(BOSS_SPAWNED);
+        bossDefeated = bundle.getBoolean(BOSS_DEFEATED);
+
+        pendingChoices = new ArrayList<>();
+        for (Bundlable b : bundle.getCollection(PENDING_CHOICES)) {
+            if (b instanceof Wand) pendingChoices.add((Wand) b);
+        }
     }
 }

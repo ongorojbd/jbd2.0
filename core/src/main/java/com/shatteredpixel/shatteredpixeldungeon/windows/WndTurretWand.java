@@ -2,13 +2,13 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.AmbulanceTurret;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.TurretSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -41,7 +41,7 @@ public class WndTurretWand extends Window {
 		this.listener = listener;
 
 		IconTitle titlebar = new IconTitle();
-		titlebar.icon(new ItemSprite(ItemSpriteSheet.WAND_MAGIC_MISSILE));
+		titlebar.icon(new TurretSprite());
 		titlebar.label(Messages.get(HospitalLevel.class, "turret_title"));
 		titlebar.setRect(0, 0, WIDTH, 0);
 		add(titlebar);
@@ -52,6 +52,13 @@ public class WndTurretWand extends Window {
 		message.setPos(0, titlebar.bottom() + GAP);
 		add(message);
 
+		//laid out like WndWandmaker: the row of choices sits centred, each button a gap from the
+		//next, rather than spread to the window's edges
+		float rowWidth = choices.size() * BTN_SIZE + (choices.size() - 1) * BTN_GAP;
+		float left = (WIDTH - rowWidth) / 2f;
+		float top = message.top() + message.height() + BTN_GAP;
+
+		ItemButton last = null;
 		for (int i = 0; i < choices.size(); i++) {
 			final Wand wand = choices.get(i);
 			ItemButton btn = new ItemButton() {
@@ -64,15 +71,12 @@ public class WndTurretWand extends Window {
 			//the mounted wand has no charges and its level is fixed, so the slot shows the
 			//sprite alone rather than a "+5" and a charge count that mean nothing here
 			btn.slot().textVisible(false);
-			btn.setRect(
-					(i + 1) * (WIDTH - BTN_GAP) / choices.size() - BTN_SIZE,
-					message.top() + message.height() + BTN_GAP,
-					BTN_SIZE,
-					BTN_SIZE);
+			btn.setRect(left + i * (BTN_SIZE + BTN_GAP), top, BTN_SIZE, BTN_SIZE);
 			add(btn);
+			last = btn;
 		}
 
-		resize(WIDTH, (int) (message.top() + message.height() + 2 * BTN_GAP + BTN_SIZE));
+		resize(WIDTH, (int) (last != null ? last.bottom() : top));
 	}
 
 	//a turret is owed either way, so there is no walking away without picking its wand
@@ -80,17 +84,31 @@ public class WndTurretWand extends Window {
 	public void onBackPressed() {
 	}
 
-	private class WndTurretWandInfo extends WndInfoItem {
+	//not WndInfoItem: that shows the wand's own description, and a support wand's turret does
+	//something else entirely (see AmbulanceTurret.turretInfo)
+	private class WndTurretWandInfo extends Window {
 
-		WndTurretWandInfo(final Item wand) {
-			super(wand);
+		WndTurretWandInfo(final Wand wand) {
+
+			IconTitle titlebar = new IconTitle();
+			titlebar.icon(new ItemSprite(wand));
+			titlebar.label(Messages.titleCase(wand.name()));
+			titlebar.setRect(0, 0, WIDTH, 0);
+			add(titlebar);
+
+			RenderedTextBlock info = PixelScene.renderTextBlock(AmbulanceTurret.turretInfo(wand), 6);
+			info.maxWidth(WIDTH);
+			info.setPos(0, titlebar.bottom() + GAP);
+			add(info);
+
+			resize(WIDTH, (int) info.bottom());
 
 			RedButton btnConfirm = new RedButton(Messages.get(WndTurretWand.class, "confirm")) {
 				@Override
 				protected void onClick() {
 					WndTurretWandInfo.this.hide();
 					WndTurretWand.this.hide();
-					listener.onChosen((Wand) wand);
+					listener.onChosen(wand);
 					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 				}
 			};

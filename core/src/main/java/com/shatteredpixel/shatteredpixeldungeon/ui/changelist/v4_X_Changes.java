@@ -29,8 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.JohnnySprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.PucciSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SkeletonSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SpiritHorseSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -41,23 +45,74 @@ import java.util.ArrayList;
 
 public class v4_X_Changes {
 
-    public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
+    public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
 
         add_Coming_Soon(changeInfos);
+        add_v4_1_Changes(changeInfos);
         add_v4_0_Changes(changeInfos);
     }
 
-    public static void add_Coming_Soon( ArrayList<ChangeInfo> changeInfos ) {
+    public static void add_Coming_Soon(ArrayList<ChangeInfo> changeInfos) {
 
         ChangeInfo changes = new ChangeInfo("출시 예정", true, "");
         changes.hardlight(0xCCCCCC);
         changeInfos.add(changes);
 
-        changes.addButton( new ChangeButton( new ItemSprite(ItemSpriteSheet.MAP), "새로운 아이템",
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.MAP), "새로운 아이템",
                 "게임플레이 콘텐츠 측면에서 다양한 아이템 카테고리에 몇 가지 새로운 아이템을 추가하는 데 집중할 예정입니다."));
     }
 
-    public static void add_v4_0_Changes( ArrayList<ChangeInfo> changeInfos ) {
+    public static void add_v4_1_Changes(ArrayList<ChangeInfo> changeInfos) {
+
+        ChangeInfo changes = new ChangeInfo("v4.0b", true, "");
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+        changes.hardlight(Window.TITLE_COLOR);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARMOR_JOHNNY), "스틸 볼 런 애니메이션 2nd & 3rd STAGE 공개 이벤트",
+                "9월 25일, 스틸 볼 런 애니메이션 2nd & 3rd STAGE 공개를 기념하여 특별한 이벤트가 시작됩니다!\n" +
+                        "\n" +
+                        "이벤트 기간동안 보조 직업 선택 시, _각 영웅별로 정해진 다른 영웅의 보조 직업_을 선택할 수 있습니다!"));
+
+        changes.addButton(new ChangeButton(
+                new Image(Assets.Sprites.YASU, 0, 0, 13, 15), "TG 대학병원 확장",
+                "고난이도 던전인 TG 대학병원의 _다음 층_이 추가되었습니다! 해당 층은 아직 조정 중으로, 사망하더라도 원래 던전으로 돌려보내집니다.\n\n" + "입장 아이템의 조건 설명이 더 직관적으로 변경되었습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+        changes.hardlight(CharSprite.WARNING);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new BuffIcon(BuffIndicator.RAGE, true), "버프 매커니즘 변경",
+                "D4C-러브 트레인-, 성인의 유해 버프, 살인충동, 선택받은 자 버프가 있는 상태로 가출소녀 앤 퀘스트를 진행해도, 퀘스트가 끝날 때 다시 해당 버프가 부여됩니다.\n\n" +
+                        "플레이어가 사망 시, D4C-러브 트레인- 버프가 사라지지 않습니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+        changes.hardlight(CharSprite.POSITIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new Image(new SpiritHorseSprite()), "인간 찬가의 기수 상향",
+                "- _험지 주파_ 특성으로 획득하는 슬로 댄서의 방어력이 기존 1-6/2-12/3-18에서 2-8/4-16/6-24로 증가합니다.\n" +
+                        "- _대륙 횡단자_ 특성으로 획득하는 기마 상태에서의 이동속도가 기존 10%/20%/30%에서 15%/30%/45%로 증가합니다.\n" +
+                        "- _필사의 각오_ 특성으로 손실되는 체력의 양이 기존 15%/10%/5%에서 8%/6%/4%로 감소합니다."));
+
+        changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+        changes.hardlight(CharSprite.NEGATIVE);
+        changeInfos.add(changes);
+
+        changes.addButton(new ChangeButton(new TalentIcon(Talent.J51), "보조 직업/아이템 하향",
+                "지나치게 강력한 성능을 보이던 일부 영웅 특성과 아이템의 밸런스를 조정했습니다.\n" +
+                        "\n" +
+                        "- _메이드 인 헤븐의 장비 DISC_: 시간 가속 시 받는 피해량이 기존 35%에서 50%로 증가합니다.\n" +
+                        "- _속도의 스탠드사_: 화살의 선택 특성 적용 시, 스타 플라티나의 장비 DISC의 충전 속도가 20% 감소합니다.\n" +
+                        "- _황금 회전의 스탠드사_: 성인의 가르침 특성으로 강화되는 황금의 회전 피해량이 기존 25%/50%/75%에서 15%/30%/45%로 감소합니다.\n" +
+                        "- _황금 회전의 스탠드사_: 화살의 선택 특성 적용 시, 터스크의 장비 DISC의 최대 피해량이 기존 25에서 20으로 감소합니다.\n" +
+                        "- _천국에 도달한 자_: 능력 사용 시 받는 피해량이 기존 1에서 2로 증가합니다."));
+    }
+
+    public static void add_v4_0_Changes(ArrayList<ChangeInfo> changeInfos) {
 
         ChangeInfo changes = new ChangeInfo("v4.0a", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -90,7 +145,7 @@ public class v4_X_Changes {
                 "강력한 사격 DISC인 _킬러 퀸의 사격 DISC_가 추가되었습니다!\n\n" +
                         "킬러 퀸의 사격 DISC는 TG 대학병원에서 획득할 수 있습니다."));
 
-        changes.addButton( new ChangeButton( ChangeIcons.V40_CITY_CARPET, "환경 비주얼 개편!",
+        changes.addButton(new ChangeButton(ChangeIcons.V40_CITY_CARPET, "환경 비주얼 개편!",
                 "죠기던의 픽셀 아트 비주얼 개편 작업이 적용되었습니다!\n" +
                         "\n" +
                         "이번 업데이트에서는 전체 지역에 적용되는 주요 변경 사항 하나와 DIO의 저택 및 퀘스트 방 위주의 작업이 이루어졌습니다:\n" +
@@ -99,8 +154,8 @@ public class v4_X_Changes {
                         "- DIO의 저택에 새로운 형태의 특수 바닥 타일이 추가되었습니다.\n" +
                         "- 자이로 퀘스트 및 관련 그래픽이 전면 개편되었습니다.\n" +
                         "- 화이트 스네이크 퀘스트 비주얼이 개편되었습니다.\n"));
-        
-        changes.addButton( new ChangeButton( ChangeIcons.V40_GREATSWORD_CRYSTAL, "신규 속성 및 저주!",
+
+        changes.addButton(new ChangeButton(ChangeIcons.V40_GREATSWORD_CRYSTAL, "신규 속성 및 저주!",
                 "무기에 적용할 수 있는 4가지 신규 속성과 2가지 신규 저주가 추가되었습니다!\n" +
                         "\n" +
                         "- 맹독의 속성: 시간에 따라 중첩되는 중독 피해를 주는 일반 속성입니다.\n" +
@@ -110,7 +165,7 @@ public class v4_X_Changes {
                         "- 고압의 저주: 간헐적으로 물기둥을 분출시켜 플레이어와 적을 모두 튕겨내는 저주입니다.\n" +
                         "- 경이로운 저주: 무작위 저주받은 사격 DISC 효과를 발동시키는 저주입니다."));
 
-        changes.addButton( new ChangeButton( ChangeIcons.V13_BUFF_AGGRESSION, "시련 리워크",
+        changes.addButton(new ChangeButton(ChangeIcons.V13_BUFF_AGGRESSION, "시련 리워크",
                 "네놈.. 보고 있구나! 시련의 대처 가능성과 일관성을 높이기 위해 메커니즘을 조정했습니다.\n" +
                         "\n" +
                         "v4.0a 이전에는 적이 플레이어를 처음 발견했을 때에만 고정된 8타일 범위 내의 다른 적들이 반응했습니다. 하지만 숙련된 플레이어들은 이 효과 자체를 아예 발동시키지 않는 편법을 많이 이용하곤 했습니다.\n" +
@@ -134,14 +189,14 @@ public class v4_X_Changes {
         changes.hardlight(CharSprite.WARNING);
         changeInfos.add(changes);
 
-        changes.addButton( new ChangeButton( ChangeIcons.V075_LONGSWORD_CORRUPTING, "기존 속성 변경 사항",
+        changes.addButton(new ChangeButton(ChangeIcons.V075_LONGSWORD_CORRUPTING, "기존 속성 변경 사항",
                 "신규 속성이 추가됨에 따라, 기존 속성에 있던 몇 가지 매끄럽지 못했던 판정들을 개선했습니다:\n" +
                         "\n" +
                         "- 관성의 속성: 적이 다른 효과에 의해 먼저 사망하여 타격이 취소되어도, 저장된 관성 피해량이 사라지지 않도록 수정되었습니다.\n" +
                         "- 정신 지배의 속성: 무기 자체의 직접 타격뿐만 아니라 타격 전에 추가 피해가 먼저 들어가는 경우에도 정신 지배 효과가 정상 적용됩니다.\n" +
                         "- 음침한 속성: 무기 자체의 타격 전에 추가 피해가 먼저 들어가는 경우에도 효과가 더 일관되게 발동하도록 개선되었습니다."));
 
-        changes.addButton( new ChangeButton( ChangeIcons.V081_MISC, Messages.get(ChangesScene.class, "misc"),
+        changes.addButton(new ChangeButton(ChangeIcons.V081_MISC, Messages.get(ChangesScene.class, "misc"),
                 "주요 변경 사항:\n" +
                         "- 이제 체력바에 지속 피해의 총량이 시각적으로 표시됩니다.\n" +
                         "- 등가교환의 명령 DISC의 편의성 및 UI가 개선되었습니다.\n" +
@@ -192,13 +247,6 @@ public class v4_X_Changes {
                         "신규 퀘스트 전용 맞춤 조정 사항:\n" +
                         "- 흔들림 없는 용기: 파문의 보호막이 필요하도록 변경됨\n" +
                         "- 수복의 스탠드사: 부활하거나 창고 지역에 입장할 때 에너지가 유지되지 않도록 변경"));
-        changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.AMULET), "보조 직업/아이템 하향",
-                "일부 영웅 스킬 및 특성에 대한 밸런스 조정이 진행되었습니다:\n" +
-                        "\n" +
-                        "- 메이드 인 헤븐의 장비 DISC: 시간 가속 시 받는 피해량이 기존 35%에서 50%로 증가합니다.\n" +
-                        "- 속도의 스탠드사: 화살의 선택 특성 적용 시, 스타 플라티나의 장비 DISC의 충전 속도가 20% 감소합니다.\n" +
-                        "- 황금 회전의 스탠드사: 화살의 선택 특성 적용 시, 터스크의 장비 DISC의 최대 피해량이 기존 25에서 20으로 감소합니다.\n" +
-                        "- 천국에 도달한 자: 능력 사용 시 받는 피해량이 기존 1에서 2로 증가합니다."));
 
     }
 

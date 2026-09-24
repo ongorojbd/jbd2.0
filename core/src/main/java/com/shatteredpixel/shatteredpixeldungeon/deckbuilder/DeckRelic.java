@@ -316,7 +316,7 @@ public enum DeckRelic {
 	BURNING_STICKS("직화구이 고기", "매 전투마다 처음으로 보조 카드를 소멸시킬 시, 그 카드의 복사본을 1장 손으로 가져옵니다.", DeckRelicRarity.UNCOMMON, DeckRelicType.SHOP, ItemSpriteSheet.STEAK),
 	SPW_FOUNDATION_SUPPLIES("SPW재단의 보급품", "보유한 포션이 없는 동안, 2의 방어력 증가를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.OVERPRICED),
 	HIGHWAY_TO_HELL("하이웨이 투 헬", "내 턴 종료 시 손에 카드가 없다면, 모든 적에게 피해를 20 줍니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.HIGHWAY),
-	SUPER_AJA("슈퍼 에이자", "첫 턴 시작 시, 1 에너지를 잃습니다. 다른 모든 턴 시작 시, 1 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ALCHEMIZE),
+	SUPER_AJA("호박석", "첫 턴 시작 시, 1 에너지를 잃습니다. 다른 모든 턴 시작 시, 1 에너지를 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.ALCHEMIZE),
 	MAGIC_LAMP("마법의 램프", "골드를 획득할 때마다, 최대 체력이 1 증가합니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.RAM),
 	POLPO_LIGHTER("폴포의 라이터", "엘리트 전투 시작 시, 공격력을 2 얻습니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.HONEYPOT),
 	DANGEROUS_OBJECT_UNIDENTIFIED("무언가가 담긴 자루", "전투 동안 피해를 입지 않았다면, 매 전투 종료 시 모든 카드 보상이 강화됩니다.", DeckRelicRarity.RARE, DeckRelicType.SHOP, ItemSpriteSheet.WATERSKIN),

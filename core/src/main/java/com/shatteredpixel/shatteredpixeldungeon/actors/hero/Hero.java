@@ -2844,6 +2844,12 @@ public class Hero extends Char {
         Ankh ankh = null;
         //look for ankhs in player inventory, prioritize ones which are blessed.
         for (Ankh i : belongings.getAllItems(Ankh.class)) {
+            //a plain ankh resurrects on the spot, which the hospital test floor has no room for:
+            //that run simply ends and the hero is sent back. A blessed one still works.
+            if (!i.isBlessed()
+                    && Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel) {
+                continue;
+            }
             if (ankh == null || i.isBlessed()) {
                 ankh = i;
             }
@@ -2916,6 +2922,16 @@ public class Hero extends Char {
 //
 //            return;
 //        }
+
+        //HospitalLevel is a test floor: nobody dies on it, the run just ends and the hero is
+        //dropped back into the main dungeon. Checked last so anything that could have saved
+        //them - Caesar, Dolomite's Teeth, an ankh - still gets its turn first.
+        if (Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel) {
+            HP = HT;
+            interrupt();
+            ((com.shatteredpixel.shatteredpixeldungeon.levels.HospitalLevel) Dungeon.level).failEscort();
+            return;
+        }
 
         Actor.fixTime();
         super.die(cause);

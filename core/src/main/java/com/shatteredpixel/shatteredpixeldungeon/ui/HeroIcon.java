@@ -110,6 +110,7 @@ public class HeroIcon extends Image {
 	public static final int JOLYNE_NEW1     = 67;
 	public static final int JOLYNE_NEW2     = 68;
 	public static final int JOLYNE_NEW3     = 69;
+	public static final int JOLYNE_NEW4     = 70;
 
 	//all cleric spells have a separate icon with no background for the action indicator
 	public static final int SPELL_ACTION_OFFSET      = 32;

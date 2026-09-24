@@ -7,7 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.SpecialVendingMachine;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Yasu2;
 import com.shatteredpixel.shatteredpixeldungeon.items.BossChallengeTester;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -97,14 +97,14 @@ public class ColdhouseLoungeLevel extends Level {
         transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_ENTRANCE));
         transitions.add(new LevelTransition(this, exit, LevelTransition.Type.REGULAR_EXIT));
 
-        placeYasu(exit);
+        placeYasu2(exit);
 
         return true;
     }
 
-    //Yasu, standing just off the exit stairs, one tile up and one tile to the left of them
-    private void placeYasu(int exit) {
-        Yasu npc = new Yasu();
+    //Yasu2, standing just off the exit stairs, one tile up and one tile to the left of them
+    private void placeYasu2(int exit) {
+        Yasu2 npc = new Yasu2();
         npc.pos = exit - WIDTH - 1;
         mobs.add(npc);
     }
@@ -173,7 +173,7 @@ public class ColdhouseLoungeLevel extends Level {
 
         //the odd one out stands at the head of the row, on open floor so it can be talked to
         SpecialVendingMachine slots = new SpecialVendingMachine();
-        slots.pos = WIDTH - 7 + 8 * WIDTH;
+        slots.pos = WIDTH - 8 + 8 * WIDTH;
         mobs.add(slots);
 
         //sized so the stock forms a ring one tile in from the edges with the shopkeeper standing

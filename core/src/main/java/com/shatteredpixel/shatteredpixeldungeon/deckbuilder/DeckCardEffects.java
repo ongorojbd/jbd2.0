@@ -47,7 +47,7 @@ public class DeckCardEffects {
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
 			int damage = card.damage(cardCode);
 			int stored = DeckCardCode.auxValue(cardCode) * damage;
-			String text = "내 턴 종료 시, 피해량이 " + damage + " 증가합니다. 해당 완드의 충전량이 0이 되면 누적된 피해량만큼 무작위 적에게 피해를 줍니다.";
+			String text = "내 턴 종료 시, 피해량이 " + damage + " 증가합니다. 해당 사격 DISC의 충전량이 0이 되면 누적된 피해량만큼 무작위 적에게 피해를 줍니다.";
 			if (stored > 0) text += " (현재 누적 피해량 " + stored + ")";
 			return text;
 		}
@@ -761,12 +761,12 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "손패의 완드 1장을 선택해 [발사]합니다.";
+			return "손패의 사격 DISC 1장을 선택해 [발사]합니다.";
 		}
 
 		@Override
 		public String keywordText(DeckCard card, int cardCode) {
-			return "[발사]: 완드 카드의 효과를 최대 충전량만큼 즉시 발동시킨 뒤 해당 완드를 소멸시킵니다.";
+			return "[발사]: 사격 DISC 카드의 효과를 최대 충전량만큼 즉시 발동시킨 뒤 해당 사격 DISC를 소멸시킵니다.";
 		}
 	}
 
@@ -4830,7 +4830,7 @@ public class DeckCardEffects {
 
 		@Override
 		public String rulesText(DeckCard card, int cardCode, DeckBuilderCombat combat) {
-			return "무작위 완드를 손으로 가져옵니다. 카드를 " + card.draw(cardCode) + "장 뽑습니다.";
+			return "무작위 사격 DISC를 손으로 가져옵니다. 카드를 " + card.draw(cardCode) + "장 뽑습니다.";
 		}
 
 		@Override

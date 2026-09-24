@@ -672,6 +672,8 @@ public class DwarfKing extends Mob {
 
         super.die(cause);
 
+        Sample.INSTANCE.play(Assets.Sounds.ENYA3);
+
         Statistics.zombiecount = 1;
 
         Heap h = Dungeon.level.heaps.get(CityBossLevel.throne);

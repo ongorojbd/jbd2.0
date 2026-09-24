@@ -27,14 +27,12 @@ public class SteelBallRunEvent {
 		BONUS_SUBCLASSES.put(HeroClass.JOHNNY,   HeroSubClass.WARLOCK);
 	}
 
-	//2026-09-25 00:00:00 ~ 2026-12-04 23:59:59 (KST 기준)
-	//TODO 테스트용으로 강제 true 처리해놓음, 배포 전에 아래 return true 줄 삭제할 것
+	//2026-09-24 00:00:00 ~ 2026-12-04 23:59:59 (KST 기준)
 	public static boolean isActive() {
-		if (true) return true;
 		TimeZone kst = TimeZone.getTimeZone("Asia/Seoul");
 		long now = System.currentTimeMillis();
 		GregorianCalendar start = new GregorianCalendar(kst);
-		start.set(2026, Calendar.SEPTEMBER, 25, 0, 0, 0);
+		start.set(2026, Calendar.SEPTEMBER, 24, 0, 0, 0);
 		start.set(Calendar.MILLISECOND, 0);
 		GregorianCalendar end = new GregorianCalendar(kst);
 		end.set(2026, Calendar.DECEMBER, 4, 23, 59, 59);
